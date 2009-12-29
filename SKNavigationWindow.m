@@ -41,6 +41,7 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "SKPDFView.h"
 #import "NSParagraphStyle_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -80,20 +81,22 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
         NSRect rect = NSMakeRect(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
-        SKNavigationButton *button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:pdfView];
-        [button setAction:@selector(goToPreviousPage:)];
-        [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
-        [button setPath:previousButtonPath(rect.size)];
-        [[self contentView] addSubview:button];
+        previousButton = [[SKNavigationButton alloc] initWithFrame:rect];
+        [previousButton setTarget:pdfView];
+        [previousButton setAction:@selector(goToPreviousPage:)];
+        [previousButton setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
+        [previousButton setPath:previousButtonPath(rect.size)];
+        [previousButton setEnabled:[pdfView canGoToPreviousPage]];
+        [[self contentView] addSubview:previousButton];
         
         rect.origin.x = NSMaxX(rect);
-        button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:pdfView];
-        [button setAction:@selector(goToNextPage:)];
-        [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
-        [button setPath:nextButtonPath(rect.size)];
-        [[self contentView] addSubview:button];
+        nextButton = [[SKNavigationButton alloc] initWithFrame:rect];
+        [nextButton setTarget:pdfView];
+        [nextButton setAction:@selector(goToNextPage:)];
+        [nextButton setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
+        [nextButton setPath:nextButtonPath(rect.size)];
+        [nextButton setEnabled:[pdfView canGoToNextPage]];
+        [[self contentView] addSubview:nextButton];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -126,6 +129,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [[self contentView] addSubview:zoomButton];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                      name:PDFViewScaleChangedNotification object:pdfView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                     name:PDFViewPageChangedNotification object:pdfView];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -133,20 +138,23 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
-        button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:pdfView];
-        [button setAction:@selector(exitFullScreen:)];
-        [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
-        [button setPath:closeButtonPath(rect.size)];
-        [[self contentView] addSubview:button];
+        closeButton = [[SKNavigationButton alloc] initWithFrame:rect];
+        [closeButton setTarget:pdfView];
+        [closeButton setAction:@selector(exitFullScreen:)];
+        [closeButton setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
+        [closeButton setPath:closeButtonPath(rect.size)];
+        [[self contentView] addSubview:closeButton];
     }
     return self;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    SKDESTROY(previousButton);
+    SKDESTROY(nextButton);
     SKDESTROY(zoomButton);
     SKDESTROY(zoomSlider);
+    SKDESTROY(closeButton);
     [super dealloc];
 }
 
@@ -165,6 +173,11 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [zoomButton setState:[[notification object] autoScales] ? NSOnState : NSOffState];
     [zoomSlider setDoubleValue:log([[notification object] scaleFactor])];
+}
+
+- (void)handlePageChangedNotification:(NSNotification *)notification {
+    [previousButton setEnabled:[[notification object] canGoToPreviousPage]];
+    [nextButton setEnabled:[[notification object] canGoToNextPage]];
 }
 
 @end
@@ -418,7 +431,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] setFill];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:[self isEnabled] == NO ? 0.3 : [self isHighlighted] ? 0.9 : 0.6] setFill];
     [([self state] == NSOnState && [self alternatePath] ? [self alternatePath] : [self path]) fill];
 }
 
@@ -522,18 +535,13 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 @implementation SKNavigationSliderCell
 
 - (void)drawBarInside:(NSRect)frame flipped:(BOOL)flipped {
-    frame.origin.x += 2.5;
-    frame.origin.y = NSMidY(frame) - 2.0;
-    frame.size.width -= 5.0;
+    frame = NSInsetRect(frame, 2.5, 0.0);
+    frame.origin.y = NSMidY(frame) - (flipped ? 2.0 : 3.0);
     frame.size.height = 5.0;
 	
-    if ([self isEnabled]) {
-        [[NSColor colorWithDeviceWhite:0.3 alpha:0.6] setFill];
-        [[NSColor colorWithDeviceWhite:1.0 alpha:0.6] setStroke];
-    } else {
-        [[NSColor colorWithDeviceWhite:0.3 alpha:0.3] setFill];
-        [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setStroke];
-    }
+    CGFloat alpha = [self isEnabled] ? 0.6 : 0.3;
+    [[NSColor colorWithDeviceWhite:0.3 alpha:alpha] setFill];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:alpha] setStroke];
     
 	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:frame xRadius:2.0 yRadius:2.0];
     [path fill];
@@ -541,22 +549,18 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)drawKnob:(NSRect)frame {
-    frame.origin.x = NSMidX(frame) - 7.5;
-    frame.origin.y = NSMidY(frame) - 7.5;
-    frame.size.height = 15.0;
-    frame.size.width = 15.0;
-    
 	if ([self isEnabled]) {
         [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.7] setFill];
-        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+        NSShadow *shade = [[NSShadow alloc] init];
         [shade setShadowColor:[NSColor blackColor]];
         [shade setShadowBlurRadius:2.0];
         [shade set];
+        [shade release];
     } else {
         [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setFill];
     }
     
-    [[NSBezierPath bezierPathWithOvalInRect:frame] fill];
+    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(SKCenterPoint(frame), SKMakeSquareSize(15.0))] fill];
 }
 
 - (BOOL)_usesCustomTrackImage { return YES; }

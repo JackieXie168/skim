@@ -42,7 +42,10 @@
 @class SKPDFView, SKNavigationToolTipView, SKNavigationButton;
 
 @interface SKNavigationWindow : SKAnimatedBorderlessWindow {
+    SKNavigationButton *previousButton;
+    SKNavigationButton *nextButton;
     SKNavigationButton *zoomButton;
+    SKNavigationButton *closeButton;
     NSSlider *zoomSlider;
 }
 - (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider;
