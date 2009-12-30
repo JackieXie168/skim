@@ -51,7 +51,6 @@
 + (BOOL)isAutoHideEnabled;
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
-- (void)moveToScreen:(NSScreen *)screen;
 - (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen;
 - (void)slideIn;
 - (void)slideOut;

@@ -1243,23 +1243,20 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (leftSideWindow == nil)
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
     
-    [leftSideWindow moveToScreen:screen];
-    
     if ([[[leftSideView window] firstResponder] isDescendantOf:leftSideView])
         [[leftSideView window] makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideView];
     
-    if (mwcFlags.usesDrawers == 0) {
+    if (mwcFlags.usesDrawers == 0)
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-    }
     
     if ([self isPresentation]) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
-        [leftSideWindow setLevel:[[self window] level] + 1];
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
         [leftSideWindow makeFirstResponder:thumbnailTableView];
+        [leftSideWindow attachToWindow:[self window] onScreen:screen];
         [leftSideWindow expand];
     } else {
         [leftSideWindow makeFirstResponder:searchField];
@@ -1271,20 +1268,17 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (rightSideWindow == nil) 
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
     
-    [rightSideWindow moveToScreen:screen];
-    
     if ([[[rightSideView window] firstResponder] isDescendantOf:rightSideView])
         [[rightSideView window] makeFirstResponder:nil];
     [rightSideWindow setMainView:rightSideView];
     
-    if (mwcFlags.usesDrawers == 0) {
+    if (mwcFlags.usesDrawers == 0)
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
-    }
     
     if ([self isPresentation]) {
-        [leftSideWindow setLevel:[[self window] level] + 1];
-        [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
-        [leftSideWindow setEnabled:NO];
+        [rightSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
+        [rightSideWindow setEnabled:NO];
+        [rightSideWindow attachToWindow:[self window] onScreen:screen];
         [rightSideWindow expand];
     } else {
         [rightSideWindow attachToWindow:[self window] onScreen:screen];
@@ -1308,7 +1302,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([self isPresentation]) {
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
-            [leftSideWindow setLevel:NSNormalWindowLevel];
             [leftSideWindow setAlphaValue:1.0];
             [leftSideWindow setEnabled:YES];
         }
@@ -1331,7 +1324,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
         
         if ([self isPresentation]) {
-            [rightSideWindow setLevel:NSNormalWindowLevel];
             [rightSideWindow setAlphaValue:1.0];
             [rightSideWindow setEnabled:YES];
         }
