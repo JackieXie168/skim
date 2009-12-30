@@ -224,7 +224,6 @@ enum {
     
     trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
     [self addTrackingArea:trackingArea];
-    PDFToolTipAreas = [[NSMutableArray alloc] init];
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     
@@ -271,7 +270,6 @@ enum {
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     SKDESTROY(trackingArea);
-    SKDESTROY(PDFToolTipAreas);
     [typeSelectHelper setDataSource:nil];
     SKDESTROY(typeSelectHelper);
     SKDESTROY(transitionController);
@@ -285,9 +283,11 @@ enum {
 
 - (void)removePDFToolTipRects {
     NSView *docView = [self documentView];
-    for (NSTrackingArea *area in PDFToolTipAreas)
-        [docView removeTrackingArea:area];
-    [PDFToolTipAreas removeAllObjects];
+    NSArray *trackingAreas = [[[docView trackingAreas] copy] autorelease];
+    for (NSTrackingArea *area in trackingAreas) {
+        if ([area owner] == self && [[area userInfo] objectForKey:@"annotation"])
+            [docView removeTrackingArea:area];
+    }
 }
 
 - (void)resetPDFToolTipRects {
@@ -308,7 +308,6 @@ enum {
                         rect = [self convertRect:rect toView:docView];
                         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, @"annotation", nil];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
-                        [PDFToolTipAreas addObject:area];
                         [docView addTrackingArea:area];
                         [area release];
                         [userInfo release];
@@ -1468,24 +1467,26 @@ enum {
 
 - (void)mouseEntered:(NSEvent *)theEvent {
     NSTrackingArea *eventArea = [theEvent trackingArea];
-    [super mouseEntered:theEvent];
-    if ([eventArea isEqual:trackingArea]) {
+    PDFAnnotation *annotation;
+    if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([PDFToolTipAreas containsObject:eventArea]) {
-        PDFAnnotation *annotation = [[eventArea userInfo] objectForKey:@"annotation"];
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"annotation"])) {
         [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
+    } else {
+        [super mouseEntered:theEvent];
     }
 }
  
 - (void)mouseExited:(NSEvent *)theEvent {
     NSTrackingArea *eventArea = [theEvent trackingArea];
-    [super mouseExited:theEvent];
-    if ([eventArea isEqual:trackingArea]) {
+    PDFAnnotation *annotation;
+    if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
-    } else if ([PDFToolTipAreas containsObject:eventArea]) {
-        PDFAnnotation *annotation = [[eventArea userInfo] objectForKey:@"annotation"];
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"annotation"])) {
         if ([annotation isEqual:[[SKPDFToolTipWindow sharedToolTipWindow] currentPDFContext]])
             [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+    } else {
+        [super mouseExited:theEvent];
     }
 }
 
