@@ -75,15 +75,13 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
-    NSRect contentRect = [screen frame];
+    NSRect contentRect = [screen frame], ignored;
     if (anEdge == NSMaxXEdge)
         contentRect.origin.x = NSMaxX(contentRect) - DEFAULT_WINDOW_WIDTH;
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
+    
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
-        controller = aController;
-        edge = anEdge;
-        [self setContentView:[[[SKSideWindowContentView alloc] initWithFrame:[[self contentView] frame] edge:edge] autorelease]];
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
 		[self setHasShadow:YES];
@@ -91,8 +89,32 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:YES];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+        
+        controller = aController;
+        edge = anEdge;
+        enabled = YES;
+        
+        NSView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
+        [self setContentView:contentView];
+        
+        NSDivideRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), &ignored, &contentRect, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+        mainContentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
+        [mainContentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
+        [contentView addSubview:mainContentView];
+        
+        if (hideWhenClosed != SKClosedSidePanelHide) {
+            trackingArea = [[NSTrackingArea alloc] initWithRect:[contentView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
+            [contentView addTrackingArea:trackingArea];
+        }
     }
     return self;
+}
+
+- (void)dealloc {
+    [timer invalidate];
+    SKDESTROY(timer);
+    SKDESTROY(trackingArea);
+    [super dealloc];
 }
 
 - (BOOL)canBecomeMainWindow { return NO; }
@@ -106,7 +128,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     state = NSDrawerClosedState;
     if (hideWhenClosed != SKClosedSidePanelCollapse)
         [self setAlphaValue:0.0];
-    [[self contentView] setAcceptsMouseOver:YES];
+    [self setAcceptsMouseOver:YES];
     [self setLevel:[window level]];
     [self orderFront:nil];
     [window addChildWindow:self ordered:NSWindowAbove];
@@ -148,7 +170,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         if ([self alphaValue] < 0.1)
             [self setAlphaValue:1.0];
         state = NSDrawerOpeningState;
-        [self animateToWidth:NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET];
+        [self animateToWidth:NSWidth([mainContentView frame]) + CONTENT_INSET];
         if ([[controller window] isKeyWindow])
             [self makeKeyAndOrderFront:nil];
         else
@@ -158,18 +180,17 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (NSView *)mainView {
-    NSArray *subviews = [[self contentView] subviews];
+    NSArray *subviews = [mainContentView subviews];
     return [subviews count] ? [subviews objectAtIndex:0] : nil;
 }
 
 - (void)setMainView:(NSView *)newContentView {
-    NSView *contentView = [[self contentView] contentView];
-    [newContentView setFrame:[contentView bounds]];
+    [newContentView setFrame:[mainContentView bounds]];
     [newContentView retain];
-    if ([[contentView subviews] count])
-        [contentView replaceSubview:[[contentView subviews] objectAtIndex:0] with:newContentView];
+    if ([[mainContentView subviews] count])
+        [mainContentView replaceSubview:[[mainContentView subviews] objectAtIndex:0] with:newContentView];
     else
-        [contentView addSubview:newContentView];
+        [mainContentView addSubview:newContentView];
     [newContentView release];
     [self recalculateKeyViewLoop];
 }
@@ -183,70 +204,13 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)expand {
-    [[self contentView] setAcceptsMouseOver:NO];
+    [self setAcceptsMouseOver:NO];
     [self slideIn];
 }
 
 - (void)collapse {
     [self slideOut];
-    [[self contentView] setAcceptsMouseOver:YES];
-}
-
-- (BOOL)isEnabled {
-    return [(SKSideWindowContentView *)[self contentView] isEnabled];
-}
-
-- (void)setEnabled:(BOOL)flag {
-    [(SKSideWindowContentView *)[self contentView] setEnabled:flag];
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    unichar ch = [theEvent firstCharacter];
-	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
-    
-    if (ch == SKEscapeCharacter && modifierFlags == 0) {
-        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
-            [controller closeSideWindow:self];
-        else
-            [controller exitFullScreen:self];
-    } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
-        [controller closeSideWindow:self];
-    } else {
-        [super keyDown:theEvent];
-    }
-}
-
-- (NSResponder *)nextResponder {
-    return controller;
-}
-
-@end
-
-
-@implementation SKSideWindowContentView
-
-- (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge {
-    if (self = [super initWithFrame:frameRect]) {
-        NSRect ignored, contentRect = NSInsetRect(frameRect, 0.0, CONTENT_INSET);
-        NSDivideRect(contentRect, &ignored, &contentRect, CONTENT_INSET, anEdge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
-        contentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
-        [contentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
-        [self addSubview:contentView];
-        if (hideWhenClosed != SKClosedSidePanelHide) {
-            trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
-            [self addTrackingArea:trackingArea];
-        }
-        enabled = YES;
-        edge = anEdge;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [timer invalidate];
-    SKDESTROY(timer);
-    SKDESTROY(trackingArea);
-    [super dealloc];
+    [self setAcceptsMouseOver:YES];
 }
 
 - (BOOL)isEnabled {
@@ -271,6 +235,123 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             SKDESTROY(timer);
         }
     }
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar ch = [theEvent firstCharacter];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
+    
+    if (ch == SKEscapeCharacter && modifierFlags == 0) {
+        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+            [controller closeSideWindow:self];
+        else
+            [controller exitFullScreen:self];
+    } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
+        [controller closeSideWindow:self];
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
+- (NSResponder *)nextResponder {
+    return controller;
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    if ([[theEvent trackingArea] isEqual:trackingArea] == NO) {
+        [super mouseExited:theEvent];
+    } else if (acceptsMouseOver && resizing == NO) {
+        if (timer) {
+            [timer invalidate];
+            SKDESTROY(timer);
+        }
+        //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
+        [self slideOut];
+    }
+}
+
+- (void)slideInWithTimer:(NSTimer *)aTimer {
+    [timer invalidate];
+    SKDESTROY(timer);
+    [self slideIn];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    if ([[theEvent trackingArea] isEqual:trackingArea] == NO) {
+        [super mouseEntered:theEvent];
+    } else if (acceptsMouseOver && resizing == NO) {
+        if (NSPointInRect([NSEvent mouseLocation], [self frame])) {
+            if (timer == nil)
+                timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
+        } else if (timer) {
+            [timer invalidate];
+            SKDESTROY(timer);
+        }
+    }
+}
+
+- (void)resizeWithEvent:(NSEvent *)theEvent {
+    if (state != NSDrawerOpenState)
+        return;
+    
+    if (enabled && [theEvent clickCount] == 2) {
+        [self collapse];
+        return;
+	}
+    
+    NSPoint initialLocation = [self convertBaseToScreen:[theEvent locationInWindow]];
+	NSRect initialFrame = [self frame];
+	BOOL keepGoing = YES;
+	
+    resizing = YES;
+    [mainContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    
+	while (keepGoing) {
+		theEvent = [self nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+				NSPoint	newLocation = [self convertBaseToScreen:[theEvent locationInWindow]];
+                NSRect newFrame = initialFrame;
+                
+                if (edge == NSMaxXEdge) {
+                    newFrame.size.width -= newLocation.x - initialLocation.x;
+                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
+                        newFrame.size.width = WINDOW_MIN_WIDTH;
+                    newFrame.origin.x = NSMaxX(initialFrame) - NSWidth(newFrame);
+                } else {
+                    newFrame.size.width += newLocation.x - initialLocation.x;
+                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
+                        newFrame.size.width = WINDOW_MIN_WIDTH;
+                }
+                [self setFrame:newFrame display:YES];
+			}
+				break;
+				
+			case NSLeftMouseUp:
+				keepGoing = NO;
+				break;
+				
+			default:
+				/* Ignore any other kind of event. */
+				break;
+		} // end of switch (event type)
+	} // end of mouse-tracking loop
+    
+    [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
+    resizing = NO;
+}
+
+@end
+
+
+@implementation SKSideWindowContentView
+
+- (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge {
+    if (self = [super initWithFrame:frameRect]) {
+        edge = anEdge;
+    }
+    return self;
 }
 
 - (NSRect)resizeHandleRect {
@@ -322,67 +403,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (id)contentView {
-    return contentView;
-}
-
-- (void)setContentView:(NSView *)newContentView {
-    contentView = newContentView;
-}
-
-- (void)resizeWithEvent:(NSEvent *)theEvent {
-	NSPoint initialLocation = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
-	NSRect initialFrame = [[self window] frame];
-	BOOL keepGoing = YES;
-	
-    resizing = YES;
-    [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    
-	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-				NSPoint	newLocation = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
-                NSRect newFrame = initialFrame;
-                
-                if (edge == NSMaxXEdge) {
-                    newFrame.size.width -= newLocation.x - initialLocation.x;
-                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
-                        newFrame.size.width = WINDOW_MIN_WIDTH;
-                    newFrame.origin.x = NSMaxX(initialFrame) - NSWidth(newFrame);
-                } else {
-                    newFrame.size.width += newLocation.x - initialLocation.x;
-                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
-                        newFrame.size.width = WINDOW_MIN_WIDTH;
-                }
-                [[self window] setFrame:newFrame display:YES];
-			}
-				break;
-				
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
-    
-    [contentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
-    resizing = NO;
-}
-
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSRect resizeHandleRect = [self resizeHandleRect];
-    if (NSMouseInRect(mouseLoc, resizeHandleRect, [self isFlipped]) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
-        if (enabled && [theEvent clickCount] == 2)
-            [(SKSideWindow *)[self window] collapse];
-        else
-            [self resizeWithEvent:theEvent];
-    } else
+    if (NSMouseInRect([self convertPoint:[theEvent locationInWindow] fromView:nil], [self resizeHandleRect], [self isFlipped]))
+        [(SKSideWindow *)[self window] resizeWithEvent:theEvent];
+    else
         [super mouseDown:theEvent];
 }
 
@@ -392,43 +416,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (void)resetCursorRects {
     [self discardCursorRects];
     [self addCursorRect:[self resizeHandleRect] cursor:[NSCursor resizeLeftRightCursor]];
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    if ([[theEvent trackingArea] isEqual:trackingArea]) {
-        if (acceptsMouseOver == NO || resizing)
-            return;
-        if (timer) {
-            [timer invalidate];
-            SKDESTROY(timer);
-        }
-        //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
-        [(SKSideWindow *)[self window] slideOut];
-    } else {
-        [super mouseExited:theEvent];
-    }
-}
-
-- (void)slideInWithTimer:(NSTimer *)aTimer {
-    [timer invalidate];
-    SKDESTROY(timer);
-    [(SKSideWindow *)[self window] slideIn];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    if ([[theEvent trackingArea] isEqual:trackingArea]) {
-        if (acceptsMouseOver == NO || resizing)
-            return;
-        if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
-            if (timer == nil)
-                timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
-        } else if (timer) {
-            [timer invalidate];
-            SKDESTROY(timer);
-        }
-    } else {
-        [super mouseEntered:theEvent];
-    }
 }
 
 @end

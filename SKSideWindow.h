@@ -46,6 +46,12 @@
     SKMainWindowController *controller;
     NSDrawerState state;
     NSRectEdge edge;
+    NSView *mainContentView;
+    NSTrackingArea *trackingArea;
+    NSTimer *timer;
+    BOOL enabled;
+    BOOL resizing;
+    BOOL acceptsMouseOver;
 }
 
 + (BOOL)isAutoHideEnabled;
@@ -62,22 +68,15 @@
 - (NSInteger)state;
 - (BOOL)isEnabled;
 - (void)setEnabled:(BOOL)flag;
+- (BOOL)acceptsMouseOver;
+- (void)setAcceptsMouseOver:(BOOL)flag;
+- (void)resizeWithEvent:(NSEvent *)theEvent;
 
 @end
 
 
 @interface SKSideWindowContentView : NSView {
-    NSView *contentView;
-    NSTrackingArea *trackingArea;
-    NSTimer *timer;
     NSRectEdge edge;
-    BOOL enabled;
-    BOOL resizing;
-    BOOL acceptsMouseOver;
 }
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge;
-- (BOOL)isEnabled;
-- (void)setEnabled:(BOOL)flag;
-- (BOOL)acceptsMouseOver;
-- (void)setAcceptsMouseOver:(BOOL)flag;
 @end
