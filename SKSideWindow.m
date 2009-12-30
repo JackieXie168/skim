@@ -83,9 +83,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
         edge = anEdge;
-        SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:[[self contentView] frame] edge:edge] autorelease];
-        [self setContentView:contentView];
-        [contentView updateTrackingAreas];
+        [self setContentView:[[[SKSideWindowContentView alloc] initWithFrame:[[self contentView] frame] edge:edge] autorelease]];
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
 		[self setHasShadow:YES];
@@ -234,6 +232,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         contentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
         [contentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [self addSubview:contentView];
+        if (hideWhenClosed != SKClosedSidePanelHide) {
+            trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
+            [self addTrackingArea:trackingArea];
+        }
         enabled = YES;
         edge = anEdge;
     }
@@ -328,24 +330,11 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     contentView = newContentView;
 }
 
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self window] && trackingArea) {
-        [self removeTrackingArea:trackingArea];
-        SKDESTROY(trackingArea);
-    }
-}
-
-- (void)viewDidMoveToWindow {
-    [self updateTrackingAreas];
-}
-
 - (void)resizeWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
 	NSRect initialFrame = [[self window] frame];
 	BOOL keepGoing = YES;
 	
-    [self removeTrackingArea:trackingArea];
-    SKDESTROY(trackingArea);
     resizing = YES;
     [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
@@ -383,7 +372,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     [contentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
     resizing = NO;
-    [self updateTrackingAreas];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -406,30 +394,19 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [self addCursorRect:[self resizeHandleRect] cursor:[NSCursor resizeLeftRightCursor]];
 }
 
-- (void)updateTrackingAreas {
-    [super updateTrackingAreas];
-    if ([self window] && resizing == NO && hideWhenClosed != SKClosedSidePanelHide) {
-        if (trackingArea) {
-            [self removeTrackingArea:trackingArea];
-            [trackingArea release];
-        }
-        NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp;
-        if (NSMouseInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds], [self isFlipped]));
-            options |= NSTrackingAssumeInside;
-        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
-        [self addTrackingArea:trackingArea];
-    }
-}
-
 - (void)mouseExited:(NSEvent *)theEvent {
-    if (acceptsMouseOver == NO)
-        return;
-    if (timer) {
-        [timer invalidate];
-        SKDESTROY(timer);
+    if ([[theEvent trackingArea] isEqual:trackingArea]) {
+        if (acceptsMouseOver == NO || resizing)
+            return;
+        if (timer) {
+            [timer invalidate];
+            SKDESTROY(timer);
+        }
+        //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
+        [(SKSideWindow *)[self window] slideOut];
+    } else {
+        [super mouseExited:theEvent];
     }
-    //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
-    [(SKSideWindow *)[self window] slideOut];
 }
 
 - (void)slideInWithTimer:(NSTimer *)aTimer {
@@ -439,14 +416,18 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    if (acceptsMouseOver == NO)
-        return;
-    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
-        if (timer == nil)
-            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
-    } else if (timer) {
-        [timer invalidate];
-        SKDESTROY(timer);
+    if ([[theEvent trackingArea] isEqual:trackingArea]) {
+        if (acceptsMouseOver == NO || resizing)
+            return;
+        if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
+            if (timer == nil)
+                timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
+        } else if (timer) {
+            [timer invalidate];
+            SKDESTROY(timer);
+        }
+    } else {
+        [super mouseEntered:theEvent];
     }
 }
 
