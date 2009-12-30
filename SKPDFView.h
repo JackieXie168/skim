@@ -126,7 +126,6 @@ typedef NSInteger SKInteractionMode;
     
     NSTrackingArea *trackingArea;
     NSMutableArray *PDFToolTipAreas;
-    NSTrackingArea *PDFToolTipArea;
     
     NSInteger spellingTag;
 }
