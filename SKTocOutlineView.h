@@ -53,7 +53,7 @@
 @end
 
 @interface SKTocOutlineView : SKOutlineView {
-    NSMutableArray *trackingAreas;
+    NSMutableSet *trackingAreas;
 }
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKTocOutlineViewDelegate>)delegate;

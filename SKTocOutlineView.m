@@ -136,7 +136,7 @@
         return;
     
     if (trackingAreas == nil)
-        trackingAreas = [[NSMutableArray alloc] init];
+        trackingAreas = [[NSMutableSet alloc] init];
     else
         [self removeTrackingAreas];
     
@@ -210,26 +210,24 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    if ([[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
+    if ([trackingAreas containsObject:trackingAreas] &&
+        [[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
         NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        if (userInfo && column != -1 && row != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
-        }
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
 	}
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    if ([[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
+    if ([trackingAreas containsObject:trackingAreas] &&
+        [[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
         NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        if (userInfo && column != -1 && row != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
-        }
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
 	}
 }
 

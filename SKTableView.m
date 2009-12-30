@@ -260,7 +260,7 @@ static char SKTableViewDefaultsObservationContext;
         return;
     
     if (trackingAreas == nil)
-        trackingAreas = [[NSMutableArray alloc] init];
+        trackingAreas = [[NSMutableSet alloc] init];
     else
         [self removeTrackingAreas];
     
@@ -317,26 +317,24 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    if ([[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
+    if ([trackingAreas containsObject:trackingAreas] &&
+        [[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
         NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        if (userInfo && column != -1 && row != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
-        }
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
 	}
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    if ([[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
+    if ([trackingAreas containsObject:trackingAreas] &&
+        [[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
         NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        if (userInfo && column != -1 && row != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
-        }
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
 	}
 }
 
