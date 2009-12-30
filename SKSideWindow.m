@@ -92,7 +92,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:YES];
-        [self setLevel:NSFloatingWindowLevel];
+        //[self setLevel:NSFloatingWindowLevel];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     }
     return self;
@@ -114,6 +114,19 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     if (hideWhenClosed != SKClosedSidePanelCollapse)
         [self setAlphaValue:0.0];
     [[self contentView] setAcceptsMouseOver:YES];
+}
+
+- (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen {
+    [self orderOut:nil];
+    [self moveToScreen:screen];
+    [self collapse];
+    [self orderFront:nil];
+    [window addChildWindow:self ordered:NSWindowAbove];
+}
+
+- (void)orderOut:(id)sender {
+    [[self parentWindow] removeChildWindow:self];
+    [super orderOut:sender];
 }
 
 - (void)animateToWidth:(CGFloat)width {

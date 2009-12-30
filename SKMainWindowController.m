@@ -1263,8 +1263,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [leftSideWindow expand];
     } else {
         [leftSideWindow makeFirstResponder:searchField];
-        [leftSideWindow collapse];
-        [leftSideWindow orderFront:self];
+        [leftSideWindow attachToWindow:[self window] onScreen:screen];
     }
 }
 
@@ -1288,8 +1287,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [leftSideWindow setEnabled:NO];
         [rightSideWindow expand];
     } else {
-        [rightSideWindow collapse];
-        [rightSideWindow orderFront:self];
+        [rightSideWindow attachToWindow:[self window] onScreen:screen];
     }
 }
 
@@ -1310,7 +1308,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([self isPresentation]) {
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
-            [leftSideWindow setLevel:NSFloatingWindowLevel];
+            [leftSideWindow setLevel:NSNormalWindowLevel];
             [leftSideWindow setAlphaValue:1.0];
             [leftSideWindow setEnabled:YES];
         }
@@ -1333,7 +1331,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
         
         if ([self isPresentation]) {
-            [rightSideWindow setLevel:NSFloatingWindowLevel];
+            [rightSideWindow setLevel:NSNormalWindowLevel];
             [rightSideWindow setAlphaValue:1.0];
             [rightSideWindow setEnabled:YES];
         }

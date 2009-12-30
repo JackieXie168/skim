@@ -244,21 +244,17 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)notification {
-    if ([[notification object] isEqual:[self window]]) {
-        NSScreen *screen = [fullScreenWindow screen];
-        [fullScreenWindow setFrame:[screen frame] display:NO];
+    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:fullScreenWindow]) {
+        NSScreen *screen = [[self window] screen];
+        [[self window] setFrame:[screen frame] display:NO];
         if ([self isFullScreen]) {
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 [leftSideWindow orderOut:self];
-                [leftSideWindow moveToScreen:screen];
-                [leftSideWindow collapse];
-                [leftSideWindow orderFront:self];
+                [leftSideWindow attachToWindow:[self window] onScreen:screen];
             }
             if ([[rightSideWindow screen] isEqual:screen] == NO) {
                 [rightSideWindow orderOut:self];
-                [leftSideWindow moveToScreen:screen];
-                [rightSideWindow collapse];
-                [rightSideWindow orderFront:self];
+                [rightSideWindow attachToWindow:[self window] onScreen:screen];
             }
         }
         [pdfView layoutDocumentView];
@@ -268,19 +264,15 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)windowDidMove:(NSNotification *)notification {
     if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:fullScreenWindow]) {
-        NSScreen *screen = [fullScreenWindow screen];
+        NSScreen *screen = [[self window] screen];
         NSRect screenFrame = [screen frame];
-        if (NSEqualRects(screenFrame, [fullScreenWindow frame]) == NO) {
-            [fullScreenWindow setFrame:screenFrame display:NO];
+        if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
+            [[self window] setFrame:screenFrame display:NO];
             if ([self isFullScreen]) {
                 [leftSideWindow orderOut:self];
-                [leftSideWindow moveToScreen:screen];
-                [leftSideWindow collapse];
-                [leftSideWindow orderFront:self];
+                [leftSideWindow attachToWindow:[self window] onScreen:screen];
                 [rightSideWindow orderOut:self];
-                [leftSideWindow moveToScreen:screen];
-                [rightSideWindow collapse];
-                [rightSideWindow orderFront:self];
+                [rightSideWindow attachToWindow:[self window] onScreen:screen];
             }
             [pdfView layoutDocumentView];
             [pdfView setNeedsDisplay:YES];
