@@ -54,6 +54,8 @@
 // aContext can be a PDFAnnotation, PDFDestination, or PDFPage
 - (void)showForPDFContext:(id)aContext atPoint:(NSPoint)aPoint;
 
+- (id)currentPDFContext;
+
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 
 - (NSFont *)font;

@@ -382,6 +382,10 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     }
 }
 
+- (id)currentPDFContext {
+    return context;
+}
+
 @end
 
 

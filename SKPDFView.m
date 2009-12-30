@@ -272,7 +272,6 @@ enum {
     [self removePDFToolTipRects];
     SKDESTROY(trackingArea);
     SKDESTROY(PDFToolTipAreas);
-    SKDESTROY(PDFToolTipArea);
     [typeSelectHelper setDataSource:nil];
     SKDESTROY(typeSelectHelper);
     SKDESTROY(transitionController);
@@ -285,7 +284,6 @@ enum {
 #pragma mark Tool Tips
 
 - (void)removePDFToolTipRects {
-    SKDESTROY(PDFToolTipArea);
     NSView *docView = [self documentView];
     for (NSTrackingArea *area in PDFToolTipAreas)
         [docView removeTrackingArea:area];
@@ -1473,15 +1471,9 @@ enum {
     [super mouseEntered:theEvent];
     if ([eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([NSApp isActive]) {
-        for (NSTrackingArea *area in PDFToolTipAreas) {
-            if ([area isEqual:eventArea]) {
-                [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:[[area userInfo] objectForKey:@"annotation"] atPoint:NSZeroPoint];
-                SKDESTROY(PDFToolTipArea);
-                PDFToolTipArea = [area retain];
-                break;
-            }
-        }
+    } else if ([PDFToolTipAreas containsObject:eventArea]) {
+        PDFAnnotation *annotation = [[eventArea userInfo] objectForKey:@"annotation"];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
     }
 }
  
@@ -1490,9 +1482,10 @@ enum {
     [super mouseExited:theEvent];
     if ([eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
-    } else if ([eventArea isEqual:PDFToolTipArea]) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-        SKDESTROY(PDFToolTipArea);
+    } else if ([PDFToolTipAreas containsObject:eventArea]) {
+        PDFAnnotation *annotation = [[eventArea userInfo] objectForKey:@"annotation"];
+        if ([annotation isEqual:[[SKPDFToolTipWindow sharedToolTipWindow] currentPDFContext]])
+            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     }
 }
 
