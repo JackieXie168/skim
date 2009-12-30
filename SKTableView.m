@@ -317,9 +317,10 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    if ([trackingAreas containsObject:trackingAreas] &&
+    NSTrackingArea *area = [theEvent trackingArea];
+    if ([trackingAreas containsObject:area] &&
         [[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
-        NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
+        NSDictionary *userInfo = [area userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
@@ -328,9 +329,10 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    if ([trackingAreas containsObject:trackingAreas] &&
+    NSTrackingArea *area = [theEvent trackingArea];
+    if ([trackingAreas containsObject:area] &&
         [[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
-        NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
+        NSDictionary *userInfo = [area userInfo];
 		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
 		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
