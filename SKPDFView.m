@@ -286,8 +286,9 @@ enum {
 
 - (void)removePDFToolTipRects {
     SKDESTROY(PDFToolTipArea);
+    NSView *docView = [self documentView];
     for (NSTrackingArea *area in PDFToolTipAreas)
-        [[self documentView] removeTrackingArea:area];
+        [docView removeTrackingArea:area];
     [PDFToolTipAreas removeAllObjects];
 }
 
@@ -298,6 +299,7 @@ enum {
         NSRange range = [self visiblePageIndexRange];
         NSUInteger i, iMax = NSMaxRange(range);
         NSRect visibleRect = [self visibleContentRect];
+        NSView *docView = [self documentView];
         
         for (i = range.location; i < iMax; i++) {
             PDFPage *page = [[self document] pageAtIndex:i];
@@ -309,7 +311,7 @@ enum {
                         rect = [self convertRect:rect toView:[self documentView]];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:annotation, @"annotation", nil]];
                         [PDFToolTipAreas addObject:area];
-                        [[self documentView] addTrackingArea:area];
+                        [docView addTrackingArea:area];
                         [area release];
                     }
                 }
