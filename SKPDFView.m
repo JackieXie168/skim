@@ -303,16 +303,17 @@ enum {
         
         for (i = range.location; i < iMax; i++) {
             PDFPage *page = [[self document] pageAtIndex:i];
-            NSArray *annotations = [page annotations];
-            for (PDFAnnotation *annotation in annotations) {
+            for (PDFAnnotation *annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNNoteString] || [annotation isLink]) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
-                        rect = [self convertRect:rect toView:[self documentView]];
-                        NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:annotation, @"annotation", nil]];
+                        rect = [self convertRect:rect toView:docView];
+                        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, @"annotation", nil];
+                        NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                         [PDFToolTipAreas addObject:area];
                         [docView addTrackingArea:area];
                         [area release];
+                        [userInfo release];
                     }
                 }
             }
