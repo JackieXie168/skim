@@ -102,24 +102,15 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (BOOL)canBecomeKeyWindow { return YES; }
 
-- (void)moveToScreen:(NSScreen *)screen {
-    NSRect screenFrame = [screen frame];
-    NSRect frame = screenFrame;
-    frame.size.width = WINDOW_OFFSET;
-    if (edge == NSMaxXEdge)
-        frame.origin.x = NSMaxX(screenFrame) - WINDOW_OFFSET;
-    frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
-    [self setFrame:frame display:NO];
+- (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen {
+    NSRect frame, ignored;
+    NSDivideRect([screen frame], &frame, &ignored, WINDOW_OFFSET, edge);
+    [self setFrame:NSInsetRect(frame, 0.0, WINDOW_INSET) display:NO];
     state = NSDrawerClosedState;
     if (hideWhenClosed != SKClosedSidePanelCollapse)
         [self setAlphaValue:0.0];
     [[self contentView] setAcceptsMouseOver:YES];
-}
-
-- (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen {
-    [self orderOut:nil];
-    [self moveToScreen:screen];
-    [self collapse];
+    [self setLevel:[window level]];
     [self orderFront:nil];
     [window addChildWindow:self ordered:NSWindowAbove];
 }
