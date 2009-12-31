@@ -471,7 +471,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways owner:self userInfo:nil];
+        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
         [self addTrackingArea:trackingArea];
         toolTip = nil;
     }
@@ -482,13 +482,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     SKDESTROY(trackingArea);
     SKDESTROY(toolTip);
     [super dealloc];
-}
-
-- (void)updateTrackingAreas {
-    [super updateTrackingAreas];
-    SKDESTROY(trackingArea);
-    trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways owner:self userInfo:nil];
-    [self addTrackingArea:trackingArea];
 }
 
 - (NSString *)toolTip {
@@ -503,15 +496,17 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:self];
-    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+    if ([[theEvent trackingArea] isEqual:trackingArea])
+        [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:self];
+    else
         [super mouseEntered:theEvent];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:self])
-        [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
-    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+    if ([[theEvent trackingArea] isEqual:trackingArea]) {
+        if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:self])
+            [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
+    } else
         [super mouseExited:theEvent];
 }
 
