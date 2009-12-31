@@ -75,10 +75,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
-    NSRect contentRect = [screen frame], ignored;
-    if (anEdge == NSMaxXEdge)
-        contentRect.origin.x = NSMaxX(contentRect) - DEFAULT_WINDOW_WIDTH;
-    contentRect.size.width = DEFAULT_WINDOW_WIDTH;
+    NSRect contentRect, ignored;
+    NSDivideRect([screen frame], &contentRect, &ignored, DEFAULT_WINDOW_WIDTH, anEdge);
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
@@ -99,7 +97,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         
         NSDivideRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), &ignored, &contentRect, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
         mainContentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
-        [mainContentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
+        [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [contentView addSubview:mainContentView];
         
         if (hideWhenClosed != SKClosedSidePanelHide) {
