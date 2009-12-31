@@ -139,11 +139,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (void)animateToWidth:(CGFloat)width {
     NSRect screenFrame = [[[controller window] screen] frame];
-    NSRect endFrame, startFrame = [self frame];
-    endFrame = startFrame;
-    endFrame.size.width = width;
-    endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
-    [[self animator] setFrame:endFrame display:YES];
+    NSRect frame = [self frame];
+    frame.size.width = width;
+    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
+    [[self animator] setFrame:frame display:YES];
 }
 
 - (void)makeTransparent {
