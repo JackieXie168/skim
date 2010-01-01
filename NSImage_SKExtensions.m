@@ -1423,6 +1423,10 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [NSGraphicsContext restoreGraphicsState];
     [inkNoteImage unlockFocus];
     [inkNoteImage setName:SKImageNameInkNote];
+    
+    [shadow1 release];
+    [shadow2 release];
+    [shadow3 release];
 }
 
 + (void)makeAdornImages {
