@@ -112,9 +112,8 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 
 static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
 
-static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, CGFloat radius);
-static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, CGFloat radius, bool active);
-static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloat radius, NSInteger mask);
+static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active);
+static void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask);
 
 enum {
     SKNavigationNone,
@@ -321,10 +320,7 @@ enum {
 #pragma mark Drawing
 
 - (void)drawPage:(PDFPage *)pdfPage {
-    
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-	
-    CGContextSaveGState(context);
+    [NSGraphicsContext saveGraphicsState];
     
     // smooth graphics when anti-aliasing
     [[NSGraphicsContext currentContext] setImageInterpolation:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey] ? NSImageInterpolationHigh : NSImageInterpolationDefault];
@@ -346,89 +342,81 @@ enum {
         CGFloat lineWidth = isLink ? 2.0 : 1.0;
         NSRect bounds = [activeAnnotation bounds];
         NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
+        [NSBezierPath setDefaultLineWidth:lineWidth];
         if (isLink) {
-            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(NSRectToCGRect(rect), floor(0.3 * NSHeight(rect)));
-            CGFloat color[4] = { 0.0, 0.0, 0.0, 0.1 };
-            CGContextSetFillColor(context, color);
-            CGContextBeginPath(context);
-            CGContextAddPath(context, path);
-            CGContextFillPath(context);
-            color[3] = 0.5;
-            CGContextSetStrokeColor(context, color);
-            CGContextSetLineWidth(context, lineWidth);
-            CGContextAddPath(context, path);
-            CGContextStrokePath(context);
-            CGPathRelease(path);
+            CGFloat radius = floor(0.3 * NSHeight(rect));
+            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
+            [path fill];
+            [path stroke];
         } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
             NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMinXEdgeMask);
+            SKDrawGrabHandle(point, 4.0, dragMask == BDSKMinXEdgeMask);
             point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
-            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMaxXEdgeMask);
+            SKDrawGrabHandle(point, 4.0, dragMask == BDSKMaxXEdgeMask);
         } else if (editField == nil) {
-            CGFloat color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
-            CGContextSetStrokeColor(context, color);
-            CGContextStrokeRectWithWidth(context, NSRectToCGRect(rect), lineWidth);
+            [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
+            [NSBezierPath strokeRect:rect];
             if ([activeAnnotation isResizable])
-                SKCGContextDrawGrabHandles(context, NSRectToCGRect(bounds), 4.0, dragMask);
+                SKDrawGrabHandles(bounds, 4.0, dragMask);
         }
+        [NSBezierPath setDefaultLineWidth:1.0];
     }
     
     if ([[highlightAnnotation page] isEqual:pdfPage]) {
-        CGFloat color[4] = { 0.0, 0.0, 0.0, 1.0 };
         NSRect bounds = [highlightAnnotation bounds];
         NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
-        CGContextSetStrokeColor(context, color);
-        CGContextStrokeRectWithWidth(context, NSRectToCGRect(rect), 1.0);
+        [[NSColor blackColor] setStroke];
+        [NSBezierPath strokeRect:rect];
     }
     
     if (readingBar) {
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
-        NSColor *nsColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey];
-        CGFloat color[4] = { [nsColor redComponent], [nsColor greenComponent], [nsColor blueComponent], [nsColor alphaComponent] };
+        NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey];
         
-        CGContextSetFillColor(context, color);
+        [color setFill];
         
         if (invert) {
             NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
             if (NSEqualRects(rect, NSZeroRect) || [[readingBar page] isEqual:pdfPage] == NO) {
-                CGContextFillRect(context, NSRectToCGRect(bounds));
+                [NSBezierPath fillRect:bounds];
             } else {
                 NSRect outRect, ignored;
                 NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge);
-                CGContextFillRect(context, NSRectToCGRect(outRect));
+                [NSBezierPath fillRect:outRect];
                 NSDivideRect(bounds, &outRect, &ignored, NSMinY(rect) - NSMinY(bounds), NSMinYEdge);
-                CGContextFillRect(context, NSRectToCGRect(outRect));
+                [NSBezierPath fillRect:outRect];
             }
         } else if ([[readingBar page] isEqual:pdfPage]) {
-            CGContextSetBlendMode(context, kCGBlendModeMultiply);        
-            CGContextFillRect(context, NSRectToCGRect(rect));
+            [NSGraphicsContext saveGraphicsState];
+            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+            [NSBezierPath fillRect:rect];
+            [NSGraphicsContext restoreGraphicsState];
         }
     }
     
     if (toolMode != SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
-        CGFloat color[4] = { 0.0, 0.0, 0.0, 1.0 };
-        CGContextSetStrokeColor(context, color);
-        CGContextStrokeRect(context, NSRectToCGRect(rect));
+        [[NSColor blackColor] setStroke];
+        [NSBezierPath strokeRect:rect];
     } else if (toolMode == SKSelectToolMode && (didSelect || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-        CGFloat color[4] = { 0.0, 0.0, 0.0, 0.6 };
         CGFloat radius = 4.0 / [self scaleFactor];
-        CGContextBeginPath(context);
-        CGContextAddRect(context, NSRectToCGRect(bounds));
-        CGContextAddRect(context, NSRectToCGRect(selectionRect));
-        CGContextSetFillColor(context, color);
-        CGContextEOFillPath(context);
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
+        [path appendBezierPathWithRect:selectionRect];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
+        [path setWindingRule:NSEvenOddWindingRule];
+        [path fill];
         if ([pdfPage pageIndex] != selectionPageIndex) {
-            color[3] = 0.3;
-            CGContextSetFillColor(context, color);
-            CGContextFillRect(context, NSRectToCGRect(selectionRect));
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
+            [NSBezierPath fillRect:selectionRect];
         }
-        SKCGContextDrawGrabHandles(context, NSRectToCGRect(selectionRect), radius, 0);
+        SKDrawGrabHandles(selectionRect, radius, 0);
     }
     
-    CGContextRestoreGState(context);
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
@@ -4268,55 +4256,26 @@ static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArra
     return MIN(i, iMax - 1);
 }
 
-#pragma mark Core Graphics extension
+#pragma mark Grab handles
 
-static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, CGFloat radius)
+static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active)
 {
-    // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fmin(radius, 0.5f * fmin(rect.size.width, rect.size.height));
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    // Make sure silly values simply lead to un-rounded corners:
-    if(radius <= 0) {
-        CGPathAddRect(path, NULL, rect);
-    } else {
-        // Now draw our rectangle:
-        CGPathMoveToPoint(path, NULL, rect.origin.x, rect.origin.y + radius);
-        // Bottom left (origin):
-        CGPathAddArcToPoint(path, NULL, rect.origin.x, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y, radius);
-        // Bottom edge and bottom right:
-        CGPathAddArcToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, radius);
-        // Right edge and top right:
-        CGPathAddArcToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y + rect.size.height, radius);
-        // Top edge and top left:
-        CGPathAddArcToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y, radius);
-        // Left edge:
-        CGPathCloseSubpath(path);
-    }
-    return path;
+    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
+    [path setLineWidth:0.25 * radius];
+    [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:active ? 1.0 : 0.8] setFill];
+    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:active ? 1.0 : 0.8] setStroke];
+    [path fill];
+    [path stroke];
 }
 
-static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, CGFloat radius, bool active)
+static void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask)
 {
-    CGFloat fillColor[4] = { 0.737118, 0.837339, 0.983108, active ? 1.0 : 0.8 };
-    CGFloat strokeColor[4] = { 0.278477, 0.467857, 0.810941, active ? 1.0 : 0.8 };
-    CGRect rect = CGRectMake(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius);
-    CGContextSetLineWidth(context, 0.25 * radius);
-    CGContextSetFillColor(context, fillColor);
-    CGContextFillEllipseInRect(context, rect);
-    CGContextSetStrokeColor(context, strokeColor);
-    CGContextStrokeEllipseInRect(context, rect);
-}
-
-static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloat radius, NSInteger mask)
-{
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMidY(rect)), radius, mask == BDSKMinXEdgeMask);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMidY(rect)), radius, mask == BDSKMaxXEdgeMask);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect)), radius, mask == BDSKMaxYEdgeMask);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)), radius, mask == BDSKMinYEdgeMask);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMaxYEdgeMask));
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMinYEdgeMask));
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMaxYEdgeMask));
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMinYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, mask == BDSKMinXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, mask == BDSKMaxXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, mask == BDSKMaxYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, mask == BDSKMinYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMinYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMinYEdgeMask));
 }
