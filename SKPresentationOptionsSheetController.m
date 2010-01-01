@@ -395,18 +395,10 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
-- (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return [[tableColumn identifier] isEqualToString:IMAGE_COLUMNID];
-}
-
-- (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[[controller pdfDocument] pageAtIndex:row] atPoint:NSZeroPoint];
-}
-
-- (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        return [[controller pdfDocument] pageAtIndex:row];
+    return nil;
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {

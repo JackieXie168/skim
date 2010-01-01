@@ -42,6 +42,7 @@
 #import "NSLayoutManager_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKPDFToolTipWindow.h"
 
 #define SPACE_CHARACTER 0x20
 
@@ -256,7 +257,7 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(tableView:shouldTrackTableColumn:row:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -269,6 +270,7 @@ static char SKTableViewDefaultsObservationContext;
         NSIndexSet *columnIndexes = [self columnIndexesInRect:[self visibleRect]];
         NSUInteger row, column = [columnIndexes firstIndex];
         NSTableColumn *tableColumn;
+        id context;
         NSDictionary *userInfo;
         NSRect rect;
         NSTrackingArea *area;
@@ -276,8 +278,8 @@ static char SKTableViewDefaultsObservationContext;
         while (column != NSNotFound) {
             tableColumn = [[self tableColumns] objectAtIndex:column];
             for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-                if ([[self delegate] tableView:self shouldTrackTableColumn:tableColumn row:row]) {
-                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:column], @"column", [NSNumber numberWithInteger:row], @"row", nil];
+                if (context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row]) {
+                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
                     rect = [self frameOfCellAtColumn:column row:row];
                     area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                     [self addTrackingArea:area];
@@ -307,27 +309,15 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    NSTrackingArea *area = [theEvent trackingArea];
-    if ([trackingAreas containsObject:area] &&
-        [[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
-        NSDictionary *userInfo = [area userInfo];
-		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
-		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-        [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
-	}
+    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
+    if (context)
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    NSTrackingArea *area = [theEvent trackingArea];
-    if ([trackingAreas containsObject:area] &&
-        [[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
-        NSDictionary *userInfo = [area userInfo];
-		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
-		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-        [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
-	}
+    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
+    if (context)
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol
