@@ -489,35 +489,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
-- (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([tv isEqual:findTableView]) {
-        return YES;
-    } else if ([tv isEqual:groupedFindTableView]) {
-        return YES;
-    }
-    return NO;
-}
-
-- (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        if ([tv isEqual:findTableView]) {
-            PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:dest atPoint:NSZeroPoint];
-        } else if ([tv isEqual:groupedFindTableView]) {
-            PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:dest atPoint:NSZeroPoint];
-        }
-    }
-}
-
-- (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        if ([tv isEqual:findTableView]) {
-            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-        } else if ([tv isEqual:groupedFindTableView]) {
-            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-        }
-    }
+- (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+    if ([tv isEqual:findTableView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+        return [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
+    else if ([tv isEqual:groupedFindTableView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+        return [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+    return nil;
 }
 
 - (void)copyPage:(id)sender {
@@ -859,20 +836,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    return YES;
-}
-
-- (void)outlineView:(NSOutlineView *)ov mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView] && [NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:[item destination] atPoint:NSZeroPoint];
-    }
-}
-
-- (void)outlineView:(NSOutlineView *)ov mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView] && [NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-    }
+- (id)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    if ([ov isEqual:outlineView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+        return [item destination];
+    return nil;
 }
 
 - (void)deleteNotes:(id)sender {

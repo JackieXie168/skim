@@ -46,9 +46,7 @@
 @optional
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 
 @end
 

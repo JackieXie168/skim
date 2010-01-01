@@ -54,9 +54,7 @@
 
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldTrackTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (id)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

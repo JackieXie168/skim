@@ -39,6 +39,7 @@
 #import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
+#import "SKPDFToolTipWindow.h"
 
 
 @implementation SKTocOutlineView
@@ -132,7 +133,7 @@
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:shouldTrackTableColumn:item:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(outlineView:PDFContextForTableColumn:item:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -145,6 +146,7 @@
         NSIndexSet *columnIndexes = [self columnIndexesInRect:[self visibleRect]];
         NSUInteger row, column = [columnIndexes firstIndex];
         NSTableColumn *tableColumn;
+        id context;
         NSDictionary *userInfo;
         NSRect rect;
         NSTrackingArea *area;
@@ -152,8 +154,8 @@
         while (column != NSNotFound) {
             tableColumn = [[self tableColumns] objectAtIndex:column];
             for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-                if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
-                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:column], @"column", [NSNumber numberWithInteger:row], @"row", nil];
+                if (context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:[self itemAtRow:row]]) {
+                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
                     rect = [self frameOfCellAtColumn:column row:row];
                     area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                     [self addTrackingArea:area];
@@ -188,27 +190,15 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    NSTrackingArea *area = [theEvent trackingArea];
-    if ([trackingAreas containsObject:area] &&
-        [[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
-        NSDictionary *userInfo = [area userInfo];
-		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
-		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-        [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
-	}
+    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
+    if (context)
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    NSTrackingArea *area = [theEvent trackingArea];
-    if ([trackingAreas containsObject:area] &&
-        [[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
-        NSDictionary *userInfo = [area userInfo];
-		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
-		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
-        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-        [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
-	}
+    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
+    if (context)
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
