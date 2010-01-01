@@ -161,13 +161,13 @@
 - (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when expanding
     [super expandItem:item expandChildren:collapseChildren];
-    [self resetCursorRects];
+    [[self window] invalidateCursorRectsForView:self];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when collapsing
     [super collapseItem:item collapseChildren:collapseChildren];
-    [self resetCursorRects];
+    [[self window] invalidateCursorRectsForView:self];
 }
 
 -(void)resetCursorRects {
