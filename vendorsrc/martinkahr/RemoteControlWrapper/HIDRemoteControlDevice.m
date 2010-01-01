@@ -183,6 +183,8 @@
 	if ([self openDevice]==NO) {
 		goto error;
 	}
+    
+	[self didChangeValueForKey:@"listeningToRemote"];
 	goto cleanup;
 	
 error:
@@ -191,7 +193,6 @@ error:
 	DisableSecureEventInput();
 	
 cleanup:	
-	[self didChangeValueForKey:@"listeningToRemote"];
 	IOObjectRelease(hidDevice);	
 }
 
