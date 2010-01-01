@@ -167,19 +167,7 @@
     }
 }
 
-- (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
-    // NSOutlineView does not call resetCursorRect when expanding
-    [super expandItem:item expandChildren:collapseChildren];
-	[self rebuildTrackingAreas];
-}
-
-- (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
-    // NSOutlineView does not call resetCursorRect when collapsing
-    [super collapseItem:item collapseChildren:collapseChildren];
-	[self rebuildTrackingAreas];
-}
-
-- (void)reloadData{
+- (void)reloadData {
     [super reloadData];
 	[self rebuildTrackingAreas];
 }
@@ -197,16 +185,6 @@
 - (void)noteNumberOfRowsChanged {
 	[super noteNumberOfRowsChanged];
 	[self rebuildTrackingAreas];
-}
-
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self window])
-        [self removeTrackingAreas];
-}
-
-- (void)viewDidMoveToWindow {
-	if ([self window])
-        [self rebuildTrackingAreas];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{

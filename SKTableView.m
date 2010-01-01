@@ -306,16 +306,6 @@ static char SKTableViewDefaultsObservationContext;
 	[self rebuildTrackingAreas];
 }
 
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self window])
-        [self removeTrackingAreas];
-}
-
-- (void)viewDidMoveToWindow {
-	if ([self window])
-        [self rebuildTrackingAreas];
-}
-
 - (void)mouseEntered:(NSEvent *)theEvent{
     NSTrackingArea *area = [theEvent trackingArea];
     if ([trackingAreas containsObject:area] &&
