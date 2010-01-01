@@ -55,23 +55,6 @@
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 
-void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
-    CMProfileRef profile;
-    CMGetDefaultProfileBySpace(cmRGBData, &profile);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithPlatformColorSpace(profile);
-    
-    CMCloseProfile(profile);
-    CGContextSetStrokeColorSpace(context, colorSpace);
-    CGContextSetFillColorSpace(context, colorSpace);
-    CGColorSpaceRelease(colorSpace);
-}
-
-
-@interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
-- (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
-@end
-
-
 @implementation PDFAnnotationMarkup (SKExtensions)
 
 static NSArray *createPointsFromStrings(NSArray *strings)

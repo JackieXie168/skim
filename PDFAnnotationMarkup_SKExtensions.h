@@ -43,9 +43,6 @@
 extern NSString *SKPDFAnnotationSelectionSpecifierKey;
 
 
-extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
-
-
 @interface PDFAnnotationMarkup (SKExtensions)
 
 - (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type;

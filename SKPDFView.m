@@ -333,7 +333,6 @@ enum {
     [super drawPage: pdfPage];
 	
     [pdfPage transformContextForBox:[self displayBox]];
-    SKCGContextSetDefaultRGBColorSpace(context);
     
     if (bezierPaths && pathPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
