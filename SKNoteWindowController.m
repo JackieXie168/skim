@@ -47,7 +47,6 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKRuntime.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"

@@ -37,7 +37,6 @@
  */
 
 #import "SKColorSwatch.h"
-#import "SKRuntime.h"
 #import "NSColor_SKExtensions.h"
 #import "SKAccessibilityFauxUIElement.h"
 #import "NSEvent_SKExtensions.h"

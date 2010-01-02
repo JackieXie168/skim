@@ -39,7 +39,6 @@
 #import "SKInfoWindowController.h"
 #import "SKMainDocument.h"
 #import <Quartz/Quartz.h>
-#import "SKRuntime.h"
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
 

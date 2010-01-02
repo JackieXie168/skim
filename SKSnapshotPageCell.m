@@ -37,7 +37,6 @@
  */
 
 #import "SKSnapshotPageCell.h"
-#import "SKRuntime.h"
 
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";

@@ -40,7 +40,6 @@
 #import "SKMainWindowController.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKRuntime.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0

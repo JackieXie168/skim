@@ -48,7 +48,6 @@
 #import "SKToolbarItem.h"
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKRuntime.h"
 #import "SKDocumentController.h"
 #import "SKSeparatorCell.h"
 

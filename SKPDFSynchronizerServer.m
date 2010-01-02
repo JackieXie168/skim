@@ -45,7 +45,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import "NSFileManager_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKRuntime.h"
 #import "NSMapTable_SKExtensions.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)

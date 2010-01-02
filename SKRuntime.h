@@ -39,15 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-#define SKINITIALIZE \
-    do { \
-        static BOOL hasBeenInitialized = NO; \
-        [super initialize]; \
-        if (hasBeenInitialized) \
-            return; \
-        hasBeenInitialized = YES;\
-    } while (0)
-
 enum { SKAddOrReplace, SKReplaceOnly, SKAddOnly };
 
 extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options);
