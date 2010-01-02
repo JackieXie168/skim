@@ -39,7 +39,6 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
-#import "SKRuntime.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"

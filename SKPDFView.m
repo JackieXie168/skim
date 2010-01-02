@@ -61,7 +61,6 @@
 #import <CoreServices/CoreServices.h>
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import "SKRuntime.h"
 #import "NSAffineTransform_SKExtensions.h"
 #import "BDSKEdgeView.h"
 #import "PDFDocument_SKExtensions.h"

@@ -39,7 +39,6 @@
 #import "SKTextWithIconCell.h"
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKRuntime.h"
 
 NSString *SKTextWithIconCellStringKey = @"string";
 NSString *SKTextWithIconCellImageKey = @"image";
