@@ -266,29 +266,41 @@ static char SKTableViewDefaultsObservationContext;
         [self removeTrackingAreas];
     
     if ([self window]) {
-        NSRange rowRange = [self rowsInRect:[self visibleRect]];
-        NSIndexSet *columnIndexes = [self columnIndexesInRect:[self visibleRect]];
-        NSUInteger row, column = [columnIndexes firstIndex];
+        NSRect visibleRect = [self visibleRect];
+        NSRange rowRange = [self rowsInRect:visibleRect];
+        NSIndexSet *columnIndexes = [self columnIndexesInRect:visibleRect];
+        NSUInteger row, column;
         NSTableColumn *tableColumn;
         id context;
         NSDictionary *userInfo;
         NSRect rect;
         NSTrackingArea *area;
         
-        while (column != NSNotFound) {
-            tableColumn = [[self tableColumns] objectAtIndex:column];
-            for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-                if (context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row]) {
-                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
-                    rect = [self frameOfCellAtColumn:column row:row];
-                    area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
-                    [self addTrackingArea:area];
-                    [trackingAreas addObject:area];
-                    [area release];
-                    [userInfo release];
+        for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
+            if (context = [[self delegate] tableView:self PDFContextForTableColumn:nil row:row]) {
+                userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
+                rect = [self rectOfRow:row];
+                area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+                [self addTrackingArea:area];
+                [trackingAreas addObject:area];
+                [area release];
+                [userInfo release];
+            } else {
+                column = [columnIndexes firstIndex];
+                while (column != NSNotFound) {
+                    tableColumn = [[self tableColumns] objectAtIndex:column];
+                    if (context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row]) {
+                        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
+                        rect = [self frameOfCellAtColumn:column row:row];
+                        area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+                        [self addTrackingArea:area];
+                        [trackingAreas addObject:area];
+                        [area release];
+                        [userInfo release];
+                    }
+                    column = [columnIndexes indexGreaterThanIndex:column];
                 }
             }
-            column = [columnIndexes indexGreaterThanIndex:column];
         }
     }
 }
