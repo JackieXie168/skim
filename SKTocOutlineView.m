@@ -132,6 +132,15 @@
     [trackingAreas removeAllObjects];
 }
 
+- (void)addTrackingAreaForRect:(NSRect)rect forPDFContext:(id)context {
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
+    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+    [self addTrackingArea:area];
+    [trackingAreas addObject:area];
+    [area release];
+    [userInfo release];
+}
+
 - (void)rebuildTrackingAreas {
     if ([[self delegate] respondsToSelector:@selector(outlineView:PDFContextForTableColumn:item:)] == NO)
         return;
@@ -149,34 +158,17 @@
         NSTableColumn *tableColumn;
         id item;
         id context;
-        NSDictionary *userInfo;
-        NSRect rect;
-        NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp;
-        NSTrackingArea *area;
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
             item = [self itemAtRow:row];
             if (context = [[self delegate] outlineView:self PDFContextForTableColumn:nil item:item]) {
-                userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
-                rect = [self rectOfRow:row];
-                area = [[NSTrackingArea alloc] initWithRect:rect options:options owner:self userInfo:userInfo];
-                [self addTrackingArea:area];
-                [trackingAreas addObject:area];
-                [area release];
-                [userInfo release];
+                [self addTrackingAreaForRect:[self rectOfRow:row] forPDFContext:context];
             } else {
                 column = [columnIndexes firstIndex];
                 while (column != NSNotFound) {
                     tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if (context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item]) {
-                        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
-                        rect = [self frameOfCellAtColumn:column row:row];
-                        area = [[NSTrackingArea alloc] initWithRect:rect options:options owner:self userInfo:userInfo];
-                        [self addTrackingArea:area];
-                        [trackingAreas addObject:area];
-                        [area release];
-                        [userInfo release];
-                    }
+                    if (context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item])
+                        [self addTrackingAreaForRect:[self frameOfCellAtColumn:column row:row] forPDFContext:context];
                     column = [columnIndexes indexGreaterThanIndex:column];
                 }
             }
