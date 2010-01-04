@@ -389,7 +389,6 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
         NSAttributedString *attrString = toolTipAttributedString([[self URL] absoluteString]);
         if ([attrString length])
             image = toolTipImageForAttributedString(attrString);
-        [attrString release];
     }
     return image;
 }
