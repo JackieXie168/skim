@@ -40,34 +40,33 @@
 #import "SKAnimatedBorderlessWindow.h"
 
 
+@protocol SKPDFToolTipContext <NSObject>
+- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize;
+@end
+
+
 @interface SKPDFToolTipWindow : SKAnimatedBorderlessWindow {
-    NSFont *font;
-    NSColor *backgroundColor;
-    NSFont *labelFont;
-    NSColor *labelColor;
-    id context;
+    id<SKPDFToolTipContext> context;
     NSPoint point;
 }
 
 + (id)sharedToolTipWindow;
 
 // aContext can be a PDFAnnotation, PDFDestination, or PDFPage
-- (void)showForPDFContext:(id)aContext atPoint:(NSPoint)aPoint;
+- (void)showForPDFContext:(id<SKPDFToolTipContext>)aContext atPoint:(NSPoint)aPoint;
 
-- (id)currentPDFContext;
+- (id<SKPDFToolTipContext>)currentPDFContext;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 
-- (NSFont *)font;
-- (void)setFont:(NSFont *)newFont;
+@end
 
-- (NSColor *)backgroundColor;
-- (void)setBackgroundColor:(NSColor *)newColor;
 
-- (NSFont *)labelFont;
-- (void)setLabelFont:(NSFont *)newFont;
+@interface PDFDestination (SKPDFToolTipContext) <SKPDFToolTipContext>
+@end
 
-- (NSColor *)labelColor;
-- (void)setLabelColor:(NSColor *)newColor;
+@interface PDFAnnotation (SKPDFToolTipContext) <SKPDFToolTipContext>
+@end
 
+@interface PDFPage (SKPDFToolTipContext) <SKPDFToolTipContext>
 @end
