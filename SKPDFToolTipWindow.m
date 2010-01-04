@@ -44,6 +44,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 #define WINDOW_OFFSET           20.0
 #define TEXT_MARGIN_X           2.0
@@ -59,27 +60,12 @@ NSString *SKToolTipWidthKey = @"SKToolTipWidth";
 NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 
 
-static NSFont *font = nil;
-static NSColor *backgroundColor = nil;
-static NSFont *labelFont = nil;
-static NSColor *labelColor = nil;
-
-
 @interface NSScreen (SKExtensions)
 + (NSScreen *)screenForPoint:(NSPoint)point;
 @end
 
 
 @implementation SKPDFToolTipWindow
-
-+ (void)initialize {
-    SKINITIALIZE;
-    
-    font = [[NSFont toolTipsFontOfSize:11.0] retain];
-    backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
-    labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
-    labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
-}
 
 + (id)sharedToolTipWindow {
     static SKPDFToolTipWindow *sharedToolTipWindow = nil;
@@ -132,10 +118,9 @@ static NSColor *labelColor = nil;
 }
 
 - (void)showDelayed {
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, [sud floatForKey:SKToolTipWidthKey], [sud floatForKey:SKToolTipHeightKey]);
-    NSImage *image = [context toolTipImageForDefaultSize:contentRect.size];
+    NSRect contentRect;
+    NSImage *image = [context toolTipImage];
     
     [self cancelDelayedAnimations];
     
@@ -143,7 +128,8 @@ static NSColor *labelColor = nil;
         [(NSImageView *)[self contentView] setImage:image];
         
         contentRect.size = [image size];
-        contentRect.origin.y -= NSHeight(contentRect);
+        contentRect.origin.x = thePoint.x;
+        contentRect.origin.y = thePoint.y - WINDOW_OFFSET - NSHeight(contentRect);
         contentRect = SKConstrainRect(contentRect, [[NSScreen screenForPoint:thePoint] visibleFrame]);
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
@@ -232,19 +218,57 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
 
 #pragma mark -
 
+static NSAttributedString *toolTipAttributedString(NSString *string) {
+    static NSDictionary *attributes = nil;
+    if (attributes == nil)
+        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont toolTipsFontOfSize:11.0], NSFontAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
+    return [[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease];
+}
+
+static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) {
+    static NSColor *backgroundColor = nil;
+    if (backgroundColor == nil)
+        backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
+    
+    CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipWidthKey];
+    CGFloat height = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipHeightKey];
+    NSRect textRect = [attrString boundingRectWithSize:NSMakeSize(width + 2 * TEXT_MARGIN_X, height + 2 * TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+    
+    textRect.size.height = fmin(NSHeight(textRect), height);
+    textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
+    
+    NSRect imageRect = {NSZeroPoint, NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size};
+    NSImage *image = [[[NSImage alloc] initWithSize:imageRect.size] autorelease];
+    
+    [image lockFocus];
+    [backgroundColor setFill];
+    NSRectFill(imageRect);
+    [attrString drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
+    [image unlockFocus];
+    
+    return image;
+}
+
+
 @interface PDFDestination (SKPDFToolTipContextExtension)
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize offset:(NSPoint)offset;
+- (NSImage *)toolTipImageWithOffset:(NSPoint)offset;
 @end
 
 @implementation PDFDestination (SKPDFToolTipContext)
 
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize offset:(NSPoint)offset {
-    PDFPage *page = [self page];
+- (NSImage *)toolTipImageWithOffset:(NSPoint)offset {
+    static NSDictionary *labelAttributes = nil;
+    static NSColor *labelColor = nil;
+    if (labelAttributes == nil)
+        labelAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:11.0], NSFontAttributeName, [NSColor whiteColor], NSForegroundColorAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
+    if (labelColor == nil)
+        labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
     
+    PDFPage *page = [self page];
     NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
     NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
-    NSRect sourceRect = {NSZeroPoint, aSize};
+    NSRect sourceRect = NSZeroRect;
     PDFSelection *selection = [page selectionForRect:bounds];
     NSAffineTransform *transform = [NSAffineTransform transform];
     
@@ -266,6 +290,8 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     
     bounds = [transform transformRect:bounds];
     
+    sourceRect.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipWidthKey];
+    sourceRect.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipHeightKey];
     sourceRect.origin = SKAddPoints([transform transformPoint:[self point]], offset);
     sourceRect.origin.y -= NSHeight(sourceRect);
     
@@ -282,8 +308,7 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     
     sourceRect = SKConstrainRect(sourceRect, pageImageRect);
     
-    NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, [NSColor whiteColor], NSForegroundColorAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
-    NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page displayLabel]] attributes:attrs];
+    NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page displayLabel]] attributes:labelAttributes];
     NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
     
     labelRect.size.width = floor(NSWidth(labelRect));
@@ -316,70 +341,41 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     
     [image unlockFocus];
     
-    [attrs release];
     [labelString release];
     
     return image;
 }
 
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize {
-    return [self toolTipImageForDefaultSize:aSize offset:NSMakePoint(-50.0, 20.0)];
+- (NSImage *)toolTipImage {
+    return [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0)];
 }
 
 @end
 
 
-static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString, NSSize aSize) {
-    if ([attrString length] == 0)
-        return nil;
-    
-    NSRect textRect = [attrString boundingRectWithSize:NSMakeSize(aSize.width + 2 * TEXT_MARGIN_X, aSize.height + 2 * TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
-    
-    textRect.size.height = fmin(NSHeight(textRect), aSize.height);
-    textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
-    
-    NSRect imageRect = {NSZeroPoint, NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size};
-    NSImage *image = [[[NSImage alloc] initWithSize:imageRect.size] autorelease];
-    
-    [image lockFocus];
-    [backgroundColor setFill];
-    NSRectFill(imageRect);
-    [attrString drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
-    [image unlockFocus];
-    
-    return image;
-}
-
-static NSAttributedString *toolTipAttributedStringForString(NSString *string) {
-    NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
-    string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attrs] autorelease];
-    [attrs release];
-    return attrString;
-}
-
-
 @implementation PDFAnnotation (SKPDFToolTipContext)
 
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize {
+- (NSImage *)toolTipImage {
     NSAttributedString *attrString = [self text];
     NSString *string = [attrString string];
     NSUInteger i, l = [string length];
     NSRange r = NSMakeRange(0, l);
     
-    while (NSNotFound != (i = NSMaxRange([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r])))
-        r = NSMakeRange(i, l - i);
-    while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
-        r.length = i - r.location;
-    if (r.length < l)
-        attrString = [attrString attributedSubstringFromRange:r];
-    
-    if ([attrString length] == 0) {
+    if (l == 0 || [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].location == NSNotFound) {
         string = [self string];
-        attrString = [string length] ? toolTipAttributedStringForString(string) : nil;
+        attrString = [string length] ? toolTipAttributedString(string) : nil;
     }
     
-    return toolTipImageForAttributedString(attrString, aSize);
+    if ([string length]) {
+        while (NSNotFound != (i = NSMaxRange([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r])))
+            r = NSMakeRange(i, l - i);
+        while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
+            r.length = i - r.location;
+        if (r.length < l)
+            attrString = [attrString attributedSubstringFromRange:r];
+    }
+    
+    return [attrString length] ? toolTipImageForAttributedString(attrString) : nil;
 }
 
 @end
@@ -387,12 +383,15 @@ static NSAttributedString *toolTipAttributedStringForString(NSString *string) {
 
 @implementation PDFAnnotationLink (SKPDFToolTipContext)
 
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize {
-    PDFDestination *dest = [self destination];
-    if (dest)
-        return [dest toolTipImageForDefaultSize:aSize offset:NSZeroPoint];
-    else
-        return toolTipImageForAttributedString(toolTipAttributedStringForString([[self URL] absoluteString]), aSize);
+- (NSImage *)toolTipImage {
+    NSImage *image = [[self destination] toolTipImageWithOffset:NSZeroPoint];
+    if (image == nil && [self URL]) {
+        NSAttributedString *attrString = toolTipAttributedString([[self URL] absoluteString]);
+        if ([attrString length])
+            image = toolTipImageForAttributedString(attrString);
+        [attrString release];
+    }
+    return image;
 }
 
 @end
@@ -400,7 +399,7 @@ static NSAttributedString *toolTipAttributedStringForString(NSString *string) {
 
 @implementation PDFPage (SKPDFToolTipContext)
 
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize {
+- (NSImage *)toolTipImage {
     return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
 }
 
