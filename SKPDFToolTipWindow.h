@@ -41,7 +41,7 @@
 
 
 @protocol SKPDFToolTipContext <NSObject>
-- (NSImage *)toolTipImageForDefaultSize:(NSSize)aSize;
+- (NSImage *)toolTipImage;
 @end
 
 
