@@ -230,8 +230,8 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
     if (backgroundColor == nil)
         backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     
-    CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipWidthKey];
-    CGFloat height = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipHeightKey];
+    CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
+    CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey];
     NSRect textRect = [attrString boundingRectWithSize:NSMakeSize(width + 2 * TEXT_MARGIN_X, height + 2 * TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
     
     textRect.size.height = fmin(NSHeight(textRect), height);
@@ -290,8 +290,8 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
     
     bounds = [transform transformRect:bounds];
     
-    sourceRect.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipWidthKey];
-    sourceRect.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKToolTipHeightKey];
+    sourceRect.size.width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
+    sourceRect.size.height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey];
     sourceRect.origin = SKAddPoints([transform transformPoint:[self point]], offset);
     sourceRect.origin.y -= NSHeight(sourceRect);
     
