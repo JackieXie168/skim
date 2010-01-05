@@ -93,14 +93,10 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         context = nil;
         point = NSZeroPoint;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orderOut:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
     }
     return self;
-}
-
-- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
-    [self orderOut:self];
 }
 
 - (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
@@ -110,10 +106,6 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 - (void)willClose {
     SKDESTROY(context);
     point = NSZeroPoint;
-}
-
-- (void)fadeOut {
-    [super fadeOut];
 }
 
 - (void)showDelayed {
