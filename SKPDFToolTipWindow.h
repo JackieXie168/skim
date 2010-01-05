@@ -57,8 +57,6 @@
 
 - (id<SKPDFToolTipContext>)currentPDFContext;
 
-- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
-
 @end
 
 
