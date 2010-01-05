@@ -100,7 +100,6 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 }
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self orderOut:self];
 }
 
