@@ -840,7 +840,7 @@
                 <cocoa key="currentPage"/>
             </property>
             <property name="active note" code="ANot" type="note"
-                description="The active note.">
+                description="The currently selected note.">
                 <cocoa key="activeNote"/>
             </property>
             <property name="selection" code="sele"
