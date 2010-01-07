@@ -296,7 +296,7 @@
         if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &fileRef, NULL)) {
             CFStringRef theUTI = NULL;
             if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
-                FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kARMNoUI);
+                FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kResolveAliasFileNoUI);
            url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
         }
         if (url == nil)
