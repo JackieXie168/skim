@@ -44,7 +44,7 @@
 #define STACK_BUFFER_SIZE 256
 
 static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item)) {
-    return (CFStringGetLength(item1) == CFStringGetLength(item2) && CFStringCompareWithOptions(item1, item2, CFRangeMake(0, CFStringGetLength(item1)), kCFCompareCaseInsensitive) == kCFCompareEqualTo);
+    return CFStringCompare(item1, item2, kCFCompareCaseInsensitive | kCFCompareNonliteral) == kCFCompareEqualTo;
 }
 
 static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item)) {
