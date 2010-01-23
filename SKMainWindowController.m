@@ -467,7 +467,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (hasWindowSetup)
         snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
-        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]];
+        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtPath:[[[self document] fileURL] path]];
     if ([snapshotSetups count])
         [self showSnapshotsWithSetups:snapshotSetups];
     

@@ -317,7 +317,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
 }
 
-- (NSArray *)snapshotsAtPath:(NSString *)path {
+- (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return nil;
     NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
