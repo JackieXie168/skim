@@ -71,7 +71,7 @@
 - (NSArray *)recentDocuments;
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
 - (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path;
-- (NSArray *)snapshotsAtPath:(NSString *)path;
+- (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path;
 
 - (NSUndoManager *)undoManager;
 
