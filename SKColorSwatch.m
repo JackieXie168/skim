@@ -401,7 +401,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     BOOL isCopy = ([NSEvent standardModifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSAlternateKeyMask;
     NSInteger i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
-    if ([sender draggingSource] == self && draggedIndex == i && isCopy == NO)
+    if ([sender draggingSource] == self && isCopy == NO)
         i = -1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
