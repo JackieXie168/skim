@@ -79,6 +79,7 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import "SKPreferenceController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -1535,8 +1536,19 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
-        NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
-        NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
+        NSString *editorCmd = nil;
+        NSString *editorArgs = nil;
+        NSMutableString *cmdString = nil;
+        SKTeXEditor editor = [[SKPreferenceController sharedPrefenceController] TeXEditorForPreset:editorPreset];
+        
+        if (editor.name) {
+            editorCmd = editor.command;
+            editorArgs = editor.arguments;
+        } else {
+            editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
+            editorArgs = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey];
+        }
+        cmdString = [[editorArgs mutableCopy] autorelease];
         
         if ([editorCmd isAbsolutePath] == NO) {
             NSMutableArray *searchPaths = [NSMutableArray arrayWithObjects:@"/usr/bin", @"/usr/local/bin", nil];

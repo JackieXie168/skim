@@ -38,6 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef struct _SKTeXEditor {
+    NSString *name, *command, *arguments;
+} SKTeXEditor;
+
 @class SKLineWell, SKFontWell;
 
 @interface SKPreferenceController : NSWindowController <NSWindowDelegate, NSTabViewDelegate> {
@@ -66,6 +70,8 @@
 
 - (NSUInteger)countOfSizes;
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
+
+- (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
 
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
