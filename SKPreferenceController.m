@@ -50,7 +50,6 @@
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
-typedef struct _SKTeXEditor { NSString *name, *command, *arguments; } SKTeXEditor;
 static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
                                      {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 
                                      {@"TextWrangler",   @"edit",        @"+%line \"%file\""}, 
@@ -184,6 +183,16 @@ static char SKPreferenceWindowUpdaterObservationContext;
 
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex {
     return [NSNumber numberWithDouble:SKDefaultFontSizes[anIndex]];
+}
+
+- (SKTeXEditor)TeXEditorForPreset:(NSString *)name {
+    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
+    while (i--) {
+        SKTeXEditor editor = SKTeXEditors[i];
+        if ([editor.name isEqualToString:name])
+            return editor;
+    }
+    return (SKTeXEditor){nil, nil, nil};
 }
 
 - (BOOL)isCustomTeXEditor {
