@@ -51,7 +51,7 @@
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"Aquamacs", @"LyX", @"TeXMaker", @"AlphaX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"emacsclient", @"lyxeditor", @"texmaker", @"alphac"};
-static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line", @"\"%file\" -line %line", @"+%line \"%file\""};
+static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line", @"\"%file\" -line %line", @"+%line \"%file\""};
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
