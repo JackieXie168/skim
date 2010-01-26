@@ -49,9 +49,17 @@
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
-static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"Aquamacs", @"LyX", @"TeXMaker", @"AlphaX"};
-static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"emacsclient", @"lyxeditor", @"texmaker", @"alphac"};
-static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line", @"\"%file\" -line %line", @"+%line \"%file\""};
+
+typedef struct _SKTeXEditor { NSString *name, *command, *arguments; } SKTeXEditor;
+static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
+                                     {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 
+                                     {@"TextWrangler",   @"edit",        @"+%line \"%file\""}, 
+                                     {@"Emacs",          @"emacsclient", @"--no-wait +%line \"%file\""}, 
+                                     {@"Aquamacs Emacs", @"emacsclient", @"--no-wait +%line \"%file\""}, 
+                                     {@"Aquamacs",       @"emacsclient", @"--no-wait +%line \"%file\""}, 
+                                     {@"LyX",            @"lyxeditor",   @"\"%file\" %line"}, 
+                                     {@"TeXMaker",       @"texmaker",    @"\"%file\" -line %line"}, 
+                                     {@"AlphaX",         @"alphac",      @"+%line \"%file\""}};
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
@@ -100,12 +108,13 @@ static char SKPreferenceWindowUpdaterObservationContext;
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
     NSString *editorPreset = [sud stringForKey:SKTeXEditorPresetKey];
-    NSInteger i = sizeof(SKTeXEditors) / sizeof(NSString *);
+    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
     NSInteger idx = -1;
     
     while (i--) {
-        [texEditorPopUpButton insertItemWithTitle:SKTeXEditors[i] atIndex:0];
-        if ([SKTeXEditors[i] isEqualToString:editorPreset])
+        NSString *name = SKTeXEditors[i].name;
+        [texEditorPopUpButton insertItemWithTitle:name atIndex:0];
+        if ([name isEqualToString:editorPreset])
             idx = i;
     }
     
@@ -219,8 +228,8 @@ static char SKPreferenceWindowUpdaterObservationContext;
     NSInteger idx = [sender indexOfSelectedItem];
     if (idx < [sender numberOfItems] - 1) {
         [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [[sudc values] setValue:SKTeXEditorCommands[idx] forKey:SKTeXEditorCommandKey];
-        [[sudc values] setValue:SKTeXEditorArguments[idx] forKey:SKTeXEditorArgumentsKey];
+        [[sudc values] setValue:SKTeXEditors[idx].command forKey:SKTeXEditorCommandKey];
+        [[sudc values] setValue:SKTeXEditors[idx].arguments forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
         [[sudc values] setValue:@"" forKey:SKTeXEditorPresetKey];
