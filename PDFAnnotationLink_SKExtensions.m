@@ -40,29 +40,18 @@
 #import "SKRuntime.h"
 
 
-@interface PDFAnnotationLink (SKLeopardPrivate)
-- (NSString *)toolTipNoLabel;
-@end
-
-
 @implementation PDFAnnotationLink (SKExtensions)
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
 
 static id (*original_toolTip)(id, SEL) = NULL;
-static id (*original_toolTipNoLabel)(id, SEL) = NULL;
 
 - (NSString *)replacement_toolTip {
     return ([self URL] || [self destination] || original_toolTip == NULL) ? @"" : original_toolTip(self, _cmd);
 }
 
-- (NSString *)replacement_toolTipNoLabel {
-    return ([self URL] || [self destination] || original_toolTipNoLabel == NULL) ? @"" : original_toolTipNoLabel(self, _cmd);
-}
-
 + (void)load {
     original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
-    original_toolTipNoLabel = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTipNoLabel), @selector(replacement_toolTipNoLabel));
 }
 
 - (BOOL)isLink { return YES; }
