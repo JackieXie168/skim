@@ -283,7 +283,7 @@ enum {
     NSView *docView = [self documentView];
     NSArray *trackingAreas = [[[docView trackingAreas] copy] autorelease];
     for (NSTrackingArea *area in trackingAreas) {
-        if ([area owner] == self && [[area userInfo] objectForKey:@"annotation"])
+        if ([area owner] == self && [[area userInfo] objectForKey:@"SKAnnotation"])
             [docView removeTrackingArea:area];
     }
 }
@@ -304,7 +304,7 @@ enum {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:docView];
-                        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, @"annotation", nil];
+                        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, @"SKAnnotation", nil];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                         [docView addTrackingArea:area];
                         [area release];
@@ -1456,7 +1456,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"annotation"])) {
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
         [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
     } else {
         [super mouseEntered:theEvent];
@@ -1468,7 +1468,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
-    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"annotation"])) {
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
         if ([annotation isEqual:[[SKPDFToolTipWindow sharedToolTipWindow] currentPDFContext]])
             [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     } else {
