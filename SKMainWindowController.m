@@ -886,7 +886,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)setPageLabel:(NSString *)label {
     NSUInteger idx = [pageLabels indexOfObject:label];
-    if (idx != NSNotFound && [[[pdfView currentPage] displayLabel] isEqual:label] == NO)
+    if (idx != NSNotFound && [[pdfView currentPage] pageIndex] != idx)
         [pdfView goToPage:[[pdfView document] pageAtIndex:idx]];
 }
 
