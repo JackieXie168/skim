@@ -249,6 +249,26 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
+    [mainWindow setDelegate:nil];
+    [fullScreenWindow setDelegate:nil];
+    [thumbnailTableView setDelegate:nil];
+    [thumbnailTableView setDataSource:nil];
+    [snapshotTableView setDelegate:nil];
+    [snapshotTableView setDataSource:nil];
+    [findTableView setDelegate:nil];
+    [findTableView setDataSource:nil];
+    [groupedFindTableView setDelegate:nil];
+    [groupedFindTableView setDataSource:nil];
+    [outlineView setDelegate:nil];
+    [outlineView setDataSource:nil];
+    [noteOutlineView setDelegate:nil];
+    [noteOutlineView setDataSource:nil];
+    [splitView setDelegate:nil];
+    [pdfSplitView setDelegate:nil];
+    [pdfView setDelegate:nil];
+    [[pdfView document] setDelegate:nil];
+    [leftSideDrawer setDelegate:nil];
+    [rightSideDrawer setDelegate:nil];
     SKDESTROY(temporaryAnnotations);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
