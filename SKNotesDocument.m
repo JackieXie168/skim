@@ -91,6 +91,8 @@
 }
 
 - (void)dealloc {
+    [outlineView setDelegate:nil];
+    [outlineView setDataSource:nil];
     SKDESTROY(notes);
 	SKDESTROY(rowHeights);
     SKDESTROY(toolbarItems);

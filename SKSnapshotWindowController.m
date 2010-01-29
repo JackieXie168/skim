@@ -83,6 +83,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    [pdfView setDelegate:nil];
+    delegate = nil;
     SKDESTROY(thumbnail);
     SKDESTROY(pageLabel);
     [super dealloc];
