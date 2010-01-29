@@ -121,6 +121,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if ([self isNoteType])
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[self window] setDelegate:nil];
+    [imageView setDelegate:nil];
+    [textView setDelegate:nil];
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     [super dealloc];
