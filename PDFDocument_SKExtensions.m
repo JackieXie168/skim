@@ -38,6 +38,14 @@
 
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSNumber_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
+#import "SKStringConstants.h"
+
+
+@interface PDFDocument (SKApplePrivateDeclarations)
+- (CGPDFDocumentRef)documentRef;
+@end
 
 
 @implementation PDFDocument (SKExtensions)
@@ -73,6 +81,70 @@
             sel = [self selectionFromPage:firstPage atPoint:NSMakePoint(NSMinX(firstRect), NSMidY(firstRect)) toPage:page atPoint:point];
     }
     return sel;
+}
+
+- (NSArray *)pageLabels {
+    NSUInteger pageCount = [self pageCount];
+    NSMutableArray *pageLabels = [NSMutableArray array];
+    if ([self respondsToSelector:@selector(documentRef)] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey] == NO) {
+        CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
+        CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
+        CGPDFDictionaryRef labelsDict = NULL;
+        CGPDFArrayRef labelsArray = NULL;
+        if (catalog &&
+            CGPDFDictionaryGetDictionary(catalog, "PageLabels", &labelsDict) &&
+            CGPDFDictionaryGetArray(labelsDict, "Nums", &labelsArray)) {
+            size_t i = CGPDFArrayGetCount(labelsArray);
+            CGPDFInteger j = pageCount;
+            while (i > 0) {
+                CGPDFInteger labelIndex;
+                CGPDFDictionaryRef labelDict = NULL;
+                const char *labelStyle;
+                CGPDFStringRef labelPDFPrefix;
+                NSString *labelPrefix;
+                CGPDFInteger labelStart;
+                if (false == CGPDFArrayGetDictionary(labelsArray, --i, &labelDict) ||
+                    false == CGPDFArrayGetInteger(labelsArray, --i, &labelIndex)) {
+                    [pageLabels removeAllObjects];
+                    break;
+                }
+                if (false == CGPDFDictionaryGetName(labelDict, "S", &labelStyle))
+                    labelStyle = NULL;
+                if (CGPDFDictionaryGetString(labelDict, "P", &labelPDFPrefix))
+                    labelPrefix = [(NSString *)CGPDFStringCopyTextString(labelPDFPrefix) autorelease];
+                else
+                    labelPrefix = nil;
+                if (false == CGPDFDictionaryGetInteger(labelDict, "St", &labelStart))
+                    labelStart = 1;
+                while (j > labelIndex) {
+                    NSNumber *labelNumber = [NSNumber numberWithInteger:--j - labelIndex + labelStart];
+                    NSMutableString *string = [NSMutableString string];
+                    if (labelPrefix)
+                        [string appendString:labelPrefix];
+                    if (labelStyle) {
+                        if (0 == strcmp(labelStyle, "D"))
+                            [string appendFormat:@"%@", labelNumber];
+                        else if (0 == strcmp(labelStyle, "R"))
+                            [string appendString:[[labelNumber romanNumeralValue] uppercaseString]];
+                        else if (0 == strcmp(labelStyle, "r"))
+                            [string appendString:[labelNumber romanNumeralValue]];
+                        else if (0 == strcmp(labelStyle, "A"))
+                            [string appendString:[[labelNumber alphaCounterValue] uppercaseString]];
+                        else if (0 == strcmp(labelStyle, "a"))
+                            [string appendString:[labelNumber alphaCounterValue]];
+                    }
+                    [pageLabels insertObject:string atIndex:0];
+                }
+            }
+        }
+    }
+    if ([pageLabels count] == 0) {
+        NSUInteger i;
+        for (i = 0; i < pageCount; i++)
+            [pageLabels addObject:[[self pageAtIndex:i] displayLabel]];
+    }
+    return pageLabels;
 }
 
 @end
