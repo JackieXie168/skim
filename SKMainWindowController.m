@@ -100,6 +100,7 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "SKColorCell.h"
+#import "PDFDocument_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -653,14 +654,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)updatePageLabelsAndOutline {
-    PDFDocument *pdfDoc = [pdfView document];
-    NSUInteger i, count = [pdfDoc pageCount];
-    
     // update page labels, also update the size of the table columns displaying the labels
     [self willChangeValueForKey:PAGELABELS_KEY];
-    [pageLabels removeAllObjects];
-    for (i = 0; i < count; i++)
-        [pageLabels addObject:[[pdfDoc pageAtIndex:i] displayLabel]];
+    [pageLabels setArray:[[pdfView document] pageLabels]];
     [self didChangeValueForKey:PAGELABELS_KEY];
     
     [self updatePageLabel];
@@ -683,7 +679,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     mwcFlags.updatingOutlineSelection = 1;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [outlineView reloadData];
-	for (i = 0; i < (NSUInteger)[outlineView numberOfRows]; i++) {
+    NSUInteger i, iMax = [outlineView numberOfRows];
+	for (i = 0; i < iMax; i++) {
 		PDFOutline *item = [outlineView itemAtRow:i];
 		if ([item isOpen])
 			[outlineView expandItem:item];
