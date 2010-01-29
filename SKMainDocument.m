@@ -152,6 +152,7 @@ static char SKMainDocumentDefaultsObservationContext;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(mainWindowController);
     [synchronizer terminate];
+    [synchronizer setDelegate:nil];
     SKDESTROY(synchronizer);
     SKDESTROY(watchedFile);
     SKDESTROY(pdfData);
