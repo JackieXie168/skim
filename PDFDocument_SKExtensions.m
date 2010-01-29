@@ -139,7 +139,7 @@
             }
         }
     }
-    if ([pageLabels count] == 0) {
+    if ([pageLabels count] != pageCount) {
         NSUInteger i;
         for (i = 0; i < pageCount; i++)
             [pageLabels addObject:[[self pageAtIndex:i] displayLabel]];
