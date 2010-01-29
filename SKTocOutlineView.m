@@ -186,11 +186,6 @@
     [self rebuildTrackingAreas];
 }
 
-- (void)setDataSource:(id)anObject {
-	[super setDataSource:anObject];
-	[self rebuildTrackingAreas];
-}
-
 - (void)noteNumberOfRowsChanged {
 	[super noteNumberOfRowsChanged];
 	[self rebuildTrackingAreas];
@@ -215,6 +210,12 @@
 
 - (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate {
     [super setDelegate:newDelegate];
+	[self rebuildTrackingAreas];
+}
+#else
+- (void)setDelegate:(id)newDelegate {
+    [super setDelegate:newDelegate];
+	[self rebuildTrackingAreas];
 }
 #endif
 
