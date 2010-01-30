@@ -194,7 +194,7 @@
 - (void)mouseEntered:(NSEvent *)theEvent{
     NSDictionary *userInfo = [theEvent userData];
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
-    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber) {
         NSInteger column = [columnNumber integerValue];
         id item = [self itemAtRow:[rowNumber integerValue]];
@@ -208,7 +208,7 @@
 - (void)mouseExited:(NSEvent *)theEvent{
     NSDictionary *userInfo = [theEvent userData];
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
-    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber)
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }

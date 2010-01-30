@@ -312,7 +312,7 @@ static char SKTableViewDefaultsObservationContext;
 - (void)mouseEntered:(NSEvent *)theEvent{
     NSDictionary *userInfo = [theEvent userData];
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
-    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber) {
         NSInteger column = [columnNumber integerValue];
         NSInteger row = [rowNumber integerValue];
@@ -326,7 +326,7 @@ static char SKTableViewDefaultsObservationContext;
 - (void)mouseExited:(NSEvent *)theEvent{
     NSDictionary *userInfo = [theEvent userData];
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
-    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber)
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }
