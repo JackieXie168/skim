@@ -137,7 +137,7 @@ enum {
     [fdfString appendString:@")"];
     if (modDate) {
         [fdfString appendFDFName:SKFDFAnnotationModificationDateKey];
-        [fdfString appendFormat:@"(%@)", SKFDFDateFromDate(modDate)];
+        [fdfString appendFormat:@"(%@)", SKFDFStringFromDate(modDate)];
     }
     if (userName) {
         [fdfString appendFDFName:SKFDFAnnotationUserNameKey];

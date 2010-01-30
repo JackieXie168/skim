@@ -184,7 +184,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
 }
 
-NSString *SKFDFDateFromDate(NSDate *date) {
+NSString *SKFDFStringFromDate(NSDate *date) {
     if (date == nil) return nil;
     static NSDateFormatter *formatter = nil;
     if (formatter == nil) {
@@ -200,25 +200,6 @@ NSString *SKFDFDateFromDate(NSDate *date) {
         [dateString insertString:@"'" atIndex:[dateString length]];
     }
     return dateString;
-}
-
-NSDate *SKDateFromFDFDate(NSString *dateString) {
-    if (dateString == nil) return nil;
-    static NSDateFormatter *formatter = nil;
-    if (formatter == nil) {
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
-    }
-    NSDate *date = nil;
-    if ([dateString hasPrefix:@"D:"]) {
-        NSMutableString *string = [dateString mutableCopy];
-        [string deleteCharactersInRange:NSMakeRange(0, 2)];
-        [string replaceOccurrencesOfString:@"Z" withString:@"+" options:0 range:NSMakeRange(0, [string length])];
-        [string replaceOccurrencesOfString:@"'" withString:@"" options:0 range:NSMakeRange(0, [string length])];
-        date = [formatter dateFromString:string];
-        [string release];
-    }
-    return date;
 }
 
 @implementation SKFDFParser
@@ -338,13 +319,10 @@ NSDate *SKDateFromFDFDate(NSString *dateString) {
     }
     
     if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationModificationDateKey, &string)) {
-        NSString *dateString = (NSString *)CGPDFStringCopyTextString(string);
-        if (dateString) {
-            NSDate *date = SKDateFromFDFDate(dateString);
-            if (date)
-                [dictionary setObject:date forKey:SKNPDFAnnotationModificationDateKey];
-        }
-        [dateString release];
+        NSDate *date = (NSDate *)CGPDFStringCopyDate(string);
+        if (date)
+            [dictionary setObject:date forKey:SKNPDFAnnotationModificationDateKey];
+        [date release];
     }
     
     if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationUserNameKey, &string)) {
