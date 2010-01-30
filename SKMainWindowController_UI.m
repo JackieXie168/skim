@@ -489,10 +489,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
+- (BOOL)tableView:(NSTableView *)tv hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+    if (([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]))
+        return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
+    return NO;
+}
+
 - (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([tv isEqual:findTableView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+    if ([tv isEqual:findTableView])
         return [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-    else if ([tv isEqual:groupedFindTableView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+    else if ([tv isEqual:groupedFindTableView])
         return [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
     return nil;
 }
@@ -836,8 +842,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
+- (BOOL)outlineView:(NSOutlineView *)ov hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    if ([ov isEqual:outlineView])
+        return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
+    return NO;
+}
+
 - (id)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO)
+    if ([ov isEqual:outlineView])
         return [item destination];
     return nil;
 }

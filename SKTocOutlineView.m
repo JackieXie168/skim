@@ -132,8 +132,9 @@
     [trackingAreas removeAllObjects];
 }
 
-- (void)addTrackingAreaForRect:(NSRect)rect forPDFContext:(id)context {
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
+- (void)addTrackingAreaForColumn:(NSInteger)column row:(NSInteger)row {
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", [NSNumber numberWithInteger:column], @"column", nil];
+    NSRect rect = column == -1 ? [self rectOfRow:row] : [self frameOfCellAtColumn:column row:row];
     NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
     [self addTrackingArea:area];
     [trackingAreas addObject:area];
@@ -157,18 +158,17 @@
         NSUInteger row, column;
         NSTableColumn *tableColumn;
         id item;
-        id context;
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
             item = [self itemAtRow:row];
-            if (context = [[self delegate] outlineView:self PDFContextForTableColumn:nil item:item]) {
-                [self addTrackingAreaForRect:[self rectOfRow:row] forPDFContext:context];
+            if ([[self delegate] outlineView:self hasPDFContextForTableColumn:nil item:item]) {
+                [self addTrackingAreaForColumn:-1 row:row];
             } else {
                 column = [columnIndexes firstIndex];
                 while (column != NSNotFound) {
                     tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if (context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item])
-                        [self addTrackingAreaForRect:[self frameOfCellAtColumn:column row:row] forPDFContext:context];
+                    if ([[self delegate] outlineView:self hasPDFContextForTableColumn:tableColumn item:item])
+                        [self addTrackingAreaForColumn:column row:row];
                     column = [columnIndexes indexGreaterThanIndex:column];
                 }
             }
@@ -192,14 +192,24 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
-    if (context)
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+    NSDictionary *userInfo = [theEvent userData];
+    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    if (columnNumber && rowNumber) {
+        NSInteger column = [columnNumber integerValue];
+        id item = [self itemAtRow:[rowNumber integerValue]];
+        NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
+        id context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
+        if (context)
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+    }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
-    if (context)
+    NSDictionary *userInfo = [theEvent userData];
+    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    if (columnNumber && rowNumber)
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }
 

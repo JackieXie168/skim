@@ -256,8 +256,9 @@ static char SKTableViewDefaultsObservationContext;
     [trackingAreas removeAllObjects];
 }
 
-- (void)addTrackingAreaForRect:(NSRect)rect forPDFContext:(id)context {
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:context, @"context", nil];
+- (void)addTrackingAreaForColumn:(NSInteger)column row:(NSInteger)row {
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", [NSNumber numberWithInteger:column], @"column", nil];
+    NSRect rect = column == -1 ? [self rectOfRow:row] : [self frameOfCellAtColumn:column row:row];
     NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
     [self addTrackingArea:area];
     [trackingAreas addObject:area];
@@ -266,7 +267,8 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO ||
+        [[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -280,17 +282,16 @@ static char SKTableViewDefaultsObservationContext;
         NSIndexSet *columnIndexes = [self columnIndexesInRect:visibleRect];
         NSUInteger row, column;
         NSTableColumn *tableColumn;
-        id context;
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-            if (context = [[self delegate] tableView:self PDFContextForTableColumn:nil row:row]) {
-                [self addTrackingAreaForRect:[self rectOfRow:row] forPDFContext:context];
+            if ([[self delegate] tableView:self hasPDFContextForTableColumn:nil row:row]) {
+                [self addTrackingAreaForColumn:-1 row:row];
             } else {
                 column = [columnIndexes firstIndex];
                 while (column != NSNotFound) {
                     tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if (context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row])
-                        [self addTrackingAreaForRect:[self frameOfCellAtColumn:column row:row] forPDFContext:context];
+                    if ([[self delegate] tableView:self hasPDFContextForTableColumn:tableColumn row:row])
+                        [self addTrackingAreaForColumn:column row:row];
                     column = [columnIndexes indexGreaterThanIndex:column];
                 }
             }
@@ -309,14 +310,24 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
-    if (context)
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+    NSDictionary *userInfo = [theEvent userData];
+    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    if (columnNumber && rowNumber) {
+        NSInteger column = [columnNumber integerValue];
+        NSInteger row = [rowNumber integerValue];
+        NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
+        id context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
+        if (context)
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+    }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    id context = [(NSDictionary *)[theEvent userData] objectForKey:@"context"];
-    if (context)
+    NSDictionary *userInfo = [theEvent userData];
+    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
+    NSNumber *rowNumber = [userInfo objectForKey:@"column"];
+    if (columnNumber && rowNumber)
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
 }
 

@@ -398,6 +398,12 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
+- (BOOL)tableView:(NSTableView *)tv hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
+        return YES;
+    return NO;
+}
+
 - (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return [[controller pdfDocument] pageAtIndex:row];
