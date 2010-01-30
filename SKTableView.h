@@ -54,6 +54,7 @@
 
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
+- (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 - (id)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
