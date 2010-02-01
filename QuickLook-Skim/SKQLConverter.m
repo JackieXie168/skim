@@ -192,7 +192,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
     NSMutableString *htmlString = [NSMutableString string];
     [htmlString appendString:@"<html><head><style type=\"text/css\">"];
     [htmlString appendString:@"body {font-family:Helvetica} "];
-    [htmlString appendString:@"dd {font-family:LucidaHandwriting-Italic, Helvetica;font-style:italic} "];
+    [htmlString appendString:@"dd {font-style:italic} "];
     [htmlString appendString:@".note-text {font-size:smaller} "];
     [htmlString appendString:@"</style></head><body><dl>"];
     
