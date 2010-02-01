@@ -56,7 +56,7 @@
 - (IBAction)showDownloads:(id)sender;
 
 - (IBAction)editBookmarks:(id)sender;
-- (IBAction)openBookmark:(id)sender;
+- (IBAction)openBookmarkAction:(id)sender;
 
 - (NSDictionary *)defaultPdfViewSettings;
 - (void)setDefaultPdfViewSettings:(NSDictionary *)settings;
