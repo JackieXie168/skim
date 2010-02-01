@@ -303,7 +303,7 @@
     [[SKBookmarkController sharedBookmarkController] showWindow:self];
 }
 
-- (IBAction)openBookmark:(id)sender {
+- (IBAction)openBookmarkAction:(id)sender {
     [[SKBookmarkController sharedBookmarkController] openBookmark:[sender representedObject]];
 }
 
@@ -350,7 +350,7 @@
                     [menu addItem:[NSMenuItem separatorItem]];
                     break;
                 default:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
                     break;
