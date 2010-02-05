@@ -42,6 +42,7 @@
 #import "NSData_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 #define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
 #define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
@@ -118,6 +119,18 @@
     if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
         return [[super attributedString] retain];
     return [super attributedString];
+}
+
+- (void)drawWithBox:(PDFDisplayBox)box {
+   NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey];
+   if (backgroundColor && [[NSGraphicsContext currentContext] isDrawingToScreen]) {
+       [NSGraphicsContext saveGraphicsState];
+       [self transformContextForBox:box];
+       [backgroundColor setFill];
+       NSRectFillUsingOperation([self boundsForBox:box], NSCompositeSourceOver);
+       [NSGraphicsContext restoreGraphicsState];
+   }
+   [super drawWithBox:box];
 }
 
 @end

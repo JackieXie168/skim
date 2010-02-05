@@ -786,6 +786,10 @@
                 description="The default background color in full screen mode.">
                 <cocoa key="fullScreenBackgroundColor"/>
             </property>
+            <property name="page background color" type="RGBA color" code="PBgC"
+                description="The default page background color.">
+                <cocoa key="pageBackgroundColor"/>
+            </property>
             <property name="default note colors" type="note colors" code="DNtC"
                 description="The default colors used for new notes.">
                 <cocoa key="defaultNoteColors"/>

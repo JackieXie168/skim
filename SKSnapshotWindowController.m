@@ -98,7 +98,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
     [self setHasWindow:YES];
 }
@@ -170,7 +170,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]];
     if (miniaturizing == NO && [[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
         [[self delegate] snapshotControllerWindowWillClose:self];
     if ([[self window] isKeyWindow])
@@ -568,6 +568,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
+        } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
+            [pdfView setNeedsDisplay:YES];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
