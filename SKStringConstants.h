@@ -43,6 +43,7 @@ extern NSString *SKTeXEditorArgumentsKey;
 extern NSString *SKTeXEditorCommandKey;
 extern NSString *SKBackgroundColorKey;
 extern NSString *SKFullScreenBackgroundColorKey;
+extern NSString *SKPageBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;
 extern NSString *SKLastVersionLaunchedKey;
 extern NSString *SKOpenContentsPaneOnlyForTOCKey;

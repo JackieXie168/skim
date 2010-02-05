@@ -426,7 +426,7 @@
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
-        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", 
+        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
             @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
@@ -465,7 +465,7 @@
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    return [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
+    [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
 }
 
 - (NSColor *)fullScreenBackgroundColor {
@@ -473,7 +473,18 @@
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    return [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];
+    [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];
+}
+
+- (NSColor *)pageBackgroundColor {
+    return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
+}
+
+- (void)setPageBackgroundColor:(NSColor *)color {
+    if ([[color colorUsingColorSpaceName:NSCalibratedRGBColorSpace] isEqual:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]])
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:SKPageBackgroundColorKey];
+    else
+        [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKPageBackgroundColorKey];
 }
 
 - (NSDictionary *)defaultNoteColors {
@@ -606,7 +617,7 @@
 }
 
 - (void)setDefaultStartLineStyle:(FourCharCode)style {
-    return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteStartLineStyleKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteStartLineStyleKey];
 }
 
 - (FourCharCode)defaultEndLineStyle {
@@ -614,7 +625,7 @@
 }
 
 - (void)setDefaultEndLineStyle:(FourCharCode)style {
-    return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
 }
 
 - (FourCharCode)defaultIconType {
@@ -622,7 +633,7 @@
 }
 
 - (void)setDefaultIconType:(FourCharCode)type {
-    return [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
 }
 
 @end

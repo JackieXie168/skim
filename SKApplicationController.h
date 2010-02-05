@@ -66,6 +66,8 @@
 - (void)setBackgroundColor:(NSColor *)color;
 - (NSColor *)fullScreenBackgroundColor;
 - (void)setFullScreenBackgroundColor:(NSColor *)color;
+- (NSColor *)pageBackgroundColor;
+- (void)setPageBackgroundColor:(NSColor *)color;
 - (NSDictionary *)defaultNoteColors;
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict;
 - (NSDictionary *)defaultLineWidths;

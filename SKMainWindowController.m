@@ -2282,7 +2282,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)registerAsObserver {
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
+        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
@@ -2293,7 +2293,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)unregisterAsObserver {
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-            [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
+            [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
                                       SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                       SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                       SKShouldAntiAliasKey, SKGreekingThresholdKey, 
@@ -2365,6 +2365,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                     }
                 }
             }
+        } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
+            [pdfView setNeedsDisplay:YES];
+            [secondaryPdfView setNeedsDisplay:YES];
+            [self allThumbnailsNeedUpdate];
+            [self allSnapshotsNeedUpdate];
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
                 [[searchField stringValue] length] && 

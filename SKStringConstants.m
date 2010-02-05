@@ -44,6 +44,7 @@ NSString *SKTeXEditorArgumentsKey = @"SKTeXEditorArguments";
 NSString *SKTeXEditorCommandKey = @"SKTeXEditorCommand";
 NSString *SKBackgroundColorKey = @"SKBackgroundColor";
 NSString *SKFullScreenBackgroundColorKey = @"SKFullScreenBackgroundColor";
+NSString *SKPageBackgroundColorKey = @"SKPageBackgroundColor";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
 NSString *SKLastVersionLaunchedKey = @"SKLastVersionLaunched";
 NSString *SKOpenContentsPaneOnlyForTOCKey = @"SKOpenContentsPaneOnlyForTOC";
