@@ -42,8 +42,27 @@
 @implementation NSUserDefaults (SKExtensions)
 
 - (NSColor *)colorForKey:(NSString *)key {
+    NSColor *color = nil;
     NSData *data = [self dataForKey:key];
-    return data ? [NSUnarchiver unarchiveObjectWithData:data] : nil;
+    if (data) {
+        color = [NSUnarchiver unarchiveObjectWithData:data];
+    } else {
+        NSArray *array = [self arrayForKey:key];
+        if ([array count]) {
+            CGFloat red, green, blue, alpha = 1.0;
+            red = green = blue = [[array objectAtIndex:0] doubleValue];
+            if ([array count] > 2) {
+                green = [[array objectAtIndex:1] doubleValue];
+                blue = [[array objectAtIndex:2] doubleValue];
+            }
+            if ([array count] == 2)
+                alpha = [[array objectAtIndex:1] doubleValue];
+            else if ([array count] > 3)
+                alpha = [[array objectAtIndex:3] doubleValue];
+            color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
+        }
+    }
+    return color;
 }
 
 - (void)setColor:(NSColor *)color forKey:(NSString *)key {
