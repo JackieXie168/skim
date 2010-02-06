@@ -1,10 +1,10 @@
 //
-//  SKTocOutlineView.h
+//  SKPDFToolTipContext.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan on 2/6/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,25 +37,19 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <CoreFoundation/CoreFoundation.h>
-#import "SKOutlineView.h"
-#import "SKPDFToolTipContext.h"
+#import <Quartz/Quartz.h>
 
 
-@protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
-@optional
-
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-
+@protocol SKPDFToolTipContext <NSObject>
+- (NSImage *)toolTipImage;
 @end
 
-@interface SKTocOutlineView : SKOutlineView {
-    NSMutableSet *trackingAreas;
-}
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTocOutlineViewDelegate>)delegate;
-- (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate;
-#endif
+
+@interface PDFDestination (SKPDFToolTipContext) <SKPDFToolTipContext>
+@end
+
+@interface PDFAnnotation (SKPDFToolTipContext) <SKPDFToolTipContext>
+@end
+
+@interface PDFPage (SKPDFToolTipContext) <SKPDFToolTipContext>
 @end

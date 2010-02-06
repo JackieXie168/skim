@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKTypeSelectHelper.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKPDFToolTipContext.h"
 
 
 @protocol SKTableViewDelegate <NSTableViewDelegate>
