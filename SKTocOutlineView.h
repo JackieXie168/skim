@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import "SKOutlineView.h"
-
+#import "SKPDFToolTipWindow.h"
 
 
 @protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
@@ -47,7 +47,7 @@
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 
 @end
 
