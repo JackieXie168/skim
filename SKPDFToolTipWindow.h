@@ -38,11 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKAnimatedBorderlessWindow.h"
-
-
-@protocol SKPDFToolTipContext <NSObject>
-- (NSImage *)toolTipImage;
-@end
+#import "SKPDFToolTipContext.h"
 
 
 @interface SKPDFToolTipWindow : SKAnimatedBorderlessWindow {
@@ -57,14 +53,4 @@
 
 - (id<SKPDFToolTipContext>)currentPDFContext;
 
-@end
-
-
-@interface PDFDestination (SKPDFToolTipContext) <SKPDFToolTipContext>
-@end
-
-@interface PDFAnnotation (SKPDFToolTipContext) <SKPDFToolTipContext>
-@end
-
-@interface PDFPage (SKPDFToolTipContext) <SKPDFToolTipContext>
 @end
