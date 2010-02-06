@@ -1397,8 +1397,6 @@
 				CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */,
 				CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */,
 				CE4645900DF8140200CFD8D2 /* SKNumberArrayFormatter.m */,
-				CE455392111DA4290060CAC9 /* SKPDFToolTipContext.h */,
-				CE455393111DA4290060CAC9 /* SKPDFToolTipContext.m */,
 			);
 			name = Miscellaneous;
 			sourceTree = "<group>";
@@ -1629,6 +1627,8 @@
 				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
 				CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */,
 				CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */,
+				CE455392111DA4290060CAC9 /* SKPDFToolTipContext.h */,
+				CE455393111DA4290060CAC9 /* SKPDFToolTipContext.m */,
 			);
 			name = "PDFKit Categories";
 			sourceTree = "<group>";
