@@ -101,6 +101,7 @@
 #import "SKFloatMapTable.h"
 #import "SKColorCell.h"
 #import "PDFDocument_SKExtensions.h"
+#import "SKPDFPage.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -2597,7 +2598,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
-        PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
+        PDFPage *emptyPage = [[[SKPDFPage alloc] init] autorelease];
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [emptyPage setRotation:[firstPage rotation]];
