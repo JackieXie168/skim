@@ -143,7 +143,8 @@
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:PDFContextForTableColumn:item:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(outlineView:hasPDFContextForTableColumn:item:)] == NO ||
+        [[self delegate] respondsToSelector:@selector(outlineView:PDFContextForTableColumn:item:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -199,7 +200,7 @@
         NSInteger column = [columnNumber integerValue];
         id item = [self itemAtRow:[rowNumber integerValue]];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
+        id<SKPDFToolTipContext> context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
         if (context)
             [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
     }

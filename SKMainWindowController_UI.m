@@ -495,7 +495,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+- (id<SKPDFToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:findTableView])
         return [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
     else if ([tv isEqual:groupedFindTableView])
@@ -848,7 +848,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (id)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:outlineView])
         return [item destination];
     return nil;

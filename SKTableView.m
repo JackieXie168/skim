@@ -267,7 +267,7 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO ||
+    if ([[self delegate] respondsToSelector:@selector(tableView:hasPDFContextForTableColumn:row:)] == NO ||
         [[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO)
         return;
     
@@ -317,7 +317,7 @@ static char SKTableViewDefaultsObservationContext;
         NSInteger column = [columnNumber integerValue];
         NSInteger row = [rowNumber integerValue];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
+        id<SKPDFToolTipContext> context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
         if (context)
             [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
     }

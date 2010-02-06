@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKTypeSelectHelper.h"
+#import "SKPDFToolTipWindow.h"
 
 
 @protocol SKTableViewDelegate <NSTableViewDelegate>
@@ -55,7 +56,7 @@
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (id)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (id<SKPDFToolTipContext>)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

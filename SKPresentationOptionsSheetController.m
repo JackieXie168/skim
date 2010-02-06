@@ -404,7 +404,7 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
-- (id)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id<SKPDFToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return [[controller pdfDocument] pageAtIndex:row];
     return nil;
