@@ -661,8 +661,7 @@
             rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
             [[self progressController] incrementBy:1.0];
         } else if (count < 19) {
-            NSInteger start = count < 5 ? 0 : 1;
-            for (i = start; i < count; i++) {
+            for (i = 0; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
                 [[self progressController] incrementBy:1.0];
             }
