@@ -649,18 +649,25 @@
         NSInteger i, j, count = [[pdfView document] pageCount];
         rect[0] = rect[1] = NSZeroRect;
         
+        if (count == 0)
+            return;
+        
         [[self progressController] setMaxValue:(double)MIN(18, count)];
         [[self progressController] setDoubleValue:0.0];
         [[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
         [[self progressController] beginSheetModalForWindow:[self window]];
         
-        if (count < 18) {
-            for (i = 0; i < count; i++) {
+        if (count == 1) {
+            rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
+            [[self progressController] incrementBy:1.0];
+        } else if (count < 19) {
+            NSInteger start = count < 5 ? 0 : 1;
+            for (i = start; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
                 [[self progressController] incrementBy:1.0];
             }
         } else {
-            NSInteger start[3] = {0, count / 2 - 3, count - 6};
+            NSInteger start[3] = {1, count / 2 - 3, count - 6};
             for (j = 0; j < 3; j++) {
                 for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
