@@ -225,23 +225,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [[self windowsMenu] removeDoubleSeparators];
 }
 
-#pragma mark Scripting support
-
-- (NSArray *)allOrderedDocuments {
-    return [super orderedDocuments];
-}
-
-- (NSArray *)orderedDocuments {
-    NSMutableArray *orderedDocuments = [[[super orderedDocuments] mutableCopy] autorelease];
-    NSInteger i = [orderedDocuments count];
-    
-    while (i--)
-        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKMainDocument class]] == NO)
-            [orderedDocuments removeObjectAtIndex:i];
-    
-    return orderedDocuments;
-}
-
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate {
     return (id <SKApplicationDelegate>)[super delegate];

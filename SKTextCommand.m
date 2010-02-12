@@ -38,7 +38,7 @@
 
 #import "SKTextCommand.h"
 #import <Quartz/Quartz.h>
-#import "SKMainDocument.h"
+#import "NSDocument_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
@@ -56,7 +56,7 @@
     PDFPage *page = [[self evaluatedArguments] objectForKey:@"Page"];
     NSAttributedString *attributedString = nil;
     
-    if ([dPO isKindOfClass:[SKMainDocument class]]) {
+    if ([dPO isKindOfClass:[NSDocument class]]) {
         attributedString = page ? [page attributedString] : [dPO richText];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
