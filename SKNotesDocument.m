@@ -245,7 +245,7 @@
                 [pdfDocument insertPage:page atIndex:pageCount++];
                 [page release];
             }
-            page = [pdfDocument pageAtIndex:pageIndex];
+            [[pdfDocument pageAtIndex:pageIndex] addAnnotation:note];
             [newNotes addObject:note];
             [note release];
         }
