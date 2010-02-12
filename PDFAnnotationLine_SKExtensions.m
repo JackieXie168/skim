@@ -163,7 +163,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
-    if (inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
         NSPoint startPoint = [inQDPointAsData pointValueAsQDPoint];
         
         NSRect bounds = [self bounds];
@@ -199,7 +199,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
-    if (inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
         NSPoint endPoint = [inQDPointAsData pointValueAsQDPoint];
         
         NSRect bounds = [self bounds];
@@ -243,11 +243,15 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (void)setScriptingStartLineStyle:(FourCharCode)style {
-    [self setStartLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+    if ([self isEditable]) {
+        [self setStartLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+    }
 }
 
 - (void)setScriptingEndLineStyle:(FourCharCode)style {
-    [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+    if ([self isEditable]) {
+        [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+    }
 }
 
 #pragma mark Accessibility

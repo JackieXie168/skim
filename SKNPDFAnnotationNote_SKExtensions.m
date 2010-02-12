@@ -91,8 +91,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isEditable { return [self isSkimNote]; }
-
 - (BOOL)hasBorder { return NO; }
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
@@ -132,7 +130,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 }
 
 - (void)setRichText:(id)newText {
-    if (newText != textStorage) {
+    if ([self isEditable] && newText != textStorage) {
         // We are willing to accept either a string or an attributed string.
         if ([newText isKindOfClass:[NSAttributedString class]])
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];

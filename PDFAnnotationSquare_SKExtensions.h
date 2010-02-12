@@ -41,4 +41,5 @@
 
 
 @interface PDFAnnotationSquare (SKExtensions)
+- (void)setScriptingInteriorColor:(NSColor *)newColor;
 @end

@@ -95,7 +95,7 @@
     static NSSet *customSquareScriptingKeys = nil;
     if (customSquareScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKNPDFAnnotationInteriorColorKey];
+        [customKeys addObject:SKPDFAnnotationScriptingInteriorColorKey];
         customSquareScriptingKeys = [customKeys copy];
         [customKeys release];
     }
@@ -104,6 +104,16 @@
 
 - (FourCharCode)scriptingNoteType {
     return SKScriptingSquareNote;
+}
+
+- (NSColor *)scriptingInteriorColor {
+    return [self interiorColor];
+}
+
+- (void)setScriptingInteriorColor:(NSColor *)newColor {
+    if ([self isEditable]) {
+        [self setInteriorColor:newColor];
+    }
 }
 
 #pragma mark Accessibility

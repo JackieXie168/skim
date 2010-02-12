@@ -993,7 +993,7 @@
             </contents>
             <property name="color" code="colr" type="RGBA color"
                 description="The color of the note. Can be given as a list of (red, green, blue, alpha), a standard color (e.g. red), or a default color (e.g. text note color).">
-                <cocoa key="color"/>
+                <cocoa key="scriptingColor"/>
             </property>
             <property name="page" code="Page" type="page" access="r"
                 description="The page for the note.">
@@ -1005,11 +1005,11 @@
             </property>
             <property name="modification date" code="ModD" type="date" access="r"
                 description="The modification date of a note.">
-                <cocoa key="modificationDate"/>
+                <cocoa key="scriptingModificationDate"/>
             </property>
             <property name="user name" code="UsrN" type="text"
                 description="The user name of the creator of a note.">
-                <cocoa key="userName"/>
+                <cocoa key="scriptingUserName"/>
             </property>
             <property name="font name" code="FntN" type="text"
                 description="The font name of a text note.">
@@ -1033,7 +1033,7 @@
             </property>
             <property name="interior color" code="IClr" type="RGBA color"
                 description="The fill color of a circle or box.">
-                <cocoa key="interiorColor"/>
+                <cocoa key="scriptingInteriorColor"/>
             </property>
             <property name="line width" code="LnWd" type="real"
                 description="The line width of the note.">

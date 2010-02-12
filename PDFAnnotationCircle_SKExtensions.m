@@ -44,6 +44,7 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 
+NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
 
 @implementation PDFAnnotationCircle (SKExtensions)
 
@@ -94,7 +95,7 @@
     static NSSet *customCircleScriptingKeys = nil;
     if (customCircleScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKNPDFAnnotationInteriorColorKey];
+        [customKeys addObject:SKPDFAnnotationScriptingInteriorColorKey];
         customCircleScriptingKeys = [customKeys copy];
         [customKeys release];
     }
@@ -103,6 +104,16 @@
 
 - (FourCharCode)scriptingNoteType {
     return SKScriptingCircleNote;
+}
+
+- (NSColor *)scriptingInteriorColor {
+    return [self interiorColor];
+}
+
+- (void)setScriptingInteriorColor:(NSColor *)newColor {
+    if ([self isEditable]) {
+        [self setInteriorColor:newColor];
+    }
 }
 
 #pragma mark Accessibility
