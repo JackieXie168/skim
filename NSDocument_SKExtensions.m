@@ -42,6 +42,7 @@
 #import "NSFileManager_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "BDAlias.h"
+#import "SKInfoWindowController.h"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -165,7 +166,9 @@ static NSSet *richTextTypes() {
 
 - (NSDictionary *)pdfViewSettings { return nil; }
 
-- (NSDictionary *)documentAttributes { return nil; }
+- (NSDictionary *)documentAttributes {
+    return [[SKInfoWindowController sharedInstance] infoForDocument:self];
+}
 
 - (BOOL)isPDFDocument { return NO; }
 

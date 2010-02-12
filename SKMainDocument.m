@@ -1972,12 +1972,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     [[self mainWindowController] applyPDFSettings:SKPDFViewSettingsFromScriptingPDFViewSettings(pdfViewSettings)];
 }
 
-- (NSDictionary *)documentAttributes {
-    NSMutableDictionary *info = [[[[SKInfoWindowController sharedInstance] infoForDocument:self] mutableCopy] autorelease];
-    [info removeObjectForKey:@"KeywordsString"];
-    return info;
-}
-
 - (BOOL)isPDFDocument {
     return YES;
 }
