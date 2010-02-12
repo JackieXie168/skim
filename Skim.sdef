@@ -868,7 +868,7 @@
                 description="The attributes of the PDF document.">
                 <cocoa key="documentAttributes"/>
             </property>
-            <property name="containing PDF" type="boolean" code="" access="r"
+            <property name="containing PDF" type="boolean" code="iPDF" access="r"
                 description="Is this a PDF document?">
                 <cocoa key="isPDFDocument"/>
             </property>
