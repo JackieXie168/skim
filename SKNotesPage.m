@@ -1,10 +1,10 @@
 //
-//  SKNotesDocument.h
+//  SKNotesPage.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/10/07.
+//  Created by Christiaan on 2/12/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,38 +36,30 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKNoteOutlineView.h"
+#import "SKNotesPage.h"
+#import <SkimNotes/SkimNotes.h>
+#import "PDFPage_SKExtensions.h"
 
-@class SKNoteOutlineView, SKStatusBar, SKFloatMapTable;
 
-@interface SKNotesDocument : NSDocument <NSWindowDelegate, NSToolbarDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource> {
-    IBOutlet SKNoteOutlineView *outlineView;
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKStatusBar *statusBar;
-    IBOutlet NSSearchField *searchField;
-    NSMutableDictionary *toolbarItems;
-    NSArray *notes;
-    NSArray *pages;
-    NSArray *properties;
-    SKFloatMapTable *rowHeights;
-    BOOL exportUsingPanel;
-    BOOL caseInsensitiveSearch;
+@implementation SKNotesPage
+
+- (id)initWithContainingDocument:(NSDocument *)aDocument pageIndex:(NSUInteger)aPageIndex {
+    if (self = [super init]) {
+        containingDocument = aDocument;
+        pageIndex = aPageIndex;
+    }
+    return self;
 }
 
-- (IBAction)openPDF:(id)sender;
-- (IBAction)searchNotes:(id)sender;
-- (IBAction)toggleStatusBar:(id)sender;
-- (IBAction)toggleCaseInsensitiveSearch:(id)sender;
- 
-- (NSArray *)notes;
-- (NSUInteger)countOfNotes;
-- (NSDictionary *)objectInNotesAtIndex:(NSUInteger)index;
- 
-- (NSArray *)pages;
-- (NSUInteger)countOfPages;
-- (NSDictionary *)objectInPagesAtIndex:(NSUInteger)index;
+- (void)dealloc {
+    containingDocument = nil;
+    [super dealloc];
+}
 
-- (void)setupToolbar:(NSWindowController *)aController;
+- (NSDocument *)containingDocument { return containingDocument; }
+
+- (NSUInteger)pageIndex { return pageIndex; }
+
+- (NSString *)label { return [self sequentialLabel]; }
 
 @end

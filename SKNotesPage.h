@@ -1,10 +1,10 @@
 //
-//  SKNote.h
+//  SKNotesPage.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 12/10/08.
+//  Created by Christiaan on 2/12/10.
 /*
- This software is Copyright (c) 2008-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,29 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 
-@interface SKNote : NSObject {
-    NSDictionary *properties;
-    NSString *type;
-    NSString *contents;
-    NSArray *texts;
+@interface SKNotesPage : PDFPage {
+    NSDocument *containingDocument;
+    NSUInteger pageIndex;
 }
-
-- (id)initWithSkimNoteProperties:(NSDictionary *)aProperties;
-
-- (NSDictionary *)SkimNoteProperties;
-
-- (NSString *)type;
-- (NSRect)bounds;
-- (NSString *)contents;
-- (NSUInteger)pageIndex;
-- (NSString *)string;
-- (NSAttributedString *)text;
-- (NSColor *)color;
-
-- (id)page;
-
-- (NSArray *)texts;
-
+- (id)initWithContainingDocument:(NSDocument *)aDocument pageIndex:(NSUInteger)aPageIndex;
 @end

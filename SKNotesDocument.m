@@ -45,8 +45,9 @@
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import <SkimNotes/SkimNotes.h>
-#import "SKNote.h"
+#import "SKNotesPage.h"
 #import "SKNoteText.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "SKStatusBar.h"
@@ -73,6 +74,7 @@
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
 #define NOTES_KEY @"notes"
+#define PAGES_KEY @"pages"
 
 #define NOTE_COLUMNID  @"note"
 #define TYPE_COLUMNID  @"type"
@@ -83,7 +85,9 @@
 
 - (id)init {
     if (self = [super init]) {
-        notes = [[NSMutableArray alloc] initWithCapacity:10];
+        notes = [[NSArray alloc] init];
+        pages = [[NSArray alloc] init];
+        properties = [[NSArray alloc] init];
         rowHeights = [[SKFloatMapTable alloc] init];
         caseInsensitiveSearch = YES;
     }
@@ -94,6 +98,8 @@
     [outlineView setDelegate:nil];
     [outlineView setDataSource:nil];
     SKDESTROY(notes);
+    SKDESTROY(pages);
+    SKDESTROY(properties);
 	SKDESTROY(rowHeights);
     SKDESTROY(toolbarItems);
     SKDESTROY(statusBar);
@@ -198,7 +204,8 @@
     NSData *data = nil;
     
     if (SKIsNotesDocumentType(typeName)) {
-        data = [NSKeyedArchiver archivedDataWithRootObject:[notes valueForKey:@"SkimNoteProperties"]];
+        // don't get the SkimNoteProperties from the notes, as they have the wrong pageIndex
+        data = [NSKeyedArchiver archivedDataWithRootObject:properties];
     } else if (SKIsNotesRTFDocumentType(typeName)) {
         data = [self notesRTFData];
     } else if (SKIsNotesTextDocumentType(typeName)) {
@@ -224,13 +231,31 @@
     }
     if (array) {
         NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
+        NSMutableArray *newPages = [NSMutableArray array];
         
         for (NSDictionary *dict in array) {
-            SKNote *note = [[SKNote alloc] initWithSkimNoteProperties:dict];
+            PDFAnnotation *note = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict];
+            PDFPage *page;
+            NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
+            while (pageIndex >= [pages count]) {
+                page = [[SKNotesPage alloc] initWithContainingDocument:self pageIndex:[pages count]];
+                [newPages addObject:page];
+                [page release];
+            }
+            page = [pages objectAtIndex:pageIndex];
             [newNotes addObject:note];
             [note release];
         }
-        [[self mutableArrayValueForKey:NOTES_KEY] setArray:newNotes];
+        [self willChangeValueForKey:PAGES_KEY];
+        [pages release];
+        pages = [newPages copy];
+        [self didChangeValueForKey:PAGES_KEY];
+        [self willChangeValueForKey:NOTES_KEY];
+        [notes release];
+        notes = [newNotes copy];
+        [self didChangeValueForKey:NOTES_KEY];
+        [properties release];
+        properties = [array copy];
         [outlineView reloadData];
         didRead = YES;
     }
@@ -393,7 +418,7 @@
 #pragma mark Accessors
 
 - (NSArray *)notes {
-    return [[notes copy] autorelease];
+    return notes;
 }
 
 - (NSUInteger)countOfNotes {
@@ -404,12 +429,16 @@
     return [notes objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(NSUInteger)theIndex {
-    [notes insertObject:note atIndex:theIndex];
+- (NSArray *)pages {
+    return pages;
 }
 
-- (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
-    [notes removeObjectAtIndex:theIndex];
+- (NSUInteger)countOfPages {
+    return [pages count];
+}
+
+- (NSDictionary *)objectInPagesAtIndex:(NSUInteger)theIndex {
+    return [pages objectAtIndex:theIndex];
 }
 
 #pragma mark NSOutlineView datasource and delegate methods
@@ -494,7 +523,11 @@
     
     for (item in items) {
         if ([item type] == nil || ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO)) {
-            noteData = [NSKeyedArchiver archivedDataWithRootObject:[([item type] ? item : [item note]) SkimNoteProperties]];
+            PDFAnnotation *note = [item type] ? item : [item note];
+            NSMutableDictionary *dict = [[note SkimNoteProperties] mutableCopy];
+            [dict setObject:[NSNumber numberWithUnsignedInteger:[note pageIndex]] forKey:SKNPDFAnnotationPageIndexKey];
+            noteData = [NSKeyedArchiver archivedDataWithRootObject:dict];
+            [dict release];
             [types addObject:SKSkimNotePboardType];
             break;
         }

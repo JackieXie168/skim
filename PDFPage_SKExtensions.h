@@ -78,8 +78,10 @@ extern NSString *SKPDFPageActionRotate;
 - (NSString *)sequentialLabel;
 - (NSString *)displayLabel;
 
+- (BOOL)isEditable;
+
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (SKMainDocument *)containingDocument;
+- (NSDocument *)containingDocument;
 - (NSUInteger)index;
 - (NSInteger)rotationAngle;
 - (void)setRotationAngle:(NSInteger)angle;
