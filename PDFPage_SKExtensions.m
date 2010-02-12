@@ -324,10 +324,14 @@ static BOOL usesSequentialPageNumbering = NO;
     return label ?: [self sequentialLabel];
 }
 
+- (BOOL)isEditable {
+    return nil != [self document];
+}
+
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    SKMainDocument *document = [self containingDocument];
+    NSDocument *document = [self containingDocument];
 	NSUInteger idx = [self pageIndex];
     
     if (document && idx != NSNotFound) {
@@ -338,11 +342,11 @@ static BOOL usesSequentialPageNumbering = NO;
     }
 }
 
-- (SKMainDocument *)containingDocument {
-    SKMainDocument *document = nil;
+- (NSDocument *)containingDocument {
+    NSDocument *document = nil;
     
     for (document in [[NSDocumentController sharedDocumentController] documents]) {
-        if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])
+        if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[(SKMainDocument *)document pdfDocument]])
             break;
     }
     
@@ -358,7 +362,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setRotationAngle:(NSInteger)angle {
-    if (angle != [self rotation]) {
+    if ([self isEditable] && angle != [self rotation]) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
         [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
@@ -377,7 +381,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setBoundsAsQDRect:[self boundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
@@ -401,7 +405,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setMediaBoundsAsQDRect:[self mediaBoundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
@@ -449,10 +453,12 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)insertInNotes:(id)newNote {
-    SKPDFView *pdfView = [[self containingDocument] pdfView];
-    
-    [pdfView addAnnotation:newNote toPage:self];
-    [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    if ([self isEditable]) {
+        SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
+        
+        [pdfView addAnnotation:newNote toPage:self];
+        [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    }
 }
 
 - (void)insertInNotes:(id)newNote atIndex:(NSUInteger)anIndex {
@@ -460,11 +466,13 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)removeFromNotesAtIndex:(NSUInteger)anIndex {
-    PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
-    SKPDFView *pdfView = [[self containingDocument] pdfView];
-    
-    [pdfView removeAnnotation:note];
-    [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    if ([self isEditable]) {
+        PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
+        SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
+        
+        [pdfView removeAnnotation:note];
+        [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    }
 }
 
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
