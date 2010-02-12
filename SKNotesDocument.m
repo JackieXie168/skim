@@ -237,12 +237,12 @@
             PDFAnnotation *note = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict];
             PDFPage *page;
             NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
-            while (pageIndex >= [pages count]) {
+            while (pageIndex >= [newPages count]) {
                 page = [[SKNotesPage alloc] initWithContainingDocument:self pageIndex:[pages count]];
                 [newPages addObject:page];
                 [page release];
             }
-            page = [pages objectAtIndex:pageIndex];
+            page = [newPages objectAtIndex:pageIndex];
             [newNotes addObject:note];
             [note release];
         }
