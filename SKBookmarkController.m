@@ -367,7 +367,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSString *path = [bookmark path];
         NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
         if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
-            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]))
+            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
+            [document respondsToSelector:@selector(mainWindowController)])
             [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }
     if (document == nil && error)
