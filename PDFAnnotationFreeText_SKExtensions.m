@@ -91,8 +91,6 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isEditable { return [self isSkimNote]; }
-
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
@@ -140,9 +138,11 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 }
 
 - (void)setFontName:(NSString *)fontName {
-    NSFont *font = [NSFont fontWithName:fontName size:[[self font] pointSize]];
-    if (font)
-        [self setFont:font];
+    if ([self isEditable]) {
+        NSFont *font = [NSFont fontWithName:fontName size:[[self font] pointSize]];
+        if (font)
+            [self setFont:font];
+    }
 }
 
 - (CGFloat)fontSize {
@@ -150,9 +150,11 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 }
 
 - (void)setFontSize:(CGFloat)pointSize {
-    NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
-    if (font)
-        [self setFont:font];
+    if ([self isEditable]) {
+        NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
+        if (font)
+            [self setFont:font];
+    }
 }
 
 - (NSColor *)scriptingFontColor {
@@ -160,7 +162,9 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 }
 
 - (void)setScriptingFontColor:(NSColor *)newScriptingFontColor {
-    [self setFontColor:newScriptingFontColor];
+    if ([self isEditable]) {
+        [self setFontColor:newScriptingFontColor];
+    }
 }
 
 #pragma mark Accessibility

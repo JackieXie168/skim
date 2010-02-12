@@ -94,8 +94,6 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isEditable { return [self isSkimNote]; }
-
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
@@ -134,7 +132,9 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 }
 
 - (void)setScriptingIconType:(FourCharCode)type {
-    [self setIconType:SKIconTypeFromScriptingIconType(type)];
+    if ([self isEditable]) {
+        [self setIconType:SKIconTypeFromScriptingIconType(type)];
+    }
 }
 
 @end

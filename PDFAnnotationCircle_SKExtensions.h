@@ -39,6 +39,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationScriptingInteriorColorKey;
 
 @interface PDFAnnotationCircle (SKExtensions)
+- (void)setScriptingInteriorColor:(NSColor *)newColor;
 @end

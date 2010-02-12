@@ -66,6 +66,9 @@ extern PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderS
 
 extern NSString *SKPDFAnnotationScriptingNoteTypeKey;
 extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
+extern NSString *SKPDFAnnotationScriptingColorKey;
+extern NSString *SKPDFAnnotationScriptingModificationDateKey;
+extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
 
 @interface PDFAnnotation (SKExtensions)
@@ -108,7 +111,13 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 + (NSSet *)customScriptingKeys;
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (FourCharCode)scriptingNoteType;
+- (NSColor *)scriptingColor;
+- (void)setScriptingColor:(NSColor *)newColor;
 - (PDFPage *)scriptingPage;
+- (NSDate *)scriptingModificationDate;
+- (void)setScriptingModificationDate:(NSDate *)date;
+- (NSString *)scriptingUserName;
+- (void)setScriptingUserName:(NSString *)name;
 - (FourCharCode)scriptingIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
@@ -118,6 +127,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSString *)fontName;
 - (CGFloat)fontSize;
 - (NSColor *)scriptingFontColor;
+- (NSColor *)scriptingInteriorColor;
 - (FourCharCode)scriptingBorderStyle;
 - (void)setScriptingBorderStyle:(NSInteger)style;
 - (NSData *)startPointAsQDPoint;

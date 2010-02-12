@@ -86,6 +86,9 @@ PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderStyle) {
 
 NSString *SKPDFAnnotationScriptingNoteTypeKey = @"scriptingNoteType";
 NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
+NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
+NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
+NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
 enum {
     SKPDFAnnotationScriptingNoteClassCode = 'Note'
@@ -162,12 +165,14 @@ enum {
 }
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil && style)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setStyle:style];
-    [self setBorder:border];
-    [border release];
+    if ([self isEditable]) {
+        PDFBorder *border = [[self border] copyWithZone:[self zone]];
+        if (border == nil && style)
+            border = [[PDFBorder allocWithZone:[self zone]] init];
+        [border setStyle:style];
+        [self setBorder:border];
+        [border release];
+    }
 }
 
 - (CGFloat)lineWidth {
@@ -175,15 +180,17 @@ enum {
 }
 
 - (void)setLineWidth:(CGFloat)width {
-    PDFBorder *border = nil;
-    if (width > 0.0) {
-        border = [[self border] copyWithZone:[self zone]];
-        if (border == nil)
-            border = [[PDFBorder allocWithZone:[self zone]] init];
-        [border setLineWidth:width];
-    } 
-    [self setBorder:border];
-    [border release];
+    if ([self isEditable]) {
+        PDFBorder *border = nil;
+        if (width > 0.0) {
+            border = [[self border] copyWithZone:[self zone]];
+            if (border == nil)
+                border = [[PDFBorder allocWithZone:[self zone]] init];
+            [border setLineWidth:width];
+        } 
+        [self setBorder:border];
+        [border release];
+    }
 }
 
 - (NSArray *)dashPattern {
@@ -191,12 +198,14 @@ enum {
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil && [pattern count])
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setDashPattern:pattern];
-    [self setBorder:border];
-    [border release];
+    if ([self isEditable]) {
+        PDFBorder *border = [[self border] copyWithZone:[self zone]];
+        if (border == nil && [pattern count])
+            border = [[PDFBorder allocWithZone:[self zone]] init];
+        [border setDashPattern:pattern];
+        [self setBorder:border];
+        [border release];
+    }
 }
 
 - (PDFTextAnnotationIconType)iconType { return kPDFTextAnnotationIconNote; }
@@ -217,7 +226,7 @@ enum {
 
 - (BOOL)isMovable { return NO; }
 
-- (BOOL)isEditable { return [self isSkimNote]; }
+- (BOOL)isEditable { return [self isSkimNote] && [[self page] isEditable]; }
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
 
@@ -278,7 +287,7 @@ enum {
 + (NSSet *)customScriptingKeys {
     static NSSet *customScriptingKeys = nil;
     if (customScriptingKeys == nil)
-        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, SKNPDFAnnotationModificationDateKey, SKNPDFAnnotationUserNameKey, nil];
+        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, SKPDFAnnotationScriptingModificationDateKey, SKPDFAnnotationScriptingUserNameKey, nil];
     return customScriptingKeys;
 }
 
@@ -307,8 +316,38 @@ enum {
     return 0;
 }
 
+- (NSColor *)scriptingColor {
+    return [self color];
+}
+
+- (void)setScriptingColor:(NSColor *)newColor {
+    if ([self isEditable]) {
+        [self setColor:newColor];
+    }
+}
+
 - (PDFPage *)scriptingPage {
     return [self page];
+}
+
+- (NSDate *)scriptingModificationDate {
+    return [self modificationDate];
+}
+
+- (void)setScriptingModificationDate:(NSDate *)date {
+    if ([self isEditable]) {
+        [self setModificationDate:date];
+    }
+}
+
+- (NSString *)scriptingUserName {
+    return [self userName];
+}
+
+- (void)setScriptingUserName:(NSString *)name {
+    if ([self isEditable]) {
+        [self setUserName:name];
+    }
 }
 
 - (FourCharCode)scriptingIconType {
@@ -322,7 +361,9 @@ enum {
 
 - (void)setTextContents:(id)text;
 {
-    [self setString:[text string]];
+    if ([self isEditable]) {
+        [self setString:[text string]];
+    }
 }
 
 - (id)coerceValueForTextContents:(id)value {
@@ -334,7 +375,7 @@ enum {
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([self isMovable]) {
+    if ([self isMovable] && [self isEditable]) {
         NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
         if ([self isResizable] == NO) {
             newBounds.size = [self bounds].size;
@@ -351,6 +392,10 @@ enum {
 
 - (NSData *)boundsAsQDRect {
     return [NSData dataWithRectAsQDRect:[self bounds]];
+}
+
+- (NSColor *)scriptingInteriorColor {
+    return nil;
 }
 
 - (NSString *)fontName {
@@ -370,7 +415,9 @@ enum {
 }
 
 - (void)setScriptingBorderStyle:(NSInteger)borderStyle {
-    [self setBorderStyle:SKBorderStyleFromScriptingBorderStyle(borderStyle)];
+    if ([self isEditable]) {
+        [self setBorderStyle:SKBorderStyleFromScriptingBorderStyle(borderStyle)];
+    }
 }
 
 - (NSData *)startPointAsQDPoint {
