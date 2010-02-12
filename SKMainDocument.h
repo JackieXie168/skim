@@ -142,7 +142,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)setSelectionPage:(PDFPage *)page;
 - (NSDictionary *)pdfViewSettings;
 - (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings;
-- (NSDictionary *)documentAttributes;
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
