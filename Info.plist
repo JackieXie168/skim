@@ -129,6 +129,7 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
 				<string>Notes as Text</string>
 			</array>
 			<key>NSExportableTypes</key>

@@ -145,12 +145,11 @@
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
-    NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
+    NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
-        for (NSString *file in [[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]) {
-            if ([[file pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame)
-                [writableTypes addObject:file];
-        }
+        NSMutableArray *tmpArray = [[writableTypes mutableCopy] autorelease];
+        [tmpArray addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
+        writableTypes = tmpArray;
     }
     return writableTypes;
 }
