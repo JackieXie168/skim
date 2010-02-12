@@ -1288,6 +1288,15 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 #pragma mark UI validation
 
+static NSArray *allMainDocumentPDFViews() {
+    NSMutableArray *array = [NSMutableArray array];
+    for (id document in [[NSDocumentController sharedDocumentController] documents]) {
+        if ([document respondsToSelector:@selector(pdfView)])
+            [array addObject:[document pdfView]];
+    }
+    return array;
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
@@ -1356,13 +1365,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     } else if (action == @selector(doGoToLastPage:)) {
         return [pdfView canGoToLastPage];
     } else if (action == @selector(allGoToNextPage:)) {
-        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToNextPage"] boolValue];
+        return [[allMainDocumentPDFViews() valueForKeyPath:@"@min.canGoToNextPage"] boolValue];
     } else if (action == @selector(allGoToPreviousPage:)) {
-        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToPreviousPage"] boolValue];
+        return [[allMainDocumentPDFViews() valueForKeyPath:@"@min.canGoToPreviousPage"] boolValue];
     } else if (action == @selector(allGoToFirstPage:)) {
-        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToFirstPage"] boolValue];
+        return [[allMainDocumentPDFViews() valueForKeyPath:@"@min.canGoToFirstPage"] boolValue];
     } else if (action == @selector(allGoToLastPage:)) {
-        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToLastPage"] boolValue];
+        return [[allMainDocumentPDFViews() valueForKeyPath:@"@min.canGoToLastPage"] boolValue];
     } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];
     } else if (action == @selector(doGoForward:)) {
