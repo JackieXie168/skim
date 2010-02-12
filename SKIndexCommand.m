@@ -38,7 +38,6 @@
 
 #import "SKIndexCommand.h"
 #import <Quartz/Quartz.h>
-#import "SKMainDocument.h"
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 
@@ -56,7 +55,7 @@
     BOOL last = [[args objectForKey:@"Last"] boolValue];
     NSUInteger idx = NSNotFound;
     
-    if ([dPO isKindOfClass:[SKMainDocument class]]) {
+    if ([dPO isKindOfClass:[NSDocument class]]) {
         idx = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         idx = [dPO pageIndex];

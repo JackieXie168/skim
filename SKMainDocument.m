@@ -2206,17 +2206,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 @implementation NSWindow (SKScriptingExtensions)
 
-static id (*original_document)(id, SEL) = NULL;
-
-- (id)replacement_document {
-    id document = original_document(self, _cmd);
-    return [[NSApp orderedDocuments] containsObject:document] ? document : nil;
-}
-
-+ (void)load {
-    original_document = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(document), @selector(replacement_document));
-}
-
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];
     if (document == nil) {

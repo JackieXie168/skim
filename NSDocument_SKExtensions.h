@@ -60,4 +60,17 @@ enum {
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentDocumentSetup;
 
+#pragma mark Scripting
+
+- (NSArray *)pages;
+- (NSArray *)notes;
+- (PDFPage *)currentPage;
+- (id)activeNote;
+- (NSTextStorage *)richText;
+- (id)selectionSpecifier;
+- (NSData *)selectionQDRect;
+- (id)selectionPage;
+- (NSDictionary *)pdfViewSettings;
+- (NSDictionary *)documentAttributes;
+
 @end

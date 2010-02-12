@@ -129,4 +129,59 @@ static NSSet *richTextTypes() {
     return setup;
 }
 
+#pragma mark Scripting
+
+- (NSArray *)pages { return nil; }
+
+- (NSArray *)notes { return nil; }
+
+- (PDFPage *)currentPage { return nil; }
+
+- (id)activeNote { return nil; }
+
+- (NSTextStorage *)richText { return nil; }
+
+- (id)selectionSpecifier { return nil; }
+
+- (NSData *)selectionQDRect { return nil; }
+
+- (id)selectionPage { return nil; }
+
+- (NSDictionary *)pdfViewSettings { return nil; }
+
+- (NSDictionary *)documentAttributes { return nil; }
+
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command {
+    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
+        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
+            [command setScriptErrorNumber:NSInternalScriptError];
+            [command setScriptErrorString:@"Revert failed."];
+        }
+    } else {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"File does not exist."];
+    }
+}
+
+- (void)handleGoToScriptCommand:(NSScriptCommand *)command {
+    [command setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+    [command setScriptErrorString:@"Notes document does not understand the 'go' command."];
+}
+
+- (id)handleFindScriptCommand:(NSScriptCommand *)command {
+    [command setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+    [command setScriptErrorString:@"Notes document does not understand the 'find' command."];
+    return nil;
+}
+
+- (void)handleShowTeXScriptCommand:(NSScriptCommand *)command {
+    [command setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+    [command setScriptErrorString:@"Notes document does not understand the 'show TeX file' command."];
+}
+
+- (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
+    [command setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+    [command setScriptErrorString:@"Notes document does not understand the 'convert notes' command."];
+}
+
 @end
