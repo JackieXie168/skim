@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 #import "SKNoteOutlineView.h"
 
 @class SKNoteOutlineView, SKStatusBar, SKFloatMapTable;
@@ -48,8 +49,7 @@
     IBOutlet NSSearchField *searchField;
     NSMutableDictionary *toolbarItems;
     NSArray *notes;
-    NSArray *pages;
-    NSArray *properties;
+    PDFDocument *pdfDocument;
     SKFloatMapTable *rowHeights;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
@@ -61,12 +61,8 @@
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
  
 - (NSArray *)notes;
-- (NSUInteger)countOfNotes;
-- (NSDictionary *)objectInNotesAtIndex:(NSUInteger)index;
- 
-- (NSArray *)pages;
-- (NSUInteger)countOfPages;
-- (NSDictionary *)objectInPagesAtIndex:(NSUInteger)index;
+
+- (PDFDocument *)pdfDocument;
 
 - (void)setupToolbar:(NSWindowController *)aController;
 

@@ -1870,23 +1870,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 #pragma mark Scripting support
 
-- (NSArray *)pages {
-    NSMutableArray *pages = [NSMutableArray array];
-    PDFDocument *pdfDoc = [self pdfDocument];
-    NSInteger i, count = [pdfDoc pageCount];
-    for (i = 0; i < count; i++)
-        [pages addObject:[pdfDoc pageAtIndex:i]];
-    return pages;
-}
-
-- (NSUInteger)countOfPages {
-    return [[self pdfDocument] pageCount];
-}
-
-- (PDFPage *)objectInPagesAtIndex:(NSUInteger)anIndex {
-    return [[self pdfDocument] pageAtIndex:anIndex];
-}
-
 - (NSArray *)notes {
     return [[self mainWindowController] notes];
 }
@@ -1993,6 +1976,10 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     NSMutableDictionary *info = [[[[SKInfoWindowController sharedInstance] infoForDocument:self] mutableCopy] autorelease];
     [info removeObjectForKey:@"KeywordsString"];
     return info;
+}
+
+- (BOOL)isPDFDocument {
+    return YES;
 }
 
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {

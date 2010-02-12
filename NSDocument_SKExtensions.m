@@ -129,9 +129,25 @@ static NSSet *richTextTypes() {
     return setup;
 }
 
+- (PDFDocument *)pdfDocument { return nil; }
+
 #pragma mark Scripting
 
-- (NSArray *)pages { return nil; }
+- (NSArray *)pages {
+    NSMutableArray *pages = [NSMutableArray array];
+    NSInteger i, count = [[self pdfDocument] pageCount];
+    for (i = 0; i < count; i++)
+        [pages addObject:[[self pdfDocument] pageAtIndex:i]];
+    return pages;
+}
+
+- (NSUInteger)countOfPages {
+    return [[self pdfDocument] pageCount];
+}
+
+- (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex {
+    return [[self pdfDocument] pageAtIndex:theIndex];
+}
 
 - (NSArray *)notes { return nil; }
 
@@ -150,6 +166,8 @@ static NSSet *richTextTypes() {
 - (NSDictionary *)pdfViewSettings { return nil; }
 
 - (NSDictionary *)documentAttributes { return nil; }
+
+- (BOOL)isPDFDocument { return NO; }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {

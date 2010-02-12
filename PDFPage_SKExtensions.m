@@ -55,6 +55,7 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -325,7 +326,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (BOOL)isEditable {
-    return nil != [self document];
+    return NO;
 }
 
 #pragma mark Scripting support
@@ -346,7 +347,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSDocument *document = nil;
     
     for (document in [[NSDocumentController sharedDocumentController] documents]) {
-        if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[(SKMainDocument *)document pdfDocument]])
+        if ([[self document] isEqual:[document pdfDocument]])
             break;
     }
     

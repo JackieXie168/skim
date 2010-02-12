@@ -133,4 +133,8 @@
    [super drawWithBox:box];
 }
 
+- (BOOL)isEditable {
+    return YES;
+}
+
 @end
