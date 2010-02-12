@@ -346,20 +346,29 @@
     [pdfView goToLastPage:sender];
 }
 
+static NSArray *allMainDocumentPDFViews() {
+    NSMutableArray *array = [NSMutableArray array];
+    for (id document in [[NSDocumentController sharedDocumentController] documents]) {
+        if ([document respondsToSelector:@selector(pdfView)])
+            [array addObject:[document pdfView]];
+    }
+    return array;
+}
+
 - (IBAction)allGoToNextPage:(id)sender {
-    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToNextPage:) withObject:sender];
+    [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToNextPage:) withObject:sender];
 }
 
 - (IBAction)allGoToPreviousPage:(id)sender {
-    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToPreviousPage:) withObject:sender];
+    [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToPreviousPage:) withObject:sender];
 }
 
 - (IBAction)allGoToFirstPage:(id)sender {
-    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToFirstPage:) withObject:sender];
+    [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToFirstPage:) withObject:sender];
 }
 
 - (IBAction)allGoToLastPage:(id)sender {
-    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
+    [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
 }
 
 - (IBAction)goToPreviousNextFirstLastPage:(id)sender {
@@ -969,7 +978,11 @@
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *label = [controller stringValue];
-        NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+        NSMutableArray *setups = [NSMutableArray array];
+        for (id document in [NSApp orderedDocuments]) {
+            if ([document isKindOfClass:[SKMainDocument class]])
+                [setups addObject:[document currentDocumentSetup]];
+        }
         [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
     }
 }
