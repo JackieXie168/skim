@@ -49,6 +49,7 @@
 #import "SKPDFView.h"
 #import "SKPDFToolTipWindow.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER 0x2192
 
@@ -99,7 +100,7 @@ static char *SKTransitionPropertiesObservationContext;
     NSMutableArray *documents = [NSMutableArray array];
     NSUInteger pageCount = [[controller pdfDocument] pageCount];
     for (doc in [[NSDocumentController sharedDocumentController] documents]) {
-        if ([doc respondsToSelector:@selector(pdfDocument)] && doc != [controller document] && [[doc pdfDocument] pageCount] == pageCount)
+        if ([doc isPDFDocument] && doc != [controller document] && [[doc pdfDocument] pageCount] == pageCount)
             [documents addObject:doc];
     }
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];

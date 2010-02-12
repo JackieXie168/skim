@@ -125,9 +125,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (NSArray *)tags;
 - (double)rating;
 
-- (NSArray *)pages;
-- (NSUInteger)countOfPages;
-- (PDFPage *)objectInPagesAtIndex:(NSUInteger)index;
 - (NSArray *)notes;
 - (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
@@ -143,6 +140,9 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)setSelectionQDRect:(NSData *)inQDBoundsAsData;
 - (id)selectionPage;
 - (void)setSelectionPage:(PDFPage *)page;
+- (NSDictionary *)pdfViewSettings;
+- (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings;
+- (NSDictionary *)documentAttributes;
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;

@@ -40,9 +40,5 @@
 #import <Quartz/Quartz.h>
 
 
-@interface SKNotesPage : PDFPage {
-    NSDocument *containingDocument;
-    NSUInteger pageIndex;
-}
-- (id)initWithContainingDocument:(NSDocument *)aDocument pageIndex:(NSUInteger)aPageIndex;
+@interface SKNotesPage : PDFPage
 @end

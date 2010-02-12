@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 extern NSString *SKDocumentErrorDomain;
 
@@ -59,11 +60,18 @@ enum {
 - (void)saveRecentDocumentInfo;
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentDocumentSetup;
+- (BOOL)isPDFDocument;
+
+- (PDFDocument *)pdfDocument;
 
 #pragma mark Scripting
 
 - (NSArray *)pages;
+- (NSUInteger)countOfPages;
+- (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex;
+
 - (NSArray *)notes;
+
 - (PDFPage *)currentPage;
 - (id)activeNote;
 - (NSTextStorage *)richText;

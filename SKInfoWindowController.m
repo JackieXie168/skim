@@ -38,6 +38,7 @@
 
 #import "SKInfoWindowController.h"
 #import "SKMainDocument.h"
+#import "NSDocument_SKExtensions.h"
 #import <Quartz/Quartz.h>
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
@@ -196,7 +197,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     PDFDocument *pdfDoc;
     unsigned long long logicalSize = 0, physicalSize = 0;
     
-    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKMainDocument *)doc pdfDocument])) {
+    if ([doc isPDFDocument] && (pdfDoc = [doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
         [dictionary setValue:[NSString stringWithFormat: @"%ld.%ld", (long)[pdfDoc majorVersion], (long)[pdfDoc minorVersion]] forKey:SKInfoVersionKey];
         [dictionary setValue:[NSNumber numberWithInteger:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];

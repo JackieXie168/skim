@@ -43,23 +43,6 @@
 
 @implementation SKNotesPage
 
-- (id)initWithContainingDocument:(NSDocument *)aDocument pageIndex:(NSUInteger)aPageIndex {
-    if (self = [super init]) {
-        containingDocument = aDocument;
-        pageIndex = aPageIndex;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    containingDocument = nil;
-    [super dealloc];
-}
-
-- (NSDocument *)containingDocument { return containingDocument; }
-
-- (NSUInteger)pageIndex { return pageIndex; }
-
 - (NSString *)label { return [self sequentialLabel]; }
 
 @end
