@@ -197,16 +197,39 @@
     return [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
 }
 
+- (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError **)outError {
+    NSFileWrapper *fileWrapper = nil;
+    
+    if (SKIsNotesDocumentType(typeName) || SKIsNotesTextDocumentType(typeName) || SKIsNotesRTFDocumentType(typeName) || SKIsNotesFDFDocumentType(typeName) || [[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
+        fileWrapper = [super fileWrapperOfType:typeName error:outError];
+    } else if (SKIsNotesRTFDocumentType(typeName)) {
+        fileWrapper = [self notesRTFDFileWrapper];
+    } else {
+        fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
+    }
+    
+    if (fileWrapper == nil && outError != NULL)
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    
+    return fileWrapper;
+}
+
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
     NSData *data = nil;
     
     if (SKIsNotesDocumentType(typeName)) {
-        // don't get the SkimNoteProperties from the notes, as they have the wrong pageIndex
         data = [NSKeyedArchiver archivedDataWithRootObject:[notes valueForKeyPath:@"SkimNoteProperties"]];
-    } else if (SKIsNotesRTFDocumentType(typeName)) {
-        data = [self notesRTFData];
     } else if (SKIsNotesTextDocumentType(typeName)) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
+    } else if (SKIsNotesRTFDocumentType(typeName)) {
+        data = [self notesRTFData];
+    } else if (SKIsNotesFDFDocumentType(typeName)) {
+        NSString *filename = [[[self fileURL] path] stringByReplacingPathExtension:@"pdf"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filename])
+            filename = [filename lastPathComponent];
+        else
+            filename = nil;
+        data = [[self notesFDFStringForFile:filename fileIDStrings:nil] dataUsingEncoding:NSISOLatin1StringEncoding];
     } else {
         data = [self notesDataUsingTemplateFile:typeName];
     }
@@ -226,6 +249,7 @@
     } else if (SKIsNotesFDFDocumentType(typeName)) {
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }
+    
     if (array) {
         NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
         
