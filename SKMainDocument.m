@@ -1993,62 +1993,21 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return [super newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
-// fix a bug in Apple's implementation, which ignores the file type (for export), also make some more sensible choice of save operation
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
-    id fileURL = [args objectForKey:@"File"];
     id fileType = [args objectForKey:@"FileType"];
     // we don't want to expose the pboard types or UTIs to the user
     if (fileType) {
         NSString *normalizedType = SKNormalizedDocumentType(fileType);
         if ([fileType isEqualToString:normalizedType] == NO) {
-            fileType = SKPDFDocumentType;
+            fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
             [arguments setObject:fileType forKey:@"FileType"];
             [command setArguments:arguments];
             [arguments release];
         }
     }
-    if (fileURL) {
-        if ([fileURL isKindOfClass:[NSURL class]] == NO) {
-            [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-            [command setScriptErrorString:@"The file is not a file or alias."];
-        } else {
-            NSSaveOperationType saveOperation = NSSaveToOperation;
-            NSString *extension = [[fileURL path] pathExtension];
-            
-            if (fileType == nil) {
-                if ([extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)
-                    fileType = SKPDFDocumentType;
-                else if ([extension caseInsensitiveCompare:@"ps"] == NSOrderedSame && SKIsPostScriptDocumentType([self fileType]))
-                    fileType = SKPostScriptDocumentType;
-                else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame && SKIsDVIDocumentType([self fileType]))
-                    fileType = SKDVIDocumentType;
-                else
-                    fileType = [self fileType];
-                saveOperation = NSSaveAsOperation;
-            }
-            
-            NSString *requiredExtension = [self fileNameExtensionForType:fileType saveOperation:saveOperation];
-            
-            if (extension == nil && requiredExtension) {
-                extension = requiredExtension;
-                fileURL = [NSURL fileURLWithPath:[[fileURL path] stringByAppendingPathExtension:extension]];
-            }
-            if (requiredExtension && [requiredExtension caseInsensitiveCompare:extension] != NSOrderedSame) {
-                [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-                [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."]];
-            } else {
-                [self saveToURL:fileURL ofType:fileType forSaveOperation:saveOperation delegate:nil didSaveSelector:NULL contextInfo:NULL];
-            }
-        }
-    } else if (fileType) {
-        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [command setScriptErrorString:@"Missing file argument."];
-    } else {
-        return [super handleSaveScriptCommand:command];
-    }
-    return nil;
+    return [super handleSaveScriptCommand:command];
 }
 
 - (id)handlePrintScriptCommand:(NSScriptCommand *)command {
