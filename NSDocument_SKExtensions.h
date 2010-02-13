@@ -57,6 +57,8 @@ enum {
 - (NSData *)notesRTFData;
 - (NSFileWrapper *)notesRTFDFileWrapper;
 
+- (NSString *)notesFDFStringForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings;
+
 - (void)saveRecentDocumentInfo;
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentDocumentSetup;

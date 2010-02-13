@@ -857,36 +857,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (NSString *)notesFDFStringForFile:(NSString *)filename {
-    NSArray *fileIDStrings = [self fileIDStrings];
-    NSInteger i, count = [[self notes] count];
-    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
-    NSMutableString *annots = [NSMutableString string];
-    for (i = 0; i < count; i++) {
-        [string appendFormat:@"%ld 0 obj<<%@>>\nendobj\n", (long)(i + 1), [[[self notes] objectAtIndex:i] fdfString]];
-        [annots appendFormat:@"%ld 0 R ", (long)(i + 1)];
-    }
-    [string appendFormat:@"%ld 0 obj<<", (long)(i + 1)];
-    [string appendFDFName:SKFDFFDFKey];
-    [string appendString:@"<<"];
-    [string appendFDFName:SKFDFAnnotationsKey];
-    [string appendFormat:@"[%@]", annots];
-    [string appendFDFName:SKFDFFileKey];
-    [string appendString:@"("];
-    if (filename)
-        [string appendString:[[filename lossyISOLatin1String] stringByEscapingParenthesis]];
-    [string appendString:@")"];
-    if ([fileIDStrings count] == 2) {
-        [string appendFDFName:SKFDFFileIDKey];
-        [string appendFormat:@"[<%@><%@>]", [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
-    }
-    [string appendString:@">>"];
-    [string appendString:@">>\nendobj\n"];
-    [string appendString:@"trailer\n<<"];
-    [string appendFDFName:SKFDFRootKey];
-    [string appendFormat:@" %ld 0 R", (long)(i + 1)];
-    [string appendString:@">>\n"];
-    [string appendString:@"%%EOF\n"];
-    return string;
+    return [self notesFDFStringForFile:filename fileIDStrings:[self fileIDStrings]];
 }
 
 #pragma mark Actions

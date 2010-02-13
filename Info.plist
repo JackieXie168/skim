@@ -128,9 +128,10 @@
 			<string>SKNotesDocument</string>
 			<key>NSExportableAs</key>
 			<array>
+				<string>Notes as Text</string>
 				<string>Notes as RTF</string>
 				<string>Notes as RTFD</string>
-				<string>Notes as Text</string>
+				<string>Notes as FDF</string>
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
