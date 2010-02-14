@@ -108,10 +108,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 
 - (SKPDFView *)pdfView;
 
-- (NSData *)notesData;
-- (NSString *)notesFDFString;
-- (NSString *)notesFDFStringForFile:(NSString *)filename;
-
 - (NSArray *)fileIDStrings;
 
 - (void)savePasswordInKeychain:(NSString *)password;

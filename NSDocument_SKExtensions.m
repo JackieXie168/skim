@@ -51,11 +51,46 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 @implementation NSDocument (SKExtensions)
 
+#pragma mark Document Setup
+
+- (void)saveRecentDocumentInfo {}
+
+- (void)applySetup:(NSDictionary *)setup {}
+
+// these are necessary for the app controller, we may change it there
+- (NSDictionary *)currentDocumentSetup {
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    NSString *fileName = [[self fileURL] path];
+    
+    if (fileName) {
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        
+        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
+        if(data)
+            [setup setObject:data forKey:SKDocumentSetupAliasKey];
+    }
+    
+    return setup;
+}
+
+#pragma mark PDF Document
+
+- (PDFDocument *)pdfDocument { return nil; }
+
+#pragma mark Notes
+
+- (NSArray *)notes { return nil; }
+
 static NSSet *richTextTypes() {
     static NSSet *types = nil;
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
     return types;
+}
+
+- (NSData *)notesData {
+    NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
+    return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
 }
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
@@ -113,7 +148,7 @@ static NSSet *richTextTypes() {
     return [self notesFileWrapperUsingTemplateFile:@"notesTemplate.rtfd"];
 }
 
-- (NSString *)notesFDFStringForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings {
+- (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings {
     NSInteger i, count = [[self notes] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
     NSMutableString *annots = [NSMutableString string];
@@ -142,30 +177,8 @@ static NSSet *richTextTypes() {
     [string appendFormat:@" %ld 0 R", (long)(i + 1)];
     [string appendString:@">>\n"];
     [string appendString:@"%%EOF\n"];
-    return string;
+    return [string dataUsingEncoding:NSISOLatin1StringEncoding];
 }
-
-- (void)saveRecentDocumentInfo {}
-
-- (void)applySetup:(NSDictionary *)setup {}
-
-// these are necessary for the app controller, we may change it there
-- (NSDictionary *)currentDocumentSetup {
-    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [[self fileURL] path];
-    
-    if (fileName) {
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        
-        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
-        if(data)
-            [setup setObject:data forKey:SKDocumentSetupAliasKey];
-    }
-    
-    return setup;
-}
-
-- (PDFDocument *)pdfDocument { return nil; }
 
 #pragma mark Scripting
 
@@ -184,8 +197,6 @@ static NSSet *richTextTypes() {
 - (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex {
     return [[self pdfDocument] pageAtIndex:theIndex];
 }
-
-- (NSArray *)notes { return nil; }
 
 - (PDFPage *)currentPage { return nil; }
 
