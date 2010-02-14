@@ -91,4 +91,10 @@ enum {
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;
 
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command;
+- (void)handleGoToScriptCommand:(NSScriptCommand *)command;
+- (id)handleFindScriptCommand:(NSScriptCommand *)command;
+- (void)handleShowTeXScriptCommand:(NSScriptCommand *)command;
+- (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command;
+
 @end
