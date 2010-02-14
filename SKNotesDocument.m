@@ -218,7 +218,7 @@
     NSData *data = nil;
     
     if (SKIsNotesDocumentType(typeName)) {
-        data = [NSKeyedArchiver archivedDataWithRootObject:[notes valueForKeyPath:@"SkimNoteProperties"]];
+        data = [self notesData];
     } else if (SKIsNotesTextDocumentType(typeName)) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
     } else if (SKIsNotesRTFDocumentType(typeName)) {
@@ -229,7 +229,7 @@
             filename = [filename lastPathComponent];
         else
             filename = nil;
-        data = [[self notesFDFStringForFile:filename fileIDStrings:nil] dataUsingEncoding:NSISOLatin1StringEncoding];
+        data = [self notesFDFDataForFile:filename fileIDStrings:nil];
     } else {
         data = [self notesDataUsingTemplateFile:typeName];
     }

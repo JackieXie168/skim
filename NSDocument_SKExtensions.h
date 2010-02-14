@@ -49,6 +49,22 @@ enum {
 
 @interface NSDocument (SKExtensions)
 
+#pragma mark Document Setup
+
+- (void)saveRecentDocumentInfo;
+- (void)applySetup:(NSDictionary *)setup;
+- (NSDictionary *)currentDocumentSetup;
+
+#pragma mark PDF Document
+
+- (PDFDocument *)pdfDocument;
+
+#pragma mark Notes
+
+- (NSArray *)notes;
+
+- (NSData *)notesData;
+
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile;
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile;
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile;
@@ -57,22 +73,13 @@ enum {
 - (NSData *)notesRTFData;
 - (NSFileWrapper *)notesRTFDFileWrapper;
 
-- (NSString *)notesFDFStringForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings;
-
-- (void)saveRecentDocumentInfo;
-- (void)applySetup:(NSDictionary *)setup;
-- (NSDictionary *)currentDocumentSetup;
-- (BOOL)isPDFDocument;
-
-- (PDFDocument *)pdfDocument;
+- (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings;
 
 #pragma mark Scripting
 
 - (NSArray *)pages;
 - (NSUInteger)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex;
-
-- (NSArray *)notes;
 
 - (PDFPage *)currentPage;
 - (id)activeNote;
@@ -82,5 +89,6 @@ enum {
 - (id)selectionPage;
 - (NSDictionary *)pdfViewSettings;
 - (NSDictionary *)documentAttributes;
+- (BOOL)isPDFDocument;
 
 @end

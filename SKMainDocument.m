@@ -532,7 +532,7 @@ static char SKMainDocumentDefaultsObservationContext;
                 [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
             if (data = [self notesRTFData])
                 [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
-            if (data = [[self notesFDFStringForFile:[name stringByAppendingPathExtension:@"pdf"]] dataUsingEncoding:NSISOLatin1StringEncoding])
+            if (data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]])
                 [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
         }
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
@@ -562,9 +562,9 @@ static char SKMainDocumentDefaultsObservationContext;
         NSString *filename = [filePath lastPathComponent];
         if (filename && SKIsPDFBundleDocumentType([self fileType]))
             filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-        NSString *string = [self notesFDFStringForFile:filename];
-        if (string)
-            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:&error];
+        NSData *data = [self notesFDFDataForFile:filename fileIDStrings:[self fileIDStrings]];
+        if (data)
+            didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
@@ -839,25 +839,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
-}
-
-#pragma mark Notes
-
-- (NSData *)notesData {
-    NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
-    return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
-}
-
-- (NSString *)notesFDFString {
-    NSString *filePath = [[self fileURL] path];
-    NSString *filename = [filePath lastPathComponent];
-    if (filename && SKIsPDFBundleDocumentType([self fileType]))
-        filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-    return [self notesFDFStringForFile:filename];
-}
-
-- (NSString *)notesFDFStringForFile:(NSString *)filename {
-    return [self notesFDFStringForFile:filename fileIDStrings:[self fileIDStrings]];
 }
 
 #pragma mark Actions
