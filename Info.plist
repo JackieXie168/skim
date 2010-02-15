@@ -499,6 +499,14 @@
 			<string>openDocumentFromURLOnPboard</string>
 			<key>NSPortName</key>
 			<string>Skim</string>
+			<key>NSRequiredContext</key>
+			<dict>
+				<key>NSTextContent</key>
+				<array>
+					<string>URL</string>
+					<string>FilePath</string>
+				</array>
+			</dict>
 			<key>NSSendTypes</key>
 			<array>
 				<string>NSURLPboardType</string>
