@@ -44,6 +44,7 @@ enum {
     SKBookmarkTypeSession,
     SKBookmarkTypeSeparator
 };
+typedef NSInteger SKBookmarkType;
 
 @interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
@@ -68,7 +69,7 @@ enum {
 
 - (NSDictionary *)properties;
 
-- (NSInteger)bookmarkType;
+- (SKBookmarkType)bookmarkType;
 
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;

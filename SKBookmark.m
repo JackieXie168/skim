@@ -174,7 +174,7 @@ static Class SKBookmarkClass = Nil;
 
 - (NSDictionary *)properties { return nil; }
 
-- (NSInteger)bookmarkType { return SKBookmarkTypeSeparator; }
+- (SKBookmarkType)bookmarkType { return SKBookmarkTypeSeparator; }
 
 - (NSImage *)icon { return nil; }
 
@@ -353,7 +353,7 @@ static Class SKBookmarkClass = Nil;
     return properties;
 }
 
-- (NSInteger)bookmarkType {
+- (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeBookmark;
 }
 
@@ -426,7 +426,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:FOLDER_STRING, TYPE_KEY, [children valueForKey:PROPERTIES_KEY], CHILDREN_KEY, label, LABEL_KEY, nil];
 }
 
-- (NSInteger)bookmarkType {
+- (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeFolder;
 }
 
@@ -531,7 +531,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:SESSION_STRING, TYPE_KEY, [children valueForKey:PROPERTIES_KEY], CHILDREN_KEY, label, LABEL_KEY, nil];
 }
 
-- (NSInteger)bookmarkType {
+- (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeSession;
 }
 
@@ -557,7 +557,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:SEPARATOR_STRING, TYPE_KEY, nil];
 }
 
-- (NSInteger)bookmarkType {
+- (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeSeparator;
 }
 
