@@ -1950,8 +1950,14 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     id fileType = [args objectForKey:@"FileType"];
     // we don't want to expose the pboard types or UTIs to the user
     if (fileType) {
-        NSString *normalizedType = SKNormalizedDocumentType(fileType);
-        if ([fileType isEqualToString:normalizedType] == NO) {
+        NSString *normalizedType = nil;
+        if ([fileType isEqualToString:@"PDF"])
+            normalizedType = SKPDFDocumentType;
+        else if ([fileType isEqualToString:@"PostScript"])
+            normalizedType = SKPostScriptDocumentType;
+        else if ([fileType isEqualToString:@"DVI"])
+            normalizedType = SKDVIDocumentType;
+        if (normalizedType) {
             fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
             [arguments setObject:fileType forKey:@"FileType"];
