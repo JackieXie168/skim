@@ -55,8 +55,6 @@ extern BOOL SKIsDVIDocumentType(NSString *docType);
 extern BOOL SKIsBareDVIDocumentType(NSString *docType);
 extern BOOL SKIsFolderDocumentType(NSString *docType);
 
-extern NSString *SKNormalizedDocumentType(NSString *docType);
-
 extern NSString *SKPDFDocumentType;
 extern NSString *SKPDFBundleDocumentType;
 extern NSString *SKEmbeddedPDFDocumentType;

@@ -84,30 +84,6 @@ DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
 DEFINE_IS_DOCUMENT_TYPE(BareDVI)
 DEFINE_IS_DOCUMENT_TYPE(Folder)
 
-#define RETURN_IF_IS_DOCUMENT_TYPE(name) if (SKIs##name##DocumentType(docType)) return SK##name##DocumentType
-
-NSString *SKNormalizedDocumentType(NSString *docType) {
-    RETURN_IF_IS_DOCUMENT_TYPE(PDF);
-    RETURN_IF_IS_DOCUMENT_TYPE(PDFBundle);
-    RETURN_IF_IS_DOCUMENT_TYPE(EmbeddedPDF);
-    RETURN_IF_IS_DOCUMENT_TYPE(BarePDF);
-    RETURN_IF_IS_DOCUMENT_TYPE(Notes);
-    RETURN_IF_IS_DOCUMENT_TYPE(NotesText);
-    RETURN_IF_IS_DOCUMENT_TYPE(NotesRTF);
-    RETURN_IF_IS_DOCUMENT_TYPE(NotesRTFD);
-    RETURN_IF_IS_DOCUMENT_TYPE(NotesFDF);
-    RETURN_IF_IS_DOCUMENT_TYPE(PostScript);
-    RETURN_IF_IS_DOCUMENT_TYPE(BarePostScript);
-    RETURN_IF_IS_DOCUMENT_TYPE(DVI);
-    RETURN_IF_IS_DOCUMENT_TYPE(BareDVI);
-    RETURN_IF_IS_DOCUMENT_TYPE(Folder);
-    if ([docType isEqualToString:@"PDF"]) return SKPDFDocumentType;
-    if ([docType isEqualToString:@"PostScript"]) return SKPostScriptDocumentType;
-    if ([docType isEqualToString:@"DVI"]) return SKDVIDocumentType;
-    return docType;
-}
-
-
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
