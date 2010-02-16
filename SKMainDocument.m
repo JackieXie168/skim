@@ -1948,7 +1948,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id fileType = [args objectForKey:@"FileType"];
-    // we don't want to expose the pboard types or UTIs to the user
+    // we don't want to expose the pboard types to the user, and we allow template file names without extension
     if (fileType) {
         NSString *normalizedType = nil;
         if ([fileType isEqualToString:@"PDF"])
@@ -1957,6 +1957,13 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             normalizedType = SKPostScriptDocumentType;
         else if ([fileType isEqualToString:@"DVI"])
             normalizedType = SKDVIDocumentType;
+        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
+            NSArray *templateTypes = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
+            NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
+            NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
+            if (idx != NSNotFound)
+                normalizedType = [templateTypes objectAtIndex:idx];
+        }
         if (normalizedType) {
             fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
