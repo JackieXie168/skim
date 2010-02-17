@@ -87,6 +87,7 @@
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE225ADD108C7458007BCDB5 /* NSMapTable_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE225ADC108C7458007BCDB5 /* NSMapTable_SKExtensions.m */; };
+		CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
@@ -176,7 +177,6 @@
 		CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */; };
 		CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CEA3DF6E106BDAC1002FB3DB /* SKFloatMapTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */; };
-		CEA450F40E47A87500D161AD /* NSLayoutManager_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA450F30E47A87500D161AD /* NSLayoutManager_SKExtensions.m */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKTocOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */; };
@@ -623,6 +623,8 @@
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE225ADB108C7458007BCDB5 /* NSMapTable_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMapTable_SKExtensions.h; sourceTree = "<group>"; };
 		CE225ADC108C7458007BCDB5 /* NSMapTable_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMapTable_SKExtensions.m; sourceTree = "<group>"; };
+		CE24875A112C9651006B4FA5 /* NSFont_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFont_SKExtensions.h; sourceTree = "<group>"; };
+		CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFont_SKExtensions.m; sourceTree = "<group>"; };
 		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
 		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
@@ -810,8 +812,6 @@
 		CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextWithIconCell.m; sourceTree = "<group>"; };
 		CEA3DF6C106BDAC1002FB3DB /* SKFloatMapTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFloatMapTable.h; sourceTree = "<group>"; };
 		CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFloatMapTable.m; sourceTree = "<group>"; };
-		CEA450F20E47A87500D161AD /* NSLayoutManager_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSLayoutManager_SKExtensions.h; sourceTree = "<group>"; };
-		CEA450F30E47A87500D161AD /* NSLayoutManager_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSLayoutManager_SKExtensions.m; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
 		CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnailTableView.h; sourceTree = "<group>"; };
@@ -1580,10 +1580,10 @@
 				CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */,
 				CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */,
 				CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */,
+				CE24875A112C9651006B4FA5 /* NSFont_SKExtensions.h */,
+				CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */,
 				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
 				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
-				CEA450F20E47A87500D161AD /* NSLayoutManager_SKExtensions.h */,
-				CEA450F30E47A87500D161AD /* NSLayoutManager_SKExtensions.m */,
 				CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */,
 				CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */,
 				CE0A3C8C0EBF3AAA00526C74 /* NSResponder_SKExtensions.h */,
@@ -2105,7 +2105,6 @@
 				CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */,
 				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
 				CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */,
-				CEA450F40E47A87500D161AD /* NSLayoutManager_SKExtensions.m in Sources */,
 				CEEE7C520E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m in Sources */,
 				CE05A7380E9024ED0060BB07 /* SKPresentationOptionsSheetController.m in Sources */,
 				CE05A86F0E90ED950060BB07 /* SKTextFieldSheetController.m in Sources */,
@@ -2131,6 +2130,7 @@
 				CE225ADD108C7458007BCDB5 /* NSMapTable_SKExtensions.m in Sources */,
 				CE455394111DA4290060CAC9 /* SKPDFToolTipContext.m in Sources */,
 				CE099663112577A000EDB88F /* SKNotesPage.m in Sources */,
+				CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

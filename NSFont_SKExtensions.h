@@ -1,10 +1,10 @@
 //
-//  NSLayoutManager_SKExtensions.h
+//  NSFont_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/4/08.
+//  Created by Christiaan on 2/17/10.
 /*
- This software is Copyright (c) 2008-2010
+ This software is Copyright (c)  2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,8 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSLayoutManager (SKExtensions)
-
-+ (CGFloat)defaultViewLineHeightForFont:(NSFont *)theFont;
-
+@interface NSFont (SKExtensions)
+- (CGFloat)defaultViewLineHeight;
 @end

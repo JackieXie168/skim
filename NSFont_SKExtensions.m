@@ -1,10 +1,10 @@
 //
-//  NSLayoutManager_SKExtensions.m
+//  NSFont_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/4/08.
+//  Created by Christiaan on 2/17/10.
 /*
- This software is Copyright (c) 2008-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,18 +36,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSLayoutManager_SKExtensions.h"
+#import "NSFont_SKExtensions.h"
 
 
-@implementation NSLayoutManager (SKExtensions)
+@implementation NSFont (SKExtensions)
 
-+ (CGFloat)defaultViewLineHeightForFont:(NSFont *)theFont {
-    static NSLayoutManager *layoutManager = nil;
-    if (layoutManager == nil) {
-        layoutManager = [[self alloc] init];
-        [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
-    }
-    return [layoutManager defaultLineHeightForFont:theFont];
+- (CGFloat)defaultViewLineHeight {
+    static NSTextFieldCell *cell = nil;
+    if (cell == nil)
+        cell = [[NSTextFieldCell alloc] init];
+    [cell setFont:self];
+    return [cell cellSize].height;
 }
 
 @end
