@@ -39,7 +39,7 @@
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
-#import "NSLayoutManager_SKExtensions.h"
+#import "NSFont_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKPDFToolTipWindow.h"
@@ -244,7 +244,7 @@ static char SKTableViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
+    [self setRowHeight:[font defaultViewLineHeight]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 

@@ -39,7 +39,7 @@
 #import "SKOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
-#import "NSLayoutManager_SKExtensions.h"
+#import "NSFont_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 
@@ -246,7 +246,7 @@ static char SKOutlineViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    CGFloat rowHeight = [NSLayoutManager defaultViewLineHeightForFont:font];
+    CGFloat rowHeight = [font defaultViewLineHeight];
     if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
         rowHeight += 2.0;
     [self setRowHeight:rowHeight];
