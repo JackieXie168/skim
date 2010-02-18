@@ -108,7 +108,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
         drawFrame.size.width = ratio * imgSize.width;
         drawFrame.size.height = ratio * imgSize.height;
         
-        drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
+        drawFrame = SKCenterRect(iconRect, drawFrame.size, [controlView isFlipped]);
         
         NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
         [ctxt saveGraphicsState];
