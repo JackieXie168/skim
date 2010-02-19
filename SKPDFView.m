@@ -100,6 +100,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 #define SKDisableUpdateContentsFromEnclosedTextKey @"SKDisableUpdateContentsFromEnclosedText"
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
+#define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
 
 #define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
@@ -4067,18 +4068,21 @@ enum {
 }
 
 - (NSCursor *)cursorForNoteToolMode {
-    switch (annotationMode) {
-        case SKFreeTextNote:  return [NSCursor textNoteCursor];
-        case SKAnchoredNote:  return [NSCursor anchoredNoteCursor];
-        case SKCircleNote:    return [NSCursor circleNoteCursor];
-        case SKSquareNote:    return [NSCursor squareNoteCursor];
-        case SKHighlightNote: return [NSCursor highlightNoteCursor];
-        case SKUnderlineNote: return [NSCursor underlineNoteCursor];
-        case SKStrikeOutNote: return [NSCursor strikeOutNoteCursor];
-        case SKLineNote:      return [NSCursor lineNoteCursor];
-        case SKInkNote:       return [NSCursor inkNoteCursor];
-        default:              return [NSCursor arrowCursor];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey]) {
+        switch (annotationMode) {
+            case SKFreeTextNote:  return [NSCursor textNoteCursor];
+            case SKAnchoredNote:  return [NSCursor anchoredNoteCursor];
+            case SKCircleNote:    return [NSCursor circleNoteCursor];
+            case SKSquareNote:    return [NSCursor squareNoteCursor];
+            case SKHighlightNote: return [NSCursor highlightNoteCursor];
+            case SKUnderlineNote: return [NSCursor underlineNoteCursor];
+            case SKStrikeOutNote: return [NSCursor strikeOutNoteCursor];
+            case SKLineNote:      return [NSCursor lineNoteCursor];
+            case SKInkNote:       return [NSCursor inkNoteCursor];
+            default:              return [NSCursor arrowCursor];
+        }
     }
+    return [NSCursor arrowCursor];
 }
 
 - (NSCursor *)cursorForSelectToolModeAtPoint:(NSPoint)point {
