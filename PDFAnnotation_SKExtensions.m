@@ -226,7 +226,7 @@ enum {
 
 - (BOOL)isMovable { return NO; }
 
-- (BOOL)isEditable { return [self isSkimNote] && ([self page] == nil || [[self page] isEditable]); }
+- (BOOL)isEditable { return [self isSkimNote] && [[self page] isNotesPage] == NO; }
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
 

@@ -45,4 +45,6 @@
 
 - (NSString *)label { return [self sequentialLabel]; }
 
+- (BOOL)isNotesPage { return YES; }
+
 @end
