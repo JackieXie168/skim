@@ -885,13 +885,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)autoSizeNoteRows:(id)sender {
-    CGFloat rowHeight = [noteOutlineView rowHeight];
+    CGFloat height, rowHeight = [noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
     CGFloat indentation = [noteOutlineView indentationPerLevel];
     CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
-    NSSize size = NSMakeSize(width, CGFLOAT_MAX);
-    NSSize smallSize = NSMakeSize(width - indentation, CGFLOAT_MAX);
+    NSRect rect = NSMakeRect(0, CGFLOAT_MAX, width, CGFLOAT_MAX);
+    NSRect smallRect = NSMakeRect(0, CGFLOAT_MAX, width - indentation, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     
@@ -902,11 +902,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
     
     for (id item in items) {
-        [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
-        NSAttributedString *attrString = [cell attributedStringValue];
-        NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        
-        [rowHeights setFloat:fmax(NSHeight(rect), rowHeight) + 2.0 forKey:item];
+        if ([item type]) {
+            [cell setObjectValue:[item string]];
+            height = [cell cellSizeForBounds:rect].height;
+        } else {
+            [cell setObjectValue:[item text]];
+            height = [cell cellSizeForBounds:smallRect].height;
+        }
+        [rowHeights setFloat:fmax(height, rowHeight) + 2.0 forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [noteOutlineView reloadData];
