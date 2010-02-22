@@ -410,7 +410,7 @@
 		70138C850896BE9A00968C2F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
@@ -422,7 +422,7 @@
 		70138C860896BE9A00968C2F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
