@@ -38,6 +38,8 @@
 
 #import "SKSplitView.h"
 
+#define POSITION_KEY @"position"
+#define DIVIDERINDEX_KEY @"dividerIndex"
 
 @implementation SKSplitView
 
@@ -83,7 +85,7 @@
 }
 
 - (void)endAnimation:(NSDictionary *)info {
-    [self setPosition:[[info objectForKey:@"position"] doubleValue] ofDividerAtIndex:[[info objectForKey:@"dividerIndex"] integerValue]];
+    [self setPosition:[[info objectForKey:POSITION_KEY] doubleValue] ofDividerAtIndex:[[info objectForKey:DIVIDERINDEX_KEY] integerValue]];
     animating = NO;
 }
 
@@ -199,7 +201,7 @@
         }
     }
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:position], @"position", [NSNumber numberWithInteger:dividerIndex], @"dividerIndex", nil];
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:position], POSITION_KEY, [NSNumber numberWithInteger:dividerIndex], DIVIDERINDEX_KEY, nil];
     NSTimeInterval duration = [[NSAnimationContext currentContext] duration];
     
     animating = YES;
