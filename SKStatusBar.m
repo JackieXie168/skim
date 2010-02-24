@@ -168,6 +168,8 @@
 	NSRect statusRect = [contentView bounds];
 	CGFloat statusHeight = NSHeight([self frame]);
     BOOL visible = (nil == [self superview]);
+    NSTimeInterval duration;
+    
 	statusRect.size.height = statusHeight;
 	
 	if (visible) {
@@ -190,10 +192,12 @@
     if (animate) {
         animating = YES;
         [NSAnimationContext beginGrouping];
+        duration = 0.5 * [[NSAnimationContext currentContext] duration];
+        [[NSAnimationContext currentContext] setDuration:duration];
         [[view animator] setFrame:viewFrame];
         [[self animator] setFrame:statusRect];
         [NSAnimationContext endGrouping];
-        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:[[NSAnimationContext currentContext] duration]];
+        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:duration];
     } else {
         [view setFrame:viewFrame];
         if (visible) {
