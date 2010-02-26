@@ -49,6 +49,13 @@
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 
+NSString *SKStyleNameKey = @"styleName";
+NSString *SKDurationKey = @"duration";
+NSString *SKShouldRestrictKey = @"shouldRestrict";
+
+#define kCIInputBacksideImageKey @"inputBacksideImage"
+#define kCIInputRectangleKey @"inputRectangleImage"
+
 #define WEAK_NULL NULL
 
 #pragma mark Private Core Graphics types and functions
@@ -296,18 +303,18 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
     CIFilter *cropFilter = [self filterWithName:@"CICrop"];
-    [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputRectangle"];
-    [cropFilter setValue:image forKey:@"inputImage"];
-    return [cropFilter valueForKey:@"outputImage"];
+    [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:kCIInputRectangleKey];
+    [cropFilter setValue:image forKey:kCIInputImageKey];
+    return [cropFilter valueForKey:kCIOutputImageKey];
 }
 
 - (CIImage *)translateImage:(CIImage *)image xBy:(CGFloat)dx yBy:(CGFloat)dy {
     CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
     NSAffineTransform *affineTransform = [NSAffineTransform transform];
     [affineTransform translateXBy:dx yBy:dy];
-    [translationFilter setValue:affineTransform forKey:@"inputTransform"];
-    [translationFilter setValue:image forKey:@"inputImage"];
-    return [translationFilter valueForKey:@"outputImage"];
+    [translationFilter setValue:affineTransform forKey:kCIInputTransformKey];
+    [translationFilter setValue:image forKey:kCIInputImageKey];
+    return [translationFilter valueForKey:kCIOutputImageKey];
 }
 
 - (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
@@ -315,10 +322,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     CGRect extent = [image extent];
     CGFloat xScale = size.width / CGRectGetWidth(extent);
     CGFloat yScale = size.height / CGRectGetHeight(extent);
-    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:@"inputScale"];
-    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:@"inputAspectRatio"];
-    [scalingFilter setValue:image forKey:@"inputImage"];
-    return [scalingFilter valueForKey:@"outputImage"];
+    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:kCIInputScaleKey];
+    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:kCIInputAspectRatioKey];
+    [scalingFilter setValue:image forKey:kCIInputImageKey];
+    return [scalingFilter valueForKey:kCIOutputImageKey];
 }
 
 - (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
@@ -329,27 +336,27 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     
     for (NSString *key in [transitionFilter inputKeys]) {
         id value = nil;
-        if ([key isEqualToString:@"inputExtent"]) {
+        if ([key isEqualToString:kCIInputExtentKey]) {
             NSRect extent = currentShouldRestrict ? rect : bounds;
             value = [CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)];
-        } else if ([key isEqualToString:@"inputAngle"]) {
+        } else if ([key isEqualToString:kCIInputAngleKey]) {
             CGFloat angle = forward ? 0.0 : M_PI;
             if ([filterName isEqualToString:@"CIPageCurlTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
-        } else if ([key isEqualToString:@"inputCenter"]) {
+        } else if ([key isEqualToString:kCIInputCenterKey]) {
             value = [CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)];
-        } else if ([key isEqualToString:@"inputImage"]) {
+        } else if ([key isEqualToString:kCIInputImageKey]) {
             value = initialCIImage;
             if (NSEqualRects(rect, bounds) == NO)
                 value = [self cropImage:value toRect:rect];
-        } else if ([key isEqualToString:@"inputTargetImage"]) {
+        } else if ([key isEqualToString:kCIInputTargetImageKey]) {
             value = finalCIImage;
             if (NSEqualRects(rect, bounds) == NO)
                 value = [self cropImage:value toRect:rect];
-        } else if ([key isEqualToString:@"inputShadingImage"]) {
+        } else if ([key isEqualToString:kCIInputShadingImageKey]) {
             value = [self inputShadingImage];
-        } else if ([key isEqualToString:@"inputBacksideImage"]) {
+        } else if ([key isEqualToString:kCIInputBacksideImageKey]) {
             value = initialCIImage;
             if (NSEqualRects(rect, bounds) == NO)
                 value = [self cropImage:value toRect:rect];
@@ -396,11 +403,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     if (fromIndex != NSNotFound && toIndex != NSNotFound && idx < [pageTransitions count]) {
         NSDictionary *info = [pageTransitions objectAtIndex:idx];
         id value;
-        if (value = [info objectForKey:@"styleName"])
+        if (value = [info objectForKey:SKStyleNameKey])
             currentTransitionStyle = [[self class] styleForName:value];
-        if ((value = [info objectForKey:@"duration"]) && [value respondsToSelector:@selector(doubleValue)])
+        if ((value = [info objectForKey:SKDurationKey]) && [value respondsToSelector:@selector(doubleValue)])
             currentDuration = [value doubleValue];
-        if ((value = [info objectForKey:@"shouldRestrict"]) && [value respondsToSelector:@selector(boolValue)])
+        if ((value = [info objectForKey:SKShouldRestrictKey]) && [value respondsToSelector:@selector(boolValue)])
             currentShouldRestrict = [value boolValue];
     }
     
@@ -559,12 +566,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
-    [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
+    [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:kCIInputTimeKey];
     [[self delegate] animationDidUpdate:self];
 }
 
 - (CIImage *)currentImage {
-    return [filter valueForKey:@"outputImage"];
+    return [filter valueForKey:kCIOutputImageKey];
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
