@@ -39,11 +39,11 @@
 #import <Foundation/Foundation.h>
 
 enum {
-    SKReleaseVersionType,
-    SKReleaseCandidateVersionType,
-    SKBetaVersionType,
-    SKDevelopmentVersionType,
-    SKAlphaVersionType,
+    SKReleaseVersionType = 0,
+    SKReleaseCandidateVersionType = -1,
+    SKBetaVersionType = -2,
+    SKDevelopmentVersionType = -3,
+    SKAlphaVersionType = -4
 };
 
 @interface SKVersionNumber : NSObject <NSCopying>
