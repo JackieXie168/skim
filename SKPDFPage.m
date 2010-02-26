@@ -49,13 +49,6 @@
 
 @implementation SKPDFPage
 
-- (id)init {
-    if (self = [super init]) {
-        foregroundBox = NSZeroRect;
-    }
-    return self;
-}
-
 - (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
     NSRect bounds = [self boundsForBox:box];
     NSBitmapImageRep *imageRep;
