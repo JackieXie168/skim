@@ -58,8 +58,6 @@ enum {
 
 + (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
 
-+ (id)versionNumberWithVersionString:(NSString *)versionString;
-
 - (id)initWithVersionString:(NSString *)versionString;
 
 - (NSString *)originalVersionString;
