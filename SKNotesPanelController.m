@@ -61,6 +61,15 @@ static SKNotesPanelController *sharedController = nil;
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];
+    [[self window] setTitle:NSLocalizedString(@"Notes", @"Window title")];
+    [textButton setTitle:NSLocalizedString(@"Text", @"Button title")];
+    [anchoredButton setTitle:NSLocalizedString(@"Anchored", @"Button title")];
+    [circleButton setTitle:NSLocalizedString(@"Circle", @"Button title")];
+    [squareButton setTitle:NSLocalizedString(@"Box", @"Button title")];
+    [highlightButton setTitle:NSLocalizedString(@"Highlight", @"Button title")];
+    [underlineButton setTitle:NSLocalizedString(@"Underline", @"Button title")];
+    [strikeOutButton setTitle:NSLocalizedString(@"Strike Out", @"Button title")];
+    [lineButton setTitle:NSLocalizedString(@"Line", @"Button title")];
 }
 
 - (IBAction)addNote:(id)sender {
