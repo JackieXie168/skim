@@ -113,7 +113,7 @@
                             // we scanned an "a", "b", "d", "f", or "rc"
                             componentCount++;
                             components = (NSInteger *)NSZoneRealloc(NSDefaultMallocZone(), components, sizeof(NSInteger) * componentCount);
-                            components[componentCount - 1] = -releaseType;
+                            components[componentCount - 1] = releaseType;
                             
                             sep = @"";
                             
