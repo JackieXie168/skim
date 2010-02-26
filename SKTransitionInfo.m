@@ -39,10 +39,6 @@
 #import "SKTransitionInfo.h"
 #import "SKThumbnail.h"
 
-#define STYLENAME_KEY @"styleName"
-#define DURATION_KEY @"duration"
-#define SHOULDRESTRICT_KEY @"shouldRestrict"
-
 
 @implementation SKTransitionInfo
 
@@ -69,18 +65,18 @@
 
 - (NSDictionary *)properties {
     return [NSDictionary dictionaryWithObjectsAndKeys:
-                ([SKTransitionController nameForStyle:transitionStyle] ?: @""), STYLENAME_KEY,
-                [NSNumber numberWithDouble:duration], DURATION_KEY,
-                [NSNumber numberWithBool:shouldRestrict], SHOULDRESTRICT_KEY, nil];
+                ([SKTransitionController nameForStyle:transitionStyle] ?: @""), SKStyleNameKey,
+                [NSNumber numberWithDouble:duration], SKDurationKey,
+                [NSNumber numberWithBool:shouldRestrict], SKShouldRestrictKey, nil];
 }
 
 - (void)setProperties:(NSDictionary *)dictionary {
     id value;
-    if (value = [dictionary objectForKey:STYLENAME_KEY])
+    if (value = [dictionary objectForKey:SKStyleNameKey])
         [self setTransitionStyle:[SKTransitionController styleForName:value]];
-    if (value = [dictionary objectForKey:DURATION_KEY])
+    if (value = [dictionary objectForKey:SKDurationKey])
         [self setDuration:[value doubleValue]];
-    if (value = [dictionary objectForKey:SHOULDRESTRICT_KEY])
+    if (value = [dictionary objectForKey:SKShouldRestrictKey])
         [self setShouldRestrict:[value doubleValue]];
 }
 

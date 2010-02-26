@@ -38,6 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKStyleNameKey;
+extern NSString *SKDurationKey;
+extern NSString *SKShouldRestrictKey;
+
 // this corresponds to the CGSTransitionType enum
 enum {
 	SKNoTransition,

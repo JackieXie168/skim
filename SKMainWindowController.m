@@ -138,6 +138,8 @@
 #define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
 #define PAGEINDEX_KEY               @"pageIndex"
 
+#define PAGETRANSITIONS_KEY @"pageTransitions"
+
 #define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
 static char SKNPDFAnnotationPropertiesObservationContext;
@@ -1212,20 +1214,20 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSMutableDictionary *options = nil;
     if ([styleName length] || [pageTransitions count]) {
         options = [NSMutableDictionary dictionary];
-        [options setValue:(styleName ?: @"") forKey:@"styleName"];
-        [options setValue:[NSNumber numberWithDouble:[transitions duration]] forKey:@"duration"];
-        [options setValue:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:@"shouldRestrict"];
-        [options setValue:pageTransitions forKey:@"pageTransitions"];
+        [options setValue:(styleName ?: @"") forKey:SKStyleNameKey];
+        [options setValue:[NSNumber numberWithDouble:[transitions duration]] forKey:SKDurationKey];
+        [options setValue:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:SKShouldRestrictKey];
+        [options setValue:pageTransitions forKey:PAGETRANSITIONS_KEY];
     }
     return options;
 }
 
 - (void)setPresentationOptions:(NSDictionary *)dictionary {
     SKTransitionController *transitions = [pdfView transitionController];
-    NSString *styleName = [dictionary objectForKey:@"styleName"];
-    NSNumber *duration = [dictionary objectForKey:@"duration"];
-    NSNumber *shouldRestrict = [dictionary objectForKey:@"shouldRestrict"];
-    NSArray *pageTransitions = [dictionary objectForKey:@"pageTransitions"];
+    NSString *styleName = [dictionary objectForKey:SKStyleNameKey];
+    NSNumber *duration = [dictionary objectForKey:SKDurationKey];
+    NSNumber *shouldRestrict = [dictionary objectForKey:SKShouldRestrictKey];
+    NSArray *pageTransitions = [dictionary objectForKey:PAGETRANSITIONS_KEY];
     if (styleName)
         [transitions setTransitionStyle:[SKTransitionController styleForName:styleName]];
     if (duration)
