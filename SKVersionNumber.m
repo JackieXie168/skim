@@ -182,31 +182,6 @@
     return releaseType;
 }
 
-- (BOOL)isRelease;
-{
-    return releaseType == SKReleaseVersionType;
-}
-
-- (BOOL)isReleaseCandidate;
-{
-    return releaseType == SKReleaseCandidateVersionType;
-}
-
-- (BOOL)isDevelopment;
-{
-    return releaseType == SKDevelopmentVersionType;
-}
-
-- (BOOL)isBeta;
-{
-    return releaseType == SKBetaVersionType;
-}
-
-- (BOOL)isAlpha;
-{
-    return releaseType == SKAlphaVersionType;
-}
-
 #pragma mark NSCopying
 
 - (id)copyWithZone:(NSZone *)zone;
