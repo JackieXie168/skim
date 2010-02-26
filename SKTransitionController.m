@@ -208,6 +208,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         currentTransitionStyle = SKNoTransition;
         currentDuration = 1.0;
         currentShouldRestrict = YES;
+        currentForward = YES;
         
         transitionWindow = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
         [transitionWindow setReleasedWhenClosed:NO];
@@ -390,14 +391,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return (SKTransitionView *)[transitionWindow contentView];
 }
 
-- (void)prepareAnimationForRect:(NSRect)rect {
-    [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
-}
-
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
     currentShouldRestrict = shouldRestrict;
+    currentForward = (toIndex >= fromIndex);
     
     NSUInteger idx = MIN(fromIndex, toIndex);
     if (fromIndex != NSNotFound && toIndex != NSNotFound && idx < [pageTransitions count]) {
@@ -427,12 +425,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     imageRect = rect;
 }
 
-- (void)animateCoreGraphicsForRect:(NSRect)rect forward:(BOOL)forward {
+- (void)animateCoreGraphicsForRect:(NSRect)rect {
     CIImage *finalImage = nil;
     
     if (currentShouldRestrict) {
         if (initialImage == nil)
-            [self prepareAnimationForRect:rect];
+            [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
         
         NSRect bounds = [view bounds];
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
@@ -461,7 +459,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     // specify our specifications
     spec.unknown1 = 0;
     spec.type =  currentTransitionStyle;
-    spec.option = forward ? CGSLeft : CGSRight;
+    spec.option = currentForward ? CGSLeft : CGSRight;
     spec.backColour = NULL;
     spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
     
@@ -496,16 +494,16 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     }
 }
 
-- (void)animateCoreImageForRect:(NSRect)rect forward:(BOOL)forward {
+- (void)animateCoreImageForRect:(NSRect)rect  {
     if (initialImage == nil)
-        [self prepareAnimationForRect:rect];
+        [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
     
     NSRect bounds = [view bounds];
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
     
     CIImage *finalImage = [self newCurrentImage];
     
-    CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
+    CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
     
     [finalImage release];
     [initialImage release];
@@ -535,15 +533,16 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     [[self transitionView] setAnimation:nil];
 }
 
-- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
+- (void)animateForRect:(NSRect)rect  {
 	if (currentTransitionStyle >= SKCoreImageTransition)
-        [self animateCoreImageForRect:rect forward:forward];
+        [self animateCoreImageForRect:rect];
 	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
-        [self animateCoreGraphicsForRect:rect forward:forward];
+        [self animateCoreGraphicsForRect:rect];
     
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
     currentShouldRestrict = shouldRestrict;
+    currentForward = YES;
 }
 
 @end

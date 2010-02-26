@@ -681,7 +681,7 @@ enum {
         [super goToPreviousPage:self];
     if (shouldAnimate) {
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-        [[self transitionController] animateForRect:rect forward:next];
+        [[self transitionController] animateForRect:rect];
         if (interactionMode == SKPresentationMode)
             [self doAutohide:YES];
     }
