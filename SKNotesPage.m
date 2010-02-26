@@ -47,4 +47,11 @@
 
 - (BOOL)isNotesPage { return YES; }
 
+- (NSAttributedString *)attributedString {
+    // on 10.6 the attributedstring is over-released by one
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
+        return [[super attributedString] retain];
+    return [super attributedString];
+}
+
 @end
