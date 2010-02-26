@@ -219,9 +219,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
+    view = nil;
     SKDESTROY(transitionWindow);
     SKDESTROY(initialImage);
     SKDESTROY(filters);
+    SKDESTROY(pageTransitions);
     [super dealloc];
 }
 
