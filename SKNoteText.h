@@ -37,20 +37,21 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 
 @interface SKNoteText : NSObject {
-    id note;
+    PDFAnnotation *note;
 }
 
-- (id)initWithNote:(id)aNote;
+- (id)initWithNote:(PDFAnnotation *)aNote;
 
-- (id)note;
+- (PDFAnnotation *)note;
 
 - (NSArray *)texts;
 
 - (NSString *)type;
-- (id)page;
+- (PDFPage *)page;
 - (NSUInteger)pageIndex;
 - (NSString *)string;
 - (NSAttributedString *)text;
