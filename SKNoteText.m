@@ -37,6 +37,7 @@
  */
 
 #import "SKNoteText.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 
 @implementation SKNoteText
@@ -48,7 +49,12 @@
     return self;
 }
 
-- (id)note {
+- (void)dealloc {
+    note = nil;
+    [super dealloc];
+}
+
+- (PDFAnnotation *)note {
     return note;
 }
 
@@ -56,7 +62,7 @@
 
 - (NSString *)type { return nil; }
 
-- (id)page { return nil; }
+- (PDFPage *)page { return nil; }
 
 - (NSString *)string { return [[self text] string]; }
 
