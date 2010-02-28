@@ -91,6 +91,11 @@
 #define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
 #define SKSpotlightLastSysVersionKey        @"lastSysVersion"
 
+#define SUScheduledCheckIntervalKey         @"SUScheduledCheckInterval"
+
+#define SKCircleInteriorString  @"CircleInterior"
+#define SKSquareInteriorString  @"SquareInterior"
+#define SKFreeTextFontString    @"FreeTextFont"
 
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
@@ -231,9 +236,9 @@
 #pragma mark Updater
 
 - (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(SUUpdater *)updater {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SUScheduledCheckInterval"]) {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SUScheduledCheckIntervalKey]) {
         // the user already used an older version of Skim and Sparkle
-        [updater setAutomaticallyChecksForUpdates:[[NSUserDefaults standardUserDefaults] integerForKey:@"SUScheduledCheckInterval"] > 0];
+        [updater setAutomaticallyChecksForUpdates:[[NSUserDefaults standardUserDefaults] integerForKey:SUScheduledCheckIntervalKey] > 0];
         return NO;
     }
     return YES;
@@ -499,9 +504,9 @@
         [sud colorForKey:SKStrikeOutNoteColorKey], SKNStrikeOutString, 
         [sud colorForKey:SKLineNoteColorKey], SKNLineString, 
         [sud colorForKey:SKInkNoteColorKey], SKNInkString, 
-        [sud colorForKey:SKCircleNoteInteriorColorKey], @"CircleInterior", 
-        [sud colorForKey:SKSquareNoteInteriorColorKey], @"SquareInterior", 
-        [sud colorForKey:SKFreeTextNoteFontColorKey], @"FreeTextFont", 
+        [sud colorForKey:SKCircleNoteInteriorColorKey], SKCircleInteriorString, 
+        [sud colorForKey:SKSquareNoteInteriorColorKey], SKSquareInteriorString, 
+        [sud colorForKey:SKFreeTextNoteFontColorKey], SKFreeTextFontString, 
         nil];
 }
 
@@ -526,11 +531,11 @@
         [sud setColor:color forKey:SKLineNoteColorKey];
     if (color = [colorDict objectForKey:SKNInkString])
         [sud setColor:color forKey:SKInkNoteColorKey];
-    if (color = [colorDict objectForKey:@"CircleInterior"])
+    if (color = [colorDict objectForKey:SKCircleInteriorString])
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:@"SquareInterior"])
+    if (color = [colorDict objectForKey:SKSquareInteriorString])
         [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:@"FreeTextFont"])
+    if (color = [colorDict objectForKey:SKFreeTextFontString])
         [sud setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 

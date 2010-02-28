@@ -767,7 +767,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewFolderToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Folder", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Folder", @"Tool tip message")];
-    [item setImageNamed:@"ToolbarNewFolder"];
+    [item setImageNamed:SKImageNameToolbarNewFolder];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkFolder:)];
     [toolbarItems setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
@@ -776,7 +776,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewSeparatorToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Separator", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Separator", @"Tool tip message")];
-    [item setImageNamed:@"ToolbarNewSeparator"];
+    [item setImageNamed:SKImageNameToolbarNewSeparator];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkSeparator:)];
     [toolbarItems setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
