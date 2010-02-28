@@ -48,6 +48,7 @@
 #define SKInfoPageSizeKey @"PageSize"
 #define SKInfoPageWidthKey @"PageWidth"
 #define SKInfoPageHeightKey @"PageHeight"
+#define SKInfoKeywordsKey @"Keywords"
 #define SKInfoKeywordsStringKey @"KeywordsString"
 #define SKInfoEncryptedKey @"Encrypted"
 #define SKInfoAllowsPrintingKey @"AllowsPrinting"
@@ -208,7 +209,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
             [dictionary setValue:[NSNumber numberWithDouble:cropSize.width] forKey:SKInfoPageWidthKey];
             [dictionary setValue:[NSNumber numberWithDouble:cropSize.height] forKey:SKInfoPageHeightKey];
         }
-        [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:SKInfoKeywordsStringKey];
+        [dictionary setValue:[[dictionary valueForKey:SKInfoKeywordsKey] componentsJoinedByString:@"\n"] forKey:SKInfoKeywordsStringKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:SKInfoAllowsPrintingKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:SKInfoAllowsCopyingKey];

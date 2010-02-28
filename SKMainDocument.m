@@ -93,6 +93,22 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKAutoRotatePrintedPagesKey @"SKAutoRotatePrintedPages"
 #define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
+#define URL_KEY             @"URL"
+#define TYPE_KEY            @"type"
+#define SAVEOPERATION_KEY   @"saveOperation"
+#define CALLBACK_KEY        @"callback"
+#define TMPPATH_KEY         @"tmpPath"
+
+#define SOURCEPATH_KEY  @"sourcePath"
+#define TARGETPATH_KEY  @"targetPath"
+#define EMAIL_KEY       @"email"
+
+#define PATH_KEY @"path"
+
+#define SKPresentationOptionsKey    @"PresentationOptions"
+#define SKTagsKey                   @"Tags"
+#define SKRatingKey                 @"Rating"
+
 static char SKMainDocumentDefaultsObservationContext;
 
 
@@ -408,12 +424,12 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
-    NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] unsignedIntegerValue];
-    NSString *tmpPath = [info objectForKey:@"tmpPath"];
+    NSSaveOperationType saveOperation = [[info objectForKey:SAVEOPERATION_KEY] unsignedIntegerValue];
+    NSString *tmpPath = [info objectForKey:TMPPATH_KEY];
     
     if (didSave) {
-        NSURL *absoluteURL = [info objectForKey:@"URL"];
-        NSString *typeName = [info objectForKey:@"type"];
+        NSURL *absoluteURL = [info objectForKey:URL_KEY];
+        NSString *typeName = [info objectForKey:TYPE_KEY];
         
         if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
             // we check for notes and may save a .skim as well:
@@ -449,7 +465,7 @@ static char SKMainDocumentDefaultsObservationContext;
     // in case we saved using the panel we should reset this for the next save
     docFlags.exportUsingPanel = NO;
     
-    NSInvocation *invocation = [info objectForKey:@"callback"];
+    NSInvocation *invocation = [info objectForKey:CALLBACK_KEY];
     if (invocation) {
         [invocation setArgument:&doc atIndex:2];
         [invocation setArgument:&didSave atIndex:3];
@@ -466,11 +482,11 @@ static char SKMainDocumentDefaultsObservationContext;
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, @"URL", typeName, @"type", [NSNumber numberWithUnsignedInteger:saveOperation], @"saveOperation", nil];
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
-        [info setObject:invocation forKey:@"callback"];
+        [info setObject:invocation forKey:CALLBACK_KEY];
     }
     
     if (SKIsPDFBundleDocumentType(typeName) && SKIsPDFBundleDocumentType([self fileType]) && [self fileURL] && saveOperation != NSSaveToOperation) {
@@ -487,7 +503,7 @@ static char SKMainDocumentDefaultsObservationContext;
             }
         }
         if (tmpPath)
-            [info setObject:tmpPath forKey:@"tmpPath"];
+            [info setObject:tmpPath forKey:TMPPATH_KEY];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
@@ -518,7 +534,7 @@ static char SKMainDocumentDefaultsObservationContext;
         NSDictionary *options = [[self mainWindowController] presentationOptions];
         if (options) {
             info = [[info mutableCopy] autorelease];
-            [(NSMutableDictionary *)info setObject:options forKey:@"PresentationOptions"];
+            [(NSMutableDictionary *)info setObject:options forKey:SKPresentationOptionsKey];
         }
         [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
         if (data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding])
@@ -814,9 +830,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     if (info == nil) {
                         [errorString release];
                     } else if ([info isKindOfClass:[NSDictionary class]]) {
-                        dictionary = [info objectForKey:@"PresentationOptions"];
-                        array = [info objectForKey:@"Tags"];
-                        number = [info objectForKey:@"Rating"];
+                        dictionary = [info objectForKey:SKPresentationOptionsKey];
+                        array = [info objectForKey:SKTagsKey];
+                        number = [info objectForKey:SKRatingKey];
                     }
                 }
             } else {
@@ -1113,8 +1129,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
-    NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
+    NSString *sourcePath = [[[info objectForKey:SOURCEPATH_KEY] copy] autorelease];
+    NSString *targetPath = [[[info objectForKey:TARGETPATH_KEY] copy] autorelease];
     NSArray *arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
     
     if ([NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]] == NO)
@@ -1122,7 +1138,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
     
-    if ([[info objectForKey:@"email"] boolValue])
+    if ([[info objectForKey:EMAIL_KEY] boolValue])
         [self performSelectorOnMainThread:@selector(emailAttachmentFile:) withObject:targetPath waitUntilDone:NO];
     
     [pool release];
@@ -1133,7 +1149,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self progressController] setIndeterminate:YES];
     [[self progressController] show];
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], @"sourcePath", fileName, @"targetPath", [NSNumber numberWithBool:email], @"email", nil];
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], SOURCEPATH_KEY, fileName, TARGETPATH_KEY, [NSNumber numberWithBool:email], EMAIL_KEY, nil];
     [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
 }
 
@@ -1414,7 +1430,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
-    NSString *path = [[notification userInfo] objectForKey:@"path"];
+    NSString *path = [[notification userInfo] objectForKey:PATH_KEY];
     
     if ([watchedFile isEqualToString:path] || notification == nil) {
         // should never happen
@@ -1429,13 +1445,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)handleFileMoveNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
+    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
         [self stopCheckingFileUpdates];
     // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
 }
 
 - (void)handleFileDeleteNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
+    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
         [self stopCheckingFileUpdates];
     docFlags.fileChangedOnDisk = YES;
 }

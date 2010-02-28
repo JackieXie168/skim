@@ -44,6 +44,8 @@ NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
 NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
+#define SKFilePathKey @"filePath"
+
 @interface SKDownload (Private)
 - (void)setStatus:(SKDownloadStatus)newStatus;
 - (void)setFilePath:(NSString *)newFilePath;
@@ -60,11 +62,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 }
 
 + (NSSet *)keyPathsForValuesAffectingFileName {
-    return [NSSet setWithObjects:@"filePath", nil];
+    return [NSSet setWithObjects:SKFilePathKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingFileIcon {
-    return [NSSet setWithObjects:@"filePath", nil];
+    return [NSSet setWithObjects:SKFilePathKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingCanCancel {
