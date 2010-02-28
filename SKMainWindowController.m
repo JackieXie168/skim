@@ -124,6 +124,10 @@
 #define PAGENUMBER_KEY  @"pageNumber"
 #define PAGELABEL_KEY   @"pageLabel"
 
+#define CONTENTVIEW_KEY @"contentView"
+#define BUTTONVIEW_KEY @"buttonView"
+#define FIRSTRESPONDER_KEY @"firstResponder"
+
 #define SKMainWindowFrameKey        @"windowFrame"
 #define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
 #define RIGHTSIDEPANEWIDTH_KEY      @"rightSidePaneWidth"
@@ -1611,9 +1615,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 #pragma mark Swapping tables
 
 - (void)finishTableAnimation:(NSDictionary *)info {
-    NSView *contentView = [info valueForKey:@"contentView"];
-    NSView *buttonView = [info valueForKey:@"buttonView"];
-    NSView *firstResponder = [info valueForKey:@"firstResponder"];
+    NSView *contentView = [info valueForKey:CONTENTVIEW_KEY];
+    NSView *buttonView = [info valueForKey:BUTTONVIEW_KEY];
+    NSView *firstResponder = [info valueForKey:FIRSTRESPONDER_KEY];
     [contentView setWantsLayer:NO];
     [buttonView setWantsLayer:NO];
     [[firstResponder window] makeFirstResponder:firstResponder];
@@ -1681,9 +1685,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
         if (changeButton)
-            [info setValue:buttonView forKey:@"buttonView"];
-        [info setValue:contentView forKey:@"contentView"];
-        [info setValue:firstResponder forKey:@"firstResponder"];
+            [info setValue:buttonView forKey:BUTTONVIEW_KEY];
+        [info setValue:contentView forKey:CONTENTVIEW_KEY];
+        [info setValue:firstResponder forKey:FIRSTRESPONDER_KEY];
         
         [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
     } else {

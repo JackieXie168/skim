@@ -48,6 +48,10 @@
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
+#define GENERAL_TABID @"general"
+
+#define UPDATEINTERVAL_KEY @"updateInterval"
+
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
 static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
@@ -262,7 +266,7 @@ static char SKPreferenceWindowUpdaterObservationContext;
             [sudc revertToInitialValuesForKeys:keys];
         else
             [sudc revertToInitialValues:nil];
-        if (tabID == nil || [tabID isEqualToString:@"general"]) {
+        if (tabID == nil || [tabID isEqualToString:GENERAL_TABID]) {
             NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"SUScheduledCheckInterval"] doubleValue];
             [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
             [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0.0];
@@ -321,9 +325,9 @@ static char SKPreferenceWindowUpdaterObservationContext;
 #pragma mark Private
 
 - (void)synchronizeUpdateInterval {
-    [self willChangeValueForKey:@"updateInterval"];
+    [self willChangeValueForKey:UPDATEINTERVAL_KEY];
     updateInterval = [[SUUpdater sharedUpdater] updateCheckInterval];
-    [self didChangeValueForKey:@"updateInterval"];
+    [self didChangeValueForKey:UPDATEINTERVAL_KEY];
 }
 
 - (void)updateRevertButtons {
