@@ -40,6 +40,7 @@
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 
 @implementation SKTextFieldSheetController
@@ -93,7 +94,7 @@
         if ([bm bookmarkType] == SKBookmarkTypeFolder) {
             NSString *label = [bm label];
             NSMenuItem *item = [menu addItemWithTitle:label ?: @"" action:NULL keyEquivalent:@""];
-            [item setImage:[bm icon]];
+            [item setImageAndSize:[bm icon]];
             [item setIndentationLevel:level];
             [item setRepresentedObject:bm];
             [self addMenuItemsForBookmarks:[bm children] level:level+1 toMenu:menu];
@@ -104,6 +105,7 @@
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
     SKBookmarkController *bookmarkController = [SKBookmarkController sharedBookmarkController];
     SKBookmark *root = [bookmarkController bookmarkRoot];
+    [self window];
     [folderPopUp removeAllItems];
     [self addMenuItemsForBookmarks:[NSArray arrayWithObjects:root, nil] level:0 toMenu:[folderPopUp menu]];
     [folderPopUp selectItemAtIndex:0];
