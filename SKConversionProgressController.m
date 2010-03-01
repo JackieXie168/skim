@@ -52,6 +52,8 @@
 
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
 
+#define MIN_BUTTON_WIDTH 90.0
+
 enum {
     SKConversionSucceeded = 0,
     SKConversionFailed = 1
@@ -193,7 +195,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [cancelButton setAction:action];
     NSRect frame = [cancelButton frame];
     [cancelButton sizeToFit];
-    CGFloat width = fmax(NSWidth([cancelButton frame]), 90.0);
+    CGFloat width = fmax(NSWidth([cancelButton frame]), MIN_BUTTON_WIDTH);
     frame.origin.x = NSMaxX(frame) - width;
     frame.size.width = width;
     [cancelButton setFrame:frame];
