@@ -529,7 +529,7 @@ enum {
 	}
 	
 	if (changed) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
         NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
     }
 }
@@ -554,7 +554,7 @@ enum {
     if (asBook != [self displaysAsBook]) {
         [super setDisplaysAsBook:asBook];
         [self relayoutEditField];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self];
     }
 }
 
