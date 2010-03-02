@@ -126,7 +126,7 @@
 - (void)drawRect:(NSRect)aRect {
     [super drawRect:aRect];
     if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
-        NSRange visibleRows = [self rowsInRect:[self visibleRect]];
+        NSRange visibleRows = [self rowsInRect:aRect];
         
         if (visibleRows.length == 0)
             return;
