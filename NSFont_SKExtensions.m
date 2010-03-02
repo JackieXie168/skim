@@ -42,11 +42,12 @@
 @implementation NSFont (SKExtensions)
 
 - (CGFloat)defaultViewLineHeight {
-    static NSTextFieldCell *cell = nil;
-    if (cell == nil)
-        cell = [[NSTextFieldCell alloc] init];
-    [cell setFont:self];
-    return [cell cellSize].height;
+    static NSLayoutManager *layoutManager = nil;
+    if (layoutManager == nil) {
+        layoutManager = [[NSLayoutManager alloc] init];
+        [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
+    }
+    return [layoutManager defaultLineHeightForFont:self];
 }
 
 @end
