@@ -43,7 +43,42 @@
 #import "NSMenu_SKExtensions.h"
 
 
+#pragma mark -
+
+void SKAutoSizeLabelFieldAndControl(NSTextField *labelField, NSControl *control);
+void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textField, NSTextField *folderLabelField, NSControl *folderPopUp);
+
 @implementation SKTextFieldSheetController
+
+- (NSString *)prompt { return @""; }
+
+- (void)autosizeLabels {
+    NSRect labelFrame = [labelField frame];
+    NSRect textFrame = [textField frame];
+    [labelField setStringValue:[self prompt]];
+    [labelField sizeToFit];
+    CGFloat dw = NSWidth([labelField frame]) - NSWidth(labelFrame);
+    textFrame.size.width -= dw;
+    textFrame.origin.x += dw;
+    [textField setFrame:textFrame];
+}
+
+- (void)windowDidLoad {
+    CGFloat right = NSMaxX([okButton frame]);
+    NSRect cancelFrame, okFrame;
+    [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
+    [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
+    [cancelButton sizeToFit];
+    [okButton sizeToFit];
+    cancelFrame = [cancelButton frame];
+    okFrame = [okButton frame];
+    cancelFrame.size.width = okFrame.size.width = fmax(82.0, fmax(NSWidth(cancelFrame), NSWidth(okFrame)));
+    okFrame.origin.x = right - NSWidth(okFrame);
+    cancelFrame.origin.x = NSMinX(okFrame) - NSWidth(cancelFrame);
+    [cancelButton setFrame:cancelFrame];
+    [okButton setFrame:okFrame];
+    [self autosizeLabels];
+}
 
 - (NSTextField *)textField {
     [self window];
@@ -66,6 +101,8 @@
 
 - (NSString *)windowNibName { return @"PageSheet"; }
 
+- (NSString *)prompt { return NSLocalizedString(@"Page:", @"Prompt"); }
+
 - (NSArray *)objectValues {
     return [(NSComboBox *)[self textField] objectValues];
 }
@@ -80,7 +117,11 @@
 #pragma mark -
 
 @implementation SKScaleSheetController
+
 - (NSString *)windowNibName { return @"ScaleSheet"; }
+
+- (NSString *)prompt { return NSLocalizedString(@"Scale:", @"Prompt"); }
+
 @end
 
 #pragma mark -
@@ -88,6 +129,33 @@
 @implementation SKBookmarkSheetController
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
+
+- (NSString *)prompt { return NSLocalizedString(@"Bookmark:", @"Prompt"); }
+
+- (NSString *)folderPrompt { return NSLocalizedString(@"Add to:", @"Prompt"); }
+
+- (void)autosizeLabels {
+    [labelField setStringValue:[self prompt]];
+    [folderLabelField setStringValue:[self folderPrompt]];
+    NSRect labelFrame = [labelField frame];
+    NSRect folderLabelFrame = [folderLabelField frame];
+    NSRect textFrame = [textField frame];
+    NSRect folderFrame = [folderPopUp frame];
+    [labelField sizeToFit];
+    [folderLabelField sizeToFit];
+    CGFloat right = fmax(NSMaxX([labelField frame]), NSMaxX([folderLabelField frame]));
+    CGFloat dw = right - NSMaxX(labelFrame);
+    labelFrame.size.width = right - NSMinX(labelFrame);
+    folderLabelFrame.size.width = right - NSMinX(labelFrame);
+    textFrame.size.width -= dw;
+    textFrame.origin.x += dw;
+    folderFrame.size.width -= dw;
+    folderFrame.origin.x += dw;
+    [labelField setFrame:labelFrame];
+    [folderLabelField setFrame:folderLabelFrame];
+    [textField setFrame:textFrame];
+    [folderPopUp setFrame:folderFrame];
+}
 
 - (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
     for (SKBookmark *bm in bookmarks) {
@@ -122,5 +190,42 @@
 #pragma mark -
 
 @implementation SKPasswordSheetController
+
 - (NSString *)windowNibName { return @"PasswordSheet"; }
+
+- (NSString *)prompt { return NSLocalizedString(@"Password:", @"Prompt"); }
+
 @end
+
+#pragma mark -
+
+void SKAutoSizeLabelFieldAndControl(NSTextField *labelField, NSControl *control) {
+    NSRect labelFrame = [labelField frame];
+    NSRect controlFrame = [control frame];
+    [labelField sizeToFit];
+    CGFloat dw = NSWidth([labelField frame]) - NSWidth(labelFrame);
+    controlFrame.size.width -= dw;
+    controlFrame.origin.x += dw;
+    [control setFrame:controlFrame];
+}
+
+void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textField, NSTextField *folderLabelField, NSControl *folderPopUp) {
+    NSRect labelFrame = [labelField frame];
+    NSRect folderLabelFrame = [folderLabelField frame];
+    NSRect textFrame = [textField frame];
+    NSRect folderFrame = [folderPopUp frame];
+    [labelField sizeToFit];
+    [folderLabelField sizeToFit];
+    CGFloat right = fmax(NSMaxX([labelField frame]), NSMaxX([folderLabelField frame]));
+    CGFloat dw = right - NSMaxX(labelFrame);
+    labelFrame.size.width = right - NSMinX(labelFrame);
+    folderLabelFrame.size.width = right - NSMinX(labelFrame);
+    textFrame.size.width -= dw;
+    textFrame.origin.x += dw;
+    folderFrame.size.width -= dw;
+    folderFrame.origin.x += dw;
+    [labelField setFrame:labelFrame];
+    [folderLabelField setFrame:folderLabelFrame];
+    [textField setFrame:textFrame];
+    [folderPopUp setFrame:folderFrame];
+}

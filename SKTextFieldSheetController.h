@@ -41,6 +41,9 @@
 
 @interface SKTextFieldSheetController : NSWindowController {
     IBOutlet NSTextField *textField;
+    IBOutlet NSTextField *labelField;
+    IBOutlet NSButton *okButton;
+    IBOutlet NSButton *cancelButton;
 }
 
 - (NSTextField *)textField;
@@ -68,6 +71,7 @@
 
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
     IBOutlet NSPopUpButton *folderPopUp;
+    IBOutlet NSTextField *folderLabelField;
 }
 
 - (SKBookmark *)selectedFolder;
