@@ -55,6 +55,9 @@
 @interface SKNoteOutlineView : SKOutlineView {    
     IBOutlet NSWindow *noteTypeSheet;
     IBOutlet NSMatrix *noteTypeMatrix;
+    IBOutlet NSTextField *noteTypeMessageField;
+    IBOutlet NSButton *noteTypeOkButton;
+    IBOutlet NSButton *noteTypeCancelButton;
 }
 
 - (NSArray *)noteTypes;

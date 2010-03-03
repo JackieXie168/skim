@@ -317,6 +317,42 @@
     [self noteTypesUpdated];
 }
 
+- (BOOL)loadNoteTypeSheet {
+    if (NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
+        NSLog(@"Failed to load NoteTypeSheet.nib");
+        return NO;
+    }
+    
+    NSMenu *menu = [self noteTypeMenu];
+    NSInteger i;
+    for (i = 0; i < NUMBER_OF_TYPES; i++)
+        [[noteTypeMatrix cellWithTag:i] setTitle:[[menu itemAtIndex:i] title]];
+    [noteTypeMatrix sizeToCells];
+    
+    [noteTypeMessageField setStringValue:NSLocalizedString(@"Select notes and highlights to show:", @"Note type message")];
+    [noteTypeMessageField sizeToFit];
+    
+    CGFloat right = NSMaxX([noteTypeOkButton frame]);
+    NSRect cancelFrame, okFrame;
+    [noteTypeOkButton setTitle:NSLocalizedString(@"OK", @"Button title")];
+    [noteTypeCancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
+    [noteTypeCancelButton sizeToFit];
+    [noteTypeOkButton sizeToFit];
+    cancelFrame = [noteTypeCancelButton frame];
+    okFrame = [noteTypeOkButton frame];
+    cancelFrame.size.width = okFrame.size.width = fmax(82.0, fmax(NSWidth(cancelFrame), NSWidth(okFrame)));
+    okFrame.origin.x = right - NSWidth(okFrame);
+    cancelFrame.origin.x = NSMinX(okFrame) - NSWidth(cancelFrame);
+    [noteTypeCancelButton setFrame:cancelFrame];
+    [noteTypeOkButton setFrame:okFrame];
+    
+    NSRect frame = [noteTypeSheet frame];
+    frame.size.width = fmax(NSWidth([noteTypeMatrix frame]) + 36.0, NSWidth([noteTypeMessageField frame]) + 34.0);
+    [noteTypeSheet setFrame:frame display:NO];
+    
+    return YES;
+}
+
 - (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         NSMenu *menu = [self noteTypeMenu];
@@ -328,10 +364,8 @@
 }
 
 - (IBAction)selectNoteTypes:(id)sender {
-    if (noteTypeSheet == nil && NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
-        NSLog(@"Failed to load NoteTypeSheet.nib");
+    if (noteTypeSheet == nil && NO == [self loadNoteTypeSheet])
         return;
-    }
     
     NSMenu *menu = [self noteTypeMenu];
     NSInteger i;
