@@ -61,6 +61,20 @@
     return [NSBundle mainBundle];
 }
 
+- (void)awakeFromNib {
+    [autoRotateButton setTitle:NSLocalizedString(@"Automatically rotate each page", @"Button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleNone] setTitle:NSLocalizedString(@"No automatic page scaling", @"Button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleToFit] setTitle:NSLocalizedString(@"Scale each page to fit paper", @"Button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleDownToFit] setTitle:NSLocalizedString(@"Only scale down large pages", @"Button title")];
+    
+    [autoRotateButton sizeToFit];
+    [printScalingModeMatrix sizeToCells];
+    
+    NSRect frame = [[self view] frame];
+    frame.size.width = fmax(NSWidth([autoRotateButton frame]), NSWidth([printScalingModeMatrix frame])) + 36.0;
+    [[self view] setFrame:frame];
+}
+
 - (BOOL)autoRotate {
     return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintAutoRotate"] boolValue];
 }
