@@ -58,7 +58,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSTextField" id="682604600">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 90}, {72, 17}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>
@@ -95,7 +95,7 @@
 						</object>
 						<object class="NSButton" id="879510254">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{304, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>
@@ -119,7 +119,7 @@
 						</object>
 						<object class="NSButton" id="983911191">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{222, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>
@@ -141,7 +141,7 @@
 						</object>
 						<object class="NSTextField" id="116930378">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{94, 88}, {286, 22}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>
@@ -172,7 +172,7 @@
 						</object>
 						<object class="NSPopUpButton" id="464848446">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{91, 56}, {292, 26}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>
@@ -229,7 +229,7 @@
 						</object>
 						<object class="NSTextField" id="490788626">
 							<reference key="NSNextResponder" ref="40255582"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 62}, {72, 17}}</string>
 							<reference key="NSSuperview" ref="40255582"/>
 							<reference key="NSWindow"/>

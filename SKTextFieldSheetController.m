@@ -42,11 +42,9 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 
-
-#pragma mark -
-
-void SKAutoSizeLabelFieldAndControl(NSTextField *labelField, NSControl *control);
-void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textField, NSTextField *folderLabelField, NSControl *folderPopUp);
+#define MIN_BUTTON_WIDTH  82.0
+#define MAX_BUTTON_WIDTH  100.0
+#define MIN_BUTTON_ORIGIN 14.0
 
 @implementation SKTextFieldSheetController
 
@@ -64,7 +62,7 @@ void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textFi
 }
 
 - (void)windowDidLoad {
-    CGFloat right = NSMaxX([okButton frame]);
+    CGFloat width, right = NSMaxX([okButton frame]);
     NSRect cancelFrame, okFrame;
     [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
     [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
@@ -72,11 +70,18 @@ void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textFi
     [okButton sizeToFit];
     cancelFrame = [cancelButton frame];
     okFrame = [okButton frame];
-    cancelFrame.size.width = okFrame.size.width = fmax(82.0, fmax(NSWidth(cancelFrame), NSWidth(okFrame)));
+    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(cancelFrame), NSWidth(okFrame))));
+    cancelFrame.size.width = fmax(NSWidth(cancelFrame), width);
+    okFrame.size.width = fmax(NSWidth(okFrame), width);
     okFrame.origin.x = right - NSWidth(okFrame);
     cancelFrame.origin.x = NSMinX(okFrame) - NSWidth(cancelFrame);
     [cancelButton setFrame:cancelFrame];
     [okButton setFrame:okFrame];
+    NSRect frame = [[self window] frame];
+    if (NSMinX(cancelFrame) < MIN_BUTTON_ORIGIN) {
+        frame.size.width += MIN_BUTTON_ORIGIN - NSMinX(cancelFrame);
+        [[self window] setFrame:frame display:NO];
+    }
     [self autosizeLabels];
 }
 
@@ -196,36 +201,3 @@ void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textFi
 - (NSString *)prompt { return NSLocalizedString(@"Password:", @"Prompt"); }
 
 @end
-
-#pragma mark -
-
-void SKAutoSizeLabelFieldAndControl(NSTextField *labelField, NSControl *control) {
-    NSRect labelFrame = [labelField frame];
-    NSRect controlFrame = [control frame];
-    [labelField sizeToFit];
-    CGFloat dw = NSWidth([labelField frame]) - NSWidth(labelFrame);
-    controlFrame.size.width -= dw;
-    controlFrame.origin.x += dw;
-    [control setFrame:controlFrame];
-}
-
-void SKAutoSizeLabelFieldsAndControls(NSTextField *labelField, NSControl *textField, NSTextField *folderLabelField, NSControl *folderPopUp) {
-    NSRect labelFrame = [labelField frame];
-    NSRect folderLabelFrame = [folderLabelField frame];
-    NSRect textFrame = [textField frame];
-    NSRect folderFrame = [folderPopUp frame];
-    [labelField sizeToFit];
-    [folderLabelField sizeToFit];
-    CGFloat right = fmax(NSMaxX([labelField frame]), NSMaxX([folderLabelField frame]));
-    CGFloat dw = right - NSMaxX(labelFrame);
-    labelFrame.size.width = right - NSMinX(labelFrame);
-    folderLabelFrame.size.width = right - NSMinX(labelFrame);
-    textFrame.size.width -= dw;
-    textFrame.origin.x += dw;
-    folderFrame.size.width -= dw;
-    folderFrame.origin.x += dw;
-    [labelField setFrame:labelFrame];
-    [folderLabelField setFrame:folderLabelFrame];
-    [textField setFrame:textFrame];
-    [folderPopUp setFrame:folderFrame];
-}
