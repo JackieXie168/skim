@@ -162,3 +162,8 @@ NSPoint SKNSPointFromQDPoint(Point qdPoint) {
     nsPoint.y = (CGFloat)qdPoint.v;
     return nsPoint;
 }
+
+#pragma mark -
+
+extern void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton);
+extern void SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls);

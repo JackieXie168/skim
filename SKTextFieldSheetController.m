@@ -41,9 +41,8 @@
 #import "SKBookmark.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
-#define MIN_BUTTON_WIDTH  82.0
-#define MAX_BUTTON_WIDTH  100.0
 #define MIN_BUTTON_ORIGIN 14.0
 
 @implementation SKTextFieldSheetController
@@ -51,35 +50,17 @@
 - (NSString *)prompt { return @""; }
 
 - (void)autosizeLabels {
-    NSRect labelFrame = [labelField frame];
-    NSRect textFrame = [textField frame];
     [labelField setStringValue:[self prompt]];
-    [labelField sizeToFit];
-    CGFloat dw = NSWidth([labelField frame]) - NSWidth(labelFrame);
-    textFrame.size.width -= dw;
-    textFrame.origin.x += dw;
-    [textField setFrame:textFrame];
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:textField, nil]);
 }
 
 - (void)windowDidLoad {
-    CGFloat width, right = NSMaxX([okButton frame]);
-    NSRect cancelFrame, okFrame;
     [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
     [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    [cancelButton sizeToFit];
-    [okButton sizeToFit];
-    cancelFrame = [cancelButton frame];
-    okFrame = [okButton frame];
-    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(cancelFrame), NSWidth(okFrame))));
-    cancelFrame.size.width = fmax(NSWidth(cancelFrame), width);
-    okFrame.size.width = fmax(NSWidth(okFrame), width);
-    okFrame.origin.x = right - NSWidth(okFrame);
-    cancelFrame.origin.x = NSMinX(okFrame) - NSWidth(cancelFrame);
-    [cancelButton setFrame:cancelFrame];
-    [okButton setFrame:okFrame];
+    SKAutoSizeButtons(okButton, cancelButton);
     NSRect frame = [[self window] frame];
-    if (NSMinX(cancelFrame) < MIN_BUTTON_ORIGIN) {
-        frame.size.width += MIN_BUTTON_ORIGIN - NSMinX(cancelFrame);
+    if (NSMinX([cancelButton frame]) < MIN_BUTTON_ORIGIN) {
+        frame.size.width += MIN_BUTTON_ORIGIN - NSMinX([cancelButton frame]);
         [[self window] setFrame:frame display:NO];
     }
     [self autosizeLabels];
@@ -142,24 +123,7 @@
 - (void)autosizeLabels {
     [labelField setStringValue:[self prompt]];
     [folderLabelField setStringValue:[self folderPrompt]];
-    NSRect labelFrame = [labelField frame];
-    NSRect folderLabelFrame = [folderLabelField frame];
-    NSRect textFrame = [textField frame];
-    NSRect folderFrame = [folderPopUp frame];
-    [labelField sizeToFit];
-    [folderLabelField sizeToFit];
-    CGFloat right = fmax(NSMaxX([labelField frame]), NSMaxX([folderLabelField frame]));
-    CGFloat dw = right - NSMaxX(labelFrame);
-    labelFrame.size.width = right - NSMinX(labelFrame);
-    folderLabelFrame.size.width = right - NSMinX(labelFrame);
-    textFrame.size.width -= dw;
-    textFrame.origin.x += dw;
-    folderFrame.size.width -= dw;
-    folderFrame.origin.x += dw;
-    [labelField setFrame:labelFrame];
-    [folderLabelField setFrame:folderLabelFrame];
-    [textField setFrame:textFrame];
-    [folderPopUp setFrame:folderFrame];
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, folderLabelField, nil], [NSArray arrayWithObjects:textField, folderPopUp, nil]);
 }
 
 - (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
