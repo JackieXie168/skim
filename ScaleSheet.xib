@@ -42,7 +42,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{326, 388}, {192, 107}}</string>
 				<int key="NSWTFlags">1886912512</int>
-				<string key="NSWindowTitle">Panel</string>
+				<string key="NSWindowTitle"/>
 				<object class="NSMutableString" key="NSWindowClass">
 					<characters key="NS.bytes">NSPanel</characters>
 				</object>
@@ -51,7 +51,7 @@
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="126349111">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -60,7 +60,6 @@
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{17, 69}, {40, 17}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="903982662">
 								<int key="NSCellFlags">68288064</int>
@@ -97,7 +96,6 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{96, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
-							<reference key="NSWindow"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="85152492">
@@ -121,7 +119,6 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{14, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="363585917">
 								<int key="NSCellFlags">67239424</int>
@@ -143,7 +140,6 @@
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{62, 66}, {110, 23}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="248880686">
 								<int key="NSCellFlags">-1804468671</int>
@@ -234,8 +230,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{192, 107}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
