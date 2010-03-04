@@ -151,7 +151,7 @@ void SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls) {
     for (control in controls) {
         frame = [control frame];
         frame.origin.x -= dw;
-        frame.size.width + dw;
+        frame.size.width += dw;
         [control setFrame:frame];
     }
 }
