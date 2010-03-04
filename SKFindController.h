@@ -43,6 +43,9 @@
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
     IBOutlet NSObjectController *ownerController;
+    IBOutlet NSTextField *labelField;
+    IBOutlet NSButton *nextButton;
+    IBOutlet NSButton *previousButton;
     NSString *findString;
     NSInteger lastChangeCount;
     BOOL ignoreCase;

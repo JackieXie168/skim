@@ -70,7 +70,6 @@
 		CE19446810627483007E8770 /* ReleaseNotes.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446110627483007E8770 /* ReleaseNotes.xib */; };
 		CE19446910627483007E8770 /* SnapshotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446210627483007E8770 /* SnapshotWindow.xib */; };
 		CE1944AB106279B0007E8770 /* DownloadsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19448C106279B0007E8770 /* DownloadsWindow.xib */; };
-		CE1944AC106279B0007E8770 /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19448E106279B0007E8770 /* FindPanel.xib */; };
 		CE1944AD106279B0007E8770 /* InfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE194490106279B0007E8770 /* InfoWindow.xib */; };
 		CE1944AE106279B0007E8770 /* LineInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE194492106279B0007E8770 /* LineInspector.xib */; };
 		CE1944AF106279B0007E8770 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE194494106279B0007E8770 /* MainMenu.xib */; };
@@ -168,6 +167,7 @@
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
+		CE8D12381140303400301B9F /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8D12371140303400301B9F /* FindPanel.xib */; };
 		CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B80491030642400EA8774 /* SKTransitionInfo.m */; };
 		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CE9CB356106597F100182386 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CB355106597F100182386 /* OpenGL.framework */; };
@@ -490,7 +490,6 @@
 		CE19446110627483007E8770 /* ReleaseNotes.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReleaseNotes.xib; sourceTree = "<group>"; };
 		CE19446210627483007E8770 /* SnapshotWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SnapshotWindow.xib; sourceTree = "<group>"; };
 		CE19448D106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE19448F106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE194491106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE194493106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE194495106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -498,7 +497,6 @@
 		CE1944A1106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE1944A9106279B0007E8770 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE1944BB106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE1944BC106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE1944BD106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE1944BE106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE1944BF106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -506,7 +504,6 @@
 		CE1944C5106279CC007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE1944C9106279CD007E8770 /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE1944D5106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE1944D6106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE1944D7106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE1944D8106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE1944D9106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -514,7 +511,6 @@
 		CE1944DF106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE1944E3106279E3007E8770 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Dutch; path = Dutch.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE1944E5106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE1944E6106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE1944E7106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE1944E8106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE1944E9106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -522,7 +518,6 @@
 		CE1944EF106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE1944F3106279F4007E8770 /* German */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = German; path = German.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE1944F510627A05007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE1944F610627A05007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE1944F710627A05007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE1944F810627A05007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE1944F910627A05007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -530,7 +525,6 @@
 		CE1944FF10627A06007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE19450310627A06007E8770 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Italian; path = Italian.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE19450510627A22007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE19450610627A22007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE19450710627A22007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE19450810627A22007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE19450910627A23007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -538,7 +532,6 @@
 		CE19450F10627A23007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE19451310627A23007E8770 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE19451510627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE19451610627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE19451710627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE19451810627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE19451910627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -546,7 +539,6 @@
 		CE19451F10627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/PreferenceWindow.xib; sourceTree = "<group>"; };
 		CE19452310627A49007E8770 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Spanish; path = Spanish.lproj/TransitionSheet.xib; sourceTree = "<group>"; };
 		CE19452510627A56007E8770 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/DownloadsWindow.xib; sourceTree = "<group>"; };
-		CE19452610627A56007E8770 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/FindPanel.xib; sourceTree = "<group>"; };
 		CE19452710627A56007E8770 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/InfoWindow.xib; sourceTree = "<group>"; };
 		CE19452810627A56007E8770 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/LineInspector.xib; sourceTree = "<group>"; };
 		CE19452910627A56007E8770 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = zh_TW; path = zh_TW.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -750,6 +742,7 @@
 		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDDocument.icns; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
+		CE8D12371140303400301B9F /* FindPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindPanel.xib; sourceTree = "<group>"; };
 		CE9B80481030642400EA8774 /* SKTransitionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionInfo.h; sourceTree = "<group>"; };
 		CE9B80491030642400EA8774 /* SKTransitionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTransitionInfo.m; sourceTree = "<group>"; };
 		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
@@ -1011,7 +1004,6 @@
 				CE5475A00B33058B00F8AFB6 /* Images */,
 				CE4DA9190B9E190D0039E89C /* Skim Help */,
 				CE19448C106279B0007E8770 /* DownloadsWindow.xib */,
-				CE19448E106279B0007E8770 /* FindPanel.xib */,
 				CE194490106279B0007E8770 /* InfoWindow.xib */,
 				CE194492106279B0007E8770 /* LineInspector.xib */,
 				CE194494106279B0007E8770 /* MainMenu.xib */,
@@ -1021,6 +1013,7 @@
 				CE090540113EDA72004B85C6 /* BookmarkSheet.xib */,
 				CE19445C10627483007E8770 /* BookmarksWindow.xib */,
 				CE19445D10627483007E8770 /* ConversionProgressWindow.xib */,
+				CE8D12371140303400301B9F /* FindPanel.xib */,
 				CE19445E10627483007E8770 /* MainWindow.xib */,
 				CE19445F10627483007E8770 /* NotesDocument.xib */,
 				CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */,
@@ -1806,7 +1799,6 @@
 				CE19446810627483007E8770 /* ReleaseNotes.xib in Resources */,
 				CE19446910627483007E8770 /* SnapshotWindow.xib in Resources */,
 				CE1944AB106279B0007E8770 /* DownloadsWindow.xib in Resources */,
-				CE1944AC106279B0007E8770 /* FindPanel.xib in Resources */,
 				CE1944AD106279B0007E8770 /* InfoWindow.xib in Resources */,
 				CE1944AE106279B0007E8770 /* LineInspector.xib in Resources */,
 				CE1944AF106279B0007E8770 /* MainMenu.xib in Resources */,
@@ -1821,6 +1813,7 @@
 				CE090547113EDA72004B85C6 /* ScaleSheet.xib in Resources */,
 				CE0905AE113F0B82004B85C6 /* NoteTypeSheet.xib in Resources */,
 				CE090613113F1655004B85C6 /* PrintAccessoryView.xib in Resources */,
+				CE8D12381140303400301B9F /* FindPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2164,21 +2157,6 @@
 				CE19452510627A56007E8770 /* zh_TW */,
 			);
 			name = DownloadsWindow.xib;
-			sourceTree = "<group>";
-		};
-		CE19448E106279B0007E8770 /* FindPanel.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE19448F106279B0007E8770 /* English */,
-				CE1944BC106279CC007E8770 /* French */,
-				CE1944D6106279E3007E8770 /* Dutch */,
-				CE1944E6106279F4007E8770 /* German */,
-				CE1944F610627A05007E8770 /* Italian */,
-				CE19450610627A22007E8770 /* ru */,
-				CE19451610627A49007E8770 /* Spanish */,
-				CE19452610627A56007E8770 /* zh_TW */,
-			);
-			name = FindPanel.xib;
 			sourceTree = "<group>";
 		};
 		CE194490106279B0007E8770 /* InfoWindow.xib */ = {
