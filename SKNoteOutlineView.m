@@ -42,6 +42,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -332,19 +333,9 @@
     [noteTypeMessageField setStringValue:NSLocalizedString(@"Select notes and highlights to show:", @"Note type message")];
     [noteTypeMessageField sizeToFit];
     
-    CGFloat right = NSMaxX([noteTypeOkButton frame]);
-    NSRect cancelFrame, okFrame;
     [noteTypeOkButton setTitle:NSLocalizedString(@"OK", @"Button title")];
     [noteTypeCancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    [noteTypeCancelButton sizeToFit];
-    [noteTypeOkButton sizeToFit];
-    cancelFrame = [noteTypeCancelButton frame];
-    okFrame = [noteTypeOkButton frame];
-    cancelFrame.size.width = okFrame.size.width = fmax(82.0, fmax(NSWidth(cancelFrame), NSWidth(okFrame)));
-    okFrame.origin.x = right - NSWidth(okFrame);
-    cancelFrame.origin.x = NSMinX(okFrame) - NSWidth(cancelFrame);
-    [noteTypeCancelButton setFrame:cancelFrame];
-    [noteTypeOkButton setFrame:okFrame];
+    SKAutoSizeButtons(noteTypeOkButton, noteTypeCancelButton);
     
     NSRect frame = [noteTypeSheet frame];
     frame.size.width = fmax(NSWidth([noteTypeMatrix frame]) + 36.0, NSWidth([noteTypeMessageField frame]) + 34.0);

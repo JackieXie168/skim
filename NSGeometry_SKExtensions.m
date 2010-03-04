@@ -109,3 +109,49 @@ BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoi
     
     return extProduct * extProduct < lineDelta * lineDelta * ( relPoint.x * relPoint.x + relPoint.y * relPoint.y );
 }
+
+#pragma mark -
+
+#define MIN_BUTTON_WIDTH 82.0
+#define MAX_BUTTON_WIDTH 100.0
+
+void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
+    CGFloat width, right = NSMaxX([defaultButton frame]);
+    NSRect altFrame, defaultFrame;
+    [altButton sizeToFit];
+    [defaultButton sizeToFit];
+    altFrame = [altButton frame];
+    defaultFrame = [defaultButton frame];
+    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(altFrame), NSWidth(defaultFrame))));
+    altFrame.size.width = fmax(NSWidth(altFrame), width);
+    defaultFrame.size.width = fmax(NSWidth(defaultFrame), width);
+    defaultFrame.origin.x = right - NSWidth(defaultFrame);
+    altFrame.origin.x = NSMinX(defaultFrame) - NSWidth(altFrame);
+    [altButton setFrame:altFrame];
+    [defaultButton setFrame:defaultFrame];
+}
+
+void SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls) {
+    NSControl *control;
+    NSRect frame;
+    CGFloat left = CGFLOAT_MAX, width = 0.0, right, dw = NSMaxX([[labelFields lastObject] frame]);
+    for (control in labelFields) {
+        [control sizeToFit];
+        frame = [control frame];
+        left = fmin(left, NSMinX(frame));
+        width = fmax(width, NSWidth(frame));
+    }
+    right = left + width;
+    for (control in labelFields) {
+        frame = [control frame];
+        frame.origin.x = right - NSWidth(frame);
+        [control setFrame:frame];
+    }
+    dw -= left + width;
+    for (control in controls) {
+        frame = [control frame];
+        frame.origin.x -= dw;
+        frame.size.width + dw;
+        [control setFrame:frame];
+    }
+}
