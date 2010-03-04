@@ -40,7 +40,7 @@
 			<object class="NSWindowTemplate" id="1029417291">
 				<int key="NSWindowStyleMask">3</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{416, 377}, {250, 107}}</string>
+				<string key="NSWindowRect">{{416, 377}, {192, 107}}</string>
 				<int key="NSWTFlags">1886912512</int>
 				<string key="NSWindowTitle">Panel</string>
 				<object class="NSMutableString" key="NSWindowClass">
@@ -50,7 +50,6 @@
 					<characters key="NS.bytes">View</characters>
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
-				<string key="NSWindowContentMinSize">{250, 107}</string>
 				<object class="NSView" key="NSWindowView" id="174626705">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -58,7 +57,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSTextField" id="1023968537">
 							<reference key="NSNextResponder" ref="174626705"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 69}, {38, 17}}</string>
 							<reference key="NSSuperview" ref="174626705"/>
 							<reference key="NSWindow"/>
@@ -95,8 +94,8 @@
 						</object>
 						<object class="NSButton" id="61808945">
 							<reference key="NSNextResponder" ref="174626705"/>
-							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{154, 12}, {82, 32}}</string>
+							<int key="NSvFlags">289</int>
+							<string key="NSFrame">{{96, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="174626705"/>
 							<reference key="NSWindow"/>
 							<int key="NSTag">1</int>
@@ -119,8 +118,8 @@
 						</object>
 						<object class="NSButton" id="807880982">
 							<reference key="NSNextResponder" ref="174626705"/>
-							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{72, 12}, {82, 32}}</string>
+							<int key="NSvFlags">289</int>
+							<string key="NSFrame">{{14, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="174626705"/>
 							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
@@ -141,8 +140,8 @@
 						</object>
 						<object class="NSComboBox" id="871967684">
 							<reference key="NSNextResponder" ref="174626705"/>
-							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{60, 65}, {173, 26}}</string>
+							<int key="NSvFlags">266</int>
+							<string key="NSFrame">{{60, 65}, {115, 26}}</string>
 							<reference key="NSSuperview" ref="174626705"/>
 							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
@@ -199,7 +198,7 @@
 											</object>
 											<object class="NSTextFieldCell" key="NSDataCell">
 												<int key="NSCellFlags">338820672</int>
-												<int key="NSCellFlags2">1024</int>
+												<int key="NSCellFlags2">268436480</int>
 												<reference key="NSSupport" ref="893670722"/>
 												<reference key="NSControlView" ref="323567152"/>
 												<bool key="NSDrawsBackground">YES</bool>
@@ -243,12 +242,11 @@
 							</object>
 						</object>
 					</object>
-					<string key="NSFrameSize">{250, 107}</string>
+					<string key="NSFrameSize">{192, 107}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
-				<string key="NSMinSize">{250, 129}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 		</object>
@@ -458,11 +456,11 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{440, 131}, {250, 107}}</string>
+					<string>{{440, 131}, {192, 107}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{440, 131}, {250, 107}}</string>
+					<string>{{440, 131}, {192, 107}}</string>
 					<boolean value="YES"/>
-					<boolean value="YES"/>
+					<boolean value="NO"/>
 					<string>{250, 107}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
