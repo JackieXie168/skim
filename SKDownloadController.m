@@ -45,6 +45,7 @@
 #import "SKTypeSelectHelper.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -87,6 +88,26 @@ static char SKDownloadPropertiesObservationContext;
 }
 
 - (void)windowDidLoad {
+    [[self window] setTitle:NSLocalizedString(@"Downloads", @"Window title")];
+    [clearButton setTitle:NSLocalizedString(@"Clear", @"Button title")];
+    [doneButton setTitle:NSLocalizedString(@"Done", @"Button title")];
+    [showDownloadsCheckButton setTitle:NSLocalizedString(@"Show Downloads window when downloading a file", @"Check button title")];
+    [removeDownloadCheckButton setTitle:NSLocalizedString(@"Remove download when finished successfully", @"Check button title")];
+    [hideDownloadsCheckButton setTitle:NSLocalizedString(@"Hide Downloads window when all downloads finished", @"Check button title")];
+    [clearButton setToolTip:NSLocalizedString(@"Remove all finished downloads", @"Tool tip message")];
+    [prefButton setToolTip:NSLocalizedString(@"Download preferences", @"Tool tip message")];
+    [prefButton accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
+    
+    [clearButton sizeToFit];
+    [showDownloadsCheckButton sizeToFit];
+    [removeDownloadCheckButton sizeToFit];
+    [hideDownloadsCheckButton sizeToFit];
+    SKAutoSizeButtons(doneButton, nil);
+    
+    NSRect frame = [preferencesSheet frame];
+    frame.size.width = 18.0 + fmaxf(fmaxf(NSMaxX([showDownloadsCheckButton frame]), NSMaxX([removeDownloadCheckButton frame])), NSMaxX([hideDownloadsCheckButton frame]));
+    [preferencesSheet setFrame:frame display:NO];
+    
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];

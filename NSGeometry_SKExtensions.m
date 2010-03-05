@@ -120,7 +120,7 @@ void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
     NSRect altFrame, defaultFrame;
     [altButton sizeToFit];
     [defaultButton sizeToFit];
-    altFrame = [altButton frame];
+    altFrame = altButton ? [altButton frame] : NSZeroRect;
     defaultFrame = [defaultButton frame];
     width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(altFrame), NSWidth(defaultFrame))));
     altFrame.size.width = fmax(NSWidth(altFrame), width);
