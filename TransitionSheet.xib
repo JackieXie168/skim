@@ -250,7 +250,7 @@
 										</object>
 										<object class="NSPopUpButton" id="303158046">
 											<reference key="NSNextResponder" ref="210267139"/>
-											<int key="NSvFlags">258</int>
+											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{81, 68}, {188, 26}}</string>
 											<reference key="NSSuperview" ref="210267139"/>
 											<reference key="NSWindow"/>
@@ -271,7 +271,7 @@
 												<int key="NSPeriodicInterval">75</int>
 												<object class="NSMenuItem" key="NSMenuItem" id="160640624">
 													<reference key="NSMenu" ref="185249612"/>
-													<string key="NSTitle">No Transition</string>
+													<string key="NSTitle"/>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -295,7 +295,7 @@
 														<reference ref="160640624"/>
 														<object class="NSMenuItem" id="182179645">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Slide</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -307,7 +307,7 @@
 														</object>
 														<object class="NSMenuItem" id="866837904">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Swap</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -319,7 +319,7 @@
 														</object>
 														<object class="NSMenuItem" id="492539560">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Cube</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -331,7 +331,7 @@
 														</object>
 														<object class="NSMenuItem" id="400754639">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Warp Fade</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -343,7 +343,7 @@
 														</object>
 														<object class="NSMenuItem" id="160868018">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Warp Switch</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -355,7 +355,7 @@
 														</object>
 														<object class="NSMenuItem" id="493549610">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Reveal</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -367,7 +367,7 @@
 														</object>
 														<object class="NSMenuItem" id="395011289">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Fade</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -379,7 +379,7 @@
 														</object>
 														<object class="NSMenuItem" id="706505795">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Zoom</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -391,7 +391,7 @@
 														</object>
 														<object class="NSMenuItem" id="647120862">
 															<reference key="NSMenu" ref="185249612"/>
-															<string key="NSTitle">Flip</string>
+															<string key="NSTitle"/>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
@@ -707,7 +707,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<object class="NSTextFieldCell" key="NSTitleCell">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Page Transition</string>
+								<string key="NSContents"/>
 								<object class="NSFont" key="NSSupport" id="26">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">11</double>
@@ -758,7 +758,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicInterval">75</int>
 												<object class="NSMenuItem" key="NSMenuItem" id="847160734">
 													<reference key="NSMenu" ref="275682313"/>
-													<string key="NSTitle">None</string>
+													<string key="NSTitle"/>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -1844,6 +1844,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>13.ImportedFromIB2</string>
 					<string>138.IBPluginDependency</string>
 					<string>138.ImportedFromIB2</string>
+					<string>14.IBEditorWindowLastContentRect</string>
 					<string>14.IBPluginDependency</string>
 					<string>14.ImportedFromIB2</string>
 					<string>15.IBPluginDependency</string>
@@ -1922,6 +1923,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>7.ImportedFromIB2</string>
 					<string>7.windowTemplate.hasMinSize</string>
 					<string>7.windowTemplate.minSize</string>
+					<string>73.IBEditorWindowLastContentRect</string>
 					<string>73.IBPluginDependency</string>
 					<string>73.ImportedFromIB2</string>
 					<string>8.IBPluginDependency</string>
@@ -1949,6 +1951,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
+					<string>{{279, 292}, {188, 203}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2027,6 +2030,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<boolean value="YES"/>
 					<boolean value="YES"/>
 					<string>{213, 107}</string>
+					<string>{{213, 350}, {254, 23}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

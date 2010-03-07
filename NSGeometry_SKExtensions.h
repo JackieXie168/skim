@@ -166,5 +166,4 @@ NSPoint SKNSPointFromQDPoint(Point qdPoint) {
 #pragma mark -
 
 extern void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton);
-extern void SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls);
-extern CGFloat SKAutoSizeLabelFieldsShiftingControls(NSArray *labelFields, NSArray *controls);
+extern CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resizeControls);

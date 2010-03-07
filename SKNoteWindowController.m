@@ -52,6 +52,7 @@
 #import "NSString_SKExtensions.h"
 #import "BDSKEdgeView.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -183,7 +184,7 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
         }
         
         [iconLabelField setStringValue:NSLocalizedString(@"Icon:", @"Popup label")];
-        //SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil]);
+        SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
         
         NSMenu *menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
         [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:imageView];

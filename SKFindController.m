@@ -73,7 +73,7 @@
     [previousButton setToolTip:NSLocalizedString(@"Find previous match", @"Tool tip message")];
     
     SKAutoSizeButtons(nextButton, previousButton);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil]);
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil], YES);
     
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
     
