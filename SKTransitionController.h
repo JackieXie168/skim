@@ -89,6 +89,8 @@ typedef NSUInteger SKAnimationTransitionStyle;
 + (NSString *)nameForStyle:(SKAnimationTransitionStyle)style;
 + (SKAnimationTransitionStyle)styleForName:(NSString *)name;
 
++ (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style;
+
 - (id)initWithView:(NSView *)aView;
 
 - (NSView *)view;

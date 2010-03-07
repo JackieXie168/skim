@@ -67,4 +67,6 @@
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
 
+- (NSString *)title;
+
 @end
