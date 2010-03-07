@@ -47,6 +47,8 @@
     IBOutlet BDSKDragImageView *imageView;
     IBOutlet SKStatusBar *statusBar;
     IBOutlet NSPopUpButton *iconTypePopUpButton;
+    IBOutlet NSTextField *iconLabelField;
+    IBOutlet NSButton *checkButton;
     IBOutlet NSObjectController *noteController;
     
     PDFAnnotation *note;

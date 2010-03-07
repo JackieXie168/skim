@@ -51,6 +51,7 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"
 #import "BDSKEdgeView.h"
+#import "NSMenu_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -134,7 +135,21 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%ld, %ld)", @"Status message"), [[note page] displayLabel], (long)NSMidX(bounds), (long)NSMidY(bounds)]];
 }
 
+static NSString *iconTypeName(PDFTextAnnotationIconType type) {
+    switch (type) {
+        case kPDFTextAnnotationIconComment:      return NSLocalizedString(@"Comment", @"Icon type name");
+        case kPDFTextAnnotationIconKey:          return NSLocalizedString(@"Key", @"Icon type name");
+        case kPDFTextAnnotationIconNote:         return NSLocalizedString(@"Note", @"Icon type name");
+        case kPDFTextAnnotationIconHelp:         return NSLocalizedString(@"Help", @"Icon type name");
+        case kPDFTextAnnotationIconNewParagraph: return NSLocalizedString(@"New Paragraph", @"Icon type name");
+        case kPDFTextAnnotationIconParagraph:    return NSLocalizedString(@"Paragraph", @"Icon type name");
+        case kPDFTextAnnotationIconInsert:       return NSLocalizedString(@"Insert", @"Icon type name");
+        default:                                 return NSLocalizedString(@"Note", @"Icon type name");
+    }
+}
+
 - (void)windowDidLoad {
+    [[self window] setTitle:NSLocalizedString(@"Note", @"Window title")];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
@@ -162,8 +177,22 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSUInteger i, count = [iconTypePopUpButton numberOfItems];
         for (i = 0; i < count; i++) {
             NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
-            [item setImage:noteIcons[[item tag]]];
+            [item setTag:i];
+            [item setTitle:iconTypeName(i)];
+            [item setImage:noteIcons[i]];
         }
+        
+        [iconLabelField setStringValue:NSLocalizedString(@"Icon:", @"Popup label")];
+        //SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil]);
+        
+        NSMenu *menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:imageView];
+        [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) target:imageView];
+        [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:imageView];
+        [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(show:) target:imageView];
+        [imageView setMenu:menu];
+        [menu release];
+        
     } else {
         NSView *gradientView = [imageView superview];
         NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
@@ -189,6 +218,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [[self window] setMinSize:minimumSize];
         [[self window] setFrame:frame display:NO];
     }
+    
+    NSRect buttonFrame = [checkButton frame];
+    CGFloat right = NSMaxX(buttonFrame);
+    [checkButton setStringValue:NSLocalizedString(@"Keep on top", @"Check button title")];
+    [checkButton sizeToFit];
+    buttonFrame = [checkButton frame];
+    buttonFrame.origin.x = right - NSWidth(buttonFrame);
+    [checkButton setFrame:buttonFrame];
     
     SKAnnotationTypeImageCell *cell = [[[SKAnnotationTypeImageCell alloc] initImageCell:nil] autorelease];
     [cell setObjectValue:[NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil]];
