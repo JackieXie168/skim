@@ -40,7 +40,12 @@
 
 
 @interface SKInfoWindowController : NSWindowController {
+    IBOutlet NSTableView *summaryTableView;
+    IBOutlet NSTableView *attributesTableView;
+    IBOutlet NSTabView *tabView;
     NSDictionary *info;
+    NSArray *summaryKeys;
+    NSArray *attributesKeys;
 }
 
 + (id)sharedInstance;
