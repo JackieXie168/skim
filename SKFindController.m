@@ -66,7 +66,7 @@
 - (void)windowDidLoad {
     [[self window] setTitle:NSLocalizedString(@"Find", @"Window title")];
     [labelField setStringValue:NSLocalizedString(@"Find:", @"Prompt")];
-    [ignoreCaseCheckbox setTitle:NSLocalizedString(@"Ignore case", @"Button title")];
+    [ignoreCaseCheckbox setTitle:NSLocalizedString(@"Ignore case", @"Check button title")];
     [nextButton setTitle:NSLocalizedString(@"Next", @"Button title")];
     [previousButton setTitle:NSLocalizedString(@"Previous", @"Button title")];
     [nextButton setToolTip:NSLocalizedString(@"Find next match", @"Tool tip message")];

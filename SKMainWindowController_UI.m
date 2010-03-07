@@ -141,7 +141,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 if (colorAccessoryView == nil) {
                     colorAccessoryView = [[NSButton alloc] init];
                     [colorAccessoryView setButtonType:NSSwitchButton];
-                    [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Button title")];
+                    [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Check button title")];
                     [[colorAccessoryView cell] setControlSize:NSSmallControlSize];
                     [colorAccessoryView setTarget:self];
                     [colorAccessoryView setAction:@selector(changeColorFill:)];
@@ -152,7 +152,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 if (textColorAccessoryView == nil) {
                     textColorAccessoryView = [[NSButton alloc] init];
                     [textColorAccessoryView setButtonType:NSSwitchButton];
-                    [textColorAccessoryView setTitle:NSLocalizedString(@"Text color", @"Button title")];
+                    [textColorAccessoryView setTitle:NSLocalizedString(@"Text color", @"Check button title")];
                     [[textColorAccessoryView cell] setControlSize:NSSmallControlSize];
                     [textColorAccessoryView setTarget:self];
                     [textColorAccessoryView setAction:@selector(changeColorText:)];

@@ -62,10 +62,10 @@
 }
 
 - (void)awakeFromNib {
-    [autoRotateButton setTitle:NSLocalizedString(@"Automatically rotate each page", @"Button title")];
-    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleNone] setTitle:NSLocalizedString(@"No automatic page scaling", @"Button title")];
-    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleToFit] setTitle:NSLocalizedString(@"Scale each page to fit paper", @"Button title")];
-    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleDownToFit] setTitle:NSLocalizedString(@"Only scale down large pages", @"Button title")];
+    [autoRotateButton setTitle:NSLocalizedString(@"Automatically rotate each page", @"Check button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleNone] setTitle:NSLocalizedString(@"No automatic page scaling", @"Radio button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleToFit] setTitle:NSLocalizedString(@"Scale each page to fit paper", @"Radio button title")];
+    [[printScalingModeMatrix cellWithTag:kPDFPrintPageScaleDownToFit] setTitle:NSLocalizedString(@"Only scale down large pages", @"Radio button title")];
     
     [autoRotateButton sizeToFit];
     [printScalingModeMatrix sizeToCells];

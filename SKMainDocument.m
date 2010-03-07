@@ -896,7 +896,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (readNotesAccessoryView == nil) {
             replaceNotesCheckButton = [[[NSButton alloc] init] autorelease];
             [replaceNotesCheckButton setButtonType:NSSwitchButton];
-            [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Button title")];
+            [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Check button title")];
             [replaceNotesCheckButton sizeToFit];
             [replaceNotesCheckButton setFrameOrigin:NSMakePoint(16.0, 8.0)];
             readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -16.0, -8.0)];
