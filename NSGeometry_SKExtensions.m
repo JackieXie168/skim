@@ -155,3 +155,28 @@ void SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls) {
         [control setFrame:frame];
     }
 }
+
+CGFloat SKAutoSizeLabelFieldsShiftingControls(NSArray *labelFields, NSArray *controls) {
+    NSControl *control;
+    NSRect frame;
+    CGFloat left = CGFLOAT_MAX, width = 0.0, right, dw = NSMaxX([[labelFields lastObject] frame]);
+    for (control in labelFields) {
+        [control sizeToFit];
+        frame = [control frame];
+        left = fmin(left, NSMinX(frame));
+        width = fmax(width, NSWidth(frame));
+    }
+    right = left + width;
+    for (control in labelFields) {
+        frame = [control frame];
+        frame.origin.x = right - NSWidth(frame);
+        [control setFrame:frame];
+    }
+    dw -= left + width;
+    for (control in controls) {
+        frame = [control frame];
+        frame.origin.x -= dw;
+        [control setFrame:frame];
+    }
+    return dw;
+}

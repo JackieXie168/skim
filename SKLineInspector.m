@@ -41,6 +41,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
+#import "NSGeometry_SKExtensions.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
 
@@ -85,7 +86,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)windowDidLoad {
-    [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
+    [[self window] setTitle:NSLocalizedString(@"Lines", @"Window title")];
     
     [lineWell setCanActivate:NO];
     [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:LINEWIDTH_KEY options:nil];
@@ -97,6 +98,18 @@ static SKLineInspector *sharedLineInspector = nil;
     SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
     [dashPatternField setFormatter:formatter];
     [formatter release];
+    
+    [borderStyleHeaderField setStringValue:NSLocalizedString(@"Line and Border Style", @"Header label")];
+    [lineEndingStyleHeaderField setStringValue:NSLocalizedString(@"Line Ending Style", @"Header label")];
+    [lineWidthLabelField setStringValue:NSLocalizedString(@"Line Width:", @"Control label")];
+    [styleLabelField setStringValue:NSLocalizedString(@"Line Style:", @"Control label")];
+    [dashPatternLabelField setStringValue:NSLocalizedString(@"Dash Pattern:", @"Control label")];
+    [startLineStyleLabelField setStringValue:NSLocalizedString(@"Start:", @"Control label")];
+    [endLineStyleLabelField setStringValue:NSLocalizedString(@"End:", @"Control label")];
+    
+    [lineWidthSlider setToolTip:NSLocalizedString(@"Line width", @"Tool tip message")];
+    [lineWidthField setToolTip:NSLocalizedString(@"Line width", @"Tool tip message")];
+    [dashPatternField setToolTip:NSLocalizedString(@"Dash pattern as numbers separated by space", @"Tool tip message")];
     
     [styleButton setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
     [styleButton setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
@@ -117,6 +130,15 @@ static SKLineInspector *sharedLineInspector = nil;
     [endLineStyleButton setToolTip:NSLocalizedString(@"Diamond end line style", @"Tool tip message") forSegment:kPDFLineStyleDiamond];
     [endLineStyleButton setToolTip:NSLocalizedString(@"Open arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
     [endLineStyleButton setToolTip:NSLocalizedString(@"Closed arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
+    
+    CGFloat dw = SKAutoSizeLabelFieldsShiftingControls([NSArray arrayWithObjects:styleLabelField, dashPatternLabelField, startLineStyleLabelField, endLineStyleLabelField, nil], [NSArray arrayWithObjects:lineWidthSlider, lineWidthField, styleButton, dashPatternField, startLineStyleButton, endLineStyleButton, nil]);
+    if (fabs(dw) > 0.0) {
+        NSRect frame = [[self window] frame];
+        frame.size.width += dw;
+        [[self window] setFrame:frame display:NO];
+    }
+    
+    [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
 
     NSImage *image = nil;
 	NSSize size;
