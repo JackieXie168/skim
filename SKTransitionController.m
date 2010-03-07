@@ -210,11 +210,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         case SKCubeTransition:       return NSLocalizedString(@"Swap", @"Transition name");
         case SKWarpSwitchTransition: return NSLocalizedString(@"Cube", @"Transition name");
         case SKWarpFlipTransition:   return NSLocalizedString(@"Flip", @"Transition name");
-        default:
-            if (style >= SKCoreImageTransition && style <= [[self transitionNames] count])
-                return [CIFilter localizedNameForFilterName:[[self transitionNames] objectAtIndex:style - 1]];
-            else
-                return nil;
+        default:                     return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
     };
 }
 
