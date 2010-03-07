@@ -198,6 +198,26 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return idx == NSNotFound ? SKNoTransition : idx + 1;
 }
 
++ (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
+    switch (style) {
+        case SKNoTransition:         return NSLocalizedString(@"No Transition", @"Transition name");
+        case SKFadeTransition:       return NSLocalizedString(@"Fade", @"Transition name");
+        case SKZoomTransition:       return NSLocalizedString(@"Zoom", @"Transition name");
+        case SKRevealTransition:     return NSLocalizedString(@"Reveal", @"Transition name");
+        case SKSlideTransition:      return NSLocalizedString(@"Slide", @"Transition name");
+        case SKWarpFadeTransition:   return NSLocalizedString(@"Warp Fade", @"Transition name");
+        case SKSwapTransition:       return NSLocalizedString(@"Warp Switch", @"Transition name");
+        case SKCubeTransition:       return NSLocalizedString(@"Swap", @"Transition name");
+        case SKWarpSwitchTransition: return NSLocalizedString(@"Cube", @"Transition name");
+        case SKWarpFlipTransition:   return NSLocalizedString(@"Flip", @"Transition name");
+        default:
+            if (style >= SKCoreImageTransition && style <= [[self transitionNames] count])
+                return [CIFilter localizedNameForFilterName:[[self transitionNames] objectAtIndex:style - 1]];
+            else
+                return nil;
+    };
+}
+
 - (id)initWithView:(NSView *)aView {
     if (self = [super init]) {
         view = aView; // don't retain as it may retain us

@@ -42,6 +42,10 @@
 
 @implementation SKTransitionInfo
 
++ (NSSet *)keyPathsForValuesAffectingValueForTitle {
+    return [NSSet setWithObjects:@"label", nil];
+}
+
 - (id)init {
     if (self = [super init]) {
         transitionStyle = SKNoTransition;
@@ -124,6 +128,13 @@
         [label release];
         label = [newLabel copy];
     }
+}
+
+- (NSString *)title {
+    NSString *title = NSLocalizedString(@"Page Transition", @"Box title");
+    if (label)
+        title = [NSString stringWithFormat:@"%@ %@", title, label];
+    return title;
 }
 
 @end

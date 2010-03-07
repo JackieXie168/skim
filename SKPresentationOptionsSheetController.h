@@ -50,6 +50,13 @@
     IBOutlet NSPopUpButton *notesDocumentPopUpButton;
     IBOutlet SKThumbnailTableView *tableView;
     IBOutlet NSButton *separateCheckButton;
+    IBOutlet NSBox *transitionBox;
+    IBOutlet NSBox *documentBox;
+    IBOutlet NSTextField *effectLabelField;
+    IBOutlet NSTextField *durationLabelField;
+    IBOutlet NSTextField *extentLabelField;
+    IBOutlet NSButton *okButton;
+    IBOutlet NSButton *cancelButton;
     IBOutlet NSObjectController *objectController;
     IBOutlet NSArrayController *arrayController;
     BOOL separate;
