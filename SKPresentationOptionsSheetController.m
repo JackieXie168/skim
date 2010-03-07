@@ -119,20 +119,12 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (void)windowDidLoad {
     // add the filter names to the popup
-    NSArray *filterNames = [SKTransitionController transitionFilterNames];
-    NSUInteger i, count = [transitionStylePopUpButton numberOfItems];
+    NSUInteger i, count = 1 + [[SKTransitionController transitionNames] count];
     
+    [transitionStylePopUpButton removeAllItems];
     for (i = 0; i < count; i++) {
-        NSMenuItem *item = [transitionStylePopUpButton itemAtIndex:i];
-        [item setTitle:[SKTransitionController localizedNameForStyle:[item tag]]];
-    }
-    
-    count = [filterNames count];
-    for (i = 0; i < count; i++) {
-        NSString *name = [filterNames objectAtIndex:i];
-        [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
-        NSMenuItem *item = [transitionStylePopUpButton lastItem];
-        [item setTag:SKCoreImageTransition + i];
+        [transitionStylePopUpButton addItemWithTitle:[SKTransitionController localizedNameForStyle:i]];
+        [[transitionStylePopUpButton lastItem] setTag:i];
     }
     
     [[notesDocumentPopUpButton itemAtIndex:0] setTitle:NSLocalizedString(@"None", @"Menu item title")];
