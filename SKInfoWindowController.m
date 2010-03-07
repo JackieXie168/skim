@@ -79,6 +79,25 @@
 - (id)init {
     if (self = [super initWithWindowNibName:@"InfoWindow"]){
         info = nil;
+        summaryKeys = [[NSArray alloc] initWithObjects:
+                            SKInfoFileNameKey,
+                            SKInfoFileSizeKey,
+                            SKInfoPageSizeKey,
+                            SKInfoPageCountKey,
+                            SKInfoVersionKey,
+                            @"",
+                            SKInfoEncryptedKey,
+                            SKInfoAllowsPrintingKey,
+                            SKInfoAllowsCopyingKey, nil];
+        attributesKeys = [[NSArray alloc] initWithObjects:
+                            PDFDocumentTitleAttribute,
+                            PDFDocumentAuthorAttribute,
+                            PDFDocumentSubjectAttribute,
+                            PDFDocumentCreatorAttribute,
+                            PDFDocumentProducerAttribute,
+                            PDFDocumentCreationDateAttribute,
+                            PDFDocumentModificationDateAttribute,
+                            PDFDocumentKeywordsAttribute, nil];
     }
     return self;
 }
@@ -86,13 +105,37 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(info);
+    SKDESTROY(summaryKeys);
+    SKDESTROY(attributesKeys);
     [super dealloc];
 }
 
 - (void)windowDidLoad {
-    [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
-    
     [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
+    [summaryTableView reloadData];
+    [attributesTableView reloadData];
+    
+    [[self window] setTitle:NSLocalizedString(@"Document Info", @"Window title")];
+    [[tabView tabViewItemAtIndex:0] setLabel:NSLocalizedString(@"Summary", @"Info tab label")];
+    [[tabView tabViewItemAtIndex:1] setLabel:NSLocalizedString(@"Attributes", @"Info tab label")];
+    
+    NSUInteger row, rowMax;
+    CGFloat width = 0.0;
+    
+    rowMax = [summaryTableView numberOfRows];
+    for (row = 0; row < rowMax; row++)
+        width = fmax(width, [[summaryTableView preparedCellAtColumn:0 row:row] cellSize].width);
+    [[summaryTableView tableColumnWithIdentifier:@"label"] setWidth:width];
+    [summaryTableView sizeToFit];
+    
+    width = 0.0;
+    rowMax = [attributesTableView numberOfRows];
+    for (row = 0; row < rowMax; row++)
+        width = fmax(width, [[attributesTableView preparedCellAtColumn:0 row:row] cellSize].width);
+    [[attributesTableView tableColumnWithIdentifier:@"label"] setWidth:width];
+    [attributesTableView sizeToFit];
+    
+    [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidBecomeMainNotification:) 
                                                  name: NSWindowDidBecomeMainNotification object: nil];
@@ -239,10 +282,107 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification {
     NSDocument *doc = [[[notification object] windowController] document];
     [self setInfo:[self infoForDocument:doc]];
+    [summaryTableView reloadData];
+    [attributesTableView reloadData];
 }
 
 - (void)handleWindowDidResignMainNotification:(NSNotification *)notification {
     [self setInfo:nil];
+    [summaryTableView reloadData];
+    [attributesTableView reloadData];
+}
+
+- (NSString *)labelForKey:(NSString *)key {
+    if ([key isEqualToString:SKInfoFileNameKey])
+        return NSLocalizedString(@"File name:", @"Info label");
+    if ([key isEqualToString:SKInfoFileSizeKey])
+        return NSLocalizedString(@"File size:", @"Info label");
+    if ([key isEqualToString:SKInfoPageSizeKey])
+        return NSLocalizedString(@"Page size:", @"Info label");
+    if ([key isEqualToString:SKInfoPageCountKey])
+        return NSLocalizedString(@"Page count:", @"Info label");
+    if ([key isEqualToString:SKInfoVersionKey])
+        return NSLocalizedString(@"PDF Version:", @"Info label");
+    if ([key isEqualToString:SKInfoEncryptedKey])
+        return NSLocalizedString(@"Encrypted:", @"Info label");
+    if ([key isEqualToString:SKInfoAllowsPrintingKey])
+        return NSLocalizedString(@"Allows printing:", @"Info label");
+    if ([key isEqualToString:SKInfoAllowsCopyingKey])
+        return NSLocalizedString(@"Allows copying:", @"Info label");
+    if ([key isEqualToString:PDFDocumentTitleAttribute])
+        return NSLocalizedString(@"Title:", @"Info label");
+    if ([key isEqualToString:PDFDocumentAuthorAttribute])
+        return NSLocalizedString(@"Author:", @"Info label");
+    if ([key isEqualToString:PDFDocumentSubjectAttribute])
+        return NSLocalizedString(@"Subject:", @"Info label");
+    if ([key isEqualToString:PDFDocumentCreatorAttribute])
+        return NSLocalizedString(@"Content Creator:", @"Info label");
+    if ([key isEqualToString:PDFDocumentProducerAttribute])
+        return NSLocalizedString(@"PDF Producer:", @"Info label");
+    if ([key isEqualToString:PDFDocumentCreationDateAttribute])
+        return NSLocalizedString(@"Creation date:", @"Info label");
+    if ([key isEqualToString:PDFDocumentModificationDateAttribute])
+        return NSLocalizedString(@"Modification date:", @"Info label");
+    if ([key isEqualToString:PDFDocumentKeywordsAttribute])
+        return NSLocalizedString(@"Keywords:", @"Info label");
+    return [key stringByAppendingString:@":"];
+}
+
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
+    NSArray *keys = nil;
+    if ([tv isEqual:summaryTableView])
+        keys = summaryKeys;
+    else if ([tv isEqual:attributesTableView])
+        keys = attributesKeys;
+    return [keys count];
+}
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    static NSDateFormatter *shortDateFormatter = nil;
+    if(shortDateFormatter == nil) {
+        shortDateFormatter = [[NSDateFormatter alloc] init];
+        [shortDateFormatter setDateStyle:NSDateFormatterShortStyle];
+        [shortDateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    }
+    NSArray *keys = nil;
+    if ([tv isEqual:summaryTableView])
+        keys = summaryKeys;
+    else if ([tv isEqual:attributesTableView])
+        keys = attributesKeys;
+    NSString *key = [keys objectAtIndex:row];
+    NSString *tcID = [tableColumn identifier];
+    id value = nil;
+    if ([key length]) {
+        if ([tcID isEqualToString:@"label"]) {
+            value = [self labelForKey:key];
+        } else if ([tcID isEqualToString:@"value"]) {
+            value = [info objectForKey:key];
+            if ([value isKindOfClass:[NSDate class]])
+                value = [shortDateFormatter stringFromDate:value];
+            else if ([value isKindOfClass:[NSNumber class]])
+                value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
+            else if (value == nil)
+                value = @"-";
+        }
+    }
+    return value;
+}
+
+- (void)tableView:(NSTableView *)tv willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([tv isEqual:attributesTableView] && [[tableColumn identifier] isEqualToString:@"label"])
+        [cell setLineBreakMode:row == [tv numberOfRows] - 1 ? NSLineBreakByWordWrapping : NSLineBreakByTruncatingTail];
+}
+
+- (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
+    CGFloat rowHeight = [tv rowHeight];
+    if ([tv isEqual:attributesTableView] && row == [tv numberOfRows] - 1)
+        rowHeight = fmax(rowHeight, NSHeight([tv bounds]) - ([tv numberOfRows] - 1) * (rowHeight + [tv intercellSpacing].height));
+    return rowHeight;
+}
+
+- (BOOL)tableView:(NSTableView *)tv shouldSelectRow:(NSInteger)row {
+    return NO;
 }
 
 @end
