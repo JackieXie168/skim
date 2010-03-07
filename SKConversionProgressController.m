@@ -43,6 +43,7 @@
 #import "NSInvocation_SKExtensions.h"
 #import "SKDocumentController.h"
 #import <libkern/OSAtomic.h>
+#import "NSGeometry_SKExtensions.h"
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
@@ -193,12 +194,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)setButtonTitle:(NSString *)title action:(SEL)action {
     [cancelButton setTitle:title];
     [cancelButton setAction:action];
-    NSRect frame = [cancelButton frame];
-    [cancelButton sizeToFit];
-    CGFloat width = fmax(NSWidth([cancelButton frame]), MIN_BUTTON_WIDTH);
-    frame.origin.x = NSMaxX(frame) - width;
-    frame.size.width = width;
-    [cancelButton setFrame:frame];
+    SKAutoSizeButtons([NSArray arrayWithObjects:cancelButton, nil], nil);
 }
 
 #pragma mark PostScript
