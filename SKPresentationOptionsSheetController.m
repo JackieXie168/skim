@@ -50,6 +50,7 @@
 #import "SKPDFToolTipWindow.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER 0x2192
 
@@ -157,7 +158,7 @@ static char *SKTransitionPropertiesObservationContext;
     [durationLabelField setStringValue:NSLocalizedString(@"Duration:", @"Control label")];
     [extentLabelField setStringValue:NSLocalizedString(@"Extent:", @"Control label")];
     
-    CGFloat dw = SKAutoSizeLabelFieldsShiftingControls([NSArray arrayWithObjects:effectLabelField, durationLabelField, extentLabelField, nil], [NSArray arrayWithObjects:transitionStylePopUpButton, transitionDurationSlider, transitionDurationField, transitionExtentMatrix, nil]);
+    CGFloat dw = SKAutoSizeLabelFields([NSArray arrayWithObjects:effectLabelField, durationLabelField, extentLabelField, nil], [NSArray arrayWithObjects:transitionStylePopUpButton, transitionDurationSlider, transitionDurationField, transitionExtentMatrix, nil], NO);
     
     if (fabs(dw) > 0.0) {
         NSRect frame = [[self window] frame];

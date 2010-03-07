@@ -51,7 +51,7 @@
 
 - (void)autosizeLabels {
     [labelField setStringValue:[self prompt]];
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:textField, nil]);
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:textField, nil], YES);
 }
 
 - (void)windowDidLoad {
@@ -123,7 +123,7 @@
 - (void)autosizeLabels {
     [labelField setStringValue:[self prompt]];
     [folderLabelField setStringValue:[self folderPrompt]];
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, folderLabelField, nil], [NSArray arrayWithObjects:textField, folderPopUp, nil]);
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, folderLabelField, nil], [NSArray arrayWithObjects:textField, folderPopUp, nil], YES);
 }
 
 - (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
