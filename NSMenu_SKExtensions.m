@@ -37,9 +37,20 @@
  */
 
 #import "NSMenu_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation NSMenu (SKExtensions)
+
+- (void)Leopard_removeAllItems {
+    NSInteger i = [self numberOfItems];
+    while (i--)
+        [self removeItemAtIndex:i];
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(removeAllItems), @selector(Leopard_removeAllItems));
+}
 
 + (NSMenu *)menu {
     return [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
@@ -93,12 +104,6 @@
 
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu {
     return [self insertItemWithTitle:aString submenu:aSubmenu atIndex:[self numberOfItems]];
-}
-
-- (void)removeAllItems {
-    NSInteger i = [self numberOfItems];
-    while (i--)
-        [self removeItemAtIndex:i];
 }
 
 - (void)removeDoubleSeparators {
