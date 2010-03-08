@@ -207,22 +207,6 @@ static char SKOutlineViewDefaultsObservationContext;
     return YES;
 }
 
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = nil;
-    
-    if ([[self delegate] respondsToSelector:@selector(outlineView:menuForTableColumn:item:)]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSInteger row = [self rowAtPoint:mouseLoc];
-        NSInteger column = [self columnAtPoint:mouseLoc];
-        if (row != -1 && column != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            menu = [[self delegate] outlineView:self menuForTableColumn:tableColumn item:[self itemAtRow:row]];
-        }
-    }
-    
-	return menu;
-}
-
 - (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation {
     if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
         [super draggedImage:anImage endedAt:aPoint operation:operation];
