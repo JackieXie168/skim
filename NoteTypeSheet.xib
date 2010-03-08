@@ -67,9 +67,9 @@
 							<object class="NSMutableArray" key="NSCells">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSButtonCell" id="712186990">
-									<int key="NSCellFlags">-2080244224</int>
+									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Text Note</string>
+									<string key="NSContents"/>
 									<object class="NSFont" key="NSSupport" id="758682501">
 										<string key="NSName">LucidaGrande</string>
 										<double key="NSSize">13</double>
@@ -95,7 +95,7 @@
 								<object class="NSButtonCell" id="951326133">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Highlight</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">4</int>
@@ -110,7 +110,7 @@
 								<object class="NSButtonCell" id="515350457">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Anchored Note</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">1</int>
@@ -125,7 +125,7 @@
 								<object class="NSButtonCell" id="366031713">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Underline</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">5</int>
@@ -140,7 +140,7 @@
 								<object class="NSButtonCell" id="339120060">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Circle</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">2</int>
@@ -155,7 +155,7 @@
 								<object class="NSButtonCell" id="624272474">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Strike Out</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">6</int>
@@ -170,7 +170,7 @@
 								<object class="NSButtonCell" id="259639235">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Box</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">3</int>
@@ -185,7 +185,7 @@
 								<object class="NSButtonCell" id="173577763">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Line</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">7</int>
@@ -442,7 +442,7 @@ h4QAAAAAAAAAAAAAAAAAAAAAdGV4dAAAAABDb3B5cmlnaHQgQXBwbGUsIEluYy4sIDIwMDgAA</bytes
 								<object class="NSButtonCell" id="352800840">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Freehand</string>
+									<string key="NSContents"/>
 									<reference key="NSSupport" ref="758682501"/>
 									<reference key="NSControlView" ref="296787853"/>
 									<int key="NSTag">8</int>
@@ -456,7 +456,7 @@ h4QAAAAAAAAAAAAAAAAAAAAAdGV4dAAAAABDb3B5cmlnaHQgQXBwbGUsIEluYy4sIDIwMDgAA</bytes
 							</object>
 							<string key="NSCellSize">{117, 18}</string>
 							<string key="NSIntercellSpacing">{4, 2}</string>
-							<int key="NSMatrixFlags">-2077753344</int>
+							<int key="NSMatrixFlags">-2077745152</int>
 							<string key="NSCellClass">NSActionCell</string>
 							<object class="NSButtonCell" key="NSProtoCell" id="77445638">
 								<int key="NSCellFlags">67239424</int>
@@ -470,8 +470,7 @@ h4QAAAAAAAAAAAAAAAAAAAAAdGV4dAAAAABDb3B5cmlnaHQgQXBwbGUsIEluYy4sIDIwMDgAA</bytes
 								<int key="NSPeriodicDelay">400</int>
 								<int key="NSPeriodicInterval">75</int>
 							</object>
-							<int key="NSSelectedRow">-1</int>
-							<int key="NSSelectedCol">-1</int>
+							<reference key="NSSelectedCell" ref="712186990"/>
 							<object class="NSColor" key="NSBackgroundColor" id="732965092">
 								<int key="NSColorSpace">6</int>
 								<string key="NSCatalogName">System</string>

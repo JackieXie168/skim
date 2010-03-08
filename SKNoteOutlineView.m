@@ -338,7 +338,9 @@
     SKAutoSizeButtons(noteTypeOkButton, noteTypeCancelButton);
     
     NSRect frame = [noteTypeSheet frame];
-    frame.size.width = fmax(NSWidth([noteTypeMatrix frame]) + 36.0, NSWidth([noteTypeMessageField frame]) + 34.0);
+    NSRect matrixFrame = [noteTypeMatrix frame];
+    NSRect messageFrame = [noteTypeMessageField frame];
+    frame.size.width = fmax(NSWidth(matrixFrame) + 2.0 * NSMinX(matrixFrame), NSWidth(messageFrame) + 2.0 * NSMinX(messageFrame));
     [noteTypeSheet setFrame:frame display:NO];
     
     return YES;
