@@ -37,6 +37,7 @@
  */
 
 #import "BDSKDragImageView.h"
+#import "NSMenu_SKExtensions.h"
 
 @implementation BDSKDragImageView
 
@@ -82,7 +83,17 @@
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = [[[super menuForEvent:theEvent] copy] autorelease];
+    NSMenu *menu = [self menu];
+    if (menu == nil) {
+        menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(show:) target:self];
+        [self setMenu:menu];
+        [menu release];
+    }
+    menu = [[menu copy] autorelease];
 	NSInteger i = [menu numberOfItems];
     
     while (i-- > 0) {
