@@ -51,7 +51,6 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"
 #import "BDSKEdgeView.h"
-#import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
@@ -185,14 +184,6 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
         
         [iconLabelField setStringValue:NSLocalizedString(@"Icon:", @"Popup label")];
         SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
-        
-        NSMenu *menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
-        [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:imageView];
-        [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) target:imageView];
-        [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:imageView];
-        [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(show:) target:imageView];
-        [imageView setMenu:menu];
-        [menu release];
         
     } else {
         NSView *gradientView = [imageView superview];
