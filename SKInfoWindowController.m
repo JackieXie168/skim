@@ -110,6 +110,15 @@
     [super dealloc];
 }
 
+static void autosizeFirstTableColumn(NSTableView *tv) {
+    NSUInteger row, rowMax = [tv numberOfRows];
+    CGFloat width = 0.0;
+    for (row = 0; row < rowMax; row++)
+        width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width);
+    [[[tv tableColumns] objectAtIndex:0] setWidth:width];
+    [tv sizeToFit];
+}
+
 - (void)windowDidLoad {
     [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
     [summaryTableView reloadData];
@@ -119,21 +128,8 @@
     [[tabView tabViewItemAtIndex:0] setLabel:NSLocalizedString(@"Summary", @"Info tab label")];
     [[tabView tabViewItemAtIndex:1] setLabel:NSLocalizedString(@"Attributes", @"Info tab label")];
     
-    NSUInteger row, rowMax;
-    CGFloat width = 0.0;
-    
-    rowMax = [summaryTableView numberOfRows];
-    for (row = 0; row < rowMax; row++)
-        width = fmax(width, [[summaryTableView preparedCellAtColumn:0 row:row] cellSize].width);
-    [[summaryTableView tableColumnWithIdentifier:@"label"] setWidth:width];
-    [summaryTableView sizeToFit];
-    
-    width = 0.0;
-    rowMax = [attributesTableView numberOfRows];
-    for (row = 0; row < rowMax; row++)
-        width = fmax(width, [[attributesTableView preparedCellAtColumn:0 row:row] cellSize].width);
-    [[attributesTableView tableColumnWithIdentifier:@"label"] setWidth:width];
-    [attributesTableView sizeToFit];
+    autosizeFirstTableColumn(summaryTableView);
+    autosizeFirstTableColumn(attributesTableView);
     
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
     
