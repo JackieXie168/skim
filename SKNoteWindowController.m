@@ -222,7 +222,7 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
     
     NSRect buttonFrame = [checkButton frame];
     CGFloat right = NSMaxX(buttonFrame);
-    [checkButton setStringValue:NSLocalizedString(@"Keep on top", @"Check button title")];
+    [checkButton setTitle:NSLocalizedString(@"Keep on top", @"Check button title")];
     [checkButton sizeToFit];
     buttonFrame = [checkButton frame];
     buttonFrame.origin.x = right - NSWidth(buttonFrame);
