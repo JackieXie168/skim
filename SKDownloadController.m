@@ -438,40 +438,50 @@ static char SKDownloadPropertiesObservationContext;
     return (nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
 }
 
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    NSMenuItem *menuItem;
-    SKDownload *download = [self objectInDownloadsAtIndex:row];
-    
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    
-    if ([download canCancel]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
-        [menuItem setRepresentedObject:download];
-    } else if ([download canRemove]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
-        [menuItem setRepresentedObject:download];
-    }
-    if ([download canResume]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
-        [menuItem setRepresentedObject:download];
-    }
-    if ([download status] == SKDownloadStatusFinished) {
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
-        [menuItem setRepresentedObject:download];
-        
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) target:self];
-        [menuItem setRepresentedObject:download];
-        
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) target:self];
-        [menuItem setRepresentedObject:download];
-    }
-    
-    return menu;
-}
-
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     return [downloads valueForKey:SKDownloadFileNameKey];
+}
+
+#pragma mark Contextual menu
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    NSMenu *newMenu = [[[NSMenu allocWithZone:[menu zone]] init] autorelease];
+    NSMenuItem *menuItem;
+    NSInteger row = [tableView clickedRow];
+    if (row != -1) {
+        SKDownload *download = [self objectInDownloadsAtIndex:row];
+        
+        if ([download canCancel]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
+            [menuItem setRepresentedObject:download];
+        } else if ([download canRemove]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
+            [menuItem setRepresentedObject:download];
+        }
+        if ([download canResume]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
+            [menuItem setRepresentedObject:download];
+        }
+        if ([download status] == SKDownloadStatusFinished) {
+            menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
+            [menuItem setRepresentedObject:download];
+            
+            menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) target:self];
+            [menuItem setRepresentedObject:download];
+            
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) target:self];
+            [menuItem setRepresentedObject:download];
+        }
+        
+        NSUInteger i, count = [newMenu numberOfItems];
+        
+        [menu removeAllItems];
+        for (i = 0; i < count; i++) {
+            menuItem = [[newMenu itemAtIndex:i] copyWithZone:[menu zone]];
+            [menu addItem:menuItem];
+            [menuItem release];
+        }
+    }
 }
 
 #pragma mark KVO

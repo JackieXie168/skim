@@ -587,35 +587,6 @@
     return [item string];
 }
 
-- (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if ([outlineView isRowSelected:[outlineView rowForItem:item]] == NO)
-        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
-    
-    NSMenu *menu = nil;
-    NSMenuItem *menuItem;
-    NSMutableArray *items = [NSMutableArray array];
-    NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
-    NSUInteger row = [rowIndexes firstIndex];
-    while (row != NSNotFound) {
-        [items addObject:[outlineView itemAtRow:row]];
-        row = [rowIndexes indexGreaterThanIndex:row];
-    }
-    
-    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
-    
-    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
-        [menuItem setRepresentedObject:items];
-        [menu addItem:[NSMenuItem separatorItem]];
-    }
-    menuItem = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
-    [menuItem setRepresentedObject:items];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
-    
-    return menu;
-}
-
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     NSInteger i, count = [outlineView numberOfRows];
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
@@ -636,6 +607,47 @@
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
     else
         [statusBar setLeftStringValue:@""];
+}
+
+#pragma mark Contextual menu
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    if ([menu isEqual:[outlineView menu]]) {
+        NSMenu *newMenu = nil;
+        NSMenuItem *item;
+        NSZone *zone = [menu zone];
+        NSMutableArray *items = [NSMutableArray array];
+        NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
+        NSInteger row = [outlineView clickedRow];
+        if (row != -1) {
+            if ([rowIndexes containsIndex:row] == NO)
+                rowIndexes = [NSIndexSet indexSetWithIndex:row];
+            NSUInteger rowIdx = [rowIndexes firstIndex];
+            while (rowIdx != NSNotFound) {
+                [items addObject:[outlineView itemAtRow:rowIdx]];
+                rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
+            }
+            
+            menu = [[[NSMenu allocWithZone:zone] init] autorelease];
+            if ([self outlineView:outlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
+                [item setRepresentedObject:items];
+                [menu addItem:[NSMenuItem separatorItem]];
+            }
+            item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+            [item setRepresentedObject:items];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+        }
+        
+        NSUInteger i, count = [newMenu numberOfItems];
+        
+        [menu removeAllItems];
+        for (i = 0; i < count; i++) {
+            item = [[newMenu itemAtIndex:i] copyWithZone:zone];
+            [menu addItem:item];
+            [item release];
+        }
+    }
 }
 
 #pragma mark Toolbar

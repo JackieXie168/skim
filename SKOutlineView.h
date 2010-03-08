@@ -49,8 +49,6 @@
 - (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
 
-- (NSMenu *)outlineView:(NSOutlineView *)anOutlineView menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
-
 - (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;

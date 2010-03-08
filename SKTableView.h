@@ -53,8 +53,6 @@
 - (void)tableViewPaste:(NSTableView *)aTableView;
 - (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
 
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-
 - (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 - (id<SKPDFToolTipContext>)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
