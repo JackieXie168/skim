@@ -613,12 +613,11 @@
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     if ([menu isEqual:[outlineView menu]]) {
-        NSMenu *newMenu = nil;
         NSMenuItem *item;
-        NSZone *zone = [menu zone];
         NSMutableArray *items = [NSMutableArray array];
         NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
         NSInteger row = [outlineView clickedRow];
+        [menu removeAllItems];
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
@@ -628,7 +627,6 @@
                 rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
             }
             
-            menu = [[[NSMenu allocWithZone:zone] init] autorelease];
             if ([self outlineView:outlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
                 [item setRepresentedObject:items];
@@ -637,15 +635,6 @@
             item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
             [item setRepresentedObject:items];
             item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
-        }
-        
-        NSUInteger i, count = [newMenu numberOfItems];
-        
-        [menu removeAllItems];
-        for (i = 0; i < count; i++) {
-            item = [[newMenu itemAtIndex:i] copyWithZone:zone];
-            [menu addItem:item];
-            [item release];
         }
     }
 }

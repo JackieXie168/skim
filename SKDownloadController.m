@@ -445,9 +445,9 @@ static char SKDownloadPropertiesObservationContext;
 #pragma mark Contextual menu
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenu *newMenu = [[[NSMenu allocWithZone:[menu zone]] init] autorelease];
     NSMenuItem *menuItem;
     NSInteger row = [tableView clickedRow];
+    [menu removeAllItems];
     if (row != -1) {
         SKDownload *download = [self objectInDownloadsAtIndex:row];
         
@@ -471,15 +471,6 @@ static char SKDownloadPropertiesObservationContext;
             
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) target:self];
             [menuItem setRepresentedObject:download];
-        }
-        
-        NSUInteger i, count = [newMenu numberOfItems];
-        
-        [menu removeAllItems];
-        for (i = 0; i < count; i++) {
-            menuItem = [[newMenu itemAtIndex:i] copyWithZone:[menu zone]];
-            [menu addItem:menuItem];
-            [menuItem release];
         }
     }
 }
