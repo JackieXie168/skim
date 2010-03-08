@@ -43,7 +43,6 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
-#define MIN_BUTTON_ORIGIN 14.0
 
 @implementation SKTextFieldSheetController
 
@@ -55,12 +54,13 @@
 }
 
 - (void)windowDidLoad {
+    NSRect frame = [[self window] frame];
+    CGFloat buttonMargin = NSWidth(frame) - NSMaxX([okButton frame]);
     [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
     [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
     SKAutoSizeButtons(okButton, cancelButton);
-    NSRect frame = [[self window] frame];
-    if (NSMinX([cancelButton frame]) < MIN_BUTTON_ORIGIN) {
-        frame.size.width += MIN_BUTTON_ORIGIN - NSMinX([cancelButton frame]);
+    if (NSMinX([cancelButton frame]) < buttonMargin) {
+        frame.size.width += buttonMargin - NSMinX([cancelButton frame]);
         [[self window] setFrame:frame display:NO];
     }
     [self autosizeLabels];
