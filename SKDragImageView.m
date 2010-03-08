@@ -1,6 +1,6 @@
 //
-//  BDSKDragImageView.m
-//  Bibdesk
+//  SKDragImageView.m
+//  Skim
 //
 //  Created by Christiaan Hofman on 11/28/05.
 /*
@@ -36,16 +36,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "BDSKDragImageView.h"
+#import "SKDragImageView.h"
 #import "NSMenu_SKExtensions.h"
 
-@implementation BDSKDragImageView
+@implementation SKDragImageView
 
-- (id <BDSKDragImageViewDelegate>)delegate {
+- (id <SKDragImageViewDelegate>)delegate {
     return delegate;
 }
 
-- (void)setDelegate:(id <BDSKDragImageViewDelegate>)newDelegate {
+- (void)setDelegate:(id <SKDragImageViewDelegate>)newDelegate {
 	delegate = newDelegate;
 }
 
@@ -77,7 +77,7 @@
         return [self image] != nil && [self isEditable];
     else if (action == @selector(paste:))
         return [self isEditable];
-    else if ([[BDSKDragImageView superclass] instancesRespondToSelector:_cmd])
+    else if ([[SKDragImageView superclass] instancesRespondToSelector:_cmd])
         [super validateMenuItem:menuItem];
     return YES;
 }
