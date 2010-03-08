@@ -37,14 +37,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BDSKDragImageView.h"
+#import "SKDragImageView.h"
 
 
 @class PDFAnnotation, SKStatusBar;
 
-@interface SKNoteWindowController : NSWindowController <NSWindowDelegate, BDSKDragImageViewDelegate> {
+@interface SKNoteWindowController : NSWindowController <NSWindowDelegate, SKDragImageViewDelegate> {
     IBOutlet NSTextView *textView;
-    IBOutlet BDSKDragImageView *imageView;
+    IBOutlet SKDragImageView *imageView;
     IBOutlet SKStatusBar *statusBar;
     IBOutlet NSPopUpButton *iconTypePopUpButton;
     IBOutlet NSTextField *iconLabelField;

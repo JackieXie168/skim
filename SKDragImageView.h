@@ -1,6 +1,6 @@
 //
-//  BDSKDragImageView.h
-//  Bibdesk
+//  SKDragImageView.h
+//  Skim
 //
 //  Created by Christiaan Hofman on 11/28/05.
 /*
@@ -38,23 +38,23 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class BDSKDragImageView;
+@class SKDragImageView;
 
-@protocol BDSKDragImageViewDelegate <NSObject>
+@protocol SKDragImageViewDelegate <NSObject>
 @optional
 
-- (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
-- (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
+- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
+- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
 
 @end
 
 
-@interface BDSKDragImageView : NSImageView {
-	id <BDSKDragImageViewDelegate> delegate;
+@interface SKDragImageView : NSImageView {
+	id <SKDragImageViewDelegate> delegate;
 } 
 
-- (id <BDSKDragImageViewDelegate>)delegate;
-- (void)setDelegate:(id <BDSKDragImageViewDelegate>)newDelegate;
+- (id <SKDragImageViewDelegate>)delegate;
+- (void)setDelegate:(id <SKDragImageViewDelegate>)newDelegate;
 
 - (IBAction)show:(id)sender;
 

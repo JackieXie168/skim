@@ -38,7 +38,7 @@
 
 #import "SKNoteWindowController.h"
 #import <Quartz/Quartz.h>
-#import "BDSKDragImageView.h"
+#import "SKDragImageView.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStatusBar.h"
@@ -340,9 +340,9 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
     return [noteController commitEditingWithDelegate:delegate didCommitSelector:didCommitSelector contextInfo:contextInfo];
 }
 
-#pragma mark BDSKDragImageView delegate protocol
+#pragma mark SKDragImageView delegate protocol
 
-- (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
+- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSString *name = [note string];
@@ -355,7 +355,7 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
     } else return NO;
 }
 
-- (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
+- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSString *name = [note string];

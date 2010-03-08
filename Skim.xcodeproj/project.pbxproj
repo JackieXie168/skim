@@ -105,7 +105,7 @@
 		CE36D173114321C800923821 /* InfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE36D172114321C800923821 /* InfoWindow.xib */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
 		CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */; };
-		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
+		CE3A41580B790C56006B64D3 /* SKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* SKDragImageView.m */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
@@ -572,8 +572,8 @@
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNPDFAnnotationNote_SKExtensions.h; sourceTree = "<group>"; };
 		CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNPDFAnnotationNote_SKExtensions.m; sourceTree = "<group>"; };
-		CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
-		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
+		CE3A41560B790C56006B64D3 /* SKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDragImageView.h; sourceTree = "<group>"; };
+		CE3A41570B790C56006B64D3 /* SKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDragImageView.m; sourceTree = "<group>"; };
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_SKExtensions.h; sourceTree = "<group>"; };
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_SKExtensions.m; sourceTree = "<group>"; };
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; explicitFileType = text.sdef; fileEncoding = 4; path = Skim.sdef; sourceTree = "<group>"; };
@@ -1206,6 +1206,8 @@
 				CE0AEDC2107A137C000C075E /* SKColorCell.m */,
 				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
+				CE3A41560B790C56006B64D3 /* SKDragImageView.h */,
+				CE3A41570B790C56006B64D3 /* SKDragImageView.m */,
 				CECDDBAB0C5BB95F0026AAEC /* SKFindTableView.h */,
 				CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
@@ -1256,8 +1258,6 @@
 				CE0710140B89BDD600733CC8 /* BDSKContainerView.m */,
 				CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */,
 				CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */,
-				CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */,
-				CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */,
 				CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */,
 				CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */,
 			);
@@ -1895,7 +1895,7 @@
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
 				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
 				CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */,
-				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
+				CE3A41580B790C56006B64D3 /* SKDragImageView.m in Sources */,
 				CE3A45530B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m in Sources */,
 				CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */,
 				CE4EC88C0B7E6EDB0091F228 /* SKSplitView.m in Sources */,
