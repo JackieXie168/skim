@@ -839,6 +839,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     // create new annotations from the dictionary and add them to their page and to the document
     for (NSDictionary *dict in noteDicts) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
@@ -852,6 +853,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
                 [observableNotes addObject:annotation];
             [annotation release];
         }
+        [pool release];
     }
     // make sure we clear the undo handling
     [self observeUndoManagerCheckpoint:nil];
