@@ -55,9 +55,6 @@
 
 - (NSDictionary *)infoForDocument:(NSDocument *)doc;
 
-- (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification;
-- (void)handleWindowDidResignMainNotification:(NSNotification *)notification;
-
 @end
 
 
