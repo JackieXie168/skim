@@ -59,6 +59,13 @@
 #define SKInfoTagsKey @"Tags"
 #define SKInfoRatingKey @"Rating"
 
+
+@interface SKInfoWindowController (SKPrivate)
+- (void)handleViewFrameDidChangeNotification:(NSNotification *)notification;
+- (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification;
+- (void)handleWindowDidResignMainNotification:(NSNotification *)notification;
+@end
+
 @implementation SKInfoWindowController
 
 + (void)initialize {
@@ -133,6 +140,8 @@ static void autosizeFirstTableColumn(NSTableView *tv) {
     
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
     
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleViewFrameDidChangeNotification:) 
+                                                 name: NSViewFrameDidChangeNotification object: [attributesTableView enclosingScrollView]];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidBecomeMainNotification:) 
                                                  name: NSWindowDidBecomeMainNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidResignMainNotification:) 
@@ -275,6 +284,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     }
 }
 
+- (void)handleViewFrameDidChangeNotification:(NSNotification *)notification {
+    [attributesTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[attributesKeys count] - 1]];
+}
+
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification {
     NSDocument *doc = [[[notification object] windowController] document];
     [self setInfo:[self infoForDocument:doc]];
@@ -373,7 +386,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
     CGFloat rowHeight = [tv rowHeight];
     if ([tv isEqual:attributesTableView] && row == [tv numberOfRows] - 1)
-        rowHeight = fmax(rowHeight, NSHeight([tv bounds]) - ([tv numberOfRows] - 1) * (rowHeight + [tv intercellSpacing].height));
+        rowHeight = fmax(rowHeight, NSHeight([[tv enclosingScrollView] bounds]) - [tv numberOfRows] * (rowHeight + [tv intercellSpacing].height) + rowHeight);
     return rowHeight;
 }
 
