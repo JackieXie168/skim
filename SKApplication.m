@@ -37,7 +37,6 @@
  */
 
 #import "SKApplication.h"
-#import "SKMainDocument.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 
