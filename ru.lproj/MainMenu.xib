@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
+<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1040</int>
-		<string key="IBDocument.SystemVersion">10B504</string>
-		<string key="IBDocument.InterfaceBuilderVersion">677</string>
-		<string key="IBDocument.AppKitVersion">1038.2</string>
-		<string key="IBDocument.HIToolboxVersion">437.00</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.InterfaceBuilderVersion">740</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
+		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
+			<string key="NS.object.0">740</string>
+		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 		</object>
@@ -60,7 +64,7 @@
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="714486174">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0J4g0L/RgNC+0LPRgNCw0LzQvNC1IFNraW0</string>
+									<string key="NSTitle">О программе Skim</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
@@ -79,7 +83,7 @@
 								</object>
 								<object class="NSMenuItem" id="547635666">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNGB0YLRgNC+0LnQutC44oCmA</string>
+									<string key="NSTitle">Настройки…</string>
 									<string key="NSKeyEquiv">,</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -88,7 +92,7 @@
 								</object>
 								<object class="NSMenuItem" id="771119716">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNC+0LLQtdGA0LjRgtGMINC+0LHQvdC+0LLQu9C10L3QuNGP4oCmA</string>
+									<string key="NSTitle">Проверить обновления…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -108,7 +112,7 @@
 								</object>
 								<object class="NSMenuItem" id="238100496">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQu9GD0LbQsdGLA</string>
+									<string key="NSTitle">Службы</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -116,7 +120,7 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="758482989">
-										<string type="base64-UTF8" key="NSTitle">0KHQu9GD0LbQsdGLA</string>
+										<string key="NSTitle">Службы</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 										</object>
@@ -136,7 +140,7 @@
 								</object>
 								<object class="NSMenuItem" id="320057155">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQutGA0YvRgtGMIFNraW0</string>
+									<string key="NSTitle">Скрыть Skim</string>
 									<string key="NSKeyEquiv">h</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -145,7 +149,7 @@
 								</object>
 								<object class="NSMenuItem" id="429944111">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQutGA0YvRgtGMINC+0YHRgtCw0LvRjNC90YvQtQ</string>
+									<string key="NSTitle">Скрыть остальные</string>
 									<string key="NSKeyEquiv">h</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -154,7 +158,7 @@
 								</object>
 								<object class="NSMenuItem" id="106819381">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDQstGB0LU</string>
+									<string key="NSTitle">Показать все</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -174,7 +178,7 @@
 								</object>
 								<object class="NSMenuItem" id="962760207">
 									<reference key="NSMenu" ref="277954360"/>
-									<string type="base64-UTF8" key="NSTitle">0JfQsNCy0LXRgNGI0LjRgtGMIFNraW0</string>
+									<string key="NSTitle">Завершить Skim</string>
 									<string key="NSKeyEquiv">q</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -187,7 +191,7 @@
 					</object>
 					<object class="NSMenuItem" id="114106132">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0KTQsNC50Ls</string>
+						<string key="NSTitle">Файл</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -195,12 +199,12 @@
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="87861203">
-							<string type="base64-UTF8" key="NSTitle">0KTQsNC50Ls</string>
+							<string key="NSTitle">Файл</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="133803723">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0YvQuSDQuNC3INCa0L7QvdCy0LXRgNGC0LA</string>
+									<string key="NSTitle">Новый из Конверта</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -209,7 +213,7 @@
 								</object>
 								<object class="NSMenuItem" id="50257476">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC60YDRi9GC0YzigKY</string>
+									<string key="NSTitle">Открыть…</string>
 									<string key="NSKeyEquiv">o</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -218,7 +222,7 @@
 								</object>
 								<object class="NSMenuItem" id="636159348">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KDQsNCx0L7Rh9C40LUg0LTQvtC60YPQvNC10L3RgtGLA</string>
+									<string key="NSTitle">Рабочие документы</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -226,12 +230,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="476928841">
-										<string type="base64-UTF8" key="NSTitle">0KDQsNCx0L7Rh9C40LUg0LTQvtC60YPQvNC10L3RgtGLA</string>
+										<string key="NSTitle">Рабочие документы</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="675183230">
 												<reference key="NSMenu" ref="476928841"/>
-												<string type="base64-UTF8" key="NSTitle">0J7Rh9C40YHRgtC40YLRjCDQvNC10L3Rjg</string>
+												<string key="NSTitle">Очистить меню</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -255,7 +259,7 @@
 								</object>
 								<object class="NSMenuItem" id="964486430">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0JfQsNC60YDRi9GC0Yw</string>
+									<string key="NSTitle">Закрыть</string>
 									<string key="NSKeyEquiv">w</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -264,7 +268,7 @@
 								</object>
 								<object class="NSMenuItem" id="726888552">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvtGF0YDQsNC90LjRgtGMA</string>
+									<string key="NSTitle">Сохранить</string>
 									<string key="NSKeyEquiv">s</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -273,7 +277,7 @@
 								</object>
 								<object class="NSMenuItem" id="971415908">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvtGF0YDQsNC90LjRgtGMINC60LDQuuKApg</string>
+									<string key="NSTitle">Сохранить как…</string>
 									<string key="NSKeyEquiv">S</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -282,7 +286,7 @@
 								</object>
 								<object class="NSMenuItem" id="266135058">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0K3QutGB0L/QvtGA0YLQuNGA0L7QstCw0YLRjOKApg</string>
+									<string key="NSTitle">Экспортировать…</string>
 									<string key="NSKeyEquiv">s</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -291,7 +295,7 @@
 								</object>
 								<object class="NSMenuItem" id="815024646">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0JLQtdGA0L3Rg9GC0YzRgdGPINC6INGB0L7RhdGA0LDQvdC10L3QvdC+0LzRgw</string>
+									<string key="NSTitle">Вернуться к сохраненному</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -311,7 +315,7 @@
 								</object>
 								<object class="NSMenuItem" id="909820704">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvtGF0YDQsNC90LjRgtGMINCw0YDRhdC40LLigKY</string>
+									<string key="NSTitle">Сохранить архив…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -320,7 +324,7 @@
 								</object>
 								<object class="NSMenuItem" id="777179687">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvtGF0YDQsNC90LjRgtGMINC+0LHRgNCw0Lcg0LTQuNGB0LrQsOKApg</string>
+									<string key="NSTitle">Сохранить образ диска…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -329,7 +333,7 @@
 								</object>
 								<object class="NSMenuItem" id="554757096">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC+0YHQu9Cw0YLRjCDQsNGA0YXQuNCy4oCmA</string>
+									<string key="NSTitle">Отослать архив…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -338,7 +342,7 @@
 								</object>
 								<object class="NSMenuItem" id="574964914">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC+0YHQu9Cw0YLRjCDQvtCx0YDQsNC3INC00LjRgdC60LDigKY</string>
+									<string key="NSTitle">Отослать образ диска…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -358,7 +362,7 @@
 								</object>
 								<object class="NSMenuItem" id="705767253">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC60YDRi9GC0Ywg0LfQsNC80LXRgtC60LjigKY</string>
+									<string key="NSTitle">Открыть заметки…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -367,7 +371,7 @@
 								</object>
 								<object class="NSMenuItem" id="515487534">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0JrQvtC90LLQtdGA0YLQuNGA0L7QstCw0YLRjCDQt9Cw0LzQtdGC0LrQuOKApg</string>
+									<string key="NSTitle">Конвертировать заметки…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -387,7 +391,7 @@
 								</object>
 								<object class="NSMenuItem" id="880243721">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QsNGA0L7Qu9GM4oCmA</string>
+									<string key="NSTitle">Пароль…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -407,7 +411,7 @@
 								</object>
 								<object class="NSMenuItem" id="592707647">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQtNC10LvQsNGC0Ywg0YHQvdC40LzQvtC6A</string>
+									<string key="NSTitle">Сделать снимок</string>
 									<string key="NSKeyEquiv">s</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -428,7 +432,7 @@
 								</object>
 								<object class="NSMenuItem" id="998123506">
 									<reference key="NSMenu" ref="87861203"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNC/0LXRh9Cw0YLQsNGC0YzigKY</string>
+									<string key="NSTitle">Напечатать…</string>
 									<string key="NSKeyEquiv">p</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -440,7 +444,7 @@
 					</object>
 					<object class="NSMenuItem" id="508567465">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQutCwA</string>
+						<string key="NSTitle">Правка</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -448,12 +452,12 @@
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="472252653">
-							<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQutCwA</string>
+							<string key="NSTitle">Правка</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="857585359">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC80LXQvdC40YLRjA</string>
+									<string key="NSTitle">Отменить</string>
 									<string key="NSKeyEquiv">z</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -462,7 +466,7 @@
 								</object>
 								<object class="NSMenuItem" id="243419992">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtCy0YLQvtGA0LjRgtGMA</string>
+									<string key="NSTitle">Повторить</string>
 									<string key="NSKeyEquiv">Z</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -482,7 +486,7 @@
 								</object>
 								<object class="NSMenuItem" id="707897471">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRi9GA0LXQt9Cw0YLRjA</string>
+									<string key="NSTitle">Вырезать</string>
 									<string key="NSKeyEquiv">x</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -491,7 +495,7 @@
 								</object>
 								<object class="NSMenuItem" id="795755677">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQutC+0L/QuNGA0L7QstCw0YLRjA</string>
+									<string key="NSTitle">Скопировать</string>
 									<string key="NSKeyEquiv">c</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -500,7 +504,7 @@
 								</object>
 								<object class="NSMenuItem" id="1024591775">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRgdGC0LDQstC40YLRjA</string>
+									<string key="NSTitle">Вставить</string>
 									<string key="NSKeyEquiv">v</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -510,7 +514,7 @@
 								<object class="NSMenuItem" id="682412834">
 									<reference key="NSMenu" ref="472252653"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0JLRgdGC0LDQstC40YLRjA</string>
+									<string key="NSTitle">Вставить</string>
 									<string key="NSKeyEquiv">v</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -519,7 +523,7 @@
 								</object>
 								<object class="NSMenuItem" id="761302152">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRgdGC0LDQstC40YLRjCDQsiDRgtC10LrRg9GJ0LXQvCDRgdGC0LjQu9C1A</string>
+									<string key="NSTitle">Вставить в текущем стиле</string>
 									<string key="NSKeyEquiv">V</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -528,7 +532,7 @@
 								</object>
 								<object class="NSMenuItem" id="812660919">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0KPQtNCw0LvQuNGC0Yw</string>
+									<string key="NSTitle">Удалить</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -537,7 +541,7 @@
 								</object>
 								<object class="NSMenuItem" id="422239284">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRi9Cx0YDQsNGC0Ywg0LLRgdC1A</string>
+									<string key="NSTitle">Выбрать все</string>
 									<string key="NSKeyEquiv">a</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -546,7 +550,7 @@
 								</object>
 								<object class="NSMenuItem" id="376454811">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvdGP0YLRjCDQstGL0LHQvtGAA</string>
+									<string key="NSTitle">Снять выбор</string>
 									<string key="NSKeyEquiv">A</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -566,7 +570,7 @@
 								</object>
 								<object class="NSMenuItem" id="596188471">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuA</string>
+									<string key="NSTitle">Найти</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -574,12 +578,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="646451119">
-										<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuA</string>
+										<string key="NSTitle">Найти</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="581345798">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuCDQsiBQREY</string>
+												<string key="NSTitle">Найти в PDF</string>
 												<string key="NSKeyEquiv">f</string>
 												<int key="NSKeyEquivModMask">1572864</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -600,7 +604,7 @@
 											</object>
 											<object class="NSMenuItem" id="1071273233">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuOKApg</string>
+												<string key="NSTitle">Найти…</string>
 												<string key="NSKeyEquiv">f</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -610,7 +614,7 @@
 											</object>
 											<object class="NSMenuItem" id="1063898276">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuCDRgdC70LXQtNGD0Y7RidC10LU</string>
+												<string key="NSTitle">Найти следующее</string>
 												<string key="NSKeyEquiv">g</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -620,7 +624,7 @@
 											</object>
 											<object class="NSMenuItem" id="1042568076">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuCDQv9GA0LXQtNGL0LTRg9GJ0LXQtQ</string>
+												<string key="NSTitle">Найти предыдущее</string>
 												<string key="NSKeyEquiv">G</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -630,7 +634,7 @@
 											</object>
 											<object class="NSMenuItem" id="302121874">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNC50YLQuCDQstGL0LHRgNCw0L3QvdC+0LU</string>
+												<string key="NSTitle">Найти выбранное</string>
 												<string key="NSKeyEquiv">e</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -640,7 +644,7 @@
 											</object>
 											<object class="NSMenuItem" id="1002509899">
 												<reference key="NSMenu" ref="646451119"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LXQudGC0Lgg0Log0LLRi9Cx0YDQsNC90L3QvtC80YM</string>
+												<string key="NSTitle">Перейти к выбранному</string>
 												<string key="NSKeyEquiv">j</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -652,7 +656,7 @@
 								</object>
 								<object class="NSMenuItem" id="994755037">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQvtC/0LjRgdCw0L3QuNC1A</string>
+									<string key="NSTitle">Правописание</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -660,12 +664,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="536708639">
-										<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQvtC/0LjRgdCw0L3QuNC1A</string>
+										<string key="NSTitle">Правописание</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="427778791">
 												<reference key="NSMenu" ref="536708639"/>
-												<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQvtC/0LjRgdCw0L3QuNC14oCmA</string>
+												<string key="NSTitle">Правописание…</string>
 												<string key="NSKeyEquiv">:</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -674,7 +678,7 @@
 											</object>
 											<object class="NSMenuItem" id="894490937">
 												<reference key="NSMenu" ref="536708639"/>
-												<string type="base64-UTF8" key="NSTitle">0J/RgNC+0LLQtdGA0LjRgtGMINC/0YDQsNCy0L7Qv9C40YHQsNC90LjQtQ</string>
+												<string key="NSTitle">Проверить правописание</string>
 												<string key="NSKeyEquiv">;</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -683,8 +687,7 @@
 											</object>
 											<object class="NSMenuItem" id="368462973">
 												<reference key="NSMenu" ref="536708639"/>
-												<string type="base64-UTF8" key="NSTitle">0J/RgNC+0LLQtdGA0Y/RgtGMINC/0YDQsNCy0L7Qv9C40YHQsNC90LjQtSDQv9C+INC80LXRgNC1INC9
-0LDQsdC+0YDQsA</string>
+												<string key="NSTitle">Проверять правописание по мере набора</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -696,7 +699,7 @@
 								</object>
 								<object class="NSMenuItem" id="899132574">
 									<reference key="NSMenu" ref="472252653"/>
-									<string type="base64-UTF8" key="NSTitle">0KDQtdGH0Yw</string>
+									<string key="NSTitle">Речь</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -704,12 +707,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="229510362">
-										<string type="base64-UTF8" key="NSTitle">0KDQtdGH0Yw</string>
+										<string key="NSTitle">Речь</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="859747112">
 												<reference key="NSMenu" ref="229510362"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QsNGH0LDRgtGMINGH0YLQtdC90LjQtQ</string>
+												<string key="NSTitle">Начать чтение</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -718,7 +721,7 @@
 											</object>
 											<object class="NSMenuItem" id="851832813">
 												<reference key="NSMenu" ref="229510362"/>
-												<string type="base64-UTF8" key="NSTitle">0J7RgdGC0LDQvdC+0LLQuNGC0Ywg0YfRgtC10L3QuNC1A</string>
+												<string key="NSTitle">Остановить чтение</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -733,7 +736,7 @@
 					</object>
 					<object class="NSMenuItem" id="821140133">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0JfQsNC80LXRgtC60Lg</string>
+						<string key="NSTitle">Заметки</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -741,12 +744,12 @@
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="629661533">
-							<string type="base64-UTF8" key="NSTitle">0JfQsNC80LXRgtC60Lg</string>
+							<string key="NSTitle">Заметки</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="60471407">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0LDRjyDRgtC10LrRgdGC0L7QstCw0Y8g0LfQsNC80LXRgtC60LA</string>
+									<string key="NSTitle">Новая текстовая заметка</string>
 									<string key="NSKeyEquiv">n</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -755,7 +758,7 @@
 								</object>
 								<object class="NSMenuItem" id="839778027">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0LDRjyDQv9GA0LjQutGA0LXQv9C70LXQvdC90LDRjyDQt9Cw0LzQtdGC0LrQsA</string>
+									<string key="NSTitle">Новая прикрепленная заметка</string>
 									<string key="NSKeyEquiv">n</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -776,7 +779,7 @@
 								</object>
 								<object class="NSMenuItem" id="111150165">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0LDRjyDQvtC60YDRg9C20L3QvtGB0YLRjA</string>
+									<string key="NSTitle">Новая окружность</string>
 									<string key="NSKeyEquiv">c</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -786,7 +789,7 @@
 								</object>
 								<object class="NSMenuItem" id="452532172">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0LDRjyDRgNCw0LzQutCwA</string>
+									<string key="NSTitle">Новая рамка</string>
 									<string key="NSKeyEquiv">c</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -807,9 +810,9 @@
 								</object>
 								<object class="NSMenuItem" id="236131638">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0L7QtSDQstGL0LTQtdC70LXQvdC40LU</string>
-									<string key="NSKeyEquiv">m</string>
-									<int key="NSKeyEquivModMask">1572864</int>
+									<string key="NSTitle">Новое выделение</string>
+									<string key="NSKeyEquiv">h</string>
+									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
 									<reference key="NSMixedImage" ref="315422901"/>
@@ -817,7 +820,7 @@
 								</object>
 								<object class="NSMenuItem" id="311929561">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0L7QtSDQv9C+0LTRh9C10YDQutC40LLQsNC90LjQtQ</string>
+									<string key="NSTitle">Новое подчеркивание</string>
 									<string key="NSKeyEquiv">M</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -827,7 +830,7 @@
 								</object>
 								<object class="NSMenuItem" id="581058850">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0L7QtSDQv9C10YDQtdGH0LXRgNC60LjQstCw0L3QuNC1A</string>
+									<string key="NSTitle">Новое перечеркивание</string>
 									<string key="NSKeyEquiv">m</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -848,7 +851,7 @@
 								</object>
 								<object class="NSMenuItem" id="880553987">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QvtCy0LDRjyDRgdGC0YDQvtC60LA</string>
+									<string key="NSTitle">Новая строка</string>
 									<string key="NSKeyEquiv">l</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -869,7 +872,7 @@
 								</object>
 								<object class="NSMenuItem" id="838035719">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNCw0LLQuNGC0Ywg0LfQsNC80LXRgtC60YM</string>
+									<string key="NSTitle">Править заметку</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -889,7 +892,7 @@
 								</object>
 								<object class="NSMenuItem" id="326009606">
 									<reference key="NSMenu" ref="629661533"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQutGA0YvRgtGMINC30LDQvNC10YLQutC4A</string>
+									<string key="NSTitle">Скрыть заметки</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -901,7 +904,7 @@
 					</object>
 					<object class="NSMenuItem" id="543347439">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0JLQuNC0A</string>
+						<string key="NSTitle">Вид</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -909,12 +912,12 @@
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="921918311">
-							<string type="base64-UTF8" key="NSTitle">0JLQuNC0A</string>
+							<string key="NSTitle">Вид</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="116342747">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0JLQviDQstC10YHRjCDRjdC60YDQsNC9A</string>
+									<string key="NSTitle">Во весь экран</string>
 									<string key="NSKeyEquiv">F</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -923,7 +926,7 @@
 								</object>
 								<object class="NSMenuItem" id="197831886">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNC10LfQtdC90YLQsNGG0LjRjw</string>
+									<string key="NSTitle">Презентация</string>
 									<string key="NSKeyEquiv">p</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -943,7 +946,7 @@
 								</object>
 								<object class="NSMenuItem" id="564098406">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QsNGA0LDQvNC10YLRgNGLINC/0YDQtdC30LXQvdGC0LDRhtC40LjigKY</string>
+									<string key="NSTitle">Параметры презентации…</string>
 									<string key="NSKeyEquiv">t</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -963,7 +966,7 @@
 								</object>
 								<object class="NSMenuItem" id="590451522">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0JvQuNC90LXQudC60LAg0YfRgtC10L3QuNGPA</string>
+									<string key="NSTitle">Линейка чтения</string>
 									<string key="NSKeyEquiv">B</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -983,7 +986,7 @@
 								</object>
 								<object class="NSMenuItem" id="190514741">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QsNC90LXQu9GMINGB0L7QtNC10YDQttCw0L3QuNGPA</string>
+									<string key="NSTitle">Панель содержания</string>
 									<string key="NSKeyEquiv">T</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -992,7 +995,7 @@
 								</object>
 								<object class="NSMenuItem" id="746211979">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0JzQuNC90LjQsNGC0Y7RgNGLA</string>
+									<string key="NSTitle">Миниатюры</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1001,7 +1004,7 @@
 								</object>
 								<object class="NSMenuItem" id="125324299">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvtC00LXRgNC20LDQvdC40LU</string>
+									<string key="NSTitle">Содержание</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1022,7 +1025,7 @@
 								</object>
 								<object class="NSMenuItem" id="444684349">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QsNC90LXQu9GMINC30LDQvNC10YLQvtC6A</string>
+									<string key="NSTitle">Панель заметок</string>
 									<string key="NSKeyEquiv">N</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1031,7 +1034,7 @@
 								</object>
 								<object class="NSMenuItem" id="481146174">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0JfQsNC80LXRgtC60Lg</string>
+									<string key="NSTitle">Заметки</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1040,7 +1043,7 @@
 								</object>
 								<object class="NSMenuItem" id="973535344">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQvdC40LzQutC4A</string>
+									<string key="NSTitle">Снимки</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1061,7 +1064,7 @@
 								</object>
 								<object class="NSMenuItem" id="73830704">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0KDQsNC30LTQtdC70LjRgtGMINC+0LrQvdC+IFBERg</string>
+									<string key="NSTitle">Разделить окно PDF</string>
 									<string key="NSKeyEquiv">p</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1081,7 +1084,7 @@
 								</object>
 								<object class="NSMenuItem" id="745559097">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0KHRgtGA0L7QutCwINGB0YLQsNGC0YPRgdCwA</string>
+									<string key="NSTitle">Строка статуса</string>
 									<string key="NSKeyEquiv">I</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1101,7 +1104,7 @@
 								</object>
 								<object class="NSMenuItem" id="133985721">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QsNC90LXQu9GMINC60L3QvtC/0L7Qug</string>
+									<string key="NSTitle">Панель кнопок</string>
 									<string key="NSKeyEquiv">b</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1110,7 +1113,7 @@
 								</object>
 								<object class="NSMenuItem" id="144786862">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNGB0YLRgNC+0LjRgtGMINCf0LDQvdC10LvRjCDQutC90L7Qv9C+0LrigKY</string>
+									<string key="NSTitle">Настроить Панель кнопок…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1130,7 +1133,7 @@
 								</object>
 								<object class="NSMenuItem" id="333958214">
 									<reference key="NSMenu" ref="921918311"/>
-									<string type="base64-UTF8" key="NSTitle">0KjRgNC40YTRgg</string>
+									<string key="NSTitle">Шрифт</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1138,12 +1141,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="647168726">
-										<string type="base64-UTF8" key="NSTitle">0KjRgNC40YTRgg</string>
+										<string key="NSTitle">Шрифт</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="668480259">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDQqNGA0LjRhNGC0Ys</string>
+												<string key="NSTitle">Показать Шрифты</string>
 												<string key="NSKeyEquiv">t</string>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1152,7 +1155,7 @@
 											</object>
 											<object class="NSMenuItem" id="413510601">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QvtC70YPQttC40YDQvdGL0Lk</string>
+												<string key="NSTitle">Полужирный</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1162,7 +1165,7 @@
 											</object>
 											<object class="NSMenuItem" id="247928616">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0JrRg9GA0YHQuNCyA</string>
+												<string key="NSTitle">Курсив</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1172,7 +1175,7 @@
 											</object>
 											<object class="NSMenuItem" id="109435271">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QvtC00YfQtdGA0LrQvdGD0YLRi9C5A</string>
+												<string key="NSTitle">Подчеркнутый</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1192,7 +1195,7 @@
 											</object>
 											<object class="NSMenuItem" id="180669194">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0JHQvtC70YzRiNC1A</string>
+												<string key="NSTitle">Больше</string>
 												<string key="NSKeyEquiv">+</string>
 												<int key="NSKeyEquivModMask">1572864</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1202,7 +1205,7 @@
 											</object>
 											<object class="NSMenuItem" id="523694396">
 												<reference key="NSMenu" ref="647168726"/>
-												<string type="base64-UTF8" key="NSTitle">0JzQtdC90YzRiNC1A</string>
+												<string key="NSTitle">Меньше</string>
 												<string key="NSKeyEquiv">-</string>
 												<int key="NSKeyEquivModMask">1572864</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1232,7 +1235,7 @@
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="305073625">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNC+0YHQvNC+0YLRgCBQREY</string>
+									<string key="NSTitle">Просмотр PDF</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1240,12 +1243,12 @@
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="229908157">
-										<string type="base64-UTF8" key="NSTitle">0J/RgNC+0YHQvNC+0YLRgCBQREY</string>
+										<string key="NSTitle">Просмотр PDF</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="70191401">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0J7RgtC00LXQu9GM0L3Ri9C1INGB0YLRgNCw0L3QuNGG0Ys</string>
+												<string key="NSTitle">Отдельные страницы</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1254,7 +1257,7 @@
 											</object>
 											<object class="NSMenuItem" id="954383692">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0KDQsNC30LLQvtGA0L7RgtGLA</string>
+												<string key="NSTitle">Развороты</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1274,7 +1277,7 @@
 											</object>
 											<object class="NSMenuItem" id="964382775">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0J3QtdC/0YDQtdGA0YvQstC90L4</string>
+												<string key="NSTitle">Непрерывно</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1283,7 +1286,7 @@
 											</object>
 											<object class="NSMenuItem" id="864353607">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0KDQtdC20LjQvCDQutC90LjQs9C4A</string>
+												<string key="NSTitle">Режим книги</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1292,7 +1295,7 @@
 											</object>
 											<object class="NSMenuItem" id="26136604">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0KDQsNC30YDRi9Cy0Ysg0YHRgtGA0LDQvdC40YY</string>
+												<string key="NSTitle">Разрывы страниц</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1312,7 +1315,7 @@
 											</object>
 											<object class="NSMenuItem" id="555104140">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QviDQvtGA0LjQs9C40L3QsNC70YM</string>
+												<string key="NSTitle">По оригиналу</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1321,7 +1324,7 @@
 											</object>
 											<object class="NSMenuItem" id="604189928">
 												<reference key="NSMenu" ref="229908157"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QviDQvtCx0YDQtdC30LDQvdC90L7QvNGDA</string>
+												<string key="NSTitle">По обрезанному</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1345,7 +1348,7 @@
 								</object>
 								<object class="NSMenuItem" id="99598962">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0JDQstGC0L7QvNCw0YLQuNGH0LXRgdC60LjQuSDQvNCw0YHRiNGC0LDQsQ</string>
+									<string key="NSTitle">Автоматический масштаб</string>
 									<string key="NSKeyEquiv">*</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1365,7 +1368,7 @@
 								</object>
 								<object class="NSMenuItem" id="106420483">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNGC0YPRgNCw0LvRjNC90LDRjyDQstC10LvQuNGH0LjQvdCwA</string>
+									<string key="NSTitle">Натуральная величина</string>
 									<string key="NSKeyEquiv">0</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1375,7 +1378,7 @@
 								<object class="NSMenuItem" id="277793694">
 									<reference key="NSMenu" ref="65775770"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0KTQuNC30LjRh9C10YHQutC40Lkg0YDQsNC30LzQtdGAA</string>
+									<string key="NSTitle">Физический размер</string>
 									<string key="NSKeyEquiv">0</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1384,7 +1387,7 @@
 								</object>
 								<object class="NSMenuItem" id="358730904">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0KPQu9C+0LbQuNGC0Ywg0LIg0L7QutC90L4</string>
+									<string key="NSTitle">Уложить в окно</string>
 									<string key="NSKeyEquiv">=</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1394,7 +1397,7 @@
 								<object class="NSMenuItem" id="975296865">
 									<reference key="NSMenu" ref="65775770"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0KPQu9C+0LbQuNGC0Ywg0L/QviDQstGL0YHQvtGC0LU</string>
+									<string key="NSTitle">Уложить по высоте</string>
 									<string key="NSKeyEquiv">=</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1403,7 +1406,7 @@
 								</object>
 								<object class="NSMenuItem" id="429242306">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0KPQstC10LvQuNGH0LjRgtGMA</string>
+									<string key="NSTitle">Увеличить</string>
 									<string key="NSKeyEquiv">+</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1412,7 +1415,7 @@
 								</object>
 								<object class="NSMenuItem" id="253161072">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0KPQvNC10L3RjNGI0LjRgtGMA</string>
+									<string key="NSTitle">Уменьшить</string>
 									<string key="NSKeyEquiv">-</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1421,7 +1424,7 @@
 								</object>
 								<object class="NSMenuItem" id="633488490">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QviDQstGL0LHRgNCw0L3QvdC+0LzRgw</string>
+									<string key="NSTitle">По выбранному</string>
 									<string key="NSKeyEquiv">_</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1441,8 +1444,7 @@
 								</object>
 								<object class="NSMenuItem" id="1004610850">
 									<reference key="NSMenu" ref="65775770"/>
-									<string type="base64-UTF8" key="NSTitle">0JjRgdC/0L7Qu9GM0LfQvtCy0LDRgtGMINC90LDRgdGC0YDQvtC50LrQuCDQutCw0Log0YHRgtCw0L3Q
-tNCw0YDRgtC90YvQtQ</string>
+									<string key="NSTitle">Использовать настройки как стандартные</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1454,7 +1456,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 					<object class="NSMenuItem" id="68314130">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LXQudGC0Lg</string>
+						<string key="NSTitle">Перейти</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -1462,13 +1464,13 @@ tNCw0YDRgtC90YvQtQ</string>
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="678438496">
-							<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LXQudGC0Lg</string>
+							<string key="NSTitle">Перейти</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="557089535">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQu9C10LTRg9GO0YnQsNGPA</string>
-									<string type="base64-UTF8" key="NSKeyEquiv">75yDA</string>
+									<string key="NSTitle">Следующая</string>
+									<string key="NSKeyEquiv"></string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
@@ -1476,8 +1478,8 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="111564471">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNC10LTRi9C00YPRidCw0Y8</string>
-									<string type="base64-UTF8" key="NSKeyEquiv">75yCA</string>
+									<string key="NSTitle">Предыдущая</string>
+									<string key="NSKeyEquiv"></string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
@@ -1485,7 +1487,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="189478928">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LLQsNGPA</string>
+									<string key="NSTitle">Первая</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1494,7 +1496,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="7618135">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtGB0LvQtdC00L3Rj9GPA</string>
+									<string key="NSTitle">Последняя</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1514,7 +1516,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="541507582">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LXQudGC0Lgg0Log0YHRgtGA0LDQvdC40YbQteKApg</string>
+									<string key="NSTitle">Перейти к странице…</string>
 									<string key="NSKeyEquiv">g</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1534,7 +1536,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="1064400514">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0Jog0L7RgtC80LXRh9C10L3QvdC+0Lkg0YHRgtGA0LDQvdC40YbQtQ</string>
+									<string key="NSTitle">К отмеченной странице</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1543,7 +1545,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="796875924">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J7RgtC80LXRgtC40YLRjCDRgdGC0YDQsNC90LjRhtGDA</string>
+									<string key="NSTitle">Отметить страницу</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1563,7 +1565,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="227324365">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0J3QsNC30LDQtA</string>
+									<string key="NSTitle">Назад</string>
 									<string key="NSKeyEquiv">[</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1572,7 +1574,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="697304638">
 									<reference key="NSMenu" ref="678438496"/>
-									<string type="base64-UTF8" key="NSTitle">0JLQv9C10YDQtdC0A</string>
+									<string key="NSTitle">Вперед</string>
 									<string key="NSKeyEquiv">]</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1584,7 +1586,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 					<object class="NSMenuItem" id="1023092564">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0JjQvdGB0YLRgNGD0LzQtdC90YLRiw</string>
+						<string key="NSTitle">Инструменты</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -1592,12 +1594,12 @@ tNCw0YDRgtC90YvQtQ</string>
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="1012355446">
-							<string type="base64-UTF8" key="NSTitle">0JjQvdGB0YLRgNGD0LzQtdC90YLRiw</string>
+							<string key="NSTitle">Инструменты</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="436398903">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQstC+0LnRgdGC0LLQsA</string>
+									<string key="NSTitle">Свойства</string>
 									<string key="NSKeyEquiv">i</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1606,7 +1608,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="539904252">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDQptCy0LXRgtCwA</string>
+									<string key="NSTitle">Показать Цвета</string>
 									<string key="NSKeyEquiv">C</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1615,7 +1617,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="459812329">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDQu9C40L3QuNC4A</string>
+									<string key="NSTitle">Показать линии</string>
 									<string key="NSKeyEquiv">L</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1624,7 +1626,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="256972672">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDQt9Cw0LzQtdGC0LrQuA</string>
+									<string key="NSTitle">Показать заметки</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1644,7 +1646,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="77732720">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0KLQtdC60YHRgg</string>
+									<string key="NSTitle">Текст</string>
 									<string key="NSKeyEquiv">1</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1653,7 +1655,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="609657743">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/RgNC+0LrRgNGD0YLQutCwA</string>
+									<string key="NSTitle">Прокрутка</string>
 									<string key="NSKeyEquiv">2</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1663,7 +1665,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="955648130">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0JzQsNGB0YjRgtCw0LE</string>
+									<string key="NSTitle">Масштаб</string>
 									<string key="NSKeyEquiv">3</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1673,7 +1675,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="245460024">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRi9Cx0L7RgA</string>
+									<string key="NSTitle">Выбор</string>
 									<string key="NSKeyEquiv">4</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1683,7 +1685,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="838220001">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0JfQsNC80LXRgtC60LA</string>
+									<string key="NSTitle">Заметка</string>
 									<string key="NSKeyEquiv">5</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1693,7 +1695,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="131809660">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0KLQuNC/INC30LDQvNC10YLQutC4A</string>
+									<string key="NSTitle">Тип заметки</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1701,12 +1703,12 @@ tNCw0YDRgtC90YvQtQ</string>
 									<reference key="NSMixedImage" ref="315422901"/>
 									<string key="NSAction">submenuAction:</string>
 									<object class="NSMenu" key="NSSubmenu" id="939337584">
-										<string type="base64-UTF8" key="NSTitle">0KLQuNC/INC30LDQvNC10YLQutC4A</string>
+										<string key="NSTitle">Тип заметки</string>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSMenuItem" id="176082234">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0KLQtdC60YHRgtC+0LLQsNGPINC30LDQvNC10YLQutCwA</string>
+												<string key="NSTitle">Текстовая заметка</string>
 												<string key="NSKeyEquiv">1</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1715,7 +1717,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="50230156">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0J/RgNC40LrRgNC10L/Qu9C10L3QvdCw0Y8g0LfQsNC80LXRgtC60LA</string>
+												<string key="NSTitle">Прикрепленная заметка</string>
 												<string key="NSKeyEquiv">2</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1725,7 +1727,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="29301560">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0J7QutGA0YPQttC90L7RgdGC0Yw</string>
+												<string key="NSTitle">Окружность</string>
 												<string key="NSKeyEquiv">3</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1735,7 +1737,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="922293213">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0KDQsNC80LrQsA</string>
+												<string key="NSTitle">Рамка</string>
 												<string key="NSKeyEquiv">4</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1745,7 +1747,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="175553455">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0JLRi9C00LXQu9C10L3QuNC1A</string>
+												<string key="NSTitle">Выделение</string>
 												<string key="NSKeyEquiv">5</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1755,7 +1757,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="510444736">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QvtC00YfQtdGA0LrQuNCy0LDQvdC40LU</string>
+												<string key="NSTitle">Подчеркивание</string>
 												<string key="NSKeyEquiv">6</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1765,7 +1767,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="822086732">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0J/QtdGA0LXRh9C10YDQutC40LLQsNC90LjQtQ</string>
+												<string key="NSTitle">Перечеркивание</string>
 												<string key="NSKeyEquiv">7</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1775,7 +1777,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="857963292">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0JvQuNC90LjRjw</string>
+												<string key="NSTitle">Линия</string>
 												<string key="NSKeyEquiv">8</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1785,7 +1787,7 @@ tNCw0YDRgtC90YvQtQ</string>
 											</object>
 											<object class="NSMenuItem" id="64013140">
 												<reference key="NSMenu" ref="939337584"/>
-												<string type="base64-UTF8" key="NSTitle">0JrRgNC40LLQsNGPA</string>
+												<string key="NSTitle">Кривая</string>
 												<string key="NSKeyEquiv">9</string>
 												<int key="NSKeyEquivModMask">1310720</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -1809,7 +1811,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="304650267">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtCy0LXRgNC90YPRgtGMINCy0LvQtdCy0L4</string>
+									<string key="NSTitle">Повернуть влево</string>
 									<string key="NSKeyEquiv">l</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1818,7 +1820,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="597892143">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtCy0LXRgNC90YPRgtGMINCy0L/RgNCw0LLQvg</string>
+									<string key="NSTitle">Повернуть вправо</string>
 									<string key="NSKeyEquiv">r</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1827,7 +1829,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="175661231">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtCy0LXRgNC90YPRgtGMINGB0YLRgNCw0L3QuNGG0YMg0LLQu9C10LLQvg</string>
+									<string key="NSTitle">Повернуть страницу влево</string>
 									<string key="NSKeyEquiv">l</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1836,7 +1838,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="387246855">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtCy0LXRgNC90YPRgtGMINGB0YLRgNCw0L3QuNGG0YMg0LLQv9GA0LDQstC+A</string>
+									<string key="NSTitle">Повернуть страницу вправо</string>
 									<string key="NSKeyEquiv">r</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1845,7 +1847,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="89880966">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J7QsdGA0LXQt9Cw0YLRjA</string>
+									<string key="NSTitle">Обрезать</string>
 									<string key="NSKeyEquiv">k</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1855,7 +1857,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								<object class="NSMenuItem" id="775612355">
 									<reference key="NSMenu" ref="1012355446"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0JDQstGC0L7QvtCx0YDQtdC30LrQsCDigJQg0J7RgtC00LXQu9GM0L3Qvg</string>
+									<string key="NSTitle">Автообрезка — Отдельно</string>
 									<string key="NSKeyEquiv">K</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1865,7 +1867,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								<object class="NSMenuItem" id="1056783379">
 									<reference key="NSMenu" ref="1012355446"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0JDQstGC0L7QvtCx0YDQtdC30LrQsCDigJQg0KHQvtCy0LzQtdGB0YLQvdC+A</string>
+									<string key="NSTitle">Автообрезка — Совместно</string>
 									<string key="NSKeyEquiv">k</string>
 									<int key="NSKeyEquivModMask">1310720</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1874,7 +1876,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="664463190">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0J7QsdGA0LXQt9Cw0YLRjCDRgdGC0YDQsNC90LjRhtGDA</string>
+									<string key="NSTitle">Обрезать страницу</string>
 									<string key="NSKeyEquiv">k</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1894,7 +1896,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="217008350">
 									<reference key="NSMenu" ref="1012355446"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRi9Cx0YDQsNGC0Ywg0YHQvtC00LXRgNC20LjQvNC+0LU</string>
+									<string key="NSTitle">Выбрать содержимое</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1906,7 +1908,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 					<object class="NSMenuItem" id="55771222">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0JfQsNC60LvQsNC00LrQuA</string>
+						<string key="NSTitle">Закладки</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -1914,12 +1916,12 @@ tNCw0YDRgtC90YvQtQ</string>
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="916408811">
-							<string type="base64-UTF8" key="NSTitle">0JfQsNC60LvQsNC00LrQuA</string>
+							<string key="NSTitle">Закладки</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="399937781">
 									<reference key="NSMenu" ref="916408811"/>
-									<string type="base64-UTF8" key="NSTitle">0JTQvtCx0LDQstC40YLRjCDQt9Cw0LrQu9Cw0LTQutGDA</string>
+									<string key="NSTitle">Добавить закладку</string>
 									<string key="NSKeyEquiv">d</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1929,7 +1931,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								<object class="NSMenuItem" id="189130785">
 									<reference key="NSMenu" ref="916408811"/>
 									<bool key="NSIsAlternate">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0JTQvtCx0LDQstC40YLRjCDQt9Cw0LrQu9Cw0LTQutGDINC90LDRgdGC0YDQvtC50LrQuA</string>
+									<string key="NSTitle">Добавить закладку настройки</string>
 									<string key="NSKeyEquiv">D</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1938,7 +1940,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="258192960">
 									<reference key="NSMenu" ref="916408811"/>
-									<string type="base64-UTF8" key="NSTitle">0JTQvtCx0LDQstC40YLRjCDQt9Cw0LrQu9Cw0LTQutGDINGB0LXQsNC90YHQsA</string>
+									<string key="NSTitle">Добавить закладку сеанса</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
@@ -1946,7 +1948,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="213082280">
 									<reference key="NSMenu" ref="916408811"/>
-									<string type="base64-UTF8" key="NSTitle">0KDQtdC00LDQutGC0LjRgNC+0LLQsNGC0Ywg0LfQsNC60LvQsNC00LrQuOKApg</string>
+									<string key="NSTitle">Редактировать закладки…</string>
 									<string key="NSKeyEquiv">b</string>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1958,7 +1960,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 					<object class="NSMenuItem" id="137842845">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0J7QutC90L4</string>
+						<string key="NSTitle">Окно</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -1966,12 +1968,12 @@ tNCw0YDRgtC90YvQtQ</string>
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="205219644">
-							<string type="base64-UTF8" key="NSTitle">0J7QutC90L4</string>
+							<string key="NSTitle">Окно</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="821665407">
 									<reference key="NSMenu" ref="205219644"/>
-									<string type="base64-UTF8" key="NSTitle">0KPQsdGA0LDRgtGMINC+0LrQvdC+INCyIERvY2s</string>
+									<string key="NSTitle">Убрать окно в Dock</string>
 									<string key="NSKeyEquiv">m</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1980,16 +1982,15 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="697425202">
 									<reference key="NSMenu" ref="205219644"/>
-									<string type="base64-UTF8" key="NSTitle">0JzQsNGB0YjRgtCw0LHQuNGA0L7QstCw0YLRjA</string>
-									<string key="NSKeyEquiv">z</string>
-									<int key="NSKeyEquivModMask">1572864</int>
+									<string key="NSTitle">Масштабировать</string>
+									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="704535619"/>
 									<reference key="NSMixedImage" ref="315422901"/>
 								</object>
 								<object class="NSMenuItem" id="16134269">
 									<reference key="NSMenu" ref="205219644"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QviDRgNCw0LfQvNC10YDRgyBQREY</string>
+									<string key="NSTitle">По размеру PDF</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1572864</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2009,7 +2010,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="687909694">
 									<reference key="NSMenu" ref="205219644"/>
-									<string type="base64-UTF8" key="NSTitle">0JfQsNCz0YDRg9C30LrQsA</string>
+									<string key="NSTitle">Загрузка</string>
 									<string key="NSKeyEquiv">D</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2029,7 +2030,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="87647895">
 									<reference key="NSMenu" ref="205219644"/>
-									<string type="base64-UTF8" key="NSTitle">0JLRgdC1INC+0LrQvdCwINC90LAg0L/QtdGA0LXQtNC90LjQuSDQv9C70LDQvQ</string>
+									<string key="NSTitle">Все окна на передний план</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2042,7 +2043,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 					<object class="NSMenuItem" id="18482714">
 						<reference key="NSMenu" ref="466075032"/>
-						<string type="base64-UTF8" key="NSTitle">0KHQv9GA0LDQstC60LA</string>
+						<string key="NSTitle">Справка</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
 						<int key="NSMnemonicLoc">2147483647</int>
@@ -2050,12 +2051,12 @@ tNCw0YDRgtC90YvQtQ</string>
 						<reference key="NSMixedImage" ref="315422901"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="775237730">
-							<string type="base64-UTF8" key="NSTitle">0KHQv9GA0LDQstC60LA</string>
+							<string key="NSTitle">Справка</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="149592645">
 									<reference key="NSMenu" ref="775237730"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQv9GA0LDQstC60LAgU2tpbQ</string>
+									<string key="NSTitle">Справка Skim</string>
 									<string key="NSKeyEquiv">?</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2066,7 +2067,7 @@ tNCw0YDRgtC90YvQtQ</string>
 									<reference key="NSMenu" ref="775237730"/>
 									<bool key="NSIsDisabled">YES</bool>
 									<bool key="NSIsSeparator">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDCq9Cn0YLQviDQvdC+0LLQvtCz0L7Cuw</string>
+									<string key="NSTitle">Показать «Что нового»</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2075,7 +2076,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="657765630">
 									<reference key="NSMenu" ref="775237730"/>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDCq9Cn0YLQviDQvdC+0LLQvtCz0L7Cuw</string>
+									<string key="NSTitle">Показать «Что нового»</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2086,7 +2087,7 @@ tNCw0YDRgtC90YvQtQ</string>
 									<reference key="NSMenu" ref="775237730"/>
 									<bool key="NSIsDisabled">YES</bool>
 									<bool key="NSIsSeparator">YES</bool>
-									<string type="base64-UTF8" key="NSTitle">0J/QvtC60LDQt9Cw0YLRjCDCq9Cn0YLQviDQvdC+0LLQvtCz0L7Cuw</string>
+									<string key="NSTitle">Показать «Что нового»</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2095,7 +2096,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="29410559">
 									<reference key="NSMenu" ref="775237730"/>
-									<string type="base64-UTF8" key="NSTitle">0KHQsNC50YIgU2tpbeKApg</string>
+									<string key="NSTitle">Сайт Skim…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2104,7 +2105,7 @@ tNCw0YDRgtC90YvQtQ</string>
 								</object>
 								<object class="NSMenuItem" id="361201494">
 									<reference key="NSMenu" ref="775237730"/>
-									<string type="base64-UTF8" key="NSTitle">U2tpbSBXaWtp4oCmA</string>
+									<string key="NSTitle">Skim Wiki…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -3291,7 +3292,7 @@ tNCw0YDRgtC90YvQtQ</string>
 						<int key="objectID">-2</int>
 						<reference key="object" ref="488003655"/>
 						<reference key="parent" ref="0"/>
-						<string type="base64-UTF8" key="objectName">RmlsZSdzIE93bmVyA</string>
+						<string key="objectName">File's Owner</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">-1</int>
@@ -4775,8 +4776,6 @@ tNCw0YDRgtC90YvQtQ</string>
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="NSArray" key="dict.sortedKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>-1.IBPluginDependency</string>
-					<string>-2.IBPluginDependency</string>
 					<string>-3.IBPluginDependency</string>
 					<string>-3.ImportedFromIB2</string>
 					<string>103.IBPluginDependency</string>
@@ -4851,7 +4850,6 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>191.ImportedFromIB2</string>
 					<string>203.IBPluginDependency</string>
 					<string>203.ImportedFromIB2</string>
-					<string>210.IBPluginDependency</string>
 					<string>210.ImportedFromIB2</string>
 					<string>219.IBPluginDependency</string>
 					<string>219.ImportedFromIB2</string>
@@ -4865,6 +4863,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>23.ImportedFromIB2</string>
 					<string>239.IBPluginDependency</string>
 					<string>239.ImportedFromIB2</string>
+					<string>24.IBEditorWindowLastContentRect</string>
 					<string>24.IBPluginDependency</string>
 					<string>24.ImportedFromIB2</string>
 					<string>240.IBPluginDependency</string>
@@ -4893,6 +4892,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>285.ImportedFromIB2</string>
 					<string>287.IBPluginDependency</string>
 					<string>287.ImportedFromIB2</string>
+					<string>29.IBEditorWindowLastContentRect</string>
 					<string>29.IBPluginDependency</string>
 					<string>29.ImportedFromIB2</string>
 					<string>292.IBPluginDependency</string>
@@ -4919,7 +4919,6 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>328.ImportedFromIB2</string>
 					<string>329.IBPluginDependency</string>
 					<string>329.ImportedFromIB2</string>
-					<string>457.IBPluginDependency</string>
 					<string>457.ImportedFromIB2</string>
 					<string>482.IBPluginDependency</string>
 					<string>482.ImportedFromIB2</string>
@@ -4931,7 +4930,6 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>515.ImportedFromIB2</string>
 					<string>516.IBPluginDependency</string>
 					<string>516.ImportedFromIB2</string>
-					<string>518.IBPluginDependency</string>
 					<string>518.ImportedFromIB2</string>
 					<string>520.IBPluginDependency</string>
 					<string>520.ImportedFromIB2</string>
@@ -5003,6 +5001,7 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>669.ImportedFromIB2</string>
 					<string>675.IBPluginDependency</string>
 					<string>675.ImportedFromIB2</string>
+					<string>676.IBEditorWindowLastContentRect</string>
 					<string>676.IBPluginDependency</string>
 					<string>676.ImportedFromIB2</string>
 					<string>678.IBPluginDependency</string>
@@ -5051,7 +5050,6 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string>723.ImportedFromIB2</string>
 					<string>724.IBPluginDependency</string>
 					<string>724.ImportedFromIB2</string>
-					<string>728.IBPluginDependency</string>
 					<string>728.ImportedFromIB2</string>
 					<string>73.IBPluginDependency</string>
 					<string>73.ImportedFromIB2</string>
@@ -5233,459 +5231,456 @@ tNCw0YDRgtC90YvQtQ</string>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES" id="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<string>{{663, 198}, {285, 123}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<string>{{39, 321}, {767, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<string>{{225, 68}, {306, 253}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="5"/>
+					<boolean value="YES"/>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -5713,6 +5708,14 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string key="className">BDSKCollapsibleView</string>
 					<string key="superclassName">BDSKContainerView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">BDSKCollapsibleView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BDSKCollapsibleView</string>
+					<string key="superclassName">BDSKContainerView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
@@ -5725,8 +5728,24 @@ tNCw0YDRgtC90YvQtQ</string>
 						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">BDSKContainerView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BDSKContainerView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BDSKEdgeView</string>
+					<string key="superclassName">BDSKContainerView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">BDSKEdgeView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -5738,15 +5757,8 @@ tNCw0YDRgtC90YvQtQ</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">BDSKGradientView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
+					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -5912,6 +5924,14 @@ tNCw0YDRgtC90YvQtQ</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSApplication</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKRichTextFormat.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<string key="superclassName">NSResponder</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
@@ -5919,12 +5939,28 @@ tNCw0YDRgtC90YvQtQ</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSDocument</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSDocument_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSDocument</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSMenu</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="1007121487">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSMenu_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMenu</string>
+					<string key="superclassName">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -5932,9 +5968,108 @@ tNCw0YDRgtC90YvQtQ</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSMenuItem</string>
+					<reference key="sourceIdentifier" ref="1007121487"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMenuItem</string>
+					<string key="superclassName">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKAccessibilityFauxUIElement.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="711964810">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFindController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKLine.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">changeLineAttribute:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKLineInspector.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="1587">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKPDFDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>PDFViewDidBeginEditing:</string>
+							<string>PDFViewDidEndEditing:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>PDFView</string>
+							<string>PDFView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="401449584">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKPDFView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTemplateParser.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">vendorsrc/ulikusterer/UKFileWatcher.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">vendorsrc/ulikusterer/UKKQueue.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -5966,12 +6101,28 @@ tNCw0YDRgtC90YvQtQ</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSResponder</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSResponder_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSResponder</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSSegmentedControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSSegmentedControl_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSSegmentedControl</string>
+					<string key="superclassName">NSControl</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -5980,12 +6131,28 @@ tNCw0YDRgtC90YvQtQ</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSView_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<string key="superclassName">NSResponder</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="852333070">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKMainDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<string key="superclassName">NSResponder</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -5993,9 +6160,28 @@ tNCw0YDRgtC90YvQtQ</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">dismiss:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSWindowController_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindowController</string>
+					<string key="superclassName">NSResponder</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFDocument</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">PDFDocument_SKExtensions.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6006,10 +6192,9 @@ tNCw0YDRgtC90YvQtQ</string>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>editBookmarks:</string>
-							<string>openBookmark:</string>
+							<string>openBookmarkAction:</string>
 							<string>orderFrontLineInspector:</string>
 							<string>orderFrontNotesPanel:</string>
-							<string>saveCurrentOpenDocuments:</string>
 							<string>showDownloads:</string>
 							<string>showPreferencePanel:</string>
 							<string>showReleaseNotes:</string>
@@ -6026,6 +6211,26 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKApplicationController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKApplicationController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>openBookmark:</string>
+							<string>saveCurrentOpenDocuments:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -6066,18 +6271,18 @@ tNCw0YDRgtC90YvQtQ</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>SKBookmarkOutlineView</string>
+							<string>SKOutlineView</string>
 							<string>SKStatusBar</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKBookmarkController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKBookmarkOutlineView</string>
-					<string key="superclassName">SKOutlineView</string>
+					<string key="className">SKBookmarkController</string>
+					<string key="superclassName">NSWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -6091,6 +6296,14 @@ tNCw0YDRgtC90YvQtQ</string>
 						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKColorSwatch.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKColorSwatch</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
@@ -6102,6 +6315,14 @@ tNCw0YDRgtC90YvQtQ</string>
 						<string key="NS.key.0">newDocumentFromClipboard:</string>
 						<string key="NS.object.0">id</string>
 					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKDocumentController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKDocumentController</string>
+					<string key="superclassName">NSDocumentController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -6135,19 +6356,64 @@ tNCw0YDRgtC90YvQtQ</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>findField</string>
 							<string>ignoreCaseCheckbox</string>
+							<string>labelField</string>
+							<string>nextButton</string>
 							<string>ownerController</string>
+							<string>previousButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
 							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
 							<string>NSObjectController</string>
+							<string>NSButton</string>
 						</object>
 					</object>
+					<reference key="sourceIdentifier" ref="711964810"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKFindController</string>
+					<string key="superclassName">NSWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKGradientView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKGradientView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKMainDocument</string>
+					<string key="superclassName">NSDocument</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>convertNotes:</string>
+							<string>emailArchive:</string>
+							<string>emailDiskImage:</string>
+							<string>readNotes:</string>
+							<string>saveArchive:</string>
+							<string>saveDiskImage:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<reference key="sourceIdentifier" ref="852333070"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKMainWindowController</string>
@@ -6163,12 +6429,12 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>allGoToLastPage:</string>
 							<string>allGoToNextPage:</string>
 							<string>allGoToPreviousPage:</string>
+							<string>alternatePaste:</string>
 							<string>alternateZoomToFit:</string>
 							<string>autoCropAll:</string>
 							<string>autoSelectContent:</string>
 							<string>changeAnnotationMode:</string>
 							<string>changeColor:</string>
-							<string>changeColorFill:</string>
 							<string>changeDisplayBox:</string>
 							<string>changeDisplayContinuous:</string>
 							<string>changeDisplayMode:</string>
@@ -6181,6 +6447,7 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>changeToolMode:</string>
 							<string>chooseScale:</string>
 							<string>chooseTransition:</string>
+							<string>copy:</string>
 							<string>createNewCircleNote:</string>
 							<string>createNewLineNote:</string>
 							<string>createNewMarkupNote:</string>
@@ -6188,6 +6455,9 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>createNewTextNote:</string>
 							<string>crop:</string>
 							<string>cropAll:</string>
+							<string>cut:</string>
+							<string>delete:</string>
+							<string>deselectAll:</string>
 							<string>displayFacingPages:</string>
 							<string>displaySinglePages:</string>
 							<string>doAutoScale:</string>
@@ -6214,6 +6484,8 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>goToPreviousNextFirstLastPage:</string>
 							<string>markPage:</string>
 							<string>password:</string>
+							<string>paste:</string>
+							<string>pasteAsPlainText:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
 							<string>rotateAllLeftRight:</string>
@@ -6227,7 +6499,6 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>selectColor:</string>
 							<string>smartAutoCropAll:</string>
 							<string>takeSnapshot:</string>
-							<string>toggleAutoActualSize:</string>
 							<string>toggleAutoScale:</string>
 							<string>toggleCaseInsensitiveNoteSearch:</string>
 							<string>toggleCaseInsensitiveSearch:</string>
@@ -6244,10 +6515,13 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>toggleStatusBar:</string>
 							<string>toggleWholeWordSearch:</string>
 							<string>zoomInActualOut:</string>
-							<string>zoomLog:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -6344,6 +6618,7 @@ tNCw0YDRgtC90YvQtQ</string>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backForwardButton</string>
+							<string>centerContentView</string>
 							<string>circleNoteButton</string>
 							<string>colorSwatch</string>
 							<string>colorsButton</string>
@@ -6384,7 +6659,6 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>ownerController</string>
 							<string>pageNumberField</string>
 							<string>pdfContentView</string>
-							<string>pdfEdgeView</string>
 							<string>pdfSplitView</string>
 							<string>pdfView</string>
 							<string>presentationButton</string>
@@ -6424,6 +6698,7 @@ tNCw0YDRgtC90YvQtQ</string>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSSegmentedControl</string>
+							<string>NSView</string>
 							<string>NSSegmentedControl</string>
 							<string>SKColorSwatch</string>
 							<string>NSSegmentedControl</string>
@@ -6449,7 +6724,7 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
 							<string>BDSKEdgeView</string>
-							<string>BDSKGradientView</string>
+							<string>SKGradientView</string>
 							<string>NSView</string>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
@@ -6464,7 +6739,6 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>NSObjectController</string>
 							<string>NSTextField</string>
 							<string>NSView</string>
-							<string>BDSKEdgeView</string>
 							<string>SKSplitView</string>
 							<string>SKPDFView</string>
 							<string>NSSegmentedControl</string>
@@ -6477,7 +6751,7 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
 							<string>BDSKEdgeView</string>
-							<string>BDSKGradientView</string>
+							<string>SKGradientView</string>
 							<string>NSView</string>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
@@ -6501,6 +6775,239 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
 						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKMainWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKMainWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addBookmark:</string>
+							<string>addSessionBookmark:</string>
+							<string>addSetupBookmark:</string>
+							<string>allGoToFirstPage:</string>
+							<string>allGoToLastPage:</string>
+							<string>allGoToNextPage:</string>
+							<string>allGoToPreviousPage:</string>
+							<string>alternatePaste:</string>
+							<string>alternateZoomToFit:</string>
+							<string>autoCropAll:</string>
+							<string>autoSelectContent:</string>
+							<string>changeAnnotationMode:</string>
+							<string>changeColor:</string>
+							<string>changeDisplayBox:</string>
+							<string>changeDisplayContinuous:</string>
+							<string>changeDisplayMode:</string>
+							<string>changeDisplaySinglePages:</string>
+							<string>changeFindPaneState:</string>
+							<string>changeFont:</string>
+							<string>changeLeftSidePaneState:</string>
+							<string>changeRightSidePaneState:</string>
+							<string>changeScaleFactor:</string>
+							<string>changeToolMode:</string>
+							<string>chooseScale:</string>
+							<string>chooseTransition:</string>
+							<string>copy:</string>
+							<string>createNewCircleNote:</string>
+							<string>createNewLineNote:</string>
+							<string>createNewMarkupNote:</string>
+							<string>createNewNote:</string>
+							<string>createNewTextNote:</string>
+							<string>crop:</string>
+							<string>cropAll:</string>
+							<string>cut:</string>
+							<string>delete:</string>
+							<string>deselectAll:</string>
+							<string>displayFacingPages:</string>
+							<string>displaySinglePages:</string>
+							<string>doAutoScale:</string>
+							<string>doGoBack:</string>
+							<string>doGoForward:</string>
+							<string>doGoToFirstPage:</string>
+							<string>doGoToLastPage:</string>
+							<string>doGoToNextPage:</string>
+							<string>doGoToPage:</string>
+							<string>doGoToPreviousPage:</string>
+							<string>doZoomIn:</string>
+							<string>doZoomOut:</string>
+							<string>doZoomToActualSize:</string>
+							<string>doZoomToFit:</string>
+							<string>doZoomToPhysicalSize:</string>
+							<string>doZoomToSelection:</string>
+							<string>editNote:</string>
+							<string>getInfo:</string>
+							<string>goBackOrForward:</string>
+							<string>goToMarkedPage:</string>
+							<string>goToPreviousNextFirstLastPage:</string>
+							<string>markPage:</string>
+							<string>password:</string>
+							<string>paste:</string>
+							<string>pasteAsPlainText:</string>
+							<string>performFit:</string>
+							<string>rotateAllLeft:</string>
+							<string>rotateAllLeftRight:</string>
+							<string>rotateAllRight:</string>
+							<string>rotateLeft:</string>
+							<string>rotateRight:</string>
+							<string>savePDFSettingToDefaults:</string>
+							<string>searchPDF:</string>
+							<string>selectColor:</string>
+							<string>smartAutoCropAll:</string>
+							<string>takeSnapshot:</string>
+							<string>toggleAutoScale:</string>
+							<string>toggleCaseInsensitiveNoteSearch:</string>
+							<string>toggleCaseInsensitiveSearch:</string>
+							<string>toggleDisplayAsBook:</string>
+							<string>toggleDisplayContinuous:</string>
+							<string>toggleDisplayPageBreaks:</string>
+							<string>toggleFullScreen:</string>
+							<string>toggleHideNotes:</string>
+							<string>toggleLeftSidePane:</string>
+							<string>togglePresentation:</string>
+							<string>toggleReadingBar:</string>
+							<string>toggleRightSidePane:</string>
+							<string>toggleSplitPDF:</string>
+							<string>toggleStatusBar:</string>
+							<string>toggleWholeWordSearch:</string>
+							<string>zoomInActualOut:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKMainWindowController_Actions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKMainWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKMainWindowController_Toolbar.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKMainWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKMainWindowController_UI.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKMainWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>changeColorFill:</string>
+							<string>toggleAutoActualSize:</string>
+							<string>zoomLog:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">pdfEdgeView</string>
+						<string key="NS.object.0">BDSKEdgeView</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
@@ -6531,15 +7038,29 @@ tNCw0YDRgtC90YvQtQ</string>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>noteTypeCancelButton</string>
 							<string>noteTypeMatrix</string>
+							<string>noteTypeMessageField</string>
+							<string>noteTypeOkButton</string>
 							<string>noteTypeSheet</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSButton</string>
 							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
 							<string>NSWindow</string>
 						</object>
 					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKNoteOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKNoteOutlineView</string>
+					<string key="superclassName">SKOutlineView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -6583,6 +7104,14 @@ tNCw0YDRgtC90YvQtQ</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKNotesDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKNotesDocument</string>
+					<string key="superclassName">NSDocument</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
@@ -6608,13 +7137,26 @@ tNCw0YDRgtC90YvQtQ</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKOutlineView</string>
+					<string key="superclassName">NSOutlineView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKPDFDocument</string>
-					<string key="superclassName">NSDocument</string>
+					<string key="superclassName">PDFDocument</string>
+					<reference key="sourceIdentifier" ref="1587"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKPDFDocument</string>
+					<string key="superclassName">PDFDocument</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -6672,7 +7214,7 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>deselectAll:</string>
 							<string>editActiveAnnotation:</string>
 							<string>editThisAnnotation:</string>
-							<string>endAnnotationEdit:</string>
+							<string>exitFullScreen:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
 							<string>removeActiveAnnotation:</string>
@@ -6680,6 +7222,8 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>selectNextActiveAnnotation:</string>
 							<string>selectPreviousActiveAnnotation:</string>
 							<string>takeSnapshot:</string>
+							<string>toggleAutoActualSize:</string>
+							<string>zoomLog:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -6702,11 +7246,30 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 						</object>
+					</object>
+					<reference key="sourceIdentifier" ref="401449584"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKPDFView</string>
+					<string key="superclassName">PDFView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">endAnnotationEdit:</string>
+						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKSplitView</string>
+					<string key="superclassName">NSSplitView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKSplitView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6719,7 +7282,7 @@ tNCw0YDRgtC90YvQtQ</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKStatusBar</string>
-					<string key="superclassName">NSControl</string>
+					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -6737,6 +7300,7 @@ tNCw0YDRgtC90YvQtQ</string>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>iconCell</string>
 							<string>leftCell</string>
 							<string>rightCell</string>
 						</object>
@@ -6744,8 +7308,17 @@ tNCw0YDRgtC90YvQtQ</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
 						</object>
 					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKStatusBar.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKStatusBar</string>
+					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -6760,6 +7333,7 @@ tNCw0YDRgtC90YvQtQ</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>copy:</string>
 							<string>delete:</string>
+							<string>paste:</string>
 							<string>scrollToBeginningOfDocument:</string>
 							<string>scrollToEndOfDocument:</string>
 						</object>
@@ -6769,11 +7343,28 @@ tNCw0YDRgtC90YvQtQ</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
+							<string>id</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKTableView</string>
+					<string key="superclassName">NSTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKThumbnailTableView</string>
+					<string key="superclassName">SKTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKThumbnailTableView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6788,8 +7379,798 @@ tNCw0YDRgtC90YvQtQ</string>
 					<string key="className">SKTocOutlineView</string>
 					<string key="superclassName">SKOutlineView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTocOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKTocOutlineView</string>
+					<string key="superclassName">SKOutlineView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SUUpdater</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBUserSource</string>
+						<string key="minorKey"/>
+					</object>
+				</object>
+			</object>
+			<object class="NSMutableArray" key="referencedPartialClassDescriptionsV3.2+">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<object class="IBPartialClassDescription">
+					<string key="className">IKCameraDeviceView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>deleteSelectedItems:</string>
+							<string>downloadAllItems:</string>
+							<string>downloadSelectedItems:</string>
+							<string>rotateLeft:</string>
+							<string>rotateRight:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">ImageKit.framework/Headers/IKCameraDeviceView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">IKImageView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>crop:</string>
+							<string>flipImageHorizontal:</string>
+							<string>flipImageVertical:</string>
+							<string>rotateImageLeft:</string>
+							<string>rotateImageRight:</string>
+							<string>zoomImageToActualSize:</string>
+							<string>zoomImageToFit:</string>
+							<string>zoomIn:</string>
+							<string>zoomOut:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">ImageKit.framework/Headers/IKImageView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<string key="superclassName">NSResponder</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="651207335">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSApplication.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="230946341">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSApplicationScripting.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="629532842">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSColorPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSHelpManager.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSPageLayout.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSApplication</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSUserInterfaceItemSearching.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArrayController</string>
+					<string key="superclassName">NSObjectController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSArrayController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSBrowser</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSBrowser.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSButton</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSButton.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSControl</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="341843721">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSControl.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSDocument</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>printDocument:</string>
+							<string>revertDocumentToSaved:</string>
+							<string>runPageLayout:</string>
+							<string>saveDocument:</string>
+							<string>saveDocumentAs:</string>
+							<string>saveDocumentTo:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSDocument</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDocumentScripting.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSDocumentController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>clearRecentDocuments:</string>
+							<string>newDocument:</string>
+							<string>openDocument:</string>
+							<string>saveAllDocuments:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDocumentController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSFontManager</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="674906179">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSFontManager.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSFormatter</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSFormatter.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMatrix</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSMatrix.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMenu</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="547573783">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSMenu.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMenuItem</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="801338264">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSMenuItem.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSMovieView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSMovieView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSAccessibility.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="651207335"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="230946341"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="629532842"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="341843721"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDictionaryController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDragging.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="674906179"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSFontPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSKeyValueBinding.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<reference key="sourceIdentifier" ref="547573783"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSNibLoading.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="303783923">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSPasteboard.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSSavePanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="430156115">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSToolbarItem.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="613693052">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSArchiver.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSClassDescription.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSError.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSFileManager.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSKeyValueCoding.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSKeyValueObserving.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSKeyedArchiver.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSObject.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSObjectScripting.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSPortCoder.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSRunLoop.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSScriptClassDescription.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSScriptKeyValueCoding.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSScriptObjectSpecifiers.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSScriptWhoseTests.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSThread.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSURL.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSURLConnection.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSURLDownload.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">ImageKit.framework/Headers/IKImageBrowserView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">ImageKit.framework/Headers/IKSaveOptions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">ImageKit.framework/Headers/ImageKitDeprecated.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="535757894">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">PDFKit.framework/Headers/PDFDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="684402686">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">PDFKit.framework/Headers/PDFView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QuartzComposer.framework/Headers/QCCompositionParameterView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QuartzComposer.framework/Headers/QCCompositionPickerView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QuartzFilters.framework/Headers/QuartzFilterManager.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QuickLookUI.framework/Headers/QLPreviewPanel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Sparkle.framework/Headers/SUAppcast.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="413484958">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Sparkle.framework/Headers/SUUpdater.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObjectController</string>
+					<string key="superclassName">NSController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSObjectController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSOutlineView</string>
+					<string key="superclassName">NSTableView</string>
+					<reference key="sourceIdentifier" ref="303783923"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSResponder</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSInterfaceStyle.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSResponder</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSResponder.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSSearchField</string>
+					<string key="superclassName">NSTextField</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSSearchField.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSSegmentedControl</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSSegmentedControl.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSSplitView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSSplitView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSTableView</string>
+					<string key="superclassName">NSControl</string>
+					<reference key="sourceIdentifier" ref="430156115"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSText</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSText.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSTextField</string>
+					<string key="superclassName">NSControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSTextField.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSClipView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<reference key="sourceIdentifier" ref="801338264"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSRulerView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<string key="superclassName">NSResponder</string>
+					<reference key="sourceIdentifier" ref="613693052"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSDrawer.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<string key="superclassName">NSResponder</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSWindowScripting.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindowController</string>
+					<string key="superclassName">NSResponder</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">showWindow:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFDocument</string>
+					<string key="superclassName">NSObject</string>
+					<reference key="sourceIdentifier" ref="535757894"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFDocument</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">SkimNotes.framework/Headers/PDFDocument_SKNExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>goBack:</string>
+							<string>goForward:</string>
+							<string>goToFirstPage:</string>
+							<string>goToLastPage:</string>
+							<string>goToNextPage:</string>
+							<string>goToPreviousPage:</string>
+							<string>selectAll:</string>
+							<string>takeBackgroundColorFrom:</string>
+							<string>zoomIn:</string>
+							<string>zoomOut:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<reference key="sourceIdentifier" ref="684402686"/>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">QCView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>play:</string>
+							<string>start:</string>
+							<string>stop:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">QuartzComposer.framework/Headers/QCView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6803,14 +8184,24 @@ tNCw0YDRgtC90YvQtQ</string>
 						<string key="NS.key.0">delegate</string>
 						<string key="NS.object.0">id</string>
 					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
+					<reference key="sourceIdentifier" ref="413484958"/>
 				</object>
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
+			<integer value="1040" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
+			<integer value="1050" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<integer value="3000" key="NS.object.0"/>
+		</object>
+		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../Skim.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
