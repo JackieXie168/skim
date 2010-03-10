@@ -106,21 +106,6 @@
     return [self insertItemWithTitle:aString submenu:aSubmenu atIndex:[self numberOfItems]];
 }
 
-- (void)removeDoubleSeparators {
-    NSInteger anIndex = [self numberOfItems];
-    BOOL wasSeparator = YES;
-    
-    while (anIndex--) {
-        if ([[self itemAtIndex:anIndex] isSeparatorItem]) {
-            if (wasSeparator)
-                [self removeItemAtIndex:anIndex];
-            wasSeparator = YES;
-        } else {
-            wasSeparator = NO;
-        }
-    }
-}
-
 @end
 
 
