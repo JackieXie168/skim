@@ -971,7 +971,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenuItem *item;
+    NSMenuItem *item = nil;
     [menu removeAllItems];
     if ([menu isEqual:[thumbnailTableView menu]]) {
         NSInteger row = [thumbnailTableView clickedRow];
@@ -1020,18 +1020,21 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                         item = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editNoteFromTable:) target:self];
                         [item setRepresentedObject:annotation];
                         item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
+                        [item setRepresentedObject:annotation];
                         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
                         [item setAlternate:YES];
                     } else {
                         item = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) target:pdfView];
+                        [item setRepresentedObject:annotation];
                     }
+                }
+                if ([pdfView activeAnnotation] == annotation) {
+                    item = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
+                    [item setRepresentedObject:annotation];
+                } else {
+                    item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
                     [item setRepresentedObject:annotation];
                 }
-                if ([pdfView activeAnnotation] == annotation)
-                    item = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
-                else
-                    item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
-                [item setRepresentedObject:annotation];
                 item = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
                 [item setRepresentedObject:annotation];
             }

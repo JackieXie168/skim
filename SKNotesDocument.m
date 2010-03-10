@@ -627,7 +627,7 @@
                 rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
             }
             
-            if ([self outlineView:outlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+            if ([self outlineView:outlineView canCopyItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
                 [item setRepresentedObject:items];
                 [menu addItem:[NSMenuItem separatorItem]];
