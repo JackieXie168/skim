@@ -2944,11 +2944,15 @@ enum {
             [annotation setEndPoint:endPoint];
             
         } else {
-            
-            if ((dragMask & BDSKMinXEdgeMask) && (dragMask & BDSKMaxXEdgeMask))
-                dragMask &= relPoint.x < 0.0 ? ~BDSKMaxXEdgeMask : ~BDSKMinXEdgeMask;
-            if ((dragMask & BDSKMinYEdgeMask) && (dragMask & BDSKMaxYEdgeMask))
-                dragMask &= relPoint.y <= 0.0 ? ~BDSKMaxYEdgeMask : ~BDSKMinYEdgeMask;
+            if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
+                dragMask = relPoint.x < 0.0 ? ((dragMask & ~BDSKMaxXEdgeMask) | BDSKMinXEdgeMask) : ((dragMask & ~BDSKMinXEdgeMask) | BDSKMaxXEdgeMask);
+                dragMask = relPoint.y <= 0.0 ? ((dragMask & ~BDSKMaxYEdgeMask) | BDSKMinYEdgeMask) : ((dragMask & ~BDSKMinYEdgeMask) | BDSKMaxYEdgeMask);
+            } else {
+                if ((dragMask & BDSKMinXEdgeMask) && (dragMask & BDSKMaxXEdgeMask))
+                    dragMask &= relPoint.x < 0.0 ? ~BDSKMaxXEdgeMask : ~BDSKMinXEdgeMask;
+                else if ((dragMask & BDSKMinYEdgeMask) && (dragMask & BDSKMaxYEdgeMask))
+                    dragMask &= relPoint.y <= 0.0 ? ~BDSKMaxYEdgeMask : ~BDSKMinYEdgeMask;
+            }
             
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 CGFloat width = NSWidth(newBounds);
