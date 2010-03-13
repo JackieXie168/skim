@@ -50,7 +50,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="560536664">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -69,7 +69,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{360, 292}</string>
 											<reference key="NSSuperview" ref="725253566"/>
-											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="_NSCornerView" key="NSCornerView">
 												<nil key="NSNextResponder"/>
@@ -253,7 +252,6 @@
 									</object>
 									<string key="NSFrameSize">{360, 292}</string>
 									<reference key="NSSuperview" ref="929537651"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="540499767"/>
 									<reference key="NSDocView" ref="540499767"/>
 									<object class="NSColor" key="NSBGColor">
@@ -272,7 +270,6 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{346, 1}, {15, 272}}</string>
 									<reference key="NSSuperview" ref="929537651"/>
-									<reference key="NSWindow"/>
 									<reference key="NSTarget" ref="929537651"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSPercent">0.80000000000000004</double>
@@ -282,7 +279,6 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{-100, -100}, {480, 15}}</string>
 									<reference key="NSSuperview" ref="929537651"/>
-									<reference key="NSWindow"/>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="929537651"/>
 									<string key="NSAction">_doScroller:</string>
@@ -291,7 +287,6 @@
 							</object>
 							<string key="NSFrame">{{0, 24}, {360, 292}}</string>
 							<reference key="NSSuperview" ref="560536664"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="725253566"/>
 							<int key="NSsFlags">528</int>
 							<reference key="NSVScroller" ref="769180550"/>
@@ -304,7 +299,6 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{324, 4}, {16, 16}}</string>
 							<reference key="NSSuperview" ref="560536664"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="196332728">
 								<int key="NSCellFlags">67239424</int>
@@ -335,7 +329,6 @@
 							<int key="NSvFlags">292</int>
 							<string key="NSFrame">{{8, 3}, {40, 18}}</string>
 							<reference key="NSSuperview" ref="560536664"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="953259606">
 								<int key="NSCellFlags">67239424</int>
@@ -360,8 +353,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{360, 316}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -421,7 +412,7 @@
 							<object class="NSButtonCell" key="NSCell" id="150822878">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Remove download when finished sucessfully</string>
+								<string key="NSContents">Remove download when finished successfully</string>
 								<reference key="NSSupport" ref="587491814"/>
 								<reference key="NSControlView" ref="888578511"/>
 								<int key="NSButtonFlags">1211912703</int>
