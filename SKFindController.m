@@ -64,14 +64,6 @@
 }
 
 - (void)windowDidLoad {
-    [[self window] setTitle:NSLocalizedString(@"Find", @"Window title")];
-    [labelField setStringValue:NSLocalizedString(@"Find:", @"Prompt")];
-    [ignoreCaseCheckbox setTitle:NSLocalizedString(@"Ignore case", @"Check button title")];
-    [nextButton setTitle:NSLocalizedString(@"Next", @"Button title")];
-    [previousButton setTitle:NSLocalizedString(@"Previous", @"Button title")];
-    [nextButton setToolTip:NSLocalizedString(@"Find next match", @"Tool tip message")];
-    [previousButton setToolTip:NSLocalizedString(@"Find previous match", @"Tool tip message")];
-    
     SKAutoSizeButtons(nextButton, previousButton);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil], YES);
     

@@ -46,18 +46,13 @@
 
 @implementation SKTextFieldSheetController
 
-- (NSString *)prompt { return @""; }
-
 - (void)autosizeLabels {
-    [labelField setStringValue:[self prompt]];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:textField, nil], YES);
 }
 
 - (void)windowDidLoad {
     NSRect frame = [[self window] frame];
     CGFloat buttonMargin = NSWidth(frame) - NSMaxX([okButton frame]);
-    [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
-    [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
     SKAutoSizeButtons(okButton, cancelButton);
     if (NSMinX([cancelButton frame]) < buttonMargin) {
         frame.size.width += buttonMargin - NSMinX([cancelButton frame]);
@@ -87,8 +82,6 @@
 
 - (NSString *)windowNibName { return @"PageSheet"; }
 
-- (NSString *)prompt { return NSLocalizedString(@"Page:", @"Prompt"); }
-
 - (NSArray *)objectValues {
     return [(NSComboBox *)[self textField] objectValues];
 }
@@ -106,8 +99,6 @@
 
 - (NSString *)windowNibName { return @"ScaleSheet"; }
 
-- (NSString *)prompt { return NSLocalizedString(@"Scale:", @"Prompt"); }
-
 @end
 
 #pragma mark -
@@ -116,13 +107,7 @@
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
 
-- (NSString *)prompt { return NSLocalizedString(@"Bookmark:", @"Prompt"); }
-
-- (NSString *)folderPrompt { return NSLocalizedString(@"Add to:", @"Prompt"); }
-
 - (void)autosizeLabels {
-    [labelField setStringValue:[self prompt]];
-    [folderLabelField setStringValue:[self folderPrompt]];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, folderLabelField, nil], [NSArray arrayWithObjects:textField, folderPopUp, nil], YES);
 }
 
@@ -161,7 +146,5 @@
 @implementation SKPasswordSheetController
 
 - (NSString *)windowNibName { return @"PasswordSheet"; }
-
-- (NSString *)prompt { return NSLocalizedString(@"Password:", @"Prompt"); }
 
 @end

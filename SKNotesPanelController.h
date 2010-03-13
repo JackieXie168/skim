@@ -37,9 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 
 
-@interface SKNotesPanelController : NSWindowController <NSWindowDelegate> {
+@interface SKNotesPanelController : SKWindowController <NSWindowDelegate> {
     IBOutlet NSButton *textButton;
     IBOutlet NSButton *anchoredButton;
     IBOutlet NSButton *circleButton;

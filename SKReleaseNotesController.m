@@ -53,7 +53,6 @@
 }
 
 - (void)windowDidLoad {
-    [[self window] setTitle:NSLocalizedString(@"Release Notes", @"window title")];
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
                                withRTF:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ReleaseNotes" ofType:@"rtf"]]];

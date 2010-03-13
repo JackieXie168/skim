@@ -149,7 +149,6 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
 }
 
 - (void)windowDidLoad {
-    [[self window] setTitle:NSLocalizedString(@"Note", @"Window title")];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
@@ -182,7 +181,6 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
             [item setImage:noteIcons[i]];
         }
         
-        [iconLabelField setStringValue:NSLocalizedString(@"Icon:", @"Popup label")];
         SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
         
     } else {
@@ -213,7 +211,6 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
     
     NSRect buttonFrame = [checkButton frame];
     CGFloat right = NSMaxX(buttonFrame);
-    [checkButton setTitle:NSLocalizedString(@"Keep on top", @"Check button title")];
     [checkButton sizeToFit];
     buttonFrame = [checkButton frame];
     buttonFrame.origin.x = right - NSWidth(buttonFrame);

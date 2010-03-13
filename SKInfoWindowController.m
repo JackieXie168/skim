@@ -131,10 +131,6 @@ static void autosizeFirstTableColumn(NSTableView *tv) {
     [summaryTableView reloadData];
     [attributesTableView reloadData];
     
-    [[self window] setTitle:NSLocalizedString(@"Document Info", @"Window title")];
-    [[tabView tabViewItemAtIndex:0] setLabel:NSLocalizedString(@"Summary", @"Info tab label")];
-    [[tabView tabViewItemAtIndex:1] setLabel:NSLocalizedString(@"Attributes", @"Info tab label")];
-    
     autosizeFirstTableColumn(summaryTableView);
     autosizeFirstTableColumn(attributesTableView);
     

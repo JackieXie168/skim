@@ -131,6 +131,21 @@ void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
     [defaultButton setFrame:defaultFrame];
 }
 
+extern void SKAutoSizeLeftButtons(NSButton *firstButton, NSButton *secondButton) {
+    CGFloat width;
+    NSRect secondFrame, firstFrame;
+    [secondButton sizeToFit];
+    [firstButton sizeToFit];
+    secondFrame = secondButton ? [secondButton frame] : NSZeroRect;
+    firstFrame = [firstButton frame];
+    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(secondFrame), NSWidth(firstFrame))));
+    secondFrame.size.width = fmax(NSWidth(secondFrame), width);
+    firstFrame.size.width = fmax(NSWidth(firstFrame), width);
+    secondFrame.origin.x = NSMaxX(firstFrame);
+    [secondButton setFrame:secondFrame];
+    [firstButton setFrame:firstFrame];
+}
+
 CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resizeControls) {
     NSControl *control;
     NSRect frame;

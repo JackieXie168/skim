@@ -38,9 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "SKViewController.h"
 
 
-@interface SKPrintAccessoryController : NSViewController <NSPrintPanelAccessorizing> {
+@interface SKPrintAccessoryController : SKViewController <NSPrintPanelAccessorizing> {
     IBOutlet NSButton *autoRotateButton;
     IBOutlet NSMatrix *printScalingModeMatrix;
 }

@@ -88,14 +88,6 @@ static char SKDownloadPropertiesObservationContext;
 }
 
 - (void)windowDidLoad {
-    [[self window] setTitle:NSLocalizedString(@"Downloads", @"Window title")];
-    [clearButton setTitle:NSLocalizedString(@"Clear", @"Button title")];
-    [doneButton setTitle:NSLocalizedString(@"Done", @"Button title")];
-    [showDownloadsCheckButton setTitle:NSLocalizedString(@"Show Downloads window when downloading a file", @"Check button title")];
-    [removeDownloadCheckButton setTitle:NSLocalizedString(@"Remove download when finished successfully", @"Check button title")];
-    [hideDownloadsCheckButton setTitle:NSLocalizedString(@"Hide Downloads window when all downloads finished", @"Check button title")];
-    [clearButton setToolTip:NSLocalizedString(@"Remove all finished downloads", @"Tool tip message")];
-    [prefButton setToolTip:NSLocalizedString(@"Download preferences", @"Tool tip message")];
     [prefButton accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
     
     [clearButton sizeToFit];

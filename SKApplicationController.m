@@ -73,6 +73,7 @@
 #import "SKRemoteStateWindow.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKFDFParser.h"
+#import "SKLocalization.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/apps/mediawiki/skim-app/"
@@ -128,6 +129,8 @@
 }
 
 - (void)awakeFromNib {
+    [[NSApp mainMenu] localizeStringsFromTable:@"MainMenu"];
+    
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
     NSInteger i, count = [viewMenu numberOfItems];
     

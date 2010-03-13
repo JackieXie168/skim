@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 
 extern NSString *SKSnapshotCurrentSetupKey;
 
@@ -55,7 +56,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
 
-@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
+@interface SKSnapshotWindowController : SKWindowController <NSWindowDelegate> {
     IBOutlet SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;

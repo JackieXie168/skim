@@ -37,9 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 
 
-@interface SKFindController : NSWindowController <NSWindowDelegate> {
+@interface SKFindController : SKWindowController <NSWindowDelegate> {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
     IBOutlet NSObjectController *ownerController;

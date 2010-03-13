@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "SKWindowController.h"
 
 extern NSString *SKLineInspectorLineAttributeDidChangeNotification;
 
@@ -53,7 +54,7 @@ typedef NSUInteger SKLineChangeAction;
 
 @class SKLineWell;
 
-@interface SKLineInspector : NSWindowController {
+@interface SKLineInspector : SKWindowController {
     IBOutlet NSSlider *lineWidthSlider;
     IBOutlet NSTextField *lineWidthField;
     IBOutlet NSSegmentedControl *styleButton;
