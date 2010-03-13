@@ -99,18 +99,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [dashPatternField setFormatter:formatter];
     [formatter release];
     
-    [borderStyleHeaderField setStringValue:NSLocalizedString(@"Line and Border Style", @"Header label")];
-    [lineEndingStyleHeaderField setStringValue:NSLocalizedString(@"Line Ending Style", @"Header label")];
-    [lineWidthLabelField setStringValue:NSLocalizedString(@"Line Width:", @"Control label")];
-    [styleLabelField setStringValue:NSLocalizedString(@"Line Style:", @"Control label")];
-    [dashPatternLabelField setStringValue:NSLocalizedString(@"Dash Pattern:", @"Control label")];
-    [startLineStyleLabelField setStringValue:NSLocalizedString(@"Start:", @"Control label")];
-    [endLineStyleLabelField setStringValue:NSLocalizedString(@"End:", @"Control label")];
-    
-    [lineWidthSlider setToolTip:NSLocalizedString(@"Line width", @"Tool tip message")];
-    [lineWidthField setToolTip:NSLocalizedString(@"Line width", @"Tool tip message")];
-    [dashPatternField setToolTip:NSLocalizedString(@"Dash pattern as numbers separated by space", @"Tool tip message")];
-    
     [styleButton setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
     [styleButton setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
     [styleButton setToolTip:NSLocalizedString(@"Beveled line style", @"Tool tip message") forSegment:kPDFBorderStyleBeveled];

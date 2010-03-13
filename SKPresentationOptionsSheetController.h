@@ -37,12 +37,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 #import "SKTransitionController.h"
 #import "SKThumbnailTableView.h"
 
 @class SKMainWindowController, SKMainDocument, SKThumbnail, SKTransitionInfo;
 
-@interface SKPresentationOptionsSheetController : NSWindowController <NSWindowDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource> {
+@interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource> {
     IBOutlet NSPopUpButton *transitionStylePopUpButton;
     IBOutlet NSTextField *transitionDurationField;
     IBOutlet NSSlider *transitionDurationSlider;

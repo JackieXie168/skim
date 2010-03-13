@@ -37,8 +37,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 
-@interface SKConversionProgressController : NSWindowController {
+@interface SKConversionProgressController : SKWindowController {
     IBOutlet NSButton *cancelButton;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField *textField;

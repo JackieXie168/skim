@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKWindowController.h"
 
 typedef struct _SKTeXEditor {
     NSString *name, *command, *arguments;
@@ -44,7 +45,7 @@ typedef struct _SKTeXEditor {
 
 @class SKLineWell, SKFontWell;
 
-@interface SKPreferenceController : NSWindowController <NSWindowDelegate, NSTabViewDelegate> {
+@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
     IBOutlet NSTabView *tabView;
     IBOutlet NSPopUpButton *updateIntervalPopUpButton;
     IBOutlet NSSlider *thumbnailSizeSlider;

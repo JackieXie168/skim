@@ -135,20 +135,10 @@ static char *SKTransitionPropertiesObservationContext;
     [transition setShouldRestrict:[transitionController shouldRestrict]];
     [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     
-    [documentBox setTitle:NSLocalizedString(@"Synchronized Notes Document", @"Box title")];
-    [separateCheckButton setTitle:NSLocalizedString(@"Distinct page transitions", @"Check button title")];
     [separateCheckButton sizeToFit];
-    [[transitionExtentMatrix cellWithTag:0] setTitle:NSLocalizedString(@"Screen", @"Radio button title")];;
-    [[transitionExtentMatrix cellWithTag:1] setTitle:NSLocalizedString(@"Page", @"Radio button title")];;
     [transitionExtentMatrix sizeToCells];
     
-    [okButton setTitle:NSLocalizedString(@"OK", @"Button title")];
-    [cancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
     SKAutoSizeButtons(okButton, cancelButton);
-    
-    [effectLabelField setStringValue:NSLocalizedString(@"Effect:", @"Control label")];
-    [durationLabelField setStringValue:NSLocalizedString(@"Duration:", @"Control label")];
-    [extentLabelField setStringValue:NSLocalizedString(@"Extent:", @"Control label")];
     
     CGFloat dw = SKAutoSizeLabelFields([NSArray arrayWithObjects:effectLabelField, durationLabelField, extentLabelField, nil], [NSArray arrayWithObjects:transitionStylePopUpButton, transitionDurationSlider, transitionDurationField, transitionExtentMatrix, nil], NO);
     
