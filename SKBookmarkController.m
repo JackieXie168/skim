@@ -170,12 +170,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
     else
         [[self window] setContentBorderThickness:22.0 forEdge:NSMinYEdge];
     
-    [[self window] setTitle:NSLocalizedString(@"Bookmarks", @"window title")];
-    
-    [[[outlineView tableColumnWithIdentifier:LABEL_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Label", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:FILE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
