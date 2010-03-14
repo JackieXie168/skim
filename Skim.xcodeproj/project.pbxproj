@@ -519,10 +519,10 @@
 		CE0E83EB114D15E000E37F38 /* DisplayPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DisplayPreferences.tiff; sourceTree = "<group>"; };
 		CE0E83EC114D15E000E37F38 /* GeneralPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GeneralPreferences.tiff; sourceTree = "<group>"; };
 		CE0E83ED114D15E000E37F38 /* NotesPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NotesPreferences.tiff; sourceTree = "<group>"; };
-		CE0E84C7114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
-		CE0E84C9114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
-		CE0E84CB114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
-		CE0E84CD114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
+		CE0E84C7114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
+		CE0E84C9114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
+		CE0E84CB114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
+		CE0E84CD114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
 		CE0E84D2114D518700E37F38 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
 		CE0E84D3114D518700E37F38 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
 		CE0E84D4114D518700E37F38 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
