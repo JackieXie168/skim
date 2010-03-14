@@ -39,57 +39,25 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-typedef struct _SKTeXEditor {
-    NSString *name, *command, *arguments;
-} SKTeXEditor;
-
-@class SKLineWell, SKFontWell;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSPopUpButton *updateIntervalPopUpButton;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    IBOutlet NSButton *revertPDFSettingsButton;
-    IBOutlet NSButton *revertFullScreenPDFSettingsButton;
-    IBOutlet SKLineWell *textLineWell;
-    IBOutlet SKLineWell *lineLineWell;
-    IBOutlet SKLineWell *circleLineWell;
-    IBOutlet SKLineWell *boxLineWell;
-    IBOutlet SKLineWell *freehandLineWell;
-    IBOutlet SKFontWell *textNoteFontWell;
-    IBOutlet SKFontWell *anchoredNoteFontWell;
+    IBOutlet NSView *contentView;
     NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
-    NSInteger updateInterval;
-    NSUserDefaults *sud;
-    NSUserDefaultsController *sudc;
+    NSDictionary *panes;
+    NSDictionary *toolbarItems;
+    NSString *currentPaneID;
 }
 
 + (id)sharedPrefenceController;
 
-- (NSUInteger)countOfSizes;
-- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
+- (void)selectPaneWithIdentifier:(NSString *)paneID;
 
-- (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
-
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
-
-- (NSInteger)updateInterval;
-- (void)setUpdateInterval:(NSInteger)interval;
-
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
-
-- (IBAction)revertPDFViewSettings:(id)sender;
-- (IBAction)revertFullScreenPDFViewSettings:(id)sender;
+- (IBAction)resetAll:(id)sender;
+- (IBAction)resetCurrent:(id)sender;
 
 - (IBAction)changeFont:(id)sender;
 - (IBAction)changeAttributes:(id)sender;
 
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
+- (void)setupToolbar;
 
 @end

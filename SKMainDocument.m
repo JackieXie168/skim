@@ -79,7 +79,7 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
-#import "SKPreferenceController.h"
+#import "SKSyncPreferences.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -1520,7 +1520,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSString *editorCmd = nil;
         NSString *editorArgs = nil;
         NSMutableString *cmdString = nil;
-        SKTeXEditor editor = [[SKPreferenceController sharedPrefenceController] TeXEditorForPreset:editorPreset];
+        SKTeXEditor editor = [SKSyncPreferences TeXEditorForPreset:editorPreset];
         
         if (editor.name) {
             editorCmd = editor.command;
