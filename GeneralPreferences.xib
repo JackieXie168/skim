@@ -418,7 +418,7 @@ AAA</bytes>
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Box</string>
+							<string key="NSContents"/>
 							<reference key="NSSupport" ref="979260457"/>
 							<object class="NSColor" key="NSBackgroundColor" id="495702290">
 								<int key="NSColorSpace">6</int>
@@ -800,7 +800,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Box</string>
+							<string key="NSContents"/>
 							<reference key="NSSupport" ref="979260457"/>
 							<reference key="NSBackgroundColor" ref="495702290"/>
 							<object class="NSColor" key="NSTextColor">
@@ -944,7 +944,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Box</string>
+							<string key="NSContents"/>
 							<reference key="NSSupport" ref="979260457"/>
 							<reference key="NSBackgroundColor" ref="495702290"/>
 							<object class="NSColor" key="NSTextColor">
@@ -982,7 +982,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Box</string>
+							<string key="NSContents"/>
 							<reference key="NSSupport" ref="979260457"/>
 							<reference key="NSBackgroundColor" ref="495702290"/>
 							<object class="NSColor" key="NSTextColor">
@@ -1004,7 +1004,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">Box</string>
+							<string key="NSContents"/>
 							<reference key="NSSupport" ref="979260457"/>
 							<reference key="NSBackgroundColor" ref="495702290"/>
 							<object class="NSColor" key="NSTextColor">
@@ -2180,7 +2180,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKGeneralPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
+					<string key="superclassName">SKViewController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -2220,14 +2220,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKGeneralPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKPreferencePane</string>
-					<string key="superclassName">SKViewController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKPreferencePane.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
