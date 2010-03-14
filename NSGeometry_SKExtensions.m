@@ -115,6 +115,15 @@ BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoi
 #define MIN_BUTTON_WIDTH 82.0
 #define MAX_BUTTON_WIDTH 100.0
 
+void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
+    for (NSView *view in views) {
+        NSRect frame = [view frame];
+        frame.origin.x += dx;
+        frame.size.width += dw;
+        [view setFrame:frame];
+    }
+}
+
 void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
     CGFloat width, right = NSMaxX([defaultButton frame]);
     NSRect altFrame, defaultFrame;
@@ -163,13 +172,7 @@ CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resi
         [control setFrame:frame];
     }
     dw += right;
-    for (control in controls) {
-        frame = [control frame];
-        frame.origin.x += dw;
-        if (resizeControls)
-            frame.size.width -= dw;
-        [control setFrame:frame];
-    }
+    SKShiftAndResizeViews(controls, dw, resizeControls ? -dw : 0.0);
     return dw;
 }
 

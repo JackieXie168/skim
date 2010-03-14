@@ -37,42 +37,29 @@
  */
 
 #import "SKPreferenceController.h"
+#import "SKViewController.h"
+#import "SKGeneralPreferences.h"
+#import "SKDisplayPreferences.h"
+#import "SKNotesPreferences.h"
+#import "SKSyncPreferences.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "SKLineWell.h"
 #import "SKFontWell.h"
 #import "NSView_SKExtensions.h"
-#import <Sparkle/Sparkle.h>
 
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
-#define GENERAL_TABID @"general"
+#define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
-#define UPDATEINTERVAL_KEY @"updateInterval"
-
-static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
-
-static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
-                                     {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 
-                                     {@"TextWrangler",   @"edit",        @"+%line \"%file\""}, 
-                                     {@"Emacs",          @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"Aquamacs Emacs", @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"Aquamacs",       @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"LyX",            @"lyxeditor",   @"\"%file\" %line"}, 
-                                     {@"TeXMaker",       @"texmaker",    @"\"%file\" -line %line"}, 
-                                     {@"AlphaX",         @"alphac",      @"+%line \"%file\""}};
+#define SKGeneralPreferencesIdentifier @"SKGeneralPreferencesIdentifier"
+#define SKDisplayPreferencesIdentifier @"SKDisplayPreferencesIdentifier"
+#define SKNotesPreferencesIdentifier   @"SKNotesPreferencesIdentifier"
+#define SKSyncPreferencesIdentifier    @"SKSyncPreferencesIdentifier"
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
-
-static char SKPreferenceWindowDefaultsObservationContext;
-static char SKPreferenceWindowUpdaterObservationContext;
-
-@interface SKPreferenceController (Private)
-- (void)synchronizeUpdateInterval;
-- (void)updateRevertButtons;
-@end
 
 @implementation SKPreferenceController
 
@@ -87,80 +74,50 @@ static char SKPreferenceWindowUpdaterObservationContext;
     if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY] retain];
-        
-        sud = [NSUserDefaults standardUserDefaults];
-        sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKPreferenceWindowDefaultsObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
     }
     return self;
 }
 
 - (void)dealloc {
-    [sudc removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
-    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"automaticallyChecksForUpdates"];
-    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"updateCheckInterval"];
     SKDESTROY(resettableKeys);
+    SKDESTROY(panes);
+    SKDESTROY(toolbarItems);
+    SKDESTROY(currentPaneID);
     [super dealloc];
 }
 
-#define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
-
 - (void)windowDidLoad {
+    [self setupToolbar];
+    [[self window] setShowsToolbarButton:NO];
+    
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
-    NSString *editorPreset = [sud stringForKey:SKTeXEditorPresetKey];
-    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
-    NSInteger idx = -1;
+    SKGeneralPreferences *generalPane = [[[SKGeneralPreferences alloc] init] autorelease];
+    SKDisplayPreferences *displayPane = [[[SKDisplayPreferences alloc] init] autorelease];
+    SKNotesPreferences *notesPane = [[[SKNotesPreferences alloc] init] autorelease];
+    SKSyncPreferences *syncPane = [[[SKSyncPreferences alloc] init] autorelease];
+    NSArray *allPanes = [NSArray arrayWithObjects:generalPane, displayPane, notesPane, syncPane, nil];
+    NSArray *paneIDs = [NSArray arrayWithObjects:SKGeneralPreferencesIdentifier, SKDisplayPreferencesIdentifier, SKNotesPreferencesIdentifier, SKSyncPreferencesIdentifier, nil];
+    panes = [[NSDictionary alloc] initWithObjects:allPanes forKeys:paneIDs];
     
-    while (i--) {
-        NSString *name = SKTeXEditors[i].name;
-        [texEditorPopUpButton insertItemWithTitle:name atIndex:0];
-        if ([name isEqualToString:editorPreset])
-            idx = i;
+    NSSize size = NSZeroSize;
+    for (NSViewController *pane in allPanes) {
+        NSSize aSize = [[pane view] frame].size;
+        size.width = fmax(size.width, aSize.width);
+        size.height = fmax(size.height, aSize.height);
     }
+    for (NSViewController *pane in allPanes) {
+        NSView *view = [pane view];
+        NSSize aSize = [view frame].size;
+        aSize.width = size.width;
+        [view setFrameSize:aSize];
+    }
+    NSRect frame = [[self window] frame];
+    frame.size.width = size.width;
+    frame.size.height += size.height - NSHeight([contentView frame]);
+    [[self window] setFrame:frame display:NO];
     
-    [self setCustomTeXEditor:idx == -1];
-    
-    if (isCustomTeXEditor)
-        [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
-    else
-        [texEditorPopUpButton selectItemAtIndex:idx];
-    
-    [self updateRevertButtons];
-    
-    [self synchronizeUpdateInterval];
-    
-    [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
-    [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
-    [textLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
-    [textLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
-    
-    [circleLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
-    [circleLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
-    [circleLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
-    [circleLineWell setDisplayStyle:SKLineWellDisplayStyleOval];
-    
-    [boxLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
-    [boxLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
-    [boxLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
-    [boxLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
-    
-    [lineLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
-    [lineLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];
-    [lineLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
-    [lineLineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
-    [lineLineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
-    
-    [freehandLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineWidthKey) options:nil];
-    [freehandLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineStyleKey) options:nil];
-    [freehandLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteDashPatternKey) options:nil];
-    [freehandLineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
-    
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
-    [textNoteFontWell setHasTextColor:YES];
-    [textNoteFontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
+    [self selectPaneWithIdentifier:SKGeneralPreferencesIdentifier];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -174,112 +131,46 @@ static char SKPreferenceWindowUpdaterObservationContext;
 }
 
 - (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem {
-    // make sure edits are committed
-    if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+        // make sure edits are committed
+        if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+            [[self window] endEditingFor:nil];
 }
 
-#pragma mark Accessors
-
-- (NSUInteger)countOfSizes {
-    return sizeof(SKDefaultFontSizes) / sizeof(CGFloat);
-}
-
-- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex {
-    return [NSNumber numberWithDouble:SKDefaultFontSizes[anIndex]];
-}
-
-- (SKTeXEditor)TeXEditorForPreset:(NSString *)name {
-    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
-    while (i--) {
-        SKTeXEditor editor = SKTeXEditors[i];
-        if ([editor.name isEqualToString:name])
-            return editor;
+- (void)selectPaneWithIdentifier:(NSString *)paneID {
+    if ([paneID isEqualToString:currentPaneID] == NO) {
+        SKViewController *oldPane = currentPaneID ? [panes objectForKey:currentPaneID] : nil;
+        SKViewController *newPane = [panes objectForKey:paneID];
+        
+        [[[self window] toolbar] setSelectedItemIdentifier:paneID];
+        [[self window] setTitle:[[toolbarItems objectForKey:paneID] label]];
+        
+        // make sure edits are committed
+        if (oldPane && [[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+            [[self window] endEditingFor:nil];
+        
+        NSView *view = [newPane view];
+        NSRect frame = [view frame];
+        [view setFrameOrigin:NSMakePoint(0.0, NSHeight([contentView frame]) - NSHeight(frame))];
+        [[oldPane view] removeFromSuperview];
+        [contentView addSubview:view];
+        
+        [currentPaneID release];
+        currentPaneID = [paneID retain];
     }
-    return (SKTeXEditor){nil, nil, nil};
-}
-
-- (BOOL)isCustomTeXEditor {
-    return isCustomTeXEditor;
-}
-
-- (void)setCustomTeXEditor:(BOOL)flag {
-    isCustomTeXEditor = flag;
-}
-
-- (NSInteger)updateInterval {
-    return updateInterval;
-}
-
-- (void)setUpdateInterval:(NSInteger)interval {
-    if (interval > 0)
-        [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
-    [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0];
 }
 
 #pragma mark Actions
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender {
-    if ([sender state] == NSOnState) {
-        [thumbnailSizeSlider setNumberOfTickMarks:8];
-        [snapshotSizeSlider setNumberOfTickMarks:8];
-        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:YES];
-        [snapshotSizeSlider setAllowsTickMarkValuesOnly:YES];
-    } else {
-        [[thumbnailSizeSlider superview] setNeedsDisplayInRect:[thumbnailSizeSlider frame]];
-        [[snapshotSizeSlider superview] setNeedsDisplayInRect:[snapshotSizeSlider frame]];
-        [thumbnailSizeSlider setNumberOfTickMarks:0];
-        [snapshotSizeSlider setNumberOfTickMarks:0];
-        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:NO];
-        [snapshotSizeSlider setAllowsTickMarkValuesOnly:NO];
-    }
-    [thumbnailSizeSlider sizeToFit];
-    [snapshotSizeSlider sizeToFit];
-}
-
-- (IBAction)changeTeXEditorPreset:(id)sender {
-    NSInteger idx = [sender indexOfSelectedItem];
-    if (idx < [sender numberOfItems] - 1) {
-        [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [[sudc values] setValue:SKTeXEditors[idx].command forKey:SKTeXEditorCommandKey];
-        [[sudc values] setValue:SKTeXEditors[idx].arguments forKey:SKTeXEditorArgumentsKey];
-        [self setCustomTeXEditor:NO];
-    } else {
-        [[sudc values] setValue:@"" forKey:SKTeXEditorPresetKey];
-        [self setCustomTeXEditor:YES];
-    }
-}
-
-- (IBAction)revertPDFViewSettings:(id)sender {
-    [sudc revertToInitialValueForKey:SKDefaultPDFDisplaySettingsKey];
-}
-
-- (IBAction)revertFullScreenPDFViewSettings:(id)sender {
-    [sudc revertToInitialValueForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
-}
-
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        NSString *tabID = (NSString *)contextInfo;
-        NSArray *keys = tabID ? [resettableKeys objectForKey:tabID] : nil;
-        if (tabID)
-            [sudc revertToInitialValuesForKeys:keys];
+        NSString *paneID = (NSString *)contextInfo;
+        if (paneID)
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[resettableKeys objectForKey:paneID]];
         else
-            [sudc revertToInitialValues:nil];
-        if (tabID == nil || [tabID isEqualToString:GENERAL_TABID]) {
-            NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"SUScheduledCheckInterval"] doubleValue];
-            [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
-            [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0.0];
-        }
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
+        if (paneID == nil || [paneID isEqualToString:SKGeneralPreferencesIdentifier])
+            [(SKGeneralPreferences *)[panes objectForKey:SKGeneralPreferencesIdentifier] resetSparkleDefaults];
     }
-}
-
-- (IBAction)changeFont:(id)sender {
-    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager:sender];
-}
-
-- (IBAction)changeAttributes:(id)sender {
-    [[[[self window] contentView] activeFontWellSubview] changeAttributesFromFontManager:sender];
 }
 
 - (IBAction)resetAll:(id)sender {
@@ -295,7 +186,11 @@ static char SKPreferenceWindowUpdaterObservationContext;
 }
 
 - (IBAction)resetCurrent:(id)sender {
-    NSString *label = [[tabView selectedTabViewItem] label];
+    if (currentPaneID == nil) {
+        NSBeep();
+        return;
+    }
+    NSString *label = [[toolbarItems objectForKey:currentPaneID] label];
     NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]
                                      defaultButton:NSLocalizedString(@"Reset", @"Button title")
                                    alternateButton:NSLocalizedString(@"Cancel", @"Button title")
@@ -304,36 +199,90 @@ static char SKPreferenceWindowUpdaterObservationContext;
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
                      didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
-                        contextInfo:[[tabView selectedTabViewItem] identifier]];
+                        contextInfo:currentPaneID];
 }
 
-#pragma mark KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKPreferenceWindowDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
-            [self updateRevertButtons];
-        }
-    } else if (context == &SKPreferenceWindowUpdaterObservationContext) {
-        [self synchronizeUpdateInterval];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
+- (IBAction)changeFont:(id)sender {
+    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager:sender];
 }
 
-#pragma mark Private
-
-- (void)synchronizeUpdateInterval {
-    [self willChangeValueForKey:UPDATEINTERVAL_KEY];
-    updateInterval = [[SUUpdater sharedUpdater] updateCheckInterval];
-    [self didChangeValueForKey:UPDATEINTERVAL_KEY];
+- (IBAction)changeAttributes:(id)sender {
+    [[[[self window] contentView] activeFontWellSubview] changeAttributesFromFontManager:sender];
 }
 
-- (void)updateRevertButtons {
-    NSDictionary *initialValues = [sudc initialValues];
-    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
-    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
+- (IBAction)selectPane:(id)sender {
+    [self selectPaneWithIdentifier:[sender itemIdentifier]];
+}
+
+#pragma mark Toolbar
+
+- (void)setupToolbar {
+    // Create a new toolbar instance, and attach it to our document window
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
+    NSToolbarItem *item;
+    
+    NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
+    
+    [toolbar setAllowsUserCustomization:NO];
+    [toolbar setAutosavesConfiguration:NO];
+    [toolbar setVisible:YES];
+    [toolbar setDelegate:self];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKGeneralPreferencesIdentifier];
+    [item setLabel:NSLocalizedString(@"General", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"General", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"GeneralPreferences"]];
+    [item setTarget:self];
+    [item setAction:@selector(selectPane:)];
+    [tmpDict setObject:item forKey:SKGeneralPreferencesIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDisplayPreferencesIdentifier];
+    [item setLabel:NSLocalizedString(@"Display", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Display", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"DisplayPreferences"]];
+    [item setTarget:self];
+    [item setAction:@selector(selectPane:)];
+    [tmpDict setObject:item forKey:SKDisplayPreferencesIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKNotesPreferencesIdentifier];
+    [item setLabel:NSLocalizedString(@"Notes", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Notes", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"NotesPreferences"]];
+    [item setTarget:self];
+    [item setAction:@selector(selectPane:)];
+    [tmpDict setObject:item forKey:SKNotesPreferencesIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKSyncPreferencesIdentifier];
+    [item setLabel:NSLocalizedString(@"Sync", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Sync", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"SyncPreferences"]];
+    [item setTarget:self];
+    [item setAction:@selector(selectPane:)];
+    [tmpDict setObject:item forKey:SKSyncPreferencesIdentifier];
+    [item release];
+    
+    toolbarItems = [tmpDict copy];
+    
+    [[self window] setToolbar:toolbar];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
+    return [toolbarItems objectForKey:itemIdent];
+}
+
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects:SKGeneralPreferencesIdentifier, SKDisplayPreferencesIdentifier, SKNotesPreferencesIdentifier, SKSyncPreferencesIdentifier, nil];
+}
+
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
+    return [self toolbarDefaultItemIdentifiers:toolbar];
+}
+
+- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar {
+    return [self toolbarDefaultItemIdentifiers:toolbar];
 }
 
 @end
