@@ -47,7 +47,7 @@
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(toggleToolbarShown:) || [menuItem action] == @selector(runToolbarCustomizationPalette:))
         return NO;
-    else if ([[BDSKPreferenceWindow superclass] instancesRespondToSelector:_cmd])
+    else if ([[SKPreferenceWindow superclass] instancesRespondToSelector:_cmd])
         return [super validateMenuItem:menuItem];
     else
         return YES;
