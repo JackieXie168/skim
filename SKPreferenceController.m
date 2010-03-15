@@ -45,6 +45,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKFontWell.h"
 #import "NSView_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
