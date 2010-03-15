@@ -136,7 +136,7 @@ static char *SKTransitionPropertiesObservationContext;
     [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     
     [separateCheckButton sizeToFit];
-    [transitionExtentMatrix sizeToCells];
+    [transitionExtentMatrix sizeToFit];
     
     SKAutoSizeButtons(okButton, cancelButton);
     

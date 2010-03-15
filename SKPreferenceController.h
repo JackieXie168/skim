@@ -42,6 +42,8 @@
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
     IBOutlet NSView *contentView;
+    IBOutlet NSButton *resetAllButton;
+    IBOutlet NSButton *resetCurrentButton;
     NSDictionary *resettableKeys;
     NSDictionary *panes;
     NSDictionary *toolbarItems;

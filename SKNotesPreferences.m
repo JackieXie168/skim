@@ -64,7 +64,7 @@
     NSArray *colorWells1 = [NSArray arrayWithObjects:textColorWell, anchoredColorWell, lineColorWell, freehandColorWell, nil];
     NSArray *colorWells2 = [NSArray arrayWithObjects:circleColorWell, circleInteriorColorWell, boxColorWell, boxInteriorColorWell, nil];
     NSArray *colorWells3 = [NSArray arrayWithObjects:highlightColorWell, underlineColorWell, strikeOutColorWell, nil];
-    NSArray *fontWells = [NSArray arrayWithObjects:textFontLabelField, anchoredFontLabelField, nil];
+    NSArray *fontWells = [NSArray arrayWithObjects:textNoteFontWell, anchoredNoteFontWell, nil];
     NSArray *lineWells1 = [NSArray arrayWithObjects:textLineWell, lineLineWell, freehandLineWell, nil];
     NSArray *lineWells2 = [NSArray arrayWithObjects:circleLineWell, boxLineWell, nil];
     NSMutableArray *labels = [NSMutableArray array];

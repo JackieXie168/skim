@@ -81,8 +81,8 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     SKAutoSizeLeftButtons(revertPDFSettingsButton, revertFullScreenPDFSettingsButton);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:openFilesLabelField, nil], [NSArray arrayWithObjects:openFilesMatrix, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:updateIntervalLabelField, nil], [NSArray arrayWithObjects:updateIntervalPopUpButton, nil], NO);
-    [openFilesMatrix sizeToCells];
-    [savePasswordsMatrix sizeToCells];
+    [openFilesMatrix sizeToFit];
+    [savePasswordsMatrix sizeToFit];
     
     [self synchronizeUpdateInterval];
 }

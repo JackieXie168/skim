@@ -328,7 +328,7 @@
     NSInteger i;
     for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[noteTypeMatrix cellWithTag:i] setTitle:[[menu itemAtIndex:i] title]];
-    [noteTypeMatrix sizeToCells];
+    [noteTypeMatrix sizeToFit];
     
     [noteTypeMessageField setStringValue:NSLocalizedString(@"Select notes and highlights to show:", @"Note type message")];
     [noteTypeMessageField sizeToFit];
