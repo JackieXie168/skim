@@ -86,8 +86,6 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)windowDidLoad {
-    [[self window] setTitle:NSLocalizedString(@"Lines", @"Window title")];
-    
     [lineWell setCanActivate:NO];
     [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:LINEWIDTH_KEY options:nil];
     [lineWell bind:SKLineWellStyleKey toObject:self withKeyPath:STYLE_KEY options:nil];
@@ -123,7 +121,7 @@ static SKLineInspector *sharedLineInspector = nil;
     if (fabs(dw) > 0.0) {
         NSRect frame = [[self window] frame];
         frame.size.width += dw;
-        [[self window] setFrame:frame display:NO];
+        [[self window] setFrame:frame display:YES];
     }
     
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
