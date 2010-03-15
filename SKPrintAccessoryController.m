@@ -61,7 +61,9 @@
     return [NSBundle mainBundle];
 }
 
-- (void)awakeFromNib {
+- (void)loadView {
+    [super loadView];
+    
     [autoRotateButton sizeToFit];
     [printScalingModeMatrix sizeToFit];
     
