@@ -42,10 +42,7 @@
 #import "SKDisplayPreferences.h"
 #import "SKNotesPreferences.h"
 #import "SKSyncPreferences.h"
-#import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-#import "SKApplicationController.h"
-#import "SKLineWell.h"
 #import "SKFontWell.h"
 #import "NSView_SKExtensions.h"
 
