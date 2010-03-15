@@ -67,6 +67,8 @@
 }
  
 - (NSString *)stringForObjectValue:(id)obj {
+    if ([obj isKindOfClass:[NSString class]])
+        obj = [NSArray array];
     if ([obj isKindOfClass:[NSNumber class]])
         obj = [NSArray arrayWithObjects:obj, nil];
     
@@ -91,7 +93,7 @@
     for (NSString *s in [string componentsSeparatedByString:@" "]) {
         if ([s length] && (success = [numberFormatter getObjectValue:&number forString:s errorDescription:error]))
             [array addObject:number];
-        if (success = NO) break;
+        if (success == NO) break;
     }
     if (success)
         *obj = array;
