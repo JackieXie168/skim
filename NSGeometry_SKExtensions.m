@@ -125,6 +125,8 @@ void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
 }
 
 void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
+    if (defaultButton == nil)
+        return;
     CGFloat width, right = NSMaxX([defaultButton frame]);
     NSRect altFrame, defaultFrame;
     [altButton sizeToFit];
@@ -141,6 +143,8 @@ void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
 }
 
 extern void SKAutoSizeLeftButtons(NSButton *firstButton, NSButton *secondButton) {
+    if (firstButton == nil)
+        return;
     CGFloat width;
     NSRect secondFrame, firstFrame;
     [secondButton sizeToFit];
@@ -156,6 +160,8 @@ extern void SKAutoSizeLeftButtons(NSButton *firstButton, NSButton *secondButton)
 }
 
 CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resizeControls) {
+    if ([labelFields count] == 0)
+        return 0.0;
     NSControl *control;
     NSRect frame;
     CGFloat left = CGFLOAT_MAX, width = 0.0, right, dw = -NSMaxX([[labelFields lastObject] frame]);
