@@ -113,11 +113,8 @@
         NSSize aSize = [view frame].size;
         aSize.width = size.width;
         [view setFrameSize:aSize];
+        [view setAutoresizingMask:NSViewMinYMargin];
     }
-    NSRect frame = [[self window] frame];
-    frame.size.width = size.width;
-    frame.size.height += size.height - NSHeight([contentView frame]);
-    [[self window] setFrame:frame display:NO];
     
     [self selectPaneWithIdentifier:SKGeneralPreferencesIdentifier];
 }
@@ -140,24 +137,34 @@
 
 - (void)selectPaneWithIdentifier:(NSString *)paneID {
     if ([paneID isEqualToString:currentPaneID] == NO) {
-        SKViewController *oldPane = currentPaneID ? [panes objectForKey:currentPaneID] : nil;
+        BOOL hasPane = currentPaneID != nil;
+        SKViewController *oldPane = hasPane ? [panes objectForKey:currentPaneID] : nil;
         SKViewController *newPane = [panes objectForKey:paneID];
         
         [[[self window] toolbar] setSelectedItemIdentifier:paneID];
         [[self window] setTitle:[[toolbarItems objectForKey:paneID] label]];
         
+        [currentPaneID release];
+        currentPaneID = [paneID retain];
+        
         // make sure edits are committed
-        if (oldPane && [[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+        if (hasPane && [[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
             [[self window] endEditingFor:nil];
         
         NSView *view = [newPane view];
         NSRect frame = [view frame];
-        [view setFrameOrigin:NSMakePoint(0.0, NSHeight([contentView frame]) - NSHeight(frame))];
-        [[oldPane view] removeFromSuperview];
-        [contentView addSubview:view];
+        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
         
-        [currentPaneID release];
-        currentPaneID = [paneID retain];
+        [view setFrameOrigin:NSMakePoint(0.0, dh)];
+        if (hasPane)
+            [contentView replaceSubview:[oldPane view] with:view];
+        else
+            [contentView addSubview:view];
+        
+        frame = [[self window] frame];
+        frame.origin.y += dh;
+        frame.size.height -= dh;
+        [[self window] setFrame:frame display:hasPane animate:hasPane];
     }
 }
 
