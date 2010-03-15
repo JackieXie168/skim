@@ -92,6 +92,8 @@
     
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
+    SKAutoSizeLeftButtons(resetCurrentButton, resetAllButton);
+    
     SKGeneralPreferences *generalPane = [[[SKGeneralPreferences alloc] init] autorelease];
     SKDisplayPreferences *displayPane = [[[SKDisplayPreferences alloc] init] autorelease];
     SKNotesPreferences *notesPane = [[[SKNotesPreferences alloc] init] autorelease];

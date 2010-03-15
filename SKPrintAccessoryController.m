@@ -63,7 +63,7 @@
 
 - (void)awakeFromNib {
     [autoRotateButton sizeToFit];
-    [printScalingModeMatrix sizeToCells];
+    [printScalingModeMatrix sizeToFit];
     
     NSRect frame = [[self view] frame];
     frame.size.width = fmax(NSWidth([autoRotateButton frame]), NSWidth([printScalingModeMatrix frame])) + 36.0;

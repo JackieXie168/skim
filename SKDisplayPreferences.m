@@ -56,6 +56,7 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     CGFloat dw;
     
     SKAutoSizeLabelFields([NSArray arrayWithObjects:thumbnailSizeLabelField, snapshotSizeLabelField, nil], [NSArray arrayWithObjects:thumbnailSizeSlider, snapshotSizeSlider, discreteSizesCheckButton, nil], NO);
+    [discreteSizesCheckButton sizeToFit];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:tableFontLabelField, nil], [NSArray arrayWithObjects:tableFontComboBox, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:greekingLabelField, nil], [NSArray arrayWithObjects:greekingTextField, nil], NO);
     [antiAliasCheckButton sizeToFit];
