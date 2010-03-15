@@ -115,6 +115,9 @@
         [view setFrameSize:aSize];
         [view setAutoresizingMask:NSViewMinYMargin];
     }
+    NSRect frame = [[self window] frame];
+    frame.size.width = size.width;
+    [[self window] setFrame:frame display:NO];
     
     [self selectPaneWithIdentifier:SKGeneralPreferencesIdentifier];
 }
