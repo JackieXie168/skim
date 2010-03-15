@@ -132,12 +132,6 @@
         [[self window] endEditingFor:nil];
 }
 
-- (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem {
-        // make sure edits are committed
-        if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
-            [[self window] endEditingFor:nil];
-}
-
 - (void)selectPaneWithIdentifier:(NSString *)paneID {
     if ([paneID isEqualToString:currentPaneID] == NO) {
         BOOL hasPane = currentPaneID != nil;
