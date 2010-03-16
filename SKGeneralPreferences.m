@@ -85,6 +85,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     [savePasswordsMatrix sizeToFit];
     
     [self synchronizeUpdateInterval];
+    [self updateRevertButtons];
 }
 
 #pragma mark Accessors
