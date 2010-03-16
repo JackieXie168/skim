@@ -54,50 +54,39 @@
 - (void)loadView {
     [super loadView];
     
-    NSArray *colorLabels1 = [NSArray arrayWithObjects:textColorLabelField, anchoredColorLabelField, lineColorLabelField, freehandColorLabelField, nil];
+    NSArray *labels1 = [NSArray arrayWithObjects:textColorLabelField, anchoredColorLabelField, lineColorLabelField, freehandColorLabelField, 
+                                                 textFontLabelField, anchoredFontLabelField, 
+                                                 textLineLabelField, lineLineLabelField, freehandLineLabelField, nil];
     NSArray *colorLabels2 = [NSArray arrayWithObjects:circleColorLabelField, circleInteriorColorLabelField, boxColorLabelField, boxInteriorColorLabelField, nil];
     NSArray *colorLabels3 = [NSArray arrayWithObjects:highlightColorLabelField, underlineColorLabelField, strikeOutColorLabelField, nil];
-    NSArray *fontLabels = [NSArray arrayWithObjects:textFontLabelField, anchoredFontLabelField, nil];
-    NSArray *lineLabels1 = [NSArray arrayWithObjects:textLineLabelField, lineLineLabelField, freehandLineLabelField, nil];
     NSArray *lineLabels2 = [NSArray arrayWithObjects:circleLineLabelField, boxLineLabelField, nil];
     NSArray *colorWells1 = [NSArray arrayWithObjects:textColorWell, anchoredColorWell, lineColorWell, freehandColorWell, nil];
     NSArray *colorWells2 = [NSArray arrayWithObjects:circleColorWell, circleInteriorColorWell, boxColorWell, boxInteriorColorWell, nil];
     NSArray *colorWells3 = [NSArray arrayWithObjects:highlightColorWell, underlineColorWell, strikeOutColorWell, nil];
-    NSArray *fontWells = [NSArray arrayWithObjects:textNoteFontWell, anchoredNoteFontWell, nil];
+    NSArray *fontWells1 = [NSArray arrayWithObjects:textNoteFontWell, anchoredNoteFontWell, nil];
     NSArray *lineWells1 = [NSArray arrayWithObjects:textLineWell, lineLineWell, freehandLineWell, nil];
     NSArray *lineWells2 = [NSArray arrayWithObjects:circleLineWell, boxLineWell, nil];
-    NSMutableArray *labels = [NSMutableArray array];
     NSMutableArray *controls = [NSMutableArray array];
     CGFloat dw, dw1, dw2;
     
-    [labels addObjectsFromArray:colorLabels1];
-    [labels addObjectsFromArray:fontLabels];
-    [labels addObjectsFromArray:lineLabels1];
+    [controls addObjectsFromArray:colorWells3];
+    dw = SKAutoSizeLabelFields(colorLabels3, controls, NO);
+    
+    [controls addObjectsFromArray:colorWells2];
+    [controls addObjectsFromArray:colorLabels3];
+    dw += SKAutoSizeLabelFields(colorLabels2, controls, NO);
+    
     [controls addObjectsFromArray:colorWells1];
     [controls addObjectsFromArray:colorLabels2];
-    [controls addObjectsFromArray:colorWells2];
-    [controls addObjectsFromArray:colorLabels3];
-    [controls addObjectsFromArray:colorWells3];
-    [controls addObjectsFromArray:fontWells];
+    [controls addObjectsFromArray:fontWells1];
     [controls addObjectsFromArray:lineWells1];
-    dw = dw1 = SKAutoSizeLabelFields(labels, controls, NO);
-    
-    [controls removeAllObjects];
-    [controls addObjectsFromArray:colorWells2];
-    [controls addObjectsFromArray:colorLabels3];
-    [controls addObjectsFromArray:colorWells3];
-    dw += SKAutoSizeLabelFields(colorLabels2, controls, NO);
-
-    dw += SKAutoSizeLabelFields(colorLabels3, colorWells3, NO);
+    dw += dw1 = SKAutoSizeLabelFields(labels1, controls, NO);
     
     dw2 = SKAutoSizeLabelFields(lineLabels2, lineWells2, NO);
     
-    SKShiftAndResizeViews(fontWells, 0.0, dw - dw1);
+    SKShiftAndResizeViews(fontWells1, 0.0, dw - dw1);
     
-    [controls removeAllObjects];
-    [controls addObjectsFromArray:lineLabels2];
-    [controls addObjectsFromArray:lineWells2];
-    SKShiftAndResizeViews(controls, dw - dw2, 0.0);
+    SKShiftAndResizeViews([lineLabels2 arrayByAddingObjectsFromArray:lineWells2], dw - dw2, 0.0);
     
     SKShiftAndResizeViews([NSArray arrayWithObjects:[self view], nil], 0.0, dw);
     
