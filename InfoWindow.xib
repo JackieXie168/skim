@@ -98,11 +98,11 @@
 																	<object class="NSTableColumn" id="310025872">
 																		<string key="NSIdentifier">label</string>
 																		<double key="NSWidth">101</double>
-																		<double key="NSMinWidth">40</double>
+																		<double key="NSMinWidth">10</double>
 																		<double key="NSMaxWidth">1000</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
 																			<int key="NSCellFlags">75628096</int>
-																			<int key="NSCellFlags2">2048</int>
+																			<int key="NSCellFlags2">67110912</int>
 																			<string key="NSContents"/>
 																			<object class="NSFont" key="NSSupport" id="26">
 																				<string key="NSName">LucidaGrande</string>
@@ -149,9 +149,6 @@
 																				<reference key="NSColor" ref="347007742"/>
 																			</object>
 																		</object>
-																		<int key="NSResizingMask">3</int>
-																		<bool key="NSIsResizeable">YES</bool>
-																		<bool key="NSIsEditable">YES</bool>
 																		<reference key="NSTableView" ref="225862586"/>
 																	</object>
 																	<object class="NSTableColumn" id="1058895469">
@@ -176,9 +173,6 @@
 																			<reference key="NSBackgroundColor" ref="622200503"/>
 																			<reference key="NSTextColor" ref="701810244"/>
 																		</object>
-																		<int key="NSResizingMask">3</int>
-																		<bool key="NSIsResizeable">YES</bool>
-																		<bool key="NSIsEditable">YES</bool>
 																		<reference key="NSTableView" ref="225862586"/>
 																	</object>
 																</object>
@@ -298,11 +292,11 @@
 																	<object class="NSTableColumn" id="1035094470">
 																		<string key="NSIdentifier">label</string>
 																		<double key="NSWidth">101</double>
-																		<double key="NSMinWidth">40</double>
+																		<double key="NSMinWidth">10</double>
 																		<double key="NSMaxWidth">1000</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
 																			<int key="NSCellFlags">75628096</int>
-																			<int key="NSCellFlags2">2048</int>
+																			<int key="NSCellFlags2">67110912</int>
 																			<string key="NSContents"/>
 																			<reference key="NSSupport" ref="26"/>
 																			<object class="NSColor" key="NSBackgroundColor" id="460638331">
@@ -320,9 +314,6 @@
 																			<reference key="NSBackgroundColor" ref="622200503"/>
 																			<reference key="NSTextColor" ref="701810244"/>
 																		</object>
-																		<int key="NSResizingMask">3</int>
-																		<bool key="NSIsResizeable">YES</bool>
-																		<bool key="NSIsEditable">YES</bool>
 																		<reference key="NSTableView" ref="877153764"/>
 																	</object>
 																	<object class="NSTableColumn" id="802563062">
@@ -347,9 +338,6 @@
 																			<reference key="NSBackgroundColor" ref="622200503"/>
 																			<reference key="NSTextColor" ref="701810244"/>
 																		</object>
-																		<int key="NSResizingMask">3</int>
-																		<bool key="NSIsResizeable">YES</bool>
-																		<bool key="NSIsEditable">YES</bool>
 																		<reference key="NSTableView" ref="877153764"/>
 																	</object>
 																</object>
@@ -900,6 +888,13 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKLocalization.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFDocument.h</string>
 					</object>
 				</object>
@@ -1073,7 +1068,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKInfoWindowController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -1096,10 +1091,18 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKInfoWindowController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKWindowController.h</string>
 					</object>
 				</object>
 			</object>
