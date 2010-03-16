@@ -95,6 +95,7 @@ static SKLineInspector *sharedLineInspector = nil;
     
     SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
     [dashPatternField setFormatter:formatter];
+    [dashPatternField bind:@"value" toObject:self withKeyPath:DASHPATTERN_KEY options:nil];
     [formatter release];
     
     [styleButton setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
