@@ -234,7 +234,6 @@
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKGeneralPreferencesIdentifier];
     [item setLabel:NSLocalizedString(@"General", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"General", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"GeneralPreferences"]];
     [item setTarget:self];
     [item setAction:@selector(selectPane:)];
@@ -243,7 +242,6 @@
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDisplayPreferencesIdentifier];
     [item setLabel:NSLocalizedString(@"Display", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Display", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"DisplayPreferences"]];
     [item setTarget:self];
     [item setAction:@selector(selectPane:)];
@@ -252,7 +250,6 @@
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKNotesPreferencesIdentifier];
     [item setLabel:NSLocalizedString(@"Notes", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Notes", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"NotesPreferences"]];
     [item setTarget:self];
     [item setAction:@selector(selectPane:)];
@@ -261,7 +258,6 @@
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKSyncPreferencesIdentifier];
     [item setLabel:NSLocalizedString(@"Sync", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Sync", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"SyncPreferences"]];
     [item setTarget:self];
     [item setAction:@selector(selectPane:)];
