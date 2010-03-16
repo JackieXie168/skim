@@ -367,7 +367,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
             if ([value isKindOfClass:[NSDate class]])
                 value = [shortDateFormatter stringFromDate:value];
             else if ([value isKindOfClass:[NSNumber class]])
-                value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
+                value = value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
             else if (value == nil)
                 value = @"-";
         }
