@@ -52,9 +52,6 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 - (void)loadView {
     [super loadView];
     
-    NSRect frame;
-    CGFloat dw;
-    
     SKAutoSizeLabelFields([NSArray arrayWithObjects:thumbnailSizeLabelField, snapshotSizeLabelField, nil], [NSArray arrayWithObjects:thumbnailSizeSlider, snapshotSizeSlider, discreteSizesCheckButton, nil], NO);
     [discreteSizesCheckButton sizeToFit];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:tableFontLabelField, nil], [NSArray arrayWithObjects:tableFontComboBox, nil], NO);
@@ -62,11 +59,7 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     [antiAliasCheckButton sizeToFit];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:backgroundColorLabelField, readingBarColorLabelField, nil], [NSArray arrayWithObjects:backgroundColorWell, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, readingBarColorWell, readingBarInvertCheckButton, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:fullScreenBackgroundColorLabelField, nil], [NSArray arrayWithObjects:fullScreenBackgroundColorWell, nil], NO);
-    frame = [searchHighlightCheckButton frame];
-    [searchHighlightCheckButton sizeToFit];
-    dw = NSWidth([searchHighlightCheckButton frame]) - NSWidth(frame);
-    if (fabs(dw) > 0.0)
-        SKShiftAndResizeViews([NSArray arrayWithObjects:searchHighlightColorWell, nil], dw, 0.0);
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:searchHighlightCheckButton, nil], [NSArray arrayWithObjects:searchHighlightColorWell, nil], NO);
     [readingBarInvertCheckButton sizeToFit];
 }
 
