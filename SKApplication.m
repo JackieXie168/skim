@@ -94,7 +94,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
-    NSWindowController *mainWindowController = [[[[aWindow windowController] document] windowControllers] objectAtIndex:0];
+    NSDocument *document = [[aWindow windowController] document];
+    NSWindowController *mainWindowController = [[document windowControllers] objectAtIndex:0];
     NSInteger numberOfItems = [windowsMenu numberOfItems];
     NSInteger itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
@@ -120,8 +121,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 [windowsMenu insertItem:item atIndex:anIndex];
                 [item release];
             }
-            if (anIndex > 0 && [[windowsMenu itemAtIndex:anIndex - 1] isSeparatorItem] == NO && [[[[windowsMenu itemAtIndex:anIndex - 1] target] windowController] document] != nil)
-                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:anIndex];
         } else if ([windowController isEqual:mainWindowController]) {
             NSMutableArray *subitems = [NSMutableArray array];
             NSMenuItem *anItem;
@@ -155,26 +154,13 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 [windowsMenu removeItemAtIndex:itemIndex];
                 if (nextIndex > itemIndex)
                     nextIndex--;
-                if (itemIndex < [windowsMenu numberOfItems] && [[windowsMenu itemAtIndex:itemIndex] isSeparatorItem] && 
-                    (itemIndex == [windowsMenu numberOfItems] - 1 || (itemIndex > 0 && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem]))) {
-                    [windowsMenu removeItemAtIndex:itemIndex];
-                    if (nextIndex > itemIndex)
-                        nextIndex--;
-                }
                 itemIndex = nextIndex++;
                 [windowsMenu insertItem:item atIndex:itemIndex];
                 [item release];
             }
-            if (itemIndex > 1 && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
-                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex];
-                nextIndex++;
-            }
             
             for (anItem in subitems)
                 [windowsMenu insertItem:anItem atIndex:nextIndex++];
-            
-            if (nextIndex < [windowsMenu numberOfItems] && [[windowsMenu itemAtIndex:nextIndex] isSeparatorItem] == NO)
-                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:nextIndex];
             
         } else {
             NSInteger mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window] andAction:@selector(makeKeyAndOrderFront:)];
@@ -185,7 +171,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             if (anIndex >= 0) {
                 while (++anIndex < numberOfItems) {
                     NSMenuItem *anItem = [windowsMenu itemAtIndex:anIndex];
-                    if ([anItem isSeparatorItem] || [[anItem title] caseInsensitiveCompare:title] == NSOrderedDescending)
+                    if ([[[anItem target] document] isEqual:document] == NO || [[anItem title] caseInsensitiveCompare:title] == NSOrderedDescending)
                         break;
                 }
                 if (itemIndex != anIndex - 1) {
@@ -214,23 +200,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [super changeWindowsItem:aWindow title:aString filename:isFilename];
     
     [self reorganizeWindowsItem:aWindow];
-}
-
-- (void)removeWindowsItem:(NSWindow *)aWindow {
-    [super removeWindowsItem:aWindow];
-    
-    NSMenu *windowsMenu = [self windowsMenu];
-    NSInteger idx = [windowsMenu numberOfItems];
-    BOOL wasSeparator = YES;
-    
-    while (idx--) {
-        if ([[windowsMenu itemAtIndex:idx] isSeparatorItem] == NO)
-            wasSeparator = NO;
-        else if (wasSeparator)
-            [windowsMenu removeItemAtIndex:idx];
-        else
-            wasSeparator = YES;
-    }
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
