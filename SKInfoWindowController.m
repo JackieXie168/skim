@@ -117,22 +117,23 @@
     [super dealloc];
 }
 
-static void autosizeFirstTableColumn(NSTableView *tv) {
-    NSUInteger row, rowMax = [tv numberOfRows];
-    CGFloat width = 0.0;
-    for (row = 0; row < rowMax; row++)
-        width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width);
-    [[[tv tableColumns] objectAtIndex:0] setWidth:width];
-    [tv sizeToFit];
-}
-
 - (void)windowDidLoad {
     [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
     [summaryTableView reloadData];
     [attributesTableView reloadData];
     
-    autosizeFirstTableColumn(summaryTableView);
-    autosizeFirstTableColumn(attributesTableView);
+    NSArray *tables = [NSArray arrayWithObjects:summaryTableView, attributesTableView, nil];
+    NSTableView *tv;
+    CGFloat width = 0.0;
+    for (tv in tables) {
+        NSUInteger row, rowMax = [tv numberOfRows];
+        for (row = 0; row < rowMax; row++)
+            width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width);
+    }
+    for (tv in tables) {
+        [[[tv tableColumns] objectAtIndex:0] setWidth:width];
+        [tv sizeToFit];
+    }
     
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
     
