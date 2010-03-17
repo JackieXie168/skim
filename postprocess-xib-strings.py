@@ -16,13 +16,14 @@ output = sys.argv[2]
 locline = re.compile(r'^"(.*)" = "(.*)";$')
 
 inputfile = codecs.open(input, 'r', 'utf-16')
-outputfile = codecs.open(output, 'w', 'utf-16')
 lines = inputfile.readlines()
+inputfile.close()
+
+outputfile = codecs.open(output, 'w', 'utf-16')
 outputfile.seek(0)
 
 for line in lines:
     line = locline.sub(r'"\2" = "\2";', line, 1)
     outputfile.write(line)
 
-inputfile.close()
 outputfile.close()
