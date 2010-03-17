@@ -104,7 +104,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, EM_DASH_CHARACTER, [self pageLabel]];
+    return [NSString stringWithFormat:@"%@ %C %@", displayName, EM_DASH_CHARACTER, [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self pageLabel]]];
 }
 
 - (BOOL)isSnapshotWindowController { return YES; }

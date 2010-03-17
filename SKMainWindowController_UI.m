@@ -282,6 +282,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 #pragma mark NSTableView datasource protocol
 
+- (NSString *)draggedFileNameForPage:(PDFPage *)page {
+    return [NSString stringWithFormat:@"%@ %C %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+}
+
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
 
@@ -294,11 +298,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *pdfData = [page dataRepresentation];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
             [pboard setData:pdfData forType:NSPDFPboardType];
             [pboard setData:tiffData forType:NSTIFFPboardType];
-            [pboard setPropertyList:[NSArray arrayWithObject:fileName] forType:NSFilesPromisePboardType];
+            [pboard setPropertyList:[NSArray arrayWithObject:[self draggedFileNameForPage:page]] forType:NSFilesPromisePboardType];
             return YES;
         }
     } else if ([tv isEqual:snapshotTableView]) {
@@ -306,10 +309,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
             [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSTIFFPboardType];
-            [pboard setPropertyList:[NSArray arrayWithObject:fileName] forType:NSFilesPromisePboardType];
+            [pboard setPropertyList:[NSArray arrayWithObject:[self draggedFileNameForPage:page]] forType:NSFilesPromisePboardType];
             return YES;
         }
     }
@@ -321,8 +323,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
-            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
+            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
             NSString *path = [basePath stringByAppendingPathExtension:@"pdf"];
             NSFileManager *fm = [NSFileManager defaultManager];
             NSInteger i = 0;
@@ -337,8 +338,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
-            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
+            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
             NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
             NSFileManager *fm = [NSFileManager defaultManager];
             NSInteger i = 0;
