@@ -42,23 +42,21 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 
 @implementation SKTextFieldSheetController
 
-- (void)autosizeLabels {
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:textField, nil], YES);
-}
-
 - (void)windowDidLoad {
     NSRect frame = [[self window] frame];
-    CGFloat buttonMargin = NSWidth(frame) - NSMaxX([okButton frame]);
-    SKAutoSizeButtons(okButton, cancelButton);
+    CGFloat buttonMargin = NSWidth(frame) - NSMaxX([[buttons objectAtIndex:0] frame]);
+    NSButton *cancelButton = [buttons lastObject];
+    SKAutoSizeRightButtons(buttons);
     if (NSMinX([cancelButton frame]) < buttonMargin) {
         frame.size.width += buttonMargin - NSMinX([cancelButton frame]);
         [[self window] setFrame:frame display:NO];
     }
-    [self autosizeLabels];
+    SKAutoSizeLabelFields(labelFields, controls, YES);
 }
 
 - (NSTextField *)textField {
@@ -106,10 +104,6 @@
 @implementation SKBookmarkSheetController
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
-
-- (void)autosizeLabels {
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, folderLabelField, nil], [NSArray arrayWithObjects:textField, folderPopUp, nil], YES);
-}
 
 - (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
     for (SKBookmark *bm in bookmarks) {

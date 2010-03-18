@@ -39,12 +39,13 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
+@class SKIBArray;
 
 @interface SKTextFieldSheetController : SKWindowController {
     IBOutlet NSTextField *textField;
-    IBOutlet NSTextField *labelField;
-    IBOutlet NSButton *okButton;
-    IBOutlet NSButton *cancelButton;
+    IBOutlet SKIBArray *labelFields;
+    IBOutlet SKIBArray *controls;
+    IBOutlet SKIBArray *buttons;
 }
 
 - (NSTextField *)textField;
@@ -72,7 +73,6 @@
 
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
     IBOutlet NSPopUpButton *folderPopUp;
-    IBOutlet NSTextField *folderLabelField;
 }
 
 - (SKBookmark *)selectedFolder;

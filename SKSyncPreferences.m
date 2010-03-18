@@ -40,6 +40,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
                                      {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 
@@ -60,11 +61,12 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:texEditorPresetLabelField, texEditorCommandLabelField, texEditorArgumentsLabelField, nil], [NSArray arrayWithObjects:texEditorPopUpButton, texEditorCommandTextField, texEditorArgumentsTextField, nil], YES);
+    SKAutoSizeLabelFields(texEditorLabels, texEditorControls, YES);
     
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
     NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
     NSInteger idx = -1;
+    NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
     
     while (i--) {
         NSString *name = SKTeXEditors[i].name;

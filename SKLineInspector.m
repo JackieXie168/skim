@@ -42,6 +42,7 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
 
@@ -118,7 +119,7 @@ static SKLineInspector *sharedLineInspector = nil;
     [endLineStyleButton setToolTip:NSLocalizedString(@"Open arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
     [endLineStyleButton setToolTip:NSLocalizedString(@"Closed arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
     
-    CGFloat dw = SKAutoSizeLabelFields([NSArray arrayWithObjects:lineWidthLabelField, styleLabelField, dashPatternLabelField, startLineStyleLabelField, endLineStyleLabelField, nil], [NSArray arrayWithObjects:lineWidthSlider, lineWidthField, styleButton, dashPatternField, startLineStyleButton, endLineStyleButton, nil], NO);
+    CGFloat dw = SKAutoSizeLabelFields(labelFields, [NSArray arrayWithObjects:lineWidthSlider, lineWidthField, styleButton, dashPatternField, startLineStyleButton, endLineStyleButton, nil], NO);
     if (fabs(dw) > 0.0) {
         NSRect frame = [[self window] frame];
         frame.size.width += dw;

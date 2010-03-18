@@ -1,10 +1,10 @@
 //
-//  SKPreferenceController.h
+//  SKIBArray.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan on 3/18/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,29 +37,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
 
-@class SKIBArray;
 
-@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
-    IBOutlet NSView *contentView;
-    IBOutlet SKIBArray *resetButtons;
-    NSDictionary *resettableKeys;
-    NSDictionary *panes;
-    NSDictionary *toolbarItems;
-    NSString *currentPaneID;
+@interface SKIBArray : NSArray {
+    IBOutlet id object1;
+    IBOutlet id object2;
+    IBOutlet id object3;
+    IBOutlet id object4;
+    IBOutlet id object5;
 }
-
-+ (id)sharedPrefenceController;
-
-- (void)selectPaneWithIdentifier:(NSString *)paneID;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
-
-- (IBAction)changeFont:(id)sender;
-- (IBAction)changeAttributes:(id)sender;
-
-- (void)setupToolbar;
-
 @end

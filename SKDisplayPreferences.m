@@ -40,6 +40,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
@@ -52,15 +53,15 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:thumbnailSizeLabelField, snapshotSizeLabelField, nil], [NSArray arrayWithObjects:thumbnailSizeSlider, snapshotSizeSlider, discreteSizesCheckButton, nil], NO);
-    [discreteSizesCheckButton sizeToFit];
+    SKAutoSizeLabelFields(thumbnailSizeLabels, thumbnailSizeControls, NO);
+    [[thumbnailSizeControls lastObject] sizeToFit];
     SKAutoSizeLabelFields([NSArray arrayWithObjects:tableFontLabelField, nil], [NSArray arrayWithObjects:tableFontComboBox, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:greekingLabelField, nil], [NSArray arrayWithObjects:greekingTextField, nil], NO);
     [antiAliasCheckButton sizeToFit];
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:backgroundColorLabelField, readingBarColorLabelField, nil], [NSArray arrayWithObjects:backgroundColorWell, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, readingBarColorWell, readingBarInvertCheckButton, nil], NO);
+    SKAutoSizeLabelFields(colorLabels, colorControls, NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:fullScreenBackgroundColorLabelField, nil], [NSArray arrayWithObjects:fullScreenBackgroundColorWell, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:searchHighlightCheckButton, nil], [NSArray arrayWithObjects:searchHighlightColorWell, nil], NO);
-    [readingBarInvertCheckButton sizeToFit];
+    [[colorControls lastObject] sizeToFit];
 }
 
 #pragma mark Accessors
@@ -76,21 +77,23 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 #pragma mark Actions
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
+    NSSlider *slider1 = [thumbnailSizeControls objectAtIndex:0];
+    NSSlider *slider2 = [thumbnailSizeControls objectAtIndex:1];
     if ([sender state] == NSOnState) {
-        [thumbnailSizeSlider setNumberOfTickMarks:8];
-        [snapshotSizeSlider setNumberOfTickMarks:8];
-        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:YES];
-        [snapshotSizeSlider setAllowsTickMarkValuesOnly:YES];
+        [slider1 setNumberOfTickMarks:8];
+        [slider2 setNumberOfTickMarks:8];
+        [slider1 setAllowsTickMarkValuesOnly:YES];
+        [slider2 setAllowsTickMarkValuesOnly:YES];
     } else {
-        [[thumbnailSizeSlider superview] setNeedsDisplayInRect:[thumbnailSizeSlider frame]];
-        [[snapshotSizeSlider superview] setNeedsDisplayInRect:[snapshotSizeSlider frame]];
-        [thumbnailSizeSlider setNumberOfTickMarks:0];
-        [snapshotSizeSlider setNumberOfTickMarks:0];
-        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:NO];
-        [snapshotSizeSlider setAllowsTickMarkValuesOnly:NO];
+        [[slider1 superview] setNeedsDisplayInRect:[slider1 frame]];
+        [[slider2 superview] setNeedsDisplayInRect:[slider2 frame]];
+        [slider1 setNumberOfTickMarks:0];
+        [slider2 setNumberOfTickMarks:0];
+        [slider1 setAllowsTickMarkValuesOnly:NO];
+        [slider2 setAllowsTickMarkValuesOnly:NO];
     }
-    [thumbnailSizeSlider sizeToFit];
-    [snapshotSizeSlider sizeToFit];
+    [slider1 sizeToFit];
+    [slider2 sizeToFit];
 }
 
 @end

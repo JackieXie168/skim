@@ -39,45 +39,21 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKLineWell, SKFontWell;
+@class SKLineWell, SKFontWell, SKIBArray;
 
 @interface SKNotesPreferences : SKViewController {
-    IBOutlet NSTextField *textColorLabelField;
-    IBOutlet NSColorWell *textColorWell;
-    IBOutlet NSTextField *anchoredColorLabelField;
-    IBOutlet NSColorWell *anchoredColorWell;
-    IBOutlet NSTextField *lineColorLabelField;
-    IBOutlet NSColorWell *lineColorWell;
-    IBOutlet NSTextField *freehandColorLabelField;
-    IBOutlet NSColorWell *freehandColorWell;
-    IBOutlet NSTextField *circleColorLabelField;
-    IBOutlet NSColorWell *circleColorWell;
-    IBOutlet NSTextField *circleInteriorColorLabelField;
-    IBOutlet NSColorWell *circleInteriorColorWell;
-    IBOutlet NSTextField *boxColorLabelField;
-    IBOutlet NSColorWell *boxColorWell;
-    IBOutlet NSTextField *boxInteriorColorLabelField;
-    IBOutlet NSColorWell *boxInteriorColorWell;
-    IBOutlet NSTextField *highlightColorLabelField;
-    IBOutlet NSColorWell *highlightColorWell;
-    IBOutlet NSTextField *underlineColorLabelField;
-    IBOutlet NSColorWell *underlineColorWell;
-    IBOutlet NSTextField *strikeOutColorLabelField;
-    IBOutlet NSColorWell *strikeOutColorWell;
-    IBOutlet NSTextField *textLineLabelField;
-    IBOutlet NSTextField *lineLineLabelField;
-    IBOutlet NSTextField *circleLineLabelField;
-    IBOutlet NSTextField *boxLineLabelField;
-    IBOutlet NSTextField *freehandLineLabelField;
-    IBOutlet NSTextField *textFontLabelField;
-    IBOutlet NSTextField *anchoredFontLabelField;
-    IBOutlet SKLineWell *textLineWell;
-    IBOutlet SKLineWell *lineLineWell;
-    IBOutlet SKLineWell *circleLineWell;
-    IBOutlet SKLineWell *boxLineWell;
-    IBOutlet SKLineWell *freehandLineWell;
-    IBOutlet SKFontWell *textNoteFontWell;
-    IBOutlet SKFontWell *anchoredNoteFontWell;
+    IBOutlet SKIBArray *colorLabels1;
+    IBOutlet SKIBArray *colorLabels2;
+    IBOutlet SKIBArray *colorLabels3;
+    IBOutlet SKIBArray *fontLabels;
+    IBOutlet SKIBArray *lineLabels1;
+    IBOutlet SKIBArray *lineLabels2;
+    IBOutlet SKIBArray *colorWells1;
+    IBOutlet SKIBArray *colorWells2;
+    IBOutlet SKIBArray *colorWells3;
+    IBOutlet SKIBArray *fontWells;
+    IBOutlet SKIBArray *lineWells1;
+    IBOutlet SKIBArray *lineWells2;
 }
 
 @end

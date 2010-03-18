@@ -44,6 +44,8 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKColorCell.h"
+#import "SKLocalization.h"
+#import "SKIBArray.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -332,18 +334,17 @@
         return NO;
     }
     
+    [noteTypeSheet localizeStringsFromTable:@"NoteTypeSheet"];
+    
     NSMenu *menu = [self noteTypeMenu];
     NSInteger i;
     for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[noteTypeMatrix cellWithTag:i] setTitle:[[menu itemAtIndex:i] title]];
     [noteTypeMatrix sizeToFit];
     
-    [noteTypeMessageField setStringValue:NSLocalizedString(@"Select notes and highlights to show:", @"Note type message")];
     [noteTypeMessageField sizeToFit];
     
-    [noteTypeOkButton setTitle:NSLocalizedString(@"OK", @"Button title")];
-    [noteTypeCancelButton setTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    SKAutoSizeButtons(noteTypeOkButton, noteTypeCancelButton);
+    SKAutoSizeRightButtons(noteTypeButtons);
     
     NSRect frame = [noteTypeSheet frame];
     NSRect matrixFrame = [noteTypeMatrix frame];

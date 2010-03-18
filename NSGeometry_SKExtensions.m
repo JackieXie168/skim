@@ -124,39 +124,42 @@ void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
     }
 }
 
-void SKAutoSizeButtons(NSButton *defaultButton, NSButton *altButton) {
-    if (defaultButton == nil)
+void SKAutoSizeRightButtons(NSArray *buttons) {
+    if ([buttons count] == 0)
         return;
-    CGFloat width, right = NSMaxX([defaultButton frame]);
-    NSRect altFrame, defaultFrame;
-    [altButton sizeToFit];
-    [defaultButton sizeToFit];
-    altFrame = altButton ? [altButton frame] : NSZeroRect;
-    defaultFrame = [defaultButton frame];
-    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(altFrame), NSWidth(defaultFrame))));
-    altFrame.size.width = fmax(NSWidth(altFrame), width);
-    defaultFrame.size.width = fmax(NSWidth(defaultFrame), width);
-    defaultFrame.origin.x = right - NSWidth(defaultFrame);
-    altFrame.origin.x = NSMinX(defaultFrame) - NSWidth(altFrame);
-    [altButton setFrame:altFrame];
-    [defaultButton setFrame:defaultFrame];
+    CGFloat x = NSMaxX([[buttons objectAtIndex:0] frame]);
+    CGFloat width = 0.0;
+    for (NSButton *button in buttons) {
+        [button sizeToFit];
+        width = fmax(width, NSWidth([button frame]));
+    }
+    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, width));
+    for (NSButton *button in buttons) {
+        NSRect frame = [button frame];
+        frame.size.width = fmax(width, NSWidth(frame));
+        x -= NSWidth(frame);
+        frame.origin.x = x;
+        [button setFrame:frame];
+    }
 }
 
-extern void SKAutoSizeLeftButtons(NSButton *firstButton, NSButton *secondButton) {
-    if (firstButton == nil)
+void SKAutoSizeLeftButtons(NSArray *buttons) {
+    if ([buttons count] == 0)
         return;
-    CGFloat width;
-    NSRect secondFrame, firstFrame;
-    [secondButton sizeToFit];
-    [firstButton sizeToFit];
-    secondFrame = secondButton ? [secondButton frame] : NSZeroRect;
-    firstFrame = [firstButton frame];
-    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, fmax(NSWidth(secondFrame), NSWidth(firstFrame))));
-    secondFrame.size.width = fmax(NSWidth(secondFrame), width);
-    firstFrame.size.width = fmax(NSWidth(firstFrame), width);
-    secondFrame.origin.x = NSMaxX(firstFrame);
-    [secondButton setFrame:secondFrame];
-    [firstButton setFrame:firstFrame];
+    CGFloat x = NSMinX([[buttons objectAtIndex:0] frame]);
+    CGFloat width = 0.0;
+    for (NSButton *button in buttons) {
+        [button sizeToFit];
+        width = fmax(width, NSWidth([button frame]));
+    }
+    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, width));
+    for (NSButton *button in buttons) {
+        NSRect frame = [button frame];
+        frame.size.width = fmax(width, NSWidth(frame));
+        frame.origin.x = x;
+        x += NSWidth(frame);
+        [button setFrame:frame];
+    }
 }
 
 CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resizeControls) {

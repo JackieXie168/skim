@@ -42,6 +42,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
 
@@ -78,7 +79,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLeftButtons(revertPDFSettingsButton, revertFullScreenPDFSettingsButton);
+    SKAutoSizeLeftButtons(revertPDFSettingsButtons);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:openFilesLabelField, nil], [NSArray arrayWithObjects:openFilesMatrix, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:updateIntervalLabelField, nil], [NSArray arrayWithObjects:updateIntervalPopUpButton, nil], NO);
     [openFilesMatrix sizeToFit];
@@ -136,8 +137,8 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (void)updateRevertButtons {
     NSDictionary *initialValues = [[NSUserDefaultsController sharedUserDefaultsController] initialValues];
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
-    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
+    [[revertPDFSettingsButtons objectAtIndex:0] setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
+    [[revertPDFSettingsButtons objectAtIndex:1] setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
 }
 
 #pragma mark Hooks

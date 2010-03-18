@@ -39,14 +39,14 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
+@class SKIBArray;
 
 @interface SKFindController : SKWindowController <NSWindowDelegate> {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
     IBOutlet NSObjectController *ownerController;
     IBOutlet NSTextField *labelField;
-    IBOutlet NSButton *nextButton;
-    IBOutlet NSButton *previousButton;
+    IBOutlet SKIBArray *buttons;
     NSString *findString;
     NSInteger lastChangeCount;
     BOOL ignoreCase;
