@@ -50,7 +50,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="927475153">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -59,6 +59,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{76, 3}, {73, 28}}</string>
 							<reference key="NSSuperview" ref="927475153"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="882051690">
 								<int key="NSCellFlags">67239424</int>
@@ -86,6 +87,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{5, 3}, {73, 28}}</string>
 							<reference key="NSSuperview" ref="927475153"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="516927679">
 								<int key="NSCellFlags">67239424</int>
@@ -109,10 +111,13 @@
 							<int key="NSvFlags">274</int>
 							<string key="NSFrame">{{0, 31}, {533, 535}}</string>
 							<reference key="NSSuperview" ref="927475153"/>
+							<reference key="NSWindow"/>
 							<string key="NSClassName">NSView</string>
 						</object>
 					</object>
 					<string key="NSFrameSize">{533, 566}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -177,6 +182,14 @@
 						<reference key="destination" ref="776334843"/>
 					</object>
 					<int key="connectionID">1655</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBAccessibilityConnection" key="connection">
+						<string key="label">link</string>
+						<reference key="source" ref="46260068"/>
+						<reference key="destination" ref="776334843"/>
+					</object>
+					<int key="connectionID">1656</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -339,7 +352,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1655</int>
+			<int key="maxID">1656</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
