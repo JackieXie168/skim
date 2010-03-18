@@ -43,8 +43,13 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKColorCell.h"
 
 #define NUMBER_OF_TYPES 9
+
+#define PAGE_COLUMNID  @"page"
+#define NOTE_COLUMNID  @"note"
+#define COLOR_COLUMNID @"color"
 
 @implementation SKNoteOutlineView
 
@@ -59,6 +64,9 @@
     if (noteTypeMatrix == nil) {
         [self noteTypeMenu]; // this sets the menu for the header view
         [super awakeFromNib];
+        [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
+        [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+        [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     }
 }
 
