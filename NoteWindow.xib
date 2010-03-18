@@ -352,7 +352,7 @@
 										<int key="NSPeriodicInterval">75</int>
 										<object class="NSMenuItem" key="NSMenuItem" id="489394259">
 											<reference key="NSMenu" ref="312376913"/>
-											<string key="NSTitle"/>
+											<string key="NSTitle">Comment</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
@@ -376,7 +376,7 @@
 												<reference ref="489394259"/>
 												<object class="NSMenuItem" id="794714255">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">Key</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -388,7 +388,7 @@
 												</object>
 												<object class="NSMenuItem" id="707932413">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">Note</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -400,7 +400,7 @@
 												</object>
 												<object class="NSMenuItem" id="280178157">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">Help</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -412,7 +412,7 @@
 												</object>
 												<object class="NSMenuItem" id="35784910">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">New Paragraph</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -424,7 +424,7 @@
 												</object>
 												<object class="NSMenuItem" id="957973871">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">Paragraph</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -436,7 +436,7 @@
 												</object>
 												<object class="NSMenuItem" id="577793603">
 													<reference key="NSMenu" ref="312376913"/>
-													<string key="NSTitle"/>
+													<string key="NSTitle">Insert</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -1288,6 +1288,13 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKLocalization.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFDocument.h</string>
 					</object>
 				</object>
@@ -1485,7 +1492,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKNoteWindowController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<string key="NS.key.0">statusBarClicked:</string>
 						<string key="NS.object.0">id</string>
@@ -1520,7 +1527,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKNoteWindowController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -1568,6 +1575,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKWindowController.h</string>
 					</object>
 				</object>
 			</object>

@@ -135,19 +135,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%ld, %ld)", @"Status message"), [[note page] displayLabel], (long)NSMidX(bounds), (long)NSMidY(bounds)]];
 }
 
-static NSString *iconTypeName(PDFTextAnnotationIconType type) {
-    switch (type) {
-        case kPDFTextAnnotationIconComment:      return NSLocalizedString(@"Comment", @"Icon type name");
-        case kPDFTextAnnotationIconKey:          return NSLocalizedString(@"Key", @"Icon type name");
-        case kPDFTextAnnotationIconNote:         return NSLocalizedString(@"Note", @"Icon type name");
-        case kPDFTextAnnotationIconHelp:         return NSLocalizedString(@"Help", @"Icon type name");
-        case kPDFTextAnnotationIconNewParagraph: return NSLocalizedString(@"New Paragraph", @"Icon type name");
-        case kPDFTextAnnotationIconParagraph:    return NSLocalizedString(@"Paragraph", @"Icon type name");
-        case kPDFTextAnnotationIconInsert:       return NSLocalizedString(@"Insert", @"Icon type name");
-        default:                                 return NSLocalizedString(@"Note", @"Icon type name");
-    }
-}
-
 - (void)windowDidLoad {
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
@@ -173,13 +160,8 @@ static NSString *iconTypeName(PDFTextAnnotationIconType type) {
                 [textView setFont:font];
         }
         
-        NSUInteger i, count = [iconTypePopUpButton numberOfItems];
-        for (i = 0; i < count; i++) {
-            NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
-            [item setTag:i];
-            [item setTitle:iconTypeName(i)];
-            [item setImage:noteIcons[i]];
-        }
+        for (NSMenuItem *item in [iconTypePopUpButton itemArray])
+            [item setImage:noteIcons[[item tag]]];
         
         SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
         
