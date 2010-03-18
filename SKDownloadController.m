@@ -94,7 +94,7 @@ static char SKDownloadPropertiesObservationContext;
     [showDownloadsCheckButton sizeToFit];
     [removeDownloadCheckButton sizeToFit];
     [hideDownloadsCheckButton sizeToFit];
-    SKAutoSizeButtons(doneButton, nil);
+    SKAutoSizeRightButtons([NSArray arrayWithObjects:doneButton, nil]);
     
     NSRect frame = [preferencesSheet frame];
     frame.size.width = 18.0 + fmaxf(fmaxf(NSMaxX([showDownloadsCheckButton frame]), NSMaxX([removeDownloadCheckButton frame])), NSMaxX([hideDownloadsCheckButton frame]));

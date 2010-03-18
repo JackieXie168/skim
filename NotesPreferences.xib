@@ -805,6 +805,42 @@
 			<object class="NSUserDefaultsController" id="251596978">
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
+			<object class="NSCustomObject" id="614731646">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="282438770">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="390195730">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="767695850">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="676025226">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="922522486">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="57200071">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="461708293">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="991261335">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="96012338">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="950568901">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
+			<object class="NSCustomObject" id="1031424649">
+				<string key="NSClassName">SKIBArray</string>
+			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<object class="NSMutableArray" key="connectionRecords">
@@ -1248,294 +1284,6 @@
 					<int key="connectionID">112</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textNoteFontWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="449588914"/>
-					</object>
-					<int key="connectionID">113</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textLineWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="351093558"/>
-					</object>
-					<int key="connectionID">114</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">lineLineWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="23083139"/>
-					</object>
-					<int key="connectionID">115</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">freehandLineWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="816803187"/>
-					</object>
-					<int key="connectionID">116</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleLineWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="829754123"/>
-					</object>
-					<int key="connectionID">117</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxLineWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1050610130"/>
-					</object>
-					<int key="connectionID">118</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">anchoredNoteFontWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="17412635"/>
-					</object>
-					<int key="connectionID">119</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">anchoredColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="707177880"/>
-					</object>
-					<int key="connectionID">120</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">anchoredColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="658698925"/>
-					</object>
-					<int key="connectionID">121</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">anchoredFontLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="729015148"/>
-					</object>
-					<int key="connectionID">122</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="621414629"/>
-					</object>
-					<int key="connectionID">123</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="896637447"/>
-					</object>
-					<int key="connectionID">124</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxInteriorColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="498902938"/>
-					</object>
-					<int key="connectionID">125</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxInteriorColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="981351940"/>
-					</object>
-					<int key="connectionID">126</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="600332705"/>
-					</object>
-					<int key="connectionID">128</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="317903247"/>
-					</object>
-					<int key="connectionID">129</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleInteriorColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="725743782"/>
-					</object>
-					<int key="connectionID">130</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleInteriorColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="600954803"/>
-					</object>
-					<int key="connectionID">131</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">freehandLineLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="623641384"/>
-					</object>
-					<int key="connectionID">134</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">highlightColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="632499014"/>
-					</object>
-					<int key="connectionID">135</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">highlightColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1051057242"/>
-					</object>
-					<int key="connectionID">136</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">lineColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="367809816"/>
-					</object>
-					<int key="connectionID">139</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">boxLineLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="849418374"/>
-					</object>
-					<int key="connectionID">140</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">circleLineLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="681830619"/>
-					</object>
-					<int key="connectionID">141</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">lineLineLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="74513021"/>
-					</object>
-					<int key="connectionID">142</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">strikeOutColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="386691170"/>
-					</object>
-					<int key="connectionID">143</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">strikeOutColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="904266144"/>
-					</object>
-					<int key="connectionID">144</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="350400179"/>
-					</object>
-					<int key="connectionID">145</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1054077573"/>
-					</object>
-					<int key="connectionID">146</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textFontLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1044625824"/>
-					</object>
-					<int key="connectionID">147</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">textLineLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="237941520"/>
-					</object>
-					<int key="connectionID">148</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">underlineColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="193510213"/>
-					</object>
-					<int key="connectionID">149</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">underlineColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="347021245"/>
-					</object>
-					<int key="connectionID">150</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">lineColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="724385998"/>
-					</object>
-					<int key="connectionID">151</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">freehandColorLabelField</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1013728757"/>
-					</object>
-					<int key="connectionID">152</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">freehandColorWell</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="328336789"/>
-					</object>
-					<int key="connectionID">153</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBAccessibilityConnection" key="connection">
 						<string key="label">link</string>
 						<reference key="source" ref="1054077573"/>
@@ -1654,6 +1402,390 @@
 						<reference key="destination" ref="1050610130"/>
 					</object>
 					<int key="connectionID">168</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorLabels2</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="282438770"/>
+					</object>
+					<int key="connectionID">174</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorLabels3</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="390195730"/>
+					</object>
+					<int key="connectionID">175</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">fontLabels</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="767695850"/>
+					</object>
+					<int key="connectionID">176</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">lineLabels2</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="922522486"/>
+					</object>
+					<int key="connectionID">178</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorLabels1</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="614731646"/>
+					</object>
+					<int key="connectionID">183</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">lineLabels1</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="676025226"/>
+					</object>
+					<int key="connectionID">184</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="350400179"/>
+					</object>
+					<int key="connectionID">185</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="707177880"/>
+					</object>
+					<int key="connectionID">186</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="724385998"/>
+					</object>
+					<int key="connectionID">187</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object4</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="1013728757"/>
+					</object>
+					<int key="connectionID">188</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="282438770"/>
+						<reference key="destination" ref="600332705"/>
+					</object>
+					<int key="connectionID">189</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="282438770"/>
+						<reference key="destination" ref="725743782"/>
+					</object>
+					<int key="connectionID">190</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="282438770"/>
+						<reference key="destination" ref="621414629"/>
+					</object>
+					<int key="connectionID">191</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object4</string>
+						<reference key="source" ref="282438770"/>
+						<reference key="destination" ref="498902938"/>
+					</object>
+					<int key="connectionID">192</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="767695850"/>
+						<reference key="destination" ref="1044625824"/>
+					</object>
+					<int key="connectionID">193</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="767695850"/>
+						<reference key="destination" ref="729015148"/>
+					</object>
+					<int key="connectionID">194</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="676025226"/>
+						<reference key="destination" ref="237941520"/>
+					</object>
+					<int key="connectionID">195</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="676025226"/>
+						<reference key="destination" ref="74513021"/>
+					</object>
+					<int key="connectionID">196</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="676025226"/>
+						<reference key="destination" ref="623641384"/>
+					</object>
+					<int key="connectionID">197</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="922522486"/>
+						<reference key="destination" ref="681830619"/>
+					</object>
+					<int key="connectionID">198</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="922522486"/>
+						<reference key="destination" ref="849418374"/>
+					</object>
+					<int key="connectionID">199</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object4</string>
+						<reference key="source" ref="57200071"/>
+						<reference key="destination" ref="1013728757"/>
+					</object>
+					<int key="connectionID">209</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="57200071"/>
+						<reference key="destination" ref="724385998"/>
+					</object>
+					<int key="connectionID">217</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="57200071"/>
+						<reference key="destination" ref="707177880"/>
+					</object>
+					<int key="connectionID">220</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="57200071"/>
+						<reference key="destination" ref="1054077573"/>
+					</object>
+					<int key="connectionID">225</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="461708293"/>
+						<reference key="destination" ref="317903247"/>
+					</object>
+					<int key="connectionID">229</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="461708293"/>
+						<reference key="destination" ref="600954803"/>
+					</object>
+					<int key="connectionID">230</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="461708293"/>
+						<reference key="destination" ref="896637447"/>
+					</object>
+					<int key="connectionID">231</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object4</string>
+						<reference key="source" ref="461708293"/>
+						<reference key="destination" ref="981351940"/>
+					</object>
+					<int key="connectionID">232</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="991261335"/>
+						<reference key="destination" ref="1051057242"/>
+					</object>
+					<int key="connectionID">233</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="991261335"/>
+						<reference key="destination" ref="347021245"/>
+					</object>
+					<int key="connectionID">234</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="991261335"/>
+						<reference key="destination" ref="904266144"/>
+					</object>
+					<int key="connectionID">235</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="390195730"/>
+						<reference key="destination" ref="632499014"/>
+					</object>
+					<int key="connectionID">236</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="390195730"/>
+						<reference key="destination" ref="193510213"/>
+					</object>
+					<int key="connectionID">237</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="390195730"/>
+						<reference key="destination" ref="386691170"/>
+					</object>
+					<int key="connectionID">238</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="96012338"/>
+						<reference key="destination" ref="449588914"/>
+					</object>
+					<int key="connectionID">239</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="96012338"/>
+						<reference key="destination" ref="17412635"/>
+					</object>
+					<int key="connectionID">240</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="950568901"/>
+						<reference key="destination" ref="351093558"/>
+					</object>
+					<int key="connectionID">241</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="950568901"/>
+						<reference key="destination" ref="23083139"/>
+					</object>
+					<int key="connectionID">242</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object3</string>
+						<reference key="source" ref="950568901"/>
+						<reference key="destination" ref="816803187"/>
+					</object>
+					<int key="connectionID">243</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object1</string>
+						<reference key="source" ref="1031424649"/>
+						<reference key="destination" ref="829754123"/>
+					</object>
+					<int key="connectionID">244</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object2</string>
+						<reference key="source" ref="1031424649"/>
+						<reference key="destination" ref="1050610130"/>
+					</object>
+					<int key="connectionID">245</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorWells1</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="57200071"/>
+					</object>
+					<int key="connectionID">246</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorWells2</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="461708293"/>
+					</object>
+					<int key="connectionID">247</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">colorWells3</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="991261335"/>
+					</object>
+					<int key="connectionID">248</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">fontWells</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="96012338"/>
+					</object>
+					<int key="connectionID">249</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">lineWells1</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="950568901"/>
+					</object>
+					<int key="connectionID">250</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">lineWells2</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="1031424649"/>
+					</object>
+					<int key="connectionID">251</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2149,6 +2281,78 @@
 						<reference key="object" ref="251596978"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">170</int>
+						<reference key="object" ref="282438770"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Labels 2</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">171</int>
+						<reference key="object" ref="390195730"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Labels 3</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">172</int>
+						<reference key="object" ref="767695850"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Font Labels</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">177</int>
+						<reference key="object" ref="922522486"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Line Labels 2</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">179</int>
+						<reference key="object" ref="614731646"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Labels 1</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">180</int>
+						<reference key="object" ref="676025226"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Line Labels 1</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">203</int>
+						<reference key="object" ref="57200071"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Wells 1</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">204</int>
+						<reference key="object" ref="461708293"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Wells 2</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">205</int>
+						<reference key="object" ref="991261335"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Color Wells 3</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">206</int>
+						<reference key="object" ref="96012338"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Font Wells</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">207</int>
+						<reference key="object" ref="950568901"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Line Wells 1</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">208</int>
+						<reference key="object" ref="1031424649"/>
+						<reference key="parent" ref="0"/>
+						<string key="objectName">Line Wells 2</string>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2290,7 +2494,7 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{123, 303}, {493, 498}}</string>
+					<string>{{35, 301}, {493, 498}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{628, 654}</string>
 					<string>{{217, 442}, {480, 272}}</string>
@@ -2564,7 +2768,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">168</int>
+			<int key="maxID">251</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2574,6 +2778,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKRichTextFormat.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">NSArray_SKExtensions.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2731,6 +2942,31 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKIBArray</string>
+					<string key="superclassName">NSArray</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>object1</string>
+							<string>object2</string>
+							<string>object3</string>
+							<string>object4</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKIBArray.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKLineWell</string>
 					<string key="superclassName">NSControl</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -2758,81 +2994,33 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>anchoredColorLabelField</string>
-							<string>anchoredColorWell</string>
-							<string>anchoredFontLabelField</string>
-							<string>anchoredNoteFontWell</string>
-							<string>boxColorLabelField</string>
-							<string>boxColorWell</string>
-							<string>boxInteriorColorLabelField</string>
-							<string>boxInteriorColorWell</string>
-							<string>boxLineLabelField</string>
-							<string>boxLineWell</string>
-							<string>circleColorLabelField</string>
-							<string>circleColorWell</string>
-							<string>circleInteriorColorLabelField</string>
-							<string>circleInteriorColorWell</string>
-							<string>circleLineLabelField</string>
-							<string>circleLineWell</string>
-							<string>freehandColorLabelField</string>
-							<string>freehandColorWell</string>
-							<string>freehandLineLabelField</string>
-							<string>freehandLineWell</string>
-							<string>highlightColorLabelField</string>
-							<string>highlightColorWell</string>
-							<string>lineColorLabelField</string>
-							<string>lineColorWell</string>
-							<string>lineLineLabelField</string>
-							<string>lineLineWell</string>
-							<string>strikeOutColorLabelField</string>
-							<string>strikeOutColorWell</string>
-							<string>textColorLabelField</string>
-							<string>textColorWell</string>
-							<string>textFontLabelField</string>
-							<string>textLineLabelField</string>
-							<string>textLineWell</string>
-							<string>textNoteFontWell</string>
-							<string>underlineColorLabelField</string>
-							<string>underlineColorWell</string>
+							<string>colorLabels1</string>
+							<string>colorLabels2</string>
+							<string>colorLabels3</string>
+							<string>colorWells1</string>
+							<string>colorWells2</string>
+							<string>colorWells3</string>
+							<string>fontLabels</string>
+							<string>fontWells</string>
+							<string>lineLabels1</string>
+							<string>lineLabels2</string>
+							<string>lineWells1</string>
+							<string>lineWells2</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>SKFontWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>SKLineWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>SKLineWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>SKLineWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>SKLineWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSTextField</string>
-							<string>SKLineWell</string>
-							<string>SKFontWell</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
+							<string>SKIBArray</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -2900,6 +3088,49 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSUserInterfaceItemSearching.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSArray.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="206164760">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSKeyValueCoding.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="1047342045">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSKeyValueObserving.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSPathUtilities.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSPredicate.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSArray</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Foundation.framework/Headers/NSSortDescriptor.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -3115,17 +3346,11 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Foundation.framework/Headers/NSKeyValueCoding.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="206164760"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Foundation.framework/Headers/NSKeyValueObserving.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="1047342045"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>

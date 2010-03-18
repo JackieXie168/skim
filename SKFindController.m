@@ -39,6 +39,7 @@
 #import "SKFindController.h"
 #import "BDSKFindFieldEditor.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 #define SKFindPanelFrameAutosaveName @"SKFindPanel"
 
@@ -64,7 +65,7 @@
 }
 
 - (void)windowDidLoad {
-    SKAutoSizeButtons(nextButton, previousButton);
+    SKAutoSizeRightButtons(buttons);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil], YES);
     
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];

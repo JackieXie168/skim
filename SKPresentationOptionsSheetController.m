@@ -51,6 +51,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 #define RIGHTARROW_CHARACTER 0x2192
 
@@ -121,6 +122,7 @@ static char *SKTransitionPropertiesObservationContext;
     // add the filter names to the popup
     NSUInteger i, count = 1 + [[SKTransitionController transitionNames] count];
     
+    NSPopUpButton *transitionStylePopUpButton = [transitionControls objectAtIndex:0];
     [transitionStylePopUpButton removeAllItems];
     for (i = 0; i < count; i++) {
         [transitionStylePopUpButton addItemWithTitle:[SKTransitionController localizedNameForStyle:i]];
@@ -136,11 +138,11 @@ static char *SKTransitionPropertiesObservationContext;
     [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     
     [separateCheckButton sizeToFit];
-    [transitionExtentMatrix sizeToFit];
+    [[transitionControls lastObject] sizeToFit];
     
-    SKAutoSizeButtons(okButton, cancelButton);
+    SKAutoSizeRightButtons(buttons);
     
-    CGFloat dw = SKAutoSizeLabelFields([NSArray arrayWithObjects:effectLabelField, durationLabelField, extentLabelField, nil], [NSArray arrayWithObjects:transitionStylePopUpButton, transitionDurationSlider, transitionDurationField, transitionExtentMatrix, nil], NO);
+    CGFloat dw = SKAutoSizeLabelFields(transitionLabels, transitionControls, NO);
     
     if (fabs(dw) > 0.0) {
         NSRect frame = [[self window] frame];

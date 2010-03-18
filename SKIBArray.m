@@ -1,10 +1,10 @@
 //
-//  SKPreferenceController.h
+//  SKIBArray.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan on 3/18/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,30 +36,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
+#import "SKIBArray.h"
 
-@class SKIBArray;
 
-@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
-    IBOutlet NSView *contentView;
-    IBOutlet SKIBArray *resetButtons;
-    NSDictionary *resettableKeys;
-    NSDictionary *panes;
-    NSDictionary *toolbarItems;
-    NSString *currentPaneID;
+@implementation SKIBArray
+
+- (NSUInteger)count {
+    if (object1 == nil)
+        return 0;
+    if (object2 == nil)
+        return 1;
+    if (object3 == nil)
+        return 2;
+    if (object4 == nil)
+        return 3;
+    if (object5 == nil)
+        return 4;
+    return 0;
 }
 
-+ (id)sharedPrefenceController;
-
-- (void)selectPaneWithIdentifier:(NSString *)paneID;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
-
-- (IBAction)changeFont:(id)sender;
-- (IBAction)changeAttributes:(id)sender;
-
-- (void)setupToolbar;
+- (id)objectAtIndex:(NSUInteger)anIndex {
+    switch (anIndex) {
+        case 0: return object1;
+        case 1: return object2;
+        case 2: return object3;
+        case 3: return object4;
+        case 4: return object5;
+        default: return nil;
+    }
+}
 
 @end

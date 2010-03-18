@@ -52,7 +52,7 @@ enum {
 };
 typedef NSUInteger SKLineChangeAction;
 
-@class SKLineWell;
+@class SKLineWell, SKIBArray;
 
 @interface SKLineInspector : SKWindowController {
     IBOutlet NSSlider *lineWidthSlider;
@@ -62,13 +62,12 @@ typedef NSUInteger SKLineChangeAction;
     IBOutlet NSSegmentedControl *startLineStyleButton;
     IBOutlet NSSegmentedControl *endLineStyleButton;
     IBOutlet SKLineWell *lineWell;
-    IBOutlet NSTextField *borderStyleHeaderField;
-    IBOutlet NSTextField *lineEndingStyleHeaderField;
     IBOutlet NSTextField *lineWidthLabelField;
     IBOutlet NSTextField *styleLabelField;
     IBOutlet NSTextField *dashPatternLabelField;
     IBOutlet NSTextField *startLineStyleLabelField;
     IBOutlet NSTextField *endLineStyleLabelField;
+    IBOutlet SKIBArray *labelFields;
     CGFloat lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;

@@ -46,6 +46,7 @@
 #import "SKFontWell.h"
 #import "NSView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
@@ -90,7 +91,7 @@
     
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
-    SKAutoSizeLeftButtons(resetCurrentButton, resetAllButton);
+    SKAutoSizeLeftButtons(resetButtons);
     
     SKGeneralPreferences *generalPane = [[[SKGeneralPreferences alloc] init] autorelease];
     SKDisplayPreferences *displayPane = [[[SKDisplayPreferences alloc] init] autorelease];

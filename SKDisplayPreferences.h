@@ -39,27 +39,22 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
+@class SKIBArray;
 
 @interface SKDisplayPreferences : SKViewController {
-    IBOutlet NSTextField *thumbnailSizeLabelField;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSTextField *snapshotSizeLabelField;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSButton *discreteSizesCheckButton;
     IBOutlet NSTextField *tableFontLabelField;
     IBOutlet NSComboBox *tableFontComboBox;
     IBOutlet NSTextField *greekingLabelField;
     IBOutlet NSTextField *greekingTextField;
     IBOutlet NSButton *antiAliasCheckButton;
-    IBOutlet NSTextField *backgroundColorLabelField;
-    IBOutlet NSColorWell *backgroundColorWell;
     IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
     IBOutlet NSColorWell *fullScreenBackgroundColorWell;
     IBOutlet NSButton *searchHighlightCheckButton;
     IBOutlet NSColorWell *searchHighlightColorWell;
-    IBOutlet NSTextField *readingBarColorLabelField;
-    IBOutlet NSColorWell *readingBarColorWell;
-    IBOutlet NSButton *readingBarInvertCheckButton;
+    IBOutlet SKIBArray *thumbnailSizeLabels;
+    IBOutlet SKIBArray *thumbnailSizeControls;
+    IBOutlet SKIBArray *colorLabels;
+    IBOutlet SKIBArray *colorControls;
 }
 
 - (NSUInteger)countOfSizes;

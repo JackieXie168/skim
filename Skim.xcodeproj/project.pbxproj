@@ -70,6 +70,7 @@
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
 		CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
+		CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */ = {isa = PBXBuildFile; fileRef = CE121BFA11529D15001D92ED /* SKIBArray.m */; };
 		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE19446310627483007E8770 /* BookmarksWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445C10627483007E8770 /* BookmarksWindow.xib */; };
 		CE19446410627483007E8770 /* ConversionProgressWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445D10627483007E8770 /* ConversionProgressWindow.xib */; };
@@ -559,6 +560,8 @@
 		CE0ECCD40DE71868006EEDDB /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		CE0ECD1A0DE73604006EEDDB /* NSDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDocument_SKExtensions.m; sourceTree = "<group>"; };
+		CE121BF911529D15001D92ED /* SKIBArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKIBArray.h; sourceTree = "<group>"; };
+		CE121BFA11529D15001D92ED /* SKIBArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKIBArray.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
 		CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizerServer.h; sourceTree = "<group>"; };
 		CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizerServer.m; sourceTree = "<group>"; };
@@ -1595,6 +1598,8 @@
 				CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */,
 				CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */,
 				CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */,
+				CE121BF911529D15001D92ED /* SKIBArray.h */,
+				CE121BFA11529D15001D92ED /* SKIBArray.m */,
 				CEAF2E570C45414100C3ECBB /* SKLine.h */,
 				CEAF2E580C45414100C3ECBB /* SKLine.m */,
 				CE099661112577A000EDB88F /* SKNotesPage.h */,
@@ -2423,6 +2428,7 @@
 				CEF60F2F114C54090074ACC4 /* SKNotesPreferences.m in Sources */,
 				CEF60F32114C54360074ACC4 /* SKSyncPreferences.m in Sources */,
 				CE0E8651114DBF7000E37F38 /* SKPreferenceWindow.m in Sources */,
+				CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
