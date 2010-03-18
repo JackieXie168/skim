@@ -38,9 +38,15 @@
 
 #import "SKFindTableView.h"
 
+#define PAGE_COLUMNID @"page"
 
 @implementation SKFindTableView
 
 + (BOOL)usesDefaultFontSize { return YES; }
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+}
 
 @end
