@@ -52,7 +52,7 @@
         return 3;
     if (object5 == nil)
         return 4;
-    return 0;
+    return 5;
 }
 
 - (id)objectAtIndex:(NSUInteger)anIndex {
