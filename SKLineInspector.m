@@ -122,7 +122,7 @@ static SKLineInspector *sharedLineInspector = nil;
     if (fabs(dw) > 0.0) {
         NSRect frame = [[self window] frame];
         frame.size.width += dw;
-        [[self window] setFrame:frame display:YES];
+        [[self window] setFrame:frame display:NO];
     }
     
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
