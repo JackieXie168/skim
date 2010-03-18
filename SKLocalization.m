@@ -88,7 +88,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
-    if ([self imagePosition] != NSImageOnly) {
+    if ([self imagePosition] != NSImageOnly && [self isKindOfClass:[NSPopUpButtonCell class]] == NO) {
         localizeStringForObjectFromTable(self, TITLE_KEY, table);
         localizeStringForObjectFromTable(self, ALTERNATETITLE_KEY, table);
     }
