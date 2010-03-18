@@ -12,7 +12,6 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="29"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -369,7 +368,7 @@
 								</object>
 								<object class="NSMenuItem" id="649140297">
 									<reference key="NSMenu" ref="812152972"/>
-									<string key="NSTitle">Read Notes...</string>
+									<string key="NSTitle">Read Notes…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -398,7 +397,7 @@
 								</object>
 								<object class="NSMenuItem" id="830066079">
 									<reference key="NSMenu" ref="812152972"/>
-									<string key="NSTitle">Password...</string>
+									<string key="NSTitle">Password…</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -5539,6 +5538,7 @@
 					<string>798.ImportedFromIB2</string>
 					<string>800.IBPluginDependency</string>
 					<string>800.ImportedFromIB2</string>
+					<string>81.IBEditorWindowLastContentRect</string>
 					<string>81.IBPluginDependency</string>
 					<string>81.ImportedFromIB2</string>
 					<string>83.IBPluginDependency</string>
@@ -6011,6 +6011,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
+					<string>{{249, 309}, {230, 403}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
