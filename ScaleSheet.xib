@@ -51,7 +51,7 @@
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="126349111">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -60,6 +60,7 @@
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{17, 69}, {40, 17}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="903982662">
 								<int key="NSCellFlags">68288064</int>
@@ -96,6 +97,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{96, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="85152492">
@@ -119,6 +121,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{14, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="363585917">
 								<int key="NSCellFlags">67239424</int>
@@ -140,6 +143,7 @@
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{62, 66}, {110, 23}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="248880686">
 								<int key="NSCellFlags">-1804468671</int>
@@ -230,6 +234,8 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{192, 107}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -301,6 +307,14 @@
 						<reference key="destination" ref="489297716"/>
 					</object>
 					<int key="connectionID">28</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBAccessibilityConnection" key="connection">
+						<string key="label">link</string>
+						<reference key="source" ref="708437025"/>
+						<reference key="destination" ref="1050335072"/>
+					</object>
+					<int key="connectionID">29</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -492,7 +506,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">28</int>
+			<int key="maxID">29</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -573,6 +587,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKLineInspector.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKLocalization.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -753,7 +774,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKTextFieldSheetController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -775,10 +796,18 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKTextFieldSheetController</string>
-					<string key="superclassName">NSWindowController</string>
+					<string key="superclassName">SKWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKWindowController.h</string>
 					</object>
 				</object>
 			</object>
