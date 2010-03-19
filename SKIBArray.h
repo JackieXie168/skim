@@ -40,10 +40,6 @@
 
 
 @interface SKIBArray : NSArray {
-    IBOutlet id object1;
-    IBOutlet id object2;
-    IBOutlet id object3;
-    IBOutlet id object4;
-    IBOutlet id object5;
+    id object1, object2, object3, object4, object5;
 }
 @end
