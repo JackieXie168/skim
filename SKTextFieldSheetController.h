@@ -39,13 +39,12 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-@class SKIBArray;
 
 @interface SKTextFieldSheetController : SKWindowController {
     IBOutlet NSTextField *textField;
-    IBOutlet SKIBArray *labelFields;
-    IBOutlet SKIBArray *controls;
-    IBOutlet SKIBArray *buttons;
+    IBOutlet NSArray *labelFields;
+    IBOutlet NSArray *controls;
+    IBOutlet NSArray *buttons;
 }
 
 - (NSTextField *)textField;

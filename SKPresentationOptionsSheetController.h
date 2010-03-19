@@ -41,16 +41,16 @@
 #import "SKTransitionController.h"
 #import "SKThumbnailTableView.h"
 
-@class SKMainWindowController, SKMainDocument, SKThumbnail, SKTransitionInfo, SKIBArray;
+@class SKMainWindowController, SKMainDocument, SKThumbnail, SKTransitionInfo;
 
 @interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource> {
     IBOutlet NSPopUpButton *notesDocumentPopUpButton;
     IBOutlet SKThumbnailTableView *tableView;
     IBOutlet NSButton *separateCheckButton;
-    IBOutlet SKIBArray *boxes;
-    IBOutlet SKIBArray *transitionLabels;
-    IBOutlet SKIBArray *transitionControls;
-    IBOutlet SKIBArray *buttons;
+    IBOutlet NSArray *boxes;
+    IBOutlet NSArray *transitionLabels;
+    IBOutlet NSArray *transitionControls;
+    IBOutlet NSArray *buttons;
     IBOutlet NSObjectController *objectController;
     IBOutlet NSArrayController *arrayController;
     BOOL separate;

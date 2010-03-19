@@ -42,7 +42,6 @@
 #import "SKLineWell.h"
 #import "SKFontWell.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 #define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 

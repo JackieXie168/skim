@@ -45,11 +45,9 @@ typedef struct _SKTeXEditor {
 } SKTeXEditor;
 
 
-@class SKIBArray;
-
 @interface SKSyncPreferences : SKViewController {
-    IBOutlet SKIBArray *texEditorLabels;
-    IBOutlet SKIBArray *texEditorControls;
+    IBOutlet NSArray *texEditorLabels;
+    IBOutlet NSArray *texEditorControls;
     BOOL isCustomTeXEditor;
 }
 

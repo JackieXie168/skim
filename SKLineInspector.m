@@ -42,7 +42,6 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
 

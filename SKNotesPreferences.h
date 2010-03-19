@@ -39,21 +39,21 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKLineWell, SKFontWell, SKIBArray;
+@class SKLineWell, SKFontWell;
 
 @interface SKNotesPreferences : SKViewController {
-    IBOutlet SKIBArray *colorLabels1;
-    IBOutlet SKIBArray *colorLabels2;
-    IBOutlet SKIBArray *colorLabels3;
-    IBOutlet SKIBArray *fontLabels;
-    IBOutlet SKIBArray *lineLabels1;
-    IBOutlet SKIBArray *lineLabels2;
-    IBOutlet SKIBArray *colorWells1;
-    IBOutlet SKIBArray *colorWells2;
-    IBOutlet SKIBArray *colorWells3;
-    IBOutlet SKIBArray *fontWells;
-    IBOutlet SKIBArray *lineWells1;
-    IBOutlet SKIBArray *lineWells2;
+    IBOutlet NSArray *colorLabels1;
+    IBOutlet NSArray *colorLabels2;
+    IBOutlet NSArray *colorLabels3;
+    IBOutlet NSArray *fontLabels;
+    IBOutlet NSArray *lineLabels1;
+    IBOutlet NSArray *lineLabels2;
+    IBOutlet NSArray *colorWells1;
+    IBOutlet NSArray *colorWells2;
+    IBOutlet NSArray *colorWells3;
+    IBOutlet NSArray *fontWells;
+    IBOutlet NSArray *lineWells1;
+    IBOutlet NSArray *lineWells2;
 }
 
 @end

@@ -40,7 +40,6 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 

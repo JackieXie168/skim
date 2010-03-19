@@ -39,11 +39,10 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-@class SKIBArray;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
     IBOutlet NSView *contentView;
-    IBOutlet SKIBArray *resetButtons;
+    IBOutlet NSArray *resetButtons;
     NSDictionary *resettableKeys;
     NSDictionary *panes;
     NSDictionary *toolbarItems;

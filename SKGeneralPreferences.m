@@ -42,7 +42,6 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
 
