@@ -149,19 +149,8 @@ static char *SKTransitionPropertiesObservationContext;
         frame.size.width += dw;
         [[self window] setFrame:frame display:NO];
         
-        frame = [transitionBox frame];
-        frame.origin.x -= dw;
-        frame.size.width += dw;
-        [transitionBox setFrame:frame];
-        
-        frame = [documentBox frame];
-        frame.origin.x -= dw;
-        frame.size.width += dw;
-        [documentBox setFrame:frame];
-        
-        frame = [separateCheckButton frame];
-        frame.origin.x -= dw;
-        [separateCheckButton setFrame:frame];
+        SKShiftAndResizeViews(boxes, -dw, dw);
+        SKShiftAndResizeViews([NSArray arrayWithObjects:separateCheckButton, nil], -dw, 0.0);
     }
     
     // collapse the table
