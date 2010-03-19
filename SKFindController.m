@@ -39,7 +39,6 @@
 #import "SKFindController.h"
 #import "BDSKFindFieldEditor.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 #define SKFindPanelFrameAutosaveName @"SKFindPanel"
 

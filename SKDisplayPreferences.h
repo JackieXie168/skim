@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKIBArray;
 
 @interface SKDisplayPreferences : SKViewController {
     IBOutlet NSTextField *tableFontLabelField;
@@ -51,10 +50,10 @@
     IBOutlet NSColorWell *fullScreenBackgroundColorWell;
     IBOutlet NSButton *searchHighlightCheckButton;
     IBOutlet NSColorWell *searchHighlightColorWell;
-    IBOutlet SKIBArray *thumbnailSizeLabels;
-    IBOutlet SKIBArray *thumbnailSizeControls;
-    IBOutlet SKIBArray *colorLabels;
-    IBOutlet SKIBArray *colorControls;
+    IBOutlet NSArray *thumbnailSizeLabels;
+    IBOutlet NSArray *thumbnailSizeControls;
+    IBOutlet NSArray *colorLabels;
+    IBOutlet NSArray *colorControls;
 }
 
 - (NSUInteger)countOfSizes;

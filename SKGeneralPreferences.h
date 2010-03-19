@@ -39,11 +39,10 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKIBArray;
 
 @interface SKGeneralPreferences : SKViewController {
     IBOutlet NSPopUpButton *updateIntervalPopUpButton;
-    IBOutlet SKIBArray *revertPDFSettingsButtons;
+    IBOutlet NSArray *revertPDFSettingsButtons;
     IBOutlet NSTextField *openFilesLabelField;
     IBOutlet NSMatrix *openFilesMatrix;
     IBOutlet NSTextField *updateIntervalLabelField;

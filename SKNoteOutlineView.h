@@ -51,13 +51,11 @@
 
 @end
 
-@class SKIBArray;
-
 @interface SKNoteOutlineView : SKOutlineView {    
     IBOutlet NSWindow *noteTypeSheet;
     IBOutlet NSMatrix *noteTypeMatrix;
     IBOutlet NSTextField *noteTypeMessageField;
-    IBOutlet SKIBArray *noteTypeButtons;
+    IBOutlet NSArray *noteTypeButtons;
 }
 
 - (NSArray *)noteTypes;

@@ -46,7 +46,6 @@
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2

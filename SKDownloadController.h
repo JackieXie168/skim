@@ -42,7 +42,7 @@
 #import "SKDownload.h"
 
 
-@class SKTableView, SKIBArray;
+@class SKTableView;
 
 @interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, SKDownloadDelegate> {
     IBOutlet NSArrayController *arrayController;
@@ -50,7 +50,7 @@
     IBOutlet NSButton *clearButton;
     IBOutlet NSButton *prefButton;
     IBOutlet NSWindow *preferencesSheet;
-    IBOutlet SKIBArray *downloadPrefsCheckButtons;
+    IBOutlet NSArray *downloadPrefsCheckButtons;
     IBOutlet NSButton *doneButton;
     NSMutableArray *downloads;
 }

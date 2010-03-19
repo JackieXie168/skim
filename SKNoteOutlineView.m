@@ -45,7 +45,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKColorCell.h"
 #import "SKLocalization.h"
-#import "SKIBArray.h"
 
 #define NUMBER_OF_TYPES 9
 

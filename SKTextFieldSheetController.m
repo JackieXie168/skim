@@ -42,7 +42,6 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKIBArray.h"
 
 
 @implementation SKTextFieldSheetController
