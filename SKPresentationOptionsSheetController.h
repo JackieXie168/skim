@@ -47,8 +47,7 @@
     IBOutlet NSPopUpButton *notesDocumentPopUpButton;
     IBOutlet SKThumbnailTableView *tableView;
     IBOutlet NSButton *separateCheckButton;
-    IBOutlet NSBox *transitionBox;
-    IBOutlet NSBox *documentBox;
+    IBOutlet SKIBArray *boxes;
     IBOutlet SKIBArray *transitionLabels;
     IBOutlet SKIBArray *transitionControls;
     IBOutlet SKIBArray *buttons;

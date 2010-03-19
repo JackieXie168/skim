@@ -40,16 +40,7 @@
 #import "SKWindowController.h"
 
 
-@interface SKNotesPanelController : SKWindowController <NSWindowDelegate> {
-    IBOutlet NSButton *textButton;
-    IBOutlet NSButton *anchoredButton;
-    IBOutlet NSButton *circleButton;
-    IBOutlet NSButton *squareButton;
-    IBOutlet NSButton *highlightButton;
-    IBOutlet NSButton *underlineButton;
-    IBOutlet NSButton *strikeOutButton;
-    IBOutlet NSButton *lineButton;
-}
+@interface SKNotesPanelController : SKWindowController <NSWindowDelegate>
 + (id)sharedController;
 + (BOOL)sharedControllerExists;
 - (IBAction)addNote:(id)sender;

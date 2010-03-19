@@ -46,6 +46,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKIBArray.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -91,13 +92,15 @@ static char SKDownloadPropertiesObservationContext;
     [prefButton accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
     
     [clearButton sizeToFit];
-    [showDownloadsCheckButton sizeToFit];
-    [removeDownloadCheckButton sizeToFit];
-    [hideDownloadsCheckButton sizeToFit];
     SKAutoSizeRightButtons([NSArray arrayWithObjects:doneButton, nil]);
     
     NSRect frame = [preferencesSheet frame];
-    frame.size.width = 18.0 + fmaxf(fmaxf(NSMaxX([showDownloadsCheckButton frame]), NSMaxX([removeDownloadCheckButton frame])), NSMaxX([hideDownloadsCheckButton frame]));
+    frame.size.width = 0.0;
+    for (NSButton *button in downloadPrefsCheckButtons) {
+        [button sizeToFit];
+        frame.size.width = fmax(NSWidth(frame), NSMaxX([button frame]));
+    }
+    frame.size.width += 18.0;
     [preferencesSheet setFrame:frame display:NO];
     
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
