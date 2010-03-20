@@ -86,7 +86,7 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 - (NSString *)identifier { return @"SKSyncPreferencesIdentifier"; }
 
-- (NSString *)label { return NSLocalizedString(@"Sync", @"Preference pane label"); }
+- (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"SyncPreferences"]; }
 
