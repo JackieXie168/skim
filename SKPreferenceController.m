@@ -61,28 +61,23 @@
 + (id)sharedPrefenceController {
     static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)
-        sharedPrefenceController = [[self alloc] init];
+        sharedPrefenceController = [[self alloc] initWithWindowNibName:@"PreferenceWindow"];
     return sharedPrefenceController;
 }
 
-- (id)init {
-    if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
-        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
-        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY] retain];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    currentPane = nil;
-    SKDESTROY(resettableKeys);
-    SKDESTROY(toolbarItems);
-    [super dealloc];
-}
-
 - (void)windowDidLoad {
-    [self setupToolbar];
-    [[self window] setShowsToolbarButton:NO];
+    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
+    NSDictionary *resettableKeys = [[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY];
+    
+    NSWindow *window = [self window];
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
+    
+    [toolbar setAllowsUserCustomization:NO];
+    [toolbar setAutosavesConfiguration:NO];
+    [toolbar setVisible:YES];
+    [toolbar setDelegate:self];
+    [window setToolbar:toolbar];
+    [window setShowsToolbarButton:NO];
     
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
@@ -92,6 +87,7 @@
     NSView *view;
     NSSize aSize, size = NSZeroSize;
     for (pane in preferencePanes) {
+        [pane setRepresentedObject:[resettableKeys objectForKey:[pane nibName]]];
         aSize = [[pane view] frame].size;
         size.width = fmax(size.width, aSize.width);
         size.height = fmax(size.height, aSize.height);
@@ -106,13 +102,13 @@
     
     currentPane = [preferencePanes objectAtIndex:0];
     view = [currentPane view];
-    [[[self window] toolbar] setSelectedItemIdentifier:[currentPane nibName]];
-    [[self window] setTitle:[currentPane title]];
+    [toolbar setSelectedItemIdentifier:[currentPane nibName]];
+    [window setTitle:[currentPane title]];
         
     NSRect frame = [[self window] frame];
     frame.size.width = size.width;
     frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
-    [[self window] setFrame:frame display:NO];
+    [window setFrame:frame display:NO];
     
     [view setFrameOrigin:NSZeroPoint];
     [contentView addSubview:view];
@@ -151,7 +147,7 @@
 
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[resettableKeys objectForKey:[currentPane nibName]]];
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[currentPane representedObject]];
         [currentPane defaultsDidRevert];
     }
 }
@@ -181,8 +177,17 @@
     [[[[self window] contentView] activeFontWellSubview] changeAttributesFromFontManager:sender];
 }
 
-- (IBAction)selectPane:(id)sender {
-    SKPreferencePane *pane = [preferencePanes objectAtIndex:[sender tag]];
+#pragma mark Toolbar
+
+- (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
+    for (SKPreferencePane *pane in preferencePanes)
+        if ([[pane nibName] isEqualToString:itemIdent])
+            return pane;
+    return nil;
+}
+
+- (void)selectPane:(id)sender {
+    SKPreferencePane *pane = [self preferencePaneForItemIdentifier:[sender itemIdentifier]];
     if ([pane isEqual:currentPane] == NO) {
         
         [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
@@ -210,39 +215,14 @@
     }
 }
 
-#pragma mark Toolbar
-
-- (void)setupToolbar {
-    // Create a new toolbar instance, and attach it to our document window
-    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
-    
-    [toolbar setAllowsUserCustomization:NO];
-    [toolbar setAutosavesConfiguration:NO];
-    [toolbar setVisible:YES];
-    [toolbar setDelegate:self];
-    
-    NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
-    NSUInteger i = 0;
-    
-    for (SKPreferencePane *pane in preferencePanes) {
-        NSString *identifier = [pane nibName];
-        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
-        [item setTag:i++];
-        [item setLabel:[pane title]];
-        [item setImage:[pane icon]];
-        [item setTarget:self];
-        [item setAction:@selector(selectPane:)];
-        [tmpDict setObject:item forKey:identifier];
-        [item release];
-    }
-    
-    toolbarItems = [tmpDict copy];
-    
-    [[self window] setToolbar:toolbar];
-}
-
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
-    return [toolbarItems objectForKey:itemIdent];
+    SKPreferencePane *pane = [self preferencePaneForItemIdentifier:itemIdent];
+    NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdent] autorelease];
+    [item setLabel:[pane title]];
+    [item setImage:[pane icon]];
+    [item setTarget:self];
+    [item setAction:@selector(selectPane:)];
+    return item;
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {

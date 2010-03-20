@@ -45,8 +45,6 @@
     IBOutlet NSView *contentView;
     IBOutlet NSArray *resetButtons;
     IBOutlet NSArray *preferencePanes;
-    NSDictionary *resettableKeys;
-    NSDictionary *toolbarItems;
     SKPreferencePane *currentPane;
 }
 
@@ -57,7 +55,5 @@
 
 - (IBAction)changeFont:(id)sender;
 - (IBAction)changeAttributes:(id)sender;
-
-- (void)setupToolbar;
 
 @end
