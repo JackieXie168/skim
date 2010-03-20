@@ -123,8 +123,6 @@
 
 #pragma mark Accessors
 
-- (NSString *)identifier { return @"SKNotesPreferencesIdentifier"; }
-
 - (NSString *)title { return NSLocalizedString(@"Notes", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"NotesPreferences"]; }

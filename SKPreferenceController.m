@@ -54,7 +54,7 @@
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
-#define IDENTIFIER_KEY @"identifier"
+#define TITLE_KEY @"title"
 
 @implementation SKPreferenceController
 
@@ -89,7 +89,7 @@
     
     SKAutoSizeLeftButtons(resetButtons);
     
-    panes = [[NSDictionary alloc] initWithObjects:preferencePanes forKeys:[preferencePanes valueForKey:IDENTIFIER_KEY]];
+    panes = [[NSDictionary alloc] initWithObjects:preferencePanes forKeys:[preferencePanes valueForKey:TITLE_KEY]];
     
     NSSize size = NSZeroSize;
     for (SKPreferencePane *pane in preferencePanes) {
@@ -108,7 +108,7 @@
     frame.size.width = size.width;
     [[self window] setFrame:frame display:NO];
     
-    [self selectPaneWithIdentifier:[[preferencePanes objectAtIndex:0] identifier]];
+    [self selectPaneWithIdentifier:[[preferencePanes objectAtIndex:0] title]];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -224,12 +224,12 @@
     [toolbar setDelegate:self];
     
     for (SKPreferencePane *pane in preferencePanes) {
-        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:[pane identifier]];
+        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:[pane title]];
         [item setLabel:[pane title]];
         [item setImage:[pane icon]];
         [item setTarget:self];
         [item setAction:@selector(selectPane:)];
-        [tmpDict setObject:item forKey:[pane identifier]];
+        [tmpDict setObject:item forKey:[pane title]];
         [item release];
     }
     
@@ -243,7 +243,7 @@
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return [preferencePanes valueForKey:IDENTIFIER_KEY];
+    return [preferencePanes valueForKey:TITLE_KEY];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {

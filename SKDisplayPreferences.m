@@ -65,8 +65,6 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 
 #pragma mark Accessors
 
-- (NSString *)identifier { return @"SKDisplayPreferencesIdentifier"; }
-
 - (NSString *)title { return NSLocalizedString(@"Display", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"DisplayPreferences"]; }
