@@ -128,7 +128,7 @@
         SKViewController *newPane = [panes objectForKey:paneID];
         
         [[[self window] toolbar] setSelectedItemIdentifier:paneID];
-        [[self window] setTitle:[[toolbarItems objectForKey:paneID] label]];
+        [[self window] setTitle:[[panes objectForKey:paneID] title]];
         
         [currentPaneID release];
         currentPaneID = [paneID retain];
@@ -186,7 +186,7 @@
         NSBeep();
         return;
     }
-    NSString *label = [[toolbarItems objectForKey:currentPaneID] label];
+    NSString *label = [[panes objectForKey:currentPaneID] title];
     NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]
                                      defaultButton:NSLocalizedString(@"Reset", @"Button title")
                                    alternateButton:NSLocalizedString(@"Cancel", @"Button title")
@@ -225,7 +225,7 @@
     
     for (SKPreferencePane *pane in preferencePanes) {
         NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:[pane identifier]];
-        [item setLabel:[pane label]];
+        [item setLabel:[pane title]];
         [item setImage:[pane icon]];
         [item setTarget:self];
         [item setAction:@selector(selectPane:)];

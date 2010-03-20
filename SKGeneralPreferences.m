@@ -92,7 +92,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (NSString *)identifier { return @"SKGeneralPreferencesIdentifier"; }
 
-- (NSString *)label { return NSLocalizedString(@"General", @"Preference pane label"); }
+- (NSString *)title { return NSLocalizedString(@"General", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"GeneralPreferences"]; }
 

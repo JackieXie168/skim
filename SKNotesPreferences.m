@@ -125,7 +125,7 @@
 
 - (NSString *)identifier { return @"SKNotesPreferencesIdentifier"; }
 
-- (NSString *)label { return NSLocalizedString(@"Notes", @"Preference pane label"); }
+- (NSString *)title { return NSLocalizedString(@"Notes", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"NotesPreferences"]; }
 
