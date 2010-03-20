@@ -84,6 +84,12 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 #pragma mark Accessors
 
+- (NSString *)identifier { return @"SKSyncPreferencesIdentifier"; }
+
+- (NSString *)label { return NSLocalizedString(@"Sync", @"Preference pane label"); }
+
+- (NSImage *)icon { return [NSImage imageNamed:@"SyncPreferences"]; }
+
 + (SKTeXEditor)TeXEditorForPreset:(NSString *)name {
     NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
     while (i--) {

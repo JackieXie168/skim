@@ -1,8 +1,8 @@
 //
-//  SKDisplayPreferences.h
+//  SKPreferencePane.h
 //  Skim
 //
-//  Created by Christiaan on 3/14/10.
+//  Created by Christiaan on 3/20/10.
 /*
  This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
@@ -37,28 +37,15 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKPreferencePane.h"
+#import "SKViewController.h"
 
 
-@interface SKDisplayPreferences : SKPreferencePane {
-    IBOutlet NSTextField *tableFontLabelField;
-    IBOutlet NSComboBox *tableFontComboBox;
-    IBOutlet NSTextField *greekingLabelField;
-    IBOutlet NSTextField *greekingTextField;
-    IBOutlet NSButton *antiAliasCheckButton;
-    IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
-    IBOutlet NSColorWell *fullScreenBackgroundColorWell;
-    IBOutlet NSButton *searchHighlightCheckButton;
-    IBOutlet NSColorWell *searchHighlightColorWell;
-    IBOutlet NSArray *thumbnailSizeLabels;
-    IBOutlet NSArray *thumbnailSizeControls;
-    IBOutlet NSArray *colorLabels;
-    IBOutlet NSArray *colorControls;
-}
+@interface SKPreferencePane : SKViewController
 
-- (NSUInteger)countOfSizes;
-- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
+- (NSString *)identifier;
+- (NSString *)label;
+- (NSImage *)icon;
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
+- (void)defaultsDidRevert;
 
 @end

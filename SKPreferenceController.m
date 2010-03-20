@@ -37,7 +37,7 @@
  */
 
 #import "SKPreferenceController.h"
-#import "SKViewController.h"
+#import "SKPreferencePane.h"
 #import "SKGeneralPreferences.h"
 #import "SKDisplayPreferences.h"
 #import "SKNotesPreferences.h"
@@ -52,12 +52,9 @@
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
-#define SKGeneralPreferencesIdentifier @"SKGeneralPreferencesIdentifier"
-#define SKDisplayPreferencesIdentifier @"SKDisplayPreferencesIdentifier"
-#define SKNotesPreferencesIdentifier   @"SKNotesPreferencesIdentifier"
-#define SKSyncPreferencesIdentifier    @"SKSyncPreferencesIdentifier"
-
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
+
+#define IDENTIFIER_KEY @"identifier"
 
 @implementation SKPreferenceController
 
@@ -92,21 +89,15 @@
     
     SKAutoSizeLeftButtons(resetButtons);
     
-    SKGeneralPreferences *generalPane = [[[SKGeneralPreferences alloc] init] autorelease];
-    SKDisplayPreferences *displayPane = [[[SKDisplayPreferences alloc] init] autorelease];
-    SKNotesPreferences *notesPane = [[[SKNotesPreferences alloc] init] autorelease];
-    SKSyncPreferences *syncPane = [[[SKSyncPreferences alloc] init] autorelease];
-    NSArray *allPanes = [NSArray arrayWithObjects:generalPane, displayPane, notesPane, syncPane, nil];
-    NSArray *paneIDs = [NSArray arrayWithObjects:SKGeneralPreferencesIdentifier, SKDisplayPreferencesIdentifier, SKNotesPreferencesIdentifier, SKSyncPreferencesIdentifier, nil];
-    panes = [[NSDictionary alloc] initWithObjects:allPanes forKeys:paneIDs];
+    panes = [[NSDictionary alloc] initWithObjects:preferencePanes forKeys:[preferencePanes valueForKey:IDENTIFIER_KEY]];
     
     NSSize size = NSZeroSize;
-    for (NSViewController *pane in allPanes) {
+    for (SKPreferencePane *pane in preferencePanes) {
         NSSize aSize = [[pane view] frame].size;
         size.width = fmax(size.width, aSize.width);
         size.height = fmax(size.height, aSize.height);
     }
-    for (NSViewController *pane in allPanes) {
+    for (SKPreferencePane *pane in preferencePanes) {
         NSView *view = [pane view];
         NSSize aSize = [view frame].size;
         aSize.width = size.width;
@@ -117,7 +108,7 @@
     frame.size.width = size.width;
     [[self window] setFrame:frame display:NO];
     
-    [self selectPaneWithIdentifier:SKGeneralPreferencesIdentifier];
+    [self selectPaneWithIdentifier:[[preferencePanes objectAtIndex:0] identifier]];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -168,12 +159,13 @@
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSString *paneID = (NSString *)contextInfo;
-        if (paneID)
+        if (paneID) {
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[resettableKeys objectForKey:paneID]];
-        else
+            [[panes objectForKey:paneID] defaultsDidRevert];
+        } else {
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-        if (paneID == nil || [paneID isEqualToString:SKGeneralPreferencesIdentifier])
-            [(SKGeneralPreferences *)[panes objectForKey:SKGeneralPreferencesIdentifier] resetSparkleDefaults];
+            [preferencePanes makeObjectsPerformSelector:@selector(defaultsDidRevert)];
+        }
     }
 }
 
@@ -223,7 +215,6 @@
 - (void)setupToolbar {
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
-    NSToolbarItem *item;
     
     NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
     
@@ -232,37 +223,15 @@
     [toolbar setVisible:YES];
     [toolbar setDelegate:self];
     
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKGeneralPreferencesIdentifier];
-    [item setLabel:NSLocalizedString(@"General", @"Toolbar item label")];
-    [item setImage:[NSImage imageNamed:@"GeneralPreferences"]];
-    [item setTarget:self];
-    [item setAction:@selector(selectPane:)];
-    [tmpDict setObject:item forKey:SKGeneralPreferencesIdentifier];
-    [item release];
-    
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDisplayPreferencesIdentifier];
-    [item setLabel:NSLocalizedString(@"Display", @"Toolbar item label")];
-    [item setImage:[NSImage imageNamed:@"DisplayPreferences"]];
-    [item setTarget:self];
-    [item setAction:@selector(selectPane:)];
-    [tmpDict setObject:item forKey:SKDisplayPreferencesIdentifier];
-    [item release];
-    
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKNotesPreferencesIdentifier];
-    [item setLabel:NSLocalizedString(@"Notes", @"Toolbar item label")];
-    [item setImage:[NSImage imageNamed:@"NotesPreferences"]];
-    [item setTarget:self];
-    [item setAction:@selector(selectPane:)];
-    [tmpDict setObject:item forKey:SKNotesPreferencesIdentifier];
-    [item release];
-    
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKSyncPreferencesIdentifier];
-    [item setLabel:NSLocalizedString(@"Sync", @"Toolbar item label")];
-    [item setImage:[NSImage imageNamed:@"SyncPreferences"]];
-    [item setTarget:self];
-    [item setAction:@selector(selectPane:)];
-    [tmpDict setObject:item forKey:SKSyncPreferencesIdentifier];
-    [item release];
+    for (SKPreferencePane *pane in preferencePanes) {
+        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:[pane identifier]];
+        [item setLabel:[pane label]];
+        [item setImage:[pane icon]];
+        [item setTarget:self];
+        [item setAction:@selector(selectPane:)];
+        [tmpDict setObject:item forKey:[pane identifier]];
+        [item release];
+    }
     
     toolbarItems = [tmpDict copy];
     
@@ -274,7 +243,7 @@
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return [NSArray arrayWithObjects:SKGeneralPreferencesIdentifier, SKDisplayPreferencesIdentifier, SKNotesPreferencesIdentifier, SKSyncPreferencesIdentifier, nil];
+    return [preferencePanes valueForKey:IDENTIFIER_KEY];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {

@@ -37,15 +37,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKViewController.h"
-#import "SKPreferenceController.h"
+#import "SKPreferencePane.h"
 
 typedef struct _SKTeXEditor {
     NSString *name, *command, *arguments;
 } SKTeXEditor;
 
 
-@interface SKSyncPreferences : SKViewController {
+@interface SKSyncPreferences : SKPreferencePane {
     IBOutlet NSArray *texEditorLabels;
     IBOutlet NSArray *texEditorControls;
     BOOL isCustomTeXEditor;
