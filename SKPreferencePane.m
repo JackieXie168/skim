@@ -46,11 +46,6 @@
     return nil;
 }
 
-- (NSString *)label {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
-}
-
 - (NSImage *)icon {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
