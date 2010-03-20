@@ -39,21 +39,18 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-@class SKIBArray;
+@class SKPreferencePane, SKIBArray;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
     IBOutlet NSView *contentView;
     IBOutlet NSArray *resetButtons;
     IBOutlet NSArray *preferencePanes;
     NSDictionary *resettableKeys;
-    NSDictionary *panes;
     NSDictionary *toolbarItems;
-    NSString *currentPaneID;
+    SKPreferencePane *currentPane;
 }
 
 + (id)sharedPrefenceController;
-
-- (void)selectPaneWithIdentifier:(NSString *)paneID;
 
 - (IBAction)resetAll:(id)sender;
 - (IBAction)resetCurrent:(id)sender;
