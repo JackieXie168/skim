@@ -90,6 +90,12 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 #pragma mark Accessors
 
+- (NSString *)identifier { return @"SKGeneralPreferencesIdentifier"; }
+
+- (NSString *)label { return NSLocalizedString(@"General", @"Preference pane label"); }
+
+- (NSImage *)icon { return [NSImage imageNamed:@"GeneralPreferences"]; }
+
 - (NSInteger)updateInterval {
     return updateInterval;
 }
@@ -142,7 +148,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 #pragma mark Hooks
 
-- (void)resetSparkleDefaults {
+- (void)defaultsDidRevert {
     NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"SUScheduledCheckInterval"] doubleValue];
     [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0.0];

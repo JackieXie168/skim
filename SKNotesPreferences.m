@@ -121,4 +121,12 @@
     [fontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
 }
 
+#pragma mark Accessors
+
+- (NSString *)identifier { return @"SKNotesPreferencesIdentifier"; }
+
+- (NSString *)label { return NSLocalizedString(@"Notes", @"Preference pane label"); }
+
+- (NSImage *)icon { return [NSImage imageNamed:@"NotesPreferences"]; }
+
 @end

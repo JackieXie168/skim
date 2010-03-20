@@ -37,10 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKViewController.h"
+#import "SKPreferencePane.h"
 
 
-@interface SKGeneralPreferences : SKViewController {
+@interface SKGeneralPreferences : SKPreferencePane {
     IBOutlet NSPopUpButton *updateIntervalPopUpButton;
     IBOutlet NSArray *revertPDFSettingsButtons;
     IBOutlet NSTextField *openFilesLabelField;
@@ -55,7 +55,5 @@
 
 - (IBAction)revertPDFViewSettings:(id)sender;
 - (IBAction)revertFullScreenPDFViewSettings:(id)sender;
-
-- (void)resetSparkleDefaults;
 
 @end

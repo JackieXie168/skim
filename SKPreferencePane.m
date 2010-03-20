@@ -1,8 +1,8 @@
 //
-//  SKDisplayPreferences.h
+//  SKPreferencePane.m
 //  Skim
 //
-//  Created by Christiaan on 3/14/10.
+//  Created by Christiaan on 3/20/10.
 /*
  This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
@@ -36,29 +36,26 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
 #import "SKPreferencePane.h"
 
 
-@interface SKDisplayPreferences : SKPreferencePane {
-    IBOutlet NSTextField *tableFontLabelField;
-    IBOutlet NSComboBox *tableFontComboBox;
-    IBOutlet NSTextField *greekingLabelField;
-    IBOutlet NSTextField *greekingTextField;
-    IBOutlet NSButton *antiAliasCheckButton;
-    IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
-    IBOutlet NSColorWell *fullScreenBackgroundColorWell;
-    IBOutlet NSButton *searchHighlightCheckButton;
-    IBOutlet NSColorWell *searchHighlightColorWell;
-    IBOutlet NSArray *thumbnailSizeLabels;
-    IBOutlet NSArray *thumbnailSizeControls;
-    IBOutlet NSArray *colorLabels;
-    IBOutlet NSArray *colorControls;
+@implementation SKPreferencePane
+
+- (NSString *)identifier {
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
 }
 
-- (NSUInteger)countOfSizes;
-- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
+- (NSString *)label {
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
+- (NSImage *)icon {
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (void)defaultsDidRevert {}
 
 @end
