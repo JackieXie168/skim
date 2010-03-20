@@ -41,11 +41,6 @@
 
 @implementation SKPreferencePane
 
-- (NSString *)identifier {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
-}
-
 - (NSImage *)icon {
     [self doesNotRecognizeSelector:_cmd];
     return nil;

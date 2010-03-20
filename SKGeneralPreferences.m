@@ -90,8 +90,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 #pragma mark Accessors
 
-- (NSString *)identifier { return @"SKGeneralPreferencesIdentifier"; }
-
 - (NSString *)title { return NSLocalizedString(@"General", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"GeneralPreferences"]; }

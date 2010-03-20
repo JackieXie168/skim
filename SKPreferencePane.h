@@ -42,7 +42,6 @@
 
 @interface SKPreferencePane : SKViewController
 
-- (NSString *)identifier;
 - (NSImage *)icon;
 
 - (void)defaultsDidRevert;
