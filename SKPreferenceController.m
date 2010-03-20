@@ -54,7 +54,7 @@
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
-#define TITLE_KEY @"title"
+#define NIBNAME_KEY @"nibName"
 
 @implementation SKPreferenceController
 
@@ -74,10 +74,9 @@
 }
 
 - (void)dealloc {
+    currentPane = nil;
     SKDESTROY(resettableKeys);
-    SKDESTROY(panes);
     SKDESTROY(toolbarItems);
-    SKDESTROY(currentPaneID);
     [super dealloc];
 }
 
@@ -89,26 +88,34 @@
     
     SKAutoSizeLeftButtons(resetButtons);
     
-    panes = [[NSDictionary alloc] initWithObjects:preferencePanes forKeys:[preferencePanes valueForKey:TITLE_KEY]];
-    
-    NSSize size = NSZeroSize;
-    for (SKPreferencePane *pane in preferencePanes) {
-        NSSize aSize = [[pane view] frame].size;
+    SKPreferencePane *pane;
+    NSView *view;
+    NSSize aSize, size = NSZeroSize;
+    for (pane in preferencePanes) {
+        aSize = [[pane view] frame].size;
         size.width = fmax(size.width, aSize.width);
         size.height = fmax(size.height, aSize.height);
     }
-    for (SKPreferencePane *pane in preferencePanes) {
-        NSView *view = [pane view];
-        NSSize aSize = [view frame].size;
+    for (pane in preferencePanes) {
+        view = [pane view];
+        aSize = [view frame].size;
         aSize.width = size.width;
         [view setFrameSize:aSize];
         [view setAutoresizingMask:NSViewMinYMargin];
     }
+    
+    currentPane = [preferencePanes objectAtIndex:0];
+    view = [currentPane view];
+    [[[self window] toolbar] setSelectedItemIdentifier:[currentPane nibName]];
+    [[self window] setTitle:[currentPane title]];
+        
     NSRect frame = [[self window] frame];
     frame.size.width = size.width;
+    frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
     [[self window] setFrame:frame display:NO];
     
-    [self selectPaneWithIdentifier:[[preferencePanes objectAtIndex:0] title]];
+    [view setFrameOrigin:NSZeroPoint];
+    [contentView addSubview:view];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -121,51 +128,12 @@
         [[self window] endEditingFor:nil];
 }
 
-- (void)selectPaneWithIdentifier:(NSString *)paneID {
-    if ([paneID isEqualToString:currentPaneID] == NO) {
-        BOOL hasPane = currentPaneID != nil;
-        SKViewController *oldPane = hasPane ? [panes objectForKey:currentPaneID] : nil;
-        SKViewController *newPane = [panes objectForKey:paneID];
-        
-        [[[self window] toolbar] setSelectedItemIdentifier:paneID];
-        [[self window] setTitle:[[panes objectForKey:paneID] title]];
-        
-        [currentPaneID release];
-        currentPaneID = [paneID retain];
-        
-        // make sure edits are committed
-        if (hasPane && [[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
-            [[self window] endEditingFor:nil];
-        
-        NSView *view = [newPane view];
-        NSRect frame = [view frame];
-        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
-        
-        [view setFrameOrigin:NSMakePoint(0.0, dh)];
-        if (hasPane)
-            [contentView replaceSubview:[oldPane view] with:view];
-        else
-            [contentView addSubview:view];
-        
-        frame = [[self window] frame];
-        frame.origin.y += dh;
-        frame.size.height -= dh;
-        [[self window] setFrame:frame display:hasPane animate:hasPane];
-    }
-}
-
 #pragma mark Actions
 
-- (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        NSString *paneID = (NSString *)contextInfo;
-        if (paneID) {
-            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[resettableKeys objectForKey:paneID]];
-            [[panes objectForKey:paneID] defaultsDidRevert];
-        } else {
-            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-            [preferencePanes makeObjectsPerformSelector:@selector(defaultsDidRevert)];
-        }
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
+        [preferencePanes makeObjectsPerformSelector:@selector(defaultsDidRevert)];
     }
 }
 
@@ -177,16 +145,23 @@
                          informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
-                     didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
+                     didEndSelector:@selector(resetAllSheetDidEnd:returnCode:contextInfo:)
                         contextInfo:NULL];
 }
 
+- (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[resettableKeys objectForKey:[currentPane nibName]]];
+        [currentPane defaultsDidRevert];
+    }
+}
+
 - (IBAction)resetCurrent:(id)sender {
-    if (currentPaneID == nil) {
+    if (currentPane == nil) {
         NSBeep();
         return;
     }
-    NSString *label = [[panes objectForKey:currentPaneID] title];
+    NSString *label = [currentPane title];
     NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]
                                      defaultButton:NSLocalizedString(@"Reset", @"Button title")
                                    alternateButton:NSLocalizedString(@"Cancel", @"Button title")
@@ -194,8 +169,8 @@
                          informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label];
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
-                     didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
-                        contextInfo:currentPaneID];
+                     didEndSelector:@selector(resetCurrentSheetDidEnd:returnCode:contextInfo:)
+                        contextInfo:NULL];
 }
 
 - (IBAction)changeFont:(id)sender {
@@ -207,7 +182,32 @@
 }
 
 - (IBAction)selectPane:(id)sender {
-    [self selectPaneWithIdentifier:[sender itemIdentifier]];
+    SKPreferencePane *pane = [preferencePanes objectAtIndex:[sender tag]];
+    if ([pane isEqual:currentPane] == NO) {
+        
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [[self window] setTitle:[pane title]];
+        
+        NSView *oldView = [currentPane view];
+        NSView *view = [pane view];
+        
+        currentPane = pane;
+        
+        // make sure edits are committed
+        if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+            [[self window] endEditingFor:nil];
+        
+        NSRect frame = [view frame];
+        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
+        
+        [view setFrameOrigin:NSMakePoint(0.0, dh)];
+        [contentView replaceSubview:oldView with:view];
+        
+        frame = [[self window] frame];
+        frame.origin.y += dh;
+        frame.size.height -= dh;
+        [[self window] setFrame:frame display:YES animate:YES];
+    }
 }
 
 #pragma mark Toolbar
@@ -216,20 +216,23 @@
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
     
-    NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
-    
     [toolbar setAllowsUserCustomization:NO];
     [toolbar setAutosavesConfiguration:NO];
     [toolbar setVisible:YES];
     [toolbar setDelegate:self];
     
+    NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
+    NSUInteger i = 0;
+    
     for (SKPreferencePane *pane in preferencePanes) {
-        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:[pane title]];
+        NSString *identifier = [pane nibName];
+        NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
+        [item setTag:i++];
         [item setLabel:[pane title]];
         [item setImage:[pane icon]];
         [item setTarget:self];
         [item setAction:@selector(selectPane:)];
-        [tmpDict setObject:item forKey:[pane title]];
+        [tmpDict setObject:item forKey:identifier];
         [item release];
     }
     
@@ -243,7 +246,7 @@
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return [preferencePanes valueForKey:TITLE_KEY];
+    return [preferencePanes valueForKey:NIBNAME_KEY];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
