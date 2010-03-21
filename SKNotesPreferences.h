@@ -56,4 +56,7 @@
     IBOutlet NSArray *lineWells2;
 }
 
+- (IBAction)changeFont:(id)sender;
+- (IBAction)changeAttributes:(id)sender;
+
 @end
