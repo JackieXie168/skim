@@ -44,6 +44,10 @@
 #import "NSGeometry_SKExtensions.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
+#define AUTOMATICALLYCHECKSFORUPDATES_KEY @"automaticallyChecksForUpdates"
+#define UPDATECHECKINTERVAL_KEY @"updateCheckInterval"
+
+#define SUScheduledCheckIntervalKey @"SUScheduledCheckInterval"
 
 static char SKGeneralPreferencesDefaultsObservationContext;
 static char SKGeneralPreferencesUpdaterObservationContext;
@@ -55,19 +59,13 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKGeneralPreferencesDefaultsObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
-    }
-    return self;
-}
-
 - (void)dealloc {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
-    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"automaticallyChecksForUpdates"];
-    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"updateCheckInterval"];
+    @try {
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
+        [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:AUTOMATICALLYCHECKSFORUPDATES_KEY];
+        [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:UPDATECHECKINTERVAL_KEY];
+    }
+    @catch(id e) {}
     [super dealloc];
 }
 
@@ -86,6 +84,10 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];
+    
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKGeneralPreferencesDefaultsObservationContext];
+    [[SUUpdater sharedUpdater] addObserver:self forKeyPath:AUTOMATICALLYCHECKSFORUPDATES_KEY options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
+    [[SUUpdater sharedUpdater] addObserver:self forKeyPath:UPDATECHECKINTERVAL_KEY options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
 }
 
 #pragma mark Accessors
@@ -147,7 +149,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 #pragma mark Hooks
 
 - (void)defaultsDidRevert {
-    NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"SUScheduledCheckInterval"] doubleValue];
+    NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:SUScheduledCheckIntervalKey] doubleValue];
     [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0.0];
 }
