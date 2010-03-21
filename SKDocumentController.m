@@ -65,6 +65,8 @@ NSString *SKPostScriptDocumentType = nil;
 NSString *SKBarePostScriptDocumentType = @"PostScript Without Notes";
 NSString *SKDVIDocumentType = @"DVI document";
 NSString *SKBareDVIDocumentType = @"DVI Without Notes";
+NSString *SKXDVDocumentType = @"XDV document";
+NSString *SKBareXDVDocumentType = @"XDV Without Notes";
 NSString *SKFolderDocumentType = @"Folder";
 
 #define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentType]; }
@@ -74,6 +76,7 @@ DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
 DEFINE_IS_DOCUMENT_TYPE(Notes)
 DEFINE_IS_DOCUMENT_TYPE(PostScript)
 DEFINE_IS_DOCUMENT_TYPE(DVI)
+DEFINE_IS_DOCUMENT_TYPE(XDV)
 DEFINE_IS_DOCUMENT_TYPE(EmbeddedPDF)
 DEFINE_IS_DOCUMENT_TYPE(BarePDF)
 DEFINE_IS_DOCUMENT_TYPE(NotesText)
@@ -82,6 +85,7 @@ DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
 DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
 DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
 DEFINE_IS_DOCUMENT_TYPE(BareDVI)
+DEFINE_IS_DOCUMENT_TYPE(BareXDV)
 DEFINE_IS_DOCUMENT_TYPE(Folder)
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";

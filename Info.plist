@@ -254,6 +254,54 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>xdv</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>XDVDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>XDV document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKMainDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>XDV document</string>
+				<string>XDV Without Notes</string>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>XDV document</string>
+				<string>XDV Without Notes</string>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>pdf</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
@@ -342,6 +390,24 @@
 			<array>
 				<string>*DVI</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string></string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>xdv</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>DVIDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>XDV Without Notes</string>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
 			<key>LSTypeIsPackage</key>

@@ -48,10 +48,13 @@
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
 #define DVIFILE_KEY     @"dviFile"
+#define XDVFILE_KEY     @"xdvFile"
 #define PDFPATH_KEY     @"pdfData"
 #define DVITOOLPATH_KEY @"dviToolPath"
+#define XDVTOOLPATH_KEY @"xdvToolPath"
 
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
+#define SKXdvConversionCommandKey @"SKXdvConversionCommand"
 
 #define MIN_BUTTON_WIDTH 90.0
 
@@ -63,6 +66,7 @@ enum {
 @interface SKConversionProgressController (Private)
 - (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
+- (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -109,6 +113,10 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
     return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:dviFile];
+}
+
++ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile {
+    return [[[[self alloc] init] autorelease] PDFDataWithXDVFile:xdvFile];
 }
 
 - (void)dealloc {
@@ -358,6 +366,107 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         pdfData = [[NSMutableData alloc] init];
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, DVIFILE_KEY, pdfData, PDFPATH_KEY, dviToolPath, DVITOOLPATH_KEY, nil];
+        
+        NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
+        
+        if (rv != SKConversionSucceeded) {
+            SKDESTROY(pdfData);
+        }
+    } else {
+        NSBeep();
+    }
+    return [pdfData autorelease];
+}
+
+#pragma mark XDV
+
++ (NSString *)xdvToolPath {
+    static NSString *xdvToolPath = nil;
+    
+    if (xdvToolPath == nil) {
+        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKXdvConversionCommandKey];
+        NSString *commandName = [commandPath lastPathComponent];
+        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
+        NSInteger i = 0, iMax = [paths count];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSArray *supportedTools = [NSArray arrayWithObjects:@"xdvipdfmx", @"xdv2pdf", nil];
+        NSEnumerator *toolEnum = [supportedTools objectEnumerator];
+        
+        NSAssert1(commandName == nil || [supportedTools containsObject:commandName], @"XDV converter %@ is not supported", commandName);
+        if (commandName == nil || [supportedTools containsObject:commandName] == NO)
+            commandName = [toolEnum nextObject];
+        do {
+            i = 0;
+            while ([fm isExecutableFileAtPath:commandPath] == NO) {
+                if (i >= iMax) {
+                    commandPath = nil;
+                    break;
+                }
+                commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
+            }
+        } while (commandPath == nil && (commandName = [toolEnum nextObject]));
+        xdvToolPath = [commandPath retain];
+    }
+    
+    return xdvToolPath;
+}
+
+- (void)doXDVConversionWithInfo:(NSDictionary *)info {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSString *xdvFile = [info objectForKey:XDVFILE_KEY];
+    NSString *commandPath = [info objectForKey:XDVTOOLPATH_KEY];
+    NSString *tmpDir = SKUniqueTemporaryDirectory();
+    NSString *outFile = [tmpDir stringByAppendingPathComponent:[[xdvFile lastPathComponent] stringByReplacingPathExtension:@"pdf"]];
+    NSArray *arguments = [NSArray arrayWithObjects:@"-o", outFile, xdvFile, nil];
+    BOOL success = NO;
+    
+    NSInvocation *invocation;
+    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    
+    if ([self shouldKeepRunning] && [fm fileExistsAtPath:xdvFile]) {
+        NSTask *task = [NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[xdvFile stringByDeletingLastPathComponent]];
+        if (task) {
+            invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
+            [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+        
+            while ([task isRunning] && [self shouldKeepRunning])
+                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if ([task isRunning])
+                [task terminate];
+            else if ([self shouldKeepRunning])
+                success = ([task terminationStatus] == 0);
+        }
+    }
+    
+    NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
+    NSMutableData *pdfData = [info objectForKey:PDFPATH_KEY];
+    
+    if (success)
+        [pdfData setData:outData];
+    
+    invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionCompleted:) argument:&success];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+    
+    [self stopModalOnMainThread:success];
+    
+    [fm removeItemAtPath:tmpDir error:NULL];
+    
+    [pool release];
+}
+
+- (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile {
+    NSString *xdvToolPath = [[self class] xdvToolPath];
+    NSMutableData *pdfData = nil;
+    
+    if (xdvToolPath) {
+        fileType = SKXDVDocumentType;
+        
+        convertingPS = 0;
+        taskShouldStop = 0;
+        pdfData = [[NSMutableData alloc] init];
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:xdvFile, XDVFILE_KEY, pdfData, PDFPATH_KEY, xdvToolPath, XDVTOOLPATH_KEY, nil];
         
         NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
         

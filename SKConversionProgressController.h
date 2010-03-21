@@ -50,6 +50,7 @@
 }
 + (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
++ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile;
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;
 @end
