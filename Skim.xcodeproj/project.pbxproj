@@ -58,6 +58,7 @@
 		CE099663112577A000EDB88F /* SKNotesPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE099662112577A000EDB88F /* SKNotesPage.m */; };
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
+		CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */; };
 		CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0AEDC2107A137C000C075E /* SKColorCell.m */; };
 		CE0E83EE114D15E000E37F38 /* SyncPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */; };
 		CE0E83EF114D15E000E37F38 /* DisplayPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EB114D15E000E37F38 /* DisplayPreferences.tiff */; };
@@ -518,6 +519,7 @@
 		CE09FC3B0E3886C100BDF413 /* SKRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRuntime.m; sourceTree = "<group>"; };
 		CE0A3C8C0EBF3AAA00526C74 /* NSResponder_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSResponder_SKExtensions.h; sourceTree = "<group>"; };
 		CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSResponder_SKExtensions.m; sourceTree = "<group>"; };
+		CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XDVDocument.icns; sourceTree = "<group>"; };
 		CE0AEDC1107A137C000C075E /* SKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorCell.h; sourceTree = "<group>"; };
 		CE0AEDC2107A137C000C075E /* SKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorCell.m; sourceTree = "<group>"; };
 		CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncPreferences.tiff; sourceTree = "<group>"; };
@@ -1714,6 +1716,7 @@
 				CE898F050C843A8B008A0856 /* PDFDDocument.icns */,
 				CE4373B30BB5440E00A56987 /* PSDocument.icns */,
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
+				CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */,
 				CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */,
@@ -2150,6 +2153,7 @@
 				CE0E84CF114D516F00E37F38 /* NotesPreferences.strings in Resources */,
 				CE0E84D0114D516F00E37F38 /* GeneralPreferences.strings in Resources */,
 				CE0E84D1114D516F00E37F38 /* DisplayPreferences.strings in Resources */,
+				CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -53,6 +53,8 @@ extern BOOL SKIsPostScriptDocumentType(NSString *docType);
 extern BOOL SKIsBarePostScriptDocumentType(NSString *docType);
 extern BOOL SKIsDVIDocumentType(NSString *docType);
 extern BOOL SKIsBareDVIDocumentType(NSString *docType);
+extern BOOL SKIsXDVDocumentType(NSString *docType);
+extern BOOL SKIsBareXDVDocumentType(NSString *docType);
 extern BOOL SKIsFolderDocumentType(NSString *docType);
 
 extern NSString *SKPDFDocumentType;
@@ -68,6 +70,8 @@ extern NSString *SKPostScriptDocumentType;
 extern NSString *SKBarePostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 extern NSString *SKBareDVIDocumentType;
+extern NSString *SKXDVDocumentType;
+extern NSString *SKBareXDVDocumentType;
 extern NSString *SKFolderDocumentType;
 
 extern NSString *SKDocumentSetupAliasKey;

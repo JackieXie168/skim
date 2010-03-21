@@ -304,6 +304,10 @@ static char SKMainDocumentDefaultsObservationContext;
         [writableTypes removeObject:SKDVIDocumentType];
         [writableTypes removeObject:SKBareDVIDocumentType];
     }
+    if (SKIsXDVDocumentType([self fileType]) == NO) {
+        [writableTypes removeObject:SKXDVDocumentType];
+        [writableTypes removeObject:SKBareXDVDocumentType];
+    }
     if (saveOperation == NSSaveToOperation) {
         [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
     }
@@ -431,7 +435,7 @@ static char SKMainDocumentDefaultsObservationContext;
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
+        if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsXDVDocumentType(typeName)) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation];
         } else if (SKIsPDFBundleDocumentType(typeName) && tmpPath) {
@@ -523,6 +527,9 @@ static char SKMainDocumentDefaultsObservationContext;
             didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsDVIDocumentType(typeName) || SKIsBareDVIDocumentType(typeName)) {
         if (SKIsDVIDocumentType([self fileType]))
+            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+    } else if (SKIsXDVDocumentType(typeName) || SKIsBareXDVDocumentType(typeName)) {
+        if (SKIsXDVDocumentType([self fileType]))
             didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
@@ -637,7 +644,7 @@ static char SKMainDocumentDefaultsObservationContext;
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsXDVDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
@@ -759,6 +766,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             } else if (SKIsDVIDocumentType(docType)) {
                 if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
+            } else if (SKIsXDVDocumentType(docType)) {
+                if (data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path]] retain])
+                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
         if (pdfDoc) {
@@ -812,7 +822,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             didRead = YES;
             [self setPDFData:data];
             [tmpData setPdfDocument:pdfDoc];
-            if (SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType))
+            if (SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType) || SKIsXDVDocumentType(docType))
                 [self setPSOrDVIData:fileData];
             [pdfDoc release];
             docFlags.fileChangedOnDisk = NO;
@@ -1355,6 +1365,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if (fileName == nil)
                 return NO;
         } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
+            isDVI = YES;
+        } else if ([extension caseInsensitiveCompare:@"xdv"] == NSOrderedSame) {
             isDVI = YES;
         }
     }
@@ -1973,6 +1985,8 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             normalizedType = SKPostScriptDocumentType;
         else if ([fileType isEqualToString:@"DVI"])
             normalizedType = SKDVIDocumentType;
+        else if ([fileType isEqualToString:@"XDV"])
+            normalizedType = SKXDVDocumentType;
         else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
             NSArray *templateTypes = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
             NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
