@@ -50,6 +50,4 @@
 
 - (void)deactivateWellSubcontrols;
 
-- (id)activeFontWellSubview;
-
 @end

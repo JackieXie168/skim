@@ -92,16 +92,6 @@
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
-- (id)activeFontWellSubview {
-	NSView *view;
-	
-	for (NSView *subview in [self subviews]) {
-		if (view = [subview activeFontWellSubview])
-			return view;
-	}
-	return nil;
-}
-
 @end
 
 
@@ -139,10 +129,6 @@
 - (void)deactivateWellSubcontrols {
     [self deactivate];
     [super deactivateWellSubcontrols];
-}
-
-- (id)activeFontWellSubview {
-    return [self isActive] ? self : [super activeFontWellSubview];
 }
 
 @end

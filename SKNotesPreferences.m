@@ -127,4 +127,20 @@
 
 - (NSImage *)icon { return [NSImage imageNamed:@"NotesPreferences"]; }
 
+#pragma mark Actions
+
+- (SKFontWell *)activeFontWell {
+    for (SKFontWell *fontWell in fontWells)
+        if ([fontWell isActive]) return fontWell;
+    return nil;
+}
+
+- (IBAction)changeFont:(id)sender {
+    [[self activeFontWell] changeFontFromFontManager:sender];
+}
+
+- (IBAction)changeAttributes:(id)sender {
+    [[self activeFontWell] changeAttributesFromFontManager:sender];
+}
+
 @end

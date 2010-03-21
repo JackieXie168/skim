@@ -170,11 +170,13 @@
 }
 
 - (IBAction)changeFont:(id)sender {
-    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager:sender];
+    if ([currentPane respondsToSelector:_cmd])
+        [currentPane changeFont:sender];
 }
 
 - (IBAction)changeAttributes:(id)sender {
-    [[[[self window] contentView] activeFontWellSubview] changeAttributesFromFontManager:sender];
+    if ([currentPane respondsToSelector:_cmd])
+        [(id)currentPane changeAttributes:sender];
 }
 
 #pragma mark Toolbar
