@@ -199,16 +199,14 @@
 		<key>SKAutoRemoveFinishedDownloads</key>
 		<false/>
 		<key>SKAutoCloseDownloadsWindow</key>
-		<false/>
+		<true/>
 		<key>SKShouldSetCreatorCode</key>
 		<false/>
 		<key>SKShowStatusBar</key>
 		<true/>
 		<key>SKShowBookmarkStatusBar</key>
-		<true/>
+		<false/>
 		<key>SKShowNotesStatusBar</key>
-		<true/>
-		<key>SKAutoRotatePrintedPages</key>
 		<true/>
 	</dict>
 	<key>ResettableKeys</key>
@@ -294,6 +292,9 @@
 			<string>SKActivatePresentationNavigationAtBottom</string>
 			<string>SKReadMissingNotesFromSkimFileOption</string>
 			<string>SKEnableAppleRemote</string>
+			<string>SKEnableKeyspanFrontRowControl</string>
+			<string>SKEnableKeyboardRemoteSimulation</string>
+			<string>SKAppleRemoteSwitchIndicationTimeout</string>
 		</array>
 	</dict>
 </dict>
