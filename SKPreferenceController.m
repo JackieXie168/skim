@@ -138,8 +138,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification {
     // make sure edits are committed
-    if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+    [currentPane commitEditing];
+    [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
 }
 
 #pragma mark Actions
@@ -212,20 +212,18 @@
         
         [[self window] setTitle:[pane title]];
         
-        NSView *oldView = [currentPane view];
-        NSView *view = [pane view];
-        
-        currentPane = pane;
-        
         // make sure edits are committed
-        if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
-            [[self window] endEditingFor:nil];
+        [currentPane commitEditing];
+        [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
         
+        NSView *view = [pane view];
         NSRect frame = [view frame];
         CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
         
         [view setFrameOrigin:NSMakePoint(0.0, dh)];
-        [contentView replaceSubview:oldView with:view];
+        [contentView replaceSubview:[currentPane view] with:view];
+        
+        currentPane = pane;
         
         frame = [[self window] frame];
         frame.origin.y += dh;
