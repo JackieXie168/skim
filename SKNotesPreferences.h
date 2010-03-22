@@ -42,11 +42,9 @@
 @class SKLineWell, SKFontWell;
 
 @interface SKNotesPreferences : SKPreferencePane {
-    IBOutlet NSArray *colorLabels1;
+    IBOutlet NSArray *labels1;
     IBOutlet NSArray *colorLabels2;
     IBOutlet NSArray *colorLabels3;
-    IBOutlet NSArray *fontLabels;
-    IBOutlet NSArray *lineLabels1;
     IBOutlet NSArray *lineLabels2;
     IBOutlet NSArray *colorWells1;
     IBOutlet NSArray *colorWells2;

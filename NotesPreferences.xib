@@ -771,12 +771,6 @@
 			<object class="NSCustomObject" id="390195730">
 				<string key="NSClassName">SKIBArray</string>
 			</object>
-			<object class="NSCustomObject" id="767695850">
-				<string key="NSClassName">SKIBArray</string>
-			</object>
-			<object class="NSCustomObject" id="676025226">
-				<string key="NSClassName">SKIBArray</string>
-			</object>
 			<object class="NSCustomObject" id="922522486">
 				<string key="NSClassName">SKIBArray</string>
 			</object>
@@ -1378,35 +1372,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">fontLabels</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="767695850"/>
-					</object>
-					<int key="connectionID">176</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">lineLabels2</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="922522486"/>
 					</object>
 					<int key="connectionID">178</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">colorLabels1</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="614731646"/>
-					</object>
-					<int key="connectionID">183</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">lineLabels1</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="676025226"/>
-					</object>
-					<int key="connectionID">184</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1471,46 +1441,6 @@
 						<reference key="destination" ref="498902938"/>
 					</object>
 					<int key="connectionID">192</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object1</string>
-						<reference key="source" ref="767695850"/>
-						<reference key="destination" ref="1044625824"/>
-					</object>
-					<int key="connectionID">193</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object2</string>
-						<reference key="source" ref="767695850"/>
-						<reference key="destination" ref="729015148"/>
-					</object>
-					<int key="connectionID">194</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object1</string>
-						<reference key="source" ref="676025226"/>
-						<reference key="destination" ref="237941520"/>
-					</object>
-					<int key="connectionID">195</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object2</string>
-						<reference key="source" ref="676025226"/>
-						<reference key="destination" ref="74513021"/>
-					</object>
-					<int key="connectionID">196</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object3</string>
-						<reference key="source" ref="676025226"/>
-						<reference key="destination" ref="623641384"/>
-					</object>
-					<int key="connectionID">197</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1743,6 +1673,54 @@
 						<reference key="destination" ref="328336789"/>
 					</object>
 					<int key="connectionID">254</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">labels1</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="614731646"/>
+					</object>
+					<int key="connectionID">256</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object5</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="1044625824"/>
+					</object>
+					<int key="connectionID">257</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object6</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="729015148"/>
+					</object>
+					<int key="connectionID">258</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object7</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="237941520"/>
+					</object>
+					<int key="connectionID">259</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object8</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="74513021"/>
+					</object>
+					<int key="connectionID">260</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">object9</string>
+						<reference key="source" ref="614731646"/>
+						<reference key="destination" ref="623641384"/>
+					</object>
+					<int key="connectionID">261</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2251,12 +2229,6 @@
 						<string key="objectName">Color Labels 3</string>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">172</int>
-						<reference key="object" ref="767695850"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Font Labels</string>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">177</int>
 						<reference key="object" ref="922522486"/>
 						<reference key="parent" ref="0"/>
@@ -2266,13 +2238,7 @@
 						<int key="objectID">179</int>
 						<reference key="object" ref="614731646"/>
 						<reference key="parent" ref="0"/>
-						<string key="objectName">Color Labels 1</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">180</int>
-						<reference key="object" ref="676025226"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Line Labels 1</string>
+						<string key="objectName">Labels 1</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">203</int>
@@ -2725,7 +2691,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">254</int>
+			<int key="maxID">261</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2910,9 +2876,17 @@
 							<string>object3</string>
 							<string>object4</string>
 							<string>object5</string>
+							<string>object6</string>
+							<string>object7</string>
+							<string>object8</string>
+							<string>object9</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2948,43 +2922,60 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKNotesPreferences</string>
-					<string key="superclassName">SKViewController</string>
+					<string key="superclassName">SKPreferencePane</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>changeAttributes:</string>
+							<string>changeFont:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>colorLabels1</string>
 							<string>colorLabels2</string>
 							<string>colorLabels3</string>
 							<string>colorWells1</string>
 							<string>colorWells2</string>
 							<string>colorWells3</string>
-							<string>fontLabels</string>
 							<string>fontWells</string>
-							<string>lineLabels1</string>
+							<string>labels1</string>
 							<string>lineLabels2</string>
 							<string>lineWells1</string>
 							<string>lineWells2</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKNotesPreferences.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKPreferencePane</string>
+					<string key="superclassName">SKViewController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKPreferencePane.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

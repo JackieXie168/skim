@@ -54,7 +54,6 @@
 - (void)loadView {
     [super loadView];
     
-    NSMutableArray *labels = [NSMutableArray array];
     NSMutableArray *controls = [NSMutableArray array];
     CGFloat dw, dw1, dw2;
     
@@ -69,10 +68,7 @@
     [controls addObjectsFromArray:colorLabels2];
     [controls addObjectsFromArray:fontWells];
     [controls addObjectsFromArray:lineWells1];
-    [labels addObjectsFromArray:colorLabels1];
-    [labels addObjectsFromArray:fontLabels];
-    [labels addObjectsFromArray:lineLabels1];
-    dw += dw1 = SKAutoSizeLabelFields(labels, controls, NO);
+    dw += dw1 = SKAutoSizeLabelFields(labels1, controls, NO);
     
     dw2 = SKAutoSizeLabelFields(lineLabels2, lineWells2, NO);
     
