@@ -61,8 +61,26 @@
 + (id)sharedPrefenceController {
     static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)
-        sharedPrefenceController = [[self alloc] initWithWindowNibName:@"PreferenceWindow"];
+        sharedPrefenceController = [[self alloc] init];
     return sharedPrefenceController;
+}
+
+- (id)init {
+    if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
+        NSMutableArray *panes = [NSMutableArray array];
+        [panes addObject:[[[SKGeneralPreferences alloc] init] autorelease]];
+        [panes addObject:[[[SKDisplayPreferences alloc] init] autorelease]];
+        [panes addObject:[[[SKNotesPreferences alloc] init] autorelease]];
+        [panes addObject:[[[SKSyncPreferences alloc] init] autorelease]];
+        preferencePanes = [panes copy];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    currentPane = nil;
+    SKDESTROY(preferencePanes);
+    [super dealloc];
 }
 
 - (void)windowDidLoad {
