@@ -121,13 +121,6 @@
 			<object class="NSCustomObject" id="921399283">
 				<string key="NSClassName">SKIBArray</string>
 			</object>
-			<object class="NSCustomObject" id="1054735158">
-				<string key="NSClassName">SKIBArray</string>
-			</object>
-			<object class="NSViewController" id="789933998"/>
-			<object class="NSViewController" id="726895119"/>
-			<object class="NSViewController" id="713526303"/>
-			<object class="NSViewController" id="171505078"/>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<object class="NSMutableArray" key="connectionRecords">
@@ -203,46 +196,6 @@
 						<reference key="destination" ref="776334843"/>
 					</object>
 					<int key="connectionID">1660</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object1</string>
-						<reference key="source" ref="1054735158"/>
-						<reference key="destination" ref="789933998"/>
-					</object>
-					<int key="connectionID">1668</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object2</string>
-						<reference key="source" ref="1054735158"/>
-						<reference key="destination" ref="726895119"/>
-					</object>
-					<int key="connectionID">1669</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object3</string>
-						<reference key="source" ref="1054735158"/>
-						<reference key="destination" ref="713526303"/>
-					</object>
-					<int key="connectionID">1670</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">object4</string>
-						<reference key="source" ref="1054735158"/>
-						<reference key="destination" ref="171505078"/>
-					</object>
-					<int key="connectionID">1671</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">preferencePanes</string>
-						<reference key="source" ref="298295156"/>
-						<reference key="destination" ref="1054735158"/>
-					</object>
-					<int key="connectionID">1672</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -332,32 +285,6 @@
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Reset Buttons</string>
 					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1661</int>
-						<reference key="object" ref="789933998"/>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1662</int>
-						<reference key="object" ref="726895119"/>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1663</int>
-						<reference key="object" ref="713526303"/>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1664</int>
-						<reference key="object" ref="171505078"/>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1665</int>
-						<reference key="object" ref="1054735158"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Preference Panes</string>
-					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -369,14 +296,6 @@
 					<string>1648.IBPluginDependency</string>
 					<string>1649.IBPluginDependency</string>
 					<string>1652.IBPluginDependency</string>
-					<string>1661.CustomClassName</string>
-					<string>1661.IBPluginDependency</string>
-					<string>1662.CustomClassName</string>
-					<string>1662.IBPluginDependency</string>
-					<string>1663.CustomClassName</string>
-					<string>1663.IBPluginDependency</string>
-					<string>1664.CustomClassName</string>
-					<string>1664.IBPluginDependency</string>
 					<string>491.IBAttributePlaceholdersKey</string>
 					<string>491.IBPluginDependency</string>
 					<string>491.ImportedFromIB2</string>
@@ -398,14 +317,6 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>SKGeneralPreferences</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>SKDisplayPreferences</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>SKNotesPreferences</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>SKSyncPreferences</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSMutableDictionary">
 						<string key="NS.key.0">ToolTip</string>
@@ -707,95 +618,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKDisplayPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">changeDiscreteThumbnailSizes:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>antiAliasCheckButton</string>
-							<string>colorControls</string>
-							<string>colorLabels</string>
-							<string>fullScreenBackgroundColorLabelField</string>
-							<string>fullScreenBackgroundColorWell</string>
-							<string>greekingLabelField</string>
-							<string>greekingTextField</string>
-							<string>searchHighlightCheckButton</string>
-							<string>searchHighlightColorWell</string>
-							<string>tableFontComboBox</string>
-							<string>tableFontLabelField</string>
-							<string>thumbnailSizeControls</string>
-							<string>thumbnailSizeLabels</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSButton</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSTextField</string>
-							<string>NSColorWell</string>
-							<string>NSTextField</string>
-							<string>NSTextField</string>
-							<string>NSButton</string>
-							<string>NSColorWell</string>
-							<string>NSComboBox</string>
-							<string>NSTextField</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKDisplayPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKGeneralPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>revertFullScreenPDFViewSettings:</string>
-							<string>revertPDFViewSettings:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>openFilesLabelField</string>
-							<string>openFilesMatrix</string>
-							<string>revertPDFSettingsButtons</string>
-							<string>savePasswordsMatrix</string>
-							<string>updateIntervalLabelField</string>
-							<string>updateIntervalPopUpButton</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSTextField</string>
-							<string>NSMatrix</string>
-							<string>NSArray</string>
-							<string>NSMatrix</string>
-							<string>NSTextField</string>
-							<string>NSPopUpButton</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKGeneralPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKIBArray</string>
 					<string key="superclassName">NSArray</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -823,47 +645,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKNotesPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>colorLabels1</string>
-							<string>colorLabels2</string>
-							<string>colorLabels3</string>
-							<string>colorWells1</string>
-							<string>colorWells2</string>
-							<string>colorWells3</string>
-							<string>fontLabels</string>
-							<string>fontWells</string>
-							<string>lineLabels1</string>
-							<string>lineLabels2</string>
-							<string>lineWells1</string>
-							<string>lineWells2</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-							<string>NSArray</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKNotesPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKPreferenceController</string>
 					<string key="superclassName">SKWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -888,13 +669,11 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>contentView</string>
-							<string>preferencePanes</string>
 							<string>resetButtons</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSView</string>
-							<string>NSArray</string>
 							<string>NSArray</string>
 						</object>
 					</object>
@@ -916,52 +695,11 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKPreferencePane</string>
-					<string key="superclassName">SKViewController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKPreferencePane.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKPreferenceWindow</string>
 					<string key="superclassName">NSWindow</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPreferenceWindow.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKSyncPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">changeTeXEditorPreset:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>texEditorControls</string>
-							<string>texEditorLabels</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSArray</string>
-							<string>NSArray</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKSyncPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKViewController</string>
-					<string key="superclassName">NSViewController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKViewController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1094,22 +832,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">NSColorWell</string>
-					<string key="superclassName">NSControl</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSColorWell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSComboBox</string>
-					<string key="superclassName">NSTextField</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSComboBox.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">NSControl</string>
 					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="934571016">
@@ -1123,14 +845,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">Foundation.framework/Headers/NSFormatter.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSMatrix</string>
-					<string key="superclassName">NSControl</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSMatrix.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1457,14 +1171,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">NSPopUpButton</string>
-					<string key="superclassName">NSButton</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSPopUpButton.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">NSResponder</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
@@ -1477,14 +1183,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSResponder.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSTextField</string>
-					<string key="superclassName">NSControl</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSTextField.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1512,18 +1210,6 @@
 					<string key="className">NSView</string>
 					<string key="superclassName">NSResponder</string>
 					<reference key="sourceIdentifier" ref="641301298"/>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSViewController</string>
-					<string key="superclassName">NSResponder</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">view</string>
-						<string key="NS.object.0">NSView</string>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSViewController.h</string>
-					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindow</string>
