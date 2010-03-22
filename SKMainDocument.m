@@ -90,7 +90,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
-#define SKAutoRotatePrintedPagesKey @"SKAutoRotatePrintedPages"
 #define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
 #define URL_KEY             @"URL"
