@@ -42,28 +42,16 @@
 @implementation SKIBArray
 
 - (NSUInteger)count {
-    if (object1 == nil)
-        return 0;
-    if (object2 == nil)
-        return 1;
-    if (object3 == nil)
-        return 2;
-    if (object4 == nil)
-        return 3;
-    if (object5 == nil)
-        return 4;
-    return 5;
+    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
+    NSUInteger i;
+    for (i = 0; i < 9; i++)
+        if (object[i] == nil) break;
+    return i;
 }
 
 - (id)objectAtIndex:(NSUInteger)anIndex {
-    switch (anIndex) {
-        case 0: return object1;
-        case 1: return object2;
-        case 2: return object3;
-        case 3: return object4;
-        case 4: return object5;
-        default: return nil;
-    }
+    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
+    return object[anIndex];
 }
 
 @end
