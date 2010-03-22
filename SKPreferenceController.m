@@ -67,12 +67,11 @@
 
 - (id)init {
     if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
-        NSMutableArray *panes = [NSMutableArray array];
-        [panes addObject:[[[SKGeneralPreferences alloc] init] autorelease]];
-        [panes addObject:[[[SKDisplayPreferences alloc] init] autorelease]];
-        [panes addObject:[[[SKNotesPreferences alloc] init] autorelease]];
-        [panes addObject:[[[SKSyncPreferences alloc] init] autorelease]];
-        preferencePanes = [panes copy];
+        preferencePanes = [[NSArray alloc] initWithObjects:
+            [[[SKGeneralPreferences alloc] init] autorelease], 
+            [[[SKDisplayPreferences alloc] init] autorelease], 
+            [[[SKNotesPreferences alloc] init] autorelease], 
+            [[[SKSyncPreferences alloc] init] autorelease], nil];
     }
     return self;
 }
