@@ -210,7 +210,6 @@
     SKPreferencePane *pane = [self preferencePaneForItemIdentifier:[sender itemIdentifier]];
     if ([pane isEqual:currentPane] == NO) {
         
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
         [[self window] setTitle:[pane title]];
         
         NSView *oldView = [currentPane view];
