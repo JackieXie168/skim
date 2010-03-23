@@ -54,4 +54,16 @@
     return object[anIndex];
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    static const unsigned long const_mu = 1;
+    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
+    NSUInteger i = 0, current = state->state;
+    for (i = 0, current = state->state; current < 9 && i < len && object[current] != nil; i++, current++)
+        stackbuf[i] = object[current];
+    state->state = current;
+    state->itemsPtr = stackbuf;
+	state->mutationsPtr = (unsigned long *)&const_mu;
+    return i;
+}
+
 @end
