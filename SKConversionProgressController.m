@@ -47,11 +47,9 @@
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
-#define DVIFILE_KEY     @"dviFile"
-#define XDVFILE_KEY     @"xdvFile"
-#define PDFPATH_KEY     @"pdfData"
-#define DVITOOLPATH_KEY @"dviToolPath"
-#define XDVTOOLPATH_KEY @"xdvToolPath"
+#define INPUTFILE_KEY   @"inputFile"
+#define PDFDATA_KEY     @"pdfData"
+#define TOOLPATH_KEY    @"toolPath"
 
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
 #define SKXdvConversionCommandKey @"SKXdvConversionCommand"
@@ -291,8 +289,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doDVIConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *dviFile = [info objectForKey:DVIFILE_KEY];
-    NSString *commandPath = [info objectForKey:DVITOOLPATH_KEY];
+    NSString *dviFile = [info objectForKey:INPUTFILE_KEY];
+    NSString *commandPath = [info objectForKey:TOOLPATH_KEY];
     NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueTemporaryDirectory();
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
@@ -319,7 +317,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
-    NSMutableData *pdfData = [info objectForKey:PDFPATH_KEY];
+    NSMutableData *pdfData = [info objectForKey:PDFDATA_KEY];
     
     if (outputPS && success) {
         NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
@@ -365,7 +363,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         taskShouldStop = 0;
         pdfData = [[NSMutableData alloc] init];
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, DVIFILE_KEY, pdfData, PDFPATH_KEY, dviToolPath, DVITOOLPATH_KEY, nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, INPUTFILE_KEY, pdfData, PDFDATA_KEY, dviToolPath, TOOLPATH_KEY, nil];
         
         NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
         
@@ -414,8 +412,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doXDVConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *xdvFile = [info objectForKey:XDVFILE_KEY];
-    NSString *commandPath = [info objectForKey:XDVTOOLPATH_KEY];
+    NSString *xdvFile = [info objectForKey:INPUTFILE_KEY];
+    NSString *commandPath = [info objectForKey:TOOLPATH_KEY];
     NSString *tmpDir = SKUniqueTemporaryDirectory();
     NSString *outFile = [tmpDir stringByAppendingPathComponent:[[xdvFile lastPathComponent] stringByReplacingPathExtension:@"pdf"]];
     NSArray *arguments = [NSArray arrayWithObjects:@"-o", outFile, xdvFile, nil];
@@ -440,7 +438,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
-    NSMutableData *pdfData = [info objectForKey:PDFPATH_KEY];
+    NSMutableData *pdfData = [info objectForKey:PDFDATA_KEY];
     
     if (success)
         [pdfData setData:outData];
@@ -466,9 +464,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         taskShouldStop = 0;
         pdfData = [[NSMutableData alloc] init];
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:xdvFile, XDVFILE_KEY, pdfData, PDFPATH_KEY, xdvToolPath, XDVTOOLPATH_KEY, nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:xdvFile, INPUTFILE_KEY, pdfData, PDFDATA_KEY, xdvToolPath, TOOLPATH_KEY, nil];
         
-        NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
+        NSInteger rv = [self runModalSelector:@selector(doXDVConversionWithInfo:) withObject:dictionary];
         
         if (rv != SKConversionSucceeded) {
             SKDESTROY(pdfData);
