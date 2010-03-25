@@ -222,10 +222,10 @@ static char *SKTransitionPropertiesObservationContext;
     return @"TransitionSheet";
 }
 
-- (void)dismiss:(id)sender {
+- (void)dismissSheet:(id)sender {
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
     if ([sender tag] == NSCancelButton) {
-        [super dismiss:sender];
+        [super dismissSheet:sender];
     } else if ([objectController commitEditing]) {
         // don't make changes when nothing was changed
         if ([undoManager canUndo]) {
@@ -237,7 +237,7 @@ static char *SKTransitionPropertiesObservationContext;
             [[controller undoManager] setActionName:NSLocalizedString(@"Change Transitions", @"Undo action name")];
         }
         [controller setPresentationNotesDocument:[self notesDocument]];
-        [super dismiss:sender];
+        [super dismissSheet:sender];
     }
 }
 

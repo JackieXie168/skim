@@ -113,9 +113,9 @@
     [(SKApplication *)NSApp setUserAttentionDisabled:NO];
 }
 
-- (IBAction)dismiss:(id)sender {
+- (IBAction)dismissSheet:(id)sender {
     [[self progressBar] stopAnimation:self];
-    [super dismiss:sender];
+    [super dismissSheet:sender];
 }
 
 - (void)show {

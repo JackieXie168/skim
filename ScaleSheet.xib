@@ -51,7 +51,7 @@
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="126349111">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -60,6 +60,7 @@
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{17, 69}, {40, 17}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="903982662">
 								<int key="NSCellFlags">68288064</int>
@@ -96,6 +97,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{96, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="85152492">
@@ -119,6 +121,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{14, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="363585917">
 								<int key="NSCellFlags">67239424</int>
@@ -140,6 +143,7 @@
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{62, 66}, {110, 23}}</string>
 							<reference key="NSSuperview" ref="126349111"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="248880686">
 								<int key="NSCellFlags">-1804468671</int>
@@ -230,6 +234,8 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{192, 107}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -262,22 +268,6 @@
 						<reference key="destination" ref="795045777"/>
 					</object>
 					<int key="connectionID">15</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">dismiss:</string>
-						<reference key="source" ref="355419291"/>
-						<reference key="destination" ref="1050335072"/>
-					</object>
-					<int key="connectionID">16</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">dismiss:</string>
-						<reference key="source" ref="355419291"/>
-						<reference key="destination" ref="708437025"/>
-					</object>
-					<int key="connectionID">17</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBAccessibilityConnection" key="connection">
@@ -350,6 +340,22 @@
 						<reference key="destination" ref="904414385"/>
 					</object>
 					<int key="connectionID">39</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">dismissSheet:</string>
+						<reference key="source" ref="355419291"/>
+						<reference key="destination" ref="1050335072"/>
+					</object>
+					<int key="connectionID">40</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">dismissSheet:</string>
+						<reference key="source" ref="355419291"/>
+						<reference key="destination" ref="708437025"/>
+					</object>
+					<int key="connectionID">41</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -559,7 +565,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">39</int>
+			<int key="maxID">41</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -800,7 +806,7 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">dismiss:</string>
+						<string key="NS.key.0">dismissSheet:</string>
 						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -828,9 +834,17 @@
 							<string>object3</string>
 							<string>object4</string>
 							<string>object5</string>
+							<string>object6</string>
+							<string>object7</string>
+							<string>object8</string>
+							<string>object9</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -873,9 +887,9 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
-							<string>SKIBArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
+							<string>NSArray</string>
 							<string>NSTextField</string>
 						</object>
 					</object>
