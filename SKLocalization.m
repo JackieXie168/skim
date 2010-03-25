@@ -112,10 +112,12 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
     NSUInteger i, iMax = [self segmentCount];
+    NSString *string;
     for (i = 0; i < iMax; i++) {
-        NSString *label = localizedStringFromTable([self labelForSegment:i], table);
-        if (label)
-            [self setLabel:label forSegment:i];
+        if (string = localizedStringFromTable([self labelForSegment:i], table))
+            [self setLabel:string forSegment:i];
+        if (string = localizedStringFromTable([self toolTipForSegment:i], table))
+            [self setToolTip:string forSegment:i];
         [[self menuForSegment:i] localizeStringsFromTable:table];
     }
 }
