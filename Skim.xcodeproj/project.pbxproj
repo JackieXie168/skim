@@ -173,6 +173,7 @@
 		CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
+		CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
@@ -772,6 +773,8 @@
 		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
 		CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask_SKExtensions.h; sourceTree = "<group>"; };
 		CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTask_SKExtensions.m; sourceTree = "<group>"; };
+		CE8388BA115BC61F00DB1AD7 /* SKNoteTypeSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteTypeSheetController.h; sourceTree = "<group>"; };
+		CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteTypeSheetController.m; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
 		CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateTag.h; sourceTree = "<group>"; };
 		CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateTag.m; sourceTree = "<group>"; };
@@ -1464,6 +1467,8 @@
 				CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */,
 				CEE54F6A0DA3FB060037169F /* SKMainWindowController_Toolbar.h */,
 				CEE54F6B0DA3FB060037169F /* SKMainWindowController_Toolbar.m */,
+				CE8388BA115BC61F00DB1AD7 /* SKNoteTypeSheetController.h */,
+				CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
 				CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */,
 				CE05A7350E9024ED0060BB07 /* SKPresentationOptionsSheetController.h */,
@@ -2439,6 +2444,7 @@
 				CE0E8651114DBF7000E37F38 /* SKPreferenceWindow.m in Sources */,
 				CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */,
 				CE01E6A21154FE0B00004111 /* SKPreferencePane.m in Sources */,
+				CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

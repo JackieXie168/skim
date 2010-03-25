@@ -37,14 +37,9 @@
  */
 
 #import "SKNoteOutlineView.h"
-#import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import <SkimNotes/SkimNotes.h>
 #import "NSEvent_SKExtensions.h"
-#import "NSMenu_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
 #import "SKColorCell.h"
-#import "SKLocalization.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -57,18 +52,20 @@
 + (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
-    SKDESTROY(noteTypeSheet);
+    SKDESTROY(noteTypeSheetController);
     [super dealloc];
 }
 
 - (void)awakeFromNib {
-    if (noteTypeMatrix == nil) {
-        [self noteTypeMenu]; // this sets the menu for the header view
-        [super awakeFromNib];
-        [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
-        [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-        [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    }
+    [super awakeFromNib];
+    
+    noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
+    [noteTypeSheetController setDelegate:self];
+    [[self headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
+    
+    [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
+    [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
 }
 
 - (void)resizeRow:(NSInteger)row withEvent:(NSEvent *)theEvent {
@@ -208,7 +205,7 @@
     NSPredicate *filterPredicate = nil;
     NSPredicate *typePredicate = nil;
     NSPredicate *searchPredicate = nil;
-    NSArray *types = [self noteTypes];
+    NSArray *types = [noteTypeSheetController noteTypes];
     if ([types count] < NUMBER_OF_TYPES) {
         NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
         NSMutableArray *predicateArray = [NSMutableArray array];
@@ -242,149 +239,18 @@
     return filterPredicate;
 }
 
-#pragma mark Note Types
+#pragma mark SKNoteTypeSheetController delegate
 
-- (NSMenu *)noteTypeMenu {
-    NSMenu *menu = [[self headerView] menu];
-    
-    if (menu == nil) {
-        menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        NSMenuItem *menuItem = nil;
-        menuItem = [menu addItemWithTitle:[SKNFreeTextString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNFreeTextString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNNoteString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setState:NSOnState];
-        [menuItem setRepresentedObject:SKNNoteString];
-        menuItem = [menu addItemWithTitle:[SKNCircleString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNCircleString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNSquareString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNSquareString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNHighlightString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNHighlightString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNUnderlineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNUnderlineString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNStrikeOutString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNLineString];
-        [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNInkString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNInkString];
-        [menuItem setState:NSOnState];
-        [menu addItem:[NSMenuItem separatorItem]];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) target:self];
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) target:self];
-        [[self headerView] setMenu:menu];
-    }
-    
-    return menu;
-}
-
-- (NSArray *)noteTypes {
-    NSMutableArray *types = [NSMutableArray array];
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    
-    for (i = 0; i < NUMBER_OF_TYPES; i++) {
-        NSMenuItem *item = [menu itemAtIndex:i];
-        if ([item state] == NSOnState)
-            [types addObject:[item representedObject]];
-    }
-    return types;
-}
-
-- (void)setNoteTypes:(NSArray *)types {
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    
-    for (i = 0; i < NUMBER_OF_TYPES; i++) {
-        NSMenuItem *item = [menu itemAtIndex:i];
-        [item setState:[types containsObject:[item representedObject]] ? NSOnState : NSOffState];
-    }
-}
-
-- (void)noteTypesUpdated {
+- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller {
     if ([[self delegate] respondsToSelector:@selector(outlineViewNoteTypesDidChange:)])
         [[self delegate] outlineViewNoteTypesDidChange:self];
 }
 
-- (IBAction)toggleDisplayNoteType:(id)sender {
-    [sender setState:![sender state]];
-    [self noteTypesUpdated];
+- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller {
+    return [[self delegate] respondsToSelector:@selector(outlineViewWindowForSheet:)] ? [[self delegate] outlineViewWindowForSheet:self] : [self window];
 }
 
-- (IBAction)displayAllNoteTypes:(id)sender {
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
-        [[menu itemAtIndex:i] setState:NSOnState];
-    [self noteTypesUpdated];
-}
-
-- (BOOL)loadNoteTypeSheet {
-    if (NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
-        NSLog(@"Failed to load NoteTypeSheet.nib");
-        return NO;
-    }
-    
-    [noteTypeSheet localizeStringsFromTable:@"NoteTypeSheet"];
-    
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
-        [[noteTypeMatrix cellWithTag:i] setTitle:[[menu itemAtIndex:i] title]];
-    [noteTypeMatrix sizeToFit];
-    
-    [noteTypeMessageField sizeToFit];
-    
-    SKAutoSizeRightButtons(noteTypeButtons);
-    
-    NSRect frame = [noteTypeSheet frame];
-    NSRect matrixFrame = [noteTypeMatrix frame];
-    NSRect messageFrame = [noteTypeMessageField frame];
-    frame.size.width = fmax(NSWidth(matrixFrame) + 2.0 * NSMinX(matrixFrame), NSWidth(messageFrame) + 2.0 * NSMinX(messageFrame));
-    [noteTypeSheet setFrame:frame display:NO];
-    
-    return YES;
-}
-
-- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        NSMenu *menu = [self noteTypeMenu];
-        NSInteger i;
-        for (i = 0; i < NUMBER_OF_TYPES; i++)
-            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellWithTag:i] state]];
-        [self noteTypesUpdated];
-    }
-}
-
-- (IBAction)selectNoteTypes:(id)sender {
-    if (noteTypeSheet == nil && NO == [self loadNoteTypeSheet])
-        return;
-    
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
-        [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
-	
-    [NSApp beginSheet:noteTypeSheet
-       modalForWindow:[[self delegate] respondsToSelector:@selector(outlineViewWindowForSheet:)] ? [[self delegate] outlineViewWindowForSheet:self] : [self window]
-        modalDelegate:self 
-       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissNoteTypeSheet:(id)sender {
-    [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
-    [noteTypeSheet orderOut:self];
-}
-
+#pragma mark Delegate
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKNoteOutlineViewDelegate>)delegate {
