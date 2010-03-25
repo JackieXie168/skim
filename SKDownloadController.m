@@ -88,7 +88,7 @@ static char SKDownloadPropertiesObservationContext;
 }
 
 - (void)windowDidLoad {
-    [prefButton accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
+    [[prefButton cell] accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
     
     [clearButton sizeToFit];
     SKAutoSizeRightButtons([NSArray arrayWithObjects:doneButton, nil]);
