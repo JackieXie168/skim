@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKOutlineView.h";
+#import "SKNoteTypeSheetController.h";
 
 
 @protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
@@ -51,23 +52,16 @@
 
 @end
 
-@interface SKNoteOutlineView : SKOutlineView {    
+
+@interface SKNoteOutlineView : SKOutlineView <SKNoteTypeSheetControllerDelegate> {    
     IBOutlet NSWindow *noteTypeSheet;
     IBOutlet NSMatrix *noteTypeMatrix;
     IBOutlet NSTextField *noteTypeMessageField;
     IBOutlet NSArray *noteTypeButtons;
+    SKNoteTypeSheetController *noteTypeSheetController;
 }
 
-- (NSArray *)noteTypes;
-- (void)setNoteTypes:(NSArray *)types;
-- (NSMenu *)noteTypeMenu;
-
 - (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
-
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKNoteOutlineViewDelegate>)delegate;
