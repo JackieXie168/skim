@@ -2136,7 +2136,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {
-	[[self progressController] dismiss:nil];
+	[[self progressController] dismissSheet:nil];
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {

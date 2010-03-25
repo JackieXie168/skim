@@ -97,7 +97,7 @@
 		  contextInfo:[invocation retain]];
 }
 
-- (IBAction)dismiss:(id)sender {
+- (IBAction)dismissSheet:(id)sender {
     [NSApp endSheet:[self window] returnCode:[sender tag]];
     [[self window] orderOut:self];
     [self release];
