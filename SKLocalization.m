@@ -74,16 +74,6 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @end
 
 
-@implementation NSCell (SKLocalization)
-
-- (void)localizeStringsFromTable:(NSString *)table {
-    if ([self type] == NSTextCellType)
-        localizeStringForObjectFromTable(self, STRINGVALUE_KEY, table);
-}
-
-@end
-
-
 @implementation NSButtonCell (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
@@ -129,6 +119,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
+    localizeStringForObjectFromTable(self, STRINGVALUE_KEY, table);
     localizeStringForObjectFromTable(self, PLACEHOLDERSTRING_KEY, table);
 }
 
