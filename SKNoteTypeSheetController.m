@@ -15,7 +15,30 @@
 
 #define NUMBER_OF_TYPES 9
 
+@interface SKNoteTypeSheetController (Private)
+- (void)toggleDisplayNoteType:(id)sender;
+- (void)displayAllNoteTypes:(id)sender;
+- (void)selectNoteTypes:(id)sender;
+@end
+
 @implementation SKNoteTypeSheetController
+
+- (id)init {
+    if (self = [super initWithWindowNibName:@"NoteTypeSheet"]) {
+        noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        NSArray *noteTypes = [NSArray arrayWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
+        NSMenuItem *menuItem;
+        for (NSString *type in noteTypes) {
+            menuItem = [noteTypeMenu addItemWithTitle:[type typeName] action:@selector(toggleDisplayNoteType:) target:self];
+            [menuItem setRepresentedObject:type];
+            [menuItem setState:NSOnState];
+        }
+        [noteTypeMenu addItem:[NSMenuItem separatorItem]];
+        menuItem = [noteTypeMenu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) target:self];
+        menuItem = [noteTypeMenu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) target:self];
+    }
+    return self;
+}
 
 - (void)dealloc {
     delegate = nil;
@@ -23,15 +46,10 @@
     [super dealloc];
 }
 
-- (NSString *)windowNibName {
-    return @"NoteTypeSheet";
-}
-
 - (void)windowDidLoad {
-    NSMenu *menu = [self noteTypeMenu];
     NSInteger i;
     for (i = 0; i < NUMBER_OF_TYPES; i++)
-        [[matrix cellWithTag:i] setTitle:[[menu itemAtIndex:i] title]];
+        [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
     [matrix sizeToFit];
     
     [messageField sizeToFit];
@@ -43,6 +61,22 @@
     NSRect messageFrame = [messageField frame];
     frame.size.width = fmax(NSWidth(matrixFrame) + 2.0 * NSMinX(matrixFrame), NSWidth(messageFrame) + 2.0 * NSMinX(messageFrame));
     [[self window] setFrame:frame display:NO];
+}
+
+- (NSMenu *)noteTypeMenu {
+    return noteTypeMenu;
+}
+
+- (NSArray *)noteTypes {
+    NSMutableArray *types = [NSMutableArray array];
+    NSInteger i;
+    
+    for (i = 0; i < NUMBER_OF_TYPES; i++) {
+        NSMenuItem *item = [noteTypeMenu itemAtIndex:i];
+        if ([item state] == NSOnState)
+            [types addObject:[item representedObject]];
+    }
+    return types;
 }
 
 - (void)noteTypesUpdated {
@@ -81,58 +115,6 @@
         modalDelegate:self 
        didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
-}
-
-- (NSMenu *)noteTypeMenu {
-    if (noteTypeMenu == nil) {
-        noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
-        NSMenuItem *menuItem = nil;
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNFreeTextString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNFreeTextString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNNoteString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setState:NSOnState];
-        [menuItem setRepresentedObject:SKNNoteString];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNCircleString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNCircleString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNSquareString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNSquareString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNHighlightString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNHighlightString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNUnderlineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNUnderlineString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNStrikeOutString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNLineString];
-        [menuItem setState:NSOnState];
-        menuItem = [noteTypeMenu addItemWithTitle:[SKNInkString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKNInkString];
-        [menuItem setState:NSOnState];
-        [noteTypeMenu addItem:[NSMenuItem separatorItem]];
-        menuItem = [noteTypeMenu addItemWithTitle:NSLocalizedString(@"Show All", @"noteTypeMenu item title") action:@selector(displayAllNoteTypes:) target:self];
-        menuItem = [noteTypeMenu addItemWithTitle:[NSLocalizedString(@"Select", @"noteTypeMenu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) target:self];
-    }
-    
-    return noteTypeMenu;
-}
-
-- (NSArray *)noteTypes {
-    NSMutableArray *types = [NSMutableArray array];
-    NSMenu *menu = [self noteTypeMenu];
-    NSInteger i;
-    
-    for (i = 0; i < NUMBER_OF_TYPES; i++) {
-        NSMenuItem *item = [menu itemAtIndex:i];
-        if ([item state] == NSOnState)
-            [types addObject:[item representedObject]];
-    }
-    return types;
 }
 
 - (id <SKNoteTypeSheetControllerDelegate>)delegate {
