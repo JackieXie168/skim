@@ -2959,7 +2959,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 53;
 			};
 			name = Debug;
 		};
@@ -2967,7 +2967,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 53;
 			};
 			name = Release;
 		};
