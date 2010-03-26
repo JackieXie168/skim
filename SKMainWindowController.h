@@ -69,7 +69,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, SKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
-@class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
+@class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
     IBOutlet SKSplitView            *splitView;
@@ -86,7 +86,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView                 *leftSideView;
     IBOutlet BDSKEdgeView           *leftSideEdgeView;
     IBOutlet BDSKCollapsibleView    *leftSideCollapsibleView;
-    IBOutlet SKGradientView       *leftSideGradientView;
+    IBOutlet SKGradientView         *leftSideGradientView;
     IBOutlet NSSegmentedControl     *leftSideButton;
     IBOutlet NSSearchField          *searchField;
     
@@ -94,7 +94,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView                 *rightSideView;
     IBOutlet BDSKEdgeView           *rightSideEdgeView;
     IBOutlet BDSKCollapsibleView    *rightSideCollapsibleView;
-    IBOutlet SKGradientView       *rightSideGradientView;
+    IBOutlet SKGradientView         *rightSideGradientView;
     IBOutlet NSSegmentedControl     *rightSideButton;
     IBOutlet NSSearchField          *noteSearchField;
     
@@ -130,6 +130,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSArrayController      *noteArrayController;
     IBOutlet SKNoteOutlineView      *noteOutlineView;
     IBOutlet NSView                 *noteView;
+    SKNoteTypeSheetController       *noteTypeSheetController;
     NSMutableArray                  *notes;
     SKFloatMapTable                 *rowHeights;
 

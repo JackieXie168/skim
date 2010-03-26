@@ -682,12 +682,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
-    if ([ov isEqual:noteOutlineView]) {
-        [self updateNoteFilterPredicate];
-    }
-}
-
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
@@ -839,10 +833,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return array;
     }
     return nil;
-}
-
-- (NSWindow *)outlineViewWindowForSheet:(NSOutlineView *)anOutlineView {
-    return [self window];
 }
 
 - (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
@@ -1103,6 +1093,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [invocation setArgument:&contextInfo atIndex:4];
         [invocation invoke];
     }
+}
+
+#pragma mark SKNoteTypeSheetController delegate protocol
+
+- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller {
+    [self updateNoteFilterPredicate];
+}
+
+- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller {
+    return [self window];
 }
 
 #pragma mark SKPDFView delegate protocol
