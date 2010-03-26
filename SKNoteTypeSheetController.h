@@ -26,7 +26,10 @@
 }
 
 - (NSArray *)noteTypes;
+
 - (NSMenu *)noteTypeMenu;
+
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
 
 - (id <SKNoteTypeSheetControllerDelegate>)delegate;
 - (void)setDelegate:(id <SKNoteTypeSheetControllerDelegate>)newDelegate;

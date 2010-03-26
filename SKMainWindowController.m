@@ -69,6 +69,7 @@
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
+#import "SKNoteTypeSheetController.h";
 #import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKPDFToolTipWindow.h"
@@ -306,6 +307,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     SKDESTROY(presentationNotesDocument);
     SKDESTROY(leftSideButton);
     SKDESTROY(findButton);
+    SKDESTROY(noteTypeSheetController);
     [super dealloc];
 }
 
@@ -494,6 +496,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtPath:[[[self document] fileURL] path]];
     if ([snapshotSetups count])
         [self showSnapshotsWithSetups:snapshotSetups];
+    
+    noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
+    [noteTypeSheetController setDelegate:self];
+    [[noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
     // typeSelectHelpers
     SKTypeSelectHelper *typeSelectHelper = [SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch];
@@ -2696,7 +2702,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)updateNoteFilterPredicate {
-    [noteArrayController setFilterPredicate:[noteOutlineView filterPredicateForSearchString:[noteSearchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveNoteSearch]];
+    [noteArrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[noteSearchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveNoteSearch]];
     [noteOutlineView reloadData];
 }
 

@@ -51,17 +51,8 @@
 
 + (BOOL)usesDefaultFontSize { return YES; }
 
-- (void)dealloc {
-    SKDESTROY(noteTypeSheetController);
-    [super dealloc];
-}
-
 - (void)awakeFromNib {
     [super awakeFromNib];
-    
-    noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
-    [noteTypeSheetController setDelegate:self];
-    [[self headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
     [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
@@ -199,55 +190,6 @@
     } else {
         [super resetCursorRects];
     }
-}
-
-- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive {
-    NSPredicate *filterPredicate = nil;
-    NSPredicate *typePredicate = nil;
-    NSPredicate *searchPredicate = nil;
-    NSArray *types = [noteTypeSheetController noteTypes];
-    if ([types count] < NUMBER_OF_TYPES) {
-        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-        NSMutableArray *predicateArray = [NSMutableArray array];
-        
-        for (NSString *type in types) {
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        }
-        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
-    }
-    if (searchString && [searchString isEqualToString:@""] == NO) {
-        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
-        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
-        NSUInteger options = NSDiacriticInsensitivePredicateOption;
-        if (caseInsensitive)
-            options |= NSCaseInsensitivePredicateOption;
-        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
-        rhs = [NSExpression expressionForKeyPath:@"text.string"];
-        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
-        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
-    }
-    if (typePredicate) {
-        if (searchPredicate)
-            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
-        else
-            filterPredicate = typePredicate;
-    } else if (searchPredicate) {
-        filterPredicate = searchPredicate;
-    }
-    return filterPredicate;
-}
-
-#pragma mark SKNoteTypeSheetController delegate
-
-- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller {
-    if ([[self delegate] respondsToSelector:@selector(outlineViewNoteTypesDidChange:)])
-        [[self delegate] outlineViewNoteTypesDidChange:self];
-}
-
-- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller {
-    return [[self delegate] respondsToSelector:@selector(outlineViewWindowForSheet:)] ? [[self delegate] outlineViewWindowForSheet:self] : [self window];
 }
 
 #pragma mark Delegate

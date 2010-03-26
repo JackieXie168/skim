@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKOutlineView.h";
-#import "SKNoteTypeSheetController.h";
 
 
 @protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
@@ -46,18 +45,12 @@
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
-- (NSWindow *)outlineViewWindowForSheet:(NSOutlineView *)anOutlineView;
 
 @end
 
 
-@interface SKNoteOutlineView : SKOutlineView <SKNoteTypeSheetControllerDelegate> {    
-    SKNoteTypeSheetController *noteTypeSheetController;
-}
-
-- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
+@interface SKNoteOutlineView : SKOutlineView
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKNoteOutlineViewDelegate>)delegate;

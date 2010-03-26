@@ -75,6 +75,44 @@
     return types;
 }
 
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive {
+    NSPredicate *filterPredicate = nil;
+    NSPredicate *typePredicate = nil;
+    NSPredicate *searchPredicate = nil;
+    NSArray *types = [self noteTypes];
+    if ([types count] < (NSUInteger)[noteTypeMenu numberOfItems]) {
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+        NSMutableArray *predicateArray = [NSMutableArray array];
+        
+        for (NSString *type in types) {
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        }
+        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+    }
+    if (searchString && [searchString isEqualToString:@""] == NO) {
+        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
+        NSUInteger options = NSDiacriticInsensitivePredicateOption;
+        if (caseInsensitive)
+            options |= NSCaseInsensitivePredicateOption;
+        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
+        rhs = [NSExpression expressionForKeyPath:@"text.string"];
+        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
+        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
+    }
+    if (typePredicate) {
+        if (searchPredicate)
+            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
+        else
+            filterPredicate = typePredicate;
+    } else if (searchPredicate) {
+        filterPredicate = searchPredicate;
+    }
+    return filterPredicate;
+}
+
 - (void)noteTypesUpdated {
     [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }

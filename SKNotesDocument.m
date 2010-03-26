@@ -100,6 +100,7 @@
 	SKDESTROY(rowHeights);
     SKDESTROY(toolbarItems);
     SKDESTROY(statusBar);
+    SKDESTROY(noteTypeSheetController);
     [super dealloc];
 }
 
@@ -137,6 +138,11 @@
     [outlineView reloadData];
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+    
+    noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
+    [noteTypeSheetController setDelegate:self];
+    [[outlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
+    
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
@@ -302,7 +308,7 @@
 }
 
 - (void)updateNoteFilterPredicate {
-    [arrayController setFilterPredicate:[outlineView filterPredicateForSearchString:[searchField stringValue] caseInsensitive:caseInsensitiveSearch]];
+    [arrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[searchField stringValue] caseInsensitive:caseInsensitiveSearch]];
     [outlineView reloadData];
 }
 
@@ -515,10 +521,6 @@
     [ov reloadData];
 }
 
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
-    [self updateNoteFilterPredicate];
-}
-
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSMutableArray *types = [NSMutableArray array];
@@ -632,6 +634,16 @@
             item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
         }
     }
+}
+
+#pragma mark SKNoteTypeSheetController delegate protocol
+
+- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller {
+    [self updateNoteFilterPredicate];
+}
+
+- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller {
+    return [outlineView window];
 }
 
 #pragma mark Toolbar

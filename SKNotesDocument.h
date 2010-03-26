@@ -39,10 +39,11 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 #import "SKNoteOutlineView.h"
+#import "SKNoteTypeSheetController.h"
 
 @class SKNoteOutlineView, SKStatusBar, SKFloatMapTable;
 
-@interface SKNotesDocument : NSDocument <NSWindowDelegate, NSToolbarDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource> {
+@interface SKNotesDocument : NSDocument <NSWindowDelegate, NSToolbarDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource, SKNoteTypeSheetControllerDelegate> {
     IBOutlet SKNoteOutlineView *outlineView;
     IBOutlet NSArrayController *arrayController;
     IBOutlet SKStatusBar *statusBar;
@@ -51,6 +52,7 @@
     NSArray *notes;
     PDFDocument *pdfDocument;
     SKFloatMapTable *rowHeights;
+    SKNoteTypeSheetController *noteTypeSheetController;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
 }
