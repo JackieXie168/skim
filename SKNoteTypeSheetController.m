@@ -13,7 +13,6 @@
 #import "NSMenu_SKExtensions.h"
 #import <SKimNotes/SkimNotes.h>
 
-#define NUMBER_OF_TYPES 9
 
 @interface SKNoteTypeSheetController (Private)
 - (void)toggleDisplayNoteType:(id)sender;
@@ -47,8 +46,8 @@
 }
 
 - (void)windowDidLoad {
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
+    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
+    for (i = 0; i < iMax; i++)
         [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
     [matrix sizeToFit];
     
@@ -69,10 +68,7 @@
 
 - (NSArray *)noteTypes {
     NSMutableArray *types = [NSMutableArray array];
-    NSInteger i;
-    
-    for (i = 0; i < NUMBER_OF_TYPES; i++) {
-        NSMenuItem *item = [noteTypeMenu itemAtIndex:i];
+    for (NSMenuItem *item in [noteTypeMenu itemArray]) {
         if ([item state] == NSOnState)
             [types addObject:[item representedObject]];
     }
@@ -89,16 +85,16 @@
 }
 
 - (void)displayAllNoteTypes:(id)sender {
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
+    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
+    for (i = 0; i < iMax; i++)
         [[noteTypeMenu itemAtIndex:i] setState:NSOnState];
     [self noteTypesUpdated];
 }
 
 - (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
-        NSInteger i;
-        for (i = 0; i < NUMBER_OF_TYPES; i++)
+    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
+        for (i = 0; i < iMax; i++)
             [[noteTypeMenu itemAtIndex:i] setState:[[matrix cellWithTag:i] state]];
         [self noteTypesUpdated];
     }
@@ -107,8 +103,8 @@
 - (void)selectNoteTypes:(id)sender {
     [self window];
     
-    NSInteger i;
-    for (i = 0; i < NUMBER_OF_TYPES; i++)
+    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
+    for (i = 0; i < iMax; i++)
         [[matrix cellWithTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
 	
     [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self]
