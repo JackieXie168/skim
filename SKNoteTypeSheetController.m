@@ -13,6 +13,7 @@
 #import "NSMenu_SKExtensions.h"
 #import <SKimNotes/SkimNotes.h>
 
+#define NOTETYPES_COUNT 9
 
 @interface SKNoteTypeSheetController (Private)
 - (void)toggleDisplayNoteType:(id)sender;
@@ -46,8 +47,8 @@
 }
 
 - (void)windowDidLoad {
-    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
-    for (i = 0; i < iMax; i++)
+    NSUInteger i;
+    for (i = 0; i < NOTETYPES_COUNT; i++)
         [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
     [matrix sizeToFit];
     
@@ -68,7 +69,9 @@
 
 - (NSArray *)noteTypes {
     NSMutableArray *types = [NSMutableArray array];
-    for (NSMenuItem *item in [noteTypeMenu itemArray]) {
+    NSUInteger i;
+    for (i = 0; i < NOTETYPES_COUNT; i++) {
+        NSMenuItem *item = [noteTypeMenu itemAtIndex:i];
         if ([item state] == NSOnState)
             [types addObject:[item representedObject]];
     }
@@ -80,7 +83,7 @@
     NSPredicate *typePredicate = nil;
     NSPredicate *searchPredicate = nil;
     NSArray *types = [self noteTypes];
-    if ([types count] < (NSUInteger)[noteTypeMenu numberOfItems]) {
+    if ([types count] < NOTETYPES_COUNT) {
         NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
         NSMutableArray *predicateArray = [NSMutableArray array];
         
@@ -123,16 +126,16 @@
 }
 
 - (void)displayAllNoteTypes:(id)sender {
-    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
-    for (i = 0; i < iMax; i++)
+    NSUInteger i;
+    for (i = 0; i < NOTETYPES_COUNT; i++)
         [[noteTypeMenu itemAtIndex:i] setState:NSOnState];
     [self noteTypesUpdated];
 }
 
 - (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
-    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
-        for (i = 0; i < iMax; i++)
+    NSUInteger i;
+        for (i = 0; i < NOTETYPES_COUNT; i++)
             [[noteTypeMenu itemAtIndex:i] setState:[[matrix cellWithTag:i] state]];
         [self noteTypesUpdated];
     }
@@ -141,8 +144,8 @@
 - (void)selectNoteTypes:(id)sender {
     [self window];
     
-    NSUInteger i, iMax = [noteTypeMenu numberOfItems];
-    for (i = 0; i < iMax; i++)
+    NSUInteger i;
+    for (i = 0; i < NOTETYPES_COUNT; i++)
         [[matrix cellWithTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
 	
     [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self]
