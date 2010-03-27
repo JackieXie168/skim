@@ -1001,7 +1001,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else if (mwcFlags.usesDrawers)
         state = [leftSideDrawer state];
     else
-        state = [splitView isSubviewCollapsed:leftSideContentView] == NO;//NSWidth([leftSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = [splitView isSubviewCollapsed:leftSideContentView] == NO;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -1012,7 +1012,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else if (mwcFlags.usesDrawers)
         state = [rightSideDrawer state];
     else
-        state = [splitView isSubviewCollapsed:rightSideContentView] == NO;//NSWidth([rightSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = [splitView isSubviewCollapsed:rightSideContentView] == NO;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
