@@ -277,6 +277,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[pdfView document] setDelegate:nil];
     [leftSideDrawer setDelegate:nil];
     [rightSideDrawer setDelegate:nil];
+    [noteTypeSheetController setDelegate:nil];
     SKDESTROY(temporaryAnnotations);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
