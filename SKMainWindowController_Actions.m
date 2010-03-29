@@ -37,6 +37,8 @@
  */
 
 #import "SKMainWindowController_Actions.h"
+#import "SKLeftSideViewController.h"
+#import "SKRightSideViewController.h"
 #import <Quartz/Quartz.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKStringConstants.h"
@@ -220,7 +222,7 @@
 }
 
 - (void)goToSelectedOutlineItem:(id)sender {
-    PDFOutline *outlineItem = [outlineView itemAtRow:[outlineView selectedRow]];
+    PDFOutline *outlineItem = [leftSideController.tocOutlineView itemAtRow:[leftSideController.tocOutlineView selectedRow]];
     if ([outlineItem destination])
         [pdfView goToDestination:[outlineItem destination]];
     else if ([outlineItem action])
@@ -864,9 +866,9 @@ static NSArray *allMainDocumentPDFViews() {
     }
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
     if (wasClosed)
-        [searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+        [leftSideController.searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
     else
-        [searchField selectText:self];
+        [leftSideController.searchField selectText:self];
 }
 
 - (IBAction)performFit:(id)sender {
@@ -1025,20 +1027,20 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
     mwcFlags.caseInsensitiveSearch = (0 == mwcFlags.caseInsensitiveSearch);
-    if ([[searchField stringValue] length])
-        [self search:searchField];
+    if ([[leftSideController.searchField stringValue] length])
+        [self search:leftSideController.searchField];
 }
 
 - (IBAction)toggleWholeWordSearch:(id)sender {
     mwcFlags.wholeWordSearch = (0 == mwcFlags.wholeWordSearch);
-    if ([[searchField stringValue] length])
-        [self search:searchField];
+    if ([[leftSideController.searchField stringValue] length])
+        [self search:leftSideController.searchField];
 }
 
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender {
     mwcFlags.caseInsensitiveNoteSearch = (0 == mwcFlags.caseInsensitiveNoteSearch);
-    if ([[noteSearchField stringValue] length])
-        [self searchNotes:noteSearchField];
+    if ([[rightSideController.searchField stringValue] length])
+        [self searchNotes:rightSideController.searchField];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
@@ -1055,7 +1057,7 @@ static NSArray *allMainDocumentPDFViews() {
             [self showLeftSideWindowOnScreen:[[self window] screen]];
     } else if (mwcFlags.usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
-            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
+            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[leftSideController.searchField stringValue] length])
                 [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
             [leftSideDrawer close];
         } else {

@@ -177,6 +177,11 @@
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
+		CE8BEFE3115F75590029020F /* SKSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8BEFE2115F75590029020F /* SKSideViewController.m */; };
+		CE8BF027115F7C390029020F /* SKLeftSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8BF026115F7C390029020F /* SKLeftSideViewController.m */; };
+		CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */; };
+		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
+		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
 		CE8D12381140303400301B9F /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8D12371140303400301B9F /* FindPanel.xib */; };
 		CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B80491030642400EA8774 /* SKTransitionInfo.m */; };
 		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
@@ -277,6 +282,8 @@
 		CEF60F91114C61300074ACC4 /* DisplayPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F90114C61300074ACC4 /* DisplayPreferences.xib */; };
 		CEF60F99114C63710074ACC4 /* NotesPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F98114C63710074ACC4 /* NotesPreferences.xib */; };
 		CEF60F9C114C64DB0074ACC4 /* SyncPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F9B114C64DB0074ACC4 /* SyncPreferences.xib */; };
+		CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */; };
+		CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DE11160BDF2001C10C8 /* RightSideView.strings */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
@@ -781,6 +788,14 @@
 		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDDocument.icns; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
+		CE8BEFE1115F75590029020F /* SKSideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSideViewController.h; sourceTree = "<group>"; };
+		CE8BEFE2115F75590029020F /* SKSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSideViewController.m; sourceTree = "<group>"; };
+		CE8BF025115F7C390029020F /* SKLeftSideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLeftSideViewController.h; sourceTree = "<group>"; };
+		CE8BF026115F7C390029020F /* SKLeftSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLeftSideViewController.m; sourceTree = "<group>"; };
+		CE8BF028115F7C5C0029020F /* SKRightSideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRightSideViewController.h; sourceTree = "<group>"; };
+		CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRightSideViewController.m; sourceTree = "<group>"; };
+		CE8BF068115F859A0029020F /* LeftSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftSideView.xib; sourceTree = "<group>"; };
+		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
 		CE8D12371140303400301B9F /* FindPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindPanel.xib; sourceTree = "<group>"; };
 		CE9B80481030642400EA8774 /* SKTransitionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionInfo.h; sourceTree = "<group>"; };
 		CE9B80491030642400EA8774 /* SKTransitionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTransitionInfo.m; sourceTree = "<group>"; };
@@ -1102,6 +1117,22 @@
 		CEF60F90114C61300074ACC4 /* DisplayPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisplayPreferences.xib; sourceTree = "<group>"; };
 		CEF60F98114C63710074ACC4 /* NotesPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotesPreferences.xib; sourceTree = "<group>"; };
 		CEF60F9B114C64DB0074ACC4 /* SyncPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SyncPreferences.xib; sourceTree = "<group>"; };
+		CEF64DE01160BDF2001C10C8 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DE21160BDF2001C10C8 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DE51160BE11001C10C8 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DE61160BE15001C10C8 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DE71160BE19001C10C8 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DE81160BE1D001C10C8 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DE91160BE21001C10C8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DEA1160BE24001C10C8 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DEB1160BE28001C10C8 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/LeftSideView.strings; sourceTree = "<group>"; };
+		CEF64DEC1160BE33001C10C8 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DED1160BE35001C10C8 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DEE1160BE39001C10C8 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DEF1160BE3E001C10C8 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DF01160BE40001C10C8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DF11160BE48001C10C8 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64DF21160BE52001C10C8 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
 		CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsController_SKExtensions.h; sourceTree = "<group>"; };
@@ -1345,6 +1376,8 @@
 				CE1CC6111143DDFD00F6B208 /* LineInspector.xib */,
 				CEF60D22114C0C5C0074ACC4 /* MainMenu.xib */,
 				CE19445E10627483007E8770 /* MainWindow.xib */,
+				CE8BF068115F859A0029020F /* LeftSideView.xib */,
+				CE8BF06F115F892A0029020F /* RightSideView.xib */,
 				CE19445F10627483007E8770 /* NotesDocument.xib */,
 				CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */,
 				CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */,
@@ -1377,6 +1410,7 @@
 				CEF60D5C114C0DA60074ACC4 /* FindPanel.strings */,
 				CE0E84CA114D516F00E37F38 /* GeneralPreferences.strings */,
 				CEF60D8D114C0DF40074ACC4 /* InfoWindow.strings */,
+				CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */,
 				CEF60D5A114C0DA60074ACC4 /* LineInspector.strings */,
 				CEF60D66114C0DA60074ACC4 /* MainMenu.strings */,
 				CEF60D58114C0DA60074ACC4 /* MainWindow.strings */,
@@ -1391,6 +1425,7 @@
 				CEF60D4A114C0DA60074ACC4 /* PrintAccessoryView.strings */,
 				CEF60D48114C0DA60074ACC4 /* ProgressSheet.strings */,
 				CEF60D46114C0DA60074ACC4 /* ReleaseNotes.strings */,
+				CEF64DE11160BDF2001C10C8 /* RightSideView.strings */,
 				CEF60D42114C0DA60074ACC4 /* SnapshotWindow.strings */,
 				CEF60D44114C0DA60074ACC4 /* ScaleSheet.strings */,
 				CE0E84C6114D516F00E37F38 /* SyncPreferences.strings */,
@@ -1467,6 +1502,12 @@
 				CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */,
 				CEE54F6A0DA3FB060037169F /* SKMainWindowController_Toolbar.h */,
 				CEE54F6B0DA3FB060037169F /* SKMainWindowController_Toolbar.m */,
+				CE8BEFE1115F75590029020F /* SKSideViewController.h */,
+				CE8BEFE2115F75590029020F /* SKSideViewController.m */,
+				CE8BF025115F7C390029020F /* SKLeftSideViewController.h */,
+				CE8BF026115F7C390029020F /* SKLeftSideViewController.m */,
+				CE8BF028115F7C5C0029020F /* SKRightSideViewController.h */,
+				CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */,
 				CE8388BA115BC61F00DB1AD7 /* SKNoteTypeSheetController.h */,
 				CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
@@ -2159,6 +2200,10 @@
 				CE0E84D0114D516F00E37F38 /* GeneralPreferences.strings in Resources */,
 				CE0E84D1114D516F00E37F38 /* DisplayPreferences.strings in Resources */,
 				CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */,
+				CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */,
+				CE8BF070115F892A0029020F /* RightSideView.xib in Resources */,
+				CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */,
+				CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2445,6 +2490,9 @@
 				CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */,
 				CE01E6A21154FE0B00004111 /* SKPreferencePane.m in Sources */,
 				CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */,
+				CE8BEFE3115F75590029020F /* SKSideViewController.m in Sources */,
+				CE8BF027115F7C390029020F /* SKLeftSideViewController.m in Sources */,
+				CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2941,6 +2989,36 @@
 				CEF60E21114C0ED70074ACC4 /* zh_TW */,
 			);
 			name = InfoWindow.strings;
+			sourceTree = "<group>";
+		};
+		CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEF64DE01160BDF2001C10C8 /* English */,
+				CEF64DE51160BE11001C10C8 /* Dutch */,
+				CEF64DE61160BE15001C10C8 /* French */,
+				CEF64DE71160BE19001C10C8 /* German */,
+				CEF64DE81160BE1D001C10C8 /* Italian */,
+				CEF64DE91160BE21001C10C8 /* ru */,
+				CEF64DEA1160BE24001C10C8 /* Spanish */,
+				CEF64DEB1160BE28001C10C8 /* zh_TW */,
+			);
+			name = LeftSideView.strings;
+			sourceTree = "<group>";
+		};
+		CEF64DE11160BDF2001C10C8 /* RightSideView.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEF64DE21160BDF2001C10C8 /* English */,
+				CEF64DEC1160BE33001C10C8 /* Dutch */,
+				CEF64DED1160BE35001C10C8 /* French */,
+				CEF64DEE1160BE39001C10C8 /* German */,
+				CEF64DEF1160BE3E001C10C8 /* Italian */,
+				CEF64DF01160BE40001C10C8 /* ru */,
+				CEF64DF11160BE48001C10C8 /* Spanish */,
+				CEF64DF21160BE52001C10C8 /* zh_TW */,
+			);
+			name = RightSideView.strings;
 			sourceTree = "<group>";
 		};
 		CEFE71941129AAA30018CD74 /* ServicesMenu.strings */ = {

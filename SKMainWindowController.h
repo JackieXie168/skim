@@ -69,161 +69,128 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, SKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
-@class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
+@class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
-    IBOutlet SKSplitView            *splitView;
+    IBOutlet SKSplitView                *splitView;
     
-    IBOutlet NSView                 *centerContentView;
-    IBOutlet SKSplitView            *pdfSplitView;
-    IBOutlet NSView                 *pdfContentView;
-    IBOutlet SKPDFView              *pdfView;
+    IBOutlet NSView                     *centerContentView;
+    IBOutlet SKSplitView                *pdfSplitView;
+    IBOutlet NSView                     *pdfContentView;
+    IBOutlet SKPDFView                  *pdfView;
     
-    NSView                          *secondaryPdfContentView;
-    SKSecondaryPDFView              *secondaryPdfView;
+    NSView                              *secondaryPdfContentView;
+    SKSecondaryPDFView                  *secondaryPdfView;
     
-    IBOutlet NSView                 *leftSideContentView;
-    IBOutlet NSView                 *leftSideView;
-    IBOutlet BDSKEdgeView           *leftSideEdgeView;
-    IBOutlet BDSKCollapsibleView    *leftSideCollapsibleView;
-    IBOutlet SKGradientView         *leftSideGradientView;
-    IBOutlet NSSegmentedControl     *leftSideButton;
-    IBOutlet NSSearchField          *searchField;
+    IBOutlet SKLeftSideViewController   *leftSideController;
+    IBOutlet SKRightSideViewController  *rightSideController;
     
-    IBOutlet NSView                 *rightSideContentView;
-    IBOutlet NSView                 *rightSideView;
-    IBOutlet BDSKEdgeView           *rightSideEdgeView;
-    IBOutlet BDSKCollapsibleView    *rightSideCollapsibleView;
-    IBOutlet SKGradientView         *rightSideGradientView;
-    IBOutlet NSSegmentedControl     *rightSideButton;
-    IBOutlet NSSearchField          *noteSearchField;
+    IBOutlet NSView                     *leftSideContentView;
+    IBOutlet NSView                     *rightSideContentView;
     
-    IBOutlet NSView                 *currentLeftSideView;
-    IBOutlet NSView                 *currentRightSideView;
+    SKStatusBar                         *statusBar;
     
-    SKStatusBar                     *statusBar;
+    NSMutableArray                      *thumbnails;
+    CGFloat                             roundedThumbnailSize;
     
-    IBOutlet SKTocOutlineView       *outlineView;
-    IBOutlet NSView                 *tocView;
+    NSMutableArray                      *searchResults;
+    NSMutableSet                        *temporaryAnnotations;
+    NSTimer                             *temporaryAnnotationTimer;
+    NSTimer                             *highlightTimer;
     
-    IBOutlet NSObjectController     *ownerController;
-    IBOutlet NSArrayController      *thumbnailArrayController;
-    IBOutlet SKThumbnailTableView   *thumbnailTableView;
-    IBOutlet NSView                 *thumbnailView;
-    NSMutableArray                  *thumbnails;
-    CGFloat                         roundedThumbnailSize;
+    NSMutableArray                      *groupedSearchResults;
     
-    IBOutlet NSArrayController      *findArrayController;
-    IBOutlet NSTableView            *findTableView;
-    IBOutlet NSView                 *findView;
-    NSMutableArray                  *searchResults;
-    NSMutableSet                    *temporaryAnnotations;
-    NSTimer                         *temporaryAnnotationTimer;
-    NSTimer                         *highlightTimer;
+    SKNoteTypeSheetController           *noteTypeSheetController;
+    NSMutableArray                      *notes;
+    SKFloatMapTable                     *rowHeights;
     
-    IBOutlet NSArrayController      *groupedFindArrayController;
-    IBOutlet NSTableView            *groupedFindTableView;
-    IBOutlet NSView                 *groupedFindView;
-    NSMutableArray                  *groupedSearchResults;
-    IBOutlet NSSegmentedControl     *findButton;
+    NSMutableArray                      *snapshots;
+    NSMutableArray                      *dirtySnapshots;
+    NSTimer                             *snapshotTimer;
+    CGFloat                             roundedSnapshotThumbnailSize;
     
-    IBOutlet NSArrayController      *noteArrayController;
-    IBOutlet SKNoteOutlineView      *noteOutlineView;
-    IBOutlet NSView                 *noteView;
-    SKNoteTypeSheetController       *noteTypeSheetController;
-    NSMutableArray                  *notes;
-    SKFloatMapTable                 *rowHeights;
-
-    IBOutlet NSArrayController      *snapshotArrayController;
-    IBOutlet SKThumbnailTableView   *snapshotTableView;
-    IBOutlet NSView                 *snapshotView;
-    NSMutableArray                  *snapshots;
-    NSMutableArray                  *dirtySnapshots;
-    NSTimer                         *snapshotTimer;
-    CGFloat                         roundedSnapshotThumbnailSize;
+    NSMutableArray                      *tags;
+    double                              rating;
     
-    NSMutableArray                  *tags;
-    double                          rating;
+    NSWindow                            *mainWindow;
+    SKFullScreenWindow                  *fullScreenWindow;
+    SKSideWindow                        *leftSideWindow;
+    SKSideWindow                        *rightSideWindow;
+    NSMutableArray                      *blankingWindows;
     
-    NSWindow                        *mainWindow;
-    SKFullScreenWindow              *fullScreenWindow;
-    SKSideWindow                    *leftSideWindow;
-    SKSideWindow                    *rightSideWindow;
-    NSMutableArray                  *blankingWindows;
+    IBOutlet NSSegmentedControl         *backForwardButton;
+    IBOutlet NSTextField                *pageNumberField;
+    IBOutlet NSSegmentedControl         *previousNextPageButton;
+    IBOutlet NSSegmentedControl         *previousPageButton;
+    IBOutlet NSSegmentedControl         *nextPageButton;
+    IBOutlet NSSegmentedControl         *previousNextFirstLastPageButton;
+    IBOutlet NSSegmentedControl         *zoomInOutButton;
+    IBOutlet NSSegmentedControl         *zoomInActualOutButton;
+    IBOutlet NSSegmentedControl         *zoomActualButton;
+    IBOutlet NSSegmentedControl         *zoomFitButton;
+    IBOutlet NSSegmentedControl         *zoomSelectionButton;
+    IBOutlet NSSegmentedControl         *rotateLeftButton;
+    IBOutlet NSSegmentedControl         *rotateRightButton;
+    IBOutlet NSSegmentedControl         *rotateLeftRightButton;
+    IBOutlet NSSegmentedControl         *cropButton;
+    IBOutlet NSSegmentedControl         *fullScreenButton;
+    IBOutlet NSSegmentedControl         *presentationButton;
+    IBOutlet NSSegmentedControl         *leftPaneButton;
+    IBOutlet NSSegmentedControl         *rightPaneButton;
+    IBOutlet NSSegmentedControl         *toolModeButton;
+    IBOutlet NSSegmentedControl         *textNoteButton;
+    IBOutlet NSSegmentedControl         *circleNoteButton;
+    IBOutlet NSSegmentedControl         *markupNoteButton;
+    IBOutlet NSSegmentedControl         *lineNoteButton;
+    IBOutlet NSSegmentedControl         *singleTwoUpButton;
+    IBOutlet NSSegmentedControl         *continuousButton;
+    IBOutlet NSSegmentedControl         *displayModeButton;
+    IBOutlet NSSegmentedControl         *displayBoxButton;
+    IBOutlet NSSegmentedControl         *infoButton;
+    IBOutlet NSSegmentedControl         *colorsButton;
+    IBOutlet NSSegmentedControl         *fontsButton;
+    IBOutlet NSSegmentedControl         *linesButton;
+    IBOutlet NSSegmentedControl         *printButton;
+    IBOutlet NSSegmentedControl         *customizeButton;
+    IBOutlet NSTextField                *scaleField;
+    IBOutlet NSSegmentedControl         *noteButton;
+    IBOutlet SKColorSwatch              *colorSwatch;
+    NSMutableDictionary                 *toolbarItems;
     
-    IBOutlet NSSegmentedControl     *backForwardButton;
-    IBOutlet NSTextField            *pageNumberField;
-    IBOutlet NSSegmentedControl     *previousNextPageButton;
-    IBOutlet NSSegmentedControl     *previousPageButton;
-    IBOutlet NSSegmentedControl     *nextPageButton;
-    IBOutlet NSSegmentedControl     *previousNextFirstLastPageButton;
-    IBOutlet NSSegmentedControl     *zoomInOutButton;
-    IBOutlet NSSegmentedControl     *zoomInActualOutButton;
-    IBOutlet NSSegmentedControl     *zoomActualButton;
-    IBOutlet NSSegmentedControl     *zoomFitButton;
-    IBOutlet NSSegmentedControl     *zoomSelectionButton;
-    IBOutlet NSSegmentedControl     *rotateLeftButton;
-    IBOutlet NSSegmentedControl     *rotateRightButton;
-    IBOutlet NSSegmentedControl     *rotateLeftRightButton;
-    IBOutlet NSSegmentedControl     *cropButton;
-    IBOutlet NSSegmentedControl     *fullScreenButton;
-    IBOutlet NSSegmentedControl     *presentationButton;
-    IBOutlet NSSegmentedControl     *leftPaneButton;
-    IBOutlet NSSegmentedControl     *rightPaneButton;
-    IBOutlet NSSegmentedControl     *toolModeButton;
-    IBOutlet NSSegmentedControl     *textNoteButton;
-    IBOutlet NSSegmentedControl     *circleNoteButton;
-    IBOutlet NSSegmentedControl     *markupNoteButton;
-    IBOutlet NSSegmentedControl     *lineNoteButton;
-    IBOutlet NSSegmentedControl     *singleTwoUpButton;
-    IBOutlet NSSegmentedControl     *continuousButton;
-    IBOutlet NSSegmentedControl     *displayModeButton;
-    IBOutlet NSSegmentedControl     *displayBoxButton;
-    IBOutlet NSSegmentedControl     *infoButton;
-    IBOutlet NSSegmentedControl     *colorsButton;
-    IBOutlet NSSegmentedControl     *fontsButton;
-    IBOutlet NSSegmentedControl     *linesButton;
-    IBOutlet NSSegmentedControl     *printButton;
-    IBOutlet NSSegmentedControl     *customizeButton;
-    IBOutlet NSTextField            *scaleField;
-    IBOutlet NSSegmentedControl     *noteButton;
-    IBOutlet SKColorSwatch          *colorSwatch;
-    NSMutableDictionary             *toolbarItems;
-    
-    SKProgressController            *progressController;
+    SKProgressController                *progressController;
     
     SKPresentationOptionsSheetController *presentationSheetController;
     
-    SKMainDocument                   *presentationNotesDocument;
+    SKMainDocument                      *presentationNotesDocument;
     
-    NSButton                        *colorAccessoryView;
-    NSButton                        *textColorAccessoryView;
+    NSButton                            *colorAccessoryView;
+    NSButton                            *textColorAccessoryView;
     
-    NSMutableArray                  *pageLabels;
+    NSMutableArray                      *pageLabels;
     
-    NSString                        *pageLabel;
-    NSUInteger                      pageNumber;
+    NSString                            *pageLabel;
+    NSUInteger                          pageNumber;
     
-    NSUInteger                      markedPageIndex;
-    NSUInteger                      beforeMarkedPageIndex;
+    NSUInteger                          markedPageIndex;
+    NSUInteger                          beforeMarkedPageIndex;
     
-    NSMutableArray                  *lastViewedPages;
+    NSMutableArray                      *lastViewedPages;
     
-    IOPMAssertionID                 activityAssertionID;
+    IOPMAssertionID                     activityAssertionID;
     
-    NSMutableDictionary             *savedNormalSetup;
+    NSMutableDictionary                 *savedNormalSetup;
     
-    CGFloat                         lastLeftSidePaneWidth;
-    CGFloat                         lastRightSidePaneWidth;
-    CGFloat                         lastSplitPDFHeight;
+    CGFloat                             lastLeftSidePaneWidth;
+    CGFloat                             lastRightSidePaneWidth;
+    CGFloat                             lastSplitPDFHeight;
     
-    CGFloat                         thumbnailCacheSize;
-    CGFloat                         snapshotCacheSize;
+    CGFloat                             thumbnailCacheSize;
+    CGFloat                             snapshotCacheSize;
     
-    NSDrawer                        *leftSideDrawer;
-    NSDrawer                        *rightSideDrawer;
+    NSDrawer                            *leftSideDrawer;
+    NSDrawer                            *rightSideDrawer;
     
-    NSMapTable                      *undoGroupOldPropertiesPerNote;
+    NSMapTable                          *undoGroupOldPropertiesPerNote;
     
     struct _mwcFlags {
         unsigned int leftSidePaneState:1;
@@ -342,16 +309,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 - (void)closeSideWindow:(SKSideWindow *)sideWindow;
 
-- (void)displayOutlineView;
-- (void)fadeInOutlineView;
-- (void)displayThumbnailView;
-- (void)fadeInThumbnailView;
-- (void)displaySearchView;
-- (void)fadeInSearchView;
-- (void)displayGroupedSearchView;
-- (void)fadeInGroupedSearchView;
-- (void)displayNoteView;
-- (void)displaySnapshotView;
+- (void)displayTocViewAnimating:(BOOL)animate;
+- (void)displayThumbnailViewAnimating:(BOOL)animate;
+- (void)displayFindViewAnimating:(BOOL)animate;
+- (void)displayGroupedFindViewAnimating:(BOOL)animate;
+- (void)displayNoteViewAnimating:(BOOL)animate;
+- (void)displaySnapshotViewAnimating:(BOOL)animate;
 
 - (void)removeTemporaryAnnotations;
 - (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page;
