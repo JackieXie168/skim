@@ -69,7 +69,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, SKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
-@class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
+@class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
     IBOutlet SKSplitView                *splitView;
@@ -84,6 +84,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     IBOutlet SKLeftSideViewController   *leftSideController;
     IBOutlet SKRightSideViewController  *rightSideController;
+    
+    IBOutlet SKMainToolbarController    *toolbarController;
     
     IBOutlet NSView                     *leftSideContentView;
     IBOutlet NSView                     *rightSideContentView;
@@ -117,45 +119,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     SKSideWindow                        *leftSideWindow;
     SKSideWindow                        *rightSideWindow;
     NSMutableArray                      *blankingWindows;
-    
-    IBOutlet NSSegmentedControl         *backForwardButton;
-    IBOutlet NSTextField                *pageNumberField;
-    IBOutlet NSSegmentedControl         *previousNextPageButton;
-    IBOutlet NSSegmentedControl         *previousPageButton;
-    IBOutlet NSSegmentedControl         *nextPageButton;
-    IBOutlet NSSegmentedControl         *previousNextFirstLastPageButton;
-    IBOutlet NSSegmentedControl         *zoomInOutButton;
-    IBOutlet NSSegmentedControl         *zoomInActualOutButton;
-    IBOutlet NSSegmentedControl         *zoomActualButton;
-    IBOutlet NSSegmentedControl         *zoomFitButton;
-    IBOutlet NSSegmentedControl         *zoomSelectionButton;
-    IBOutlet NSSegmentedControl         *rotateLeftButton;
-    IBOutlet NSSegmentedControl         *rotateRightButton;
-    IBOutlet NSSegmentedControl         *rotateLeftRightButton;
-    IBOutlet NSSegmentedControl         *cropButton;
-    IBOutlet NSSegmentedControl         *fullScreenButton;
-    IBOutlet NSSegmentedControl         *presentationButton;
-    IBOutlet NSSegmentedControl         *leftPaneButton;
-    IBOutlet NSSegmentedControl         *rightPaneButton;
-    IBOutlet NSSegmentedControl         *toolModeButton;
-    IBOutlet NSSegmentedControl         *textNoteButton;
-    IBOutlet NSSegmentedControl         *circleNoteButton;
-    IBOutlet NSSegmentedControl         *markupNoteButton;
-    IBOutlet NSSegmentedControl         *lineNoteButton;
-    IBOutlet NSSegmentedControl         *singleTwoUpButton;
-    IBOutlet NSSegmentedControl         *continuousButton;
-    IBOutlet NSSegmentedControl         *displayModeButton;
-    IBOutlet NSSegmentedControl         *displayBoxButton;
-    IBOutlet NSSegmentedControl         *infoButton;
-    IBOutlet NSSegmentedControl         *colorsButton;
-    IBOutlet NSSegmentedControl         *fontsButton;
-    IBOutlet NSSegmentedControl         *linesButton;
-    IBOutlet NSSegmentedControl         *printButton;
-    IBOutlet NSSegmentedControl         *customizeButton;
-    IBOutlet NSTextField                *scaleField;
-    IBOutlet NSSegmentedControl         *noteButton;
-    IBOutlet SKColorSwatch              *colorSwatch;
-    NSMutableDictionary                 *toolbarItems;
     
     SKProgressController                *progressController;
     

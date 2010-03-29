@@ -37,9 +37,90 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKMainWindowController.h"
 
+@class SKMainWindowController, SKColorSwatch;
 
-@interface SKMainWindowController (Toolbar) <NSToolbarDelegate>
+@interface SKMainToolbarController : NSViewController {
+    SKMainWindowController *mainController;
+    NSSegmentedControl *backForwardButton;
+    NSTextField *pageNumberField;
+    NSSegmentedControl *previousNextPageButton;
+    NSSegmentedControl *previousPageButton;
+    NSSegmentedControl *nextPageButton;
+    NSSegmentedControl *previousNextFirstLastPageButton;
+    NSSegmentedControl *zoomInOutButton;
+    NSSegmentedControl *zoomInActualOutButton;
+    NSSegmentedControl *zoomActualButton;
+    NSSegmentedControl *zoomFitButton;
+    NSSegmentedControl *zoomSelectionButton;
+    NSSegmentedControl *rotateLeftButton;
+    NSSegmentedControl *rotateRightButton;
+    NSSegmentedControl *rotateLeftRightButton;
+    NSSegmentedControl *cropButton;
+    NSSegmentedControl *fullScreenButton;
+    NSSegmentedControl *presentationButton;
+    NSSegmentedControl *leftPaneButton;
+    NSSegmentedControl *rightPaneButton;
+    NSSegmentedControl *toolModeButton;
+    NSSegmentedControl *textNoteButton;
+    NSSegmentedControl *circleNoteButton;
+    NSSegmentedControl *markupNoteButton;
+    NSSegmentedControl *lineNoteButton;
+    NSSegmentedControl *singleTwoUpButton;
+    NSSegmentedControl *continuousButton;
+    NSSegmentedControl *displayModeButton;
+    NSSegmentedControl *displayBoxButton;
+    NSSegmentedControl *infoButton;
+    NSSegmentedControl *colorsButton;
+    NSSegmentedControl *fontsButton;
+    NSSegmentedControl *linesButton;
+    NSSegmentedControl *printButton;
+    NSSegmentedControl *customizeButton;
+    NSTextField *scaleField;
+    NSSegmentedControl *noteButton;
+    SKColorSwatch *colorSwatch;
+    NSMutableDictionary *toolbarItems;
+}
+
+@property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *backForwardButton;
+@property (nonatomic, assign) IBOutlet NSTextField *pageNumberField;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *previousNextPageButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *previousPageButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *nextPageButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *previousNextFirstLastPageButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *zoomInOutButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *zoomInActualOutButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *zoomActualButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *zoomFitButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *zoomSelectionButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *rotateLeftButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *rotateRightButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *rotateLeftRightButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *cropButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *fullScreenButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *presentationButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *leftPaneButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *rightPaneButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *toolModeButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *textNoteButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *circleNoteButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *markupNoteButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *lineNoteButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *singleTwoUpButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *continuousButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *displayModeButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *displayBoxButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *infoButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *colorsButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *fontsButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *linesButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *printButton;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *customizeButton;
+@property (nonatomic, assign) IBOutlet NSTextField *scaleField;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *noteButton;
+@property (nonatomic, assign) IBOutlet SKColorSwatch *colorSwatch;
+
 - (void)setupToolbar;
+
 @end
