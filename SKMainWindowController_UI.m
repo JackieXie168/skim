@@ -37,6 +37,7 @@
  */
 
 #import "SKMainWindowController_UI.h"
+#import "SKMainWindowController_Actions.h"
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
 #import "SKMainToolbarController.h"

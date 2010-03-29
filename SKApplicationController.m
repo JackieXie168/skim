@@ -45,6 +45,7 @@
 #import "SKStringConstants.h"
 #import "SKMainDocument.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
 #import "BDAlias.h"
