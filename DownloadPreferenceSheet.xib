@@ -12,7 +12,6 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="4"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -61,6 +60,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{18, 98}, {339, 18}}</string>
 							<reference key="NSSuperview" ref="842307944"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="971962760">
 								<int key="NSCellFlags">67239424</int>
@@ -92,6 +92,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{18, 78}, {302, 18}}</string>
 							<reference key="NSSuperview" ref="842307944"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="448898473">
 								<int key="NSCellFlags">67239424</int>
@@ -114,6 +115,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{38, 58}, {360, 18}}</string>
 							<reference key="NSSuperview" ref="842307944"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="399289033">
 								<int key="NSCellFlags">67239424</int>
@@ -136,6 +138,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{320, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="842307944"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="476758512">
 								<int key="NSCellFlags">67239424</int>
@@ -155,6 +158,7 @@
 					</object>
 					<string key="NSFrameSize">{416, 134}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -162,9 +166,7 @@
 			<object class="NSUserDefaultsController" id="891013564">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>SKAutoOpenDownloadsWindow</string>
 					<string>SKAutoRemoveFinishedDownloads</string>
-					<string>SKAutoCloseDownloadsWindow</string>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -303,6 +305,22 @@
 					</object>
 					<int key="connectionID">27</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.SKAutoRemoveFinishedDownloads</string>
+						<reference key="source" ref="637021347"/>
+						<reference key="destination" ref="891013564"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="637021347"/>
+							<reference key="NSDestination" ref="891013564"/>
+							<string key="NSLabel">enabled: values.SKAutoRemoveFinishedDownloads</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.SKAutoRemoveFinishedDownloads</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">29</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -426,10 +444,11 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="NSArray" key="dict.sortedKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>-3.IBPluginDependency</string>
 					<string>10.IBPluginDependency</string>
 					<string>11.IBPluginDependency</string>
 					<string>12.IBPluginDependency</string>
-					<string>22.IBPluginDependency</string>
+					<string>18.IBPluginDependency</string>
 					<string>3.IBEditorWindowLastContentRect</string>
 					<string>3.IBPluginDependency</string>
 					<string>3.IBWindowTemplateEditedContentRect</string>
@@ -450,6 +469,7 @@
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -489,7 +509,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">27</int>
+			<int key="maxID">29</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
