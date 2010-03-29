@@ -39,7 +39,7 @@
 #import "SKMainWindowController_Actions.h"
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
-#import "SKMainWindowController_Toolbar.h"
+#import "SKMainToolbarController.h"
 #import <Quartz/Quartz.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKStringConstants.h"
