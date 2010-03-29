@@ -1,10 +1,10 @@
 //
-//  SKDownloadController.h
+//  SKDownloadPreferenceController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/11/07.
+//  Created by Christiaan on 3/29/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,38 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
-#import "SKTableView.h"
-#import "SKDownload.h"
 
 
-@class SKTableView;
-
-@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, SKDownloadDelegate> {
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKTableView *tableView;
-    IBOutlet NSButton *clearButton;
-    IBOutlet NSButton *prefButton;
-    NSMutableArray *downloads;
+@interface SKDownloadPreferenceController : SKWindowController {
+    IBOutlet NSArray *checkButtons;
+    IBOutlet NSButton *doneButton;
 }
-
-+ (id)sharedDownloadController;
-
-+ (NSImage *)cancelImage;
-+ (NSImage *)deleteImage;
-+ (NSImage *)resumeImage;
-
-- (SKDownload *)addDownloadForURL:(NSURL *)aURL;
-
-- (IBAction)clearDownloads:(id)sender;
-- (IBAction)removeDownload:(id)sender;
-- (IBAction)cancelDownload:(id)sender;
-
-- (IBAction)showDownloadPreferences:(id)sender;
-
-- (NSArray *)downloads;
-- (NSUInteger)countOfDownloads;
-- (SKDownload *)objectInDownloadsAtIndex:(NSUInteger)anIndex;
-- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
-- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
 
 @end
