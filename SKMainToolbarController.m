@@ -38,6 +38,7 @@
 
 #import "SKMainToolbarController.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "SKToolbarItem.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKStringConstants.h"

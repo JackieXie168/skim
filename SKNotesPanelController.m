@@ -38,6 +38,7 @@
 
 #import "SKNotesPanelController.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 
 #define SKNotesPanelFrameAutosaveName @"SKNotesPanel"
 

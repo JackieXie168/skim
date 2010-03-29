@@ -38,6 +38,7 @@
 
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "NSEvent_SKExtensions.h"
 
 
