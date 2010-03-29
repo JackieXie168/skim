@@ -242,8 +242,6 @@
             
             [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Go To Page", @"Tool tip message")];
-            [pageNumberField setAction:@selector(:)];
-            [pageNumberField setTarget:mainController];
             [item setViewWithSizes:pageNumberField];
             [item setMenuFormRepresentation:menuItem];
             
