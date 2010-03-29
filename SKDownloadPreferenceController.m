@@ -1,10 +1,10 @@
 //
-//  SKDownloadController.h
+//  SKDownloadPreferenceController.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/11/07.
+//  Created by Christiaan on 3/29/10.
 /*
- This software is Copyright (c) 2007-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,40 +36,27 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
-#import "SKTableView.h"
-#import "SKDownload.h"
+#import "SKDownloadPreferenceController.h"
+#import "NSGeometry_SKExtensions.h"
 
 
-@class SKTableView;
+@implementation SKDownloadPreferenceController
 
-@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, SKDownloadDelegate> {
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKTableView *tableView;
-    IBOutlet NSButton *clearButton;
-    IBOutlet NSButton *prefButton;
-    NSMutableArray *downloads;
+- (NSString *)windowNibName {
+    return @"DownloadPreferenceSheet";
 }
 
-+ (id)sharedDownloadController;
-
-+ (NSImage *)cancelImage;
-+ (NSImage *)deleteImage;
-+ (NSImage *)resumeImage;
-
-- (SKDownload *)addDownloadForURL:(NSURL *)aURL;
-
-- (IBAction)clearDownloads:(id)sender;
-- (IBAction)removeDownload:(id)sender;
-- (IBAction)cancelDownload:(id)sender;
-
-- (IBAction)showDownloadPreferences:(id)sender;
-
-- (NSArray *)downloads;
-- (NSUInteger)countOfDownloads;
-- (SKDownload *)objectInDownloadsAtIndex:(NSUInteger)anIndex;
-- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
-- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
+- (void)windowDidLoad {
+    SKAutoSizeRightButtons([NSArray arrayWithObjects:doneButton, nil]);
+    
+    NSRect frame = [[self window] frame];
+    frame.size.width = 0.0;
+    for (NSButton *button in checkButtons) {
+        [button sizeToFit];
+        frame.size.width = fmax(NSWidth(frame), NSMaxX([button frame]));
+    }
+    frame.size.width += 18.0;
+    [[self window] setFrame:frame display:NO];
+}
 
 @end
