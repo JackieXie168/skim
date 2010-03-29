@@ -1,5 +1,5 @@
 //
-//  SKMainWindowController_Toolbar.m
+//  SKMainToolbarController.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/2/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKMainWindowController_Toolbar.h"
+#import "SKMainToolbarController.h"
 #import "SKMainWindowController.h"
 #import "SKToolbarItem.h"
 #import "NSSegmentedControl_SKExtensions.h"

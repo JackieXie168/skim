@@ -39,7 +39,7 @@
 #import "SKMainWindowController_UI.h"
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
-#import "SKMainWindowController_Toolbar.h"
+#import "SKMainToolbarController.h"
 #import "SKFindTableView.h"
 #import "SKPDFView.h"
 #import "SKStatusBar.h"

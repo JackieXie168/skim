@@ -1,5 +1,5 @@
 //
-//  SKMainWindowController_Toolbar.h
+//  SKMainToolbarController.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/2/08.
