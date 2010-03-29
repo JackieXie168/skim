@@ -165,7 +165,6 @@
             [item setToolTip:NSLocalizedString(@"Previous/Next", @"Tool tip message")];
             [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
             [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
-            [previousNextPageButton setAction:@selector(goToPreviousNextFirstLastPage:)];
             [previousNextPageButton setTarget:mainController];
             [item setViewWithSizes:previousNextPageButton];
             [item setMenuFormRepresentation:menuItem];
@@ -180,7 +179,6 @@
             [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
             [previousPageButton setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
             [previousPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
-            [previousPageButton setAction:@selector(goToPreviousNextFirstLastPage:)];
             [previousPageButton setTarget:mainController];
             [item setViewWithSizes:previousPageButton];
             [item setMenuFormRepresentation:menuItem];
@@ -196,7 +194,6 @@
             [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
             [nextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
             [nextPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
-            [nextPageButton setAction:@selector(goToPreviousNextFirstLastPage:)];
             [nextPageButton setTarget:mainController];
             [item setViewWithSizes:nextPageButton];
             [item setMenuFormRepresentation:menuItem];
@@ -216,7 +213,6 @@
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:2];
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:3];
-            [previousNextFirstLastPageButton setAction:@selector(goToPreviousNextFirstLastPage:)];
             [previousNextFirstLastPageButton setTarget:mainController];
             [item setViewWithSizes:previousNextFirstLastPageButton];
             [item setMenuFormRepresentation:menuItem];
@@ -232,7 +228,6 @@
             [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
             [backForwardButton setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
             [backForwardButton setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
-            [backForwardButton setAction:@selector(goBackOrForward:)];
             [backForwardButton setTarget:mainController];
             [item setViewWithSizes:backForwardButton];
             [item setMenuFormRepresentation:menuItem];
@@ -252,7 +247,6 @@
             
             [item setLabels:NSLocalizedString(@"Scale", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Scale", @"Tool tip message")];
-            [scaleField setAction:@selector(changeScaleFactor:)];
             [scaleField setTarget:mainController];
             [item setViewWithSizes:scaleField];
             [item setMenuFormRepresentation:menuItem];
@@ -263,7 +257,6 @@
             
             [item setLabels:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
-            [zoomActualButton setAction:@selector(doZoomToActualSize:)];
             [zoomActualButton setTarget:mainController];
             [item setViewWithSizes:zoomActualButton];
             [item setMenuFormRepresentation:menuItem];
@@ -274,7 +267,6 @@
             
             [item setLabels:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
-            [zoomFitButton setAction:@selector(doZoomToFit:)];
             [zoomFitButton setTarget:mainController];
             [item setViewWithSizes:zoomFitButton];
             [item setMenuFormRepresentation:menuItem];
@@ -285,7 +277,6 @@
             
             [item setLabels:NSLocalizedString(@"Zoom To Selection", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Selection", @"Tool tip message")];
-            [zoomSelectionButton setAction:@selector(doZoomToSelection:)];
             [zoomSelectionButton setTarget:mainController];
             [item setViewWithSizes:zoomSelectionButton];
             [item setMenuFormRepresentation:menuItem];
@@ -301,7 +292,6 @@
             [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
             [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
             [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
-            [zoomInOutButton setAction:@selector(zoomInActualOut:)];
             [zoomInOutButton setTarget:mainController];
             [item setViewWithSizes:zoomInOutButton];
             [item setMenuFormRepresentation:menuItem];
@@ -319,7 +309,6 @@
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
-            [zoomInActualOutButton setAction:@selector(zoomInActualOut:)];
             [zoomInActualOutButton setTarget:mainController];
             [item setViewWithSizes:zoomInActualOutButton];
             [item setMenuFormRepresentation:menuItem];
@@ -330,7 +319,6 @@
             
             [item setLabels:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
-            [rotateRightButton setAction:@selector(rotateAllRight:)];
             [rotateRightButton setTarget:mainController];
             [item setViewWithSizes:rotateRightButton];
             
@@ -340,7 +328,6 @@
             
             [item setLabels:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Left", @"Tool tip message")];
-            [rotateLeftButton setAction:@selector(rotateAllLeft:)];
             [rotateLeftButton setTarget:mainController];
             [item setViewWithSizes:rotateLeftButton];
             [item setMenuFormRepresentation:menuItem];
@@ -351,7 +338,6 @@
             
             [item setLabels:NSLocalizedString(@"Rotate", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Left or Right", @"Tool tip message")];
-            [rotateLeftRightButton setAction:@selector(rotateAllLeftRight:)];
             [rotateLeftRightButton setTarget:mainController];
             [item setViewWithSizes:rotateLeftRightButton];
             [item setMenuFormRepresentation:menuItem];
@@ -362,7 +348,6 @@
             
             [item setLabels:NSLocalizedString(@"Crop", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Crop", @"Tool tip message")];
-            [cropButton setAction:@selector(cropAll:)];
             [cropButton setTarget:mainController];
             [item setViewWithSizes:cropButton];
             [item setMenuFormRepresentation:menuItem];
@@ -373,7 +358,6 @@
             
             [item setLabels:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
-            [fullScreenButton setAction:@selector(toggleFullScreen:)];
             [fullScreenButton setTarget:mainController];
             [item setViewWithSizes:fullScreenButton];
             [item setMenuFormRepresentation:menuItem];
@@ -384,7 +368,6 @@
             
             [item setLabels:NSLocalizedString(@"Presentation", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
-            [presentationButton setAction:@selector(togglePresentation:)];
             [presentationButton setTarget:mainController];
             [item setViewWithSizes:presentationButton];
             [item setMenuFormRepresentation:menuItem];
@@ -403,7 +386,6 @@
             
             [item setLabels:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
-            [textNoteButton setAction:@selector(createNewTextNote:)];
             [textNoteButton setTarget:mainController];
             [item setViewWithSizes:textNoteButton];
             [item setMenuFormRepresentation:menuItem];
@@ -422,7 +404,6 @@
             
             [item setLabels:NSLocalizedString(@"Add Shape", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Circle or Box", @"Tool tip message")];
-            [circleNoteButton setAction:@selector(createNewCircleNote:)];
             [circleNoteButton setTarget:mainController];
             [item setViewWithSizes:circleNoteButton];
             [item setMenuFormRepresentation:menuItem];
@@ -443,7 +424,6 @@
             
             [item setLabels:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Markup", @"Tool tip message")];
-            [markupNoteButton setAction:@selector(createNewMarkupNote:)];
             [markupNoteButton setTarget:mainController];
             [item setViewWithSizes:markupNoteButton];
             [item setMenuFormRepresentation:menuItem];
@@ -455,7 +435,6 @@
             [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
             [item setTag:SKLineNote];
-            [lineNoteButton setAction:@selector(createNewLineNote:)];
             [lineNoteButton setTarget:mainController];
             [item setViewWithSizes:lineNoteButton];
             [item setMenuFormRepresentation:menuItem];
@@ -483,7 +462,6 @@
             [noteButton setToolTip:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
             [noteButton setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
             [noteButton setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
-            [noteButton setAction:@selector(createNewNote:)];
             [noteButton setTarget:mainController];
             [item setViewWithSizes:noteButton];
             [item setMenuFormRepresentation:menuItem];
@@ -526,7 +504,6 @@
             [toolModeButton setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
             [toolModeButton setToolTip:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
             [toolModeButton setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
-            [toolModeButton setAction:@selector(changeToolMode:)];
             [toolModeButton setTarget:mainController];
             [item setViewWithSizes:toolModeButton];
             [item setMenuFormRepresentation:menuItem];
@@ -542,7 +519,6 @@
             [item setToolTip:NSLocalizedString(@"Single/Two Pages", @"Tool tip message")];
             [singleTwoUpButton setToolTip:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:0];
             [singleTwoUpButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:1];
-            [singleTwoUpButton setAction:@selector(changeDisplaySinglePages:)];
             [singleTwoUpButton setTarget:mainController];
             [item setViewWithSizes:singleTwoUpButton];
             [item setMenuFormRepresentation:menuItem];
@@ -558,7 +534,6 @@
             [item setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message")];
             [continuousButton setToolTip:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:0];
             [continuousButton setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:1];
-            [continuousButton setAction:@selector(changeDisplayContinuous:)];
             [continuousButton setTarget:mainController];
             [item setViewWithSizes:continuousButton];
             [item setMenuFormRepresentation:menuItem];
@@ -578,7 +553,6 @@
             [displayModeButton setToolTip:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
             [displayModeButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
             [displayModeButton setToolTip:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
-            [displayModeButton setAction:@selector(changeDisplayMode:)];
             [displayModeButton setTarget:mainController];
             [item setViewWithSizes:displayModeButton];
             [item setMenuFormRepresentation:menuItem];
@@ -592,7 +566,6 @@
             
             [item setLabels:NSLocalizedString(@"Display Box", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Display Box", @"Tool tip message")];
-            [displayBoxButton setAction:@selector(changeDisplayBox:)];
             [displayBoxButton setTarget:mainController];
             [item setViewWithSizes:displayBoxButton];
             [item setMenuFormRepresentation:menuItem];
@@ -610,7 +583,6 @@
             
             [item setLabels:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Favorite Colors", @"Tool tip message")];
-            [colorSwatch setAction:@selector(selectColor:)];
             [colorSwatch setTarget:mainController];
             [item setViewWithSizes:colorSwatch];
             [item setMenuFormRepresentation:menuItem];
@@ -650,7 +622,6 @@
             
             [item setLabels:NSLocalizedString(@"Info", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
-            [infoButton setAction:@selector(getInfo:)];
             [infoButton setTarget:mainController];
             [item setViewWithSizes:infoButton];
             [item setMenuFormRepresentation:menuItem];
@@ -661,7 +632,6 @@
             
             [item setLabels:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
-            [leftPaneButton setAction:@selector(toggleLeftSidePane:)];
             [leftPaneButton setTarget:mainController];
             [item setViewWithSizes:leftPaneButton];
             [item setMenuFormRepresentation:menuItem];
@@ -672,7 +642,6 @@
             
             [item setLabels:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
-            [rightPaneButton setAction:@selector(toggleRightSidePane:)];
             [rightPaneButton setTarget:mainController];
             [item setViewWithSizes:rightPaneButton];
             [item setMenuFormRepresentation:menuItem];
@@ -683,6 +652,7 @@
             
             [item setLabels:NSLocalizedString(@"Print", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Print Document", @"Tool tip message")];
+            [printButton setTarget:mainController.document];
             [item setViewWithSizes:printButton];
             [item setMenuFormRepresentation:menuItem];
             
