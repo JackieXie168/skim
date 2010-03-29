@@ -39,6 +39,7 @@
 #import "SKMainWindowController_UI.h"
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
+#import "SKMainWindowController_Toolbar.h"
 #import "SKFindTableView.h"
 #import "SKPDFView.h"
 #import "SKStatusBar.h"
@@ -1316,13 +1317,13 @@ static NSArray *allMainDocumentPDFViews() {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
     } else if (action == @selector(createNewTextNote:)) {
-        [menuItem setState:[textNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[toolbarController.textNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if (action == @selector(createNewCircleNote:)) {
-        [menuItem setState:[circleNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[toolbarController.circleNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if (action == @selector(createNewMarkupNote:)) {
-        [menuItem setState:[markupNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[toolbarController.markupNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && [[pdfView currentSelection] hasCharacters];
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
@@ -1506,8 +1507,8 @@ static NSArray *allMainDocumentPDFViews() {
 #pragma mark Notification handlers
 
 - (void)handleChangedHistoryNotification:(NSNotification *)notification {
-    [backForwardButton setEnabled:[pdfView canGoBack] forSegment:0];
-    [backForwardButton setEnabled:[pdfView canGoForward] forSegment:1];
+    [toolbarController.backForwardButton setEnabled:[pdfView canGoBack] forSegment:0];
+    [toolbarController.backForwardButton setEnabled:[pdfView canGoForward] forSegment:1];
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
@@ -1522,16 +1523,16 @@ static NSArray *allMainDocumentPDFViews() {
     [self updatePageNumber];
     [self updatePageLabel];
     
-    [previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
-    [previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];
-    [previousPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
-    [previousPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
-    [nextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:0];
-    [nextPageButton setEnabled:[pdfView canGoToLastPage] forSegment:1];
-    [previousNextFirstLastPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
-    [previousNextFirstLastPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
-    [previousNextFirstLastPageButton setEnabled:[pdfView canGoToNextPage] forSegment:2];
-    [previousNextFirstLastPageButton setEnabled:[pdfView canGoToLastPage] forSegment:3];
+    [toolbarController.previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
+    [toolbarController.previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];
+    [toolbarController.previousPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
+    [toolbarController.previousPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
+    [toolbarController.nextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:0];
+    [toolbarController.nextPageButton setEnabled:[pdfView canGoToLastPage] forSegment:1];
+    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
+    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
+    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToNextPage] forSegment:2];
+    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToLastPage] forSegment:3];
     
     [self updateOutlineSelection];
     [self updateNoteSelection];
@@ -1551,35 +1552,35 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [scaleField setDoubleValue:[pdfView scaleFactor] * 100.0];
+    [toolbarController.scaleField setDoubleValue:[pdfView scaleFactor] * 100.0];
     
-    [zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
-    [zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [zoomInActualOutButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
-    [zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
-    [zoomActualButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01];
+    [toolbarController.zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
+    [toolbarController.zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
+    [toolbarController.zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
+    [toolbarController.zoomInActualOutButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [toolbarController.zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
+    [toolbarController.zoomActualButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
-    [toolModeButton selectSegmentWithTag:[pdfView toolMode]];
+    [toolbarController.toolModeButton selectSegmentWithTag:[pdfView toolMode]];
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
-    [displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
+    [toolbarController.displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
     if (notification) // no need to do this when loading the document
         [self resetThumbnails];
 }
 
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
     PDFDisplayMode displayMode = [pdfView displayMode];
-    [displayModeButton selectSegmentWithTag:displayMode];
-    [singleTwoUpButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplaySinglePageContinuous) ? kPDFDisplaySinglePage : kPDFDisplayTwoUp];
-    [continuousButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) ? kPDFDisplaySinglePage : kPDFDisplaySinglePageContinuous];
+    [toolbarController.displayModeButton selectSegmentWithTag:displayMode];
+    [toolbarController.singleTwoUpButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplaySinglePageContinuous) ? kPDFDisplaySinglePage : kPDFDisplayTwoUp];
+    [toolbarController.continuousButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) ? kPDFDisplaySinglePage : kPDFDisplaySinglePageContinuous];
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
-    [toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[pdfView annotationMode]]] forSegment:SKNoteToolMode];
+    [toolbarController.toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[pdfView annotationMode]]] forSegment:SKNoteToolMode];
 }
 
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {

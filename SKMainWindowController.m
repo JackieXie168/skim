@@ -254,8 +254,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)dealloc {
     [self stopObservingNotes:[self notes]];
     SKDESTROY(undoGroupOldPropertiesPerNote);
-    @try { [colorSwatch unbind:@"colors"]; }
-    @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [mainWindow setDelegate:nil];
@@ -284,7 +282,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 	SKDESTROY(fullScreenWindow);
     SKDESTROY(mainWindow);
     SKDESTROY(statusBar);
-    SKDESTROY(toolbarItems);
     SKDESTROY(savedNormalSetup);
     SKDESTROY(progressController);
     SKDESTROY(colorAccessoryView);
@@ -363,7 +360,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self displayNoteViewAnimating:NO];
     
     // Set up the tool bar
-    [self setupToolbar];
+    [toolbarController setupToolbar];
     
     // Set up the window
     // we retain as we might replace it with the full screen window

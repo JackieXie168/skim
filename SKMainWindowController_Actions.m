@@ -39,6 +39,7 @@
 #import "SKMainWindowController_Actions.h"
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
+#import "SKMainWindowController_Toolbar.h"
 #import <Quartz/Quartz.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKStringConstants.h"
@@ -170,10 +171,10 @@
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [textNoteButton tag]) {
-            [textNoteButton setTag:type];
+        if (isButtonClick == NO && type != [toolbarController.textNoteButton tag]) {
+            [toolbarController.textNoteButton setTag:type];
             NSString *imgName = type == SKFreeTextNote ? SKImageNameToolbarAddTextNoteMenu : SKImageNameToolbarAddAnchoredNoteMenu;
-            [textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [toolbarController.textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
 }
@@ -183,10 +184,10 @@
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [circleNoteButton tag]) {
-            [circleNoteButton setTag:type];
+        if (isButtonClick == NO && type != [toolbarController.circleNoteButton tag]) {
+            [toolbarController.circleNoteButton setTag:type];
             NSString *imgName = type == SKCircleNote ? SKImageNameToolbarAddCircleNoteMenu : SKImageNameToolbarAddSquareNoteMenu;
-            [circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [toolbarController.circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
 }
@@ -196,10 +197,10 @@
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [markupNoteButton tag]) {
-            [markupNoteButton setTag:type];
+        if (isButtonClick == NO && type != [toolbarController.markupNoteButton tag]) {
+            [toolbarController.markupNoteButton setTag:type];
             NSString *imgName = type == SKHighlightNote ? SKImageNameToolbarAddHighlightNoteMenu : SKUnderlineNote ? SKImageNameToolbarAddUnderlineNoteMenu : SKImageNameToolbarAddStrikeOutNoteMenu;
-            [markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [toolbarController.markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
 }

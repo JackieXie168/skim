@@ -183,6 +183,7 @@
 		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
 		CE8D12381140303400301B9F /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8D12371140303400301B9F /* FindPanel.xib */; };
+		CE9767901160D65F008DCB8F /* MainToolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE97678E1160D65F008DCB8F /* MainToolbar.strings */; };
 		CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B80491030642400EA8774 /* SKTransitionInfo.m */; };
 		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CE9CB356106597F100182386 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CB355106597F100182386 /* OpenGL.framework */; };
@@ -284,6 +285,7 @@
 		CEF60F9C114C64DB0074ACC4 /* SyncPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F9B114C64DB0074ACC4 /* SyncPreferences.xib */; };
 		CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */; };
 		CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DE11160BDF2001C10C8 /* RightSideView.strings */; };
+		CEF64E361160CBAC001C10C8 /* MainToolbar.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF64E351160CBAC001C10C8 /* MainToolbar.xib */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
@@ -797,6 +799,14 @@
 		CE8BF068115F859A0029020F /* LeftSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftSideView.xib; sourceTree = "<group>"; };
 		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
 		CE8D12371140303400301B9F /* FindPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindPanel.xib; sourceTree = "<group>"; };
+		CE97678F1160D65F008DCB8F /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767911160D66D008DCB8F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767921160D66F008DCB8F /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767931160D671008DCB8F /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767941160D674008DCB8F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767951160D677008DCB8F /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767961160D67A008DCB8F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/MainToolbar.strings; sourceTree = "<group>"; };
+		CE9767971160D67D008DCB8F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/MainToolbar.strings; sourceTree = "<group>"; };
 		CE9B80481030642400EA8774 /* SKTransitionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionInfo.h; sourceTree = "<group>"; };
 		CE9B80491030642400EA8774 /* SKTransitionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTransitionInfo.m; sourceTree = "<group>"; };
 		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
@@ -1133,6 +1143,7 @@
 		CEF64DF01160BE40001C10C8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CEF64DF11160BE48001C10C8 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CEF64DF21160BE52001C10C8 /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/RightSideView.strings; sourceTree = "<group>"; };
+		CEF64E351160CBAC001C10C8 /* MainToolbar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainToolbar.xib; sourceTree = "<group>"; };
 		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
 		CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsController_SKExtensions.h; sourceTree = "<group>"; };
@@ -1378,6 +1389,7 @@
 				CE19445E10627483007E8770 /* MainWindow.xib */,
 				CE8BF068115F859A0029020F /* LeftSideView.xib */,
 				CE8BF06F115F892A0029020F /* RightSideView.xib */,
+				CEF64E351160CBAC001C10C8 /* MainToolbar.xib */,
 				CE19445F10627483007E8770 /* NotesDocument.xib */,
 				CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */,
 				CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */,
@@ -1414,6 +1426,7 @@
 				CEF60D5A114C0DA60074ACC4 /* LineInspector.strings */,
 				CEF60D66114C0DA60074ACC4 /* MainMenu.strings */,
 				CEF60D58114C0DA60074ACC4 /* MainWindow.strings */,
+				CE97678E1160D65F008DCB8F /* MainToolbar.strings */,
 				CEF60D56114C0DA60074ACC4 /* NotesDocument.strings */,
 				CEF60D54114C0DA60074ACC4 /* NotesPanel.strings */,
 				CE0E84C8114D516F00E37F38 /* NotesPreferences.strings */,
@@ -2204,6 +2217,8 @@
 				CE8BF070115F892A0029020F /* RightSideView.xib in Resources */,
 				CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */,
 				CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */,
+				CEF64E361160CBAC001C10C8 /* MainToolbar.xib in Resources */,
+				CE9767901160D65F008DCB8F /* MainToolbar.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2659,6 +2674,21 @@
 				CEB540460F261D1700723C1F /* zh_TW */,
 			);
 			name = ZoomValues.strings;
+			sourceTree = "<group>";
+		};
+		CE97678E1160D65F008DCB8F /* MainToolbar.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE97678F1160D65F008DCB8F /* English */,
+				CE9767911160D66D008DCB8F /* Dutch */,
+				CE9767921160D66F008DCB8F /* French */,
+				CE9767931160D671008DCB8F /* German */,
+				CE9767941160D674008DCB8F /* Italian */,
+				CE9767951160D677008DCB8F /* ru */,
+				CE9767961160D67A008DCB8F /* Spanish */,
+				CE9767971160D67D008DCB8F /* zh_TW */,
+			);
+			name = MainToolbar.strings;
 			sourceTree = "<group>";
 		};
 		CEF60D40114C0DA60074ACC4 /* TransitionSheet.strings */ = {
