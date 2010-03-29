@@ -37,6 +37,8 @@
  */
 
 #import "SKMainWindowController_UI.h"
+#import "SKLeftSideViewController.h"
+#import "SKRightSideViewController.h"
 #import "SKFindTableView.h"
 #import "SKPDFView.h"
 #import "SKStatusBar.h"
@@ -239,7 +241,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         
-        [ownerController setContent:nil];
+        //[ownerController setContent:nil];
+        [leftSideController setMainController:nil];
+        [rightSideController setMainController:nil];
     }
 }
 
@@ -292,7 +296,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
@@ -304,7 +308,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [pboard setPropertyList:[NSArray arrayWithObject:[self draggedFileNameForPage:page]] forType:NSFilesPromisePboardType];
             return YES;
         }
-    } else if ([tv isEqual:snapshotTableView]) {
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
@@ -319,7 +323,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
@@ -333,7 +337,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             if ([[page dataRepresentation] writeToFile:path atomically:YES])
                 return [NSArray arrayWithObjects:[path lastPathComponent], nil];
         }
-    } else if ([tv isEqual:snapshotTableView]) {
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
@@ -355,24 +359,24 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:findTableView] || [[aNotification object] isEqual:groupedFindTableView]) {
+    if ([[aNotification object] isEqual:leftSideController.findTableView] || [[aNotification object] isEqual:leftSideController.groupedFindTableView]) {
         [self updateFindResultHighlights:YES];
         
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
-    } else if ([[aNotification object] isEqual:thumbnailTableView]) {
+    } else if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
         if (mwcFlags.updatingThumbnailSelection == 0) {
-            NSInteger row = [thumbnailTableView selectedRow];
+            NSInteger row = [leftSideController.thumbnailTableView selectedRow];
             if (row != -1)
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
             
             if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
                 [self hideLeftSideWindow];
         }
-    } else if ([[aNotification object] isEqual:snapshotTableView]) {
-        NSInteger row = [snapshotTableView selectedRow];
+    } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
+        NSInteger row = [rightSideController.snapshotTableView selectedRow];
         if (row != -1) {
-            SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+            SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
             if ([[controller window] isVisible])
                 [[controller window] orderFront:self];
         }
@@ -380,7 +384,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)tableView:(NSTableView *)tv commandSelectRow:(NSInteger)row {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:kPDFDisplayBoxCropBox];
         
         rect.origin.y = NSMidY(rect) - 100.0;
@@ -392,7 +396,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
                                      fmin(thumbSize.height, roundedThumbnailSize));
@@ -402,8 +406,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             return cellSize.height;
         else
             return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    } else if ([tv isEqual:snapshotTableView]) {
-        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSSize thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
                                      fmin(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
@@ -417,22 +421,22 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:snapshotTableView]) {
-        NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSArray *controllers = [[rightSideController.snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
         [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObjectsInArray:controllers];
     }
 }
 
 - (BOOL)tableView:(NSTableView *)tv canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:snapshotTableView]) {
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
@@ -443,7 +447,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [pboard setData:pdfData forType:NSPDFPboardType];
             [pboard setData:tiffData forType:NSTIFFPboardType];
         }
-    } else if ([tv isEqual:findTableView]) {
+    } else if ([tv isEqual:leftSideController.findTableView]) {
         NSMutableString *string = [NSMutableString string];
         NSUInteger idx = [rowIndexes firstIndex];
         while (idx != NSNotFound) {
@@ -456,7 +460,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
         [pboard setString:string forType:NSStringPboardType];
-    } else if ([tv isEqual:groupedFindTableView]) {
+    } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
         NSMutableString *string = [NSMutableString string];
         NSUInteger idx = [rowIndexes firstIndex];
         while (idx != NSNotFound) {
@@ -476,48 +480,48 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:thumbnailTableView] || [tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
 }
 
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         return lastViewedPages;
     }
     return nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tv hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if (([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]))
+    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView]))
         return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
     return NO;
 }
 
 - (id<SKPDFToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([tv isEqual:findTableView])
-        return [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-    else if ([tv isEqual:groupedFindTableView])
-        return [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+    if ([tv isEqual:leftSideController.findTableView])
+        return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
+    else if ([tv isEqual:leftSideController.groupedFindTableView])
+        return [[[[[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
     return nil;
 }
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         return pageLabels;
     }
     return nil;
 }
 
 - (void)tableView:(NSTableView *)tv typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
     }
 }
 
 - (void)tableView:(NSTableView *)tv typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
         else
@@ -528,13 +532,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSOutlineView datasource protocol
 
 - (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = [[pdfView document] outlineRoot];
         return [(PDFOutline *)item numberOfChildren];
-    } else if ([ov isEqual:noteOutlineView]) {
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         if (item == nil)
-            return [[noteArrayController arrangedObjects] count];
+            return [[rightSideController.noteArrayController arrangedObjects] count];
         else
             return [[item texts] count];
     }
@@ -542,14 +546,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item{
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = [[pdfView document] outlineRoot];
         id obj = [(PDFOutline *)item childAtIndex:anIndex];
         return obj;
-    } else if ([ov isEqual:noteOutlineView]) {
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         if (item == nil)
-            return [[noteArrayController arrangedObjects] objectAtIndex:anIndex];
+            return [[rightSideController.noteArrayController arrangedObjects] objectAtIndex:anIndex];
         else
             return [[item texts] lastObject];
     }
@@ -557,25 +561,25 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item{
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = [[pdfView document] outlineRoot];
         return ([(PDFOutline *)item numberOfChildren] > 0);
-    } else if ([ov isEqual:noteOutlineView]) {
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [[item texts] count] > 0;
     }
     return NO;
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
         NSString *tcID = [tableColumn identifier];
         if([tcID isEqualToString:LABEL_COLUMNID]) {
             return [(PDFOutline *)item label];
         } else if([tcID isEqualToString:PAGE_COLUMNID]) {
             return [(PDFOutline *)item pageLabel];
         }
-    } else if ([ov isEqual:noteOutlineView]) {
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         if ([tcID isEqualToString:NOTE_COLUMNID])
             return [item type] ? (id)[item string] : (id)[item text];
@@ -590,7 +594,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
             if ([item type] && [object isEqualToString:[item string]] == NO)
                 [item setString:object];
@@ -601,7 +605,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSOutlineView delegate protocol
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
             if ([item type] == nil) {
                 if ([pdfView hideNotes] == NO) {
@@ -620,12 +624,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
         NSArray *sortDescriptors = nil;
         BOOL ascending = YES;
         if ([oldTableColumn isEqual:tableColumn]) {
-            sortDescriptors = [[noteArrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
+            sortDescriptors = [[rightSideController.noteArrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
             ascending = [[sortDescriptors lastObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
@@ -644,7 +648,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
             [ov setHighlightedTableColumn:tableColumn]; 
         }
-        [noteArrayController setSortDescriptors:sortDescriptors];
+        [rightSideController.noteArrayController setSortDescriptors:sortDescriptors];
         [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
                 inTableColumn:tableColumn];
         [ov reloadData];
@@ -653,7 +657,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
-	if ([[notification object] isEqual:outlineView] && (mwcFlags.updatingOutlineSelection == 0)){
+	if ([[notification object] isEqual:leftSideController.tocOutlineView] && (mwcFlags.updatingOutlineSelection == 0)){
         mwcFlags.updatingOutlineSelection = 1;
         [self goToSelectedOutlineItem:nil];
         mwcFlags.updatingOutlineSelection = 0;
@@ -663,27 +667,27 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
+    if ([ov isEqual:rightSideController.noteOutlineView] && [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         return [item string];
     }
     return nil;
 }
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
-    if ([[notification object] isEqual:outlineView]) {
+    if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
         [self updateOutlineSelection];
     }
 }
 
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification{
-    if ([[notification object] isEqual:outlineView]) {
+    if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
         [self updateOutlineSelection];
     }
 }
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
         return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
     }
@@ -691,7 +695,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         return YES;
     }
     return NO;
@@ -715,7 +719,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items  {
-    if ([ov isEqual:noteOutlineView] && [items count]) {
+    if ([ov isEqual:rightSideController.noteOutlineView] && [items count]) {
         for (PDFAnnotation *item in [self noteItems:items])
             [pdfView removeAnnotation:item];
         [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
@@ -723,14 +727,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items  {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [items count] > 0;
     }
     return NO;
 }
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
-    if ([ov isEqual:noteOutlineView] && [items count]) {
+    if ([ov isEqual:rightSideController.noteOutlineView] && [items count]) {
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSMutableArray *types = [NSMutableArray array];
         NSData *noteData = nil;
@@ -774,14 +778,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [items count] > 0;
     }
     return NO;
 }
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
         NSMutableArray *array = [NSMutableArray array];
         
         for (NSNumber *rowNumber in lastViewedPages) {
@@ -796,13 +800,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView])
+    if ([ov isEqual:leftSideController.tocOutlineView])
         return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
     return NO;
 }
 
 - (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView])
+    if ([ov isEqual:leftSideController.tocOutlineView])
         return [item destination];
     return nil;
 }
@@ -816,45 +820,45 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([ov isEqual:noteOutlineView]) {
-        NSInteger i, count = [noteOutlineView numberOfRows];
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        NSInteger i, count = [rightSideController.noteOutlineView numberOfRows];
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) {
-            id item = [noteOutlineView itemAtRow:i];
+            id item = [rightSideController.noteOutlineView itemAtRow:i];
             NSString *string = [item string];
             [texts addObject:string ?: @""];
         }
         return texts;
-    } else if ([ov isEqual:outlineView]) {
-        NSInteger i, count = [outlineView numberOfRows];
+    } else if ([ov isEqual:leftSideController.tocOutlineView]) {
+        NSInteger i, count = [leftSideController.tocOutlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
-            [array addObject:[[(PDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
+            [array addObject:[[(PDFOutline *)[leftSideController.tocOutlineView itemAtRow:i] label] lossyASCIIString]];
         return array;
     }
     return nil;
 }
 
 - (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
-    if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
-    } else if ([ov isEqual:outlineView]) {
+    } else if ([ov isEqual:leftSideController.tocOutlineView]) {
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
     }
 }
 
 - (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
+    if ([typeSelectHelper isEqual:[leftSideController.thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
         else
             [self updateLeftStatus];
-    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+    } else if ([typeSelectHelper isEqual:[rightSideController.noteOutlineView typeSelectHelper]]) {
         if (searchString)
             [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
         else
             [self updateRightStatus];
-    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+    } else if ([typeSelectHelper isEqual:[leftSideController.tocOutlineView typeSelectHelper]]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString]];
         else
@@ -865,7 +869,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark Contextual menus
 
 - (void)copyPage:(id)sender {
-    [self tableView:thumbnailTableView copyRowsWithIndexes:[sender representedObject]];
+    [self tableView:leftSideController.thumbnailTableView copyRowsWithIndexes:[sender representedObject]];
 }
 
 - (void)deleteSnapshot:(id)sender {
@@ -889,18 +893,18 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)deleteNotes:(id)sender {
-    [self outlineView:noteOutlineView deleteItems:[sender representedObject]];
+    [self outlineView:rightSideController.noteOutlineView deleteItems:[sender representedObject]];
 }
 
 - (void)copyNotes:(id)sender {
-    [self outlineView:noteOutlineView copyItems:[sender representedObject]];
+    [self outlineView:rightSideController.noteOutlineView copyItems:[sender representedObject]];
 }
 
 - (void)editNoteFromTable:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
-    NSInteger row = [noteOutlineView rowForItem:annotation];
-    [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    [noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
+    NSInteger row = [rightSideController.noteOutlineView rowForItem:annotation];
+    [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [rightSideController.noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
 }
 
 - (void)deselectNote:(id)sender {
@@ -919,10 +923,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)autoSizeNoteRows:(id)sender {
-    CGFloat height, rowHeight = [noteOutlineView rowHeight];
-    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
+    CGFloat height, rowHeight = [rightSideController.noteOutlineView rowHeight];
+    NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = [noteOutlineView indentationPerLevel];
+    CGFloat indentation = [rightSideController.noteOutlineView indentationPerLevel];
     CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSRect rect = NSMakeRect(0, CGFLOAT_MAX, width, CGFLOAT_MAX);
     NSRect smallRect = NSMakeRect(0, CGFLOAT_MAX, width - indentation, CGFLOAT_MAX);
@@ -946,7 +950,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [rowHeights setFloat:fmax(height, rowHeight) + 2.0 forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
-    [noteOutlineView reloadData];
+    [rightSideController.noteOutlineView reloadData];
 }
 
 - (void)resetHeightOfNoteRows:(id)sender {
@@ -957,22 +961,22 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         for (id item in items)
             [rowHeights removeFloatForKey:item];
     }
-    [noteOutlineView reloadData];
+    [rightSideController.noteOutlineView reloadData];
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     NSMenuItem *item = nil;
     [menu removeAllItems];
-    if ([menu isEqual:[thumbnailTableView menu]]) {
-        NSInteger row = [thumbnailTableView clickedRow];
+    if ([menu isEqual:[leftSideController.thumbnailTableView menu]]) {
+        NSInteger row = [leftSideController.thumbnailTableView clickedRow];
         if (row != -1) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) target:self];
             [item setRepresentedObject:[NSIndexSet indexSetWithIndex:row]];
         }
-    } else if ([menu isEqual:[snapshotTableView menu]]) {
-        NSInteger row = [snapshotTableView clickedRow];
+    } else if ([menu isEqual:[rightSideController.snapshotTableView menu]]) {
+        NSInteger row = [rightSideController.snapshotTableView clickedRow];
         if (row != -1) {
-            SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+            SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
             item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) target:self];
             [item setRepresentedObject:controller];
             item = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(showSnapshot:) target:self];
@@ -982,24 +986,24 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 [item setRepresentedObject:controller];
             }
         }
-    } else if ([menu isEqual:[noteOutlineView menu]]) {
+    } else if ([menu isEqual:[rightSideController.noteOutlineView menu]]) {
         NSMutableArray *items = [NSMutableArray array];
-        NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
-        NSInteger row = [noteOutlineView clickedRow];
+        NSIndexSet *rowIndexes = [rightSideController.noteOutlineView selectedRowIndexes];
+        NSInteger row = [rightSideController.noteOutlineView clickedRow];
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
             NSUInteger rowIdx = [rowIndexes firstIndex];
             while (rowIdx != NSNotFound) {
-                [items addObject:[noteOutlineView itemAtRow:rowIdx]];
+                [items addObject:[rightSideController.noteOutlineView itemAtRow:rowIdx]];
                 rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
             }
             
-            if ([self outlineView:noteOutlineView canDeleteItems:items]) {
+            if ([self outlineView:rightSideController.noteOutlineView canDeleteItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) target:self];
                 [item setRepresentedObject:items];
             }
-            if ([self outlineView:noteOutlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+            if ([self outlineView:rightSideController.noteOutlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
                 [item setRepresentedObject:items];
             }
@@ -1040,7 +1044,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSControl delegate protocol
 
 - (void)controlTextDidBeginEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView]) {
+    if ([[note object] isEqual:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable == NO && mwcFlags.isEditingPDF == NO)
             [[self document] objectDidBeginEditing:self];
         mwcFlags.isEditingTable = YES;
@@ -1048,7 +1052,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView]) {
+    if ([[note object] isEqual:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable && mwcFlags.isEditingPDF == NO)
             [[self document] objectDidEndEditing:self];
         mwcFlags.isEditingTable = NO;
@@ -1069,15 +1073,15 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSEditor protocol
 
 - (void)discardEditing {
-    [noteOutlineView abortEditing];
+    [rightSideController.noteOutlineView abortEditing];
     [pdfView discardEditing];
 }
 
 - (BOOL)commitEditing {
     if ([pdfView isEditing])
         return [pdfView commitEditing];
-    if ([noteOutlineView editedRow] != -1)
-        return [[noteOutlineView window] makeFirstResponder:noteOutlineView];
+    if ([rightSideController.noteOutlineView editedRow] != -1)
+        return [[rightSideController.noteOutlineView window] makeFirstResponder:rightSideController.noteOutlineView];
     return YES;
 }
 
@@ -1435,7 +1439,7 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
-        [menuItem setState:mwcFlags.leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
+        [menuItem setState:mwcFlags.leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([leftSideController.findTableView window] || [leftSideController.groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
         return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || [[pdfView document] outlineRoot];
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:mwcFlags.rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
@@ -1512,8 +1516,8 @@ static NSArray *allMainDocumentPDFViews() {
     [lastViewedPages insertObject:[NSNumber numberWithUnsignedInteger:[page pageIndex]] atIndex:0];
     if ([lastViewedPages count] > 5)
         [lastViewedPages removeLastObject];
-    [thumbnailTableView setNeedsDisplay:YES];
-    [outlineView setNeedsDisplay:YES];
+    [leftSideController.thumbnailTableView setNeedsDisplay:YES];
+    [leftSideController.tocOutlineView setNeedsDisplay:YES];
     
     [self updatePageNumber];
     [self updatePageLabel];
@@ -1613,12 +1617,12 @@ static NSArray *allMainDocumentPDFViews() {
     }
     if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation] == NO) {
-            [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
+            [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
     } else {
-        [noteOutlineView deselectAll:self];
+        [rightSideController.noteOutlineView deselectAll:self];
     }
-    [noteOutlineView reloadData];
+    [rightSideController.noteOutlineView reloadData];
     [self updateRightStatus];
 }
 
@@ -1629,9 +1633,9 @@ static NSArray *allMainDocumentPDFViews() {
     if ([annotation isSkimNote]) {
         mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] addObject:annotation];
-        [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+        [rightSideController.noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
         mwcFlags.updatingNoteSelection = 0;
-        [noteOutlineView reloadData];
+        [rightSideController.noteOutlineView reloadData];
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
@@ -1649,7 +1653,7 @@ static NSArray *allMainDocumentPDFViews() {
     
     if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation])
-            [noteOutlineView deselectAll:self];
+            [rightSideController.noteOutlineView deselectAll:self];
         
         for (NSWindowController *wc in [[self document] windowControllers]) {
             if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation) {
@@ -1660,9 +1664,9 @@ static NSArray *allMainDocumentPDFViews() {
         
         mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] removeObject:annotation];
-        [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+        [rightSideController.noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
         mwcFlags.updatingNoteSelection = 0;
-        [noteOutlineView reloadData];
+        [rightSideController.noteOutlineView reloadData];
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
@@ -1690,8 +1694,8 @@ static NSArray *allMainDocumentPDFViews() {
         [secondaryPdfView setNeedsDisplay:YES];
     }
     
-    [noteArrayController rearrangeObjects];
-    [noteOutlineView reloadData];
+    [rightSideController.noteArrayController rearrangeObjects];
+    [rightSideController.noteOutlineView reloadData];
 }
 
 - (void)handleReadingBarDidChangeNotification:(NSNotification *)notification {

@@ -39,6 +39,8 @@
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Toolbar.h"
 #import "SKMainWindowController_UI.h"
+#import "SKLeftSideViewController.h"
+#import "SKRightSideViewController.h"
 #import <Quartz/Quartz.h>
 #import <Carbon/Carbon.h>
 #import "SKStringConstants.h"
@@ -239,7 +241,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
-        mwcFlags.isAnimating = 0;
         mwcFlags.updatingColor = 0;
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
@@ -259,18 +260,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self unregisterAsObserver];
     [mainWindow setDelegate:nil];
     [fullScreenWindow setDelegate:nil];
-    [thumbnailTableView setDelegate:nil];
-    [thumbnailTableView setDataSource:nil];
-    [snapshotTableView setDelegate:nil];
-    [snapshotTableView setDataSource:nil];
-    [findTableView setDelegate:nil];
-    [findTableView setDataSource:nil];
-    [groupedFindTableView setDelegate:nil];
-    [groupedFindTableView setDataSource:nil];
-    [outlineView setDelegate:nil];
-    [outlineView setDataSource:nil];
-    [noteOutlineView setDelegate:nil];
-    [noteOutlineView setDataSource:nil];
     [splitView setDelegate:nil];
     [pdfSplitView setDelegate:nil];
     [pdfView setDelegate:nil];
@@ -306,8 +295,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     SKDESTROY(pdfSplitView);
     SKDESTROY(secondaryPdfContentView);
     SKDESTROY(presentationNotesDocument);
-    SKDESTROY(leftSideButton);
-    SKDESTROY(findButton);
     SKDESTROY(noteTypeSheetController);
     [super dealloc];
 }
@@ -319,28 +306,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     mwcFlags.settingUpWindow = 1;
     
     // Set up the panes and subviews, needs to be done before we resize them
-    
-    [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [leftSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([leftSideCollapsibleView frame]))];
-    
-    [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
-    
-    [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-    [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-    
     [pdfSplitView setFrame:[centerContentView bounds]];
     [centerContentView addSubview:pdfSplitView];
-    
-    [leftSideButton retain];
-    [findButton retain];
-    
-    [leftSideButton setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
-    [leftSideButton setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
-    [rightSideButton setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
-    [rightSideButton setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
-    [findButton setToolTip:NSLocalizedString(@"Separate search results", @"Tool tip message") forSegment:SKSingularFindPaneState];
-    [findButton setToolTip:NSLocalizedString(@"Group search results by page", @"Tool tip message") forSegment:SKGroupedFindPaneState];
     
     // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
     [leftSideContentView setAutoresizesSubviews:YES];
@@ -348,61 +315,52 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [centerContentView setAutoresizesSubviews:YES];
     [pdfContentView setAutoresizesSubviews:YES];
     
+    // make sure the first thing we call on the side view controllers is its view so their nib is loaded
     NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
     rect.size.height -= 1;
-    [leftSideView setFrame:rect];
-    [leftSideContentView addSubview:leftSideView];
+    [[leftSideController view] setFrame:rect];
+    [leftSideContentView addSubview:leftSideController.view];
     NSInsetRect([rightSideContentView bounds], -1, -1);
-    [rightSideView setFrame:rect];
+    [[rightSideController view] setFrame:rect];
     rect.size.height -= 1;
-    [rightSideContentView addSubview:rightSideView];
+    [rightSideContentView addSubview:rightSideController.view];
     
-    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Whole Words Only", @"Menu item title") action:@selector(toggleWholeWordSearch:) target:self];
-    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
-    [[searchField cell] setSearchMenuTemplate:menu];
-    [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
+    [leftSideController.searchField setAction:@selector(search:)];
+    [leftSideController.searchField setTarget:self];
+    [rightSideController.searchField setAction:@selector(searchNotes:)];
+    [rightSideController.searchField setTarget:self];
     
-    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:self];
-    [[noteSearchField cell] setSearchMenuTemplate:menu];
-    [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
-    
-    [[noteOutlineView tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
-    
-    [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
-    [noteOutlineView setTarget:self];
-    [outlineView setDoubleAction:@selector(goToSelectedOutlineItem:)];
-    [outlineView setTarget:self];
-    [snapshotTableView setDoubleAction:@selector(toggleSelectedSnapshots:)];
-    [snapshotTableView setTarget:self];
-    [findTableView setDoubleAction:@selector(goToSelectedFindResults:)];
-    [findTableView setTarget:self];
-    [groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
-    [groupedFindTableView setTarget:self];
-    
-    [pdfView setFrame:[pdfContentView bounds]];
+    [rightSideController.noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
+    [rightSideController.noteOutlineView setTarget:self];
+    [leftSideController.tocOutlineView setDoubleAction:@selector(goToSelectedOutlineItem:)];
+    [leftSideController.tocOutlineView setTarget:self];
+    [rightSideController.snapshotTableView setDoubleAction:@selector(toggleSelectedSnapshots:)];
+    [rightSideController.snapshotTableView setTarget:self];
+    [leftSideController.findTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [leftSideController.findTableView setTarget:self];
+    [leftSideController.groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [leftSideController.groupedFindTableView setTarget:self];
     
     if (mwcFlags.usesDrawers) {
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
         [leftSideDrawer setParentWindow:[self window]];
         [leftSideDrawer setContentView:leftSideContentView];
-        [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+        [leftSideController.edgeView setEdges:BDSKNoEdgeMask];
         [leftSideDrawer openOnEdge:NSMinXEdge];
         [leftSideDrawer setDelegate:self];
         rightSideDrawer = [[NSDrawer alloc] initWithContentSize:[rightSideContentView frame].size preferredEdge:NSMaxXEdge];
         [rightSideDrawer setParentWindow:[self window]];
         [rightSideDrawer setContentView:rightSideContentView];
-        [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+        [rightSideController.edgeView setEdges:BDSKNoEdgeMask];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [rightSideDrawer setDelegate:self];
         [centerContentView setFrame:[splitView bounds]];
     }
     
-    [outlineView setAutoresizesOutlineColumn: NO];
-    [noteOutlineView setAutoresizesOutlineColumn: NO];
-    [self displayThumbnailView];
-    [self displayNoteView];
+    //[outlineView setAutoresizesOutlineColumn: NO];
+    //[noteOutlineView setAutoresizesOutlineColumn: NO];
+    [self displayThumbnailViewAnimating:NO];
+    [self displayNoteViewAnimating:NO];
     
     // Set up the tool bar
     [self setupToolbar];
@@ -451,13 +409,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // this needs to be done before loading the PDFDocument
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease];
-    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
-    [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
-    [ownerController setContent:self];
+    [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
+    [rightSideController.snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     
     NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
-    [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
-    [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
+    [leftSideController.groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
+    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
         
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
@@ -470,7 +427,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (hasOutline)
         [self setLeftSidePaneState:SKOutlineSidePaneState];
     else
-        [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
+        [leftSideController.button setEnabled:NO forSegment:SKOutlineSidePaneState];
     
     // Due to a bug in Leopard we should only resize and swap in the PDFView after loading the PDFDocument
     [pdfView setFrame:[pdfContentView bounds]];
@@ -500,16 +457,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
     [noteTypeSheetController setDelegate:self];
-    [[noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
+    [[rightSideController.noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
-    // typeSelectHelpers
-    SKTypeSelectHelper *typeSelectHelper = [SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch];
-    [typeSelectHelper setMatchesImmediately:NO];
-    [typeSelectHelper setCyclesSimilarResults:NO];
-    [thumbnailTableView setTypeSelectHelper:typeSelectHelper];
-    [pdfView setTypeSelectHelper:typeSelectHelper];
-    [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
-    [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+    [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
     [[self window] recalculateKeyViewLoop];
     [[self window] makeFirstResponder:pdfView];
@@ -691,40 +641,40 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [self updatePageLabel];
     
-    [self updatePageColumnWidthForTableView:thumbnailTableView];
-    [self updatePageColumnWidthForTableView:snapshotTableView];
-    [self updatePageColumnWidthForTableView:outlineView];
-    [self updatePageColumnWidthForTableView:noteOutlineView];
-    [self updatePageColumnWidthForTableView:findTableView];
-    [self updatePageColumnWidthForTableView:groupedFindTableView];
+    [self updatePageColumnWidthForTableView:leftSideController.thumbnailTableView];
+    [self updatePageColumnWidthForTableView:rightSideController.snapshotTableView];
+    [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
+    [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
+    [self updatePageColumnWidthForTableView:leftSideController.findTableView];
+    [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
     
     // this uses the pageLabels
-    [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
+    [[leftSideController.thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
     
     // these carry a label, moreover when this is called the thumbnails will also be invalid
     [self resetThumbnails];
     [self allSnapshotsNeedUpdate];
-    [noteOutlineView reloadData];
+    [rightSideController.noteOutlineView reloadData];
     
     mwcFlags.updatingOutlineSelection = 1;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
-    [outlineView reloadData];
-    NSUInteger i, iMax = [outlineView numberOfRows];
+    [leftSideController.tocOutlineView reloadData];
+    NSUInteger i, iMax = [leftSideController.tocOutlineView numberOfRows];
 	for (i = 0; i < iMax; i++) {
-		PDFOutline *item = [outlineView itemAtRow:i];
+		PDFOutline *item = [leftSideController.tocOutlineView itemAtRow:i];
 		if ([item isOpen])
-			[outlineView expandItem:item];
+			[leftSideController.tocOutlineView expandItem:item];
 	}
     mwcFlags.updatingOutlineSelection = 0;
     [self updateOutlineSelection];
     
     // handle the case as above where the outline has disappeared in a reload situation
-    if (nil == [[pdfView document] outlineRoot] && currentLeftSideView == tocView) {
-        [self fadeInThumbnailView];
-        [leftSideButton setSelectedSegment:SKThumbnailSidePaneState];
+    if (nil == [[pdfView document] outlineRoot] && leftSideController.currentView == leftSideController.tocView) {
+        [self displayThumbnailViewAnimating:YES];
+        [leftSideController.button setSelectedSegment:SKThumbnailSidePaneState];
     }
 
-    [leftSideButton setEnabled:[[pdfView document] outlineRoot] != nil forSegment:SKOutlineSidePaneState];
+    [leftSideController.button setEnabled:[[pdfView document] outlineRoot] != nil forSegment:SKOutlineSidePaneState];
 }
 
 - (SKProgressController *)progressController {
@@ -860,7 +810,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     // make sure we clear the undo handling
     [self observeUndoManagerCheckpoint:nil];
-    [noteOutlineView reloadData];
+    [rightSideController.noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
     [pdfView resetPDFToolTipRects];
 }
@@ -948,15 +898,15 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (mwcFlags.leftSidePaneState != newLeftSidePaneState) {
         mwcFlags.leftSidePaneState = newLeftSidePaneState;
         
-        if ([searchField stringValue] && [[searchField stringValue] isEqualToString:@""] == NO) {
-            [searchField setStringValue:@""];
+        if ([leftSideController.searchField stringValue] && [[leftSideController.searchField stringValue] isEqualToString:@""] == NO) {
+            [leftSideController.searchField setStringValue:@""];
             [self removeTemporaryAnnotations];
         }
         
         if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
-            [self displayThumbnailView];
+            [self displayThumbnailViewAnimating:NO];
         else if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState)
-            [self displayOutlineView];
+            [self displayTocViewAnimating:NO];
     }
 }
 
@@ -969,9 +919,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         mwcFlags.rightSidePaneState = newRightSidePaneState;
         
         if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
-            [self displayNoteView];
+            [self displayNoteViewAnimating:NO];
         else if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState)
-            [self displaySnapshotView];
+            [self displaySnapshotViewAnimating:NO];
     }
 }
 
@@ -984,11 +934,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         mwcFlags.findPaneState = newFindPaneState;
         
         if (mwcFlags.findPaneState == SKSingularFindPaneState) {
-            if ([groupedFindView window])
-                [self displaySearchView];
+            if ([leftSideController.groupedFindView window])
+                [self displayFindViewAnimating:NO];
         } else if (mwcFlags.findPaneState == SKGroupedFindPaneState) {
-            if ([findView window])
-                [self displayGroupedSearchView];
+            if ([leftSideController.findView window])
+                [self displayGroupedFindViewAnimating:NO];
         }
         [self updateFindResultHighlights:YES];
     }
@@ -1082,7 +1032,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [notes removeAllObjects];
         
         [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
-        [noteOutlineView reloadData];
+        [rightSideController.noteOutlineView reloadData];
     }
 }
 
@@ -1153,11 +1103,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (NSArray *)selectedNotes {
     NSMutableArray *selectedNotes = [NSMutableArray array];
-    NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
+    NSIndexSet *rowIndexes = [rightSideController.noteOutlineView selectedRowIndexes];
     NSUInteger row = [rowIndexes firstIndex];
     id item = nil;
     while (row != NSNotFound) {
-        item = [noteOutlineView itemAtRow:row];
+        item = [rightSideController.noteOutlineView itemAtRow:row];
         if ([item type] == nil)
             item = [(SKNoteText *)item note];
         if ([selectedNotes containsObject:item] == NO)
@@ -1271,23 +1221,23 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (leftSideWindow == nil)
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
     
-    if ([[[leftSideView window] firstResponder] isDescendantOf:leftSideView])
-        [[leftSideView window] makeFirstResponder:nil];
-    [leftSideWindow setMainView:leftSideView];
+    if ([[[leftSideController.view window] firstResponder] isDescendantOf:leftSideController.view])
+        [[leftSideController.view window] makeFirstResponder:nil];
+    [leftSideWindow setMainView:leftSideController.view];
     
     if (mwcFlags.usesDrawers == 0)
-        [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+        [leftSideController.edgeView setEdges:BDSKNoEdgeMask];
     
     if ([self isPresentation]) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
-        [leftSideWindow makeFirstResponder:thumbnailTableView];
+        [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window] onScreen:screen];
         [leftSideWindow expand];
     } else {
-        [leftSideWindow makeFirstResponder:searchField];
+        [leftSideWindow makeFirstResponder:leftSideController.searchField];
         [leftSideWindow attachToWindow:[self window] onScreen:screen];
     }
 }
@@ -1296,12 +1246,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (rightSideWindow == nil) 
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
     
-    if ([[[rightSideView window] firstResponder] isDescendantOf:rightSideView])
-        [[rightSideView window] makeFirstResponder:nil];
-    [rightSideWindow setMainView:rightSideView];
+    if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
+        [[rightSideController.view window] makeFirstResponder:nil];
+    [rightSideWindow setMainView:rightSideController.view];
     
     if (mwcFlags.usesDrawers == 0)
-        [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+        [rightSideController.edgeView setEdges:BDSKNoEdgeMask];
     
     if ([self isPresentation]) {
         [rightSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
@@ -1314,18 +1264,18 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)hideLeftSideWindow {
-    if ([[leftSideView window] isEqual:leftSideWindow]) {
+    if ([[leftSideController.view window] isEqual:leftSideWindow]) {
         [leftSideWindow orderOut:self];
         
-        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideView])
+        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
         NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
         rect.size.height -= 1;
-        [leftSideView setFrame:rect];
-        [leftSideContentView addSubview:leftSideView];
+        [leftSideController.view setFrame:rect];
+        [leftSideContentView addSubview:leftSideController.view];
         
         if (mwcFlags.usesDrawers == 0) {
-            [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+            [leftSideController.edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         }
         
         if ([self isPresentation]) {
@@ -1337,18 +1287,18 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)hideRightSideWindow {
-    if ([[rightSideView window] isEqual:rightSideWindow]) {
+    if ([[rightSideController.view window] isEqual:rightSideWindow]) {
         [rightSideWindow orderOut:self];
         
-        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideView])
+        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
         NSRect rect = NSInsetRect([rightSideContentView bounds], -1, -1);
         rect.size.height -= 1;
-        [rightSideView setFrame:rect];
-        [rightSideContentView addSubview:rightSideView];
+        [rightSideController.view setFrame:rect];
+        [rightSideContentView addSubview:rightSideController.view];
         
         if (mwcFlags.usesDrawers == 0) {
-            [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+            [rightSideController.edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         }
         
         if ([self isPresentation]) {
@@ -1619,168 +1569,30 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 #pragma mark Swapping tables
 
-- (void)finishTableAnimation:(NSDictionary *)info {
-    NSView *contentView = [info valueForKey:CONTENTVIEW_KEY];
-    NSView *buttonView = [info valueForKey:BUTTONVIEW_KEY];
-    NSView *firstResponder = [info valueForKey:FIRSTRESPONDER_KEY];
-    [contentView setWantsLayer:NO];
-    [buttonView setWantsLayer:NO];
-    [[firstResponder window] makeFirstResponder:firstResponder];
-    [[contentView window] recalculateKeyViewLoop];
-    mwcFlags.isAnimating = 0;
-}
-
-- (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
-    if ([newView window] != nil)
-        return;
-    
-    NSView *oldView = nil;
-    if (newView == noteView || newView == snapshotView) {
-        oldView = currentRightSideView;
-        currentRightSideView = newView;
-    } else {
-        oldView = currentLeftSideView;
-        currentLeftSideView = newView;
-    }
-    
-    BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
-    BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
-    BOOL changeButton = wasFind != isFind;
-    NSSegmentedControl *oldButton = wasFind ? findButton : leftSideButton;
-    NSSegmentedControl *newButton = isFind ? findButton : leftSideButton;
-    NSView *buttonView = [oldButton superview];
-    NSView *contentView = [oldView superview];
-    id firstResponder = [[oldView window] firstResponder];
-    
-    if ([firstResponder isDescendantOf:oldView])
-        firstResponder = [newView nextKeyView];
-    else if (wasFind != isFind && [firstResponder isEqual:oldButton])
-        firstResponder = newButton;
-    else
-        firstResponder = nil;
-
-    if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
-        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
-    
-    if (changeButton)
-        [newButton setFrame:[oldButton frame]];
-    [newView setFrame:[oldView frame]];
-    
-    if (animate == NO) {
-        [contentView replaceSubview:oldView with:newView];
-        if (changeButton)
-            [[oldButton superview] replaceSubview:oldButton with:newButton];
-        [[firstResponder window] makeFirstResponder:firstResponder];
-    } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
-        mwcFlags.isAnimating = 1;
-        
-        [contentView setWantsLayer:YES];
-        [contentView displayIfNeeded];
-        if (changeButton) {
-            [buttonView setWantsLayer:YES];
-            [buttonView displayIfNeeded];
-        }
-        
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:0.7]; 
-        [[contentView animator] replaceSubview:oldView with:newView];
-        if (changeButton)
-            [[buttonView animator] replaceSubview:oldButton with:newButton];
-        [NSAnimationContext endGrouping];
-        
-        NSMutableDictionary *info = [NSMutableDictionary dictionary];
-        if (changeButton)
-            [info setValue:buttonView forKey:BUTTONVIEW_KEY];
-        [info setValue:contentView forKey:CONTENTVIEW_KEY];
-        [info setValue:firstResponder forKey:FIRSTRESPONDER_KEY];
-        
-        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
-    } else {
-        [newView setHidden:YES];
-        [[oldView superview] addSubview:newView];
-        if (changeButton) {
-            [newButton setHidden:YES];
-            [[oldButton superview] addSubview:newButton];
-        }
-        
-        NSArray *viewAnimations = [NSArray arrayWithObjects:
-            [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-            [NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
-        
-        NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:0.7];
-        [animation setAnimationCurve:NSAnimationEaseIn];
-        mwcFlags.isAnimating = 1;
-        [animation startAnimation];
-        mwcFlags.isAnimating = 0;
-        
-        if (changeButton) {
-            viewAnimations = [NSArray arrayWithObjects:
-                [NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-                [NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
-            
-            animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-            [animation setAnimationBlockingMode:NSAnimationBlocking];
-            [animation setDuration:0.3];
-            [animation setAnimationCurve:NSAnimationEaseIn];
-            [animation startAnimation];
-        }
-        
-        [[firstResponder window] makeFirstResponder:firstResponder];
-        [oldView removeFromSuperview];
-        [oldView setHidden:NO];
-        [[newView window] recalculateKeyViewLoop];
-        
-        if (changeButton) {
-            [oldButton removeFromSuperview];
-            [oldButton setHidden:NO];
-        }
-    }
-}
-
-- (void)displayOutlineView {
-    [self replaceSideView:tocView animate:NO];
+- (void)displayTocViewAnimating:(BOOL)animate {
+    [leftSideController replaceSideView:leftSideController.tocView animate:animate];
     [self updateOutlineSelection];
 }
 
-- (void)fadeInOutlineView {
-    [self replaceSideView:tocView animate:YES];
-    [self updateOutlineSelection];
-}
-
-- (void)displayThumbnailView {
-    [self replaceSideView:thumbnailView animate:NO];
+- (void)displayThumbnailViewAnimating:(BOOL)animate {
+    [leftSideController replaceSideView:leftSideController.thumbnailView animate:animate];
     [self updateThumbnailSelection];
 }
 
-- (void)fadeInThumbnailView {
-    [self replaceSideView:thumbnailView animate:YES];
-    [self updateThumbnailSelection];
+- (void)displayFindViewAnimating:(BOOL)animate {
+    [leftSideController replaceSideView:leftSideController.findView animate:animate];
 }
 
-- (void)displaySearchView {
-    [self replaceSideView:findView animate:NO];
+- (void)displayGroupedFindViewAnimating:(BOOL)animate {
+    [leftSideController replaceSideView:leftSideController.groupedFindView animate:animate];
 }
 
-- (void)fadeInSearchView {
-    [self replaceSideView:findView animate:YES];
+- (void)displayNoteViewAnimating:(BOOL)animate {
+    [rightSideController replaceSideView:rightSideController.noteView animate:animate];
 }
 
-- (void)displayGroupedSearchView {
-    [self replaceSideView:groupedFindView animate:NO];
-}
-
-- (void)fadeInGroupedSearchView {
-    [self replaceSideView:groupedFindView animate:YES];
-}
-
-- (void)displayNoteView {
-    [self replaceSideView:noteView animate:NO];
-}
-
-- (void)displaySnapshotView {
-    [self replaceSideView:snapshotView animate:NO];
+- (void)displaySnapshotViewAnimating:(BOOL)animate {
+    [rightSideController replaceSideView:rightSideController.snapshotView animate:animate];
     [self updateSnapshotsIfNeeded];
 }
 
@@ -1858,8 +1670,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (range.location != NSNotFound && range.location > 0)
             string = [string substringWithRange:NSMakeRange(0, range.location)];
     }
-    [searchField setStringValue:string];
-    [self performSelector:@selector(search:) withObject:searchField afterDelay:0.0];
+    [leftSideController.searchField setStringValue:string];
+    [self performSelector:@selector(search:) withObject:leftSideController.searchField afterDelay:0.0];
 }
 
 - (IBAction)search:(id)sender {
@@ -1873,9 +1685,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         // get rid of temporary annotations
         [self removeTemporaryAnnotations];
         if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
-            [self fadeInThumbnailView];
+            [self displayThumbnailViewAnimating:YES];
         else 
-            [self fadeInOutlineView];
+            [self displayTocViewAnimating:YES];
     } else {
         NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
         if (mwcFlags.wholeWordSearch) {
@@ -1889,9 +1701,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [[pdfView document] beginFindString:[sender stringValue] withOptions:options];
         }
         if (mwcFlags.findPaneState == SKSingularFindPaneState)
-            [self fadeInSearchView];
+            [self displayFindViewAnimating:YES];
         else
-            [self fadeInGroupedSearchView];
+            [self displayGroupedFindViewAnimating:YES];
         
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
@@ -1919,8 +1731,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (selection) {
         [pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
-        [findTableView deselectAll:self];
-        [groupedFindTableView deselectAll:self];
+        [leftSideController.findTableView deselectAll:self];
+        [leftSideController.groupedFindTableView deselectAll:self];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
             [self removeTemporaryAnnotations];
             [self addAnnotationsForSelection:selection];
@@ -1997,10 +1809,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)updateFindResultHighlights:(BOOL)scroll {
     NSArray *findResults = nil;
     
-    if (mwcFlags.findPaneState == SKSingularFindPaneState && [findView window])
-        findResults = [findArrayController selectedObjects];
-    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [groupedFindView window])
-        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
+    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findView window])
+        findResults = [leftSideController.findArrayController selectedObjects];
+    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindView window])
+        findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     [self goToFindResults:findResults scrollToVisible:scroll];
 }
 
@@ -2056,10 +1868,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (mwcFlags.findPanelFind == 0) {
         NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
         [self setSearchResults:nil];
-        [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-        [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-        [[groupedFindTableView headerView] setNeedsDisplay:YES];
+        [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
+        [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
+        [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
+        [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
         [self setGroupedSearchResults:nil];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
@@ -2075,10 +1887,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];
-        [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-        [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-        [[groupedFindTableView headerView] setNeedsDisplay:YES];
+        [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
+        [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
+        [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
+        [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
     }
@@ -2213,7 +2025,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)toggleSelectedSnapshots:(id)sender {
     // there should only be a single snapshot
-    SKSnapshotWindowController *controller = [[snapshotArrayController selectedObjects] lastObject];
+    SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController selectedObjects] lastObject];
     
     if ([[controller window] isVisible])
         [controller miniaturize];
@@ -2251,14 +2063,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
-    NSInteger row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
     
-    [snapshotTableView scrollRowToVisible:row];
+    [rightSideController.snapshotTableView scrollRowToVisible:row];
     
-    NSRect rect = [snapshotTableView frameOfCellAtColumn:0 row:row];
+    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
     
-    rect = [snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[snapshotTableView window] convertBaseToScreen:rect.origin];
+    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
     
     return rect;
 }
@@ -2266,11 +2078,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
     [[self document] addWindowController:controller];
     
-    NSInteger row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
-    NSRect rect = [snapshotTableView frameOfCellAtColumn:0 row:row];
+    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
         
-    rect = [snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[snapshotTableView window] convertBaseToScreen:rect.origin];
+    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
     
     return rect;
 }
@@ -2384,22 +2196,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self allSnapshotsNeedUpdate];
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
-                [[searchField stringValue] length] && 
-                (([findView window] && [findTableView numberOfSelectedRows]) || ([groupedFindView window] && [groupedFindTableView numberOfSelectedRows]))) {
+                [[leftSideController.searchField stringValue] length] && 
+                (([leftSideController.findView window] && [leftSideController.findTableView numberOfSelectedRows]) || ([leftSideController.groupedFindView window] && [leftSideController.groupedFindTableView numberOfSelectedRows]))) {
                 // clear the selection
                 [self updateFindResultHighlights:NO];
             }
         } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
-            if ([[searchField stringValue] length] &&  ([findTableView numberOfSelectedRows] || [groupedFindTableView numberOfSelectedRows])) {
+            if ([[leftSideController.searchField stringValue] length] &&  ([leftSideController.findTableView numberOfSelectedRows] || [leftSideController.groupedFindTableView numberOfSelectedRows])) {
                 // clear the selection
                 [self updateFindResultHighlights:NO];
             }
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
-            [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
         } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
             [self resetSnapshotSizeIfNeeded];
-            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
+            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
@@ -2408,8 +2220,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKTableFontSizeKey]) {
             NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-            [outlineView setFont:font];
-            [self updatePageColumnWidthForTableView:outlineView];
+            [leftSideController.tocOutlineView setFont:font];
+            [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
         }
         
     } else if (context == &SKNPDFAnnotationPropertiesObservationContext) {
@@ -2484,8 +2296,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [pdfView resetPDFToolTipRects];
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
-                [noteArrayController rearrangeObjects];
-                [noteOutlineView reloadData];
+                [rightSideController.noteArrayController rearrangeObjects];
+                [rightSideController.noteOutlineView reloadData];
             }
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
@@ -2528,10 +2340,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([[pdfView document] outlineRoot] == nil)
         return -1;
     
-	NSInteger i, numRows = [outlineView numberOfRows];
+	NSInteger i, numRows = [leftSideController.tocOutlineView numberOfRows];
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
-		PDFOutline *outlineItem = [outlineView itemAtRow:i];
+		PDFOutline *outlineItem = [leftSideController.tocOutlineView itemAtRow:i];
         PDFPage *page = [outlineItem page];
 		
         if (page == nil) {
@@ -2558,12 +2370,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     
 	// Test that the current selection is still valid.
-	NSInteger row = [outlineView selectedRow];
-    if (row == -1 || [[[[outlineView itemAtRow:row] destination] page] pageIndex] != pageIndex) {
+	NSInteger row = [leftSideController.tocOutlineView selectedRow];
+    if (row == -1 || [[[[leftSideController.tocOutlineView itemAtRow:row] destination] page] pageIndex] != pageIndex) {
         row = [self outlineRowForPageIndex:pageIndex];
         if (row != -1) {
             mwcFlags.updatingOutlineSelection = 1;
-            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+            [leftSideController.tocOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
             mwcFlags.updatingOutlineSelection = 0;
         }
     }
@@ -2582,11 +2394,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     newSize = [image size];
     if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
-        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
+        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
 }
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
-    if (mwcFlags.isAnimating || [thumbnailTableView isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
+    if ([leftSideController.thumbnailTableView isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
         return NO;
     [self performSelector:@selector(makeImageForThumbnail:) withObject:thumbnail afterDelay:0.0];
     return YES;
@@ -2596,8 +2408,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	// Get index of current page.
 	NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     mwcFlags.updatingThumbnailSelection = 1;
-    [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
-    [thumbnailTableView scrollRowToVisible:pageIndex];
+    [leftSideController.thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
+    [leftSideController.thumbnailTableView scrollRowToVisible:pageIndex];
     mwcFlags.updatingThumbnailSelection = 0;
 }
 
@@ -2652,7 +2464,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     SKThumbnail *tn = [self objectInThumbnailsAtIndex:anIndex];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
     [tn setDirty:YES];
-    [thumbnailTableView reloadData];
+    [leftSideController.thumbnailTableView reloadData];
 }
 
 - (void)allThumbnailsNeedUpdate {
@@ -2660,14 +2472,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
         [tn setDirty:YES];
     }
-    [thumbnailTableView reloadData];
+    [leftSideController.thumbnailTableView reloadData];
 }
 
 #pragma mark Notes
 
 - (void)updateNoteSelection {
 
-    NSArray *orderedNotes = [noteArrayController arrangedObjects];
+    NSArray *orderedNotes = [rightSideController.noteArrayController arrangedObjects];
     PDFAnnotation *annotation, *selAnnotation = nil;
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
 	NSInteger i, count = [orderedNotes count];
@@ -2697,14 +2509,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
     if (selAnnotation) {
         mwcFlags.updatingNoteSelection = 1;
-        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
+        [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
         mwcFlags.updatingNoteSelection = 0;
     }
 }
 
 - (void)updateNoteFilterPredicate {
-    [noteArrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[noteSearchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveNoteSearch]];
-    [noteOutlineView reloadData];
+    [rightSideController.noteArrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[rightSideController.searchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveNoteSearch]];
+    [rightSideController.noteOutlineView reloadData];
 }
 
 #pragma mark Snapshots
@@ -2741,7 +2553,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)updateSnapshotsIfNeeded {
-    if ([snapshotTableView window] != nil && [dirtySnapshots count] > 0 && snapshotTimer == nil)
+    if ([rightSideController.snapshotTableView window] != nil && [dirtySnapshots count] > 0 && snapshotTimer == nil)
         snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
 }
 
@@ -2756,8 +2568,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         newSize = [image size];
         if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
-            NSUInteger idx = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
-            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
+            NSUInteger idx = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
         }
     }
     if ([dirtySnapshots count] == 0) {
