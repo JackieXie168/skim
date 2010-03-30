@@ -90,24 +90,6 @@
     }
 }
 
-- (IBAction)selectColor:(id)sender{
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote]) {
-        BOOL isFill = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        BOOL isText = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setFontColor:)];
-        NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
-        NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
-        if (newColor && [color isEqual:newColor] == NO) {
-            if (isFill)
-                [(id)annotation setInteriorColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
-            else if (isText)
-                [(id)annotation setFontColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
-            else
-                [annotation setColor:newColor];
-        }
-    }
-}
-
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if (mwcFlags.updatingFont == 0 && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
@@ -161,53 +143,8 @@
 
 - (IBAction)createNewNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
-        NSInteger type = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
-        [pdfView addAnnotationWithType:type];
-    } else NSBeep();
-}
-
-- (IBAction)createNewTextNote:(id)sender{
-    if ([pdfView hideNotes] == NO) {
-        BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [toolbarController.textNoteButton tag]) {
-            [toolbarController.textNoteButton setTag:type];
-            NSString *imgName = type == SKFreeTextNote ? SKImageNameToolbarAddTextNoteMenu : SKImageNameToolbarAddAnchoredNoteMenu;
-            [toolbarController.textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
-        }
-    } else NSBeep();
-}
-
-- (IBAction)createNewCircleNote:(id)sender{
-    if ([pdfView hideNotes] == NO) {
-        BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
-        NSInteger type = [sender tag];
-        [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [toolbarController.circleNoteButton tag]) {
-            [toolbarController.circleNoteButton setTag:type];
-            NSString *imgName = type == SKCircleNote ? SKImageNameToolbarAddCircleNoteMenu : SKImageNameToolbarAddSquareNoteMenu;
-            [toolbarController.circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
-        }
-    } else NSBeep();
-}
-
-- (IBAction)createNewMarkupNote:(id)sender{
-    if ([pdfView hideNotes] == NO) {
-        BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
-        NSInteger type = [sender tag];
-        [pdfView addAnnotationWithType:type];
-        if (isButtonClick == NO && type != [toolbarController.markupNoteButton tag]) {
-            [toolbarController.markupNoteButton setTag:type];
-            NSString *imgName = type == SKHighlightNote ? SKImageNameToolbarAddHighlightNoteMenu : SKUnderlineNote ? SKImageNameToolbarAddUnderlineNoteMenu : SKImageNameToolbarAddStrikeOutNoteMenu;
-            [toolbarController.markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
-        }
-    } else NSBeep();
-}
-
-- (IBAction)createNewLineNote:(id)sender{
-    if ([pdfView hideNotes] == NO) {
-        [pdfView addAnnotationWithType:SKLineNote];
     } else NSBeep();
 }
 
@@ -267,8 +204,6 @@
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode tag = [sender tag];
-    if ([sender respondsToSelector:@selector(selectedTag)])
-        tag = [sender selectedTag];
     PDFDisplayMode displayMode = [pdfView displayMode];
     if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplayTwoUp) 
         [pdfView setDisplayMode:kPDFDisplayTwoUp];
@@ -295,8 +230,6 @@
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode tag = [sender tag];
-    if ([sender respondsToSelector:@selector(selectedTag)])
-        tag = [sender selectedTag];
     PDFDisplayMode displayMode = [pdfView displayMode];
     if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplaySinglePageContinuous)
         [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
@@ -310,8 +243,6 @@
 
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender tag];
-    if ([sender respondsToSelector:@selector(selectedTag)])
-        displayMode = [sender selectedTag];
     [pdfView setDisplayMode:displayMode];
 }
 
@@ -325,10 +256,6 @@
 
 - (IBAction)changeDisplayBox:(id)sender {
     PDFDisplayBox displayBox = [sender tag];
-    if ([sender respondsToSelector:@selector(indexOfSelectedItem)])
-        displayBox = [sender indexOfSelectedItem] == 0 ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
-    else if ([sender respondsToSelector:@selector(selectedSegment)])
-        displayBox = [sender selectedSegment];
     [pdfView setDisplayBox:displayBox];
 }
 
@@ -374,19 +301,6 @@ static NSArray *allMainDocumentPDFViews() {
     [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
 }
 
-- (IBAction)goToPreviousNextFirstLastPage:(id)sender {
-    NSInteger tag = [sender selectedTag];
-    if (tag == -1)
-        [pdfView goToPreviousPage:sender];
-    else if (tag == 1)
-        [pdfView goToNextPage:sender];
-    else if (tag == -2)
-        [pdfView goToFirstPage:sender];
-    else if (tag == 2)
-        [pdfView goToLastPage:sender];
-        
-}
-
 - (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
         [self setPageLabel:[controller stringValue]];
@@ -410,13 +324,6 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)doGoForward:(id)sender {
     [pdfView goForward:sender];
-}
-
-- (IBAction)goBackOrForward:(id)sender {
-    if ([sender selectedSegment] == 1)
-        [pdfView goForward:sender];
-    else
-        [pdfView goBack:sender];
 }
 
 - (IBAction)goToMarkedPage:(id)sender {
@@ -523,16 +430,6 @@ static NSArray *allMainDocumentPDFViews() {
     [pdfView scrollPageToVisible:page];
 }
 
-- (IBAction)zoomInActualOut:(id)sender {
-    NSInteger tag = [sender selectedTag];
-    if (tag == -1)
-        [pdfView zoomOut:sender];
-    else if (tag == 0)
-        [pdfView setScaleFactor:1.0];
-    else if (tag == 1)
-        [pdfView zoomIn:sender];
-}
-
 - (IBAction)doAutoScale:(id)sender {
     [pdfView setAutoScales:YES];
 }
@@ -590,10 +487,6 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)rotateAllLeft:(id)sender {
     [self rotateAllBy:-90];
-}
-
-- (IBAction)rotateAllLeftRight:(id)sender {
-    [self rotateAllBy:[sender selectedSegment] == 0 ? -90 : 90];
 }
 
 - (void)cropPageAtIndex:(NSUInteger)anIndex toRect:(NSRect)rect {
@@ -776,31 +669,6 @@ static NSArray *allMainDocumentPDFViews() {
     [[SKInfoWindowController sharedInstance] showWindow:self];
 }
 
-- (IBAction)changeScaleFactor:(id)sender {
-    NSInteger scale = [sender integerValue];
-
-	if (scale >= 10.0 && scale <= 500.0 ) {
-		[pdfView setScaleFactor:scale / 100.0f];
-		[pdfView setAutoScales:NO];
-	}
-}
-
-- (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton)
-        [pdfView setScaleFactor:[[controller textField] integerValue]];
-}
-
-- (IBAction)chooseScale:(id)sender {
-    SKScaleSheetController *scaleSheetController = [[[SKScaleSheetController alloc] init] autorelease];
-    
-    [[scaleSheetController textField] setIntegerValue:[pdfView scaleFactor]];
-    
-    [scaleSheetController beginSheetModalForWindow: [self window]
-        modalDelegate: self
-       didEndSelector: @selector(scaleSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: nil];
-}
-
 - (IBAction)delete:(id)sender {
     [pdfView delete:sender];
 }
@@ -830,7 +698,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    NSInteger newToolMode = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
+    NSInteger newToolMode = [sender tag];
     [pdfView setToolMode:newToolMode];
 }
 

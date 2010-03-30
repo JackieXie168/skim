@@ -49,11 +49,5 @@
 - (void)registerForNotifications;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleToolModeChangedNotification:(NSNotification *)notification;
-- (void)handleDisplayBoxChangedNotification:(NSNotification *)notification;
-- (void)handleDisplayModeChangedNotification:(NSNotification *)notification;
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
-- (void)handleChangedHistoryNotification:(NSNotification *)notification;
 
 @end

@@ -462,14 +462,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[self window] recalculateKeyViewLoop];
     [[self window] makeFirstResponder:pdfView];
     
-    // This update toolbar item and other states
-    [self handleChangedHistoryNotification:nil];
+    // Update page states
     [self handlePageChangedNotification:nil];
-    [self handleScaleChangedNotification:nil];
-    [self handleToolModeChangedNotification:nil];
-    [self handleDisplayBoxChangedNotification:nil];
-    [self handleDisplayModeChangedNotification:nil];
-    [self handleAnnotationModeChangedNotification:nil];
+    [toolbarController handlePageChangedNotification:nil];
     
     // Observe notifications and KVO
     [self registerForNotifications];
@@ -768,7 +763,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
         
         // the number of pages may have changed
-        [self handleChangedHistoryNotification:nil];
+        [toolbarController handleChangedHistoryNotification:nil];
         [self handlePageChangedNotification:nil];
         [self updateLeftStatus];
         [self updateRightStatus];

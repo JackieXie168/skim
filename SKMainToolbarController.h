@@ -38,10 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKMainWindowController, SKColorSwatch;
+@class SKMainWindowController, SKPDFView, SKColorSwatch;
 
 @interface SKMainToolbarController : NSViewController {
     SKMainWindowController *mainController;
+    SKPDFView *pdfView;
     NSSegmentedControl *backForwardButton;
     NSTextField *pageNumberField;
     NSSegmentedControl *previousNextPageButton;
@@ -122,5 +123,35 @@
 @property (nonatomic, assign) IBOutlet SKColorSwatch *colorSwatch;
 
 - (void)setupToolbar;
+
+- (void)registerForNotifications;
+- (void)handleChangedHistoryNotification:(NSNotification *)notification;
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+
+#pragma mark Actions
+
+- (IBAction)goToPreviousNextFirstLastPage:(id)sender;
+- (IBAction)goBackOrForward:(id)sender;
+- (IBAction)changeScaleFactor:(id)sender;
+- (void)chooseScale:(id)sender;
+- (IBAction)zoomInActualOut:(id)sender;
+- (IBAction)zoomToFit:(id)sender;
+- (IBAction)zoomToSelection:(id)sender;
+- (IBAction)rotateAllLeftRight:(id)sender;
+- (IBAction)cropAll:(id)sender;
+- (IBAction)enterFullScreen:(id)sender;
+- (IBAction)enterPresentation:(id)sender;
+- (IBAction)toggleLeftSidePane:(id)sender;
+- (IBAction)toggleRightSidePane:(id)sender;
+- (IBAction)changeDisplayBox:(id)sender;
+- (IBAction)changeDisplaySinglePages:(id)sender;
+- (IBAction)changeDisplayContinuous:(id)sender;
+- (IBAction)changeDisplayMode:(id)sender;
+- (void)createNewTextNote:(id)sender;
+- (void)createNewCircleNote:(id)sender;
+- (void)createNewMarkupNote:(id)sender;
+- (IBAction)createNewNote:(id)sender;
+- (IBAction)changeToolMode:(id)sender;
+- (IBAction)selectColor:(id)sender;
 
 @end

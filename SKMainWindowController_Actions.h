@@ -43,13 +43,8 @@
 @interface SKMainWindowController (Actions)
 
 - (IBAction)changeColor:(id)sender;
-- (IBAction)selectColor:(id)sender;
 - (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
-- (IBAction)createNewTextNote:(id)sender;
-- (IBAction)createNewCircleNote:(id)sender;
-- (IBAction)createNewMarkupNote:(id)sender;
-- (IBAction)createNewLineNote:(id)sender;
 - (IBAction)editNote:(id)sender;
 - (IBAction)toggleHideNotes:(id)sender;
 - (IBAction)takeSnapshot:(id)sender;
@@ -70,11 +65,9 @@
 - (IBAction)allGoToPreviousPage:(id)sender;
 - (IBAction)allGoToFirstPage:(id)sender;
 - (IBAction)allGoToLastPage:(id)sender;
-- (IBAction)goToPreviousNextFirstLastPage:(id)sender;
 - (IBAction)doGoToPage:(id)sender;
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
-- (IBAction)goBackOrForward:(id)sender;
 - (IBAction)goToMarkedPage:(id)sender;
 - (IBAction)markPage:(id)sender;
 - (IBAction)doZoomIn:(id)sender;
@@ -84,22 +77,18 @@
 - (IBAction)doZoomToFit:(id)sender;
 - (IBAction)alternateZoomToFit:(id)sender;
 - (IBAction)doZoomToSelection:(id)sender;
-- (IBAction)zoomInActualOut:(id)sender;
 - (IBAction)doAutoScale:(id)sender;
 - (IBAction)toggleAutoScale:(id)sender;
 - (IBAction)rotateRight:(id)sender;
 - (IBAction)rotateLeft:(id)sender;
 - (IBAction)rotateAllRight:(id)sender;
 - (IBAction)rotateAllLeft:(id)sender;
-- (IBAction)rotateAllLeftRight:(id)sender;
 - (IBAction)crop:(id)sender;
 - (IBAction)cropAll:(id)sender;
 - (IBAction)autoCropAll:(id)sender;
 - (IBAction)smartAutoCropAll:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
 - (IBAction)getInfo:(id)sender;
-- (IBAction)changeScaleFactor:(id)sender;
-- (IBAction)chooseScale:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)paste:(id)sender;
 - (IBAction)alternatePaste:(id)sender;
