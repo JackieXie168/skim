@@ -764,6 +764,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         // the number of pages may have changed
         [toolbarController handleChangedHistoryNotification:nil];
+        [toolbarController handlePageChangedNotification:nil];
         [self handlePageChangedNotification:nil];
         [self updateLeftStatus];
         [self updateRightStatus];
