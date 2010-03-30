@@ -1529,11 +1529,8 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
     [self resetThumbnails];
 }
-- (void)handleSelectionChangedNotification:(NSNotification *)notification {
-    [self updateRightStatus];
-}
 
-- (void)handleMagnificationChangedNotification:(NSNotification *)notification {
+- (void)handleSelectionOrMagnificationChangedNotification:(NSNotification *)notification {
     [self updateRightStatus];
 }
 
@@ -1674,7 +1671,9 @@ static NSArray *allMainDocumentPDFViews() {
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleMagnificationChangedNotification:) 
+    [nc addObserver:self selector:@selector(handleSelectionOrMagnificationChangedNotification:) 
+                             name:SKPDFViewSelectionChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleSelectionOrMagnificationChangedNotification:) 
                              name:SKPDFViewMagnificationChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDisplayBoxChangedNotification:) 
                              name:PDFViewDisplayBoxChangedNotification object:pdfView];
