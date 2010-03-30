@@ -47,7 +47,7 @@
 
 @implementation SKLeftSideViewController
 
-@synthesize tocOutlineView, tocView, thumbnailArrayController, thumbnailTableView, thumbnailView, findArrayController, findTableView, findView, groupedFindArrayController, groupedFindTableView, groupedFindView;
+@synthesize tocOutlineView, thumbnailArrayController, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
 
 - (void)dealloc {
     [thumbnailTableView setDelegate:nil];
@@ -72,8 +72,8 @@
     [alternateButton setToolTip:NSLocalizedString(@"Group search results by page", @"Tool tip message") forSegment:SKGroupedFindPaneState];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Whole Words Only", @"Menu item title") action:@selector(toggleWholeWordSearch:) target:self];
-    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
+    [menu addItemWithTitle:NSLocalizedString(@"Whole Words Only", @"Menu item title") action:@selector(toggleWholeWordSearch:) target:mainController];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:mainController];
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
@@ -95,7 +95,7 @@
 }
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
-    return [aView isEqual:findView] || [aView isEqual:groupedFindView];
+    return [aView isEqual:findTableView.enclosingScrollView] || [aView isEqual:groupedFindTableView.enclosingScrollView];
 }
 
 @end
