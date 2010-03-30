@@ -84,8 +84,6 @@
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
-static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
-
 #define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
 @interface SKMainWindowController (SKPrivateMain)
@@ -1317,15 +1315,6 @@ static NSArray *allMainDocumentPDFViews() {
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
-    } else if (action == @selector(createNewTextNote:)) {
-        [menuItem setState:[toolbarController.textNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
-        return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
-    } else if (action == @selector(createNewCircleNote:)) {
-        [menuItem setState:[toolbarController.circleNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
-        return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
-    } else if (action == @selector(createNewMarkupNote:)) {
-        [menuItem setState:[toolbarController.markupNoteButton tag] == [menuItem tag] ? NSOnState : NSOffState];
-        return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && [[pdfView currentSelection] hasCharacters];
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [self isPresentation] == NO && [annotation isSkimNote] && ([annotation isEditable]);
@@ -1507,10 +1496,6 @@ static NSArray *allMainDocumentPDFViews() {
 
 #pragma mark Notification handlers
 
-- (void)handleChangedHistoryNotification:(NSNotification *)notification {
-    [toolbarController.backForwardButton setEnabled:[pdfView canGoBack] forSegment:0];
-    [toolbarController.backForwardButton setEnabled:[pdfView canGoForward] forSegment:1];
-}
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     PDFPage *page = [pdfView currentPage];
@@ -1523,17 +1508,6 @@ static NSArray *allMainDocumentPDFViews() {
     
     [self updatePageNumber];
     [self updatePageLabel];
-    
-    [toolbarController.previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
-    [toolbarController.previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];
-    [toolbarController.previousPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
-    [toolbarController.previousPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
-    [toolbarController.nextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:0];
-    [toolbarController.nextPageButton setEnabled:[pdfView canGoToLastPage] forSegment:1];
-    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
-    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
-    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToNextPage] forSegment:2];
-    [toolbarController.previousNextFirstLastPageButton setEnabled:[pdfView canGoToLastPage] forSegment:3];
     
     [self updateOutlineSelection];
     [self updateNoteSelection];
@@ -1552,38 +1526,9 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
-- (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [toolbarController.scaleField setDoubleValue:[pdfView scaleFactor] * 100.0];
-    
-    [toolbarController.zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [toolbarController.zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
-    [toolbarController.zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [toolbarController.zoomInActualOutButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
-    [toolbarController.zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
-    [toolbarController.zoomActualButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01];
-}
-
-- (void)handleToolModeChangedNotification:(NSNotification *)notification {
-    [toolbarController.toolModeButton selectSegmentWithTag:[pdfView toolMode]];
-}
-
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
-    [toolbarController.displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
-    if (notification) // no need to do this when loading the document
-        [self resetThumbnails];
+    [self resetThumbnails];
 }
-
-- (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    [toolbarController.displayModeButton selectSegmentWithTag:displayMode];
-    [toolbarController.singleTwoUpButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplaySinglePageContinuous) ? kPDFDisplaySinglePage : kPDFDisplayTwoUp];
-    [toolbarController.continuousButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) ? kPDFDisplaySinglePage : kPDFDisplaySinglePageContinuous];
-}
-
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
-    [toolbarController.toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[pdfView annotationMode]]] forSegment:SKNoteToolMode];
-}
-
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {
     [self updateRightStatus];
 }
@@ -1729,22 +1674,10 @@ static NSArray *allMainDocumentPDFViews() {
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleScaleChangedNotification:) 
-                             name:PDFViewScaleChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleToolModeChangedNotification:) 
-                             name:SKPDFViewToolModeChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
-                             name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleSelectionChangedNotification:) 
-                             name:SKPDFViewSelectionChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleMagnificationChangedNotification:) 
                              name:SKPDFViewMagnificationChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleDisplayModeChangedNotification:) 
-                             name:PDFViewDisplayModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDisplayBoxChangedNotification:) 
                              name:PDFViewDisplayBoxChangedNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
-                             name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
                              name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidAddAnnotationNotification:) 
