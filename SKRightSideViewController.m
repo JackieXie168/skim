@@ -49,7 +49,7 @@
 
 @implementation SKRightSideViewController
 
-@synthesize noteArrayController, noteOutlineView, noteView, snapshotArrayController, snapshotTableView, snapshotView;
+@synthesize noteArrayController, noteOutlineView, snapshotArrayController, snapshotTableView;
 
 - (void)dealloc {
     [snapshotTableView setDelegate:nil];
@@ -70,7 +70,7 @@
     [button setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:self];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:mainController];
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     

@@ -44,19 +44,15 @@
 @interface SKRightSideViewController : SKSideViewController {
     NSArrayController *noteArrayController;
     SKNoteOutlineView *noteOutlineView;
-    NSView *noteView;
 
     NSArrayController *snapshotArrayController;
     SKThumbnailTableView *snapshotTableView;
-    NSView *snapshotView;
 }
 
 @property (nonatomic, assign) IBOutlet NSArrayController *noteArrayController;
 @property (nonatomic, assign) IBOutlet SKNoteOutlineView *noteOutlineView;
-@property (nonatomic, assign) IBOutlet NSView *noteView;
 
 @property (nonatomic, assign) IBOutlet NSArrayController *snapshotArrayController;
 @property (nonatomic, assign) IBOutlet SKThumbnailTableView *snapshotTableView;
-@property (nonatomic, assign) IBOutlet NSView *snapshotView;
 
 @end

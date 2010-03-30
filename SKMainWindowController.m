@@ -667,7 +667,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self updateOutlineSelection];
     
     // handle the case as above where the outline has disappeared in a reload situation
-    if (nil == [[pdfView document] outlineRoot] && leftSideController.currentView == leftSideController.tocView) {
+    if (nil == [[pdfView document] outlineRoot] && leftSideController.currentView == leftSideController.tocOutlineView.enclosingScrollView) {
         [self displayThumbnailViewAnimating:YES];
         [leftSideController.button setSelectedSegment:SKThumbnailSidePaneState];
     }
@@ -932,10 +932,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         mwcFlags.findPaneState = newFindPaneState;
         
         if (mwcFlags.findPaneState == SKSingularFindPaneState) {
-            if ([leftSideController.groupedFindView window])
+            if ([leftSideController.groupedFindTableView window])
                 [self displayFindViewAnimating:NO];
         } else if (mwcFlags.findPaneState == SKGroupedFindPaneState) {
-            if ([leftSideController.findView window])
+            if ([leftSideController.findTableView window])
                 [self displayGroupedFindViewAnimating:NO];
         }
         [self updateFindResultHighlights:YES];
@@ -1568,29 +1568,29 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 #pragma mark Swapping tables
 
 - (void)displayTocViewAnimating:(BOOL)animate {
-    [leftSideController replaceSideView:leftSideController.tocView animate:animate];
+    [leftSideController replaceSideView:leftSideController.tocOutlineView.enclosingScrollView animate:animate];
     [self updateOutlineSelection];
 }
 
 - (void)displayThumbnailViewAnimating:(BOOL)animate {
-    [leftSideController replaceSideView:leftSideController.thumbnailView animate:animate];
+    [leftSideController replaceSideView:leftSideController.thumbnailTableView.enclosingScrollView animate:animate];
     [self updateThumbnailSelection];
 }
 
 - (void)displayFindViewAnimating:(BOOL)animate {
-    [leftSideController replaceSideView:leftSideController.findView animate:animate];
+    [leftSideController replaceSideView:leftSideController.findTableView.enclosingScrollView animate:animate];
 }
 
 - (void)displayGroupedFindViewAnimating:(BOOL)animate {
-    [leftSideController replaceSideView:leftSideController.groupedFindView animate:animate];
+    [leftSideController replaceSideView:leftSideController.groupedFindTableView.enclosingScrollView animate:animate];
 }
 
 - (void)displayNoteViewAnimating:(BOOL)animate {
-    [rightSideController replaceSideView:rightSideController.noteView animate:animate];
+    [rightSideController replaceSideView:rightSideController.noteOutlineView.enclosingScrollView animate:animate];
 }
 
 - (void)displaySnapshotViewAnimating:(BOOL)animate {
-    [rightSideController replaceSideView:rightSideController.snapshotView animate:animate];
+    [rightSideController replaceSideView:rightSideController.snapshotTableView.enclosingScrollView animate:animate];
     [self updateSnapshotsIfNeeded];
 }
 
@@ -1807,9 +1807,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)updateFindResultHighlights:(BOOL)scroll {
     NSArray *findResults = nil;
     
-    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findView window])
+    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
         findResults = [leftSideController.findArrayController selectedObjects];
-    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindView window])
+    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
         findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     [self goToFindResults:findResults scrollToVisible:scroll];
 }
@@ -2195,7 +2195,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
                 [[leftSideController.searchField stringValue] length] && 
-                (([leftSideController.findView window] && [leftSideController.findTableView numberOfSelectedRows]) || ([leftSideController.groupedFindView window] && [leftSideController.groupedFindTableView numberOfSelectedRows]))) {
+                (([leftSideController.findTableView window] && [leftSideController.findTableView numberOfSelectedRows]) || ([leftSideController.groupedFindTableView window] && [leftSideController.groupedFindTableView numberOfSelectedRows]))) {
                 // clear the selection
                 [self updateFindResultHighlights:NO];
             }
