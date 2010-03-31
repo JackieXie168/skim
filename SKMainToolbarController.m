@@ -921,8 +921,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [pdfView addAnnotationWithType:type];
         if (type != [textNoteButton tagForSegment:0]) {
             [textNoteButton setTag:type forSegment:0];
-            NSString *imgName = type == SKFreeTextNote ? SKImageNameToolbarAddTextNoteMenu : SKImageNameToolbarAddAnchoredNoteMenu;
-            [textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [textNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();
 }
@@ -933,8 +932,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [pdfView addAnnotationWithType:type];
         if (type != [circleNoteButton tagForSegment:0]) {
             [circleNoteButton setTag:type forSegment:0];
-            NSString *imgName = type == SKCircleNote ? SKImageNameToolbarAddCircleNoteMenu : SKImageNameToolbarAddSquareNoteMenu;
-            [circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [circleNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();
 }
@@ -945,8 +943,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [pdfView addAnnotationWithType:type];
         if (type != [markupNoteButton tagForSegment:0]) {
             [markupNoteButton setTag:type forSegment:0];
-            NSString *imgName = type == SKHighlightNote ? SKImageNameToolbarAddHighlightNoteMenu : SKUnderlineNote ? SKImageNameToolbarAddUnderlineNoteMenu : SKImageNameToolbarAddStrikeOutNoteMenu;
-            [markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
+            [markupNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();
 }
