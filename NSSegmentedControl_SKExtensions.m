@@ -57,4 +57,12 @@
     [[accessibilitySegments objectAtIndex:segment] accessibilitySetOverrideValue:toolTip forAttribute:NSAccessibilityDescriptionAttribute];
 }
 
+- (NSInteger)tagForSegment:(NSInteger)segment {
+    return [[self cell] tagForSegment:segment];
+}
+
+- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment {
+    [[self cell] setTag:tag forSegment:segment];
+}
+
 @end

@@ -747,13 +747,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(createNewTextNote:)) {
-        [menuItem setState:[[textNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[textNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if (action == @selector(createNewCircleNote:)) {
-        [menuItem setState:[[circleNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[circleNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if (action == @selector(createNewMarkupNote:)) {
-        [menuItem setState:[[markupNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[markupNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && [[pdfView currentSelection] hasCharacters];
     }
     return YES;
@@ -919,8 +919,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([pdfView hideNotes] == NO) {
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (type != [[textNoteButton cell] tagForSegment:0]) {
-            [[textNoteButton cell] setTag:type forSegment:0];
+        if (type != [textNoteButton tagForSegment:0]) {
+            [textNoteButton setTag:type forSegment:0];
             NSString *imgName = type == SKFreeTextNote ? SKImageNameToolbarAddTextNoteMenu : SKImageNameToolbarAddAnchoredNoteMenu;
             [textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
@@ -931,8 +931,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([pdfView hideNotes] == NO) {
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (type != [[circleNoteButton cell] tagForSegment:0]) {
-            [[circleNoteButton cell] setTag:type forSegment:0];
+        if (type != [circleNoteButton tagForSegment:0]) {
+            [circleNoteButton setTag:type forSegment:0];
             NSString *imgName = type == SKCircleNote ? SKImageNameToolbarAddCircleNoteMenu : SKImageNameToolbarAddSquareNoteMenu;
             [circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
@@ -943,8 +943,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([pdfView hideNotes] == NO) {
         NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (type != [[markupNoteButton cell] tagForSegment:0]) {
-            [[markupNoteButton cell] setTag:type forSegment:0];
+        if (type != [markupNoteButton tagForSegment:0]) {
+            [markupNoteButton setTag:type forSegment:0];
             NSString *imgName = type == SKHighlightNote ? SKImageNameToolbarAddHighlightNoteMenu : SKUnderlineNote ? SKImageNameToolbarAddUnderlineNoteMenu : SKImageNameToolbarAddStrikeOutNoteMenu;
             [markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
