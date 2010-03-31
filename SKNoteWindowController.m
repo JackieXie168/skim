@@ -166,17 +166,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
         
     } else {
-        NSView *gradientView = [imageView superview];
-        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
-        NSTextField *textField = nil;
-        
-        for (id view in [gradientView subviews]) {
-            if ([view isKindOfClass:[NSTextField class]] && [view isEditable]) {
-                textField = view;
-                break;
-            }
-        }
-        
+        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [[imageView superview] frame]);
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
         [textView setRichText:NO];
