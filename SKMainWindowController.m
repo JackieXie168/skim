@@ -349,13 +349,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
         [leftSideDrawer setParentWindow:[self window]];
         [leftSideDrawer setContentView:leftSideContentView];
-        [leftSideController.edgeView setEdges:BDSKNoEdgeMask];
         [leftSideDrawer openOnEdge:NSMinXEdge];
         [leftSideDrawer setDelegate:self];
         rightSideDrawer = [[NSDrawer alloc] initWithContentSize:[rightSideContentView frame].size preferredEdge:NSMaxXEdge];
         [rightSideDrawer setParentWindow:[self window]];
         [rightSideDrawer setContentView:rightSideContentView];
-        [rightSideController.edgeView setEdges:BDSKNoEdgeMask];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [rightSideDrawer setDelegate:self];
         [centerContentView setFrame:[splitView bounds]];
@@ -1225,9 +1223,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [[leftSideController.view window] makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideController.view];
     
-    if (mwcFlags.usesDrawers == 0)
-        [leftSideController.edgeView setEdges:BDSKNoEdgeMask];
-    
     if ([self isPresentation]) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
@@ -1249,9 +1244,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];
     [rightSideWindow setMainView:rightSideController.view];
-    
-    if (mwcFlags.usesDrawers == 0)
-        [rightSideController.edgeView setEdges:BDSKNoEdgeMask];
     
     if ([self isPresentation]) {
         [rightSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
@@ -1277,10 +1269,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [leftSideController.view setFrame:rect];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if (mwcFlags.usesDrawers == 0) {
-            [leftSideController.edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-        }
-        
         if ([self isPresentation]) {
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
             [leftSideWindow setAlphaValue:1.0];
@@ -1302,10 +1290,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
         [rightSideController.view setFrame:rect];
         [rightSideContentView addSubview:rightSideController.view];
-        
-        if (mwcFlags.usesDrawers == 0) {
-            [rightSideController.edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-        }
         
         if ([self isPresentation]) {
             [rightSideWindow setAlphaValue:1.0];

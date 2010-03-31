@@ -38,7 +38,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomView" id="905545468">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -52,6 +52,7 @@
 								<int key="NSvFlags">274</int>
 								<string key="NSFrameSize">{200, 355}</string>
 								<reference key="NSSuperview" ref="923866883"/>
+								<reference key="NSWindow"/>
 								<object class="NSMutableString" key="NSClassName">
 									<characters key="NS.bytes">NSView</characters>
 								</object>
@@ -60,6 +61,7 @@
 						</object>
 						<string key="NSFrameSize">{200, 355}</string>
 						<reference key="NSSuperview" ref="905545468"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 					<object class="NSCustomView" id="909611649">
@@ -87,6 +89,7 @@
 														<int key="NSvFlags">260</int>
 														<string key="NSFrame">{{10, 8}, {57, 25}}</string>
 														<reference key="NSSuperview" ref="25587430"/>
+														<reference key="NSWindow"/>
 														<bool key="NSEnabled">YES</bool>
 														<object class="NSSegmentedCell" key="NSCell" id="145170310">
 															<int key="NSCellFlags">67239424</int>
@@ -126,6 +129,7 @@
 												</object>
 												<string key="NSFrameSize">{77, 42}</string>
 												<reference key="NSSuperview" ref="1067192785"/>
+												<reference key="NSWindow"/>
 												<string key="NSClassName">NSView</string>
 											</object>
 											<object class="NSSearchField" id="827083746">
@@ -133,6 +137,7 @@
 												<int key="NSvFlags">258</int>
 												<string key="NSFrame">{{75, 11}, {115, 22}}</string>
 												<reference key="NSSuperview" ref="1067192785"/>
+												<reference key="NSWindow"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="181483723">
 													<int key="NSCellFlags">343014976</int>
@@ -208,23 +213,28 @@
 										</object>
 										<string key="NSFrameSize">{200, 45}</string>
 										<reference key="NSSuperview" ref="453091411"/>
+										<reference key="NSWindow"/>
 										<string key="NSClassName">SKGradientView</string>
 										<string key="NSExtension">NSView</string>
 									</object>
 								</object>
 								<string key="NSFrameSize">{200, 45}</string>
 								<reference key="NSSuperview" ref="909611649"/>
+								<reference key="NSWindow"/>
 								<string key="NSClassName">BDSKCollapsibleView</string>
 								<string key="NSExtension">NSView</string>
 							</object>
 						</object>
 						<string key="NSFrame">{{0, 355}, {200, 45}}</string>
 						<reference key="NSSuperview" ref="905545468"/>
-						<string key="NSClassName">BDSKEdgeView</string>
+						<reference key="NSWindow"/>
+						<string key="NSClassName">SKEdgeView</string>
 						<string key="NSExtension">NSView</string>
 					</object>
 				</object>
 				<string key="NSFrameSize">{200, 400}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -1316,22 +1326,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">edgeView</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="909611649"/>
-					</object>
-					<int key="connectionID">169</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">gradientView</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1067192785"/>
-					</object>
-					<int key="connectionID">170</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">searchField</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="827083746"/>
@@ -2319,6 +2313,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKEdgeView</string>
+					<string key="superclassName">BDSKEdgeView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKEdgeView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKFindTableView</string>
 					<string key="superclassName">SKTableView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -2376,6 +2378,61 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKMainToolbarController</string>
 					<string key="superclassName">NSViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>changeDisplayBox:</string>
+							<string>changeDisplayContinuous:</string>
+							<string>changeDisplayMode:</string>
+							<string>changeDisplaySinglePages:</string>
+							<string>changeScaleFactor:</string>
+							<string>changeToolMode:</string>
+							<string>chooseScale:</string>
+							<string>createNewCircleNote:</string>
+							<string>createNewMarkupNote:</string>
+							<string>createNewNote:</string>
+							<string>createNewTextNote:</string>
+							<string>cropAll:</string>
+							<string>enterFullScreen:</string>
+							<string>enterPresentation:</string>
+							<string>goBackOrForward:</string>
+							<string>goToPreviousNextFirstLastPage:</string>
+							<string>rotateAllLeftRight:</string>
+							<string>selectColor:</string>
+							<string>toggleLeftSidePane:</string>
+							<string>toggleRightSidePane:</string>
+							<string>zoomInActualOut:</string>
+							<string>zoomToFit:</string>
+							<string>zoomToSelection:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -2549,16 +2606,10 @@
 							<string>changeFont:</string>
 							<string>changeLeftSidePaneState:</string>
 							<string>changeRightSidePaneState:</string>
-							<string>changeScaleFactor:</string>
 							<string>changeToolMode:</string>
-							<string>chooseScale:</string>
 							<string>chooseTransition:</string>
 							<string>copy:</string>
-							<string>createNewCircleNote:</string>
-							<string>createNewLineNote:</string>
-							<string>createNewMarkupNote:</string>
 							<string>createNewNote:</string>
-							<string>createNewTextNote:</string>
 							<string>crop:</string>
 							<string>cropAll:</string>
 							<string>cut:</string>
@@ -2582,22 +2633,18 @@
 							<string>doZoomToSelection:</string>
 							<string>editNote:</string>
 							<string>getInfo:</string>
-							<string>goBackOrForward:</string>
 							<string>goToMarkedPage:</string>
-							<string>goToPreviousNextFirstLastPage:</string>
 							<string>markPage:</string>
 							<string>password:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
-							<string>rotateAllLeftRight:</string>
 							<string>rotateAllRight:</string>
 							<string>rotateLeft:</string>
 							<string>rotateRight:</string>
 							<string>savePDFSettingToDefaults:</string>
 							<string>searchPDF:</string>
-							<string>selectColor:</string>
 							<string>smartAutoCropAll:</string>
 							<string>takeSnapshot:</string>
 							<string>toggleAutoScale:</string>
@@ -2615,21 +2662,9 @@
 							<string>toggleSplitPDF:</string>
 							<string>toggleStatusBar:</string>
 							<string>toggleWholeWordSearch:</string>
-							<string>zoomInActualOut:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2846,8 +2881,6 @@
 							<string>button</string>
 							<string>collapsibleView</string>
 							<string>currentView</string>
-							<string>edgeView</string>
-							<string>gradientView</string>
 							<string>mainController</string>
 							<string>searchField</string>
 						</object>
@@ -2857,8 +2890,6 @@
 							<string>NSSegmentedControl</string>
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
-							<string>BDSKEdgeView</string>
-							<string>SKGradientView</string>
 							<string>SKMainWindowController</string>
 							<string>NSSearchField</string>
 						</object>

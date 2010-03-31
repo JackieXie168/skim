@@ -292,6 +292,7 @@
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
+		CEF98DFC1163F9620087D974 /* SKEdgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF98DFB1163F9620087D974 /* SKEdgeView.m */; };
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFC7EDA1137FDE20055D1E2 /* NotesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
@@ -1166,6 +1167,8 @@
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEF82CC40EC4ADDA009652CF /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
+		CEF98DFA1163F9620087D974 /* SKEdgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKEdgeView.h; sourceTree = "<group>"; };
+		CEF98DFB1163F9620087D974 /* SKEdgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKEdgeView.m; sourceTree = "<group>"; };
 		CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFormatCommand.h; sourceTree = "<group>"; };
 		CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFormatCommand.m; sourceTree = "<group>"; };
 		CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotesPanel.xib; sourceTree = "<group>"; };
@@ -1615,6 +1618,8 @@
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE3A41560B790C56006B64D3 /* SKDragImageView.h */,
 				CE3A41570B790C56006B64D3 /* SKDragImageView.m */,
+				CEF98DFA1163F9620087D974 /* SKEdgeView.h */,
+				CEF98DFB1163F9620087D974 /* SKEdgeView.m */,
 				CECDDBAB0C5BB95F0026AAEC /* SKFindTableView.h */,
 				CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
@@ -2529,6 +2534,7 @@
 				CE8BF027115F7C390029020F /* SKLeftSideViewController.m in Sources */,
 				CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */,
 				CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */,
+				CEF98DFC1163F9620087D974 /* SKEdgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
