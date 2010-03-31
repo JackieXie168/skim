@@ -38,9 +38,7 @@
 
 #import "SKSideViewController.h"
 #import "SKPDFToolTipWindow.h"
-#import "BDSKEdgeView.h"
 #import "BDSKCollapsibleView.h"
-#import "SKGradientView.h"
 #import "SKPDFToolTipWindow.h"
 
 #define CONTENTVIEW_KEY @"contentView"
@@ -50,7 +48,7 @@
 
 @implementation SKSideViewController
 
-@synthesize mainController, edgeView, collapsibleView, gradientView, button, alternateButton, searchField, currentView;
+@synthesize mainController, collapsibleView, button, alternateButton, searchField, currentView;
 
 - (void)dealloc {
     mainController = nil;
@@ -64,7 +62,6 @@
     
     [collapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [collapsibleView setMinSize:NSMakeSize(111.0, NSHeight([collapsibleView frame]))];
-    [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
 }
 
 #pragma mark View animation

@@ -1,8 +1,8 @@
 //
-//  SKSideViewController.h
+//  SKEdgeView.h
 //  Skim
 //
-//  Created by Christiaan on 3/28/10.
+//  Created by Christiaan on 3/31/10.
 /*
  This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
@@ -37,28 +37,8 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "BDSKEdgeView.h"
 
-@class SKMainWindowController, BDSKCollapsibleView;
 
-@interface SKSideViewController : NSViewController {
-    BDSKCollapsibleView *collapsibleView;
-    NSSegmentedControl *button;
-    NSSegmentedControl *alternateButton;
-    NSSearchField *searchField;
-    NSView *currentView;
-    SKMainWindowController *mainController;
-    BOOL isAnimating;
-}
-
-@property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
-@property (nonatomic, assign) IBOutlet BDSKCollapsibleView *collapsibleView;
-@property (nonatomic, retain) IBOutlet NSSegmentedControl *button;
-@property (nonatomic, retain) IBOutlet NSSegmentedControl *alternateButton;
-@property (nonatomic, assign) IBOutlet NSSearchField *searchField;
-@property (nonatomic, assign) IBOutlet NSView *currentView;
-
-- (BOOL)requiresAlternateButtonForView:(NSView *)aView;
-
-- (void)replaceSideView:(NSView *)newView animate:(BOOL)animate;
-
+@interface SKEdgeView : BDSKEdgeView
 @end
