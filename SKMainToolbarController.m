@@ -915,37 +915,26 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [pdfView setDisplayMode:displayMode];
 }
 
-- (void)createNewTextNote:(id)sender {
+- (void)createNewNoteWithType:(NSInteger)type forButton:(NSSegmentedControl *)button {
     if ([pdfView hideNotes] == NO) {
-        NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
-        if (type != [textNoteButton tagForSegment:0]) {
-            [textNoteButton setTag:type forSegment:0];
-            [textNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
+        if (type != [button tagForSegment:0]) {
+            [button setTag:type forSegment:0];
+            [button setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();
+}
+
+- (void)createNewTextNote:(id)sender {
+    [self createNewNoteWithType:[sender tag] forButton:textNoteButton];
 }
 
 - (void)createNewCircleNote:(id)sender {
-    if ([pdfView hideNotes] == NO) {
-        NSInteger type = [sender tag];
-        [pdfView addAnnotationWithType:type];
-        if (type != [circleNoteButton tagForSegment:0]) {
-            [circleNoteButton setTag:type forSegment:0];
-            [circleNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
-        }
-    } else NSBeep();
+    [self createNewNoteWithType:[sender tag] forButton:circleNoteButton];
 }
 
 - (void)createNewMarkupNote:(id)sender {
-    if ([pdfView hideNotes] == NO) {
-        NSInteger type = [sender tag];
-        [pdfView addAnnotationWithType:type];
-        if (type != [markupNoteButton tagForSegment:0]) {
-            [markupNoteButton setTag:type forSegment:0];
-            [markupNoteButton setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
-        }
-    } else NSBeep();
+    [self createNewNoteWithType:[sender tag] forButton:markupNoteButton];
 }
 
 - (IBAction)createNewNote:(id)sender {
