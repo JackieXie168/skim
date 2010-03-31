@@ -315,14 +315,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     // make sure the first thing we call on the side view controllers is its view so their nib is loaded
     NSRect rect = [leftSideContentView bounds];
-    if (mwcFlags.usesDrawers) {
+    if (mwcFlags.usesDrawers == 0) {
         rect = NSInsetRect(rect, -1, -1);
         rect.size.height -= 1;
     }
     [[leftSideController view] setFrame:rect];
     [leftSideContentView addSubview:leftSideController.view];
     rect = [rightSideContentView bounds];
-    if (mwcFlags.usesDrawers) {
+    if (mwcFlags.usesDrawers == 0) {
         rect = NSInsetRect(rect, -1, -1);
         rect.size.height -= 1;
     }
@@ -1270,7 +1270,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
         NSRect rect = [leftSideContentView bounds];
-        if (mwcFlags.usesDrawers) {
+        if (mwcFlags.usesDrawers == 0) {
             rect = NSInsetRect(rect, -1, -1);
             rect.size.height -= 1;
         }
@@ -1296,7 +1296,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
         NSRect rect = [rightSideContentView bounds];
-        if (mwcFlags.usesDrawers) {
+        if (mwcFlags.usesDrawers == 0) {
             rect = NSInsetRect(rect, -1, -1);
             rect.size.height -= 1;
         }
