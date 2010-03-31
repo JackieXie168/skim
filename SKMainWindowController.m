@@ -314,13 +314,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfContentView setAutoresizesSubviews:YES];
     
     // make sure the first thing we call on the side view controllers is its view so their nib is loaded
-    NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
-    rect.size.height -= 1;
+    NSRect rect = [leftSideContentView bounds];
+    if (mwcFlags.usesDrawers) {
+        rect = NSInsetRect(rect, -1, -1);
+        rect.size.height -= 1;
+    }
     [[leftSideController view] setFrame:rect];
     [leftSideContentView addSubview:leftSideController.view];
-    NSInsetRect([rightSideContentView bounds], -1, -1);
+    rect = [rightSideContentView bounds];
+    if (mwcFlags.usesDrawers) {
+        rect = NSInsetRect(rect, -1, -1);
+        rect.size.height -= 1;
+    }
     [[rightSideController view] setFrame:rect];
-    rect.size.height -= 1;
     [rightSideContentView addSubview:rightSideController.view];
     
     [leftSideController.searchField setAction:@selector(search:)];
@@ -1263,8 +1269,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
-        NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
-        rect.size.height -= 1;
+        NSRect rect = [leftSideContentView bounds];
+        if (mwcFlags.usesDrawers) {
+            rect = NSInsetRect(rect, -1, -1);
+            rect.size.height -= 1;
+        }
         [leftSideController.view setFrame:rect];
         [leftSideContentView addSubview:leftSideController.view];
         
@@ -1286,8 +1295,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
-        NSRect rect = NSInsetRect([rightSideContentView bounds], -1, -1);
-        rect.size.height -= 1;
+        NSRect rect = [rightSideContentView bounds];
+        if (mwcFlags.usesDrawers) {
+            rect = NSInsetRect(rect, -1, -1);
+            rect.size.height -= 1;
+        }
         [rightSideController.view setFrame:rect];
         [rightSideContentView addSubview:rightSideController.view];
         
