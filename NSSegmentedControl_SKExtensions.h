@@ -44,5 +44,7 @@
 - (NSInteger)selectedTag;
 - (void)setEnabledForAllSegments:(BOOL)enabled;
 - (void)setToolTip:(NSString *)toolTip forSegment:(NSInteger)segment;
+- (NSInteger)tagForSegment:(NSInteger)segment;
+- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment;
 
 @end
