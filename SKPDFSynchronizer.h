@@ -62,11 +62,8 @@ enum {
     NSConnection *connection;
 }
 
-- (id <SKPDFSynchronizerDelegate>)delegate;
-- (void)setDelegate:(id <SKPDFSynchronizerDelegate>)newDelegate;
-
-- (NSString *)fileName;
-- (void)setFileName:(NSString *)newFileName;
+@property (assign) id <SKPDFSynchronizerDelegate> delegate;
+@property (copy) NSString *fileName;
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
 - (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options;

@@ -42,6 +42,9 @@
 
 @implementation SKPDFSynchronizer
 
+@synthesize delegate;
+@dynamic fileName;
+
 - (id)init {
     if (self = [super init]) {
         NSPort *port1 = [NSPort port];
@@ -93,14 +96,6 @@
 #pragma mark Finding
 
 #pragma mark | Accessors
-
-- (id <SKPDFSynchronizerDelegate>)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id <SKPDFSynchronizerDelegate>)newDelegate {
-    delegate = newDelegate;
-}
 
 - (NSString *)fileName {
     return [server fileName];
