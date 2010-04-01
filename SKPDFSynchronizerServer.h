@@ -74,14 +74,11 @@
     struct SKServerFlags *serverFlags;
 }
 
+// these properties are thread safe
+@property BOOL shouldKeepRunning;
+@property (copy) NSString *fileName;
+
 // this sets up the background thread and connects back to the client, blocks until it's fully set up
 - (void)startDOServerForPorts:(NSArray *)ports;
-
-// these 4 accessors are thread safe
-- (BOOL)shouldKeepRunning;
-- (void)setShouldKeepRunning:(BOOL)flag;
-
-- (NSString *)fileName;
-- (void)setFileName:(NSString *)newFileName;
 
 @end
