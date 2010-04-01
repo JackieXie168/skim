@@ -42,6 +42,9 @@
 
 @implementation SKReadingBar
 
+@synthesize page, currentLine, numberOfLines;
+@dynamic currentLastLine, currentBounds;
+
 - (id)initWithPage:(PDFPage *)aPage {
     if (self = [super init]) {
         numberOfLines = 1;
@@ -62,10 +65,6 @@
     [super dealloc];
 }
 
-- (PDFPage *)page {
-    return page;
-}
-
 - (void)setPage:(PDFPage *)newPage {
     if (page != newPage) {
         [page release];
@@ -76,24 +75,8 @@
     } 
 }
 
-- (NSInteger)currentLine {
-    return currentLine;
-}
-
-- (void)setCurrentLine:(NSInteger)lineIndex {
-    currentLine = lineIndex;
-}
-
 - (NSInteger)currentLastLine {
     return MIN([lineRects count], currentLine + numberOfLines) - 1;
-}
-
-- (NSUInteger)numberOfLines {
-    return numberOfLines;
-}
-
-- (void)setNumberOfLines:(NSUInteger)number {
-    numberOfLines = number;
 }
 
 - (NSRect)currentBounds {

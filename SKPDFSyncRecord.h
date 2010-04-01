@@ -47,24 +47,15 @@
     NSInteger line;
 }
 
+@property (readonly) NSInteger recordIndex;
+@property NSInteger pageIndex;
+@property NSPoint point;
+@property (readonly) CGFloat x;
+@property (readonly) CGFloat y;
+@property (retain) NSString *file;
+@property NSInteger line;
+
 - (id)initWithRecordIndex:(NSInteger)aRecordIndex;
-
-- (NSInteger)recordIndex;
-
-- (NSInteger)pageIndex;
-- (void)setPageIndex:(NSInteger)newPageIndex;
-
-- (NSPoint)point;
-- (void)setPoint:(NSPoint)newPoint;
-
-- (CGFloat)x;
-- (CGFloat)y;
-
-- (NSString *)file;
-- (void)setFile:(NSString *)newFile;
-
-- (NSInteger)line;
-- (void)setLine:(NSInteger)newLine;
 
 @end
 

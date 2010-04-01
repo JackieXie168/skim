@@ -68,6 +68,8 @@
 
 @implementation SKInfoWindowController
 
+@synthesize info;
+
 + (void)initialize {
     SKINITIALIZE;
     
@@ -268,17 +270,6 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [dictionary setValue:[NSNumber numberWithDouble:[(SKMainDocument *)doc rating]] forKey:SKInfoRatingKey];
     
     return dictionary;
-}
-
-- (NSDictionary *)info {
-    return info;
-}
-
-- (void)setInfo:(NSDictionary *)newInfo {
-    if (info != newInfo) {
-        [info release];
-        info = [newInfo retain];
-    }
 }
 
 - (void)handleViewFrameDidChangeNotification:(NSNotification *)notification {

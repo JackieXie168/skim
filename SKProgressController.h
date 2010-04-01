@@ -44,22 +44,12 @@
     IBOutlet NSTextField *progressField;
 }
 
-- (NSProgressIndicator *)progressBar;
-
-- (NSString *)message;
-- (void)setMessage:(NSString *)newMessage;
-
-- (BOOL)isIndeterminate;
-- (void)setIndeterminate:(BOOL)flag;
-
-- (double)minValue;
-- (void)setMinValue:(double)newMinimum;
-
-- (double)maxValue;
-- (void)setMaxValue:(double)newMaximum;
-
-- (double)doubleValue;
-- (void)setDoubleValue:(double)doubleValue;
+@property (readonly) NSProgressIndicator *progressBar;
+@property (retain) NSString *message;
+@property (getter=isIndeterminate) BOOL indeterminate;
+@property double minValue;
+@property double maxValue;
+@property double doubleValue;
 
 - (void)incrementBy:(double)delta;
 

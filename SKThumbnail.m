@@ -41,6 +41,9 @@
 
 @implementation SKThumbnail
 
+@synthesize delegate, dirty, image, label, pageIndex;
+@dynamic size;
+
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex {
     if (self = [super init]) {
         image = [anImage retain];
@@ -52,38 +55,16 @@
 }
 
 - (void)dealloc {
+    delegate = nil;
     SKDESTROY(image);
     SKDESTROY(label);
     [super dealloc];
-}
-
-- (id <SKThumbnailDelegate>)delegate { return delegate; }
-
-- (void)setDelegate:(id <SKThumbnailDelegate>)newDelegate { delegate = newDelegate; }
-
-- (BOOL)isDirty { return dirty; }
-
-- (void)setDirty:(BOOL)flag { dirty = flag; }
-
-- (void)setImage:(NSImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-    }
 }
 
 - (NSImage *)image {
     if (dirty && [delegate generateImageForThumbnail:self])
         [self setDirty:NO];
     return image;
-}
-
-- (NSString *)label {
-    return label;
-}
-
-- (NSUInteger)pageIndex {
-    return pageIndex;
 }
 
 - (NSSize)size {

@@ -68,6 +68,9 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
+@synthesize separate, transition, transitions;
+@dynamic pageTransitions, notesDocument, isScrolling;
+
 - (id)initForController:(SKMainWindowController *)aController {
     if (self = [super init]) {
         controller = aController;
@@ -241,10 +244,6 @@ static char *SKTransitionPropertiesObservationContext;
     }
 }
 
-- (BOOL)separate {
-    return separate;
-}
-
 - (void)setSeparate:(BOOL)newSeparate {
     if (separate != newSeparate) {
         separate = newSeparate;
@@ -280,38 +279,6 @@ static char *SKTransitionPropertiesObservationContext;
         }
         [[[self undoManager] prepareWithInvocationTarget:self] setSeparate:separate == NO];
     }
-}
-
-- (SKAnimationTransitionStyle)transitionStyle {
-    return [transition transitionStyle];
-}
-
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
-    [transition setTransitionStyle:style];
-}
-
-- (CGFloat)duration {
-    return [transition duration];
-}
-
-- (void)setDuration:(CGFloat)newDuration {
-    [transition setDuration:newDuration];
-}
-
-- (BOOL)shouldRestrict {
-    return [transition shouldRestrict];
-}
-
-- (void)setShouldRestrict:(BOOL)flag {
-    [transition setShouldRestrict:flag];
-}
-
-- (SKTransitionInfo *)transition {
-    return transition;
-}
-
-- (NSArray *)transitions {
-    return transitions;
 }
 
 - (void)setTransitions:(NSArray *)newTransitions {

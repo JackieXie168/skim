@@ -25,13 +25,10 @@
     id <SKNoteTypeSheetControllerDelegate> delegate;
 }
 
-- (NSArray *)noteTypes;
-
-- (NSMenu *)noteTypeMenu;
+@property (assign) id <SKNoteTypeSheetControllerDelegate> delegate;
+@property (readonly) NSArray *noteTypes;
+@property (readonly) NSMenu *noteTypeMenu;
 
 - (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
-
-- (id <SKNoteTypeSheetControllerDelegate>)delegate;
-- (void)setDelegate:(id <SKNoteTypeSheetControllerDelegate>)newDelegate;
 
 @end

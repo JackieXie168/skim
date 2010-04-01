@@ -56,6 +56,8 @@ NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorL
 
 @implementation SKLineInspector
 
+@synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
+
 static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
@@ -428,10 +430,6 @@ static SKLineInspector *sharedLineInspector = nil;
 
 #pragma mark Accessors
 
-- (CGFloat)lineWidth {
-    return lineWidth;
-}
-
 - (void)setLineWidth:(CGFloat)width {
     if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
@@ -439,19 +437,11 @@ static SKLineInspector *sharedLineInspector = nil;
     }
 }
 
-- (PDFBorderStyle)style {
-    return style;
-}
-
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
         [self notifyChangeAction:SKStyleLineChangeAction];
     }
-}
-
-- (NSArray *)dashPattern {
-    return dashPattern;
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
@@ -462,19 +452,11 @@ static SKLineInspector *sharedLineInspector = nil;
     }
 }
 
-- (PDFLineStyle)startLineStyle {
-    return startLineStyle;
-}
-
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
         [self notifyChangeAction:SKStartLineStyleLineChangeAction];
     }
-}
-
-- (PDFLineStyle)endLineStyle {
-    return endLineStyle;
 }
 
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {
@@ -495,10 +477,6 @@ static SKLineInspector *sharedLineInspector = nil;
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
         [self setEndLineStyle:[(PDFAnnotationLine *)annotation endLineStyle]];
     }
-}
-
-- (SKLineChangeAction)currentLineChangeAction {
-    return currentLineChangeAction;
 }
 
 - (void)setNilValueForKey:(NSString *)key {

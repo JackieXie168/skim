@@ -57,6 +57,9 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @implementation SKDownload
 
+@synthesize URL, URLDownload, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
+@dynamic fileName, info;
+
 + (NSSet *)infoKeys {
     return [NSSet setWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
 }
@@ -134,18 +137,6 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 #pragma mark Accessors
 
-- (id <SKDownloadDelegate>)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id <SKDownloadDelegate>)newDelegate {
-    delegate = newDelegate;
-}
-
-- (SKDownloadStatus)status {
-    return status;
-}
-
 - (void)setStatus:(SKDownloadStatus)newStatus {
     if (status != newStatus) {
         if (newStatus == SKDownloadStatusDownloading) {
@@ -158,14 +149,6 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         }
         status = newStatus;
     }
-}
-
-- (NSURL *)URL {
-    return URL;
-}
-
-- (NSString *)filePath {
-    return filePath;
 }
 
 - (void)setFilePath:(NSString *)newFilePath {
@@ -196,10 +179,6 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     }
 }
 
-- (long long)expectedContentLength {
-    return expectedContentLength;
-}
-
 - (void)setExpectedContentLength:(long long)newExpectedContentLength {
     if (expectedContentLength != newExpectedContentLength) {
         expectedContentLength = newExpectedContentLength;
@@ -207,19 +186,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     }
 }
 
-- (long long)receivedContentLength {
-    return receivedContentLength;
-}
-
 - (void)setReceivedContentLength:(long long)newReceivedContentLength {
     if (receivedContentLength != newReceivedContentLength) {
         receivedContentLength = newReceivedContentLength;
 		[progressIndicator setDoubleValue:(double)receivedContentLength];
     }
-}
-
-- (NSURLDownload *)URLDownload {
-    return URLDownload;
 }
 
 - (NSProgressIndicator *)progressIndicator {

@@ -52,6 +52,12 @@
     NSTextView *fieldEditor;
 }
 
+@property (retain) NSString *findString;
+@property BOOL ignoreCase;
+@property (readonly) NSInteger findOptions;
+@property (readonly) id target;
+@property (readonly) id selectionSource;
+
 + (id)sharedFindController;
 
 - (IBAction)performFindPanelAction:(id)sender;
@@ -59,17 +65,6 @@
 - (IBAction)findNextAndOrderOutFindPanel:(id)sender;
 - (IBAction)findPrevious:(id)sender;
 - (IBAction)pickFindString:(id)sender;
-
-- (NSString *)findString;
-- (void)setFindString:(NSString *)newFindString;
-
-- (BOOL)ignoreCase;
-- (void)setIgnoreCase:(BOOL)newIgnoreCase;
-
-- (NSInteger)findOptions;
-
-- (id)target;
-- (id)selectionSource;
 
 @end
 

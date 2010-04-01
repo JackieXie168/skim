@@ -42,6 +42,9 @@
 
 @implementation SKTransitionInfo
 
+@synthesize transitionStyle, duration, shouldRestrict, thumbnail, label;
+@dynamic properties, title;
+
 + (NSSet *)keyPathsForValuesAffectingValueForTitle {
     return [NSSet setWithObjects:@"label", nil];
 }
@@ -82,52 +85,6 @@
         [self setDuration:[value doubleValue]];
     if (value = [dictionary objectForKey:SKShouldRestrictKey])
         [self setShouldRestrict:[value doubleValue]];
-}
-
-- (SKAnimationTransitionStyle)transitionStyle {
-    return transitionStyle;
-}
-
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)newTransitionStyle {
-    transitionStyle = newTransitionStyle;
-}
-
-- (CGFloat)duration {
-    return duration;
-}
-
-- (void)setDuration:(CGFloat)newDuration {
-    duration = newDuration;
-}
-
-- (BOOL)shouldRestrict {
-    return shouldRestrict;
-}
-
-- (void)setShouldRestrict:(BOOL)newShouldRestrict {
-    shouldRestrict = newShouldRestrict;
-}
-
-- (SKThumbnail *)thumbnail {
-    return thumbnail;
-}
-
-- (void)setThumbnail:(SKThumbnail *)newThumbnail {
-    if (thumbnail != newThumbnail) {
-        [thumbnail release];
-        thumbnail = [newThumbnail retain];
-    }
-}
-
-- (NSString *)label {
-    return label;
-}
-
-- (void)setLabel:(NSString *)newLabel {
-    if (label != newLabel) {
-        [label release];
-        label = [newLabel copy];
-    }
 }
 
 - (NSString *)title {

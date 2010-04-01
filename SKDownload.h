@@ -75,30 +75,29 @@ typedef NSInteger SKDownloadStatus;
     NSString *filePath;
     NSImage *fileIcon;
     NSProgressIndicator *progressIndicator;
-    NSInteger status;
+    SKDownloadStatus status;
     id <SKDownloadDelegate> delegate;
 }
 
+@property (assign) id <SKDownloadDelegate> delegate;
+
+@property (readonly) SKDownloadStatus status;
+
+@property (readonly) NSURL *URL;
+
+@property (readonly) NSString *filePath;
+@property (readonly) NSString *fileName;
+@property (readonly) NSImage *fileIcon;
+@property (readonly) long long expectedContentLength;
+@property (readonly) long long receivedContentLength;
+
+@property (readonly) NSURLDownload *URLDownload;
+
+@property (readonly) NSProgressIndicator *progressIndicator;
+
+@property (readonly) NSDictionary *info;
+
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
-
-- (id <SKDownloadDelegate>)delegate;
-- (void)setDelegate:(id <SKDownloadDelegate>)newDelegate;
-
-- (SKDownloadStatus)status;
-
-- (NSURL *)URL;
-
-- (NSString *)filePath;
-- (NSString *)fileName;
-- (NSImage *)fileIcon;
-- (long long)expectedContentLength;
-- (long long)receivedContentLength;
-
-- (NSURLDownload *)URLDownload;
-
-- (NSProgressIndicator *)progressIndicator;
-
-- (NSDictionary *)info;
 
 - (void)start;
 - (void)cancel;
