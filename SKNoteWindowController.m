@@ -67,6 +67,9 @@ static char SKNoteWindowStringObservationContext;
 
 @implementation SKNoteWindowController
 
+@synthesize note, keepOnTop, forceOnTop;
+@dynamic isNoteType;
+
 static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 + (void)makeNoteIcons {
@@ -240,26 +243,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (BOOL)isNoteWindowController { return YES; }
 
-- (PDFAnnotation *)note {
-    return note;
-}
-
 - (BOOL)isNoteType {
     return [[note type] isEqualToString:SKNNoteString];
-}
-
-- (BOOL)keepOnTop {
-    return keepOnTop;
 }
 
 - (void)setKeepOnTop:(BOOL)flag {
     keepOnTop = flag;
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-}
-
-- (BOOL)forceOnTop {
-    return forceOnTop;
 }
 
 - (void)setForceOnTop:(BOOL)flag {

@@ -23,6 +23,9 @@
 
 @implementation SKNoteTypeSheetController
 
+@synthesize delegate, noteTypeMenu;
+@dynamic noteTypes;
+
 - (id)init {
     if (self = [super initWithWindowNibName:@"NoteTypeSheet"]) {
         noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
@@ -61,10 +64,6 @@
     NSRect messageFrame = [messageField frame];
     frame.size.width = fmax(NSWidth(matrixFrame) + 2.0 * NSMinX(matrixFrame), NSWidth(messageFrame) + 2.0 * NSMinX(messageFrame));
     [[self window] setFrame:frame display:NO];
-}
-
-- (NSMenu *)noteTypeMenu {
-    return noteTypeMenu;
 }
 
 - (NSArray *)noteTypes {
@@ -152,14 +151,6 @@
         modalDelegate:self 
        didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
-}
-
-- (id <SKNoteTypeSheetControllerDelegate>)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id <SKNoteTypeSheetControllerDelegate>)newDelegate {
-    delegate = newDelegate;
 }
 
 @end

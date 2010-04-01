@@ -41,6 +41,8 @@
 
 @implementation SKVersionNumber
 
+@synthesize originalVersionString, cleanVersionString, componentCount, releaseType;
+
 + (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
 {
     SKVersionNumber *versionNumber = [[self alloc] initWithVersionString:versionString];
@@ -154,32 +156,12 @@
 
 #pragma mark API
 
-- (NSString *)originalVersionString;
-{
-    return originalVersionString;
-}
-
-- (NSString *)cleanVersionString;
-{
-    return cleanVersionString;
-}
-
-- (NSUInteger)componentCount;
-{
-    return componentCount;
-}
-
 - (NSInteger)componentAtIndex:(NSUInteger)componentIndex;
 {
     // This treats the version as a infinite sequence ending in "...0.0.0.0", making comparison easier
     if (componentIndex < componentCount)
         return components[componentIndex];
     return 0;
-}
-
-- (NSInteger)releaseType;
-{
-    return releaseType;
 }
 
 #pragma mark NSCopying

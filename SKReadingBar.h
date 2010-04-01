@@ -47,19 +47,14 @@
     NSUInteger numberOfLines;
 }
 
+@property (retain) PDFPage *page;
+@property NSInteger currentLine;
+@property (readonly) NSInteger currentLastLine;
+@property NSUInteger numberOfLines;
+@property (readonly) NSRect currentBounds;
+
 - (id)initWithPage:(PDFPage *)aPage;
 
-- (PDFPage *)page;
-- (void)setPage:(PDFPage *)newPage;
-
-- (NSInteger)currentLine;
-- (void)setCurrentLine:(NSInteger)lineIndex;
-- (NSInteger)currentLastLine;
-
-- (NSUInteger)numberOfLines;
-- (void)setNumberOfLines:(NSUInteger)number;
-
-- (NSRect)currentBounds;
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box;
 
 - (BOOL)goToNextLine;

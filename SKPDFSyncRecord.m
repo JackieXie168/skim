@@ -42,6 +42,9 @@
 
 @implementation SKPDFSyncRecord
 
+@synthesize recordIndex, pageIndex, point, file, line;
+@dynamic x, y;
+
 - (id)initWithRecordIndex:(NSInteger)aRecordIndex {
     if (self = [super init]) {
         recordIndex = aRecordIndex;
@@ -58,53 +61,12 @@
     [super dealloc];
 }
 
-- (NSInteger)recordIndex {
-    return recordIndex;
-}
-
-- (NSInteger)pageIndex {
-    return pageIndex;
-}
-
-- (void)setPageIndex:(NSInteger)newPageIndex {
-    if (pageIndex != newPageIndex) {
-        pageIndex = newPageIndex;
-    }
-}
-
-- (NSPoint)point {
-    return point;
-}
-
-- (void)setPoint:(NSPoint)newPoint {
-    point = newPoint;
-}
-
 - (CGFloat)x {
     return point.x;
 }
 
 - (CGFloat)y {
     return point.y;
-}
-
-- (NSString *)file {
-    return file;
-}
-
-- (void)setFile:(NSString *)newFile {
-    if (file != newFile) {
-        [file release];
-        file = [newFile retain];
-    }
-}
-
-- (NSInteger)line {
-    return line;
-}
-
-- (void)setLine:(NSInteger)newLine {
-    line = newLine;
 }
 
 @end

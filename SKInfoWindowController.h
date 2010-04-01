@@ -49,10 +49,9 @@
     NSArray *attributesKeys;
 }
 
-+ (id)sharedInstance;
+@property (copy) NSDictionary *info;
 
-- (NSDictionary *)info;
-- (void)setInfo:(NSDictionary *)newInfo;
++ (id)sharedInstance;
 
 - (NSDictionary *)infoForDocument:(NSDocument *)doc;
 

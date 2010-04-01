@@ -49,24 +49,12 @@
     NSString *label;
 }
 
-- (NSDictionary *)properties;
-- (void)setProperties:(NSDictionary *)dictionary;
-
-- (SKAnimationTransitionStyle)transitionStyle;
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
-
-- (CGFloat)duration;
-- (void)setDuration:(CGFloat)newDuration;
-
-- (BOOL)shouldRestrict;
-- (void)setShouldRestrict:(BOOL)newShouldRestrict;
-
-- (SKThumbnail *)thumbnail;
-- (void)setThumbnail:(SKThumbnail *)newThumbnail;
-
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
-
-- (NSString *)title;
+@property (copy) NSDictionary *properties;
+@property SKAnimationTransitionStyle transitionStyle;
+@property CGFloat duration;
+@property BOOL shouldRestrict;
+@property (retain) SKThumbnail *thumbnail;
+@property (copy) NSString *label;
+@property (readonly) NSString *title;
 
 @end

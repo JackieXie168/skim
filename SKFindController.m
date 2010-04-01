@@ -44,6 +44,9 @@
 
 @implementation SKFindController
 
+@synthesize findString, ignoreCase;
+@dynamic findOptions, target, selectionSource;
+
 + (id)sharedFindController {
     static SKFindController *sharedFindController = nil;
     if (sharedFindController == nil)
@@ -140,27 +143,6 @@
     if (string) {
         [self setFindString:string];
         [self updateFindPboard];
-    }
-}
-
-- (NSString *)findString {
-    return findString;
-}
-
-- (void)setFindString:(NSString *)newFindString {
-    if (findString != newFindString) {
-        [findString release];
-        findString = [newFindString retain];
-    }
-}
-
-- (BOOL)ignoreCase {
-    return ignoreCase;
-}
-
-- (void)setIgnoreCase:(BOOL)newIgnoreCase {
-    if (ignoreCase != newIgnoreCase) {
-        ignoreCase = newIgnoreCase;
     }
 }
 

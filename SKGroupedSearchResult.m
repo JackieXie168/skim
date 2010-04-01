@@ -42,6 +42,9 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 
 @implementation SKGroupedSearchResult
 
+@synthesize page, maxCount, matches;
+@dynamic count;
+
 + (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount {
     return [[[self alloc] initWithPage:aPage maxCount:aMaxCount] autorelease];
 }
@@ -61,24 +64,8 @@ NSString *SKGroupedSearchResultCountKey = @"count";
     [super dealloc];
 }
 
-- (PDFPage *)page {
-    return page;
-}
-
 - (NSUInteger)count {
     return [matches count];
-}
-
-- (NSUInteger)maxCount {
-    return maxCount;
-}
-
-- (void)setMaxCount:(NSUInteger)newMaxCount {
-    maxCount = newMaxCount;
-}
-
-- (NSArray *)matches {
-    return matches;
 }
 
 - (void)addMatch:(PDFSelection *)match {

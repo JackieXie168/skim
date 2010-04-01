@@ -47,17 +47,14 @@ extern NSString *SKGroupedSearchResultCountKey;
     NSMutableArray *matches;
 }
 
+@property (readonly) PDFPage *page;
+@property (readonly) NSUInteger count;
+@property NSUInteger maxCount;
+@property (readonly) NSArray *matches;
+
 + (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
 - (id)initWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
 
-- (PDFPage *)page;
-
-- (NSUInteger)count;
-
-- (NSUInteger)maxCount;
-- (void)setMaxCount:(NSUInteger)newMaxCount;
-
-- (NSArray *)matches;
 - (void)addMatch:(PDFSelection *)match;
 
 @end
