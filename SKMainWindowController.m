@@ -359,8 +359,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [centerContentView setFrame:[splitView bounds]];
     }
     
-    //[outlineView setAutoresizesOutlineColumn: NO];
-    //[noteOutlineView setAutoresizesOutlineColumn: NO];
     [self displayThumbnailViewAnimating:NO];
     [self displayNoteViewAnimating:NO];
     
