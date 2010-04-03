@@ -53,6 +53,8 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 @implementation SKSyncPreferences
 
+@synthesize customTeXEditor;
+
 - (NSString *)nibName {
     return @"SyncPreferences";
 }
@@ -76,7 +78,7 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
     
     [self setCustomTeXEditor:idx == -1];
     
-    if (isCustomTeXEditor)
+    if (idx == -1)
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
     else
         [texEditorPopUpButton selectItemAtIndex:idx];
@@ -96,14 +98,6 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
             return editor;
     }
     return (SKTeXEditor){nil, nil, nil};
-}
-
-- (BOOL)isCustomTeXEditor {
-    return isCustomTeXEditor;
-}
-
-- (void)setCustomTeXEditor:(BOOL)flag {
-    isCustomTeXEditor = flag;
 }
 
 #pragma mark Actions

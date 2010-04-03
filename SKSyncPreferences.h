@@ -47,13 +47,12 @@ typedef struct _SKTeXEditor {
 @interface SKSyncPreferences : SKPreferencePane {
     IBOutlet NSArray *texEditorLabels;
     IBOutlet NSArray *texEditorControls;
-    BOOL isCustomTeXEditor;
+    BOOL customTeXEditor;
 }
 
-+ (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
+@property (getter=isCustomTeXEditor) BOOL customTeXEditor;
 
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
++ (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
 
 - (IBAction)changeTeXEditorPreset:(id)sender;
 
