@@ -56,10 +56,10 @@ enum {
     NSInteger releaseType;
 }
 
-@property (readonly) NSString *originalVersionString;
-@property (readonly) NSString *cleanVersionString;
-@property (readonly) NSUInteger componentCount;
-@property NSInteger releaseType;
+@property (nonatomic, readonly) NSString *originalVersionString;
+@property (nonatomic, readonly) NSString *cleanVersionString;
+@property (nonatomic, readonly) NSUInteger componentCount;
+@property (nonatomic) NSInteger releaseType;
 
 + (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
 

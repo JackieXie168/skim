@@ -25,9 +25,9 @@
     id <SKNoteTypeSheetControllerDelegate> delegate;
 }
 
-@property (assign) id <SKNoteTypeSheetControllerDelegate> delegate;
-@property (readonly) NSArray *noteTypes;
-@property (readonly) NSMenu *noteTypeMenu;
+@property (nonatomic, assign) id <SKNoteTypeSheetControllerDelegate> delegate;
+@property (nonatomic, readonly) NSArray *noteTypes;
+@property (nonatomic, readonly) NSMenu *noteTypeMenu;
 
 - (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
 

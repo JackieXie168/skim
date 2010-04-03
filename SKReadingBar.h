@@ -47,11 +47,11 @@
     NSUInteger numberOfLines;
 }
 
-@property (retain) PDFPage *page;
-@property NSInteger currentLine;
-@property (readonly) NSInteger currentLastLine;
-@property NSUInteger numberOfLines;
-@property (readonly) NSRect currentBounds;
+@property (nonatomic, retain) PDFPage *page;
+@property (nonatomic) NSInteger currentLine;
+@property (nonatomic, readonly) NSInteger currentLastLine;
+@property (nonatomic) NSUInteger numberOfLines;
+@property (nonatomic, readonly) NSRect currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage;
 

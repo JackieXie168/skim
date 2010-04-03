@@ -54,12 +54,12 @@
     id <SKThumbnailDelegate> delegate;
 }
 
-@property (assign) id <SKThumbnailDelegate> delegate;
-@property (getter=isDirty) BOOL dirty;
-@property (retain) NSImage *image;
-@property (readonly) NSString *label;
-@property (readonly) NSUInteger pageIndex;
-@property (readonly) NSSize size;
+@property (nonatomic, assign) id <SKThumbnailDelegate> delegate;
+@property (nonatomic, getter=isDirty) BOOL dirty;
+@property (nonatomic, retain) NSImage *image;
+@property (nonatomic, readonly) NSString *label;
+@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) NSSize size;
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
 
