@@ -61,10 +61,10 @@
     NSUndoManager *textViewUndoManager;
 }
 
-@property (readonly) PDFAnnotation *note;
-@property BOOL keepOnTop;
-@property BOOL forceOnTop;
-@property (readonly) BOOL isNoteType;
+@property (nonatomic, readonly) PDFAnnotation *note;
+@property (nonatomic) BOOL keepOnTop;
+@property (nonatomic) BOOL forceOnTop;
+@property (rnonatomic, eadonly) BOOL isNoteType;
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
 

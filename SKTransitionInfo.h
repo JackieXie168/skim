@@ -49,12 +49,12 @@
     NSString *label;
 }
 
-@property (copy) NSDictionary *properties;
-@property SKAnimationTransitionStyle transitionStyle;
-@property CGFloat duration;
-@property BOOL shouldRestrict;
-@property (retain) SKThumbnail *thumbnail;
-@property (copy) NSString *label;
-@property (readonly) NSString *title;
+@property (nonatomic, copy) NSDictionary *properties;
+@property (nonatomic) SKAnimationTransitionStyle transitionStyle;
+@property (nonatomic) CGFloat duration;
+@property (nonatomic) BOOL shouldRestrict;
+@property (nonatomic, retain) SKThumbnail *thumbnail;
+@property (nonatomic, copy) NSString *label;
+@property (nonatomic, readonly) NSString *title;
 
 @end

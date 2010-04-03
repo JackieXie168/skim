@@ -50,7 +50,7 @@ typedef struct _SKTeXEditor {
     BOOL customTeXEditor;
 }
 
-@property (getter=isCustomTeXEditor) BOOL customTeXEditor;
+@property (nonatomic, getter=isCustomTeXEditor) BOOL customTeXEditor;
 
 + (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
 

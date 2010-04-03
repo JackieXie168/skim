@@ -47,13 +47,13 @@
     NSInteger line;
 }
 
-@property (readonly) NSInteger recordIndex;
-@property NSInteger pageIndex;
-@property NSPoint point;
-@property (readonly) CGFloat x;
-@property (readonly) CGFloat y;
-@property (retain) NSString *file;
-@property NSInteger line;
+@property (nonatomic, readonly) NSInteger recordIndex;
+@property (nonatomic) NSInteger pageIndex;
+@property (nonatomic) NSPoint point;
+@property (nonatomic, readonly) CGFloat x;
+@property (nonatomic, readonly) CGFloat y;
+@property (nonatomic, retain) NSString *file;
+@property (nonatomic) NSInteger line;
 
 - (id)initWithRecordIndex:(NSInteger)aRecordIndex;
 

@@ -52,11 +52,11 @@
     NSTextView *fieldEditor;
 }
 
-@property (retain) NSString *findString;
-@property BOOL ignoreCase;
-@property (readonly) NSInteger findOptions;
-@property (readonly) id target;
-@property (readonly) id selectionSource;
+@property (nonatomic, retain) NSString *findString;
+@property (nonatomic) BOOL ignoreCase;
+@property (nonatomic, readonly) NSInteger findOptions;
+@property (nonatomic, readonly) id target;
+@property (nonatomic, readonly) id selectionSource;
 
 + (id)sharedFindController;
 

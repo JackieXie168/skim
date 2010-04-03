@@ -60,12 +60,12 @@
     NSUndoManager *undoManager;
 }
 
-@property BOOL separate;
-@property (readonly) SKTransitionInfo *transition;
-@property (copy) NSArray *transitions;
-@property (readonly) NSArray *pageTransitions;
-@property (readonly) SKMainDocument *notesDocument;
-@property (readonly) BOOL isScrolling;
+@property (nonatomic) BOOL separate;
+@property (nonatomic, readonly) SKTransitionInfo *transition;
+@property (nonatomic, copy) NSArray *transitions;
+@property (nonatomic, readonly) NSArray *pageTransitions;
+@property (nonatomic, readonly) SKMainDocument *notesDocument;
+@property (nonatomic, readonly) BOOL isScrolling;
 
 - (id)initForController:(SKMainWindowController *)aController;
 

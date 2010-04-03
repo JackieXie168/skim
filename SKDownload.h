@@ -79,23 +79,23 @@ typedef NSInteger SKDownloadStatus;
     id <SKDownloadDelegate> delegate;
 }
 
-@property (assign) id <SKDownloadDelegate> delegate;
+@property (nonatomic, assign) id <SKDownloadDelegate> delegate;
 
-@property (readonly) SKDownloadStatus status;
+@property (nonatomic, readonly) SKDownloadStatus status;
 
-@property (readonly) NSURL *URL;
+@property (nonatomic, readonly) NSURL *URL;
 
-@property (readonly) NSString *filePath;
-@property (readonly) NSString *fileName;
-@property (readonly) NSImage *fileIcon;
-@property (readonly) long long expectedContentLength;
-@property (readonly) long long receivedContentLength;
+@property (nonatomic, readonly) NSString *filePath;
+@property (nonatomic, readonly) NSString *fileName;
+@property (nonatomic, readonly) NSImage *fileIcon;
+@property (nonatomic, readonly) long long expectedContentLength;
+@property (nonatomic, readonly) long long receivedContentLength;
 
-@property (readonly) NSURLDownload *URLDownload;
+@property (nonatomic, readonly) NSURLDownload *URLDownload;
 
-@property (readonly) NSProgressIndicator *progressIndicator;
+@property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
 
-@property (readonly) NSDictionary *info;
+@property (nonatomic, readonly) NSDictionary *info;
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
 

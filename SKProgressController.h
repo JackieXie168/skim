@@ -44,12 +44,12 @@
     IBOutlet NSTextField *progressField;
 }
 
-@property (readonly) NSProgressIndicator *progressBar;
-@property (retain) NSString *message;
-@property (getter=isIndeterminate) BOOL indeterminate;
-@property double minValue;
-@property double maxValue;
-@property double doubleValue;
+@property (nonatomic, readonly) NSProgressIndicator *progressBar;
+@property (nonatomic, retain) NSString *message;
+@property (nonatomic, getter=isIndeterminate) BOOL indeterminate;
+@property (nonatomic) double minValue;
+@property (nonatomic) double maxValue;
+@property (nonatomic) double doubleValue;
 
 - (void)incrementBy:(double)delta;
 

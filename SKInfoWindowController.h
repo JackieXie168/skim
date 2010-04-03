@@ -49,7 +49,7 @@
     NSArray *attributesKeys;
 }
 
-@property (copy) NSDictionary *info;
+@property (nonatomic, copy) NSDictionary *info;
 
 + (id)sharedInstance;
 

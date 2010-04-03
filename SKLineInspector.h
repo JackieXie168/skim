@@ -76,12 +76,11 @@ typedef NSUInteger SKLineChangeAction;
     SKLineChangeAction currentLineChangeAction;
 }
 
-@property CGFloat lineWidth;
-@property PDFBorderStyle style;
-@property (copy) NSArray *dashPattern;
-@property PDFLineStyle startLineStyle;
-@property PDFLineStyle endLineStyle;
-@property (readonly) SKLineChangeAction currentLineChangeAction;
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic) PDFBorderStyle style;
+@property (nonatomic, copy) NSArray *dashPattern;
+@property (nonatomic) PDFLineStyle endLineStyle;
+@property (nonatomic, readonly) SKLineChangeAction currentLineChangeAction;
 
 + (id)sharedLineInspector;
 + (BOOL)sharedLineInspectorExists;

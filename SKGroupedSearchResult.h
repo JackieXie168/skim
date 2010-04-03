@@ -47,10 +47,10 @@ extern NSString *SKGroupedSearchResultCountKey;
     NSMutableArray *matches;
 }
 
-@property (readonly) PDFPage *page;
-@property (readonly) NSUInteger count;
-@property NSUInteger maxCount;
-@property (readonly) NSArray *matches;
+@property (nonatomic, readonly) PDFPage *page;
+@property (nonatomic, readonly) NSUInteger count;
+@property (nonatomic) NSUInteger maxCount;
+@property (nonatomic, readonly) NSArray *matches;
 
 + (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
 - (id)initWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
