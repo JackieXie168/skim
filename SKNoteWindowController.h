@@ -64,7 +64,7 @@
 @property (nonatomic, readonly) PDFAnnotation *note;
 @property (nonatomic) BOOL keepOnTop;
 @property (nonatomic) BOOL forceOnTop;
-@property (rnonatomic, eadonly) BOOL isNoteType;
+@property (nonatomic, readonly) BOOL isNoteType;
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
 
