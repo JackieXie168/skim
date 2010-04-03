@@ -69,6 +69,10 @@
 #import "NSDocument_SKExtensions.h"
 
 
+@interface SKMainWindowController (SKPrivateUI)
+- (void)updateLineInspector;
+@end
+
 @implementation SKMainWindowController (Actions)
 
 - (IBAction)changeColor:(id)sender{
@@ -138,6 +142,8 @@
                 break;
         }
         mwcFlags.updatingLine = 0;
+        // in case one property changes another, e.g. when adding a dashPattern the borderStyle can change
+        [self updateLineInspector];
     }
 }
 
