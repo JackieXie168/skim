@@ -119,16 +119,12 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKGeneralPreferencesDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
-            [self updateRevertButtons];
-        }
-    } else if (context == &SKGeneralPreferencesUpdaterObservationContext) {
+    if (context == &SKGeneralPreferencesDefaultsObservationContext)
+        [self updateRevertButtons];
+    else if (context == &SKGeneralPreferencesUpdaterObservationContext)
         [self synchronizeUpdateInterval];
-    } else {
+    else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 #pragma mark Private
