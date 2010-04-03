@@ -79,6 +79,7 @@ typedef NSUInteger SKLineChangeAction;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) PDFBorderStyle style;
 @property (nonatomic, copy) NSArray *dashPattern;
+@property (nonatomic) PDFLineStyle startLineStyle;
 @property (nonatomic) PDFLineStyle endLineStyle;
 @property (nonatomic, readonly) SKLineChangeAction currentLineChangeAction;
 
