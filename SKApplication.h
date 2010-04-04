@@ -50,8 +50,7 @@ extern NSString *SKApplicationStartsTerminatingNotification;
     BOOL userAttentionDisabled;
 }
 
-- (BOOL)isUserAttentionDisabled;
-- (void)setUserAttentionDisabled:(BOOL)flag;
+@property (nonatomic, getter=isUserAttentionDisabled) BOOL userAttentionDisabled;
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate;

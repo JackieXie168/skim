@@ -65,6 +65,23 @@ extern NSString *SKSnapshotCurrentSetupKey;
     BOOL forceOnTop;
 }
 
+@property (nonatomic, assign) id <SKSnapshotWindowControllerDelegate> delegate;
+@property (nonatomic, readonly) PDFView *pdfView;
+@property (nonatomic, retain) NSImage *thumbnail;
+@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) NSString *pageLabel;
+@property (nonatomic, readonly) BOOL hasWindow;
+@property (nonatomic, readonly) NSDictionary *pageAndWindow;
+@property (nonatomic, readonly) NSDictionary *currentSetup;
+@property (nonatomic) BOOL forceOnTop;
+
+@property (nonatomic, readonly) NSAttributedString *thumbnailAttachment;
+@property (nonatomic, readonly) NSAttributedString *thumbnail512Attachment;
+@property (nonatomic, readonly) NSAttributedString *thumbnail256Attachment;
+@property (nonatomic, readonly) NSAttributedString *thumbnail128Attachment;
+@property (nonatomic, readonly) NSAttributedString *thumbnail64Attachment;
+@property (nonatomic, readonly) NSAttributedString *thumbnail32Attachment;
+
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup;
 
@@ -72,33 +89,10 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 - (void)redisplay;
 
-- (id <SKSnapshotWindowControllerDelegate>)delegate;
-- (void)setDelegate:(id <SKSnapshotWindowControllerDelegate>)newDelegate;
-
-- (PDFView *)pdfView;
-- (NSImage *)thumbnail;
-- (void)setThumbnail:(NSImage *)newThumbnail;
-
-- (NSUInteger)pageIndex;
-- (NSString *)pageLabel;
-- (BOOL)hasWindow;
-- (NSDictionary *)pageAndWindow;
-
-- (NSDictionary *)currentSetup;
-
-- (BOOL)forceOnTop;
-- (void)setForceOnTop:(BOOL)flag;
-
 - (NSImage *)thumbnailWithSize:(CGFloat)size;
 - (NSImage *)thumbnailWithSize:(CGFloat)size shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
-- (NSAttributedString *)thumbnailAttachment;
-- (NSAttributedString *)thumbnail512Attachment;
-- (NSAttributedString *)thumbnail256Attachment;
-- (NSAttributedString *)thumbnail128Attachment;
-- (NSAttributedString *)thumbnail64Attachment;
-- (NSAttributedString *)thumbnail32Attachment;
 
 - (void)miniaturize;
 - (void)deminiaturize;

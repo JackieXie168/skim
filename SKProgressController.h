@@ -47,9 +47,7 @@
 @property (nonatomic, readonly) NSProgressIndicator *progressBar;
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, getter=isIndeterminate) BOOL indeterminate;
-@property (nonatomic) double minValue;
-@property (nonatomic) double maxValue;
-@property (nonatomic) double doubleValue;
+@property (nonatomic) double minValue, maxValue, doubleValue;
 
 - (void)incrementBy:(double)delta;
 

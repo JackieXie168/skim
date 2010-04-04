@@ -46,19 +46,14 @@
     IBOutlet NSArray *controls;
     IBOutlet NSArray *buttons;
 }
-
-- (NSTextField *)textField;
-
-- (NSString *)stringValue;
-- (void)setStringValue:(NSString *)string;
-
+@property (nonatomic, readonly) NSTextField *textField;
+@property (nonatomic, retain) NSString *stringValue;
 @end
 
 #pragma mark -
 
 @interface SKPageSheetController : SKTextFieldSheetController
-- (NSArray *)objectValues;
-- (void)setObjectValues:(NSArray *)objects;
+@property (nonatomic, retain) NSArray *objectValues;
 @end
 
 #pragma mark -
@@ -73,9 +68,7 @@
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
     IBOutlet NSPopUpButton *folderPopUp;
 }
-
-- (SKBookmark *)selectedFolder;
-
+@property (nonatomic, readonly) SKBookmark *selectedFolder;
 @end
 
 #pragma mark -

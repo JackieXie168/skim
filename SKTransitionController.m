@@ -154,6 +154,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 @implementation SKTransitionController
 
+@synthesize view, transitionStyle, duration, shouldRestrict, pageTransitions;
+
 + (NSArray *)transitionFilterNames {
     static NSArray *transitionFilterNames = nil;
     
@@ -241,53 +243,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     SKDESTROY(filters);
     SKDESTROY(pageTransitions);
     [super dealloc];
-}
-
-- (NSView *)view {
-    return view;
-}
-
-- (void)setView:(NSView *)newView {
-    if (view != newView) {
-        view = newView;
-    }
-}
-
-- (SKAnimationTransitionStyle)transitionStyle {
-    return transitionStyle;
-}
-
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
-    if (transitionStyle != style) {
-        transitionStyle = style;
-    }
-}
-
-- (CGFloat)duration {
-    return duration;
-}
-
-- (void)setDuration:(CGFloat)newDuration {
-    duration = newDuration;
-}
-
-- (BOOL)shouldRestrict {
-    return shouldRestrict;
-}
-
-- (void)setShouldRestrict:(BOOL)flag {
-    shouldRestrict = flag;
-}
-
-- (NSArray *)pageTransitions {
-    return pageTransitions;
-}
-
-- (void)setPageTransitions:(NSArray *)newPageTransitions {
-    if (pageTransitions != newPageTransitions) {
-        [pageTransitions release];
-        pageTransitions = [newPageTransitions copy];
-    }
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {

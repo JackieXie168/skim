@@ -46,10 +46,7 @@
     IBOutlet NSMatrix *printScalingModeMatrix;
 }
 
-- (BOOL)autoRotate;
-- (void)setAutoRotate:(BOOL)autoRotate;
-
-- (PDFPrintScalingMode)printScalingMode;
-- (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode;
+@property (nonatomic) BOOL autoRotate;
+@property (nonatomic) PDFPrintScalingMode printScalingMode;
 
 @end

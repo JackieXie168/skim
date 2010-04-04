@@ -77,6 +77,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 @implementation SKSnapshotWindowController
 
+@synthesize delegate, pdfView, thumbnail, pageLabel, hasWindow, forceOnTop;
+@dynamic pageIndex, pageAndWindow, currentSetup, thumbnailAttachment, thumbnail512Attachment, thumbnail256Attachment, thumbnail128Attachment, thumbnail64Attachment, thumbnail32Attachment;
+
 + (NSSet *)keyPathsForValuesAffectingPageAndWindow {
     return [NSSet setWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil];
 }
@@ -271,29 +274,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Acessors
 
-- (id <SKSnapshotWindowControllerDelegate>)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id <SKSnapshotWindowControllerDelegate>)newDelegate {
-    delegate = newDelegate;
-}
-
-- (PDFView *)pdfView {
-    return pdfView;
-}
-
-- (NSImage *)thumbnail {
-    return thumbnail;
-}
-
-- (void)setThumbnail:(NSImage *)newThumbnail {
-    if (thumbnail != newThumbnail) {
-        [thumbnail release];
-        thumbnail = [newThumbnail retain];
-    }
-}
-
 - (NSRect)bounds {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     return [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
@@ -301,10 +281,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (NSUInteger)pageIndex {
     return [[pdfView currentPage] pageIndex];
-}
-
-- (NSString *)pageLabel {
-    return pageLabel;
 }
 
 - (void)setPageLabel:(NSString *)newPageLabel {
@@ -315,20 +291,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
     }
 }
 
-- (BOOL)hasWindow {
-    return hasWindow;
-}
-
 - (void)setHasWindow:(BOOL)flag {
     hasWindow = flag;
 }
 
 - (NSDictionary *)pageAndWindow {
     return [NSDictionary dictionaryWithObjectsAndKeys:[self pageLabel], SKSnapshotPageCellLabelKey, [NSNumber numberWithBool:[self hasWindow]], SKSnapshotPageCellHasWindowKey, nil];
-}
-
-- (BOOL)forceOnTop {
-    return forceOnTop;
 }
 
 - (void)setForceOnTop:(BOOL)flag {

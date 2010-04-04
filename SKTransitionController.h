@@ -83,6 +83,12 @@ typedef NSUInteger SKAnimationTransitionStyle;
     NSArray *pageTransitions;
 }
 
+@property (nonatomic, assign) NSView *view;
+@property (nonatomic) SKAnimationTransitionStyle transitionStyle;
+@property (nonatomic) CGFloat duration;
+@property (nonatomic) BOOL shouldRestrict;
+@property (nonatomic, copy) NSArray *pageTransitions;
+
 + (NSArray *)transitionFilterNames;
 + (NSArray *)transitionNames;
 
@@ -92,21 +98,6 @@ typedef NSUInteger SKAnimationTransitionStyle;
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style;
 
 - (id)initWithView:(NSView *)aView;
-
-- (NSView *)view;
-- (void)setView:(NSView *)newView;
-
-- (SKAnimationTransitionStyle)transitionStyle;
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
-
-- (CGFloat)duration;
-- (void)setDuration:(CGFloat)newDuration;
-
-- (BOOL)shouldRestrict;
-- (void)setShouldRestrict:(BOOL)flag;
-
-- (NSArray *)pageTransitions;
-- (void)setPageTransitions:(NSArray *)newPageTransitions;
 
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
 - (void)animateForRect:(NSRect)rect;

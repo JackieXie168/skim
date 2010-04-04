@@ -88,8 +88,7 @@ typedef NSInteger SKDownloadStatus;
 @property (nonatomic, readonly) NSString *filePath;
 @property (nonatomic, readonly) NSString *fileName;
 @property (nonatomic, readonly) NSImage *fileIcon;
-@property (nonatomic, readonly) long long expectedContentLength;
-@property (nonatomic, readonly) long long receivedContentLength;
+@property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
 
 @property (nonatomic, readonly) NSURLDownload *URLDownload;
 
@@ -97,16 +96,14 @@ typedef NSInteger SKDownloadStatus;
 
 @property (nonatomic, readonly) NSDictionary *info;
 
+@property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
+
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
 
 - (void)start;
 - (void)cancel;
 - (void)resume;
 - (void)cleanup;
-
-- (BOOL)canCancel;
-- (BOOL)canRemove;
-- (BOOL)canResume;
 
 - (void)removeProgressIndicatorFromSuperview;
 
