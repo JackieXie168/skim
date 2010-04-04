@@ -103,41 +103,37 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (IBAction)emailArchive:(id)sender;
 - (IBAction)emailDiskImage:(id)sender;
 
-- (SKMainWindowController *)mainWindowController;
-- (PDFDocument *)pdfDocument;
+@property (nonatomic, readonly) SKMainWindowController *mainWindowController;
+@property (nonatomic, readonly) PDFDocument *pdfDocument;
 
-- (SKPDFView *)pdfView;
+@property (nonatomic, readonly) SKPDFView *pdfView;
 
-- (NSArray *)fileIDStrings;
+@property (nonatomic, readonly) NSArray *fileIDStrings;
 
 - (void)savePasswordInKeychain:(NSString *)password;
 
 - (void)applySetup:(NSDictionary *)setup;
 
-- (SKPDFSynchronizer *)synchronizer;
+@property (nonatomic, readonly) SKPDFSynchronizer *synchronizer;
 
-- (NSArray *)snapshots;
+@property (nonatomic, readonly) NSArray *snapshots;
 
-- (NSArray *)tags;
-- (double)rating;
+@property (nonatomic, readonly) NSArray *tags;
+@property (nonatomic, readonly) double rating;
 
 - (NSArray *)notes;
 - (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
-- (PDFPage *)currentPage;
-- (void)setCurrentPage:(PDFPage *)page;
-- (id)activeNote;
-- (void)setActiveNote:(id)note;
-- (NSTextStorage *)richText;
-- (id)selectionSpecifier;
-- (void)setSelectionSpecifier:(id)specifier;
-- (NSData *)selectionQDRect;
-- (void)setSelectionQDRect:(NSData *)inQDBoundsAsData;
-- (id)selectionPage;
-- (void)setSelectionPage:(PDFPage *)page;
-- (NSDictionary *)pdfViewSettings;
-- (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings;
+
+@property (nonatomic, copy) PDFPage *currentPage;
+@property (nonatomic, copy) id activeNote;
+@property (nonatomic, readonly) NSTextStorage *richText;
+@property (nonatomic, copy) id selectionSpecifier;
+@property (nonatomic, copy) NSData *selectionQDRect;
+@property (nonatomic, copy) PDFPage *selectionPage;
+@property (nonatomic, copy) NSDictionary *pdfViewSettings;
+
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;

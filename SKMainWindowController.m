@@ -199,6 +199,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 @implementation SKMainWindowController
 
+@synthesize pdfView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel;
+@dynamic pdfDocument, presentationOptions, selectedNotes, isPresentation, isFullScreen, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
+
 + (void)initialize {
     SKINITIALIZE;
     
@@ -811,21 +814,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView resetPDFToolTipRects];
 }
 
-- (void)setOpenMetaTags:(NSArray *)newTags {
-    if (tags != newTags) {
-        [tags release];
-        tags = [newTags retain] ?: [[NSArray alloc] init];
-    }
-}
-
-- (void)setOpenMetaRating:(double)newRating {
-    rating = newRating;
-}
-
-- (SKPDFView *)pdfView {
-    return pdfView;
-}
-
 - (void)updatePageNumber {
     NSUInteger number = [[pdfView currentPage] pageIndex] + 1;
     if (pageNumber != number) {
@@ -833,10 +821,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         pageNumber = number;
         [self didChangeValueForKey:PAGENUMBER_KEY];
     }
-}
-
-- (NSUInteger)pageNumber {
-    return pageNumber;
 }
 
 - (void)setPageNumber:(NSUInteger)number {
@@ -856,10 +840,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         pageLabel = [label retain];
         [self didChangeValueForKey:PAGELABEL_KEY];
     }
-}
-
-- (NSString *)pageLabel {
-    return pageLabel;
 }
 
 - (void)setPageLabel:(NSString *)label {
@@ -1190,25 +1170,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (shouldRestrict)
         [transitions setShouldRestrict:[shouldRestrict boolValue]];
     [transitions setPageTransitions:pageTransitions];
-}
-
-- (SKMainDocument *)presentationNotesDocument {
-    return presentationNotesDocument;
-}
-
-- (void)setPresentationNotesDocument:(SKMainDocument *)aDocument {
-    if (presentationNotesDocument != aDocument) {
-        [presentationNotesDocument release];
-        presentationNotesDocument = [aDocument retain];
-    }
-}
-
-- (NSArray *)tags {
-    return tags;
-}
-
-- (double)rating {
-    return rating;
 }
 
 #pragma mark Full Screen support

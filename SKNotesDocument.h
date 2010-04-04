@@ -57,15 +57,14 @@
     BOOL caseInsensitiveSearch;
 }
 
+@property (nonatomic, readonly) NSArray *notes;
+@property (nonatomic, readonly) PDFDocument *pdfDocument;
+
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
  
-- (NSArray *)notes;
-
-- (PDFDocument *)pdfDocument;
-
 - (void)setupToolbar:(NSWindowController *)aController;
 
 @end
