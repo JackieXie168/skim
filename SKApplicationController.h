@@ -58,29 +58,17 @@
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmarkAction:(id)sender;
 
-- (NSDictionary *)defaultPdfViewSettings;
-- (void)setDefaultPdfViewSettings:(NSDictionary *)settings;
-- (NSDictionary *)defaultFullScreenPdfViewSettings;
-- (void)setDefaultFullScreenPdfViewSettings:(NSDictionary *)settings;
-- (NSColor *)backgroundColor;
-- (void)setBackgroundColor:(NSColor *)color;
-- (NSColor *)fullScreenBackgroundColor;
-- (void)setFullScreenBackgroundColor:(NSColor *)color;
-- (NSColor *)pageBackgroundColor;
-- (void)setPageBackgroundColor:(NSColor *)color;
-- (NSDictionary *)defaultNoteColors;
-- (void)setDefaultNoteColors:(NSDictionary *)colorDict;
-- (NSDictionary *)defaultLineWidths;
-- (void)setDefaultLineWidths:(NSDictionary *)dict;
-- (NSDictionary *)defaultLineStyles;
-- (void)setDefaultLineStyles:(NSDictionary *)dict;
-- (NSDictionary *)defaultDashPatterns;
-- (void)setDefaultDashPatterns:(NSDictionary *)dict;
-- (FourCharCode)defaultStartLineStyle;
-- (void)setDefaultStartLineStyle:(FourCharCode)style;
-- (FourCharCode)defaultEndLineStyle;
-- (void)setDefaultEndLineStyle:(FourCharCode)style;
-- (FourCharCode)defaultIconType;
-- (void)setDefaultIconType:(FourCharCode)type;
+@property (nonatomic, copy) NSDictionary *defaultPdfViewSettings;
+@property (nonatomic, copy) NSDictionary *defaultFullScreenPdfViewSettings;
+@property (nonatomic, copy) NSColor *backgroundColor;
+@property (nonatomic, copy) NSColor *fullScreenBackgroundColor;
+@property (nonatomic, copy) NSColor *pageBackgroundColor;
+@property (nonatomic, copy) NSDictionary *defaultNoteColors;
+@property (nonatomic, copy) NSDictionary *defaultLineWidths;
+@property (nonatomic, copy) NSDictionary *defaultLineStyles;
+@property (nonatomic, copy) NSDictionary *defaultDashPatterns;
+@property (nonatomic) FourCharCode defaultStartLineStyle;
+@property (nonatomic) FourCharCode defaultEndLineStyle;
+@property (nonatomic) FourCharCode defaultIconType;
 
 @end

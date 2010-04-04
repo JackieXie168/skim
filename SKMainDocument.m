@@ -163,6 +163,10 @@ static char SKMainDocumentDefaultsObservationContext;
 
 @implementation SKMainDocument
 
+@synthesize mainWindowController;
+@dynamic pdfDocument, pdfView, fileIDStrings, synchronizer, snapshots, tags, rating, currentPage, activeNote, richText, selectionSpecifier, selectionQDRect,selectionPage, pdfViewSettings;
+
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(mainWindowController);
@@ -197,9 +201,9 @@ static char SKMainDocumentDefaultsObservationContext;
     if ([tmpData presentationOptions])
         [[self mainWindowController] setPresentationOptions:[tmpData presentationOptions]];
     
-    [[self mainWindowController] setOpenMetaTags:[tmpData openMetaTags]];
+    [[self mainWindowController] setTags:[tmpData openMetaTags]];
     
-    [[self mainWindowController] setOpenMetaRating:[tmpData openMetaRating]];
+    [[self mainWindowController] setRating:[tmpData openMetaRating]];
     
     [[self undoManager] enableUndoRegistration];
 }
@@ -1632,10 +1636,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 #pragma mark Accessors
 
-- (SKMainWindowController *)mainWindowController {
-    return mainWindowController;
-}
-
 - (PDFDocument *)pdfDocument{
     return [[self mainWindowController] pdfDocument];
 }
@@ -1739,7 +1739,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 }
 
 - (NSArray *)tags {
-    return [[self mainWindowController] tags];
+    return [[self mainWindowController] tags] ?: [NSArray array];
 }
 
 - (double)rating {

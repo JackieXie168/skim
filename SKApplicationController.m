@@ -106,6 +106,8 @@
 
 @implementation SKApplicationController
 
+@dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
+
 + (void)initialize{
     SKINITIALIZE;
     

@@ -192,12 +192,11 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
 
-- (SKPDFView *)pdfView;
+@property (nonatomic, readonly) SKPDFView *pdfView;
 
-- (PDFDocument *)pdfDocument;
-- (void)setPdfDocument:(PDFDocument *)document;
+@property (nonatomic, retain) PDFDocument *pdfDocument;
 
-- (SKProgressController *)progressController;
+@property (nonatomic, readonly) SKProgressController *progressController;
 
 - (NSArray *)notes;
 - (NSUInteger)countOfNotes;
@@ -234,41 +233,32 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
 - (void)removeObjectFromGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
 
-- (NSDictionary *)presentationOptions;
-- (void)setPresentationOptions:(NSDictionary *)dictionary;
+@property (nonatomic, copy) NSDictionary *presentationOptions;
 
-- (SKMainDocument *)presentationNotesDocument;
-- (void)setPresentationNotesDocument:(SKMainDocument *)aDocument;
+@property (nonatomic, retain) SKMainDocument *presentationNotesDocument;
 
-- (NSArray *)tags;
-- (double)rating;
+@property (nonatomic, copy) NSArray *tags;
+@property (nonatomic) double rating;
 
-- (NSArray *)selectedNotes;
+@property (nonatomic, readonly) NSArray *selectedNotes;
 
-- (NSUInteger)pageNumber;
-- (void)setPageNumber:(NSUInteger)pageNumber;
-- (NSString *)pageLabel;
-- (void)setPageLabel:(NSString *)label;
+@property (nonatomic) NSUInteger pageNumber;
+@property (nonatomic, copy) NSString *pageLabel;
 
-- (BOOL)isFullScreen;
-- (BOOL)isPresentation;
+@property (nonatomic, readonly) BOOL isFullScreen, isPresentation;
 
-- (BOOL)autoScales;
+@property (nonatomic, readonly) BOOL autoScales;
 
-- (SKLeftSidePaneState)leftSidePaneState;
-- (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState;
-- (SKRightSidePaneState)rightSidePaneState;
-- (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState;
-- (SKFindPaneState)findPaneState;
-- (void)setFindPaneState:(SKFindPaneState)newFindPaneState;
+@property (nonatomic) SKLeftSidePaneState leftSidePaneState;
+@property (nonatomic) SKRightSidePaneState rightSidePaneState;
+@property (nonatomic) SKFindPaneState findPaneState;
 
 - (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
 - (void)showRightSideWindowOnScreen:(NSScreen *)screen;
 - (void)hideLeftSideWindow;
 - (void)hideRightSideWindow;
 
-- (BOOL)leftSidePaneIsOpen;
-- (BOOL)rightSidePaneIsOpen;
+@property (nonatomic, readonly) BOOL leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 - (void)closeSideWindow:(SKSideWindow *)sideWindow;
 
@@ -302,9 +292,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace;
-
-- (void)setOpenMetaTags:(NSArray *)tags;
-- (void)setOpenMetaRating:(double)rating;
 
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;

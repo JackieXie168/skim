@@ -82,6 +82,8 @@
 
 @implementation SKNotesDocument
 
+@synthesize notes, pdfDocument;
+
 - (id)init {
     if (self = [super init]) {
         notes = [[NSArray alloc] init];
@@ -441,16 +443,6 @@
         return YES;
     }
     return YES;
-}
-
-#pragma mark Accessors
-
-- (NSArray *)notes {
-    return notes;
-}
-
-- (PDFDocument *)pdfDocument {
-    return pdfDocument;
 }
 
 #pragma mark NSOutlineView datasource and delegate methods
