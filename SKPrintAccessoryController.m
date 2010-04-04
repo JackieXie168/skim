@@ -41,6 +41,8 @@
 
 @implementation SKPrintAccessoryController
 
+@dynamic autoRotate, printScalingMode;
+
 + (NSSet *)keyPathsForValuesAffectingLocalizedSummaryItems {
     return [NSSet setWithObjects:@"autoRotate", @"printScalingMode", nil];
 }

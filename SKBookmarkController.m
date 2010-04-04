@@ -91,6 +91,8 @@ static char SKBookmarkPropertiesObservationContext;
 
 @implementation SKBookmarkController
 
+@synthesize bookmarkRoot, recentDocuments;
+
 static NSUInteger maxRecentDocumentsCount = 0;
 
 + (void)initialize {
@@ -194,10 +196,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #pragma mark Bookmarks
 
-- (SKBookmark *)bookmarkRoot {
-    return bookmarkRoot;
-}
-
 static NSArray *minimumCoverForBookmarks(NSArray *items) {
     SKBookmark *lastBm = nil;
     NSMutableArray *minimalCover = [NSMutableArray array];
@@ -265,10 +263,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 #pragma mark Recent Documents
-
-- (NSArray *)recentDocuments {
-    return recentDocuments;
-}
 
 - (NSUInteger)indexOfRecentDocumentAtPath:(NSString *)path {
     NSUInteger idx = NSNotFound, i, iMax = [recentDocuments count];

@@ -46,6 +46,8 @@
 
 @implementation SKTextFieldSheetController
 
+@dynamic textField, stringValue;
+
 - (void)windowDidLoad {
     NSRect frame = [[self window] frame];
     CGFloat buttonMargin = NSWidth(frame) - NSMaxX([[buttons objectAtIndex:0] frame]);
@@ -77,6 +79,8 @@
 
 @implementation SKPageSheetController
 
+@dynamic objectValues;
+
 - (NSString *)windowNibName { return @"PageSheet"; }
 
 - (NSArray *)objectValues {
@@ -101,6 +105,8 @@
 #pragma mark -
 
 @implementation SKBookmarkSheetController
+
+@dynamic selectedFolder;
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
 

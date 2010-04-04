@@ -58,7 +58,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, URLDownload, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
-@dynamic fileName, info;
+@dynamic fileName, info, canCancel, canRemove, canResume;
 
 + (NSSet *)infoKeys {
     return [NSSet setWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];

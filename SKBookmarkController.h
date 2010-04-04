@@ -54,7 +54,8 @@
 
 + (id)sharedBookmarkController;
 
-- (SKBookmark *)bookmarkRoot;
+@property (nonatomic, readonly) SKBookmark *bookmarkRoot;
+@property (nonatomic, readonly) NSArray *recentDocuments;
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
@@ -69,7 +70,6 @@
 - (IBAction)deleteBookmark:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 
-- (NSArray *)recentDocuments;
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
 - (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path;
 - (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path;

@@ -55,8 +55,7 @@
 @property (nonatomic, retain) NSString *findString;
 @property (nonatomic) BOOL ignoreCase;
 @property (nonatomic, readonly) NSInteger findOptions;
-@property (nonatomic, readonly) id target;
-@property (nonatomic, readonly) id selectionSource;
+@property (nonatomic, readonly) id target, selectionSource;
 
 + (id)sharedFindController;
 
