@@ -57,6 +57,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 @implementation SKLineWell
 
+@synthesize action, target, lineWidth, style, dashPattern, startLineStyle, endLineStyle;
+@dynamic isActive, canActivate, highlighted, displayStyle;
+
 + (void)initialize {
     SKINITIALIZE;
     
@@ -457,26 +460,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark Accessors
 
-- (SEL)action {
-    return action;
-}
-
-- (void)setAction:(SEL)selector {
-    if (selector != action) {
-        action = selector;
-    }
-}
-
-- (id)target {
-    return target;
-}
-
-- (void)setTarget:(id)newTarget {
-    if (target != newTarget) {
-        target = newTarget;
-    }
-}
-
 - (BOOL)isActive {
     return lwFlags.active;
 }
@@ -514,10 +497,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
 }
 
-- (CGFloat)lineWidth {
-    return lineWidth;
-}
-
 - (void)setLineWidth:(CGFloat)width {
     if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
@@ -525,19 +504,11 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
 }
 
-- (PDFBorderStyle)style {
-    return style;
-}
-
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
         [self changedValueForKey:SKLineWellStyleKey];
     }
-}
-
-- (NSArray *)dashPattern {
-    return dashPattern;
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
@@ -549,19 +520,11 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
 }
 
-- (PDFLineStyle)startLineStyle {
-    return startLineStyle;
-}
-
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
         [self changedValueForKey:SKLineWellStartLineStyleKey];
     }
-}
-
-- (PDFLineStyle)endLineStyle {
-    return endLineStyle;
 }
 
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {

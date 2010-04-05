@@ -76,31 +76,19 @@ typedef NSInteger SKLineWellDisplayStyle;
     id titleUIElement;
 }
 
+@property (nonatomic) SEL action;
+@property (nonatomic, assign) id target;
+@property (nonatomic, readonly) BOOL isActive;
+@property (nonatomic) BOOL canActivate;
+@property (nonatomic, getter=isHighlighted) BOOL highlighted;
+@property (nonatomic) SKLineWellDisplayStyle displayStyle;
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic) PDFBorderStyle style;
+@property (nonatomic, copy) NSArray *dashPattern;
+@property (nonatomic) PDFLineStyle startLineStyle, endLineStyle;
+
 - (void)activate:(BOOL)exclusive;
 - (void)deactivate;
-
-- (BOOL)isActive;
-
-- (BOOL)canActivate;
-- (void)setCanActivate:(BOOL)flag;
-
-- (BOOL)isHighlighted;
-- (void)setHighlighted:(BOOL)flag;
-
-- (SKLineWellDisplayStyle)displayStyle;
-- (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle;
-
-- (CGFloat)lineWidth;
-- (void)setLineWidth:(CGFloat)width;
-- (PDFBorderStyle)style;
-- (void)setStyle:(PDFBorderStyle)newStyle;
-- (NSArray *)dashPattern;
-- (void)setDashPattern:(NSArray *)pattern;
-
-- (PDFLineStyle)startLineStyle;
-- (void)setStartLineStyle:(PDFLineStyle)newStyle;
-- (PDFLineStyle)endLineStyle;
-- (void)setEndLineStyle:(PDFLineStyle)newStyle;
 
 - (void)lineInspectorLineAttributeChanged:(NSNotification *)notification;
 

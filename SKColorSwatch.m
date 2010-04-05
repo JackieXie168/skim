@@ -56,6 +56,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 @implementation SKColorSwatch
 
+@synthesize action, target, colors, autoResizes;
+@synthesize clickedColorIndex=clickedIndex;
+@dynamic color;
+
 + (void)initialize {
     SKINITIALIZE;
     
@@ -333,41 +337,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [self sizeToFit];
 }
 
-- (BOOL)autoResizes {
-    return autoResizes;
-}
-
-- (void)setAutoResizes:(BOOL)flag {
-    autoResizes = flag;
-}
-
-- (NSInteger)clickedColorIndex {
-    return clickedIndex;
-}
-
 - (NSColor *)color {
     NSInteger i = clickedIndex;
     return i == -1 ? nil : [colors objectAtIndex:i];
-}
-
-- (SEL)action {
-    return action;
-}
-
-- (void)setAction:(SEL)selector {
-    if (selector != action) {
-        action = selector;
-    }
-}
-
-- (id)target {
-    return target;
-}
-
-- (void)setTarget:(id)newTarget {
-    if (target != newTarget) {
-        target = newTarget;
-    }
 }
 
 #pragma mark NSDraggingSource protocol 

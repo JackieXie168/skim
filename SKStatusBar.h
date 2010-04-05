@@ -56,54 +56,21 @@ typedef NSInteger SKProgressIndicatorStyle;
     BOOL animating;
 }
 
+@property (nonatomic, readonly) BOOL isVisible;
+@property (nonatomic, readonly, getter=isAnimating) BOOL animating;
+@property (nonatomic, copy) NSString *leftStringValue;
+@property (nonatomic, copy) NSAttributedString *leftAttributedStringValue;
+@property (nonatomic, copy) NSString *rightStringValue;
+@property (nonatomic, copy) NSAttributedString *rightAttributedStringValue;
+@property (nonatomic) SEL leftAction, rightAction;
+@property (nonatomic, assign) id leftTarget, rightTarget;
+@property (nonatomic) NSInteger leftState, rightState, state;
+@property (nonatomic, retain) NSFont *font; 
+@property (nonatomic, retain) id iconCell; 
+@property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
+@property (nonatomic) SKProgressIndicatorStyle progressIndicatorStyle;
+
 - (void)toggleBelowView:(NSView *)view animate:(BOOL)animate;
-
-- (BOOL)isVisible;
-- (BOOL)isAnimating;
-
-- (NSString *)leftStringValue;
-- (void)setLeftStringValue:(NSString *)aString;
-
-- (NSAttributedString *)leftAttributedStringValue;
-- (void)setLeftAttributedStringValue:(NSAttributedString *)object;
-
-- (NSString *)rightStringValue;
-- (void)setRightStringValue:(NSString *)aString;
-
-- (NSAttributedString *)rightAttributedStringValue;
-- (void)setRightAttributedStringValue:(NSAttributedString *)object;
-
-- (SEL)leftAction;
-- (void)setLeftAction:(SEL)selector;
-
-- (id)leftTarget;
-- (void)setLeftTarget:(id)newTarget;
-
-- (SEL)rightAction;
-- (void)setRightAction:(SEL)selector;
-
-- (id)rightTarget;
-- (void)setRightTarget:(id)newTarget;
-
-- (NSInteger)leftState;
-- (void)setLeftState:(NSInteger)newState;
-
-- (NSInteger)rightState;
-- (void)setRightState:(NSInteger)newState;
-
-- (NSInteger)state;
-- (void)setState:(NSInteger)newState;
-
-- (NSFont *)font;
-- (void)setFont:(NSFont *)fontObject;
-
-- (id)iconCell;
-- (void)setIconCell:(id)newIconCell;
-
-- (NSProgressIndicator *)progressIndicator;
-
-- (SKProgressIndicatorStyle)progressIndicatorStyle;
-- (void)setProgressIndicatorStyle:(SKProgressIndicatorStyle)style;
 
 - (void)startAnimation:(id)sender;
 - (void)stopAnimation:(id)sender;

@@ -50,6 +50,9 @@
 
 @implementation SKSnapshotPDFView
 
+@synthesize autoFits, scalePopUpButton;
+@dynamic scrollView;
+
 static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
 static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
 
@@ -165,10 +168,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
 }
 
-- (NSPopUpButton *)scalePopUpButton {
-    return scalePopUpButton;
-}
-
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([self autoFits]) {
         NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
@@ -196,10 +195,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [self setScaleFactor:[selectedFactorObject doubleValue] adjustPopup:NO];
     else
         [self setAutoFits:YES adjustPopup:NO];
-}
-
-- (BOOL)autoFits {
-    return autoFits;
 }
 
 - (void)setAutoFits:(BOOL)newAuto {

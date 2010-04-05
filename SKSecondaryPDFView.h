@@ -49,17 +49,12 @@
     CGFloat pinchZoomFactor;
 }
 
-- (PDFView *)synchronizedPDFView;
-- (void)setSynchronizedPDFView:(PDFView *)newSynchronizedPDFView;
-
-- (BOOL)synchronizeZoom;
-- (void)setSynchronizeZoom:(BOOL)newSync;
+@property (nonatomic, retain) PDFView *synchronizedPDFView;
+@property (nonatomic) BOOL synchronizeZoom;
+@property (nonatomic, retain) NSScrollView *scrollView;
 
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
-
-- (NSScrollView *)scrollView;
-- (void)setScrollerSize:(NSControlSize)controlSize;
 
 - (void)setNeedsDisplayInRect:(NSRect)aRect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
