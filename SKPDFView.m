@@ -293,7 +293,7 @@ enum {
 - (void)resetPDFToolTipRects {
     [self removePDFToolTipRects];
     
-    if ([self document] && [self window]) {
+    if ([self document] && [self window] && interactionMode != SKPresentationMode) {
         NSRange range = [self visiblePageIndexRange];
         NSUInteger i, iMax = NSMaxRange(range);
         NSRect visibleRect = [self visibleContentRect];
@@ -502,6 +502,7 @@ enum {
             [self disableNavigation];
         else
             [self enableNavigationForScreen:screen];
+        [self resetPDFToolTipRects];
     }
 }
 
