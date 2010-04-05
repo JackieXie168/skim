@@ -176,6 +176,10 @@ enum {
 
 @implementation SKPDFView
 
+@synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper;
+@synthesize currentMagnification=magnification;
+@dynamic isEditing, hasReadingBar, currentSelectionPage, currentSelectionRect, undoManager;
+
 + (void)initialize {
     SKINITIALIZE;
     
@@ -452,10 +456,6 @@ enum {
     [self resetPDFToolTipRects];
 }
 
-- (SKToolMode)toolMode {
-    return toolMode;
-}
-
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
         if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) {
@@ -475,10 +475,6 @@ enum {
     }
 }
 
-- (SKNoteType)annotationMode {
-    return annotationMode;
-}
-
 - (void)setAnnotationMode:(SKNoteType)newAnnotationMode {
     if (annotationMode != newAnnotationMode) {
         annotationMode = newAnnotationMode;
@@ -487,10 +483,6 @@ enum {
         // hack to make sure we update the cursor
         [[self window] makeFirstResponder:self];
     }
-}
-
-- (SKInteractionMode)interactionMode {
-    return interactionMode;
 }
 
 - (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen {
@@ -504,10 +496,6 @@ enum {
             [self enableNavigationForScreen:screen];
         [self resetPDFToolTipRects];
     }
-}
-
-- (PDFAnnotation *)activeAnnotation {
-	return activeAnnotation;
 }
 
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation {
@@ -600,14 +588,6 @@ enum {
     }
 }
 
-- (CGFloat)currentMagnification {
-    return magnification;
-}
-
-- (BOOL)hideNotes {
-    return hideNotes;
-}
-
 - (void)setHideNotes:(BOOL)flag {
     if (hideNotes != flag) {
         hideNotes = flag;
@@ -627,17 +607,6 @@ enum {
         [transitionController addObserver:self forKeyPath:@"pageTransitions" options:options context:&SKPDFViewTransitionsObservationContext];
     }
     return transitionController;
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
-}
-
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
-    if (typeSelectHelper != newTypeSelectHelper) {
-        [typeSelectHelper release];
-        typeSelectHelper = [newTypeSelectHelper retain];
-    }
 }
 
 #pragma mark Reading bar

@@ -129,40 +129,23 @@ typedef NSInteger SKInteractionMode;
     NSInteger spellingTag;
 }
 
-- (SKToolMode)toolMode;
-- (void)setToolMode:(SKToolMode)newToolMode;
+@property (nonatomic) SKToolMode toolMode;
+@property (nonatomic) SKNoteType annotationMode;
+@property (nonatomic, readonly) SKInteractionMode interactionMode;
+@property (nonatomic, assign) PDFAnnotation *activeAnnotation;
+@property (nonatomic, readonly) BOOL isEditing;
+@property (nonatomic) NSRect currentSelectionRect;
+@property (nonatomic, retain) PDFPage *currentSelectionPage;
+@property (nonatomic, readonly) CGFloat currentMagnification;
+@property (nonatomic) BOOL hideNotes;
+@property (nonatomic, readonly) BOOL hasReadingBar;
+@property (nonatomic, readonly) SKReadingBar *readingBar;
+@property (nonatomic, readonly) SKTransitionController *transitionController;
+@property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
+@property (nonatomic, readonly) NSUndoManager *undoManager;
 
-- (SKNoteType)annotationMode;
-- (void)setAnnotationMode:(SKNoteType)newAnnotationMode;
-
-- (SKInteractionMode)interactionMode;
 - (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen;
-
-- (PDFAnnotation *)activeAnnotation;
-- (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
-
-- (BOOL)isEditing;
-
-- (NSRect)currentSelectionRect;
-- (void)setCurrentSelectionRect:(NSRect)rect;
-
-- (PDFPage *)currentSelectionPage;
-- (void)setCurrentSelectionPage:(PDFPage *)page;
-
-- (CGFloat)currentMagnification;
-
-- (BOOL)hideNotes;
-- (void)setHideNotes:(BOOL)flag;
-
-- (BOOL)hasReadingBar;
-- (SKReadingBar *)readingBar;
-
 - (void)toggleReadingBar;
-
-- (SKTransitionController *)transitionController;
-
-- (SKTypeSelectHelper *)typeSelectHelper;
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
 - (IBAction)delete:(id)sender;
 - (IBAction)paste:(id)sender;
@@ -207,8 +190,6 @@ typedef NSInteger SKInteractionMode;
 - (NSArray *)accessibilityChildren;
 - (id)accessibilityChildAtPoint:(NSPoint)point;
 - (id)accessibilityFocusedChild;
-
-- (NSUndoManager *)undoManager;
 
 @end
 
