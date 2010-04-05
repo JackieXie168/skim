@@ -46,14 +46,14 @@
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
 
-- (PDFAnnotation *)note;
+@property (nonatomic, readonly) PDFAnnotation *note;
 
-- (NSArray *)texts;
+@property (nonatomic, readonly) NSArray *texts;
 
-- (NSString *)type;
-- (PDFPage *)page;
-- (NSUInteger)pageIndex;
-- (NSString *)string;
-- (NSAttributedString *)text;
+@property (nonatomic, readonly) NSString *type;
+@property (nonatomic, readonly) PDFPage *page;
+@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) NSString *string;
+@property (nonatomic, readonly) NSAttributedString *text;
 
 @end
