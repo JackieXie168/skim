@@ -48,16 +48,15 @@
     CGFloat pinchZoomFactor;
 }
 
-- (BOOL)autoFits;
-- (void)setAutoFits:(BOOL)newAuto;
+@property (nonatomic) BOOL autoFits;
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;
-- (NSScrollView *)scrollView;
+@property (nonatomic, readonly) NSScrollView *scrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)resetAutoFitRectIfNeeded;
 - (void)makeScalePopUpButton;
-- (NSPopUpButton *)scalePopUpButton;
+@property (nonatomic, readonly) NSPopUpButton *scalePopUpButton;
 
 @end

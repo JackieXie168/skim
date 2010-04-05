@@ -65,6 +65,9 @@ static char SKFontWellFontSizeObservationContext;
 
 @implementation SKFontWell
 
+@synthesize action, target;
+@dynamic isActive, fontName, fontSize, textColor, hasTextColor;
+
 + (void)initialize {
     [self exposeBinding:FONTNAME_KEY];
     [self exposeBinding:FONTSIZE_KEY];
@@ -242,26 +245,6 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 #pragma mark Accessors
-
-- (SEL)action {
-    return action;
-}
-
-- (void)setAction:(SEL)selector {
-    if (selector != action) {
-        action = selector;
-    }
-}
-
-- (id)target {
-    return target;
-}
-
-- (void)setTarget:(id)newTarget {
-    if (target != newTarget) {
-        target = newTarget;
-    }
-}
 
 - (BOOL)isActive {
     return [self state] == NSOnState;
@@ -445,6 +428,8 @@ static char SKFontWellFontSizeObservationContext;
 
 @implementation SKFontWellCell
 
+@synthesize textColor, hasTextColor;
+
 - (void)commonInit {
     if (textColor == nil)
         [self setTextColor:[NSColor blackColor]];
@@ -520,27 +505,6 @@ static char SKFontWellFontSizeObservationContext;
         return attrString;
     } else {
         return [super attributedTitle];
-    }
-}
-
-- (NSColor *)textColor {
-    return textColor;
-}
-
-- (void)setTextColor:(NSColor *)newTextColor {
-    if (textColor != newTextColor) {
-        [textColor release];
-        textColor = [newTextColor copy];
-    }
-}
-
-- (BOOL)hasTextColor {
-    return hasTextColor;
-}
-
-- (void)setHasTextColor:(BOOL)newHasTextColor {
-    if (hasTextColor != newHasTextColor) {
-        hasTextColor = newHasTextColor;
     }
 }
 

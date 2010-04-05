@@ -58,6 +58,9 @@
 
 @implementation SKStatusBar
 
+@synthesize animating, iconCell;
+@dynamic isVisible, leftStringValue, leftAttributedStringValue, rightStringValue, rightAttributedStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, state, font, progressIndicator, progressIndicatorStyle;
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -141,10 +144,6 @@
 
 - (BOOL)isVisible {
 	return [self superview] && [self isHidden] == NO;
-}
-
-- (BOOL)isAnimating {
-    return animating;
 }
 
 - (void)endAnimation:(NSNumber *)visible {
@@ -358,10 +357,6 @@
 
 - (void)setState:(NSInteger)newState {
     [self setRightState:newState];
-}
-
-- (id)iconCell {
-    return iconCell;
 }
 
 - (void)setIconCell:(id)newIconCell {

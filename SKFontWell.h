@@ -45,22 +45,16 @@
     NSMutableDictionary *bindingInfo;
 }
 
+@property (nonatomic) SEL action;
+@property (nonatomic, assign) id target;
+@property (nonatomic) BOOL isActive;
+@property (nonatomic, copy) NSString *fontName;
+@property (nonatomic) CGFloat fontSize;
+@property (nonatomic, copy) NSColor *textColor;
+@property (nonatomic) BOOL hasTextColor;
+
 - (void)activate;
 - (void)deactivate;
-
-- (BOOL)isActive;
-
-- (NSString *)fontName;
-- (void)setFontName:(NSString *)fontName;
-
-- (CGFloat)fontSize;
-- (void)setFontSize:(CGFloat)pointSize;
-
-- (NSColor *)textColor;
-- (void)setTextColor:(NSColor *)newTextColor;
-
-- (BOOL)hasTextColor;
-- (void)setHasTextColor:(BOOL)newHasTextColor;
 
 - (void)changeFontFromFontManager:(id)sender;
 - (void)changeAttributesFromFontManager:(id)sender;
@@ -73,10 +67,7 @@
     BOOL hasTextColor;
 }
 
-- (NSColor *)textColor;
-- (void)setTextColor:(NSColor *)newTextColor;
-
-- (BOOL)hasTextColor;
-- (void)setHasTextColor:(BOOL)newHasTextColor;
+@property (nonatomic, copy) NSColor *textColor;
+@property (nonatomic) BOOL hasTextColor;
 
 @end
