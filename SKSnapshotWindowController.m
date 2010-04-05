@@ -70,9 +70,9 @@ NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
 static char SKSnaphotWindowDefaultsObservationContext;
 
-@interface SKSnapshotWindowController (SKPrivate) 
-- (void)setPageLabel:(NSString *)newPageLabel;
-- (void)setHasWindow:(BOOL)flag;
+@interface SKSnapshotWindowController () 
+@property (nonatomic, copy) NSString *pageLabel;
+@property (nonatomic) BOOL hasWindow;
 @end
 
 @implementation SKSnapshotWindowController
@@ -289,10 +289,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
         pageLabel = [newPageLabel retain];
         [self synchronizeWindowTitleWithDocumentName];
     }
-}
-
-- (void)setHasWindow:(BOOL)flag {
-    hasWindow = flag;
 }
 
 - (NSDictionary *)pageAndWindow {

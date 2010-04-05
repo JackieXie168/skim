@@ -69,7 +69,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @property (nonatomic, readonly) PDFView *pdfView;
 @property (nonatomic, retain) NSImage *thumbnail;
 @property (nonatomic, readonly) NSUInteger pageIndex;
-@property (nonatomic, readonly) NSString *pageLabel;
+@property (nonatomic, readonly, copy) NSString *pageLabel;
 @property (nonatomic, readonly) BOOL hasWindow;
 @property (nonatomic, readonly) NSDictionary *pageAndWindow;
 @property (nonatomic, readonly) NSDictionary *currentSetup;

@@ -46,11 +46,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 #define SKFilePathKey @"filePath"
 
-@interface SKDownload (Private)
-- (void)setStatus:(SKDownloadStatus)newStatus;
-- (void)setFilePath:(NSString *)newFilePath;
-- (void)setExpectedContentLength:(long long)newExpectedContentLength;
-- (void)setReceivedContentLength:(long long)newReceivedContentLength;
+@interface SKDownload ()
+@property (nonatomic) SKDownloadStatus status;
+@property (nonatomic, retain) NSString *filePath;
+@property (nonatomic, retain) NSImage *fileIcon;
+@property (nonatomic) long long expectedContentLength, receivedContentLength;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 @end
 
@@ -170,13 +170,6 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     if (fileIcon == nil && URL)
         return [[NSWorkspace sharedWorkspace] iconForFileType:[[[self URL] path] pathExtension]];
     return fileIcon;
-}
-
-- (void)setFileIcon:(NSImage *)newFileIcon {
-    if (fileIcon != newFileIcon) {
-        [fileIcon release];
-        fileIcon = [newFileIcon retain];
-    }
 }
 
 - (void)setExpectedContentLength:(long long)newExpectedContentLength {
