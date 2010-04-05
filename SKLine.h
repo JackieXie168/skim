@@ -43,8 +43,7 @@
     NSInteger index;
 }
 - (id)initWithIndex:(NSInteger)anIndex;
-- (NSInteger)index;
-- (NSInteger)scriptingIndex;
+@property (nonatomic, readonly) NSInteger index, scriptingIndex;
 @end
 
 

@@ -42,6 +42,9 @@
 
 @implementation SKLine
 
+@synthesize index;
+@dynamic scriptingIndex;
+
 - (id)initWithIndex:(NSInteger)anIndex {
     if (self = [super init]) {
         index = anIndex;
@@ -52,10 +55,6 @@
 - (NSScriptObjectSpecifier *)objectSpecifier {
     NSScriptClassDescription *containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[SKApplication class]];
     return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:index] autorelease];
-}
-
-- (NSInteger)index {
-    return index;
 }
 
 - (NSInteger)scriptingIndex {

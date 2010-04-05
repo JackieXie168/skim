@@ -42,6 +42,9 @@
 
 @implementation SKNoteText
 
+@synthesize note;
+@dynamic texts, type, page, pageIndex, string, text;
+
 - (id)initWithNote:(id)aNote {
     if (self = [super init]) {
         note = aNote;
@@ -52,10 +55,6 @@
 - (void)dealloc {
     note = nil;
     [super dealloc];
-}
-
-- (PDFAnnotation *)note {
-    return note;
 }
 
 - (NSArray *)texts { return nil; }
