@@ -85,9 +85,9 @@ typedef NSInteger SKDownloadStatus;
 
 @property (nonatomic, readonly) NSURL *URL;
 
-@property (nonatomic, readonly) NSString *filePath;
+@property (nonatomic, readonly, retain) NSString *filePath;
 @property (nonatomic, readonly) NSString *fileName;
-@property (nonatomic, readonly) NSImage *fileIcon;
+@property (nonatomic, readonly, retain) NSImage *fileIcon;
 @property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
 
 @property (nonatomic, readonly) NSURLDownload *URLDownload;
