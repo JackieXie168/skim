@@ -51,6 +51,6 @@
 // aContext can be a PDFAnnotation, PDFDestination, or PDFPage
 - (void)showForPDFContext:(id<SKPDFToolTipContext>)aContext atPoint:(NSPoint)aPoint;
 
-- (id<SKPDFToolTipContext>)currentPDFContext;
+@property (nonatomic, readonly) id<SKPDFToolTipContext> currentPDFContext;
 
 @end

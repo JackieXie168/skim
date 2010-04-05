@@ -64,29 +64,22 @@
 }
 + (id)sharedToolTipWindow;
 - (void)showToolTip:(NSString *)toolTip forView:(NSView *)aView;
-- (NSView *)view;
+@property (nonatomic, readonly) NSView *view;
 @end
 
 @interface SKNavigationToolTipView : NSView {
     NSString *stringValue;
 }
-- (NSString *)stringValue;
-- (void)setStringValue:(NSString *)newStringValue;
-- (NSAttributedString *)attributedStringValue;
+@property (nonatomic, retain) NSString *stringValue;
+@property (nonatomic, readonly) NSAttributedString *attributedStringValue;
 - (void)sizeToFit;
 @end
 
 
 @interface SKNavigationButton : NSButton
 
-- (NSBezierPath *)path;
-- (void)setPath:(NSBezierPath *)newPath;
-
-- (NSBezierPath *)alternatePath;
-- (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
-
-- (NSString *)alternateToolTip;
-- (void)setAlternateToolTip:(NSString *)string;
+@property (nonatomic, retain) NSBezierPath *path, *alternatePath;
+@property (nonatomic, retain) NSString *toolTip, *alternateToolTip;
 
 @end
 
@@ -98,17 +91,8 @@
     NSBezierPath *alternatePath;
 }
 
-- (NSString *)toolTip;
-- (void)setToolTip:(NSString *)string;
-
-- (NSString *)alternateToolTip;
-- (void)setAlternateToolTip:(NSString *)string;
-
-- (NSBezierPath *)path;
-- (void)setPath:(NSBezierPath *)newPath;
-
-- (NSBezierPath *)alternatePath;
-- (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
+@property (nonatomic, retain) NSBezierPath *path, *alternatePath;
+@property (nonatomic, retain) NSString *toolTip, *alternateToolTip;
 
 @end
 
@@ -118,8 +102,7 @@
     NSString *toolTip;
 }
 
-- (NSString *)toolTip;
-- (void)setToolTip:(NSString *)string;
+@property (nonatomic, retain) NSString *toolTip;
 
 @end
 

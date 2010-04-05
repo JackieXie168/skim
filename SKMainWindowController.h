@@ -245,9 +245,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @property (nonatomic) NSUInteger pageNumber;
 @property (nonatomic, copy) NSString *pageLabel;
 
-@property (nonatomic, readonly) BOOL isFullScreen, isPresentation;
-
-@property (nonatomic, readonly) BOOL autoScales;
+@property (nonatomic, readonly) BOOL isFullScreen, isPresentation, autoScales;
 
 @property (nonatomic) SKLeftSidePaneState leftSidePaneState;
 @property (nonatomic) SKRightSidePaneState rightSidePaneState;

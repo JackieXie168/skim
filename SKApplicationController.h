@@ -58,17 +58,9 @@
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmarkAction:(id)sender;
 
-@property (nonatomic, copy) NSDictionary *defaultPdfViewSettings;
-@property (nonatomic, copy) NSDictionary *defaultFullScreenPdfViewSettings;
-@property (nonatomic, copy) NSColor *backgroundColor;
-@property (nonatomic, copy) NSColor *fullScreenBackgroundColor;
-@property (nonatomic, copy) NSColor *pageBackgroundColor;
-@property (nonatomic, copy) NSDictionary *defaultNoteColors;
-@property (nonatomic, copy) NSDictionary *defaultLineWidths;
-@property (nonatomic, copy) NSDictionary *defaultLineStyles;
-@property (nonatomic, copy) NSDictionary *defaultDashPatterns;
-@property (nonatomic) FourCharCode defaultStartLineStyle;
-@property (nonatomic) FourCharCode defaultEndLineStyle;
-@property (nonatomic) FourCharCode defaultIconType;
+@property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
+@property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor;
+@property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns;
+@property (nonatomic) FourCharCode defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
 
 @end

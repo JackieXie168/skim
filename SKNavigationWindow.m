@@ -204,6 +204,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationToolTipWindow
 
+@synthesize view;
+
 + (id)sharedToolTipWindow {
     static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
@@ -252,10 +254,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     SKDESTROY(view);
 }
 
-- (NSView *)view {
-    return view;
-}
-
 - (BOOL)accessibilityIsIgnored {
     return YES;
 }
@@ -265,6 +263,9 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 #pragma mark -
 
 @implementation SKNavigationToolTipView
+
+@synthesize stringValue;
+@dynamic attributedStringValue;
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
@@ -276,17 +277,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)dealloc {
     SKDESTROY(stringValue);
     [super dealloc];
-}
-
-- (NSString *)stringValue {
-    return stringValue;
-}
-
-- (void)setStringValue:(NSString *)newStringValue {
-    if (stringValue != newStringValue) {
-        [stringValue release];
-        stringValue = [newStringValue retain];
-    }
 }
 
 - (NSAttributedString *)attributedStringValue {
@@ -326,6 +316,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 #pragma mark -
 
 @implementation SKNavigationButton
+
+@dynamic path, alternatePath, toolTip, alternateToolTip;
 
 + (Class)cellClass { return [SKNavigationButtonCell class]; }
 
@@ -369,6 +361,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationButtonCell
 
+@synthesize path, alternatePath, toolTip, alternateToolTip;
+
 - (id)initTextCell:(NSString *)aString {
     if (self = [super initTextCell:@""]) {
 		[self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
@@ -384,50 +378,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     SKDESTROY(path);
     SKDESTROY(alternatePath);
     [super dealloc];
-}
-
-- (NSString *)toolTip {
-    return toolTip;
-}
-
-- (void)setToolTip:(NSString *)string {
-    if (toolTip != string) {
-        [toolTip release];
-        toolTip = [string retain];
-    }
-}
-
-- (NSString *)alternateToolTip {
-    return alternateToolTip;
-}
-
-- (void)setAlternateToolTip:(NSString *)string {
-    if (alternateToolTip != string) {
-        [alternateToolTip release];
-        alternateToolTip = [string retain];
-    }
-}
-
-- (NSBezierPath *)path {
-    return path;
-}
-
-- (void)setPath:(NSBezierPath *)newPath {
-    if (path != newPath) {
-        [path release];
-        path = [newPath retain];
-    }
-}
-
-- (NSBezierPath *)alternatePath {
-    return alternatePath;
-}
-
-- (void)setAlternatePath:(NSBezierPath *)newAlternatePath {
-    if (alternatePath != newAlternatePath) {
-        [alternatePath release];
-        alternatePath = [newAlternatePath retain];
-    }
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
@@ -467,6 +417,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationSlider
 
+@synthesize toolTip;
+
 + (Class)cellClass { return [SKNavigationSliderCell class]; }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -482,17 +434,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     SKDESTROY(trackingArea);
     SKDESTROY(toolTip);
     [super dealloc];
-}
-
-- (NSString *)toolTip {
-    return toolTip;
-}
-
-- (void)setToolTip:(NSString *)string {
-    if (toolTip != string) {
-        [toolTip release];
-        toolTip = [string retain];
-    }
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {

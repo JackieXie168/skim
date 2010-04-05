@@ -56,20 +56,18 @@
 
 + (BOOL)isAutoHideEnabled;
 
+@property (nonatomic, retain) NSView *mainView;
+@property (nonatomic, readonly) NSRectEdge edge;
+@property (nonatomic, readonly) NSDrawerState state;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic) BOOL acceptsMouseOver;
+
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
 - (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen;
 - (void)slideIn;
 - (void)slideOut;
 - (void)expand;
 - (void)collapse;
-- (NSView *)mainView;
-- (void)setMainView:(NSView *)newContentView;
-- (NSRectEdge)edge;
-- (NSInteger)state;
-- (BOOL)isEnabled;
-- (void)setEnabled:(BOOL)flag;
-- (BOOL)acceptsMouseOver;
-- (void)setAcceptsMouseOver:(BOOL)flag;
 - (void)resizeWithEvent:(NSEvent *)theEvent;
 
 @end

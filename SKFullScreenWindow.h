@@ -46,8 +46,7 @@
 
 - (id)initWithScreen:(NSScreen *)screen;
 
-- (NSView *)mainView;
-- (void)setMainView:(NSView *)view;
+@property (nonatomic, retain) NSView *mainView;
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;

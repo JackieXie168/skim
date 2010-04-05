@@ -46,6 +46,8 @@
 
 @implementation SKAnimatedBorderlessWindow
 
+@dynamic defaultAlphaValue, fadeInDuration, fadeOutDuration, autoHideTimeInterval;
+
 - (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen {
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
 		[self setBackgroundColor:[NSColor clearColor]];

@@ -58,10 +58,8 @@ typedef NSInteger SKProgressIndicatorStyle;
 
 @property (nonatomic, readonly) BOOL isVisible;
 @property (nonatomic, readonly, getter=isAnimating) BOOL animating;
-@property (nonatomic, copy) NSString *leftStringValue;
-@property (nonatomic, copy) NSAttributedString *leftAttributedStringValue;
-@property (nonatomic, copy) NSString *rightStringValue;
-@property (nonatomic, copy) NSAttributedString *rightAttributedStringValue;
+@property (nonatomic, copy) NSString *leftStringValue,  *rightStringValue;
+@property (nonatomic, copy) NSAttributedString *leftAttributedStringValue, *rightAttributedStringValue;
 @property (nonatomic) SEL leftAction, rightAction;
 @property (nonatomic, assign) id leftTarget, rightTarget;
 @property (nonatomic) NSInteger leftState, rightState, state;

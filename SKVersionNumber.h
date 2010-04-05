@@ -56,8 +56,7 @@ enum {
     NSInteger releaseType;
 }
 
-@property (nonatomic, readonly) NSString *originalVersionString;
-@property (nonatomic, readonly) NSString *cleanVersionString;
+@property (nonatomic, readonly) NSString *originalVersionString, *cleanVersionString;
 @property (nonatomic, readonly) NSUInteger componentCount;
 @property (nonatomic) NSInteger releaseType;
 

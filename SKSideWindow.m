@@ -57,6 +57,9 @@ enum { SKClosedSidePanelCollapse, SKClosedSidePanelAutoHide, SKClosedSidePanelHi
 
 @implementation SKSideWindow
 
+@synthesize edge, state, enabled, acceptsMouseOver;
+@dynamic mainView;
+
 static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 + (void)initialize {
@@ -190,14 +193,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [self recalculateKeyViewLoop];
 }
 
-- (NSRectEdge)edge {
-    return edge;
-}
-
-- (NSInteger)state {
-    return state;
-}
-
 - (void)expand {
     [self setAcceptsMouseOver:NO];
     [self slideIn];
@@ -206,16 +201,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (void)collapse {
     [self slideOut];
     [self setAcceptsMouseOver:YES];
-}
-
-- (BOOL)isEnabled {
-    return enabled;
-}
-
-- (void)setEnabled:(BOOL)flag {
-    if (enabled != flag) {
-        enabled = flag;
-    }
 }
 
 - (BOOL)acceptsMouseOver {

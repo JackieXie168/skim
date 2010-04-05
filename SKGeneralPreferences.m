@@ -59,6 +59,8 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
+@synthesize updateInterval;
+
 - (void)dealloc {
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
@@ -95,10 +97,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (NSString *)title { return NSLocalizedString(@"General", @"Preference pane label"); }
 
 - (NSImage *)icon { return [NSImage imageNamed:@"GeneralPreferences"]; }
-
-- (NSInteger)updateInterval {
-    return updateInterval;
-}
 
 - (void)setUpdateInterval:(NSInteger)interval {
     if (interval > 0)
