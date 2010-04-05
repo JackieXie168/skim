@@ -50,8 +50,7 @@
     NSInteger updateInterval;
 }
 
-- (NSInteger)updateInterval;
-- (void)setUpdateInterval:(NSInteger)interval;
+@property (nonatomic) NSInteger updateInterval;
 
 - (IBAction)revertPDFViewSettings:(id)sender;
 - (IBAction)revertFullScreenPDFViewSettings:(id)sender;

@@ -44,6 +44,8 @@
 
 @implementation SKFullScreenWindow
 
+@dynamic mainView;
+
 - (id)initWithScreen:(NSScreen *)screen {
     if (screen == nil)
         screen = [NSScreen mainScreen];

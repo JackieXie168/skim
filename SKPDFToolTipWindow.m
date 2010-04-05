@@ -54,6 +54,8 @@
 
 @implementation SKPDFToolTipWindow
 
+@synthesize currentPDFContext=context;
+
 + (id)sharedToolTipWindow {
     static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
@@ -140,10 +142,6 @@
         
         [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? ALT_SHOW_DELAY : DEFAULT_SHOW_DELAY];
     }
-}
-
-- (id<SKPDFToolTipContext>)currentPDFContext {
-    return context;
 }
 
 @end
