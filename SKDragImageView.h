@@ -38,16 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKDragImageView;
-
-@protocol SKDragImageViewDelegate <NSObject>
-@optional
-
-- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
-- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
-
-@end
-
+@protocol SKDragImageViewDelegate;
 
 @interface SKDragImageView : NSImageView {
 	id <SKDragImageViewDelegate> delegate;
@@ -57,5 +48,14 @@
 - (void)setDelegate:(id <SKDragImageViewDelegate>)newDelegate;
 
 - (IBAction)show:(id)sender;
+
+@end
+
+
+@protocol SKDragImageViewDelegate <NSObject>
+@optional
+
+- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
+- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
 
 @end

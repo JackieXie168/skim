@@ -39,17 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKTableView.h"
 
-
-@protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
-@optional
-
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
-- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
-
-@end
-
-
-@class SKTypeSelectHelper;
+@protocol SKThumbnailTableViewDelegate;
 
 @interface SKThumbnailTableView : SKTableView
 {
@@ -62,5 +52,14 @@
 - (id <SKThumbnailTableViewDelegate>)delegate;
 - (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate;
 #endif
+
+@end
+
+
+@protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
+@optional
+
+- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
+- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 
 @end

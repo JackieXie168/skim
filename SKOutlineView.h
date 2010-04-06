@@ -39,29 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKTypeSelectHelper.h"
 
-
-@protocol SKOutlineViewDelegate <NSOutlineViewDelegate>
-@optional
-
-- (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
-
-- (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
-
-- (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
-- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
-- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
-
-@end
-
-@protocol SKOutlineViewDataSource <NSOutlineViewDataSource>
-@optional
-
-- (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
-
-@end
-
+@protocol SKOutlineViewDelegate, SKOutlineViewDataSource;
 
 @interface SKOutlineView : NSOutlineView <SKTypeSelectDataSource> {
     SKTypeSelectHelper *typeSelectHelper;
@@ -89,5 +67,28 @@
 - (id <SKOutlineViewDataSource>)dataSource;
 - (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource;
 #endif
+
+@end
+
+
+@protocol SKOutlineViewDelegate <NSOutlineViewDelegate>
+@optional
+
+- (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
+
+- (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
+
+- (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
+- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+
+@end
+
+@protocol SKOutlineViewDataSource <NSOutlineViewDataSource>
+@optional
+
+- (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
 
 @end

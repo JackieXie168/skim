@@ -39,12 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class SKThumbnail;
-
-@protocol SKThumbnailDelegate <NSObject>
-- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
-@end
-
+@protocol SKThumbnailDelegate;
 
 @interface SKThumbnail : NSObject {
     NSImage *image;
@@ -63,4 +58,9 @@
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
 
+@end
+
+
+@protocol SKThumbnailDelegate <NSObject>
+- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
 @end
