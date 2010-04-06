@@ -44,7 +44,7 @@
 
 @implementation SKFindController
 
-@synthesize findString, ignoreCase;
+@synthesize findField, ignoreCaseCheckbox, ownerController, labelField, buttons, findString, ignoreCase;
 @dynamic findOptions, target, selectionSource;
 
 + (id)sharedFindController {

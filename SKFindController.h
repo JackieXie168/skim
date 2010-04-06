@@ -41,17 +41,22 @@
 
 
 @interface SKFindController : SKWindowController <NSWindowDelegate> {
-    IBOutlet NSTextField *findField;
-    IBOutlet NSButton *ignoreCaseCheckbox;
-    IBOutlet NSObjectController *ownerController;
-    IBOutlet NSTextField *labelField;
-    IBOutlet NSArray *buttons;
+    NSTextField *findField;
+    NSButton *ignoreCaseCheckbox;
+    NSObjectController *ownerController;
+    NSTextField *labelField;
+    NSArray *buttons;
     NSString *findString;
     NSInteger lastChangeCount;
     BOOL ignoreCase;
     NSTextView *fieldEditor;
 }
 
+@property (nonatomic, assign) IBOutlet NSTextField *findField;
+@property (nonatomic, assign) IBOutlet NSButton *ignoreCaseCheckbox;
+@property (nonatomic, assign) IBOutlet NSObjectController *ownerController;
+@property (nonatomic, assign) IBOutlet NSTextField *labelField;
+@property (nonatomic, assign) IBOutlet NSArray *buttons;
 @property (nonatomic, retain) NSString *findString;
 @property (nonatomic) BOOL ignoreCase;
 @property (nonatomic, readonly) NSInteger findOptions;

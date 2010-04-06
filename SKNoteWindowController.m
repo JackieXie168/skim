@@ -67,7 +67,7 @@ static char SKNoteWindowStringObservationContext;
 
 @implementation SKNoteWindowController
 
-@synthesize note, keepOnTop, forceOnTop;
+@synthesize textView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
 @dynamic isNoteType;
 
 static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};

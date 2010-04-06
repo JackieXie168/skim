@@ -41,13 +41,16 @@
 
 
 @interface SKTextFieldSheetController : SKWindowController {
-    IBOutlet NSTextField *textField;
-    IBOutlet NSArray *labelFields;
-    IBOutlet NSArray *controls;
-    IBOutlet NSArray *buttons;
+    NSTextField *textField;
+    NSArray *labelFields;
+    NSArray *controls;
+    NSArray *buttons;
 }
-@property (nonatomic, readonly) NSTextField *textField;
+
+@property (nonatomic, assign) IBOutlet NSTextField *textField;
+@property (nonatomic, assign) IBOutlet NSArray *labelFields, *controls, *buttons;
 @property (nonatomic, retain) NSString *stringValue;
+
 @end
 
 #pragma mark -
@@ -66,8 +69,9 @@
 @class SKBookmark;
 
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
-    IBOutlet NSPopUpButton *folderPopUp;
+    NSPopUpButton *folderPopUp;
 }
+@property (nonatomic, assign) IBOutlet NSPopUpButton *folderPopUp;
 @property (nonatomic, readonly) SKBookmark *selectedFolder;
 @end
 

@@ -59,7 +59,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-@synthesize updateInterval;
+@synthesize updateIntervalPopUpButton, revertPDFSettingsButtons, openFilesLabelField, openFilesMatrix, updateIntervalLabelField, savePasswordsMatrix, updateInterval;
 
 - (void)dealloc {
     @try {

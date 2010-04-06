@@ -55,19 +55,19 @@ typedef NSUInteger SKLineChangeAction;
 @class SKLineWell;
 
 @interface SKLineInspector : SKWindowController {
-    IBOutlet NSSlider *lineWidthSlider;
-    IBOutlet NSTextField *lineWidthField;
-    IBOutlet NSSegmentedControl *styleButton;
-    IBOutlet NSTextField *dashPatternField;
-    IBOutlet NSSegmentedControl *startLineStyleButton;
-    IBOutlet NSSegmentedControl *endLineStyleButton;
-    IBOutlet SKLineWell *lineWell;
-    IBOutlet NSTextField *lineWidthLabelField;
-    IBOutlet NSTextField *styleLabelField;
-    IBOutlet NSTextField *dashPatternLabelField;
-    IBOutlet NSTextField *startLineStyleLabelField;
-    IBOutlet NSTextField *endLineStyleLabelField;
-    IBOutlet NSArray *labelFields;
+    NSSlider *lineWidthSlider;
+    NSTextField *lineWidthField;
+    NSSegmentedControl *styleButton;
+    NSTextField *dashPatternField;
+    NSSegmentedControl *startLineStyleButton;
+    NSSegmentedControl *endLineStyleButton;
+    SKLineWell *lineWell;
+    NSTextField *lineWidthLabelField;
+    NSTextField *styleLabelField;
+    NSTextField *dashPatternLabelField;
+    NSTextField *startLineStyleLabelField;
+    NSTextField *endLineStyleLabelField;
+    NSArray *labelFields;
     CGFloat lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;
@@ -76,6 +76,12 @@ typedef NSUInteger SKLineChangeAction;
     SKLineChangeAction currentLineChangeAction;
 }
 
+@property (nonatomic, assign) IBOutlet NSSlider *lineWidthSlider;
+@property (nonatomic, assign) IBOutlet NSTextField *lineWidthField, *dashPatternField;
+@property (nonatomic, assign) IBOutlet NSSegmentedControl *styleButton, *startLineStyleButton, *endLineStyleButton;
+@property (nonatomic, assign) IBOutlet SKLineWell *lineWell;
+@property (nonatomic, assign) IBOutlet NSTextField *lineWidthLabelField, *styleLabelField, *dashPatternLabelField, *startLineStyleLabelField, *endLineStyleLabelField;
+@property (nonatomic, assign) IBOutlet NSArray *labelFields;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) PDFBorderStyle style;
 @property (nonatomic, copy) NSArray *dashPattern;

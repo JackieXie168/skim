@@ -41,20 +41,30 @@
 
 
 @interface SKDisplayPreferences : SKPreferencePane {
-    IBOutlet NSTextField *tableFontLabelField;
-    IBOutlet NSComboBox *tableFontComboBox;
-    IBOutlet NSTextField *greekingLabelField;
-    IBOutlet NSTextField *greekingTextField;
-    IBOutlet NSButton *antiAliasCheckButton;
-    IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
-    IBOutlet NSColorWell *fullScreenBackgroundColorWell;
-    IBOutlet NSButton *searchHighlightCheckButton;
-    IBOutlet NSColorWell *searchHighlightColorWell;
-    IBOutlet NSArray *thumbnailSizeLabels;
-    IBOutlet NSArray *thumbnailSizeControls;
-    IBOutlet NSArray *colorLabels;
-    IBOutlet NSArray *colorControls;
+    NSTextField *tableFontLabelField;
+    NSComboBox *tableFontComboBox;
+    NSTextField *greekingLabelField;
+    NSTextField *greekingTextField;
+    NSButton *antiAliasCheckButton;
+    NSTextField *fullScreenBackgroundColorLabelField;
+    NSColorWell *fullScreenBackgroundColorWell;
+    NSButton *searchHighlightCheckButton;
+    NSColorWell *searchHighlightColorWell;
+    NSArray *thumbnailSizeLabels;
+    NSArray *thumbnailSizeControls;
+    NSArray *colorLabels;
+    NSArray *colorControls;
 }
+
+@property (nonatomic, assign) IBOutlet NSTextField *tableFontLabelField;
+@property (nonatomic, assign) IBOutlet NSComboBox *tableFontComboBox;
+@property (nonatomic, assign) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
+@property (nonatomic, assign) IBOutlet NSButton *antiAliasCheckButton;
+@property (nonatomic, assign) IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
+@property (nonatomic, assign) IBOutlet NSColorWell *fullScreenBackgroundColorWell;
+@property (nonatomic, assign) IBOutlet NSButton *searchHighlightCheckButton;
+@property (nonatomic, assign) IBOutlet NSColorWell *searchHighlightColorWell;
+@property (nonatomic, assign) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;

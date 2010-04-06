@@ -44,7 +44,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @protocol SKSnapshotWindowControllerDelegate;
 
 @interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
-    IBOutlet SKSnapshotPDFView* pdfView;
+    SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;
     NSString *pageLabel;
@@ -53,8 +53,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
     BOOL forceOnTop;
 }
 
+@property (nonatomic, assign) IBOutlet SKSnapshotPDFView *pdfView;
 @property (nonatomic, assign) id <SKSnapshotWindowControllerDelegate> delegate;
-@property (nonatomic, readonly) PDFView *pdfView;
 @property (nonatomic, retain) NSImage *thumbnail;
 @property (nonatomic, readonly) NSUInteger pageIndex;
 @property (nonatomic, readonly, copy) NSString *pageLabel;

@@ -43,7 +43,8 @@
 
 @implementation SKProgressController
 
-@dynamic progressBar, message, indeterminate, minValue, maxValue, doubleValue;
+@synthesize progressBar, progressField;
+@dynamic message, indeterminate, minValue, maxValue, doubleValue;
 
 - (NSString *)windowNibName { 
     return @"ProgressSheet";

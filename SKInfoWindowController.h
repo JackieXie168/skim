@@ -41,14 +41,16 @@
 
 
 @interface SKInfoWindowController : SKWindowController {
-    IBOutlet NSTableView *summaryTableView;
-    IBOutlet NSTableView *attributesTableView;
-    IBOutlet NSTabView *tabView;
+    NSTableView *summaryTableView;
+    NSTableView *attributesTableView;
+    NSTabView *tabView;
     NSDictionary *info;
     NSArray *summaryKeys;
     NSArray *attributesKeys;
 }
 
+@property (nonatomic, assign) IBOutlet NSTableView *summaryTableView, *attributesTableView;
+@property (nonatomic, assign) IBOutlet NSTabView *tabView;
 @property (nonatomic, copy) NSDictionary *info;
 
 + (id)sharedInstance;

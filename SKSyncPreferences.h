@@ -45,11 +45,12 @@ typedef struct _SKTeXEditor {
 
 
 @interface SKSyncPreferences : SKPreferencePane {
-    IBOutlet NSArray *texEditorLabels;
-    IBOutlet NSArray *texEditorControls;
+    NSArray *texEditorLabels;
+    NSArray *texEditorControls;
     BOOL customTeXEditor;
 }
 
+@property (nonatomic, assign) IBOutlet NSArray *texEditorLabels, *texEditorControls;
 @property (nonatomic, getter=isCustomTeXEditor) BOOL customTeXEditor;
 
 + (SKTeXEditor)TeXEditorForPreset:(NSString *)name;

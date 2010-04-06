@@ -58,6 +58,8 @@
 
 @implementation SKPreferenceController
 
+@synthesize contentView, resetButtons;
+
 + (id)sharedPrefenceController {
     static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)

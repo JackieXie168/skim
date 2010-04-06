@@ -41,8 +41,11 @@
 
 
 @interface SKDownloadPreferenceController : SKWindowController {
-    IBOutlet NSArray *checkButtons;
-    IBOutlet NSButton *doneButton;
+    NSArray *checkButtons;
+    NSButton *doneButton;
 }
+
+@property (nonatomic, assign) IBOutlet NSArray *checkButtons;
+@property (nonatomic, assign) IBOutlet NSButton *doneButton;
 
 @end

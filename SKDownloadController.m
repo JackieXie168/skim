@@ -69,6 +69,8 @@ static char SKDownloadPropertiesObservationContext;
 
 @implementation SKDownloadController
 
+@synthesize arrayController, tableView, clearButton, prefButton;
+
 + (id)sharedDownloadController {
     static SKDownloadController *sharedDownloadController = nil;
     if (sharedDownloadController == nil)

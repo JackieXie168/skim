@@ -47,6 +47,8 @@
 
 @implementation SKNotesPreferences
 
+@synthesize labels1, colorLabels2, colorLabels3, lineLabels2, colorWells1, colorWells2, colorWells3, fontWells, lineWells1, lineWells2;
+
 - (NSString *)nibName {
     return @"NotesPreferences";
 }

@@ -91,7 +91,7 @@ static char SKBookmarkPropertiesObservationContext;
 
 @implementation SKBookmarkController
 
-@synthesize bookmarkRoot, recentDocuments;
+@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments;
 
 static NSUInteger maxRecentDocumentsCount = 0;
 

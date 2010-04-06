@@ -40,11 +40,12 @@
 
 
 @interface SKProgressController : NSWindowController {
-    IBOutlet NSProgressIndicator *progressBar;
-    IBOutlet NSTextField *progressField;
+    NSProgressIndicator *progressBar;
+    NSTextField *progressField;
 }
 
-@property (nonatomic, readonly) NSProgressIndicator *progressBar;
+@property (nonatomic, assign) IBOutlet NSProgressIndicator *progressBar;
+@property (nonatomic, assign) IBOutlet NSTextField *progressField;
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, getter=isIndeterminate) BOOL indeterminate;
 @property (nonatomic) double minValue, maxValue, doubleValue;
