@@ -41,10 +41,23 @@
 
 @implementation SKIBArray
 
-@synthesize object1, object2, object3, object4, object5, object6, object7, object8, object9;
+@dynamic object1, object2, object3, object4, object5, object6, object7, object8, object9;
+
+#define DEFINE_ACCESSORS(i) \
+- (id)object##i { return object[i-1]; } \
+- (void)setObject##i:(id)obj { object[i-1] = obj; }
+
+DEFINE_ACCESSORS(1)
+DEFINE_ACCESSORS(2)
+DEFINE_ACCESSORS(3)
+DEFINE_ACCESSORS(4)
+DEFINE_ACCESSORS(5)
+DEFINE_ACCESSORS(6)
+DEFINE_ACCESSORS(7)
+DEFINE_ACCESSORS(8)
+DEFINE_ACCESSORS(9)
 
 - (NSUInteger)count {
-    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
     NSUInteger i;
     for (i = 0; i < 9; i++)
         if (object[i] == nil) break;
@@ -52,20 +65,15 @@
 }
 
 - (id)objectAtIndex:(NSUInteger)anIndex {
-    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
     return object[anIndex];
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
     static const unsigned long const_mu = 1;
-    id object[] = {object1, object2, object3, object4, object5, object6, object7, object8, object9};
-    NSUInteger i = 0, current = state->state;
-    for (i = 0, current = state->state; current < 9 && i < len && object[current] != nil; i++, current++)
-        stackbuf[i] = object[current];
-    state->state = current;
-    state->itemsPtr = stackbuf;
+    state->state = 1;
+    state->itemsPtr = object;
 	state->mutationsPtr = (unsigned long *)&const_mu;
-    return i;
+    return [self count];
 }
 
 @end
