@@ -69,11 +69,15 @@ DEFINE_ACCESSORS(9)
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
-    static const unsigned long const_mu = 1;
-    state->state = 1;
-    state->itemsPtr = object;
-	state->mutationsPtr = (unsigned long *)&const_mu;
-    return [self count];
+    enum { ATSTART = 0, ATEND = 1 };
+    if (state->state == ATSTART) {
+        static const unsigned long const_mu = 1;
+        state->state = ATEND;
+        state->itemsPtr = object;
+        state->mutationsPtr = (unsigned long *)&const_mu;
+        return [self count];
+    }
+    return 0;
 }
 
 @end
