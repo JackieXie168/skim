@@ -67,27 +67,20 @@ typedef NSInteger SKBookmarkType;
 - (id)initSeparator;
 - (id)initWithProperties:(NSDictionary *)dictionary;
 
-- (NSDictionary *)properties;
-
-- (SKBookmarkType)bookmarkType;
-
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
-
-- (NSImage *)icon;
-
-- (NSString *)path;
-- (NSUInteger)pageIndex;
-- (NSNumber *)pageNumber;
+@property (nonatomic, readonly) NSDictionary *properties;
+@property (nonatomic, readonly) SKBookmarkType bookmarkType;
+@property (nonatomic, retain) NSString *label;
+@property (nonatomic, readonly) NSImage *icon;
+@property (nonatomic, readonly) NSString *path;
+@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) NSNumber *pageNumber;
+@property (nonatomic, assign) SKBookmark *parent;
 
 - (NSArray *)children;
 - (NSUInteger)countOfChildren;
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex;
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
-
-- (SKBookmark *)parent;
-- (void)setParent:(SKBookmark *)newParent;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;

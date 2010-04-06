@@ -86,6 +86,9 @@
 
 @implementation SKBookmark
 
+@synthesize parent;
+@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber;
+
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
 
@@ -192,14 +195,6 @@ static Class SKBookmarkClass = Nil;
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
-
-- (SKBookmark *)parent {
-    return parent;
-}
-
-- (void)setParent:(SKBookmark *)newParent {
-    parent = newParent;
-}
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark {
     if (self == bookmark)
