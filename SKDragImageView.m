@@ -41,13 +41,7 @@
 
 @implementation SKDragImageView
 
-- (id <SKDragImageViewDelegate>)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id <SKDragImageViewDelegate>)newDelegate {
-	delegate = newDelegate;
-}
+@synthesize delegate;
 
 - (IBAction)show:(id)sender {
     NSImage *image = [self image];

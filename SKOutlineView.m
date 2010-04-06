@@ -50,6 +50,9 @@ static char SKOutlineViewDefaultsObservationContext;
 
 @implementation SKOutlineView
 
+@synthesize typeSelectHelper;
+@dynamic selectedItems, canDelete, canCopy;
+
 + (BOOL)usesDefaultFontSize { return NO; }
 
 - (void)dealloc {
@@ -94,10 +97,6 @@ static char SKOutlineViewDefaultsObservationContext;
         idx = [indexes indexGreaterThanIndex:idx];
     }
     return items;
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {

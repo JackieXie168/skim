@@ -47,15 +47,11 @@
 
 + (BOOL)usesDefaultFontSize;
 
-- (NSArray *)selectedItems;
+@property (nonatomic, readonly) NSArray *selectedItems;
+@property (nonatomic, readonly) BOOL canDelete, canCopy;
+@property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
-- (SKTypeSelectHelper *)typeSelectHelper;
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
-
-- (BOOL)canDelete;
 - (void)delete:(id)sender;
-
-- (BOOL)canCopy;
 - (void)copy:(id)sender;
 
 - (void)scrollToBeginningOfDocument:(id)sender;

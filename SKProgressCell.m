@@ -45,6 +45,8 @@
 
 @implementation SKProgressCell
 
+@dynamic progressIndicator, fileName, status, statusDescription;
+
 - (id)objectValueForKey:(NSString *)key {
     id value = nil;
     NSDictionary *info = [self objectValue];
