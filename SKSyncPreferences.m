@@ -53,7 +53,7 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 @implementation SKSyncPreferences
 
-@synthesize customTeXEditor;
+@synthesize texEditorLabels, texEditorControls, customTeXEditor;
 
 - (NSString *)nibName {
     return @"SyncPreferences";

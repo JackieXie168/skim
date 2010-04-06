@@ -72,23 +72,23 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
-    IBOutlet SKSplitView                *splitView;
+    SKSplitView                         *splitView;
     
-    IBOutlet NSView                     *centerContentView;
-    IBOutlet SKSplitView                *pdfSplitView;
-    IBOutlet NSView                     *pdfContentView;
-    IBOutlet SKPDFView                  *pdfView;
+    NSView                              *centerContentView;
+    SKSplitView                         *pdfSplitView;
+    NSView                              *pdfContentView;
+    SKPDFView                           *pdfView;
     
     NSView                              *secondaryPdfContentView;
     SKSecondaryPDFView                  *secondaryPdfView;
     
-    IBOutlet SKLeftSideViewController   *leftSideController;
-    IBOutlet SKRightSideViewController  *rightSideController;
+    SKLeftSideViewController            *leftSideController;
+    SKRightSideViewController           *rightSideController;
     
-    IBOutlet SKMainToolbarController    *toolbarController;
+    SKMainToolbarController             *toolbarController;
     
-    IBOutlet NSView                     *leftSideContentView;
-    IBOutlet NSView                     *rightSideContentView;
+    NSView                              *leftSideContentView;
+    NSView                              *rightSideContentView;
     
     SKStatusBar                         *statusBar;
     
@@ -180,6 +180,20 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     } mwcFlags;
 }
 
+@property (nonatomic, assign) IBOutlet SKSplitView *splitView;
+    
+@property (nonatomic, assign) IBOutlet NSView *centerContentView;
+@property (nonatomic, assign) IBOutlet SKSplitView *pdfSplitView;
+@property (nonatomic, assign) IBOutlet NSView *pdfContentView;
+@property (nonatomic, assign) IBOutlet SKPDFView *pdfView;
+
+@property (nonatomic, assign) IBOutlet SKLeftSideViewController *leftSideController;
+@property (nonatomic, assign) IBOutlet SKRightSideViewController *rightSideController;
+    
+@property (nonatomic, assign) IBOutlet SKMainToolbarController *toolbarController;
+    
+@property (nonatomic, assign) IBOutlet NSView *leftSideContentView, *rightSideContentView;
+
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)enterPresentation:(id)sender;
@@ -191,8 +205,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
-
-@property (nonatomic, readonly) SKPDFView *pdfView;
 
 @property (nonatomic, retain) PDFDocument *pdfDocument;
 

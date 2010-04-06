@@ -106,6 +106,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @implementation SKConversionProgressController
 
+@synthesize cancelButton, progressBar, textField;
+
 + (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
     return [[[[self alloc] init] autorelease] PDFDataWithPostScriptData:psData];
 }

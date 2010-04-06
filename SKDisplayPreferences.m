@@ -45,6 +45,8 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 
 @implementation SKDisplayPreferences
 
+@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, searchHighlightCheckButton, searchHighlightColorWell, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
+
 - (NSString *)nibName {
     return @"DisplayPreferences";
 }

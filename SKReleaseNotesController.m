@@ -41,6 +41,8 @@
 
 @implementation SKReleaseNotesController
 
+@synthesize textView;
+
 + (id)sharedReleaseNotesController {
     static SKReleaseNotesController *sharedReleaseNotesController = nil;
     if (sharedReleaseNotesController == nil)

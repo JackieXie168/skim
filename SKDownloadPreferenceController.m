@@ -42,6 +42,8 @@
 
 @implementation SKDownloadPreferenceController
 
+@synthesize checkButtons, doneButton;
+
 - (NSString *)windowNibName {
     return @"DownloadPreferenceSheet";
 }

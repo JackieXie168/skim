@@ -41,8 +41,10 @@
 
 
 @interface SKReleaseNotesController : SKWindowController {
-    IBOutlet NSTextView *textView;
+    NSTextView *textView;
 }
+
+@property (nonatomic, assign) IBOutlet NSTextView *textView;
 
 + (id)sharedReleaseNotesController;
 

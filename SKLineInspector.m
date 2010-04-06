@@ -56,7 +56,7 @@ NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorL
 
 @implementation SKLineInspector
 
-@synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
+@synthesize lineWidthSlider, lineWidthField, dashPatternField, styleButton, startLineStyleButton, endLineStyleButton, lineWell, lineWidthLabelField, styleLabelField, dashPatternLabelField, startLineStyleLabelField, endLineStyleLabelField, labelFields, lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
 
 static SKLineInspector *sharedLineInspector = nil;
 

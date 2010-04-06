@@ -42,17 +42,19 @@
 @class SKLineWell, SKFontWell;
 
 @interface SKNotesPreferences : SKPreferencePane {
-    IBOutlet NSArray *labels1;
-    IBOutlet NSArray *colorLabels2;
-    IBOutlet NSArray *colorLabels3;
-    IBOutlet NSArray *lineLabels2;
-    IBOutlet NSArray *colorWells1;
-    IBOutlet NSArray *colorWells2;
-    IBOutlet NSArray *colorWells3;
-    IBOutlet NSArray *fontWells;
-    IBOutlet NSArray *lineWells1;
-    IBOutlet NSArray *lineWells2;
+    NSArray *labels1;
+    NSArray *colorLabels2;
+    NSArray *colorLabels3;
+    NSArray *lineLabels2;
+    NSArray *colorWells1;
+    NSArray *colorWells2;
+    NSArray *colorWells3;
+    NSArray *fontWells;
+    NSArray *lineWells1;
+    NSArray *lineWells2;
 }
+
+@property (nonatomic, assign) IBOutlet NSArray *labels1, *colorLabels2, *colorLabels3, *lineLabels2, *colorWells1, *colorWells2, *colorWells3, *fontWells, *lineWells1, *lineWells2;
 
 - (IBAction)changeFont:(id)sender;
 - (IBAction)changeAttributes:(id)sender;

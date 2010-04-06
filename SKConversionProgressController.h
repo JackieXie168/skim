@@ -40,17 +40,24 @@
 
 
 @interface SKConversionProgressController : NSWindowController {
-    IBOutlet NSButton *cancelButton;
-    IBOutlet NSProgressIndicator *progressBar;
-    IBOutlet NSTextField *textField;
+    NSButton *cancelButton;
+    NSProgressIndicator *progressBar;
+    NSTextField *textField;
     NSString *fileType;
     CGPSConverterRef converter;
     volatile int32_t convertingPS;
     volatile int32_t taskShouldStop;
 }
+
+@property (nonatomic, assign) IBOutlet NSButton *cancelButton;
+@property (nonatomic, assign) IBOutlet NSProgressIndicator *progressBar;
+@property (nonatomic, assign) IBOutlet NSTextField *textField;
+
 + (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 + (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile;
+
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;
+
 @end

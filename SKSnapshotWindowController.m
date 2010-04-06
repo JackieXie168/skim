@@ -77,7 +77,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 @implementation SKSnapshotWindowController
 
-@synthesize delegate, pdfView, thumbnail, pageLabel, hasWindow, forceOnTop;
+@synthesize pdfView, delegate, thumbnail, pageLabel, hasWindow, forceOnTop;
 @dynamic pageIndex, pageAndWindow, currentSetup, thumbnailAttachment, thumbnail512Attachment, thumbnail256Attachment, thumbnail128Attachment, thumbnail64Attachment, thumbnail32Attachment;
 
 + (NSSet *)keyPathsForValuesAffectingPageAndWindow {

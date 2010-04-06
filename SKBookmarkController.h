@@ -43,8 +43,8 @@
 @class SKBookmark, SKStatusBar;
 
 @interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, SKOutlineViewDelegate, NSOutlineViewDataSource> {
-    IBOutlet SKOutlineView *outlineView;
-    IBOutlet SKStatusBar *statusBar;
+    SKOutlineView *outlineView;
+    SKStatusBar *statusBar;
     SKBookmark *bookmarkRoot;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
@@ -54,6 +54,8 @@
 
 + (id)sharedBookmarkController;
 
+@property (nonatomic, assign) IBOutlet SKOutlineView *outlineView;
+@property (nonatomic, assign) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, readonly) SKBookmark *bookmarkRoot;
 @property (nonatomic, readonly) NSArray *recentDocuments;
 

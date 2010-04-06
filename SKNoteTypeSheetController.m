@@ -23,7 +23,7 @@
 
 @implementation SKNoteTypeSheetController
 
-@synthesize delegate, noteTypeMenu;
+@synthesize matrix, messageField, buttons, delegate, noteTypeMenu;
 @dynamic noteTypes;
 
 - (id)init {

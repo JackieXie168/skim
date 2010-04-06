@@ -46,7 +46,7 @@
 
 @implementation SKTextFieldSheetController
 
-@dynamic textField, stringValue;
+@dynamic textField, labelFields, controls, buttons, stringValue;
 
 - (void)windowDidLoad {
     NSRect frame = [[self window] frame];
@@ -106,6 +106,7 @@
 
 @implementation SKBookmarkSheetController
 
+@synthesize folderPopUp;
 @dynamic selectedFolder;
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }

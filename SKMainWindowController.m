@@ -199,7 +199,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 @implementation SKMainWindowController
 
-@synthesize pdfView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel;
+@synthesize splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel;
 @dynamic pdfDocument, presentationOptions, selectedNotes, isPresentation, isFullScreen, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {

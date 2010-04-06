@@ -68,7 +68,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-@synthesize separate, transition, transitions;
+@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, objectController, arrayController, separate, transition, transitions;
 @dynamic pageTransitions, notesDocument, isScrolling;
 
 - (id)initForController:(SKMainWindowController *)aController {

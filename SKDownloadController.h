@@ -45,12 +45,16 @@
 @class SKTableView;
 
 @interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, SKDownloadDelegate> {
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKTableView *tableView;
-    IBOutlet NSButton *clearButton;
-    IBOutlet NSButton *prefButton;
+    NSArrayController *arrayController;
+    SKTableView *tableView;
+    NSButton *clearButton;
+    NSButton *prefButton;
     NSMutableArray *downloads;
 }
+
+@property (nonatomic, assign) IBOutlet NSArrayController *arrayController;
+@property (nonatomic, assign) IBOutlet SKTableView *tableView;
+@property (nonatomic, assign) IBOutlet NSButton *clearButton, *prefButton;
 
 + (id)sharedDownloadController;
 

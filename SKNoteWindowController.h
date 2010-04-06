@@ -44,13 +44,13 @@
 @class PDFAnnotation, SKStatusBar;
 
 @interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate> {
-    IBOutlet NSTextView *textView;
-    IBOutlet SKDragImageView *imageView;
-    IBOutlet SKStatusBar *statusBar;
-    IBOutlet NSPopUpButton *iconTypePopUpButton;
-    IBOutlet NSTextField *iconLabelField;
-    IBOutlet NSButton *checkButton;
-    IBOutlet NSObjectController *noteController;
+    NSTextView *textView;
+    SKDragImageView *imageView;
+    SKStatusBar *statusBar;
+    NSPopUpButton *iconTypePopUpButton;
+    NSTextField *iconLabelField;
+    NSButton *checkButton;
+    NSObjectController *noteController;
     
     PDFAnnotation *note;
     
@@ -61,6 +61,13 @@
     NSUndoManager *textViewUndoManager;
 }
 
+@property (nonatomic, assign) IBOutlet NSTextView *textView;
+@property (nonatomic, assign) IBOutlet SKDragImageView *imageView;
+@property (nonatomic, assign) IBOutlet SKStatusBar *statusBar;
+@property (nonatomic, assign) IBOutlet NSPopUpButton *iconTypePopUpButton;
+@property (nonatomic, assign) IBOutlet NSTextField *iconLabelField;
+@property (nonatomic, assign) IBOutlet NSButton *checkButton;
+@property (nonatomic, assign) IBOutlet NSObjectController *noteController;
 @property (nonatomic, readonly) PDFAnnotation *note;
 @property (nonatomic) BOOL keepOnTop, forceOnTop, isNoteType;
 
