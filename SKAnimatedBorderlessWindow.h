@@ -46,8 +46,8 @@
 
 - (void)willClose;
 
-@property (nonatomic) CGFloat defaultAlphaValue;
-@property (nonatomic) NSTimeInterval fadeInDuration, fadeOutDuration, autoHideTimeInterval;
+@property (nonatomic, readonly) CGFloat defaultAlphaValue;
+@property (nonatomic, readonly) NSTimeInterval fadeInDuration, fadeOutDuration, autoHideTimeInterval;
 
 - (void)fadeIn;
 - (void)fadeOut;
