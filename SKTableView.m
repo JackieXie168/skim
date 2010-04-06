@@ -56,6 +56,9 @@ static char SKTableViewDefaultsObservationContext;
 
 @implementation SKTableView
 
+@synthesize typeSelectHelper;
+@dynamic canDelete, canCopy, canPaste;
+
 + (BOOL)usesDefaultFontSize { return NO; }
 
 - (void)dealloc {
@@ -89,10 +92,6 @@ static char SKTableViewDefaultsObservationContext;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {

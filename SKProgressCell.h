@@ -41,12 +41,9 @@
 
 @interface SKProgressCell : NSTextFieldCell
 
-- (NSProgressIndicator *)progressIndicator;
-
-- (NSString *)fileName;
-
-- (NSInteger)status;
-
-- (NSString *)statusDescription;
+@property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
+@property (nonatomic, readonly) NSString *fileName;
+@property (nonatomic, readonly) NSInteger status;
+@property (nonatomic, readonly) NSString *statusDescription;
 
 @end

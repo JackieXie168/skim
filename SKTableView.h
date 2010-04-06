@@ -49,16 +49,11 @@
 
 + (BOOL)usesDefaultFontSize;
 
-- (SKTypeSelectHelper *)typeSelectHelper;
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
+@property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
+@property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
-- (BOOL)canDelete;
 - (void)delete:(id)sender;
-
-- (BOOL)canCopy;
 - (void)copy:(id)sender;
-
-- (BOOL)canPaste;
 - (void)paste:(id)sender;
 
 - (void)scrollToBeginningOfDocument:(id)sender;

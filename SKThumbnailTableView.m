@@ -66,6 +66,8 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
 
 @implementation SKThumbnailTableView
 
+@synthesize isScrolling;
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
@@ -145,8 +147,6 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
     }
     return NO;
 }
-
-- (BOOL)isScrolling { return isScrolling; }
 
 - (void)handleScrollerWillScroll:(NSNotification *)note {
     isScrolling = YES;

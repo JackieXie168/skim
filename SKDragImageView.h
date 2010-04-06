@@ -44,8 +44,7 @@
 	id <SKDragImageViewDelegate> delegate;
 } 
 
-- (id <SKDragImageViewDelegate>)delegate;
-- (void)setDelegate:(id <SKDragImageViewDelegate>)newDelegate;
+@property (nonatomic, assign) id <SKDragImageViewDelegate> delegate;
 
 - (IBAction)show:(id)sender;
 

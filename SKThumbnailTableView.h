@@ -46,7 +46,7 @@
     BOOL isScrolling;
 }
 
-- (BOOL)isScrolling;
+@property (nonatomic, readonly) BOOL isScrolling;
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKThumbnailTableViewDelegate>)delegate;
