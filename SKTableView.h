@@ -40,28 +40,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKPDFToolTipContext.h"
 
-
-@protocol SKTableViewDelegate <NSTableViewDelegate>
-@optional
-
-- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-
-- (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
-
-- (void)tableViewPaste:(NSTableView *)aTableView;
-- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
-
-- (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (id<SKPDFToolTipContext>)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-
-- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
-- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
-- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
-
-@end
-
+@protocol SKTableViewDelegate;
 
 @interface SKTableView : NSTableView <SKTypeSelectDataSource> {
     NSMutableSet *trackingAreas;
@@ -89,5 +68,27 @@
 - (id <SKTableViewDelegate>)delegate;
 - (void)setDelegate:(id <SKTableViewDelegate>)newDelegate;
 #endif
+
+@end
+
+
+@protocol SKTableViewDelegate <NSTableViewDelegate>
+@optional
+
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
+- (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
+- (void)tableViewPaste:(NSTableView *)aTableView;
+- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
+
+- (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (id<SKPDFToolTipContext>)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+
+- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
 
 @end

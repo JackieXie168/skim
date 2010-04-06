@@ -40,20 +40,8 @@
 
 extern NSString *SKSnapshotCurrentSetupKey;
 
-@class SKSnapshotWindowController;
-
-@protocol SKSnapshotWindowControllerDelegate <NSObject>
-@optional
-
-- (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller;
-- (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller;
-- (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller;
-
-@end
-
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
+@protocol SKSnapshotWindowControllerDelegate;
 
 @interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
     IBOutlet SKSnapshotPDFView* pdfView;
@@ -101,6 +89,18 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
+
+@end
+
+
+@protocol SKSnapshotWindowControllerDelegate <NSObject>
+@optional
+
+- (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller;
+- (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller;
+- (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller;
 
 @end
 

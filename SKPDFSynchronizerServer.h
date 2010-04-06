@@ -39,20 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import "synctex_parser.h"
 
-// these methods can be sent to the proxy for the server and are implemented by the server
-@protocol SKPDFSynchronizerServer
-- (oneway void)stopRunning; 
-- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
-- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file options:(NSInteger)options;
-@end
-
-// these methods can be sent to the proxy for the client and must be implemented by the client
-@protocol SKPDFSynchronizerClient
-- (void)setServerProxy:(byref id)anObject;
-- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
-@end
-
 
 @interface SKPDFSynchronizerServer : NSObject {
     NSString *fileName;
@@ -81,4 +67,18 @@
 // this sets up the background thread and connects back to the client, blocks until it's fully set up
 - (void)startDOServerForPorts:(NSArray *)ports;
 
+@end
+
+// these methods can be sent to the proxy for the server and are implemented by the server
+@protocol SKPDFSynchronizerServer
+- (oneway void)stopRunning; 
+- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
+- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file options:(NSInteger)options;
+@end
+
+// these methods can be sent to the proxy for the client and must be implemented by the client
+@protocol SKPDFSynchronizerClient
+- (void)setServerProxy:(byref id)anObject;
+- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
 @end

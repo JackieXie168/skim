@@ -40,11 +40,7 @@
 
 extern NSString *SKApplicationStartsTerminatingNotification;
 
-@protocol SKApplicationDelegate <NSApplicationDelegate>
-@optional
-- (void)applicationStartsTerminating:(NSNotification *)aNotification;
-@end
-
+@protocol SKApplicationDelegate;
 
 @interface SKApplication : NSApplication {
     BOOL userAttentionDisabled;
@@ -57,6 +53,12 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate;
 #endif
 
+@end
+
+
+@protocol SKApplicationDelegate <NSApplicationDelegate>
+@optional
+- (void)applicationStartsTerminating:(NSNotification *)aNotification;
 @end
 
 

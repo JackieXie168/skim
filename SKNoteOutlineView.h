@@ -39,16 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKOutlineView.h";
 
-
-@protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
-@optional
-
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
-- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
-
-@end
-
+@protocol SKNoteOutlineViewDelegate;
 
 @interface SKNoteOutlineView : SKOutlineView
 
@@ -56,5 +47,15 @@
 - (id <SKNoteOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKNoteOutlineViewDelegate>)newDelegate;
 #endif
+
+@end
+
+
+@protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
+@optional
+
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
+- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 
 @end

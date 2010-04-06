@@ -120,9 +120,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
-- (void)animationDidUpdate:(NSAnimation *)anAnimation;
-@end
+@protocol SKTransitionAnimationDelegate;
 
 @interface SKTransitionAnimation : NSAnimation {
     CIFilter *filter;
@@ -133,6 +131,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (id <SKTransitionAnimationDelegate>)delegate;
 - (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate;
 #endif
+@end
+
+@protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
+- (void)animationDidUpdate:(NSAnimation *)anAnimation;
 @end
 
 #pragma mark -

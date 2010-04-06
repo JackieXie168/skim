@@ -41,15 +41,7 @@
 #import "SKOutlineView.h"
 #import "SKPDFToolTipContext.h"
 
-
-@protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
-@optional
-
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-
-@end
+@protocol SKTocOutlineViewDelegate;
 
 @interface SKTocOutlineView : SKOutlineView {
     NSMutableSet *trackingAreas;
@@ -58,4 +50,14 @@
 - (id <SKTocOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate;
 #endif
+@end
+
+
+@protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
+@optional
+
+- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+
 @end

@@ -9,13 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-@class SKNoteTypeSheetController;
-
-@protocol SKNoteTypeSheetControllerDelegate <NSObject>
-- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller;
-- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller;
-@end
-
+@protocol SKNoteTypeSheetControllerDelegate;
 
 @interface SKNoteTypeSheetController : SKWindowController {
     IBOutlet NSMatrix *matrix;
@@ -31,4 +25,10 @@
 
 - (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
 
+@end
+
+
+@protocol SKNoteTypeSheetControllerDelegate <NSObject>
+- (void)noteTypeSheetControllerNoteTypesDidChange:(SKNoteTypeSheetController *)controller;
+- (NSWindow *)windowForNoteTypeSheetController:(SKNoteTypeSheetController *)controller;
 @end
