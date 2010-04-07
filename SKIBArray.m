@@ -41,37 +41,32 @@
 
 @implementation SKIBArray
 
-@dynamic object1, object2, object3, object4, object5, object6, object7, object8, object9;
-
-#define DEFINE_ACCESSORS(i) \
-- (id)object##i { return object[i-1]; } \
-- (void)setObject##i:(id)obj { \
-    if (object[i-1] != obj) { \
-        [object[i-1] release]; \
-        object[i-1] = [obj retain]; \
-    } \
+static void setObjectAtIndex(id *object, id obj, NSUInteger i) {
+    if (object[i] != obj) {
+        [object[i] release];
+        object[i] = [obj retain];
+    }
 }
 
-DEFINE_ACCESSORS(1)
-DEFINE_ACCESSORS(2)
-DEFINE_ACCESSORS(3)
-DEFINE_ACCESSORS(4)
-DEFINE_ACCESSORS(5)
-DEFINE_ACCESSORS(6)
-DEFINE_ACCESSORS(7)
-DEFINE_ACCESSORS(8)
-DEFINE_ACCESSORS(9)
+#define SYNTHESIZE_OBJECT_ACCESSORS(i) \
+@dynamic object##i; \
+- (id)object##i { return object[i-1]; } \
+- (void)setObject##i:(id)obj { setObjectAtIndex(object, obj, i-1); }
+
+SYNTHESIZE_OBJECT_ACCESSORS(1)
+SYNTHESIZE_OBJECT_ACCESSORS(2)
+SYNTHESIZE_OBJECT_ACCESSORS(3)
+SYNTHESIZE_OBJECT_ACCESSORS(4)
+SYNTHESIZE_OBJECT_ACCESSORS(5)
+SYNTHESIZE_OBJECT_ACCESSORS(6)
+SYNTHESIZE_OBJECT_ACCESSORS(7)
+SYNTHESIZE_OBJECT_ACCESSORS(8)
+SYNTHESIZE_OBJECT_ACCESSORS(9)
 
 - (void)dealloc {
-    SKDESTROY(object[0]);
-    SKDESTROY(object[1]);
-    SKDESTROY(object[2]);
-    SKDESTROY(object[3]);
-    SKDESTROY(object[4]);
-    SKDESTROY(object[5]);
-    SKDESTROY(object[6]);
-    SKDESTROY(object[7]);
-    SKDESTROY(object[8]);
+    NSUInteger i;
+    for (i = 0; i < 9; i++)
+        setObjectAtIndex(object, nil, i);
     [super dealloc];
 }
 
