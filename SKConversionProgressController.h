@@ -49,9 +49,9 @@
     volatile int32_t taskShouldStop;
 }
 
-@property (nonatomic, assign) IBOutlet NSButton *cancelButton;
-@property (nonatomic, assign) IBOutlet NSProgressIndicator *progressBar;
-@property (nonatomic, assign) IBOutlet NSTextField *textField;
+@property (nonatomic, retain) IBOutlet NSButton *cancelButton;
+@property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
+@property (nonatomic, retain) IBOutlet NSTextField *textField;
 
 + (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
