@@ -55,7 +55,7 @@
 + (id)sharedBookmarkController;
 
 @property (nonatomic, assign) IBOutlet SKOutlineView *outlineView;
-@property (nonatomic, assign) IBOutlet SKStatusBar *statusBar;
+@property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, readonly) SKBookmark *bookmarkRoot;
 @property (nonatomic, readonly) NSArray *recentDocuments;
 

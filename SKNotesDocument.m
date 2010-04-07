@@ -82,7 +82,7 @@
 
 @implementation SKNotesDocument
 
-@synthesize outlineView, arrayController, statusBar, searchField, notes, pdfDocument;
+@synthesize outlineView, arrayController, searchField, notes, pdfDocument;
 
 - (id)init {
     if (self = [super init]) {
