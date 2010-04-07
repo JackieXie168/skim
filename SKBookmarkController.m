@@ -156,6 +156,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     SKDESTROY(recentDocuments);
     SKDESTROY(draggedBookmarks);
     SKDESTROY(toolbarItems);
+    SKDESTROY(outlineView);
     SKDESTROY(statusBar);
     [super dealloc];
 }
