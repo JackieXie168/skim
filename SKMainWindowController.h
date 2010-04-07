@@ -183,14 +183,14 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @property (nonatomic, assign) IBOutlet SKSplitView *splitView;
     
 @property (nonatomic, assign) IBOutlet NSView *centerContentView;
-@property (nonatomic, assign) IBOutlet SKSplitView *pdfSplitView;
+@property (nonatomic, retain) IBOutlet SKSplitView *pdfSplitView;
 @property (nonatomic, assign) IBOutlet NSView *pdfContentView;
-@property (nonatomic, assign) IBOutlet SKPDFView *pdfView;
+@property (nonatomic, retain) IBOutlet SKPDFView *pdfView;
 
-@property (nonatomic, assign) IBOutlet SKLeftSideViewController *leftSideController;
-@property (nonatomic, assign) IBOutlet SKRightSideViewController *rightSideController;
+@property (nonatomic, retain) IBOutlet SKLeftSideViewController *leftSideController;
+@property (nonatomic, retain) IBOutlet SKRightSideViewController *rightSideController;
     
-@property (nonatomic, assign) IBOutlet SKMainToolbarController *toolbarController;
+@property (nonatomic, retain) IBOutlet SKMainToolbarController *toolbarController;
     
 @property (nonatomic, assign) IBOutlet NSView *leftSideContentView, *rightSideContentView;
 

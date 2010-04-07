@@ -46,8 +46,8 @@
 @interface SKNotesDocument : NSDocument <NSWindowDelegate, NSToolbarDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource, SKNoteTypeSheetControllerDelegate> {
     SKNoteOutlineView *outlineView;
     NSArrayController *arrayController;
-    SKStatusBar *statusBar;
     NSSearchField *searchField;
+    SKStatusBar *statusBar;
     NSMutableDictionary *toolbarItems;
     NSArray *notes;
     PDFDocument *pdfDocument;
@@ -59,7 +59,6 @@
 
 @property (nonatomic, assign) IBOutlet SKNoteOutlineView *outlineView;
 @property (nonatomic, assign) IBOutlet NSArrayController *arrayController;
-@property (nonatomic, assign) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, assign) IBOutlet NSSearchField *searchField;
 @property (nonatomic, readonly) NSArray *notes;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;

@@ -45,7 +45,12 @@
 
 #define DEFINE_ACCESSORS(i) \
 - (id)object##i { return object[i-1]; } \
-- (void)setObject##i:(id)obj { object[i-1] = obj; }
+- (void)setObject##i:(id)obj { \
+    if (object[i-1] != obj) { \
+        [object[i-1] release]; \
+        object[i-1] = [obj retain]; \
+    } \
+}
 
 DEFINE_ACCESSORS(1)
 DEFINE_ACCESSORS(2)
@@ -56,6 +61,19 @@ DEFINE_ACCESSORS(6)
 DEFINE_ACCESSORS(7)
 DEFINE_ACCESSORS(8)
 DEFINE_ACCESSORS(9)
+
+- (void)dealloc {
+    SKDESTROY(object[0]);
+    SKDESTROY(object[1]);
+    SKDESTROY(object[2]);
+    SKDESTROY(object[3]);
+    SKDESTROY(object[4]);
+    SKDESTROY(object[5]);
+    SKDESTROY(object[6]);
+    SKDESTROY(object[7]);
+    SKDESTROY(object[8]);
+    [super dealloc];
+}
 
 - (NSUInteger)count {
     NSUInteger i;

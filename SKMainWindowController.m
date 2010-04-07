@@ -297,6 +297,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     SKDESTROY(secondaryPdfContentView);
     SKDESTROY(presentationNotesDocument);
     SKDESTROY(noteTypeSheetController);
+    SKDESTROY(leftSideController);
+    SKDESTROY(rightSideController);
+    SKDESTROY(toolbarController);
     [super dealloc];
 }
 
@@ -371,8 +374,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Set up the window
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
-    [pdfView retain];
-    [pdfSplitView retain];
     
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
