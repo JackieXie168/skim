@@ -116,6 +116,9 @@
     SKDESTROY(info);
     SKDESTROY(summaryKeys);
     SKDESTROY(attributesKeys);
+    SKDESTROY(summaryTableView);
+    SKDESTROY(attributesTableView);
+    SKDESTROY(tabView);
     [super dealloc];
 }
 

@@ -56,6 +56,10 @@
     [snapshotTableView setDataSource:nil];
     [noteOutlineView setDelegate:nil];
     [noteOutlineView setDataSource:nil];
+    SKDESTROY(noteArrayController);
+    SKDESTROY(snapshotArrayController);
+    SKDESTROY(noteOutlineView);
+    SKDESTROY(snapshotTableView);
     [super dealloc];
 }
 

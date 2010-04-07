@@ -56,6 +56,13 @@
     [groupedFindTableView setDelegate:nil];
     [tocOutlineView setDelegate:nil];
     [tocOutlineView setDataSource:nil];
+    SKDESTROY(thumbnailArrayController);
+    SKDESTROY(findArrayController);
+    SKDESTROY(groupedFindArrayController);
+    SKDESTROY(tocOutlineView);
+    SKDESTROY(thumbnailTableView);
+    SKDESTROY(findTableView);
+    SKDESTROY(groupedFindTableView);
     [super dealloc];
 }
 

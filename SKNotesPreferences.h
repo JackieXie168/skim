@@ -54,7 +54,7 @@
     NSArray *lineWells2;
 }
 
-@property (nonatomic, assign) IBOutlet NSArray *labels1, *colorLabels2, *colorLabels3, *lineLabels2, *colorWells1, *colorWells2, *colorWells3, *fontWells, *lineWells1, *lineWells2;
+@property (nonatomic, retain) IBOutlet NSArray *labels1, *colorLabels2, *colorLabels3, *lineLabels2, *colorWells1, *colorWells2, *colorWells3, *fontWells, *lineWells1, *lineWells2;
 
 - (IBAction)changeFont:(id)sender;
 - (IBAction)changeAttributes:(id)sender;

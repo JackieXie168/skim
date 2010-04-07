@@ -48,8 +48,8 @@
     SKPreferencePane *currentPane;
 }
 
-@property (nonatomic, assign) IBOutlet NSView *contentView;
-@property (nonatomic, assign) IBOutlet NSArray *resetButtons;
+@property (nonatomic, retain) IBOutlet NSView *contentView;
+@property (nonatomic, retain) IBOutlet NSArray *resetButtons;
 
 + (id)sharedPrefenceController;
 

@@ -84,6 +84,19 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)dealloc {
     SKDESTROY(dashPattern);
+    SKDESTROY(lineWidthSlider);
+    SKDESTROY(lineWidthField);
+    SKDESTROY(dashPatternField);
+    SKDESTROY(styleButton);
+    SKDESTROY(startLineStyleButton);
+    SKDESTROY(endLineStyleButton);
+    SKDESTROY(lineWell);
+    SKDESTROY(lineWidthLabelField);
+    SKDESTROY(styleLabelField);
+    SKDESTROY(dashPatternLabelField);
+    SKDESTROY(startLineStyleLabelField);
+    SKDESTROY(endLineStyleLabelField);
+    SKDESTROY(labelFields);
     [super dealloc];
 }
 

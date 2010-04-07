@@ -55,6 +55,12 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 @synthesize texEditorLabels, texEditorControls, customTeXEditor;
 
+- (void)dealloc {
+    SKDESTROY(texEditorLabels);
+    SKDESTROY(texEditorControls);
+    [super dealloc];
+}
+
 - (NSString *)nibName {
     return @"SyncPreferences";
 }

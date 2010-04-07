@@ -130,6 +130,13 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [textView setDelegate:nil];
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
+    SKDESTROY(textView);
+    SKDESTROY(imageView);
+    SKDESTROY(statusBar);
+    SKDESTROY(iconTypePopUpButton);
+    SKDESTROY(iconLabelField);
+    SKDESTROY(checkButton);
+    SKDESTROY(noteController);
     [super dealloc];
 }
 

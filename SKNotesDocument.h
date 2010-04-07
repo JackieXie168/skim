@@ -57,9 +57,9 @@
     BOOL caseInsensitiveSearch;
 }
 
-@property (nonatomic, assign) IBOutlet SKNoteOutlineView *outlineView;
-@property (nonatomic, assign) IBOutlet NSArrayController *arrayController;
-@property (nonatomic, assign) IBOutlet NSSearchField *searchField;
+@property (nonatomic, retain) IBOutlet SKNoteOutlineView *outlineView;
+@property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
+@property (nonatomic, retain) IBOutlet NSSearchField *searchField;
 @property (nonatomic, readonly) NSArray *notes;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;
 

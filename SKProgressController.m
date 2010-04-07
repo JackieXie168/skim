@@ -46,6 +46,12 @@
 @synthesize progressBar, progressField;
 @dynamic message, indeterminate, minValue, maxValue, doubleValue;
 
+- (void)dealloc {
+    SKDESTROY(progressBar);
+    SKDESTROY(progressField);
+    [super dealloc];
+}
+
 - (NSString *)windowNibName { 
     return @"ProgressSheet";
 }

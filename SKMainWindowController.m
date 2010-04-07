@@ -292,14 +292,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     SKDESTROY(textColorAccessoryView);
     SKDESTROY(leftSideDrawer);
     SKDESTROY(rightSideDrawer);
-    SKDESTROY(pdfView);
-    SKDESTROY(pdfSplitView);
     SKDESTROY(secondaryPdfContentView);
     SKDESTROY(presentationNotesDocument);
     SKDESTROY(noteTypeSheetController);
+    SKDESTROY(splitView);
+    SKDESTROY(centerContentView);
+    SKDESTROY(pdfSplitView);
+    SKDESTROY(pdfContentView);
+    SKDESTROY(pdfView);
     SKDESTROY(leftSideController);
     SKDESTROY(rightSideController);
     SKDESTROY(toolbarController);
+    SKDESTROY(leftSideContentView);
+    SKDESTROY(rightSideContentView);
     [super dealloc];
 }
 

@@ -103,6 +103,9 @@
     SKDESTROY(toolbarItems);
     SKDESTROY(statusBar);
     SKDESTROY(noteTypeSheetController);
+    SKDESTROY(outlineView);
+    SKDESTROY(arrayController);
+    SKDESTROY(searchField);
     [super dealloc];
 }
 

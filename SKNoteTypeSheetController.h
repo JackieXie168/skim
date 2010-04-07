@@ -19,9 +19,9 @@
     id <SKNoteTypeSheetControllerDelegate> delegate;
 }
 
-@property (nonatomic, assign) IBOutlet NSMatrix *matrix;
-@property (nonatomic, assign) IBOutlet NSTextField *messageField;
-@property (nonatomic, assign) IBOutlet NSArray *buttons;
+@property (nonatomic, retain) IBOutlet NSMatrix *matrix;
+@property (nonatomic, retain) IBOutlet NSTextField *messageField;
+@property (nonatomic, retain) IBOutlet NSArray *buttons;
 @property (nonatomic, assign) id <SKNoteTypeSheetControllerDelegate> delegate;
 @property (nonatomic, readonly) NSArray *noteTypes;
 @property (nonatomic, readonly) NSMenu *noteTypeMenu;

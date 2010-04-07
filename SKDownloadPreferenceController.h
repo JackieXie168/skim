@@ -45,7 +45,7 @@
     NSButton *doneButton;
 }
 
-@property (nonatomic, assign) IBOutlet NSArray *checkButtons;
-@property (nonatomic, assign) IBOutlet NSButton *doneButton;
+@property (nonatomic, retain) IBOutlet NSArray *checkButtons;
+@property (nonatomic, retain) IBOutlet NSButton *doneButton;
 
 @end

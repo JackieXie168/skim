@@ -47,8 +47,8 @@
     NSArray *buttons;
 }
 
-@property (nonatomic, assign) IBOutlet NSTextField *textField;
-@property (nonatomic, assign) IBOutlet NSArray *labelFields, *controls, *buttons;
+@property (nonatomic, retain) IBOutlet NSTextField *textField;
+@property (nonatomic, retain) IBOutlet NSArray *labelFields, *controls, *buttons;
 @property (nonatomic, retain) NSString *stringValue;
 
 @end
@@ -71,7 +71,7 @@
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
     NSPopUpButton *folderPopUp;
 }
-@property (nonatomic, assign) IBOutlet NSPopUpButton *folderPopUp;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *folderPopUp;
 @property (nonatomic, readonly) SKBookmark *selectedFolder;
 @end
 

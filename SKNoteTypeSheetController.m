@@ -46,6 +46,9 @@
 - (void)dealloc {
     delegate = nil;
     SKDESTROY(noteTypeMenu);
+    SKDESTROY(matrix);
+    SKDESTROY(messageField);
+    SKDESTROY(buttons);
     [super dealloc];
 }
 

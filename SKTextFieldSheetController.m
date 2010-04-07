@@ -48,6 +48,14 @@
 
 @dynamic textField, labelFields, controls, buttons, stringValue;
 
+- (void)dealloc {
+    SKDESTROY(textField);
+    SKDESTROY(labelFields);
+    SKDESTROY(controls);
+    SKDESTROY(buttons);
+    [super dealloc];
+}
+
 - (void)windowDidLoad {
     NSRect frame = [[self window] frame];
     CGFloat buttonMargin = NSWidth(frame) - NSMaxX([[buttons objectAtIndex:0] frame]);
@@ -108,6 +116,11 @@
 
 @synthesize folderPopUp;
 @dynamic selectedFolder;
+
+- (void)dealloc {
+    SKDESTROY(folderPopUp);
+    [super dealloc];
+}
 
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
 

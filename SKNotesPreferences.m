@@ -49,6 +49,20 @@
 
 @synthesize labels1, colorLabels2, colorLabels3, lineLabels2, colorWells1, colorWells2, colorWells3, fontWells, lineWells1, lineWells2;
 
+- (void)dealloc {
+    SKDESTROY(labels1);
+    SKDESTROY(colorLabels2);
+    SKDESTROY(colorLabels3);
+    SKDESTROY(lineLabels2);
+    SKDESTROY(colorWells1);
+    SKDESTROY(colorWells2);
+    SKDESTROY(colorWells3);
+    SKDESTROY(fontWells);
+    SKDESTROY(lineWells1);
+    SKDESTROY(lineWells2);
+    [super dealloc];
+}
+
 - (NSString *)nibName {
     return @"NotesPreferences";
 }

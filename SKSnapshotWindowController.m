@@ -90,6 +90,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     delegate = nil;
     SKDESTROY(thumbnail);
     SKDESTROY(pageLabel);
+    SKDESTROY(pdfView);
     [super dealloc];
 }
 

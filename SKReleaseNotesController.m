@@ -54,6 +54,11 @@
     return (self = [super initWithWindowNibName:@"ReleaseNotes"]);
 }
 
+- (void)dealloc {
+    SKDESTROY(textView);
+    [super dealloc];
+}
+
 - (void)windowDidLoad {
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
