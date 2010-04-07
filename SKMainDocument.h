@@ -126,12 +126,12 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
 
-@property (nonatomic, copy) PDFPage *currentPage;
+@property (nonatomic, retain) PDFPage *currentPage;
 @property (nonatomic, copy) id activeNote;
 @property (nonatomic, readonly) NSTextStorage *richText;
 @property (nonatomic, copy) id selectionSpecifier;
 @property (nonatomic, copy) NSData *selectionQDRect;
-@property (nonatomic, copy) PDFPage *selectionPage;
+@property (nonatomic, retain) PDFPage *selectionPage;
 @property (nonatomic, copy) NSDictionary *pdfViewSettings;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
