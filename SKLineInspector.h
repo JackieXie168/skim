@@ -76,12 +76,12 @@ typedef NSUInteger SKLineChangeAction;
     SKLineChangeAction currentLineChangeAction;
 }
 
-@property (nonatomic, assign) IBOutlet NSSlider *lineWidthSlider;
-@property (nonatomic, assign) IBOutlet NSTextField *lineWidthField, *dashPatternField;
-@property (nonatomic, assign) IBOutlet NSSegmentedControl *styleButton, *startLineStyleButton, *endLineStyleButton;
-@property (nonatomic, assign) IBOutlet SKLineWell *lineWell;
-@property (nonatomic, assign) IBOutlet NSTextField *lineWidthLabelField, *styleLabelField, *dashPatternLabelField, *startLineStyleLabelField, *endLineStyleLabelField;
-@property (nonatomic, assign) IBOutlet NSArray *labelFields;
+@property (nonatomic, retain) IBOutlet NSSlider *lineWidthSlider;
+@property (nonatomic, retain) IBOutlet NSTextField *lineWidthField, *dashPatternField;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *styleButton, *startLineStyleButton, *endLineStyleButton;
+@property (nonatomic, retain) IBOutlet SKLineWell *lineWell;
+@property (nonatomic, retain) IBOutlet NSTextField *lineWidthLabelField, *styleLabelField, *dashPatternLabelField, *startLineStyleLabelField, *endLineStyleLabelField;
+@property (nonatomic, retain) IBOutlet NSArray *labelFields;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) PDFBorderStyle style;
 @property (nonatomic, copy) NSArray *dashPattern;

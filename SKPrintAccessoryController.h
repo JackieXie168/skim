@@ -46,8 +46,8 @@
     NSMatrix *printScalingModeMatrix;
 }
 
-@property (nonatomic, assign) IBOutlet NSButton *autoRotateButton;
-@property (nonatomic, assign) IBOutlet NSMatrix *printScalingModeMatrix;
+@property (nonatomic, retain) IBOutlet NSButton *autoRotateButton;
+@property (nonatomic, retain) IBOutlet NSMatrix *printScalingModeMatrix;
 @property (nonatomic) BOOL autoRotate;
 @property (nonatomic) PDFPrintScalingMode printScalingMode;
 

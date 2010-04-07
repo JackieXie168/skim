@@ -44,8 +44,8 @@
     NSTextField *progressField;
 }
 
-@property (nonatomic, assign) IBOutlet NSProgressIndicator *progressBar;
-@property (nonatomic, assign) IBOutlet NSTextField *progressField;
+@property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
+@property (nonatomic, retain) IBOutlet NSTextField *progressField;
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, getter=isIndeterminate) BOOL indeterminate;
 @property (nonatomic) double minValue, maxValue, doubleValue;

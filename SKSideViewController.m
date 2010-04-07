@@ -52,8 +52,11 @@
 
 - (void)dealloc {
     mainController = nil;
+    SKDESTROY(collapsibleView);
     SKDESTROY(button);
     SKDESTROY(alternateButton);
+    SKDESTROY(searchField);
+    SKDESTROY(currentView);
     [super dealloc];
 }
 

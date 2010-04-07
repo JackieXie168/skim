@@ -44,6 +44,12 @@
 
 @synthesize checkButtons, doneButton;
 
+- (void)dealloc {
+    SKDESTROY(checkButtons);
+    SKDESTROY(doneButton);
+    [super dealloc];
+}
+
 - (NSString *)windowNibName {
     return @"DownloadPreferenceSheet";
 }

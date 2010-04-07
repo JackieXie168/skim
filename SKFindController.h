@@ -52,11 +52,11 @@
     NSTextView *fieldEditor;
 }
 
-@property (nonatomic, assign) IBOutlet NSTextField *findField;
-@property (nonatomic, assign) IBOutlet NSButton *ignoreCaseCheckbox;
-@property (nonatomic, assign) IBOutlet NSObjectController *ownerController;
-@property (nonatomic, assign) IBOutlet NSTextField *labelField;
-@property (nonatomic, assign) IBOutlet NSArray *buttons;
+@property (nonatomic, retain) IBOutlet NSTextField *findField;
+@property (nonatomic, retain) IBOutlet NSButton *ignoreCaseCheckbox;
+@property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
+@property (nonatomic, retain) IBOutlet NSTextField *labelField;
+@property (nonatomic, retain) IBOutlet NSArray *buttons;
 @property (nonatomic, retain) NSString *findString;
 @property (nonatomic) BOOL ignoreCase;
 @property (nonatomic, readonly) NSInteger findOptions;

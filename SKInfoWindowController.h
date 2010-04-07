@@ -49,8 +49,8 @@
     NSArray *attributesKeys;
 }
 
-@property (nonatomic, assign) IBOutlet NSTableView *summaryTableView, *attributesTableView;
-@property (nonatomic, assign) IBOutlet NSTabView *tabView;
+@property (nonatomic, retain) IBOutlet NSTableView *summaryTableView, *attributesTableView;
+@property (nonatomic, retain) IBOutlet NSTabView *tabView;
 @property (nonatomic, copy) NSDictionary *info;
 
 + (id)sharedInstance;

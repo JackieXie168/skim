@@ -91,6 +91,15 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(transition);
     SKDESTROY(transitions);
     SKDESTROY(undoManager);
+    SKDESTROY(notesDocumentPopUpButton);
+    SKDESTROY(tableView);
+    SKDESTROY(separateCheckButton);
+    SKDESTROY(boxes);
+    SKDESTROY(transitionLabels);
+    SKDESTROY(transitionControls);
+    SKDESTROY(buttons);
+    SKDESTROY(objectController);
+    SKDESTROY(arrayController);
     [super dealloc];
 }
 

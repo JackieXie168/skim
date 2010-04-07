@@ -47,6 +47,23 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 
 @synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, searchHighlightCheckButton, searchHighlightColorWell, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
+- (void)dealloc {
+    SKDESTROY(tableFontLabelField);
+    SKDESTROY(tableFontComboBox);
+    SKDESTROY(greekingLabelField);
+    SKDESTROY(greekingTextField);
+    SKDESTROY(antiAliasCheckButton);
+    SKDESTROY(fullScreenBackgroundColorLabelField);
+    SKDESTROY(fullScreenBackgroundColorWell);
+    SKDESTROY(searchHighlightCheckButton);
+    SKDESTROY(searchHighlightColorWell);
+    SKDESTROY(thumbnailSizeLabels);
+    SKDESTROY(thumbnailSizeControls);
+    SKDESTROY(colorLabels);
+    SKDESTROY(colorControls);
+    [super dealloc];
+}
+
 - (NSString *)nibName {
     return @"DisplayPreferences";
 }

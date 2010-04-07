@@ -180,11 +180,11 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     } mwcFlags;
 }
 
-@property (nonatomic, assign) IBOutlet SKSplitView *splitView;
+@property (nonatomic, retain) IBOutlet SKSplitView *splitView;
     
-@property (nonatomic, assign) IBOutlet NSView *centerContentView;
+@property (nonatomic, retain) IBOutlet NSView *centerContentView;
 @property (nonatomic, retain) IBOutlet SKSplitView *pdfSplitView;
-@property (nonatomic, assign) IBOutlet NSView *pdfContentView;
+@property (nonatomic, retain) IBOutlet NSView *pdfContentView;
 @property (nonatomic, retain) IBOutlet SKPDFView *pdfView;
 
 @property (nonatomic, retain) IBOutlet SKLeftSideViewController *leftSideController;
@@ -192,7 +192,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
 @property (nonatomic, retain) IBOutlet SKMainToolbarController *toolbarController;
     
-@property (nonatomic, assign) IBOutlet NSView *leftSideContentView, *rightSideContentView;
+@property (nonatomic, retain) IBOutlet NSView *leftSideContentView, *rightSideContentView;
 
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;

@@ -60,12 +60,12 @@
     NSUndoManager *undoManager;
 }
 
-@property (nonatomic, assign) IBOutlet NSPopUpButton *notesDocumentPopUpButton;
-@property (nonatomic, assign) IBOutlet SKThumbnailTableView *tableView;
-@property (nonatomic, assign) IBOutlet NSButton *separateCheckButton;
-@property (nonatomic, assign) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
-@property (nonatomic, assign) IBOutlet NSObjectController *objectController;
-@property (nonatomic, assign) IBOutlet NSArrayController *arrayController;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *notesDocumentPopUpButton;
+@property (nonatomic, retain) IBOutlet SKThumbnailTableView *tableView;
+@property (nonatomic, retain) IBOutlet NSButton *separateCheckButton;
+@property (nonatomic, retain) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
+@property (nonatomic, retain) IBOutlet NSObjectController *objectController;
+@property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
 @property (nonatomic) BOOL separate;
 @property (nonatomic, readonly) SKTransitionInfo *transition;
 @property (nonatomic, copy) NSArray *transitions;

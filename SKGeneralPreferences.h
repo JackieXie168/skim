@@ -50,12 +50,12 @@
     NSInteger updateInterval;
 }
 
-@property (nonatomic, assign) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
-@property (nonatomic, assign) IBOutlet NSArray *revertPDFSettingsButtons;
-@property (nonatomic, assign) IBOutlet NSTextField *openFilesLabelField;
-@property (nonatomic, assign) IBOutlet NSMatrix *openFilesMatrix;
-@property (nonatomic, assign) IBOutlet NSTextField *updateIntervalLabelField;
-@property (nonatomic, assign) IBOutlet NSMatrix *savePasswordsMatrix;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
+@property (nonatomic, retain) IBOutlet NSArray *revertPDFSettingsButtons;
+@property (nonatomic, retain) IBOutlet NSTextField *openFilesLabelField;
+@property (nonatomic, retain) IBOutlet NSMatrix *openFilesMatrix;
+@property (nonatomic, retain) IBOutlet NSTextField *updateIntervalLabelField;
+@property (nonatomic, retain) IBOutlet NSMatrix *savePasswordsMatrix;
 @property (nonatomic) NSInteger updateInterval;
 
 - (IBAction)revertPDFViewSettings:(id)sender;

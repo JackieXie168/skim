@@ -54,10 +54,10 @@
     NSTableView *groupedFindTableView;
 }
 
-@property (nonatomic, assign) IBOutlet NSArrayController *thumbnailArrayController, *findArrayController,  *groupedFindArrayController;
-@property (nonatomic, assign) IBOutlet SKTocOutlineView *tocOutlineView;
-@property (nonatomic, assign) IBOutlet SKThumbnailTableView *thumbnailTableView;
-@property (nonatomic, assign) IBOutlet NSTableView *findTableView;
-@property (nonatomic, assign) IBOutlet NSTableView *groupedFindTableView;
+@property (nonatomic, retain) IBOutlet NSArrayController *thumbnailArrayController, *findArrayController,  *groupedFindArrayController;
+@property (nonatomic, retain) IBOutlet SKTocOutlineView *tocOutlineView;
+@property (nonatomic, retain) IBOutlet SKThumbnailTableView *thumbnailTableView;
+@property (nonatomic, retain) IBOutlet NSTableView *findTableView;
+@property (nonatomic, retain) IBOutlet NSTableView *groupedFindTableView;
 
 @end

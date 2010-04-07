@@ -56,6 +56,12 @@
     return [NSSet setWithObjects:@"representedObject", nil];
 }
 
+- (void)dealloc {
+    SKDESTROY(autoRotateButton);
+    SKDESTROY(printScalingModeMatrix);
+    [super dealloc];
+}
+
 - (NSString *)nibName {
     return @"PrintAccessoryView";
 }

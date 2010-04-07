@@ -52,9 +52,9 @@
     NSMutableArray *downloads;
 }
 
-@property (nonatomic, assign) IBOutlet NSArrayController *arrayController;
-@property (nonatomic, assign) IBOutlet SKTableView *tableView;
-@property (nonatomic, assign) IBOutlet NSButton *clearButton, *prefButton;
+@property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
+@property (nonatomic, retain) IBOutlet SKTableView *tableView;
+@property (nonatomic, retain) IBOutlet NSButton *clearButton, *prefButton;
 
 + (id)sharedDownloadController;
 

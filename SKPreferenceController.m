@@ -81,6 +81,8 @@
 - (void)dealloc {
     currentPane = nil;
     SKDESTROY(preferencePanes);
+    SKDESTROY(contentView);
+    SKDESTROY(resetButtons);
     [super dealloc];
 }
 

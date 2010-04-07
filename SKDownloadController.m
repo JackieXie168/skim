@@ -88,6 +88,10 @@ static char SKDownloadPropertiesObservationContext;
 - (void)dealloc {
     [self endObservingDownloads:downloads];
     SKDESTROY(downloads);
+    SKDESTROY(arrayController);
+    SKDESTROY(tableView);
+    SKDESTROY(clearButton);
+    SKDESTROY(prefButton);
     [super dealloc];
 }
 

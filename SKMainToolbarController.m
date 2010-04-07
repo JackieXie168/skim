@@ -119,8 +119,45 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     mainController = nil;
-    pdfView = nil;
+    SKDESTROY(pdfView);
     SKDESTROY(toolbarItems);
+    SKDESTROY(backForwardButton);
+    SKDESTROY(previousNextPageButton);
+    SKDESTROY(previousPageButton);
+    SKDESTROY(nextPageButton);
+    SKDESTROY(previousNextFirstLastPageButton);
+    SKDESTROY(zoomInOutButton);
+    SKDESTROY(zoomInActualOutButton);
+    SKDESTROY(zoomActualButton);
+    SKDESTROY(zoomFitButton);
+    SKDESTROY(zoomSelectionButton);
+    SKDESTROY(rotateLeftButton);
+    SKDESTROY(rotateRightButton);
+    SKDESTROY(rotateLeftRightButton);
+    SKDESTROY(cropButton);
+    SKDESTROY(fullScreenButton);
+    SKDESTROY(presentationButton);
+    SKDESTROY(leftPaneButton);
+    SKDESTROY(rightPaneButton);
+    SKDESTROY(toolModeButton);
+    SKDESTROY(textNoteButton);
+    SKDESTROY(circleNoteButton);
+    SKDESTROY(markupNoteButton);
+    SKDESTROY(lineNoteButton);
+    SKDESTROY(singleTwoUpButton);
+    SKDESTROY(continuousButton);
+    SKDESTROY(displayModeButton);
+    SKDESTROY(displayBoxButton);
+    SKDESTROY(infoButton);
+    SKDESTROY(colorsButton);
+    SKDESTROY(fontsButton);
+    SKDESTROY(linesButton);
+    SKDESTROY(printButton);
+    SKDESTROY(customizeButton);
+    SKDESTROY(noteButton);
+    SKDESTROY(pageNumberField);
+    SKDESTROY(scaleField);
+    SKDESTROY(colorSwatch);
     [super dealloc];
 }
 
@@ -140,7 +177,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [toolbar setAutosavesConfiguration:YES];
     [toolbar setDisplayMode:NSToolbarDisplayModeDefault];
     
-    pdfView = [mainController pdfView];
+    pdfView = [[mainController pdfView] retain];
     
     // We are the delegate
     [toolbar setDelegate:self];

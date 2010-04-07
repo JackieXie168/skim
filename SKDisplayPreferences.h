@@ -56,15 +56,15 @@
     NSArray *colorControls;
 }
 
-@property (nonatomic, assign) IBOutlet NSTextField *tableFontLabelField;
-@property (nonatomic, assign) IBOutlet NSComboBox *tableFontComboBox;
-@property (nonatomic, assign) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
-@property (nonatomic, assign) IBOutlet NSButton *antiAliasCheckButton;
-@property (nonatomic, assign) IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
-@property (nonatomic, assign) IBOutlet NSColorWell *fullScreenBackgroundColorWell;
-@property (nonatomic, assign) IBOutlet NSButton *searchHighlightCheckButton;
-@property (nonatomic, assign) IBOutlet NSColorWell *searchHighlightColorWell;
-@property (nonatomic, assign) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
+@property (nonatomic, retain) IBOutlet NSTextField *tableFontLabelField;
+@property (nonatomic, retain) IBOutlet NSComboBox *tableFontComboBox;
+@property (nonatomic, retain) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
+@property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
+@property (nonatomic, retain) IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
+@property (nonatomic, retain) IBOutlet NSColorWell *fullScreenBackgroundColorWell;
+@property (nonatomic, retain) IBOutlet NSButton *searchHighlightCheckButton;
+@property (nonatomic, retain) IBOutlet NSColorWell *searchHighlightColorWell;
+@property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;

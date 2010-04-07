@@ -62,7 +62,13 @@
 }
 
 - (void)dealloc {
+    SKDESTROY(findString);
     SKDESTROY(fieldEditor);
+    SKDESTROY(findField);
+    SKDESTROY(ignoreCaseCheckbox);
+    SKDESTROY(ownerController);
+    SKDESTROY(labelField);
+    SKDESTROY(buttons);
     [super dealloc];
 }
 

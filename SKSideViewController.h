@@ -51,10 +51,10 @@
 }
 
 @property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
-@property (nonatomic, assign) IBOutlet BDSKCollapsibleView *collapsibleView;
+@property (nonatomic, retain) IBOutlet BDSKCollapsibleView *collapsibleView;
 @property (nonatomic, retain) IBOutlet NSSegmentedControl *button, *alternateButton;
-@property (nonatomic, assign) IBOutlet NSSearchField *searchField;
-@property (nonatomic, assign) IBOutlet NSView *currentView;
+@property (nonatomic, retain) IBOutlet NSSearchField *searchField;
+@property (nonatomic, retain) IBOutlet NSView *currentView;
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView;
 

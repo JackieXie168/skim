@@ -61,13 +61,13 @@
     NSUndoManager *textViewUndoManager;
 }
 
-@property (nonatomic, assign) IBOutlet NSTextView *textView;
-@property (nonatomic, assign) IBOutlet SKDragImageView *imageView;
-@property (nonatomic, assign) IBOutlet SKStatusBar *statusBar;
-@property (nonatomic, assign) IBOutlet NSPopUpButton *iconTypePopUpButton;
-@property (nonatomic, assign) IBOutlet NSTextField *iconLabelField;
-@property (nonatomic, assign) IBOutlet NSButton *checkButton;
-@property (nonatomic, assign) IBOutlet NSObjectController *noteController;
+@property (nonatomic, retain) IBOutlet NSTextView *textView;
+@property (nonatomic, retain) IBOutlet SKDragImageView *imageView;
+@property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *iconTypePopUpButton;
+@property (nonatomic, retain) IBOutlet NSTextField *iconLabelField;
+@property (nonatomic, retain) IBOutlet NSButton *checkButton;
+@property (nonatomic, retain) IBOutlet NSObjectController *noteController;
 @property (nonatomic, readonly) PDFAnnotation *note;
 @property (nonatomic) BOOL keepOnTop, forceOnTop, isNoteType;
 

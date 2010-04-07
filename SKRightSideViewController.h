@@ -49,8 +49,8 @@
     SKThumbnailTableView *snapshotTableView;
 }
 
-@property (nonatomic, assign) IBOutlet NSArrayController *noteArrayController, *snapshotArrayController;
-@property (nonatomic, assign) IBOutlet SKNoteOutlineView *noteOutlineView;
-@property (nonatomic, assign) IBOutlet SKThumbnailTableView *snapshotTableView;
+@property (nonatomic, retain) IBOutlet NSArrayController *noteArrayController, *snapshotArrayController;
+@property (nonatomic, retain) IBOutlet SKNoteOutlineView *noteOutlineView;
+@property (nonatomic, retain) IBOutlet SKThumbnailTableView *snapshotTableView;
 
 @end

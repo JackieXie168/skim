@@ -68,6 +68,12 @@ static char SKGeneralPreferencesUpdaterObservationContext;
         [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:UPDATECHECKINTERVAL_KEY];
     }
     @catch(id e) {}
+    SKDESTROY(updateIntervalPopUpButton);
+    SKDESTROY(revertPDFSettingsButtons);
+    SKDESTROY(openFilesLabelField);
+    SKDESTROY(openFilesMatrix);
+    SKDESTROY(updateIntervalLabelField);
+    SKDESTROY(savePasswordsMatrix);
     [super dealloc];
 }
 
