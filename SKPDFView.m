@@ -274,6 +274,7 @@ enum {
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     SKDESTROY(trackingArea);
+    SKDESTROY(activeAnnotation);
     [typeSelectHelper setDataSource:nil];
     SKDESTROY(typeSelectHelper);
     SKDESTROY(transitionController);
@@ -508,17 +509,17 @@ enum {
             [self commitEditing];
 	}
     
-	// Assign.
-	if (newAnnotation) {
-		activeAnnotation = newAnnotation;
-		
-		// Force redisplay.
-		[self setNeedsDisplayForAnnotation:activeAnnotation];
-	} else {
-		activeAnnotation = nil;
-	}
-	
 	if (changed) {
+        // Assign.
+        [activeAnnotation release];
+        if (newAnnotation) {
+            activeAnnotation = [newAnnotation retain];
+            // Force redisplay.
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
+        } else {
+            activeAnnotation = nil;
+        }
+        
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
         NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
     }

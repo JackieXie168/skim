@@ -132,7 +132,7 @@ typedef NSInteger SKInteractionMode;
 @property (nonatomic) SKToolMode toolMode;
 @property (nonatomic) SKNoteType annotationMode;
 @property (nonatomic, readonly) SKInteractionMode interactionMode;
-@property (nonatomic, assign) PDFAnnotation *activeAnnotation;
+@property (nonatomic, retain) PDFAnnotation *activeAnnotation;
 @property (nonatomic, readonly) BOOL isEditing;
 @property (nonatomic) NSRect currentSelectionRect;
 @property (nonatomic, retain) PDFPage *currentSelectionPage;
