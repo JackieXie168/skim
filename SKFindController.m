@@ -37,7 +37,7 @@
  */
 
 #import "SKFindController.h"
-#import "BDSKFindFieldEditor.h"
+#import "SKFindFieldEditor.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define SKFindPanelFrameAutosaveName @"SKFindPanel"
@@ -207,7 +207,7 @@ static id responderForSelector(SEL selector) {
 
 - (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
     if (fieldEditor == nil)
-        fieldEditor = [[BDSKFindFieldEditor alloc] init];
+        fieldEditor = [[SKFindFieldEditor alloc] init];
     return fieldEditor;
 }
 
