@@ -38,6 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKUnarchiveFromDataArrayTransformerName;
+
 @class SKMainWindowController, SKPDFView, SKColorSwatch;
 
 @interface SKMainToolbarController : NSViewController {

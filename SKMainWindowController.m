@@ -96,7 +96,6 @@
 #import "NSImage_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
-#import "NSValueTransformer_SKExtensions.h"
 #import "RemoteControl.h"
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
@@ -162,8 +161,6 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
 
-NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
-
 @interface SKMainWindowController (SKPrivate)
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
@@ -204,9 +201,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 + (void)initialize {
     SKINITIALIZE;
-    
-    [NSValueTransformer setValueTransformer:[NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName]
-                                    forName:SKUnarchiveFromDataArrayTransformerName];
     
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
 }
