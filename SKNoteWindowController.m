@@ -174,7 +174,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     } else {
         [gradientView setHidden:YES];
         
-        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [[imageView superview] frame]);
+        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
         [textView setRichText:NO];
