@@ -364,6 +364,10 @@ static char SKMainWindowDefaultsObservationContext;
     [self displayThumbnailViewAnimating:NO];
     [self displayNoteViewAnimating:NO];
     
+    // we need to create the PDFView before setting the toolbar
+    pdfView = [[SKPDFView alloc] initWithFrame:[pdfContentView bounds]];
+    [pdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    
     // Set up the tool bar
     [toolbarController setupToolbar];
     
@@ -385,9 +389,6 @@ static char SKMainWindowDefaultsObservationContext;
     }
     
     // Set up the PDF
-    pdfView = [[SKPDFView alloc] initWithFrame:[pdfContentView bounds]];
-    [pdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
