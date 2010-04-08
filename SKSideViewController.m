@@ -39,7 +39,6 @@
 #import "SKSideViewController.h"
 #import "SKPDFToolTipWindow.h"
 #import "SKGradientView.h"
-#import "BDSKCollapsibleView.h"
 #import "SKPDFToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 
@@ -50,12 +49,11 @@
 
 @implementation SKSideViewController
 
-@synthesize mainController, gradientView, collapsibleView, button, alternateButton, searchField, currentView;
+@synthesize mainController, gradientView, button, alternateButton, searchField, currentView;
 
 - (void)dealloc {
     mainController = nil;
     SKDESTROY(gradientView);
-    SKDESTROY(collapsibleView);
     SKDESTROY(button);
     SKDESTROY(alternateButton);
     SKDESTROY(searchField);
@@ -67,8 +65,7 @@
     [super loadView];
     
     [gradientView setAutoEdges:YES];
-    [collapsibleView setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
-    [collapsibleView setMinSize:NSMakeSize(111.0, NSHeight([collapsibleView frame]))];
+    [gradientView setMinSize:NSMakeSize(111.0, NSHeight([gradientView frame]))];
 }
 
 #pragma mark View animation
