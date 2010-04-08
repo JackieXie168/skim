@@ -180,6 +180,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     } mwcFlags;
 }
 
+@property (nonatomic, retain) IBOutlet NSWindow *mainWindow;
+
 @property (nonatomic, retain) IBOutlet SKSplitView *splitView;
     
 @property (nonatomic, retain) IBOutlet NSView *centerContentView;
