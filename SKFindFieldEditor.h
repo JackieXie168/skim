@@ -1,6 +1,6 @@
 //
-//  BDSKFindFieldEditor.h
-//  Bibdesk
+//  SKFindFieldEditor.h
+//  Skim
 //
 //  Created by Christiaan Hofman on 4/6/06.
 /*
@@ -39,5 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface BDSKFindFieldEditor : NSTextView {}
+@interface SKFindFieldEditor : NSTextView {}
 @end
