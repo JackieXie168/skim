@@ -110,11 +110,4 @@ enum {
 */
 - (void)setColor:(NSColor *)aColor forEdge:(NSRectEdge)edge;
 
-/*!
-	@method adjustSubviews
-	@abstract Adjusts the frames of the subviews of the contentView so they fit in the contentView.
-	@discussion (discussion)
-*/
-- (void)adjustSubviews;
-
 @end
