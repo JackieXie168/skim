@@ -50,13 +50,13 @@
 #import "PDFSelection_SKExtensions.h"
 
 
-@interface NSResponder (BDSKGesturesPrivate)
+@interface NSResponder (SKGesturesPrivate)
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)beginGestureWithEvent:(NSEvent *)theEvent;
 - (void)endGestureWithEvent:(NSEvent *)theEvent;
 @end
 
-@interface NSEvent (BDSKGesturesPrivate)
+@interface NSEvent (SKGesturesPrivate)
 - (CGFloat)magnification;
 @end
 
