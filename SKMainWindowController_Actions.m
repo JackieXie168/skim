@@ -59,7 +59,6 @@
 #import "SKSideWindow.h"
 #import "SKPDFToolTipWindow.h"
 #import "SKBookmarkController.h"
-#import "BDSKCollapsibleView.h"
 #import "SKSplitView.h"
 #import "SKLineInspector.h"
 #import "NSEvent_SKExtensions.h"
