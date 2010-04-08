@@ -199,7 +199,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 @implementation SKMainWindowController
 
-@synthesize splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel;
 @dynamic pdfDocument, presentationOptions, selectedNotes, isPresentation, isFullScreen, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
@@ -377,9 +377,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [toolbarController setupToolbar];
     
     // Set up the window
-    // we retain as we might replace it with the full screen window
-    mainWindow = [[self window] retain];
-    
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
