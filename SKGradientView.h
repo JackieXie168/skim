@@ -37,7 +37,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "BDSKContainerView.h"
 
+@interface SKGradientView : BDSKContainerView {
+	NSInteger edges;
+    BOOL autoEdges;
+}
 
-@interface SKGradientView : NSView
+@property (nonatomic) NSInteger edges;
+@property (nonatomic) BOOL autoEdges;
+
 @end

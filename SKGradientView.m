@@ -37,26 +37,64 @@
  */
 
 #import "SKGradientView.h"
+#import "NSGeometry_SKExtensions.h"
 
+#define BORDER_SIZE 1.0
 
 @implementation SKGradientView
 
-- (void)dealloc
-{
+@synthesize edges, autoEdges;
+
+- (id)initWithFrame:(NSRect)frame {
+    if (self = [super initWithFrame:frame]) {
+	   edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		edges = [decoder decodeIntegerForKey:@"edges"];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeInteger:edges forKey:@"edges"];
+  // NSView should handle encoding of contentView as it is a subview
+}
+
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
+	[super dealloc];
 }
 
 - (void)drawRect:(NSRect)aRect
 {        
-    // fill entire view, not just the (possibly clipped) aRect
+	NSRect rect = [self bounds];
+	NSRect edgeRect;
+	NSInteger edge = 4;
+	
+    [NSGraphicsContext saveGraphicsState];
+    
+    [[NSColor colorWithDeviceWhite:0.55 alpha:1.0] set];
+	while (--edge >= 0) {
+		if ((edges & (1 << edge)) == 0)
+			continue;
+		NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
+		NSRectFill(edgeRect);
+	}
+    
     if ([[self window] styleMask] != NSBorderlessWindowMask) {
         BOOL keyOrMain = [[self window] isMainWindow] || [[self window] isKeyWindow];
         NSColor *lowerColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.75 : 0.8 alpha:1.0];
         NSColor *upperColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.9 : 0.95 alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:lowerColor endingColor:upperColor] autorelease];
-        [gradient drawInRect:[self bounds] angle:90.0];
+        [gradient drawInRect:rect angle:90.0];
     }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)handleKeyOrMainStateChangedNotification:(NSNotification *)note {
@@ -76,16 +114,33 @@
 
 - (void)viewDidMoveToWindow {
     NSWindow *window = [self window];
-    if ([window styleMask] != NSBorderlessWindowMask) {
+    BOOL hasBorder = [window styleMask] != NSBorderlessWindowMask;
+    if (hasBorder) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
     }
+    if (autoEdges)
+        [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
 }
 
 // required in order for redisplay to work properly with the controls
 - (BOOL)isOpaque{  return [[self window] styleMask] != NSBorderlessWindowMask; }
+
+- (void)setEdges:(NSInteger)mask {
+	if (mask != edges) {
+		edges = mask;
+		[contentView setFrame:[self contentRect]];
+		[self setNeedsDisplay:YES];
+	}
+}
+
+- (void)setAutoEdges:(BOOL)flag {
+    autoEdges = flag;
+    if (autoEdges)
+        [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
+}
 
 @end

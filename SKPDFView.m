@@ -63,7 +63,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "NSAffineTransform_SKExtensions.h"
-#import "BDSKEdgeView.h"
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityFauxUIElement.h"
@@ -358,9 +357,9 @@ enum {
             [path stroke];
         } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
             NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-            SKDrawGrabHandle(point, 4.0, dragMask == BDSKMinXEdgeMask);
+            SKDrawGrabHandle(point, 4.0, dragMask == SKMinXEdgeMask);
             point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
-            SKDrawGrabHandle(point, 4.0, dragMask == BDSKMaxXEdgeMask);
+            SKDrawGrabHandle(point, 4.0, dragMask == SKMaxXEdgeMask);
         } else if (editField == nil) {
             [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
             [NSBezierPath strokeRect:rect];
@@ -2875,7 +2874,7 @@ enum {
             PDFAnnotationLine *annotation = (PDFAnnotationLine *)activeAnnotation;
             NSPoint endPoint = originalEndPoint;
             startPoint = originalStartPoint;
-            NSPoint *draggedPoint = (dragMask & BDSKMinXEdgeMask) ? &startPoint : &endPoint;
+            NSPoint *draggedPoint = (dragMask & SKMinXEdgeMask) ? &startPoint : &endPoint;
             
             *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
             draggedPoint->x = floor(draggedPoint->x);
@@ -2893,7 +2892,7 @@ enum {
             }
             
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
-                NSPoint *fixedPoint = (dragMask & BDSKMinXEdgeMask) ? &endPoint : &startPoint;
+                NSPoint *fixedPoint = (dragMask & SKMinXEdgeMask) ? &endPoint : &startPoint;
                 NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
                 CGFloat dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
                 
@@ -2917,30 +2916,30 @@ enum {
             
         } else {
             if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
-                dragMask = relPoint.x < 0.0 ? ((dragMask & ~BDSKMaxXEdgeMask) | BDSKMinXEdgeMask) : ((dragMask & ~BDSKMinXEdgeMask) | BDSKMaxXEdgeMask);
-                dragMask = relPoint.y <= 0.0 ? ((dragMask & ~BDSKMaxYEdgeMask) | BDSKMinYEdgeMask) : ((dragMask & ~BDSKMinYEdgeMask) | BDSKMaxYEdgeMask);
+                dragMask = relPoint.x < 0.0 ? ((dragMask & ~SKMaxXEdgeMask) | SKMinXEdgeMask) : ((dragMask & ~SKMinXEdgeMask) | SKMaxXEdgeMask);
+                dragMask = relPoint.y <= 0.0 ? ((dragMask & ~SKMaxYEdgeMask) | SKMinYEdgeMask) : ((dragMask & ~SKMinYEdgeMask) | SKMaxYEdgeMask);
             } else {
-                if ((dragMask & BDSKMinXEdgeMask) && (dragMask & BDSKMaxXEdgeMask))
-                    dragMask &= relPoint.x < 0.0 ? ~BDSKMaxXEdgeMask : ~BDSKMinXEdgeMask;
-                else if ((dragMask & BDSKMinYEdgeMask) && (dragMask & BDSKMaxYEdgeMask))
-                    dragMask &= relPoint.y <= 0.0 ? ~BDSKMaxYEdgeMask : ~BDSKMinYEdgeMask;
+                if ((dragMask & SKMinXEdgeMask) && (dragMask & SKMaxXEdgeMask))
+                    dragMask &= relPoint.x < 0.0 ? ~SKMaxXEdgeMask : ~SKMinXEdgeMask;
+                else if ((dragMask & SKMinYEdgeMask) && (dragMask & SKMaxYEdgeMask))
+                    dragMask &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
             }
             
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 CGFloat width = NSWidth(newBounds);
                 CGFloat height = NSHeight(newBounds);
                 
-                if (dragMask & BDSKMaxXEdgeMask)
+                if (dragMask & SKMaxXEdgeMask)
                     width = fmax(8.0, width + relPoint.x);
-                else if (dragMask & BDSKMinXEdgeMask)
+                else if (dragMask & SKMinXEdgeMask)
                     width = fmax(8.0, width - relPoint.x);
-                if (dragMask & BDSKMaxYEdgeMask)
+                if (dragMask & SKMaxYEdgeMask)
                     height = fmax(8.0, height + relPoint.y);
-                else if (dragMask & BDSKMinYEdgeMask)
+                else if (dragMask & SKMinYEdgeMask)
                     height = fmax(8.0, height - relPoint.y);
                 
-                if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
-                    if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
+                if (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
+                    if (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask))
                         width = height = fmax(width, height);
                     else
                         height = width;
@@ -2948,14 +2947,14 @@ enum {
                     width = height;
                 }
                 
-                if (dragMask & BDSKMinXEdgeMask) {
+                if (dragMask & SKMinXEdgeMask) {
                     if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
                         width = height = fmax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
                 } else {
                     if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
                         width = height = fmax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
                 }
-                if (dragMask & BDSKMinYEdgeMask) {
+                if (dragMask & SKMinYEdgeMask) {
                     if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
                         width = height = fmax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
                 } else {
@@ -2963,22 +2962,22 @@ enum {
                         width = height = fmax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
                 }
                 
-                if (dragMask & BDSKMinXEdgeMask)
+                if (dragMask & SKMinXEdgeMask)
                     newBounds.origin.x = NSMaxX(newBounds) - width;
-                if (dragMask & BDSKMinYEdgeMask)
+                if (dragMask & SKMinYEdgeMask)
                     newBounds.origin.y = NSMaxY(newBounds) - height;
                 newBounds.size.width = width;
                 newBounds.size.height = height;
                
             } else {
-                if (dragMask & BDSKMaxXEdgeMask) {
+                if (dragMask & SKMaxXEdgeMask) {
                     newBounds.size.width += relPoint.x;
                     if (NSMaxX(newBounds) > NSMaxX(pageBounds))
                         newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
                     if (NSWidth(newBounds) < 8.0) {
                         newBounds.size.width = 8.0;
                     }
-                } else if (dragMask & BDSKMinXEdgeMask) {
+                } else if (dragMask & SKMinXEdgeMask) {
                     newBounds.origin.x += relPoint.x;
                     newBounds.size.width -= relPoint.x;
                     if (NSMinX(newBounds) < NSMinX(pageBounds)) {
@@ -2990,7 +2989,7 @@ enum {
                         newBounds.size.width = 8.0;
                     }
                 }
-                if (dragMask & BDSKMaxYEdgeMask) {
+                if (dragMask & SKMaxYEdgeMask) {
                     newBounds.size.height += relPoint.y;
                     if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
                         newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
@@ -2998,7 +2997,7 @@ enum {
                     if (NSHeight(newBounds) < 8.0) {
                         newBounds.size.height = 8.0;
                     }
-                } else if (dragMask & BDSKMinYEdgeMask) {
+                } else if (dragMask & SKMinYEdgeMask) {
                     newBounds.origin.y += relPoint.y;
                     newBounds.size.height -= relPoint.y;
                     if (NSMinY(newBounds) < NSMinY(pageBounds)) {
@@ -3177,35 +3176,35 @@ enum {
             dragMask = 0;
             if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
                 if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
-                    dragMask = BDSKMaxXEdgeMask;
+                    dragMask = SKMaxXEdgeMask;
                 else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
-                    dragMask = BDSKMinXEdgeMask;
+                    dragMask = SKMinXEdgeMask;
             }  else if ([activeAnnotation isResizable]) {
                 if (NSWidth(originalBounds) < 2.0) {
-                    dragMask |= BDSKMinXEdgeMask | BDSKMaxXEdgeMask;
+                    dragMask |= SKMinXEdgeMask | SKMaxXEdgeMask;
                 } else if ([page rotation] < 180) {
                     if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
-                        dragMask |= BDSKMaxXEdgeMask;
+                        dragMask |= SKMaxXEdgeMask;
                     else if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
-                        dragMask |= BDSKMinXEdgeMask;
+                        dragMask |= SKMinXEdgeMask;
                 } else {
                     if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
-                        dragMask |= BDSKMinXEdgeMask;
+                        dragMask |= SKMinXEdgeMask;
                     else if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
-                        dragMask |= BDSKMaxXEdgeMask;
+                        dragMask |= SKMaxXEdgeMask;
                 }
                 if (NSHeight(originalBounds) < 2.0) {
-                    dragMask |= BDSKMinYEdgeMask | BDSKMaxYEdgeMask;
+                    dragMask |= SKMinYEdgeMask | SKMaxYEdgeMask;
                 } else if ([page rotation] % 270 != 0) {
                     if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
-                        dragMask |= BDSKMaxYEdgeMask;
+                        dragMask |= SKMaxYEdgeMask;
                     else if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
-                        dragMask |= BDSKMinYEdgeMask;
+                        dragMask |= SKMinYEdgeMask;
                 } else {
                     if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
-                        dragMask |= BDSKMinYEdgeMask;
+                        dragMask |= SKMinYEdgeMask;
                     else if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
-                        dragMask |= BDSKMaxYEdgeMask;
+                        dragMask |= SKMaxYEdgeMask;
                 }
             }
             if (dragMask)
@@ -3394,16 +3393,16 @@ enum {
         }
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
-        dragMask = BDSKMaxXEdgeMask | BDSKMinYEdgeMask;
+        dragMask = SKMaxXEdgeMask | SKMinYEdgeMask;
     } else {
         if (initialPoint.x > NSMaxX(selectionRect) - margin)
-            dragMask |= BDSKMaxXEdgeMask;
+            dragMask |= SKMaxXEdgeMask;
         else if (initialPoint.x < NSMinX(selectionRect) + margin)
-            dragMask |= BDSKMinXEdgeMask;
+            dragMask |= SKMinXEdgeMask;
         if (initialPoint.y < NSMinY(selectionRect) + margin)
-            dragMask |= BDSKMinYEdgeMask;
+            dragMask |= SKMinYEdgeMask;
         else if (initialPoint.y > NSMaxY(selectionRect) - margin)
-            dragMask |= BDSKMaxYEdgeMask;
+            dragMask |= SKMaxYEdgeMask;
         didSelect = YES;
     }
     
@@ -3438,17 +3437,17 @@ enum {
             CGFloat height = NSHeight(newRect);
             CGFloat square;
             
-            if (dragMask & BDSKMaxXEdgeMask)
+            if (dragMask & SKMaxXEdgeMask)
                 width += delta.x;
-            else if (dragMask & BDSKMinXEdgeMask)
+            else if (dragMask & SKMinXEdgeMask)
                 width -= delta.x;
-            if (dragMask & BDSKMaxYEdgeMask)
+            if (dragMask & SKMaxYEdgeMask)
                 height += delta.y;
-            else if (dragMask & BDSKMinYEdgeMask)
+            else if (dragMask & SKMinYEdgeMask)
                 height -= delta.y;
             
-            if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
-                if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
+            if (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
+                if (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask))
                     square = fmax(fabs(width), fabs(height));
                 else
                     square = fabs(width);
@@ -3456,7 +3455,7 @@ enum {
                 square = fabs(height);
             }
             
-            if (dragMask & BDSKMinXEdgeMask) {
+            if (dragMask & SKMinXEdgeMask) {
                 if (width >= 0.0 && NSMaxX(newRect) - square < NSMinX(pageBounds))
                     square = NSMaxX(newRect) - NSMinX(pageBounds);
                 else if (width < 0.0 && NSMaxX(newRect) + square > NSMaxX(pageBounds))
@@ -3467,7 +3466,7 @@ enum {
                 else if (width < 0.0 && NSMinX(newRect) - square < NSMinX(pageBounds))
                     square = NSMinX(newRect) - NSMinX(pageBounds);
             }
-            if (dragMask & BDSKMinYEdgeMask) {
+            if (dragMask & SKMinYEdgeMask) {
                 if (height >= 0.0 && NSMaxY(newRect) - square < NSMinY(pageBounds))
                     square = NSMaxY(newRect) - NSMinY(pageBounds);
                 else if (height < 0.0 && NSMaxY(newRect) + square > NSMaxY(pageBounds))
@@ -3479,23 +3478,23 @@ enum {
                     square = NSMinY(newRect) - NSMinY(pageBounds);
             }
             
-            if (dragMask & BDSKMinXEdgeMask)
+            if (dragMask & SKMinXEdgeMask)
                 newRect.origin.x = width < 0.0 ? NSMaxX(newRect) : NSMaxX(newRect) - square;
-            else if (width < 0.0 && (dragMask & BDSKMaxXEdgeMask))
+            else if (width < 0.0 && (dragMask & SKMaxXEdgeMask))
                 newRect.origin.x = NSMinX(newRect) - square;
-            if (dragMask & BDSKMinYEdgeMask)
+            if (dragMask & SKMinYEdgeMask)
                 newRect.origin.y = height < 0.0 ? NSMaxY(newRect) : NSMaxY(newRect) - square;
-            else if (height < 0.0 && (dragMask & BDSKMaxYEdgeMask))
+            else if (height < 0.0 && (dragMask & SKMaxYEdgeMask))
                 newRect.origin.y = NSMinY(newRect) - square;
             newRect.size.width = newRect.size.height = square;
         } else {
-            if (dragMask & BDSKMaxXEdgeMask) {
+            if (dragMask & SKMaxXEdgeMask) {
                 newRect.size.width += delta.x;
                 if (NSWidth(newRect) < 0.0) {
                     newRect.size.width *= -1.0;
                     newRect.origin.x -= NSWidth(newRect);
                 }
-            } else if (dragMask & BDSKMinXEdgeMask) {
+            } else if (dragMask & SKMinXEdgeMask) {
                 newRect.origin.x += delta.x;
                 newRect.size.width -= delta.x;
                 if (NSWidth(newRect) < 0.0) {
@@ -3504,13 +3503,13 @@ enum {
                 }
             }
             
-            if (dragMask & BDSKMaxYEdgeMask) {
+            if (dragMask & SKMaxYEdgeMask) {
                 newRect.size.height += delta.y;
                 if (NSHeight(newRect) < 0.0) {
                     newRect.size.height *= -1.0;
                     newRect.origin.y -= NSHeight(newRect);
                 }
-            } else if (dragMask & BDSKMinYEdgeMask) {
+            } else if (dragMask & SKMinYEdgeMask) {
                 newRect.origin.y += delta.y;
                 newRect.size.height -= delta.y;
                 if (NSHeight(newRect) < 0.0) {
@@ -4249,12 +4248,12 @@ static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active)
 
 static void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask)
 {
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, mask == BDSKMinXEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, mask == BDSKMaxXEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, mask == BDSKMaxYEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, mask == BDSKMinYEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMaxYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, mask == (BDSKMinXEdgeMask | BDSKMinYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMaxYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMinYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, mask == SKMinXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, mask == SKMaxXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, mask == SKMaxYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, mask == SKMinYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, mask == (SKMinXEdgeMask | SKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, mask == (SKMinXEdgeMask | SKMinYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, mask == (SKMaxXEdgeMask | SKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, mask == (SKMaxXEdgeMask | SKMinYEdgeMask));
 }

@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BDSKContainerView.h"
-#import "BDSKEdgeView.h"
 
 
 @interface BDSKCollapsibleView : BDSKContainerView {
