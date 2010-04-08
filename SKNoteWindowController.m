@@ -172,6 +172,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
         
     } else {
+        [gradientView setHidden:YES];
+        
         NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [[imageView superview] frame]);
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
