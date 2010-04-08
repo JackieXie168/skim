@@ -43,18 +43,25 @@
 
 @implementation SKGradientView
 
-@synthesize edges, autoEdges;
+@synthesize contentView, minSize, edges, autoEdges;
+@dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
-	   edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
-       autoEdges = NO;
+    self = [super initWithFrame:frame];
+    if (self) {
+        contentView = [[NSView alloc] initWithFrame:[self contentRect]];
+		[super addSubview:contentView];
+        minSize = NSZeroSize;
+        edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
+        autoEdges = NO;
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
+		// this decodes only the reference, the actual view should already be decoded as a subview
+        contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		autoEdges = [decoder decodeBoolForKey:@"autoEdges"];
 	}
@@ -63,14 +70,37 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
   [super encodeWithCoder:coder];
+  // this encodes only a reference, the actual contentView should already be encoded because it's a subview
+  [coder encodeConditionalObject:contentView forKey:@"contentView"];
   [coder encodeInteger:edges forKey:@"edges"];
   [coder encodeBool:autoEdges forKey:@"autoEdges"];
-  // NSView should handle encoding of contentView as it is a subview
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    SKDESTROY(contentView);
 	[super dealloc];
+}
+
+- (void)resizeSubviewsWithOldSize:(NSSize)size {
+	[contentView setFrame:[self contentRect]];
+}
+
+- (void)resizeWithOldSuperviewSize:(NSSize)oldSize {
+	[super resizeWithOldSuperviewSize:oldSize];
+	[contentView setFrame:[self contentRect]];
+}
+
+- (void)addSubview:(NSView *)aView {
+	[contentView addSubview:aView];
+}
+
+- (void)addSubview:(NSView *)aView positioned:(NSWindowOrderingMode)place relativeTo:(NSView *)otherView {
+	[contentView addSubview:aView positioned:place relativeTo:otherView];
+}
+
+- (void)replaceSubview:(NSView *)aView with:(NSView *)newView {
+	[contentView replaceSubview:aView with:newView];
 }
 
 - (void)drawRect:(NSRect)aRect
@@ -132,6 +162,17 @@
 // required in order for redisplay to work properly with the controls
 - (BOOL)isOpaque{  return [[self window] styleMask] != NSBorderlessWindowMask; }
 
+- (void)setContentView:(NSView *)aView {
+	if (aView != contentView) {
+		[contentView removeFromSuperview];
+        [contentView release];
+		[super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+		contentView = [aView retain];
+		[contentView setFrame:[self contentRect]];
+		[self setNeedsDisplay:YES];
+	}
+}
+
 - (void)setEdges:(NSInteger)mask {
 	if (mask != edges) {
 		edges = mask;
@@ -144,6 +185,21 @@
     autoEdges = flag;
     if (autoEdges)
         [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
+}
+
+- (NSRect)contentRect {
+	NSRect rect = [self bounds];
+	NSRect edgeRect;
+	NSInteger edge = 4;
+	while (--edge >= 0) {
+		if (edges & (1 << edge))
+			NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
+	}
+	if (rect.size.width < minSize.width)
+		rect.size.width = minSize.width;
+	if (rect.size.height < minSize.height)
+		rect.size.height = minSize.height;
+	return rect;
 }
 
 @end
