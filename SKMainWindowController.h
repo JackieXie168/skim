@@ -65,8 +65,6 @@ enum {
     SKFitWindowOption
 };
 
-extern NSString *SKUnarchiveFromDataArrayTransformerName;
-
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, SKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
 @class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
