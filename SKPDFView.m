@@ -60,7 +60,6 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "SKLineWell.h"
 #import <CoreServices/CoreServices.h>
-#import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "NSAffineTransform_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"

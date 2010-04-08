@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "SKMainWindowController.h"
 #import "SKTransitionController.h"
+#import "NSGeometry_SKExtensions.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewAnnotationModeChangedNotification;
@@ -117,7 +118,7 @@ typedef NSInteger SKInteractionMode;
     CGFloat magnification;
     BOOL didSelect;
     BOOL mouseDownInAnnotation;
-    NSInteger dragMask;
+    SKRectEdges dragMask;
     NSArray *bezierPaths;
     NSUInteger pathPageIndex;
     NSColor *pathColor;
