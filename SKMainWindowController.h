@@ -185,7 +185,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @property (nonatomic, retain) IBOutlet NSView *centerContentView;
 @property (nonatomic, retain) IBOutlet SKSplitView *pdfSplitView;
 @property (nonatomic, retain) IBOutlet NSView *pdfContentView;
-@property (nonatomic, retain) IBOutlet SKPDFView *pdfView;
 
 @property (nonatomic, retain) IBOutlet SKLeftSideViewController *leftSideController;
 @property (nonatomic, retain) IBOutlet SKRightSideViewController *rightSideController;
@@ -206,6 +205,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
 
+@property (nonatomic, readonly) SKPDFView *pdfView;
 @property (nonatomic, retain) PDFDocument *pdfDocument;
 
 @property (nonatomic, readonly) SKProgressController *progressController;

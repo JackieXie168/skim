@@ -397,11 +397,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     
     // Set up the PDF
-    [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    pdfView = [[SKPDFView alloc] initWithFrame:[pdfContentView bounds]];
+    [pdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
+    
+    [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
     [pdfView setDelegate:self];
     
