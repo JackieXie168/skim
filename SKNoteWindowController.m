@@ -67,7 +67,7 @@ static char SKNoteWindowStringObservationContext;
 
 @implementation SKNoteWindowController
 
-@synthesize textView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
+@synthesize textView, edgeView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
 @dynamic isNoteType;
 
 static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
@@ -131,6 +131,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);
+    SKDESTROY(edgeView);
     SKDESTROY(imageView);
     SKDESTROY(statusBar);
     SKDESTROY(iconTypePopUpButton);
@@ -155,12 +156,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
     if ([self isNoteType]) {
-        NSScrollView *scrollView = [[[textView enclosingScrollView] retain] autorelease];
-        BDSKEdgeView *edgeView = [[[BDSKEdgeView alloc] initWithFrame:[scrollView frame]] autorelease];
-        [edgeView setEdges:BDSKMaxYEdgeMask];
-        [edgeView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [[scrollView superview] addSubview:edgeView];
-        [edgeView setContentView:scrollView];
+        [edgeView setEdges:BDSKMinYEdgeMask];
+        [edgeView setColor:[edgeView colorForEdge:NSMaxYEdge] forEdge:NSMinYEdge];
         
         if ([[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];

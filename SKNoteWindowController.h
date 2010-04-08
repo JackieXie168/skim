@@ -41,10 +41,11 @@
 #import "SKDragImageView.h"
 
 
-@class PDFAnnotation, SKStatusBar;
+@class PDFAnnotation, SKStatusBar, BDSKEdgeView;
 
 @interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate> {
     NSTextView *textView;
+    BDSKEdgeView *edgeView;
     SKDragImageView *imageView;
     SKStatusBar *statusBar;
     NSPopUpButton *iconTypePopUpButton;
@@ -62,6 +63,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet NSTextView *textView;
+@property (nonatomic, retain) IBOutlet BDSKEdgeView *edgeView;
 @property (nonatomic, retain) IBOutlet SKDragImageView *imageView;
 @property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, retain) IBOutlet NSPopUpButton *iconTypePopUpButton;
