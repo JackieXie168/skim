@@ -48,6 +48,7 @@
 - (id)initWithFrame:(NSRect)frame {
     if (self = [super initWithFrame:frame]) {
 	   edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
+       autoEdges = NO;
     }
     return self;
 }
@@ -55,6 +56,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		edges = [decoder decodeIntegerForKey:@"edges"];
+		autoEdges = [decoder decodeBoolForKey:@"autoEdges"];
 	}
 	return self;
 }
@@ -62,6 +64,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
   [super encodeWithCoder:coder];
   [coder encodeInteger:edges forKey:@"edges"];
+  [coder encodeBool:autoEdges forKey:@"autoEdges"];
   // NSView should handle encoding of contentView as it is a subview
 }
 
