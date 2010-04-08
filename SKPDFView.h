@@ -88,7 +88,7 @@ enum {
 };
 typedef NSInteger SKInteractionMode;
 
-@class SKReadingBar, SKTransitionController, SKTypeSelectHelper;
+@class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow;
 
 @interface SKPDFView : PDFView <NSTextFieldDelegate> {
     SKToolMode toolMode;
