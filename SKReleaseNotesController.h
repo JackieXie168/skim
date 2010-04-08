@@ -1,5 +1,5 @@
 //
-//  BDSKReleaseNotesController.h
+//  SKReleaseNotesController.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 8/8/06.
