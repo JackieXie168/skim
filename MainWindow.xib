@@ -2,22 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.SystemVersion">10D573</string>
 		<string key="IBDocument.InterfaceBuilderVersion">740</string>
-		<string key="IBDocument.AppKitVersion">1038.25</string>
-		<string key="IBDocument.HIToolboxVersion">458.00</string>
+		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string>com.apple.pdfkit.ibplugin</string>
-			</object>
-			<object class="NSMutableArray" key="dict.values">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>740</string>
-				<string>1.1.0</string>
-			</object>
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
+			<string key="NS.object.0">740</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -25,7 +16,6 @@
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string>com.apple.pdfkit.ibplugin</string>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.Metadata">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -122,35 +112,6 @@
 				</object>
 				<string key="NSFrameSize">{265, 250}</string>
 			</object>
-			<object class="NSCustomView" id="692365954">
-				<nil key="NSNextResponder"/>
-				<int key="NSvFlags">256</int>
-				<object class="NSMutableArray" key="NSSubviews">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="PDFView" id="558506994">
-						<reference key="NSNextResponder" ref="692365954"/>
-						<int key="NSvFlags">18</int>
-						<object class="NSMutableSet" key="NSDragTypes">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="NSArray" key="set.sortedObjects">
-								<bool key="EncodedWithXMLCoder">YES</bool>
-								<string>NSFilenamesPboardType</string>
-							</object>
-						</object>
-						<string key="NSFrame">{{20, 20}, {128, 128}}</string>
-						<reference key="NSSuperview" ref="692365954"/>
-						<int key="DisplayMode">1</int>
-						<bool key="PageBreaks">YES</bool>
-						<float key="ScaleFactor">1</float>
-						<bool key="AutoScale">NO</bool>
-					</object>
-				</object>
-				<string key="NSFrameSize">{168, 168}</string>
-				<object class="NSMutableString" key="NSClassName">
-					<characters key="NS.bytes">NSView</characters>
-				</object>
-				<string key="NSExtension">NSResponder</string>
-			</object>
 			<object class="NSCustomObject" id="441088418">
 				<string key="NSClassName">SKLeftSideViewController</string>
 			</object>
@@ -195,14 +156,6 @@
 						<reference key="destination" ref="648893916"/>
 					</object>
 					<int key="connectionID">775</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">pdfView</string>
-						<reference key="source" ref="589428351"/>
-						<reference key="destination" ref="558506994"/>
-					</object>
-					<int key="connectionID">857</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -348,21 +301,6 @@
 						<reference key="parent" ref="117035432"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">855</int>
-						<reference key="object" ref="692365954"/>
-						<object class="NSMutableArray" key="children">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="558506994"/>
-						</object>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">PDFView</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">856</int>
-						<reference key="object" ref="558506994"/>
-						<reference key="parent" ref="692365954"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">1385</int>
 						<reference key="object" ref="943255459"/>
 						<object class="NSMutableArray" key="children">
@@ -436,7 +374,6 @@
 					<string>1385.CustomClassName</string>
 					<string>1385.IBPluginDependency</string>
 					<string>1385.ImportedFromIB2</string>
-					<string>1551.IBPluginDependency</string>
 					<string>5.IBEditorWindowLastContentRect</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.IBWindowTemplateEditedContentRect</string>
@@ -449,12 +386,6 @@
 					<string>769.ImportedFromIB2</string>
 					<string>770.IBPluginDependency</string>
 					<string>770.ImportedFromIB2</string>
-					<string>855.IBEditorWindowLastContentRect</string>
-					<string>855.IBPluginDependency</string>
-					<string>855.ImportedFromIB2</string>
-					<string>856.CustomClassName</string>
-					<string>856.IBPluginDependency</string>
-					<string>856.ImportedFromIB2</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -471,7 +402,6 @@
 					<string>SKSplitView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{2, 97}, {1000, 600}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{2, 97}, {1000, 600}}</string>
@@ -483,12 +413,6 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
-					<string>{{189, 459}, {168, 168}}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
-					<string>SKPDFView</string>
-					<string>com.apple.pdfkit.ibplugin</string>
 					<boolean value="YES"/>
 				</object>
 			</object>
@@ -544,22 +468,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">BDSKContainerView</string>
 					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKEdgeView</string>
-					<string key="superclassName">BDSKContainerView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKEdgeView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKEdgeView</string>
-					<string key="superclassName">BDSKContainerView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -677,7 +585,7 @@
 							<string>PDFView</string>
 						</object>
 					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="539498419">
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFView.h</string>
 					</object>
@@ -845,14 +753,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKGradientView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKGradientView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKLeftSideViewController</string>
 					<string key="superclassName">SKSideViewController</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -861,29 +761,21 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>findArrayController</string>
 							<string>findTableView</string>
-							<string>findView</string>
 							<string>groupedFindArrayController</string>
 							<string>groupedFindTableView</string>
-							<string>groupedFindView</string>
 							<string>thumbnailArrayController</string>
 							<string>thumbnailTableView</string>
-							<string>thumbnailView</string>
 							<string>tocOutlineView</string>
-							<string>tocView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSArrayController</string>
 							<string>NSTableView</string>
-							<string>NSView</string>
 							<string>NSArrayController</string>
 							<string>NSTableView</string>
-							<string>NSView</string>
 							<string>NSArrayController</string>
 							<string>SKThumbnailTableView</string>
-							<string>NSView</string>
 							<string>SKTocOutlineView</string>
-							<string>NSView</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -894,6 +786,61 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKMainToolbarController</string>
 					<string key="superclassName">NSViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>changeDisplayBox:</string>
+							<string>changeDisplayContinuous:</string>
+							<string>changeDisplayMode:</string>
+							<string>changeDisplaySinglePages:</string>
+							<string>changeScaleFactor:</string>
+							<string>changeToolMode:</string>
+							<string>chooseScale:</string>
+							<string>createNewCircleNote:</string>
+							<string>createNewMarkupNote:</string>
+							<string>createNewNote:</string>
+							<string>createNewTextNote:</string>
+							<string>cropAll:</string>
+							<string>enterFullScreen:</string>
+							<string>enterPresentation:</string>
+							<string>goBackOrForward:</string>
+							<string>goToPreviousNextFirstLastPage:</string>
+							<string>rotateAllLeftRight:</string>
+							<string>selectColor:</string>
+							<string>toggleLeftSidePane:</string>
+							<string>toggleRightSidePane:</string>
+							<string>zoomInActualOut:</string>
+							<string>zoomToFit:</string>
+							<string>zoomToSelection:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -1007,190 +954,14 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addBookmark:</string>
-							<string>addSessionBookmark:</string>
-							<string>addSetupBookmark:</string>
-							<string>allGoToFirstPage:</string>
-							<string>allGoToLastPage:</string>
-							<string>allGoToNextPage:</string>
-							<string>allGoToPreviousPage:</string>
-							<string>alternatePaste:</string>
-							<string>alternateZoomToFit:</string>
-							<string>autoCropAll:</string>
-							<string>autoSelectContent:</string>
-							<string>changeAnnotationMode:</string>
-							<string>changeColor:</string>
-							<string>changeDisplayBox:</string>
-							<string>changeDisplayContinuous:</string>
-							<string>changeDisplayMode:</string>
-							<string>changeDisplaySinglePages:</string>
-							<string>changeFindPaneState:</string>
-							<string>changeFont:</string>
-							<string>changeLeftSidePaneState:</string>
-							<string>changeRightSidePaneState:</string>
-							<string>changeScaleFactor:</string>
-							<string>changeToolMode:</string>
-							<string>chooseScale:</string>
-							<string>chooseTransition:</string>
-							<string>copy:</string>
-							<string>createNewCircleNote:</string>
-							<string>createNewLineNote:</string>
-							<string>createNewMarkupNote:</string>
-							<string>createNewNote:</string>
-							<string>createNewTextNote:</string>
-							<string>crop:</string>
-							<string>cropAll:</string>
-							<string>cut:</string>
-							<string>delete:</string>
-							<string>deselectAll:</string>
-							<string>displayFacingPages:</string>
-							<string>displaySinglePages:</string>
-							<string>doAutoScale:</string>
-							<string>doGoBack:</string>
-							<string>doGoForward:</string>
-							<string>doGoToFirstPage:</string>
-							<string>doGoToLastPage:</string>
-							<string>doGoToNextPage:</string>
-							<string>doGoToPage:</string>
-							<string>doGoToPreviousPage:</string>
-							<string>doZoomIn:</string>
-							<string>doZoomOut:</string>
-							<string>doZoomToActualSize:</string>
-							<string>doZoomToFit:</string>
-							<string>doZoomToPhysicalSize:</string>
-							<string>doZoomToSelection:</string>
-							<string>editNote:</string>
 							<string>enterFullScreen:</string>
 							<string>enterPresentation:</string>
 							<string>exitFullScreen:</string>
-							<string>getInfo:</string>
-							<string>goBackOrForward:</string>
-							<string>goToMarkedPage:</string>
-							<string>goToPreviousNextFirstLastPage:</string>
-							<string>markPage:</string>
-							<string>password:</string>
-							<string>paste:</string>
-							<string>pasteAsPlainText:</string>
-							<string>performFit:</string>
-							<string>rotateAllLeft:</string>
-							<string>rotateAllLeftRight:</string>
-							<string>rotateAllRight:</string>
-							<string>rotateLeft:</string>
-							<string>rotateRight:</string>
-							<string>savePDFSettingToDefaults:</string>
 							<string>search:</string>
 							<string>searchNotes:</string>
-							<string>searchPDF:</string>
-							<string>selectColor:</string>
-							<string>smartAutoCropAll:</string>
-							<string>takeSnapshot:</string>
-							<string>toggleAutoScale:</string>
-							<string>toggleCaseInsensitiveNoteSearch:</string>
-							<string>toggleCaseInsensitiveSearch:</string>
-							<string>toggleDisplayAsBook:</string>
-							<string>toggleDisplayContinuous:</string>
-							<string>toggleDisplayPageBreaks:</string>
-							<string>toggleFullScreen:</string>
-							<string>toggleHideNotes:</string>
-							<string>toggleLeftSidePane:</string>
-							<string>togglePresentation:</string>
-							<string>toggleReadingBar:</string>
-							<string>toggleRightSidePane:</string>
-							<string>toggleSplitPDF:</string>
-							<string>toggleStatusBar:</string>
-							<string>toggleWholeWordSearch:</string>
-							<string>zoomInActualOut:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1207,7 +978,6 @@
 							<string>leftSideController</string>
 							<string>pdfContentView</string>
 							<string>pdfSplitView</string>
-							<string>pdfView</string>
 							<string>rightSideContentView</string>
 							<string>rightSideController</string>
 							<string>splitView</string>
@@ -1220,7 +990,6 @@
 							<string>SKLeftSideViewController</string>
 							<string>NSView</string>
 							<string>SKSplitView</string>
-							<string>SKPDFView</string>
 							<string>NSView</string>
 							<string>SKRightSideViewController</string>
 							<string>SKSplitView</string>
@@ -1259,16 +1028,10 @@
 							<string>changeFont:</string>
 							<string>changeLeftSidePaneState:</string>
 							<string>changeRightSidePaneState:</string>
-							<string>changeScaleFactor:</string>
 							<string>changeToolMode:</string>
-							<string>chooseScale:</string>
 							<string>chooseTransition:</string>
 							<string>copy:</string>
-							<string>createNewCircleNote:</string>
-							<string>createNewLineNote:</string>
-							<string>createNewMarkupNote:</string>
 							<string>createNewNote:</string>
-							<string>createNewTextNote:</string>
 							<string>crop:</string>
 							<string>cropAll:</string>
 							<string>cut:</string>
@@ -1292,22 +1055,18 @@
 							<string>doZoomToSelection:</string>
 							<string>editNote:</string>
 							<string>getInfo:</string>
-							<string>goBackOrForward:</string>
 							<string>goToMarkedPage:</string>
-							<string>goToPreviousNextFirstLastPage:</string>
 							<string>markPage:</string>
 							<string>password:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
-							<string>rotateAllLeftRight:</string>
 							<string>rotateAllRight:</string>
 							<string>rotateLeft:</string>
 							<string>rotateRight:</string>
 							<string>savePDFSettingToDefaults:</string>
 							<string>searchPDF:</string>
-							<string>selectColor:</string>
 							<string>smartAutoCropAll:</string>
 							<string>takeSnapshot:</string>
 							<string>toggleAutoScale:</string>
@@ -1325,21 +1084,9 @@
 							<string>toggleSplitPDF:</string>
 							<string>toggleStatusBar:</string>
 							<string>toggleWholeWordSearch:</string>
-							<string>zoomInActualOut:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1428,13 +1175,6 @@
 					<string key="className">SKMainWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKMainWindowController_Toolbar.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKMainWindowController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKMainWindowController_UI.h</string>
 					</object>
 				</object>
@@ -1500,74 +1240,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKPDFView</string>
-					<string key="superclassName">PDFView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addAnnotation:</string>
-							<string>alternatePaste:</string>
-							<string>autoSelectContent:</string>
-							<string>changeAnnotationMode:</string>
-							<string>changeToolMode:</string>
-							<string>copy:</string>
-							<string>cut:</string>
-							<string>delete:</string>
-							<string>deselectAll:</string>
-							<string>editActiveAnnotation:</string>
-							<string>editThisAnnotation:</string>
-							<string>exitFullScreen:</string>
-							<string>paste:</string>
-							<string>pasteAsPlainText:</string>
-							<string>removeActiveAnnotation:</string>
-							<string>removeThisAnnotation:</string>
-							<string>selectNextActiveAnnotation:</string>
-							<string>selectPreviousActiveAnnotation:</string>
-							<string>takeSnapshot:</string>
-							<string>toggleAutoActualSize:</string>
-							<string>zoomLog:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<reference key="sourceIdentifier" ref="539498419"/>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKPDFView</string>
-					<string key="superclassName">PDFView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">endAnnotationEdit:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKRightSideViewController</string>
 					<string key="superclassName">SKSideViewController</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -1576,19 +1248,15 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>noteArrayController</string>
 							<string>noteOutlineView</string>
-							<string>noteView</string>
 							<string>snapshotArrayController</string>
 							<string>snapshotTableView</string>
-							<string>snapshotView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSArrayController</string>
 							<string>SKNoteOutlineView</string>
-							<string>NSView</string>
 							<string>NSArrayController</string>
 							<string>SKThumbnailTableView</string>
-							<string>NSView</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -1607,8 +1275,6 @@
 							<string>button</string>
 							<string>collapsibleView</string>
 							<string>currentView</string>
-							<string>edgeView</string>
-							<string>gradientView</string>
 							<string>mainController</string>
 							<string>searchField</string>
 						</object>
@@ -1618,8 +1284,6 @@
 							<string>NSSegmentedControl</string>
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
-							<string>BDSKEdgeView</string>
-							<string>SKGradientView</string>
 							<string>SKMainWindowController</string>
 							<string>NSSearchField</string>
 						</object>
