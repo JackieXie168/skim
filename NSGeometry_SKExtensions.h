@@ -46,6 +46,7 @@ enum {
 	SKMaxYEdgeMask = 1 << NSMaxYEdge,
 	SKEveryEdgeMask = SKMinXEdgeMask | SKMinYEdgeMask | SKMaxXEdgeMask | SKMaxYEdgeMask,
 };
+typedef NSUInteger SKRectEdges;
 
 static inline NSPoint SKIntegralPoint(NSPoint point) {
     return NSMakePoint(round(point.x), round(point.y));

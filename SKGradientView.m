@@ -173,7 +173,7 @@
 	}
 }
 
-- (void)setEdges:(NSInteger)mask {
+- (void)setEdges:(SKRectEdges)mask {
 	if (mask != edges) {
 		edges = mask;
 		[contentView setFrame:[self contentRect]];
@@ -190,8 +190,8 @@
 - (NSRect)contentRect {
 	NSRect rect = [self bounds];
 	NSRect edgeRect;
-	NSInteger edge = 4;
-	while (--edge >= 0) {
+	NSRectEdge edge = 4;
+	while (edge-- > 0) {
 		if (edges & (1 << edge))
 			NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
 	}
