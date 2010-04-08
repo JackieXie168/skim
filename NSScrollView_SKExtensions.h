@@ -40,8 +40,5 @@
 
 
 @interface NSScrollView (SKExtensions) 
-
-- (NSArray *)placards;
-- (void)setPlacards:(NSArray *)newPlacards;
-
+@property (nonatomic, copy) NSArray *placards;
 @end

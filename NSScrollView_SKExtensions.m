@@ -40,7 +40,7 @@
 #import "SKRuntime.h"
 
 
-@interface BDSKPlacardView : NSView
+@interface SKPlacardView : NSView
 - (void)tile;
 @end
 
@@ -75,7 +75,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
 - (void)replacement_tile {
     original_tile(self, _cmd);
     
-    BDSKPlacardView *placardView = [scrollViewPlacardViews objectForKey:self];
+    SKPlacardView *placardView = [scrollViewPlacardViews objectForKey:self];
     if (placardView) {
         NSScroller *scroller = [self horizontalScroller];
         NSRect placardFrame, scrollerFrame = [scroller frame];
@@ -103,9 +103,9 @@ static NSMapTable *scrollViewPlacardViews = nil;
 }
 
 - (void)setPlacards:(NSArray *)newPlacards {
-    BDSKPlacardView *placardView = [[scrollViewPlacardViews objectForKey:self] retain];
+    SKPlacardView *placardView = [[scrollViewPlacardViews objectForKey:self] retain];
     if (placardView == nil && [newPlacards count]) {
-        placardView = [[BDSKPlacardView alloc] init];
+        placardView = [[SKPlacardView alloc] init];
         [scrollViewPlacardViews setObject:placardView forKey:self];
     }
     
@@ -128,7 +128,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
 @end
 
 
-@implementation BDSKPlacardView
+@implementation SKPlacardView
 
 - (void)drawRect:(NSRect)aRect {
     NSImage *bgImage = [NSImage imageNamed:@"Scroller_Background"];
