@@ -38,9 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKMainWindowController, BDSKCollapsibleView;
+@class SKMainWindowController, SKGradientView, BDSKCollapsibleView;
 
 @interface SKSideViewController : NSViewController {
+    SKGradientView *gradientView;
     BDSKCollapsibleView *collapsibleView;
     NSSegmentedControl *button;
     NSSegmentedControl *alternateButton;
@@ -51,6 +52,7 @@
 }
 
 @property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
+@property (nonatomic, retain) IBOutlet SKGradientView *gradientView;
 @property (nonatomic, retain) IBOutlet BDSKCollapsibleView *collapsibleView;
 @property (nonatomic, retain) IBOutlet NSSegmentedControl *button, *alternateButton;
 @property (nonatomic, retain) IBOutlet NSSearchField *searchField;

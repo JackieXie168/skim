@@ -38,6 +38,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum {
+	SKNoEdgeMask = 0,
+	SKMinXEdgeMask = 1 << NSMinXEdge,
+	SKMinYEdgeMask = 1 << NSMinYEdge,
+	SKMaxXEdgeMask = 1 << NSMaxXEdge,
+	SKMaxYEdgeMask = 1 << NSMaxYEdge,
+	SKEveryEdgeMask = SKMinXEdgeMask | SKMinYEdgeMask | SKMaxXEdgeMask | SKMaxYEdgeMask,
+};
 
 static inline NSPoint SKIntegralPoint(NSPoint point) {
     return NSMakePoint(round(point.x), round(point.y));

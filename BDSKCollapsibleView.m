@@ -37,6 +37,7 @@
  */
 
 #import "BDSKCollapsibleView.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation BDSKCollapsibleView
@@ -44,7 +45,7 @@
 - (id)initWithFrame:(NSRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		collapseEdges = BDSKMinXEdgeMask | BDSKMinYEdgeMask;
+		collapseEdges = SKMinXEdgeMask | SKMinYEdgeMask;
 		minSize = NSZeroSize;
     }
     return self;
@@ -90,12 +91,12 @@
 - (NSRect)contentRect {
 	NSRect rect = [self bounds];
 	if (rect.size.width < minSize.width) {
-		if (collapseEdges & BDSKMinXEdgeMask)
+		if (collapseEdges & SKMinXEdgeMask)
 			rect.origin.x -= minSize.width - NSWidth(rect);
 		rect.size.width = minSize.width;
 	}
 	if (rect.size.height < minSize.height) {
-		if (collapseEdges & BDSKMinYEdgeMask)
+		if (collapseEdges & SKMinYEdgeMask)
 			rect.origin.y -= minSize.height - NSHeight(rect);
 		rect.size.height = minSize.height;
 	}

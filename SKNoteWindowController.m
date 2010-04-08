@@ -50,7 +50,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"
-#import "BDSKEdgeView.h"
+#import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
@@ -67,7 +67,7 @@ static char SKNoteWindowStringObservationContext;
 
 @implementation SKNoteWindowController
 
-@synthesize textView, edgeView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
+@synthesize textView, gradientView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
 @dynamic isNoteType;
 
 static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
@@ -131,7 +131,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);
-    SKDESTROY(edgeView);
+    SKDESTROY(gradientView);
     SKDESTROY(imageView);
     SKDESTROY(statusBar);
     SKDESTROY(iconTypePopUpButton);
@@ -156,8 +156,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
     if ([self isNoteType]) {
-        [edgeView setEdges:BDSKMinYEdgeMask];
-        [edgeView setColor:[edgeView colorForEdge:NSMaxYEdge] forEdge:NSMinYEdge];
+        [gradientView setEdges:SKMinYEdgeMask];
         
         if ([[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];

@@ -38,8 +38,10 @@
 
 #import "SKSideViewController.h"
 #import "SKPDFToolTipWindow.h"
+#import "SKGradientView.h"
 #import "BDSKCollapsibleView.h"
 #import "SKPDFToolTipWindow.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define CONTENTVIEW_KEY @"contentView"
 #define BUTTONVIEW_KEY @"buttonView"
@@ -48,10 +50,11 @@
 
 @implementation SKSideViewController
 
-@synthesize mainController, collapsibleView, button, alternateButton, searchField, currentView;
+@synthesize mainController, gradientView, collapsibleView, button, alternateButton, searchField, currentView;
 
 - (void)dealloc {
     mainController = nil;
+    SKDESTROY(gradientView);
     SKDESTROY(collapsibleView);
     SKDESTROY(button);
     SKDESTROY(alternateButton);
@@ -63,7 +66,8 @@
 - (void)loadView {
     [super loadView];
     
-    [collapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [gradientView setAutoEdges:YES];
+    [collapsibleView setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [collapsibleView setMinSize:NSMakeSize(111.0, NSHeight([collapsibleView frame]))];
 }
 
