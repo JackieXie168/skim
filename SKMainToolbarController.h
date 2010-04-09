@@ -44,7 +44,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @interface SKMainToolbarController : NSViewController {
     SKMainWindowController *mainController;
-    SKPDFView *pdfView;
     NSSegmentedControl *backForwardButton;
     NSTextField *pageNumberField;
     NSSegmentedControl *previousNextPageButton;
