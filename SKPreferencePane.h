@@ -42,7 +42,7 @@
 
 @interface SKPreferencePane : SKViewController
 
-- (NSImage *)icon;
+@property (nonatomic, readonly) NSImage *icon;
 
 - (void)defaultsDidRevert;
 
