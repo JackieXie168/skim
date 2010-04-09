@@ -68,6 +68,6 @@
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
  
-- (void)setupToolbar:(NSWindowController *)aController;
+- (void)setupToolbarForWindow:(NSWindow *)aWindow;
 
 @end

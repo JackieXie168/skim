@@ -121,7 +121,7 @@
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [aController setShouldCloseDocument:YES];
     
-    [self setupToolbar:aController];
+    [self setupToolbarForWindow:[aController window]];
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
@@ -643,7 +643,7 @@
 
 #pragma mark Toolbar
 
-- (void)setupToolbar:(NSWindowController *)aController {
+- (void)setupToolbarForWindow:(NSWindow *)aWindow {
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKNotesDocumentToolbarIdentifier] autorelease];
     SKToolbarItem *item;
@@ -681,7 +681,7 @@
     [item release];
     
     // Attach the toolbar to the window
-    [[aController window] setToolbar:toolbar];
+    [aWindow setToolbar:toolbar];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
