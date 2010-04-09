@@ -58,6 +58,7 @@
 @property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, readonly) SKBookmark *bookmarkRoot;
 @property (nonatomic, readonly) NSArray *recentDocuments;
+@property (nonatomic, readonly) NSUndoManager *undoManager;
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
@@ -75,7 +76,5 @@
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
 - (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path;
 - (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path;
-
-- (NSUndoManager *)undoManager;
 
 @end

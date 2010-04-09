@@ -41,6 +41,8 @@
 
 @implementation SKPreferencePane
 
+@dynamic icon;
+
 - (NSImage *)icon {
     [self doesNotRecognizeSelector:_cmd];
     return nil;

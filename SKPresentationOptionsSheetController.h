@@ -72,10 +72,9 @@
 @property (nonatomic, readonly) NSArray *pageTransitions;
 @property (nonatomic, readonly) SKMainDocument *notesDocument;
 @property (nonatomic, readonly) BOOL isScrolling;
+@property (nonatomic, readonly) NSUndoManager *undoManager;
 
 - (id)initForController:(SKMainWindowController *)aController;
-
-- (NSUndoManager *)undoManager;
 
 - (void)startObservingTransitions:(NSArray *)infos;
 - (void)stopObservingTransitions:(NSArray *)infos;
