@@ -102,7 +102,7 @@
     
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
-    SKAutoSizeLeftButtons(resetButtons);
+    SKAutoSizeButtons(resetButtons, NO);
     
     SKPreferencePane *pane;
     NSView *view;

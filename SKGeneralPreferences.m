@@ -84,7 +84,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLeftButtons(revertPDFSettingsButtons);
+    SKAutoSizeButtons(revertPDFSettingsButtons, NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:openFilesLabelField, nil], [NSArray arrayWithObjects:openFilesMatrix, nil], NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:updateIntervalLabelField, nil], [NSArray arrayWithObjects:updateIntervalPopUpButton, nil], NO);
     [openFilesMatrix sizeToFit];

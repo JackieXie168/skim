@@ -216,7 +216,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)setButtonTitle:(NSString *)title action:(SEL)action {
     [cancelButton setTitle:title];
     [cancelButton setAction:action];
-    SKAutoSizeRightButtons([NSArray arrayWithObjects:cancelButton, nil]);
+    SKAutoSizeButtons([NSArray arrayWithObjects:cancelButton, nil], YES);
 }
 
 #pragma mark PostScript

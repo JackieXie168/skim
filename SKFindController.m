@@ -73,7 +73,7 @@
 }
 
 - (void)windowDidLoad {
-    SKAutoSizeRightButtons(buttons);
+    SKAutoSizeButtons(buttons, YES);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil], YES);
     
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];

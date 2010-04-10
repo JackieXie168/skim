@@ -55,7 +55,7 @@
 }
 
 - (void)windowDidLoad {
-    SKAutoSizeRightButtons([NSArray arrayWithObjects:doneButton, nil]);
+    SKAutoSizeButtons([NSArray arrayWithObjects:doneButton, nil], YES);
     
     NSRect frame = [[self window] frame];
     frame.size.width = 0.0;

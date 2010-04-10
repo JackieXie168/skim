@@ -124,40 +124,27 @@ void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
     }
 }
 
-void SKAutoSizeRightButtons(NSArray *buttons) {
+void SKAutoSizeButtons(NSArray *buttons, BOOL rightAlign) {
     if ([buttons count] == 0)
         return;
-    CGFloat x = NSMaxX([[buttons objectAtIndex:0] frame]);
+    NSButton *button = [buttons objectAtIndex:0];
+    CGFloat x = rightAlign ? NSMaxX([button frame]) : NSMinX([button frame]);
     CGFloat width = 0.0;
-    for (NSButton *button in buttons) {
+    for (button in buttons) {
         [button sizeToFit];
         width = fmax(width, NSWidth([button frame]));
     }
     width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, width));
-    for (NSButton *button in buttons) {
+    for (button in buttons) {
         NSRect frame = [button frame];
         frame.size.width = fmax(width, NSWidth(frame));
-        x -= NSWidth(frame);
-        frame.origin.x = x;
-        [button setFrame:frame];
-    }
-}
-
-void SKAutoSizeLeftButtons(NSArray *buttons) {
-    if ([buttons count] == 0)
-        return;
-    CGFloat x = NSMinX([[buttons objectAtIndex:0] frame]);
-    CGFloat width = 0.0;
-    for (NSButton *button in buttons) {
-        [button sizeToFit];
-        width = fmax(width, NSWidth([button frame]));
-    }
-    width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, width));
-    for (NSButton *button in buttons) {
-        NSRect frame = [button frame];
-        frame.size.width = fmax(width, NSWidth(frame));
-        frame.origin.x = x;
-        x += NSWidth(frame);
+        if (rightAlign) {
+            x -= NSWidth(frame);
+            frame.origin.x = x;
+        } else {
+            frame.origin.x = x;
+            x += NSWidth(frame);
+        }
         [button setFrame:frame];
     }
 }

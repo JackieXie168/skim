@@ -151,7 +151,7 @@ static char *SKTransitionPropertiesObservationContext;
     [separateCheckButton sizeToFit];
     [[transitionControls lastObject] sizeToFit];
     
-    SKAutoSizeRightButtons(buttons);
+    SKAutoSizeButtons(buttons, YES);
     
     CGFloat dw = SKAutoSizeLabelFields(transitionLabels, transitionControls, NO);
     
