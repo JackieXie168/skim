@@ -43,9 +43,9 @@
     id parent;
 }
 - (id)initWithParent:(id)aParent;
-- (id)parent;
-- (id)representedObject;
-- (NSInteger)index;
+@property (nonatomic, readonly) id parent;
+@property (nonatomic, readonly) id representedObject;
+@property (nonatomic, readonly) NSInteger index;
 @end
 
 #pragma mark -

@@ -48,6 +48,9 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 @implementation SKAccessibilityFauxUIElement
 
+@synthesize parent;
+@dynamic representedObject, index;
+
 - (id)initWithParent:(id)aParent {
     if (self = [super init]) {
         parent = aParent;
@@ -66,10 +69,6 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (NSUInteger)hash {
     return [parent hash];
-}
-
-- (id)parent {
-    return parent;
 }
 
 - (id)representedObject {
