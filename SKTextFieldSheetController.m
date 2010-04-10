@@ -60,7 +60,7 @@
     NSRect frame = [[self window] frame];
     CGFloat buttonMargin = NSWidth(frame) - NSMaxX([[buttons objectAtIndex:0] frame]);
     NSButton *cancelButton = [buttons lastObject];
-    SKAutoSizeRightButtons(buttons);
+    SKAutoSizeButtons(buttons, YES);
     if (NSMinX([cancelButton frame]) < buttonMargin) {
         frame.size.width += buttonMargin - NSMinX([cancelButton frame]);
         [[self window] setFrame:frame display:NO];

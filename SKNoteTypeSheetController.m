@@ -60,7 +60,7 @@
     
     [messageField sizeToFit];
     
-    SKAutoSizeRightButtons(buttons);
+    SKAutoSizeButtons(buttons, YES);
     
     NSRect frame = [[self window] frame];
     NSRect matrixFrame = [matrix frame];
