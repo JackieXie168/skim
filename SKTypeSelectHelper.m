@@ -63,6 +63,9 @@
 
 @implementation SKTypeSelectHelper
 
+@synthesize dataSource, searchString;
+@dynamic cyclesSimilarResults, matchesImmediately, matchOption, isProcessing;
+
 
 + (id)typeSelectHelper {
     return [[[self alloc] init] autorelease];
@@ -100,10 +103,6 @@
 
 #pragma mark Accessors
 
-- (id)dataSource {
-    return dataSource;
-}
-
 - (void)setDataSource:(id)newDataSource {
     if (dataSource != newDataSource) {
         dataSource = newDataSource;
@@ -133,17 +132,6 @@
 
 - (void)setMatchOption:(SKTypeSelectMatchOption)newValue {
     tshFlags.matchOption = newValue;
-}
-
-- (NSString *)searchString {
-    return searchString;
-}
-
-- (void)setSearchString:(NSString *)newSearchString {
-    if (searchString != newSearchString) {
-        [searchString release];
-        searchString = [newSearchString retain];
-    }
 }
 
 - (BOOL)isProcessing {
