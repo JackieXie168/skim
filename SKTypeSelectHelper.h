@@ -61,27 +61,16 @@ typedef NSInteger SKTypeSelectMatchOption;
     NSTimer *timer;
 }
 
+@property (nonatomic, assign) id dataSource;
+@property (nonatomic) BOOL cyclesSimilarResults, matchesImmediately;
+@property (nonatomic) SKTypeSelectMatchOption matchOption;
+@property (nonatomic, retain) NSString *searchString;
+@property (nonatomic, readonly) BOOL isProcessing;
+
 + (id)typeSelectHelper;
 + (id)typeSelectHelperWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;
 
 - (id)initWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;
-
-- (id)dataSource;
-- (void)setDataSource:(id)anObject;
-
-- (BOOL)cyclesSimilarResults;
-- (void)setCyclesSimilarResults:(BOOL)newValue;
-
-- (BOOL)matchesImmediately;
-- (void)setMatchesImmediately:(BOOL)newValue;
-
-- (SKTypeSelectMatchOption)matchOption;
-- (void)setMatchOption:(SKTypeSelectMatchOption)newValue;
-    
-- (NSString *)searchString;
-- (void)setSearchString:(NSString *)newSearchString;
-
-- (BOOL)isProcessing;
 
 - (void)rebuildTypeSelectSearchCache;
 
