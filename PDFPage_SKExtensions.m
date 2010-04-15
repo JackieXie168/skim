@@ -462,11 +462,11 @@ static BOOL usesSequentialPageNumbering = NO;
     }
 }
 
-- (void)insertInNotes:(id)newNote atIndex:(NSUInteger)anIndex {
+- (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeFromNotesAtIndex:(NSUInteger)anIndex {
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
     if ([self isNotesPage] == NO) {
         PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
