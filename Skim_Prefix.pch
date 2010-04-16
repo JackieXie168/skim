@@ -40,6 +40,30 @@
     #define SKDESTROY(variable) do { [variable release]; variable = nil; } while (0)
     #define SKCFDESTROY(variable) do { if (variable) CFRelease(variable); variable = NULL; } while (0)
     #define SKZONEDESTROY(variable) do { if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; } while (0)
+    
+    #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    
+    #define SUBCLASS_DELEGATE_DECLARATION(protocol) \
+    - (id <protocol>)delegate; \
+    - (void)setDelegate:(id <protocol>)newDelegate;
+    #define SUBCLASS_DELEGATE_DEFINITION(protocol) \
+    - (id <protocol>)delegate { return (id <protocol>)[super delegate]; } \
+    - (void)setDelegate:(id <protocol>)newDelegate { [super setDelegate:newDelegate]; }
+    #define SUBCLASS_DATASOURCE_DECLARATION(protocol) \
+    - (id <protocol>)dataSource; \
+    - (void)setDataSource:(id <protocol>)newDataSource;
+    #define SUBCLASS_DATASOURCE_DEFINITION(protocol) \
+    - (id <protocol>)dataSource { return (id <protocol>)[super dataSource]; } \
+    - (void)setDataSource:(id <protocol>)newDataSource { [super setDataSource:newDataSource]; }
+    
+    #else
+    
+    #define SUBCLASS_DELEGATE_DECLARATION(protocol)
+    #define SUBCLASS_DELEGATE_DEFINITION(protocol)
+    #define SUBCLASS_DATASOURCE_DECLARATION(protocol)
+    #define SUBCLASS_DATASOURCE_DEFINITION(protocol)
+    
+    #endif
 
 #else
 
