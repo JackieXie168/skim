@@ -196,6 +196,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [self reorganizeWindowsItem:aWindow];
 }
 
-SUBCLASS_DELEGATE_DECLARATION(SKApplicationDelegate)
+SUBCLASS_DELEGATE_DEFINITION(SKApplicationDelegate)
 
 @end

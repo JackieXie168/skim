@@ -48,7 +48,7 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 @property (nonatomic, getter=isUserAttentionDisabled) BOOL userAttentionDisabled;
 
-SUBCLASS_DELEGATE_DEFINITION(SKApplicationDelegate)
+SUBCLASS_DELEGATE_DECLARATION(SKApplicationDelegate)
 
 @end
 
