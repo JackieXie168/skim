@@ -41,6 +41,7 @@
 
 @interface SKIBArray : NSArray {
     id object[9];
+    unsigned long mutations;
 }
 @property (nonatomic, retain) IBOutlet id object1, object2, object3, object4, object5, object6, object7, object8, object9;
 @end
