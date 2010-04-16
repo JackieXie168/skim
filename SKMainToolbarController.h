@@ -42,7 +42,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class SKMainWindowController, SKPDFView, SKColorSwatch;
 
-@interface SKMainToolbarController : NSViewController {
+@interface SKMainToolbarController : NSViewController <NSToolbarDelegate> {
     SKMainWindowController *mainController;
     NSSegmentedControl *backForwardButton;
     NSTextField *pageNumberField;
