@@ -41,17 +41,18 @@
 
 @implementation SKIBArray
 
-static void setObjectAtIndex(id *object, id obj, NSUInteger i) {
+static void setObjectAtIndex(id *object, id obj, NSUInteger i, unsigned long *mutationsPtr) {
     if (object[i] != obj) {
         [object[i] release];
         object[i] = [obj retain];
+        (*mutationsPtr)++;
     }
 }
 
 #define SYNTHESIZE_OBJECT_ACCESSORS(i) \
 @dynamic object##i; \
 - (id)object##i { return object[i-1]; } \
-- (void)setObject##i:(id)obj { setObjectAtIndex(object, obj, i-1); }
+- (void)setObject##i:(id)obj { setObjectAtIndex(object, obj, i-1, &mutations); }
 
 SYNTHESIZE_OBJECT_ACCESSORS(1)
 SYNTHESIZE_OBJECT_ACCESSORS(2)
@@ -66,7 +67,7 @@ SYNTHESIZE_OBJECT_ACCESSORS(9)
 - (void)dealloc {
     NSUInteger i;
     for (i = 0; i < 9; i++)
-        setObjectAtIndex(object, nil, i);
+        setObjectAtIndex(object, nil, i, &mutations);
     [super dealloc];
 }
 
@@ -82,12 +83,10 @@ SYNTHESIZE_OBJECT_ACCESSORS(9)
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
-    enum { ATSTART = 0, ATEND = 1 };
-    if (state->state == ATSTART) {
-        static const unsigned long const_mu = 1;
-        state->state = ATEND;
+    if (state->state == 0) {
+        state->state = 1;
         state->itemsPtr = object;
-        state->mutationsPtr = (unsigned long *)&const_mu;
+        state->mutationsPtr = &mutations;
         return [self count];
     }
     return 0;
