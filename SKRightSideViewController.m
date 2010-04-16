@@ -39,6 +39,7 @@
 #import "SKRightSideViewController.h"
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Actions.h"
+#import "SKMainWindowController_UI.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKColorCell.h"

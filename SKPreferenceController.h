@@ -41,7 +41,7 @@
 
 @class SKPreferencePane, SKIBArray;
 
-@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate> {
+@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate> {
     NSView *contentView;
     NSArray *resetButtons;
     NSArray *preferencePanes;
