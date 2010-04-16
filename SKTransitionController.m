@@ -127,10 +127,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 - (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
 - (CIImage *)currentImage;
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTransitionAnimationDelegate>)delegate;
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate;
-#endif
+SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
 @end
 
 @protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
@@ -548,15 +545,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [filter valueForKey:kCIOutputImageKey];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTransitionAnimationDelegate>)delegate {
-    return (id <SKTransitionAnimationDelegate>)[super delegate];
-}
-
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate {
-    [super setDelegate:newDelegate];
-}
-#endif
+SUBCLASS_DELEGATE_DEFINITION(SKTransitionAnimationDelegate)
 
 @end
 

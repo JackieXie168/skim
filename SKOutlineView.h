@@ -57,12 +57,8 @@
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKOutlineViewDelegate>)delegate;
-- (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate;
-- (id <SKOutlineViewDataSource>)dataSource;
-- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource;
-#endif
+SUBCLASS_DELEGATE_DECLARATION(SKOutlineViewDelegate)
+SUBCLASS_DATASOURCE_DECLARATION(SKOutlineViewDataSource)
 
 @end
 

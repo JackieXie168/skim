@@ -196,14 +196,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [self reorganizeWindowsItem:aWindow];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKApplicationDelegate>)delegate {
-    return (id <SKApplicationDelegate>)[super delegate];
-}
-
-- (void)setDelegate:(id <SKApplicationDelegate>)newDelegate {
-    [super setDelegate:newDelegate];
-}
-#endif
+SUBCLASS_DELEGATE_DECLARATION(SKApplicationDelegate)
 
 @end
