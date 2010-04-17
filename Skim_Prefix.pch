@@ -43,27 +43,24 @@
     
     #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
     
-    #define SUBCLASS_DELEGATE_DECLARATION(protocol) \
-    - (id <protocol>)delegate; \
-    - (void)setDelegate:(id <protocol>)newDelegate;
-    #define SUBCLASS_DELEGATE_DEFINITION(protocol) \
-    - (id <protocol>)delegate { return (id <protocol>)[super delegate]; } \
-    - (void)setDelegate:(id <protocol>)newDelegate { [super setDelegate:newDelegate]; }
-    #define SUBCLASS_DATASOURCE_DECLARATION(protocol) \
-    - (id <protocol>)dataSource; \
-    - (void)setDataSource:(id <protocol>)newDataSource;
-    #define SUBCLASS_DATASOURCE_DEFINITION(protocol) \
-    - (id <protocol>)dataSource { return (id <protocol>)[super dataSource]; } \
-    - (void)setDataSource:(id <protocol>)newDataSource { [super setDataSource:newDataSource]; }
+    #define SUBCLASS_ACCESSOR_DECLARATION(protocol, key, Key) \
+    - (id <protocol>)key; \
+    - (void)set##Key:(id <protocol>)new##Key;
+    #define SUBCLASS_ACCESSOR_DEFINITION(protocol, key, Key) \
+    - (id <protocol>)key { return (id <protocol>)[super key]; } \
+    - (void)set##Key:(id <protocol>)new##Key { [super set##Key:new##Key]; }
     
     #else
     
-    #define SUBCLASS_DELEGATE_DECLARATION(protocol)
-    #define SUBCLASS_DELEGATE_DEFINITION(protocol)
-    #define SUBCLASS_DATASOURCE_DECLARATION(protocol)
-    #define SUBCLASS_DATASOURCE_DEFINITION(protocol)
+    #define SUBCLASS_ACCESSOR_DECLARATION(protocol, key, Key)
+    #define SUBCLASS_ACCESSOR_DEFINITION(protocol, key, Key)
     
     #endif
+    
+    #define SUBCLASS_DELEGATE_DECLARATION(protocol) SUBCLASS_ACCESSOR_DECLARATION(protocol, delegate, Delegate)
+    #define SUBCLASS_DELEGATE_DEFINITION(protocol) SUBCLASS_ACCESSOR_DEFINITION(protocol, delegate, Delegate)
+    #define SUBCLASS_DATASOURCE_DECLARATION(protocol) SUBCLASS_ACCESSOR_DECLARATION(protocol, dataSource, DataSource)
+    #define SUBCLASS_DATASOURCE_DEFINITION(protocol) SUBCLASS_ACCESSOR_DEFINITION(protocol, dataSource, DataSource)
 
 #else
 
