@@ -59,10 +59,7 @@
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTableViewDelegate>)delegate;
-- (void)setDelegate:(id <SKTableViewDelegate>)newDelegate;
-#endif
+SUBCLASS_DELEGATE_DECLARATION(SKTableViewDelegate)
 
 @end
 
