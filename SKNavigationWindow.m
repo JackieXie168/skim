@@ -148,6 +148,26 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        previousButton = [[decoder decodeObjectForKey:@"previousButton"] retain];
+        nextButton = [[decoder decodeObjectForKey:@"nextButton"] retain];
+        zoomButton = [[decoder decodeObjectForKey:@"zoomButton"] retain];
+        zoomSlider = [[decoder decodeObjectForKey:@"zoomSlider"] retain];
+        closeButton = [[decoder decodeObjectForKey:@"closeButton"] retain];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeConditionalObject:previousButton forKey:@"previousButton"];
+    [coder encodeConditionalObject:nextButton forKey:@"nextButton"];
+    [coder encodeConditionalObject:zoomButton forKey:@"zoomButton"];
+    [coder encodeConditionalObject:zoomSlider forKey:@"zoomSlider"];
+    [coder encodeConditionalObject:closeButton forKey:@"closeButton"];
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(previousButton);
@@ -226,6 +246,18 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        toolTipView = [decoder decodeObjectForKey:@"toolTipView"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeConditionalObject:toolTipView forKey:@"toolTipView"];
+}
+
 - (BOOL)canBecomeKeyWindow { return NO; }
 
 - (BOOL)canBecomeMainWindow { return NO; }
@@ -272,6 +304,18 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         stringValue = nil;
     }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        stringValue = [[decoder decodeObjectForKey:@"stringValue"] retain];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:stringValue forKey:@"stringValue"];
 }
 
 - (void)dealloc {
@@ -372,6 +416,24 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        toolTip = [[decoder decodeObjectForKey:@"toolTip"] retain];
+        alternateToolTip = [[decoder decodeObjectForKey:@"alternateToolTip"] retain];
+        path = [[decoder decodeObjectForKey:@"path"] retain];
+        alternatePath = [[decoder decodeObjectForKey:@"alternatePath"] retain];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:toolTip forKey:@"toolTip"];
+    [coder encodeObject:alternateToolTip forKey:@"alternateToolTip"];
+    [coder encodeObject:path forKey:@"path"];
+    [coder encodeObject:alternatePath forKey:@"alternatePath"];
+}
+
 - (void)dealloc {
     SKDESTROY(toolTip);
     SKDESTROY(alternateToolTip);
@@ -428,6 +490,20 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         toolTip = nil;
     }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        toolTip = [[decoder decodeObjectForKey:@"toolTip"] retain];
+        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
+        [self addTrackingArea:trackingArea];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:toolTip forKey:@"toolTip"];
 }
 
 - (void)dealloc {
