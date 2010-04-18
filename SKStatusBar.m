@@ -92,6 +92,27 @@
 	[super dealloc];
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+        leftCell = [[decoder decodeObjectForKey:@"leftCell"] retain];
+        rightCell = [[decoder decodeObjectForKey:@"rightCell"] retain];
+        iconCell = [[decoder decodeObjectForKey:@"iconCell"] retain];
+        progressIndicator = [[decoder decodeObjectForKey:@"progressIndicator"] retain];
+        leftTrackingArea = nil;
+        rightTrackingArea = nil;
+        animating = NO;
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:leftCell forKey:@"leftCell"];
+    [coder encodeObject:rightCell forKey:@"rightCell"];
+    [coder encodeObject:iconCell forKey:@"iconCell"];
+    [coder encodeObject:progressIndicator forKey:@"progressIndicator"];
+}
+
 - (void)getLeftFrame:(NSRectPointer)leftFrame rightFrame:(NSRectPointer)rightFrame {
     CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
     CGFloat rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
