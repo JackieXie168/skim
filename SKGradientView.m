@@ -71,13 +71,13 @@
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-  [super encodeWithCoder:coder];
-  // this encodes only a reference, the actual contentView should already be encoded because it's a subview
-  [coder encodeConditionalObject:contentView forKey:@"contentView"];
-  [coder encodeDouble:minSize.width forKey:@"minSize.width"];
-  [coder encodeDouble:minSize.height forKey:@"minSize.height"];
-  [coder encodeInteger:edges forKey:@"edges"];
-  [coder encodeBool:autoEdges forKey:@"autoEdges"];
+    [super encodeWithCoder:coder];
+    // this encodes only a reference, the actual contentView should already be encoded because it's a subview
+    [coder encodeConditionalObject:contentView forKey:@"contentView"];
+    [coder encodeDouble:minSize.width forKey:@"minSize.width"];
+    [coder encodeDouble:minSize.height forKey:@"minSize.height"];
+    [coder encodeInteger:edges forKey:@"edges"];
+    [coder encodeBool:autoEdges forKey:@"autoEdges"];
 }
 
 - (void)dealloc {
