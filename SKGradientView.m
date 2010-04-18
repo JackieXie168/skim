@@ -49,11 +49,11 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        contentView = [[NSView alloc] initWithFrame:[self contentRect]];
-		[super addSubview:contentView];
         minSize = NSZeroSize;
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
         autoEdges = NO;
+        contentView = [[NSView alloc] initWithFrame:[self contentRect]];
+		[super addSubview:contentView];
     }
     return self;
 }
