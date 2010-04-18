@@ -61,6 +61,12 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    SKNumberArrayFormatter *copy = [super copyWithZone:zone];
+    copy->numberFormatter = [numberFormatter copyWithZone:zone];
+    return copy;
+}
+
 - (void)dealloc {
     SKDESTROY(numberFormatter);
     [super dealloc];
