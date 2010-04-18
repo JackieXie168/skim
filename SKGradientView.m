@@ -62,6 +62,8 @@
 	if (self = [super initWithCoder:decoder]) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
+		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
+		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		autoEdges = [decoder decodeBoolForKey:@"autoEdges"];
 	}
@@ -72,6 +74,8 @@
   [super encodeWithCoder:coder];
   // this encodes only a reference, the actual contentView should already be encoded because it's a subview
   [coder encodeConditionalObject:contentView forKey:@"contentView"];
+  [coder encodeDouble:minSize.width forKey:@"minSize.width"];
+  [coder encodeDouble:minSize.height forKey:@"minSize.height"];
   [coder encodeInteger:edges forKey:@"edges"];
   [coder encodeBool:autoEdges forKey:@"autoEdges"];
 }
