@@ -191,13 +191,11 @@
 }
 
 - (IBAction)changeFont:(id)sender {
-    if ([currentPane respondsToSelector:_cmd])
-        [currentPane changeFont:sender];
+    [currentPane changeFont:sender];
 }
 
 - (IBAction)changeAttributes:(id)sender {
-    if ([currentPane respondsToSelector:_cmd])
-        [(id)currentPane changeAttributes:sender];
+    [currentPane changeAttributes:sender];
 }
 
 #pragma mark Toolbar
