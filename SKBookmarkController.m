@@ -507,7 +507,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [new removeObjectsInArray:oldValue];
                     [self stopObservingBookmarks:old];
                     [self startObservingBookmarks:new];
-                    [[[self undoManager] prepareWithInvocationTarget:self] setChildren:oldValue ofBookmark:bookmark];
+                    [[[self undoManager] prepareWithInvocationTarget:self] setChildren:[[oldValue copy] autorelease] ofBookmark:bookmark];
                 } else if ([keyPath isEqualToString:LABEL_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
                 }
@@ -521,7 +521,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             case NSKeyValueChangeRemoval:
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
-                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:oldValue inChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:[[oldValue copy] autorelease] inChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
             case NSKeyValueChangeReplacement:
@@ -529,7 +529,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [self stopObservingBookmarks:oldValue];
                     [self startObservingBookmarks:newValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
-                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:oldValue inChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:[[oldValue copy] autorelease] inChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
         }
