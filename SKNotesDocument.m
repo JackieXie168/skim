@@ -647,8 +647,7 @@
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKNotesDocumentToolbarIdentifier] autorelease];
     SKToolbarItem *item;
-    
-    toolbarItems = [[NSMutableDictionary alloc] initWithCapacity:1];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
     [toolbar setAllowsUserCustomization:YES];
@@ -668,7 +667,7 @@
     [item setMinSize:size];
     size.width = 1000.0;
     [item setMaxSize:size];
-    [toolbarItems setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
+    [dict setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKNotesDocumentOpenPDFToolbarItemIdentifier];
@@ -677,8 +676,10 @@
     [item setImageNamed:@"PDFDocument"];
     [item setTarget:self];
     [item setAction:@selector(openPDF:)];
-    [toolbarItems setObject:item forKey:SKNotesDocumentOpenPDFToolbarItemIdentifier];
+    [dict setObject:item forKey:SKNotesDocumentOpenPDFToolbarItemIdentifier];
     [item release];
+    
+    toolbarItems = [dict mutableCopy];
     
     // Attach the toolbar to the window
     [aWindow setToolbar:toolbar];

@@ -49,7 +49,7 @@
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
     NSArray *draggedBookmarks;
-    NSMutableDictionary *toolbarItems;
+    NSDictionary *toolbarItems;
 }
 
 + (id)sharedBookmarkController;

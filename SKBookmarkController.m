@@ -739,8 +739,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKBookmarksToolbarIdentifier] autorelease];
     SKToolbarItem *item;
-    
-    toolbarItems = [[NSMutableDictionary alloc] initWithCapacity:3];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
     [toolbar setAllowsUserCustomization: YES];
@@ -758,7 +757,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     [item setImageNamed:SKImageNameToolbarNewFolder];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkFolder:)];
-    [toolbarItems setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
+    [dict setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewSeparatorToolbarItemIdentifier];
@@ -767,7 +766,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     [item setImageNamed:SKImageNameToolbarNewSeparator];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkSeparator:)];
-    [toolbarItems setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
+    [dict setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksDeleteToolbarItemIdentifier];
@@ -776,8 +775,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     [item setImage:[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)]];
     [item setTarget:self];
     [item setAction:@selector(deleteBookmark:)];
-    [toolbarItems setObject:item forKey:SKBookmarksDeleteToolbarItemIdentifier];
+    [dict setObject:item forKey:SKBookmarksDeleteToolbarItemIdentifier];
     [item release];
+    
+    toolbarItems = [dict mutableCopy];
     
     // Attach the toolbar to the window
     [[self window] setToolbar:toolbar];

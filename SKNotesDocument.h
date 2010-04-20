@@ -48,7 +48,7 @@
     NSArrayController *arrayController;
     NSSearchField *searchField;
     SKStatusBar *statusBar;
-    NSMutableDictionary *toolbarItems;
+    NSDictionary *toolbarItems;
     NSArray *notes;
     PDFDocument *pdfDocument;
     SKFloatMapTable *rowHeights;
