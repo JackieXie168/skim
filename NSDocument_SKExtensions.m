@@ -49,6 +49,8 @@
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
+#define TEMPLATES_FOLDER_NAME @"Templates"
+
 @implementation NSDocument (SKExtensions)
 
 #pragma mark Document Setup
@@ -97,7 +99,7 @@ static NSSet *richTextTypes() {
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSString *string = nil;
     if ([richTextTypes() containsObject:fileType] == NO) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -110,7 +112,7 @@ static NSSet *richTextTypes() {
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
     if ([richTextTypes() containsObject:fileType]) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -126,7 +128,7 @@ static NSSet *richTextTypes() {
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
