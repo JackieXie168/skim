@@ -119,6 +119,7 @@
         if (changeButton)
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [[firstResponder window] makeFirstResponder:firstResponder];
+        [[contentView window] recalculateKeyViewLoop];
     } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
         isAnimating = 1;
         
