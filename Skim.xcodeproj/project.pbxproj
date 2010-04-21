@@ -2325,19 +2325,19 @@
 			files = (
 			);
 			inputPaths = (
-				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
-				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp/SkimHelp.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp/SkimHelp.html",
 			);
 			name = "Run Script: Copy Help";
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/Skim Help/Skim Help.html",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/Skim Help/Skim Help.html",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/French.lproj/Skim Help",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/German.lproj/Skim Help",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/Skim Help",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Spanish.lproj/Skim Help",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ru.lproj/Skim Help",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_TW.lproj/Skim Help",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/SkimHelp/SkimHelp.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/SkimHelp/SkimHelp.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/French.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/German.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Spanish.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ru.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_TW.lproj/SkimHelp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
