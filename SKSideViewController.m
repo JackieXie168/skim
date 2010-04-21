@@ -102,7 +102,7 @@
     id firstResponder = [[oldView window] firstResponder];
     
     if ([firstResponder isDescendantOf:oldView])
-        firstResponder = [newView nextKeyView];
+        firstResponder = newView;
     else if (wasAlternate != isAlternate && [firstResponder isEqual:oldButton])
         firstResponder = newButton;
     else
