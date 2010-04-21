@@ -44,7 +44,12 @@ NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
 NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
-#define SKFilePathKey @"filePath"
+#define SKFilePathKey  @"filePath"
+#define SKFileIconKey  @"fileIcon"
+#define SKCanCancelKey @"canCancel"
+#define SKCanRemoveKey @"canRemove"
+#define SKCanResumeKey @"canResume"
+#define SKInfoKey      @"info"
 
 @interface SKDownload ()
 @property (nonatomic) SKDownloadStatus status;
@@ -60,32 +65,30 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @synthesize URL, URLDownload, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
 @dynamic fileName, info, canCancel, canRemove, canResume;
 
-+ (NSSet *)infoKeys {
-    return [NSSet setWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
+static NSSet *keysAffectedByFilePath = nil;
+static NSSet *keysAffectedByDownloadStatus = nil;
+static NSSet *filePathSet = nil;
+static NSSet *downloadStatusSet = nil;
+static NSSet *infoKeys = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    keysAffectedByFilePath = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKFileIconKey, nil];
+    keysAffectedByDownloadStatus = [[NSSet alloc] initWithObjects:SKCanCancelKey, SKCanRemoveKey, SKCanResumeKey, nil];
+    filePathSet = [[NSSet alloc] initWithObjects:SKFilePathKey, nil];
+    downloadStatusSet = [[NSSet alloc] initWithObjects:SKDownloadStatusKey, nil];
+    infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingFileName {
-    return [NSSet setWithObjects:SKFilePathKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingFileIcon {
-    return [NSSet setWithObjects:SKFilePathKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingCanCancel {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingCanRemove {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingCanResume {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingInfo {
-    return [self infoKeys];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *set = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([keysAffectedByDownloadStatus containsObject:key])
+        return [set count] > 0 ? [set setByAddingObjectsFromSet:filePathSet] : filePathSet;
+    if ([keysAffectedByDownloadStatus containsObject:key])
+        return [set count] > 0 ? [set setByAddingObjectsFromSet:downloadStatusSet] : downloadStatusSet;
+    if ([SKInfoKey isEqualToString:key])
+        return [set count] > 0 ? [set setByAddingObjectsFromSet:infoKeys] : infoKeys;
+    return set;
 }
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate {
@@ -202,7 +205,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 - (NSDictionary *)info {
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
-    for (NSString *key in [[self class] infoKeys])
+    for (NSString *key in infoKeys)
         [info setValue:[self valueForKey:key] forKey:key];
     return info;
 }
