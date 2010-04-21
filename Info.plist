@@ -521,7 +521,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleHelpBookFolder</key>
-	<string>Skim Help</string>
+	<string>SkimHelp</string>
 	<key>CFBundleHelpBookName</key>
 	<string>Skim Help</string>
 	<key>CFBundleIconFile</key>
