@@ -236,13 +236,22 @@ static BOOL isFolderUTI(NSString *theUTI) {
     if (isAppleScriptUTI(theUTI)) {
         NSDictionary *errorDictionary;
         NSAppleScript *script = [[[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFilename] error:&errorDictionary] autorelease];
-        NSAppleEventDescriptor *result = [script executeAndReturnError:&errorDictionary];
-        if (result == nil)
+        if (script == nil) {
+            NSLog(@"AppleScript file '%@' could not be opened: %@", scriptFilename, errorDictionary);
             NSBeep();
+        } else {
+            NSAppleEventDescriptor *result = [script executeAndReturnError:&errorDictionary];
+            if (result == nil) {
+                NSLog(@"AppleScript file '%@' failed to execute: %@", scriptFilename, errorDictionary);
+                NSBeep();
+            }
+        }
     } else if (isApplicationUTI(theUTI)) {
         BOOL result = [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
-        if (result == NO)
+        if (result == NO) {
+            NSLog(@"Application '%@' could not be launched", scriptFilename);
             NSBeep();
+        }
     } else if (isAutomatorWorkflowUTI(theUTI)) {
         [NSTask launchedTaskWithLaunchPath:@"/usr/bin/automator" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
     } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
