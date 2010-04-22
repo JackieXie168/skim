@@ -56,7 +56,7 @@
 @implementation SKScriptMenu
 
 static SKScriptMenu *sharedMenu = nil;
-static menuNeedsUpdate = NO;
+static BOOL menuNeedsUpdate = NO;
 
 + (void)setupScriptMenu {
     if (sharedMenu)
