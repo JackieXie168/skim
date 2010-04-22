@@ -181,7 +181,7 @@ static NSString *menuItemTitle(NSString *path) {
     [self updateSubmenu:menu withScripts:scripts];
     
     if ([menu numberOfItems] == 0)
-        [menu addItemWithTitle:NSLocalizedString(@"No Scripts", @"Menu item title") action:NULL keyEquivalent:@""];
+        [menu addItemWithTitle:NSLocalizedString(@"No Script", @"Menu item title") action:NULL keyEquivalent:@""];
     
     menuNeedsUpdate = NO;
 }
