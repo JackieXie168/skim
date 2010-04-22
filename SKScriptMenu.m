@@ -101,7 +101,7 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
                                         (CFArrayRef)scriptFolders,
                                         kFSEventStreamEventIdSinceNow, // sinceWhen
                                         1.0, // latency
-                                        0); // flags
+                                        kFSEventStreamCreateFlagWatchRoot); // flags
         FSEventStreamScheduleWithRunLoop(streamRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
         FSEventStreamStart(streamRef);
         
@@ -149,7 +149,6 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             if ([scriptExtensions containsObject:[[scriptName pathExtension] lowercaseString]])
                 scriptName = [scriptName stringByDeletingPathExtension];
             item = [menu addItemWithTitle:scriptName action:@selector(executeScript:) target:self];
-            [item setTarget:self];
             [item setRepresentedObject:scriptFilename];
         }
     }
