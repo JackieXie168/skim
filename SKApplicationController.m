@@ -75,6 +75,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "SKFDFParser.h"
 #import "SKLocalization.h"
+#import "SKScriptMenu.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/apps/mediawiki/skim-app/"
@@ -144,6 +145,8 @@
     }
     
     [[[NSApp mainMenu] itemAtIndex:BOOKMARKS_MENU_INDEX] setRepresentedObject:[[SKBookmarkController sharedBookmarkController] bookmarkRoot]];
+    
+    [SKScriptMenu setupScriptMenu];
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
