@@ -79,7 +79,7 @@ static menuNeedsUpdate = NO;
     if ([scriptFolders count] == 0)
         return;
     
-    sharedMenu = [[self alloc] initWithPaths:scriptFolders];
+    sharedMenu = [[self allocWithZone:[NSMenu menuZone]] initWithPaths:scriptFolders];
     NSMenuItem *menuItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:SCRIPTS_MENU_TITLE action:NULL keyEquivalent:@""];
     [menuItem setImage:[NSImage imageNamed:@"ScriptMenu"]];
     [menuItem setSubmenu:sharedMenu];
