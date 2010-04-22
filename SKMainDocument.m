@@ -1562,7 +1562,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             } else {
                 for (path in [[NSFileManager defaultManager] applicationSupportDirectories]) {
                     [searchPaths addObject:path];
-                    [searchPaths addObject:[path stringByAppendingPathComponent:@"Scripts"]];
+                    [searchPaths addObject:[path stringByAppendingPathComponent:@"bin"]];
                 }
             }
             
