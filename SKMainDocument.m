@@ -345,7 +345,7 @@ static char SKMainDocumentDefaultsObservationContext;
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
     docFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:didSaveSelector contextInfo:contextInfo];
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
 #ifdef __LP64__
