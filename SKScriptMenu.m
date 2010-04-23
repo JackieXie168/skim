@@ -226,10 +226,10 @@ static BOOL isFolderUTI(NSString *theUTI) {
         BOOL isDir = [fileType isEqualToString:NSFileTypeDirectory];
         NSString *theUTI = [ws typeOfFile:[[filePath stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
         
-        NSDictionary *dict;
+        NSMutableDictionary *dict;
         
         if ([file hasPrefix:@"."]) {
-        } else if ([menuItemTitle(path) isEqualToString:@"-"]) {
+        } else if ([menuItemTitle(file) isEqualToString:@"-"]) {
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
             [files addObject:dict];
             [dict release];
