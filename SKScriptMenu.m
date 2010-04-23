@@ -160,6 +160,8 @@ static NSString *menuItemTitle(NSString *path) {
             [menu addItemWithTitle:title submenu:submenu];
             [self updateSubmenu:submenu withScripts:folderContent];
             [submenu release];
+        } else if ([title isEqualToString:@"-"]) {
+            [menu addItem:[NSMenuItem separatorItem]];
         } else {
             NSMenuItem *item = [menu addItemWithTitle:title action:@selector(executeScript:) target:self];
             [item setRepresentedObject:scriptFilename];
@@ -227,6 +229,10 @@ static BOOL isFolderUTI(NSString *theUTI) {
         NSDictionary *dict;
         
         if ([file hasPrefix:@"."]) {
+        } else if ([menuItemTitle(path) isEqualToString:@"-"]) {
+            dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
+            [files addObject:dict];
+            [dict release];
         } else if (isAppleScriptUTI(theUTI) || isApplicationUTI(theUTI) || isAutomatorWorkflowUTI(theUTI) || ([fm isExecutableFileAtPath:filePath] && isDir == NO)) {
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
             [files addObject:dict];
