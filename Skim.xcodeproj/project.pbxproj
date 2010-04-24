@@ -1270,7 +1270,8 @@
 				CE2DE4D20B85D94800D0DA12 /* Data */,
 				CE2DE4CF0B85D89B00D0DA12 /* Controllers */,
 				CE2DE4D00B85D8C400D0DA12 /* Windows */,
-				CE2DE4D10B85D92F00D0DA12 /* Views */,
+				CE2DE4D10B85D92F00D0DA12 /* Views and Cells */,
+				CEC0ABED118307F900384CFD /* View Helpers */,
 				CE32DC1D0DAD282E0099414B /* Parsers */,
 				CE4643F10DF6BADC00CFD8D2 /* Commands */,
 				CE070EC10B89063400733CC8 /* Foundation Categories */,
@@ -1603,7 +1604,7 @@
 			name = Windows;
 			sourceTree = "<group>";
 		};
-		CE2DE4D10B85D92F00D0DA12 /* Views */ = {
+		CE2DE4D10B85D92F00D0DA12 /* Views and Cells */ = {
 			isa = PBXGroup;
 			children = (
 				CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */,
@@ -1658,12 +1659,10 @@
 				CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */,
 				CEA575FB0B9208B60003D2E7 /* SKTocOutlineView.h */,
 				CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */,
-				CE4972880BDE8B2900D7F1D2 /* SKToolbarItem.h */,
-				CE4972890BDE8B2900D7F1D2 /* SKToolbarItem.m */,
 				CE2DED6A0B86334900D0DA12 /* SKFindFieldEditor.h */,
 				CE2DED6B0B86334900D0DA12 /* SKFindFieldEditor.m */,
 			);
-			name = Views;
+			name = "Views and Cells";
 			sourceTree = "<group>";
 		};
 		CE2DE4D20B85D94800D0DA12 /* Data */ = {
@@ -1714,14 +1713,8 @@
 			children = (
 				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
 				CE09FC3B0E3886C100BDF413 /* SKRuntime.m */,
-				CE121AC61180644A00951425 /* SKScriptMenu.h */,
-				CE121AC71180644A00951425 /* SKScriptMenu.m */,
 				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
 				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
-				CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */,
-				CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */,
-				CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */,
-				CE4645900DF8140200CFD8D2 /* SKNumberArrayFormatter.m */,
 			);
 			name = Miscellaneous;
 			sourceTree = "<group>";
@@ -1865,6 +1858,21 @@
 			);
 			name = UKKQueue;
 			path = ulikusterer;
+			sourceTree = "<group>";
+		};
+		CEC0ABED118307F900384CFD /* View Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */,
+				CE4645900DF8140200CFD8D2 /* SKNumberArrayFormatter.m */,
+				CE121AC61180644A00951425 /* SKScriptMenu.h */,
+				CE121AC71180644A00951425 /* SKScriptMenu.m */,
+				CE4972880BDE8B2900D7F1D2 /* SKToolbarItem.h */,
+				CE4972890BDE8B2900D7F1D2 /* SKToolbarItem.m */,
+				CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */,
+				CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */,
+			);
+			name = "View Helpers";
 			sourceTree = "<group>";
 		};
 		CEC7B4E70CF607CA008CCD63 /* Products */ = {
