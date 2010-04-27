@@ -46,7 +46,8 @@
 
 @implementation SKTextFieldSheetController
 
-@dynamic textField, labelFields, controls, buttons, stringValue;
+@synthesize textField, labelFields, controls, buttons;
+@dynamic stringValue;
 
 - (void)dealloc {
     SKDESTROY(textField);
