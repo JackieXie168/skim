@@ -1,5 +1,5 @@
 //
-//  SKPDFToolTipWindow.m
+//  SKImageToolTipWindow.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/16/07.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define WINDOW_OFFSET           20.0
@@ -52,12 +52,12 @@
 @end
 
 
-@implementation SKPDFToolTipWindow
+@implementation SKImageToolTipWindow
 
 @synthesize currentPDFContext=context;
 
 + (id)sharedToolTipWindow {
-    static SKPDFToolTipWindow *sharedToolTipWindow = nil;
+    static SKImageToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
         sharedToolTipWindow = [[self alloc] init];
     return sharedToolTipWindow;
@@ -131,7 +131,7 @@
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
-- (void)showForPDFContext:(id<SKPDFToolTipContext>)aContext atPoint:(NSPoint)aPoint {
+- (void)showForPDFContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint {
     point = aPoint;
     
     if ([aContext isEqual:context] == NO) {

@@ -39,7 +39,7 @@
 #import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 
 
 @implementation SKTocOutlineView
@@ -200,9 +200,9 @@
         NSInteger column = [columnNumber integerValue];
         id item = [self itemAtRow:[rowNumber integerValue]];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKPDFToolTipContext> context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
+        id<SKImageToolTipContext> context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
         if (context)
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
     }
 }
 
@@ -211,7 +211,7 @@
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
     NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber)
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5

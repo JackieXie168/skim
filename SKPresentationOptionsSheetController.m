@@ -47,7 +47,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKMainWindowController.h"
 #import "SKPDFView.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
@@ -235,7 +235,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (void)dismissSheet:(id)sender {
-    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
+    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
     if ([sender tag] == NSCancelButton) {
         [super dismissSheet:sender];
     } else if ([objectController commitEditing]) {
@@ -257,7 +257,7 @@ static char *SKTransitionPropertiesObservationContext;
     if (separate != newSeparate) {
         separate = newSeparate;
         
-        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
+        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
         
         NSWindow *window = [self window];
         BOOL isVisible = [window isVisible];
@@ -399,7 +399,7 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
-- (id<SKPDFToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id<SKImageToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return [[controller pdfDocument] pageAtIndex:row];
     return nil;

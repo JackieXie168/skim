@@ -37,9 +37,9 @@
  */
 
 #import "SKSideViewController.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "SKGradientView.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define CONTENTVIEW_KEY @"contentView"
@@ -108,7 +108,7 @@
     else
         firstResponder = nil;
 
-    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     
     if (changeButton)
         [newButton setFrame:[oldButton frame]];

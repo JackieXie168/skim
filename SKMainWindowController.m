@@ -72,7 +72,7 @@
 #import "SKNoteTypeSheetController.h";
 #import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "NSValue_SKExtensions.h"

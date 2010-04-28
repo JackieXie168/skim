@@ -42,7 +42,7 @@
 #import "NSFont_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 
 #define SPACE_CHARACTER 0x20
 
@@ -300,9 +300,9 @@ static char SKTableViewDefaultsObservationContext;
         NSInteger column = [columnNumber integerValue];
         NSInteger row = [rowNumber integerValue];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKPDFToolTipContext> context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
+        id<SKImageToolTipContext> context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
         if (context)
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
     }
 }
 
@@ -311,7 +311,7 @@ static char SKTableViewDefaultsObservationContext;
     NSNumber *columnNumber = [userInfo objectForKey:@"column"];
     NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber)
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol

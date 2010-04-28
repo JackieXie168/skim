@@ -1,5 +1,5 @@
 //
-//  SKPDFToolTipWindow.h
+//  SKImageToolTipWindow.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/16/07.
@@ -38,19 +38,19 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKAnimatedBorderlessWindow.h"
-#import "SKPDFToolTipContext.h"
+#import "SKImageToolTipContext.h"
 
 
-@interface SKPDFToolTipWindow : SKAnimatedBorderlessWindow {
-    id<SKPDFToolTipContext> context;
+@interface SKImageToolTipWindow : SKAnimatedBorderlessWindow {
+    id<SKImageToolTipContext> context;
     NSPoint point;
 }
 
 + (id)sharedToolTipWindow;
 
 // aContext can be a PDFAnnotation, PDFDestination, or PDFPage
-- (void)showForPDFContext:(id<SKPDFToolTipContext>)aContext atPoint:(NSPoint)aPoint;
+- (void)showForPDFContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint;
 
-@property (nonatomic, readonly) id<SKPDFToolTipContext> currentPDFContext;
+@property (nonatomic, readonly) id<SKImageToolTipContext> currentPDFContext;
 
 @end

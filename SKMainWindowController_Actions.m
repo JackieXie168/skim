@@ -57,7 +57,7 @@
 #import "SKMainDocument.h"
 #import "SKStatusBar.h"
 #import "SKSideWindow.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "SKBookmarkController.h"
 #import "SKSplitView.h"
 #import "SKLineInspector.h"
@@ -918,7 +918,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
         if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
         else
@@ -931,7 +931,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (mwcFlags.usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
             if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[leftSideController.searchField stringValue] length])
-                [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+                [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
             [leftSideDrawer close];
         } else {
             [leftSideDrawer openOnEdge:NSMinXEdge];

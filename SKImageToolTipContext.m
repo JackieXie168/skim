@@ -1,5 +1,5 @@
 //
-//  SKPDFToolTipContext.m
+//  SKImageToolTipContext.m
 //  Skim
 //
 //  Created by Christiaan on 2/6/10.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFToolTipContext.h"
+#import "SKImageToolTipContext.h"
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
@@ -85,11 +85,11 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
 }
 
 
-@interface PDFDestination (SKPDFToolTipContextExtension)
+@interface PDFDestination (SKImageToolTipContextExtension)
 - (NSImage *)toolTipImageWithOffset:(NSPoint)offset;
 @end
 
-@implementation PDFDestination (SKPDFToolTipContext)
+@implementation PDFDestination (SKImageToolTipContext)
 
 - (NSImage *)toolTipImageWithOffset:(NSPoint)offset {
     static NSDictionary *labelAttributes = nil;
@@ -188,7 +188,7 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
 @end
 
 
-@implementation PDFAnnotation (SKPDFToolTipContext)
+@implementation PDFAnnotation (SKImageToolTipContext)
 
 - (NSImage *)toolTipImage {
     NSAttributedString *attrString = [self text];
@@ -216,7 +216,7 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
 @end
 
 
-@implementation PDFAnnotationLink (SKPDFToolTipContext)
+@implementation PDFAnnotationLink (SKImageToolTipContext)
 
 - (NSImage *)toolTipImage {
     NSImage *image = [[self destination] toolTipImageWithOffset:NSZeroPoint];
@@ -231,7 +231,7 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
 @end
 
 
-@implementation PDFPage (SKPDFToolTipContext)
+@implementation PDFPage (SKImageToolTipContext)
 
 - (NSImage *)toolTipImage {
     return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
