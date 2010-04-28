@@ -1428,7 +1428,7 @@ enum {
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
-        [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
+        [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:NSZeroPoint];
     } else {
         [super mouseEntered:theEvent];
     }
@@ -1440,7 +1440,7 @@ enum {
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
-        if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentPDFContext]])
+        if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
     } else {
         [super mouseExited:theEvent];
@@ -2075,7 +2075,7 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
-            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
         } else {
             [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         }
@@ -2124,7 +2124,7 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
-            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
         } else {
             [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         }

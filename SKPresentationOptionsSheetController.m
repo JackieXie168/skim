@@ -393,13 +393,13 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
-- (BOOL)tableView:(NSTableView *)tv hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (BOOL)tableView:(NSTableView *)tv hasImageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return YES;
     return NO;
 }
 
-- (id<SKImageToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (id<SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return [[controller pdfDocument] pageAtIndex:row];
     return nil;

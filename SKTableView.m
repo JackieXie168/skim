@@ -250,8 +250,8 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(tableView:hasPDFContextForTableColumn:row:)] == NO ||
-        [[self delegate] respondsToSelector:@selector(tableView:PDFContextForTableColumn:row:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(tableView:hasImageContextForTableColumn:row:)] == NO ||
+        [[self delegate] respondsToSelector:@selector(tableView:imageContextForTableColumn:row:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -267,13 +267,13 @@ static char SKTableViewDefaultsObservationContext;
         NSTableColumn *tableColumn;
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-            if ([[self delegate] tableView:self hasPDFContextForTableColumn:nil row:row]) {
+            if ([[self delegate] tableView:self hasImageContextForTableColumn:nil row:row]) {
                 [self addTrackingAreaForColumn:-1 row:row];
             } else {
                 column = [columnIndexes firstIndex];
                 while (column != NSNotFound) {
                     tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if ([[self delegate] tableView:self hasPDFContextForTableColumn:tableColumn row:row])
+                    if ([[self delegate] tableView:self hasImageContextForTableColumn:tableColumn row:row])
                         [self addTrackingAreaForColumn:column row:row];
                     column = [columnIndexes indexGreaterThanIndex:column];
                 }
@@ -300,9 +300,9 @@ static char SKTableViewDefaultsObservationContext;
         NSInteger column = [columnNumber integerValue];
         NSInteger row = [rowNumber integerValue];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKImageToolTipContext> context = [[self delegate] tableView:self PDFContextForTableColumn:tableColumn row:row];
+        id<SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForTableColumn:tableColumn row:row];
         if (context)
-            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
     }
 }
 
