@@ -1863,6 +1863,8 @@
 		CEC0ABED118307F900384CFD /* View Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */,
+				CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */,
 				CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */,
 				CE4645900DF8140200CFD8D2 /* SKNumberArrayFormatter.m */,
 				CE121AC61180644A00951425 /* SKScriptMenu.h */,
@@ -1927,8 +1929,6 @@
 				CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */,
 				CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */,
 				CE4A8BA10BB15980004AD07D /* NSWindowController_SKExtensions.m */,
-				CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */,
-				CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */,
 			);
 			name = "AppKit Categories";
 			sourceTree = "<group>";
