@@ -1,5 +1,5 @@
 //
-//  SKPDFToolTipContext.h
+//  SKImageToolTipContext.h
 //  Skim
 //
 //  Created by Christiaan on 2/6/10.
@@ -40,16 +40,16 @@
 #import <Quartz/Quartz.h>
 
 
-@protocol SKPDFToolTipContext <NSObject>
+@protocol SKImageToolTipContext <NSObject>
 - (NSImage *)toolTipImage;
 @end
 
 
-@interface PDFDestination (SKPDFToolTipContext) <SKPDFToolTipContext>
+@interface PDFDestination (SKImageToolTipContext) <SKImageToolTipContext>
 @end
 
-@interface PDFAnnotation (SKPDFToolTipContext) <SKPDFToolTipContext>
+@interface PDFAnnotation (SKImageToolTipContext) <SKImageToolTipContext>
 @end
 
-@interface PDFPage (SKPDFToolTipContext) <SKPDFToolTipContext>
+@interface PDFPage (SKImageToolTipContext) <SKImageToolTipContext>
 @end

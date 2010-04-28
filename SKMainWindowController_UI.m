@@ -55,7 +55,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKNoteText.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "SKMainDocument.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
@@ -499,7 +499,7 @@
     return NO;
 }
 
-- (id<SKPDFToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+- (id<SKImageToolTipContext>)tableView:(NSTableView *)tv PDFContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:leftSideController.findTableView])
         return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
     else if ([tv isEqual:leftSideController.groupedFindTableView])
@@ -805,7 +805,7 @@
     return NO;
 }
 
-- (id<SKPDFToolTipContext>)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+- (id<SKImageToolTipContext>)outlineView:(NSOutlineView *)ov PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:leftSideController.tocOutlineView])
         return [item destination];
     return nil;

@@ -38,7 +38,7 @@
 
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
-#import "SKPDFToolTipWindow.h"
+#import "SKImageToolTipWindow.h"
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Actions.h"
 #import <SkimNotes/SkimNotes.h>
@@ -269,7 +269,7 @@ enum {
     [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
     [self showNavWindow:NO];
     [self doAutohide:NO];
-    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
@@ -450,7 +450,7 @@ enum {
     [self removePDFToolTipRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
-    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [super setDocument:document];
     [self resetPDFToolTipRects];
 }
@@ -1169,7 +1169,7 @@ enum {
         [super mouseMoved:theEvent];
     
     if ([activeAnnotation isLink]) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
         [self setActiveAnnotation:nil];
     }
     
@@ -1428,7 +1428,7 @@ enum {
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
+        [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
     } else {
         [super mouseEntered:theEvent];
     }
@@ -1440,8 +1440,8 @@ enum {
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
-        if ([annotation isEqual:[[SKPDFToolTipWindow sharedToolTipWindow] currentPDFContext]])
-            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentPDFContext]])
+            [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
     } else {
         [super mouseExited:theEvent];
     }
@@ -1947,7 +1947,7 @@ enum {
     
     if ([activeAnnotation isLink]) {
         
-        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         if ([activeAnnotation destination])
             [self goToDestination:[(PDFAnnotationLink *)activeAnnotation destination]];
         else if ([(PDFAnnotationLink *)activeAnnotation URL])
@@ -1980,7 +1980,7 @@ enum {
         
     } else if ([activeAnnotation isEditable]) {
         
-        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         
         if ([[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
             [[self delegate] PDFView:self editAnnotation:activeAnnotation];
@@ -2075,9 +2075,9 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
-            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+            [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         }
     }
 }
@@ -2124,9 +2124,9 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
-            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+            [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         }
     }
 }
