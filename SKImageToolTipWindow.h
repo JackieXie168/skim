@@ -49,8 +49,8 @@
 + (id)sharedToolTipWindow;
 
 // aContext can be a PDFAnnotation, PDFDestination, or PDFPage
-- (void)showForPDFContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint;
+- (void)showForImageContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint;
 
-@property (nonatomic, readonly) id<SKImageToolTipContext> currentPDFContext;
+@property (nonatomic, readonly) id<SKImageToolTipContext> currentImageContext;
 
 @end

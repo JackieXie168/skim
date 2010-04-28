@@ -76,8 +76,8 @@ SUBCLASS_DELEGATE_DECLARATION(SKTableViewDelegate)
 - (void)tableViewPaste:(NSTableView *)aTableView;
 - (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
 
-- (BOOL)tableView:(NSTableView *)aTableView hasPDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (id<SKImageToolTipContext>)tableView:(NSTableView *)aTableView PDFContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (BOOL)tableView:(NSTableView *)aTableView hasImageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (id<SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

@@ -54,7 +54,7 @@ SUBCLASS_DELEGATE_DECLARATION(SKTocOutlineViewDelegate)
 @optional
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasPDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id<SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView PDFContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasImageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id<SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 
 @end

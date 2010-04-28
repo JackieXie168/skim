@@ -54,7 +54,7 @@
 
 @implementation SKImageToolTipWindow
 
-@synthesize currentPDFContext=context;
+@synthesize currentImageContext=context;
 
 + (id)sharedToolTipWindow {
     static SKImageToolTipWindow *sharedToolTipWindow = nil;
@@ -131,7 +131,7 @@
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
-- (void)showForPDFContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint {
+- (void)showForImageContext:(id<SKImageToolTipContext>)aContext atPoint:(NSPoint)aPoint {
     point = aPoint;
     
     if ([aContext isEqual:context] == NO) {

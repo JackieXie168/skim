@@ -143,8 +143,8 @@
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:hasPDFContextForTableColumn:item:)] == NO ||
-        [[self delegate] respondsToSelector:@selector(outlineView:PDFContextForTableColumn:item:)] == NO)
+    if ([[self delegate] respondsToSelector:@selector(outlineView:hasImageContextForTableColumn:item:)] == NO ||
+        [[self delegate] respondsToSelector:@selector(outlineView:imageContextForTableColumn:item:)] == NO)
         return;
     
     if (trackingAreas == nil)
@@ -162,13 +162,13 @@
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
             item = [self itemAtRow:row];
-            if ([[self delegate] outlineView:self hasPDFContextForTableColumn:nil item:item]) {
+            if ([[self delegate] outlineView:self hasImageContextForTableColumn:nil item:item]) {
                 [self addTrackingAreaForColumn:-1 row:row];
             } else {
                 column = [columnIndexes firstIndex];
                 while (column != NSNotFound) {
                     tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if ([[self delegate] outlineView:self hasPDFContextForTableColumn:tableColumn item:item])
+                    if ([[self delegate] outlineView:self hasImageContextForTableColumn:tableColumn item:item])
                         [self addTrackingAreaForColumn:column row:row];
                     column = [columnIndexes indexGreaterThanIndex:column];
                 }
@@ -200,9 +200,9 @@
         NSInteger column = [columnNumber integerValue];
         id item = [self itemAtRow:[rowNumber integerValue]];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKImageToolTipContext> context = [[self delegate] outlineView:self PDFContextForTableColumn:tableColumn item:item];
+        id<SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForTableColumn:tableColumn item:item];
         if (context)
-            [[SKImageToolTipWindow sharedToolTipWindow] showForPDFContext:context atPoint:NSZeroPoint];
+            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
     }
 }
 
