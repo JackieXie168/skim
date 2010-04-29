@@ -253,11 +253,11 @@
         [[self window] setFrame:[screen frame] display:NO];
         if ([self isFullScreen]) {
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
-                [leftSideWindow orderOut:self];
+                [leftSideWindow remove];
                 [leftSideWindow attachToWindow:[self window] onScreen:screen];
             }
             if ([[rightSideWindow screen] isEqual:screen] == NO) {
-                [rightSideWindow orderOut:self];
+                [rightSideWindow remove];
                 [rightSideWindow attachToWindow:[self window] onScreen:screen];
             }
         }
@@ -273,9 +273,9 @@
         if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
             [[self window] setFrame:screenFrame display:NO];
             if ([self isFullScreen]) {
-                [leftSideWindow orderOut:self];
+                [leftSideWindow remove];
                 [leftSideWindow attachToWindow:[self window] onScreen:screen];
-                [rightSideWindow orderOut:self];
+                [rightSideWindow remove];
                 [rightSideWindow attachToWindow:[self window] onScreen:screen];
             }
             [pdfView layoutDocumentView];

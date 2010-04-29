@@ -1214,7 +1214,7 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (void)hideLeftSideWindow {
     if ([[leftSideController.view window] isEqual:leftSideWindow]) {
-        [leftSideWindow orderOut:self];
+        [leftSideWindow remove];
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
@@ -1236,7 +1236,7 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (void)hideRightSideWindow {
     if ([[rightSideController.view window] isEqual:rightSideWindow]) {
-        [rightSideWindow orderOut:self];
+        [rightSideWindow remove];
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];

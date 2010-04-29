@@ -165,9 +165,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [window addChildWindow:self ordered:NSWindowAbove];
 }
 
-- (void)orderOut:(id)sender {
+- (void)remove {
     [[self parentWindow] removeChildWindow:self];
-    [super orderOut:sender];
+    [self orderOut:nil];
 }
 
 - (void)animateToWidth:(CGFloat)width {
