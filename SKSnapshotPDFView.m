@@ -405,6 +405,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 #pragma mark Dragging
 
 - (void)mouseDown:(NSEvent *)theEvent{
+    [[self window] makeFirstResponder:self];
 	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
         // eat up mouseDragged/mouseUp events, so we won't get their event handlers
         while (YES) {
