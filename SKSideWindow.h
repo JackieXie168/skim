@@ -68,6 +68,7 @@
 - (void)slideOut;
 - (void)expand;
 - (void)collapse;
+- (void)remove;
 - (void)resizeWithEvent:(NSEvent *)theEvent;
 
 @end
