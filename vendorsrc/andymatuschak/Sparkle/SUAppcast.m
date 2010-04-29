@@ -55,18 +55,27 @@
 	download = nil;
     
 	NSError *error = nil;
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL fileURLWithPath:downloadFilename] options:0 error:&error];
+    NSXMLDocument *document = nil;
 	BOOL failed = NO;
 	NSArray *xmlItems = nil;
 	NSMutableArray *appcastItems = [NSMutableArray array];
 	
+	if (downloadFilename)
+	{
+		document = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL fileURLWithPath:downloadFilename] options:0 error:&error] autorelease];
+	
 #if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
-    [[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
 #else
-    [[NSFileManager defaultManager] removeItemAtPath:downloadFilename error:NULL];
+		[[NSFileManager defaultManager] removeItemAtPath:downloadFilename error:nil];
 #endif
-    [downloadFilename release];
-    downloadFilename = nil;
+		[downloadFilename release];
+		downloadFilename = nil;
+	}
+	else
+	{
+		failed = YES;
+	}
     
     if (nil == document)
     {
