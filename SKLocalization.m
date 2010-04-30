@@ -186,7 +186,6 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 
 - (void)localizeStringsFromTable:(NSString *)table {
     localizeStringForObjectFromTable(self, LABEL_KEY, table);
-    localizeStringForObjectFromTable(self, TOOLTIP_KEY, table);
     [[self view] localizeStringsFromTable:table];
 }
 
