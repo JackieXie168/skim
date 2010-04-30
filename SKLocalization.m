@@ -38,13 +38,6 @@
 
 #import "SKLocalization.h"
 
-#define TITLE_KEY               @"title"
-#define ALTERNATETITLE_KEY      @"alternateTitle"
-#define STRINGVALUE_KEY         @"stringValue"
-#define PLACEHOLDERSTRING_KEY   @"placeholderString"
-#define LABEL_KEY               @"label"
-#define TOOLTIP_KEY             @"toolTip"
-
 static NSString *localizedStringFromTable(NSString *string, NSString *table) {
     if ([string length] == 0)
         return nil;
@@ -52,11 +45,18 @@ static NSString *localizedStringFromTable(NSString *string, NSString *table) {
     return [[NSBundle mainBundle] localizedStringForKey:string value:string table:table];
 }
 
-static void localizeStringForObjectFromTable(id object, NSString *key, NSString *table) {
-    NSString *value = localizedStringFromTable([object valueForKey:key], table);
-    if (value)
-        [object setValue:value forKey:key];
-}
+#define LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, property) \
+do { \
+    NSString *value = localizedStringFromTable(object.property, table); \
+    if (value) object.property = value; \
+} while (0)
+
+#define localizeTitleForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, title)
+#define localizeAlternateTitleForObjectFromTable(object, table)    LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, alternateTitle)
+#define localizeStringValueForObjectFromTable(object, table)       LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, stringValue)
+#define localizePlaceholderStringForObjectFromTable(object, table) LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, placeholderString)
+#define localizeLabelForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, label)
+#define localizeToolTipForObjectFromTable(object, table)           LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, toolTip)
 
 @implementation NSObject (SKLocalization)
 
@@ -79,8 +79,8 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
     if ([self imagePosition] != NSImageOnly && [self isKindOfClass:[NSPopUpButtonCell class]] == NO) {
-        localizeStringForObjectFromTable(self, TITLE_KEY, table);
-        localizeStringForObjectFromTable(self, ALTERNATETITLE_KEY, table);
+        localizeTitleForObjectFromTable(self, table);
+        localizeAlternateTitleForObjectFromTable(self, table);
     }
 }
 
@@ -119,8 +119,8 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
-    localizeStringForObjectFromTable(self, STRINGVALUE_KEY, table);
-    localizeStringForObjectFromTable(self, PLACEHOLDERSTRING_KEY, table);
+    localizeStringValueForObjectFromTable(self, table);
+    localizePlaceholderStringForObjectFromTable(self, table);
 }
 
 @end
@@ -129,7 +129,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @implementation NSView (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    localizeStringForObjectFromTable(self, TOOLTIP_KEY, table);
+    localizeToolTipForObjectFromTable(self, table);
     [[self subviews] localizeStringsFromTable:table];
 }
 
@@ -140,7 +140,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 
 - (void)localizeStringsFromTable:(NSString *)table {
     [super localizeStringsFromTable:table];
-    localizeStringForObjectFromTable(self, TITLE_KEY, table);
+    localizeTitleForObjectFromTable(self, table);
 }
 
 @end
@@ -185,7 +185,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @implementation NSTabViewItem (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    localizeStringForObjectFromTable(self, LABEL_KEY, table);
+    localizeLabelForObjectFromTable(self, table);
     [[self view] localizeStringsFromTable:table];
 }
 
@@ -216,7 +216,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @implementation NSMenu (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    localizeStringForObjectFromTable(self, TITLE_KEY, table);
+    localizeTitleForObjectFromTable(self, table);
     [[self itemArray] localizeStringsFromTable:table];
 }
 
@@ -226,7 +226,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @implementation NSMenuItem (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    localizeStringForObjectFromTable(self, TITLE_KEY, table);
+    localizeTitleForObjectFromTable(self, table);
     [[self submenu] localizeStringsFromTable:table];
 }
 
@@ -236,7 +236,7 @@ static void localizeStringForObjectFromTable(id object, NSString *key, NSString 
 @implementation NSWindow (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    localizeStringForObjectFromTable(self, TITLE_KEY, table);
+    localizeTitleForObjectFromTable(self, table);
     [[self contentView] localizeStringsFromTable:table];
 }
 
