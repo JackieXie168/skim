@@ -167,8 +167,6 @@
 		}
 	}
     
-	[document release];
-	
 	if ([appcastItems count])
     {
 		NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
