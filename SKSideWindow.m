@@ -366,6 +366,18 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        edge = [decoder decodeIntegerForKey:@"edge"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeInteger:edge forKey:@"edge"];
+}
+
 - (NSRect)resizeHandleRect {
     NSRect rect, ignored;
     NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
