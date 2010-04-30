@@ -146,7 +146,8 @@
     
     [[[NSApp mainMenu] itemAtIndex:BOOKMARKS_MENU_INDEX] setRepresentedObject:[[SKBookmarkController sharedBookmarkController] bookmarkRoot]];
     
-    [SKScriptMenu setupScriptMenu];
+    // this creates the script menu if needed
+    (void)[NSApp scriptMenu];
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
