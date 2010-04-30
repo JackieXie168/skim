@@ -1554,10 +1554,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if ([editorPreset isEqualToString:@""] == NO) {
                 if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
                     (appBundle = [NSBundle bundleWithPath:path])) {
-                    [searchPaths addObject:[appBundle sharedSupportPath]];
-                    [searchPaths addObject:[appBundle resourcePath]];
                     if ([editorPreset isEqualToString:@"BBEdit"] == NO)
-                        [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
+                        [searchPaths insertObject:[[appBundle executablePath] stringByDeletingLastPathComponent] atIndex:0];
+                    [searchPaths insertObject:[appBundle resourcePath] atIndex:0];
+                    [searchPaths insertObject:[appBundle sharedSupportPath] atIndex:0];
                 }
             } else {
                 [searchPaths addObjectsFromArray:[[NSFileManager defaultManager] applicationSupportDirectories]];
