@@ -39,9 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKScriptMenu : NSMenu <NSMenuDelegate> {
-    FSEventStreamRef streamRef;
-    NSArray *sortDescriptors;
-}
-+ (void)setupScriptMenu;
+@interface NSApplication (SKScriptMenu)
+- (NSMenu *)scriptMenu;
 @end
