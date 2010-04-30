@@ -89,8 +89,8 @@
     if ([newView window] != nil)
         return;
     
-    NSView *oldView = currentView;
-    currentView = newView;
+    NSView *oldView = [[currentView retain] autorelease];
+    self.currentView = newView;
     
     BOOL wasAlternate = [self requiresAlternateButtonForView:oldView];
     BOOL isAlternate = [self requiresAlternateButtonForView:newView];
