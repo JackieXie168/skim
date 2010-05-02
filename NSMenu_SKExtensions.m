@@ -56,12 +56,6 @@
     return [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
 }
 
-- (NSMenuItem *)supermenuItem {
-    NSMenu *supermenu = [self supermenu];
-    NSInteger idx = [supermenu indexOfItemWithSubmenu:self];
-    return idx == -1 ? nil : [supermenu itemAtIndex:idx];
-}
-
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget atIndex:(NSInteger)anIndex {
     NSMenuItem *item = [[NSMenuItem allocWithZone:[self zone]] initWithTitle:aString action:aSelector target:aTarget];
     [self insertItem:item atIndex:anIndex];
