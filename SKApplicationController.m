@@ -343,8 +343,10 @@
 #pragma mark Support
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenuItem *item = [menu supermenuItem];
-    SKBookmark *bm = [item representedObject];
+    NSMenu *supermenu = [menu supermenu];
+    NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
+    SKBookmark *bm = idx == -1 ? nil : [[supermenu itemAtIndex:idx] representedObject];
+    NSMenuItem *item;
     
     if ([bm isKindOfClass:[SKBookmark class]]) {
         NSArray *bookmarks = [bm children];
