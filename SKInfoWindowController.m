@@ -358,12 +358,12 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
             value = [self labelForKey:key];
         } else if ([tcID isEqualToString:@"value"]) {
             value = [info objectForKey:key];
-            if ([value isKindOfClass:[NSDate class]])
+            if (value == nil)
+                value = @"-";
+            else if ([value isKindOfClass:[NSDate class]])
                 value = [shortDateFormatter stringFromDate:value];
             else if ([value isKindOfClass:[NSNumber class]])
-                value = value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
-            else if (value == nil)
-                value = @"-";
+                value = ([key isEqualToString:SKInfoPageCountKey] ? [value stringValue] : ([value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"")));
         }
     }
     return value;
