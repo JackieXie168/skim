@@ -213,20 +213,6 @@ static char SKMainDocumentDefaultsObservationContext;
     [tmpData release];
     tmpData = nil;
     
-    if ([[self pdfDocument] pageCount]) {
-        PDFPage *page = [[self pdfDocument] pageAtIndex:0];
-        NSPrintInfo *printInfo = [self printInfo];
-        NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
-        BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
-        
-        printInfo = [printInfo copy];
-        [[printInfo dictionary] setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
-        if (isLandscape)
-            [printInfo setOrientation:NSLandscapeOrientation];
-        [self setPrintInfo:printInfo];
-        [printInfo release];
-    }
-    
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKMainDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
@@ -1725,10 +1711,17 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return nil;
 }
 
-- (void)setPrintInfo:(NSPrintInfo *)printInfo {
-    [[self undoManager] disableUndoRegistration];
-    [super setPrintInfo:printInfo];
-    [[self undoManager] enableUndoRegistration];
+- (NSPrintInfo *)printInfo {
+    NSPrintInfo *printInfo = [super printInfo];
+    if ([[self pdfDocument] pageCount]) {
+        PDFPage *page = [[self pdfDocument] pageAtIndex:0];
+        NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
+        BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
+        
+        [[printInfo dictionary] setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
+        [printInfo setOrientation:isLandscape ? NSLandscapeOrientation : NSPortraitOrientation];
+    }
+    return printInfo;
 }
 
 - (NSArray *)snapshots {
