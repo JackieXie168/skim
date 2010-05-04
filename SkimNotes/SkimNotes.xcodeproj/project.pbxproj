@@ -203,6 +203,7 @@
 		CEDB9AFE0E2E9F8A0057FD09 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-App.xcconfig"; sourceTree = "<group>"; };
 		CEDB9B200E2EA2F30057FD09 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CEF877D211905CED006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -528,6 +529,7 @@
 				cs,
 				ru,
 				zh_TW,
+				pl,
 			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* SkimNotes */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
@@ -702,6 +704,7 @@
 				CE3907BA0E082CB40015B0B7 /* ru */,
 				CE5A82DD0E6C5403008C0AA9 /* Italian */,
 				CEB540910F261E9D00723C1F /* zh_TW */,
+				CEF877D211905CED006436A2 /* pl */,
 			);
 			name = SkimNotes.strings;
 			sourceTree = "<group>";
