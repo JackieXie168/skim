@@ -61,6 +61,7 @@
 		CED8D45A0D744F910028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D45B0D744F910028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D45C0D744F910028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
+		CEF8779E11905C53006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CEF9B7BC0CF8CF50001F40F5 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Skim.icns; sourceTree = "<group>"; };
 		F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = /System/Library/Frameworks/QuickLook.framework; sourceTree = "<absolute>"; };
@@ -213,6 +214,7 @@
 				ru,
 				Spanish,
 				zh_TW,
+				pl,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* QuickLookSkim */;
 			projectDirPath = "";
@@ -280,6 +282,7 @@
 				CECB026D0DC5EB3E0000B16B /* ru */,
 				CECB027F0DC5EB5D0000B16B /* Spanish */,
 				CEB5409B0F261EEF00723C1F /* zh_TW */,
+				CEF8779E11905C53006436A2 /* pl */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
