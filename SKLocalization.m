@@ -77,11 +77,8 @@ do { \
 @implementation NSButtonCell (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    [super localizeStringsFromTable:table];
-    if ([self imagePosition] != NSImageOnly && [self isKindOfClass:[NSPopUpButtonCell class]] == NO) {
-        localizeTitleForObjectFromTable(self, table);
-        localizeAlternateTitleForObjectFromTable(self, table);
-    }
+    localizeTitleForObjectFromTable(self, table);
+    localizeAlternateTitleForObjectFromTable(self, table);
 }
 
 @end
@@ -90,7 +87,7 @@ do { \
 @implementation NSPopUpButtonCell (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    [super localizeStringsFromTable:table];
+    // don't call super because the title is taken from the menu
     [[self menu] localizeStringsFromTable:table];
 }
 
@@ -100,7 +97,6 @@ do { \
 @implementation NSSegmentedCell (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    [super localizeStringsFromTable:table];
     NSUInteger i, iMax = [self segmentCount];
     NSString *string;
     for (i = 0; i < iMax; i++) {
@@ -118,7 +114,6 @@ do { \
 @implementation NSTextFieldCell (SKLocalization)
 
 - (void)localizeStringsFromTable:(NSString *)table {
-    [super localizeStringsFromTable:table];
     localizeStringValueForObjectFromTable(self, table);
     localizePlaceholderStringForObjectFromTable(self, table);
 }
