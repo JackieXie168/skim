@@ -40,5 +40,4 @@
 
 
 @interface SKPrintableView : NSTextView
-- (id)initWithAttributedString:(NSAttributedString *)attributedString printInfo:(NSPrintInfo *)printInfo;
 @end
