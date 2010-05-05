@@ -326,8 +326,15 @@
     [printInfo setHorizontallyCentered:NO];
     [printInfo setVerticallyCentered:NO];
     
+    SKPrintableView *printableView = [[SKPrintableView alloc] initWithFrame:[printInfo imageablePageBounds]];
+    [printableView setVerticallyResizable:YES];
+    [printableView setHorizontallyResizable:NO];
+    
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL];
-    NSView *printableView = [[SKPrintableView alloc] initWithAttributedString:attrString printInfo:printInfo];
+    NSTextStorage *textStorage = [printableView textStorage];
+    [textStorage beginEditing];
+    [textStorage setAttributedString:attrString];
+    [textStorage endEditing];
     
     NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:printableView printInfo:printInfo];
     
