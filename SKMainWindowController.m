@@ -666,7 +666,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     // handle the case as above where the outline has disappeared in a reload situation
     if (nil == [[pdfView document] outlineRoot] && leftSideController.currentView == leftSideController.tocOutlineView.enclosingScrollView) {
-        [self displayThumbnailViewAnimating:YES];
+        [self displayThumbnailViewAnimating:NO];
         [leftSideController.button setSelectedSegment:SKThumbnailSidePaneState];
     }
 
