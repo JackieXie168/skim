@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10D573</string>
-		<string key="IBDocument.InterfaceBuilderVersion">740</string>
+		<string key="IBDocument.InterfaceBuilderVersion">762</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">740</string>
+			<string key="NS.object.0">762</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1404,22 +1404,6 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">nextKeyView</string>
-						<reference key="source" ref="404684452"/>
-						<reference key="destination" ref="574277828"/>
-					</object>
-					<int key="connectionID">77</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">nextKeyView</string>
-						<reference key="source" ref="948439344"/>
-						<reference key="destination" ref="694808295"/>
-					</object>
-					<int key="connectionID">78</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">view</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="850098044"/>
@@ -2080,7 +2064,6 @@
 							<reference ref="598815062"/>
 							<reference ref="835856591"/>
 							<reference ref="1058504007"/>
-							<reference ref="206221324"/>
 							<reference ref="838752059"/>
 							<reference ref="697963551"/>
 							<reference ref="840849757"/>
@@ -2095,6 +2078,7 @@
 							<reference ref="404684452"/>
 							<reference ref="574277828"/>
 							<reference ref="694808295"/>
+							<reference ref="206221324"/>
 							<reference ref="948439344"/>
 						</object>
 						<reference key="parent" ref="0"/>
@@ -2959,38 +2943,17 @@
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">BDSKCollapsibleView</string>
-					<string key="superclassName">BDSKContainerView</string>
+					<string key="className">NSApplication</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKCollapsibleView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKContainerView</string>
-					<string key="superclassName">NSView</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">contentView</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKContainerView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKEdgeView</string>
-					<string key="superclassName">BDSKContainerView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKEdgeView.h</string>
+						<string key="minorKey">SKRichTextFormat.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSApplication</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKRichTextFormat.h</string>
+						<string key="minorKey">SKScriptMenu.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -3068,7 +3031,7 @@
 							<string>PDFView</string>
 						</object>
 					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="340766310">
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFView.h</string>
 					</object>
@@ -3197,6 +3160,10 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKGradientView</string>
 					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">contentView</string>
+						<string key="NS.object.0">id</string>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKGradientView.h</string>
@@ -3410,9 +3377,9 @@
 							<string>centerContentView</string>
 							<string>leftSideContentView</string>
 							<string>leftSideController</string>
+							<string>mainWindow</string>
 							<string>pdfContentView</string>
 							<string>pdfSplitView</string>
-							<string>pdfView</string>
 							<string>rightSideContentView</string>
 							<string>rightSideController</string>
 							<string>splitView</string>
@@ -3423,9 +3390,9 @@
 							<string>NSView</string>
 							<string>NSView</string>
 							<string>SKLeftSideViewController</string>
+							<string>NSWindow</string>
 							<string>NSView</string>
 							<string>SKSplitView</string>
-							<string>SKPDFView</string>
 							<string>NSView</string>
 							<string>SKRightSideViewController</string>
 							<string>SKSplitView</string>
@@ -3464,16 +3431,10 @@
 							<string>changeFont:</string>
 							<string>changeLeftSidePaneState:</string>
 							<string>changeRightSidePaneState:</string>
-							<string>changeScaleFactor:</string>
 							<string>changeToolMode:</string>
-							<string>chooseScale:</string>
 							<string>chooseTransition:</string>
 							<string>copy:</string>
-							<string>createNewCircleNote:</string>
-							<string>createNewLineNote:</string>
-							<string>createNewMarkupNote:</string>
 							<string>createNewNote:</string>
-							<string>createNewTextNote:</string>
 							<string>crop:</string>
 							<string>cropAll:</string>
 							<string>cut:</string>
@@ -3497,22 +3458,18 @@
 							<string>doZoomToSelection:</string>
 							<string>editNote:</string>
 							<string>getInfo:</string>
-							<string>goBackOrForward:</string>
 							<string>goToMarkedPage:</string>
-							<string>goToPreviousNextFirstLastPage:</string>
 							<string>markPage:</string>
 							<string>password:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
-							<string>rotateAllLeftRight:</string>
 							<string>rotateAllRight:</string>
 							<string>rotateLeft:</string>
 							<string>rotateRight:</string>
 							<string>savePDFSettingToDefaults:</string>
 							<string>searchPDF:</string>
-							<string>selectColor:</string>
 							<string>smartAutoCropAll:</string>
 							<string>takeSnapshot:</string>
 							<string>toggleAutoScale:</string>
@@ -3530,21 +3487,9 @@
 							<string>toggleSplitPDF:</string>
 							<string>toggleStatusBar:</string>
 							<string>toggleWholeWordSearch:</string>
-							<string>zoomInActualOut:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3670,62 +3615,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKPDFView</string>
-					<string key="superclassName">PDFView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addAnnotation:</string>
-							<string>alternatePaste:</string>
-							<string>autoSelectContent:</string>
-							<string>changeAnnotationMode:</string>
-							<string>changeToolMode:</string>
-							<string>copy:</string>
-							<string>cut:</string>
-							<string>delete:</string>
-							<string>deselectAll:</string>
-							<string>editActiveAnnotation:</string>
-							<string>editThisAnnotation:</string>
-							<string>exitFullScreen:</string>
-							<string>paste:</string>
-							<string>pasteAsPlainText:</string>
-							<string>removeActiveAnnotation:</string>
-							<string>removeThisAnnotation:</string>
-							<string>selectNextActiveAnnotation:</string>
-							<string>selectPreviousActiveAnnotation:</string>
-							<string>takeSnapshot:</string>
-							<string>toggleAutoActualSize:</string>
-							<string>zoomLog:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<reference key="sourceIdentifier" ref="340766310"/>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKRightSideViewController</string>
 					<string key="superclassName">SKSideViewController</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -3759,9 +3648,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>alternateButton</string>
 							<string>button</string>
-							<string>collapsibleView</string>
 							<string>currentView</string>
-							<string>edgeView</string>
 							<string>gradientView</string>
 							<string>mainController</string>
 							<string>searchField</string>
@@ -3770,9 +3657,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
-							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
-							<string>BDSKEdgeView</string>
 							<string>SKGradientView</string>
 							<string>SKMainWindowController</string>
 							<string>NSSearchField</string>
@@ -4496,6 +4381,7 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
+		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -4507,5 +4393,104 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">Skim.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<bool key="EncodedWithXMLCoder">YES</bool>
+			<object class="NSArray" key="dict.sortedKeys">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>ToolbarAddAnchoredNote</string>
+				<string>ToolbarAddCircleNote</string>
+				<string>ToolbarAddCircleNoteMenu</string>
+				<string>ToolbarAddHighlightNote</string>
+				<string>ToolbarAddHighlightNoteMenu</string>
+				<string>ToolbarAddLineNote</string>
+				<string>ToolbarAddSquareNote</string>
+				<string>ToolbarAddStrikeOutNote</string>
+				<string>ToolbarAddTextNote</string>
+				<string>ToolbarAddTextNoteMenu</string>
+				<string>ToolbarAddUnderlineNote</string>
+				<string>ToolbarBack</string>
+				<string>ToolbarColors</string>
+				<string>ToolbarCrop</string>
+				<string>ToolbarCropBox</string>
+				<string>ToolbarCustomize</string>
+				<string>ToolbarFirstPage</string>
+				<string>ToolbarFonts</string>
+				<string>ToolbarForward</string>
+				<string>ToolbarFullScreen</string>
+				<string>ToolbarInfo</string>
+				<string>ToolbarLastPage</string>
+				<string>ToolbarLeftPane</string>
+				<string>ToolbarLines</string>
+				<string>ToolbarMagnifyTool</string>
+				<string>ToolbarMediaBox</string>
+				<string>ToolbarMoveTool</string>
+				<string>ToolbarPageDown</string>
+				<string>ToolbarPageUp</string>
+				<string>ToolbarPresentation</string>
+				<string>ToolbarPrint</string>
+				<string>ToolbarRightPane</string>
+				<string>ToolbarRotateLeft</string>
+				<string>ToolbarRotateRight</string>
+				<string>ToolbarSelectTool</string>
+				<string>ToolbarSinglePage</string>
+				<string>ToolbarSinglePageContinuous</string>
+				<string>ToolbarTextTool</string>
+				<string>ToolbarTwoUp</string>
+				<string>ToolbarTwoUpContinuous</string>
+				<string>ToolbarZoomActual</string>
+				<string>ToolbarZoomIn</string>
+				<string>ToolbarZoomOut</string>
+				<string>ToolbarZoomToFit</string>
+				<string>ToolbarZoomToSelection</string>
+			</object>
+			<object class="NSMutableArray" key="dict.values">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 20}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 19}</string>
+				<string>{128, 128}</string>
+				<string>{27, 20}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 17}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 20}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 19}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{27, 20}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+				<string>{128, 128}</string>
+			</object>
+		</object>
 	</data>
 </archive>
