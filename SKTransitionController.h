@@ -95,7 +95,7 @@ typedef NSUInteger SKAnimationTransitionStyle;
 
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style;
 
-- (id)initWithView:(NSView *)aView;
+- (id)initForView:(NSView *)aView;
 
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
 - (void)animateForRect:(NSRect)rect;
