@@ -215,7 +215,7 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     };
 }
 
-- (id)initWithView:(NSView *)aView {
+- (id)initForView:(NSView *)aView {
     NSWindow *window = [[[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO] autorelease];
     [window setReleasedWhenClosed:NO];
     [window setIgnoresMouseEvents:YES];

@@ -598,7 +598,7 @@ enum {
 
 - (SKTransitionController * )transitionController {
     if (transitionController == nil) {
-        transitionController = [[SKTransitionController alloc] initWithView:self];
+        transitionController = [[SKTransitionController alloc] initForView:self];
         NSKeyValueObservingOptions options = (NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld);
         [transitionController addObserver:self forKeyPath:@"transitionStyle" options:options context:&SKPDFViewTransitionsObservationContext];
         [transitionController addObserver:self forKeyPath:@"duration" options:options context:&SKPDFViewTransitionsObservationContext];
