@@ -54,7 +54,7 @@ NSString *SKDurationKey = @"duration";
 NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define kCIInputBacksideImageKey @"inputBacksideImage"
-#define kCIInputRectangleKey @"inputRectangleImage"
+#define kCIInputRectangleKey @"inputRectangle"
 
 #define WEAK_NULL NULL
 
@@ -207,16 +207,21 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
         case SKRevealTransition:     return NSLocalizedString(@"Reveal", @"Transition name");
         case SKSlideTransition:      return NSLocalizedString(@"Slide", @"Transition name");
         case SKWarpFadeTransition:   return NSLocalizedString(@"Warp Fade", @"Transition name");
-        case SKSwapTransition:       return NSLocalizedString(@"Warp Switch", @"Transition name");
-        case SKCubeTransition:       return NSLocalizedString(@"Swap", @"Transition name");
-        case SKWarpSwitchTransition: return NSLocalizedString(@"Cube", @"Transition name");
+        case SKSwapTransition:       return NSLocalizedString(@"Swap", @"Transition name");
+        case SKCubeTransition:       return NSLocalizedString(@"Cube", @"Transition name");
+        case SKWarpSwitchTransition: return NSLocalizedString(@"Warp Switch", @"Transition name");
         case SKWarpFlipTransition:   return NSLocalizedString(@"Flip", @"Transition name");
         default:                     return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
     };
 }
 
 - (id)initWithView:(NSView *)aView {
-    if (self = [super init]) {
+    NSWindow *window = [[[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO] autorelease];
+    [window setReleasedWhenClosed:NO];
+    [window setIgnoresMouseEvents:YES];
+    [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
+    
+    if (self = [self initWithWindow:window]) {
         view = aView; // don't retain as it may retain us
         
         transitionStyle = SKNoTransition;
@@ -227,17 +232,12 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
         currentShouldRestrict = YES;
         currentForward = YES;
         
-        transitionWindow = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-        [transitionWindow setReleasedWhenClosed:NO];
-        [transitionWindow setIgnoresMouseEvents:YES];
-        [transitionWindow setContentView:[[[SKTransitionView alloc] init] autorelease]];
     }
     return self;
 }
 
 - (void)dealloc {
     view = nil;
-    SKDESTROY(transitionWindow);
     SKDESTROY(initialImage);
     SKDESTROY(filters);
     SKDESTROY(pageTransitions);
@@ -355,12 +355,8 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
 }
 
-- (NSWindow *)transitionWindow {
-    return transitionWindow;
-}
-
 - (SKTransitionView *)transitionView {
-    return (SKTransitionView *)[transitionWindow contentView];
+    return (SKTransitionView *)[[self window] contentView];
 }
 
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
@@ -420,9 +416,9 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
         [[self transitionView] setImage:initialImage];
         initialImage = nil;
         
-        [[self transitionWindow] setFrame:frame display:YES];
-        [[self transitionWindow] orderBack:nil];
-        [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
+        [[self window] setFrame:frame display:YES];
+        [[self window] orderBack:nil];
+        [[view window] addChildWindow:[self window] ordered:NSWindowAbove];
     }
     
     // declare our variables  
@@ -433,7 +429,7 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     spec.type =  currentTransitionStyle;
     spec.option = currentForward ? CGSLeft : CGSRight;
     spec.backColour = NULL;
-    spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
+    spec.wid = [(currentShouldRestrict ? [self window] : [view window]) windowNumber];
     
     // Let's get a connection
     CGSConnection cgs = _CGSDefaultConnection();
@@ -460,8 +456,8 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     handle = 0;
     
     if (currentShouldRestrict) {
-        [[view window] removeChildWindow:[self transitionWindow]];
-        [[self transitionWindow] orderOut:nil];
+        [[view window] removeChildWindow:[self window]];
+        [[self window] orderOut:nil];
         [[self transitionView] setImage:nil];
     }
 }
@@ -488,9 +484,9 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     [[self transitionView] setAnimation:animation];
     [animation release];
     
-    [[self transitionWindow] setFrame:frame display:NO];
-    [[self transitionWindow] orderBack:nil];
-    [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
+    [[self window] setFrame:frame display:NO];
+    [[self window] orderBack:nil];
+    [[view window] addChildWindow:[self window] ordered:NSWindowAbove];
     
     [animation startAnimation];
     
@@ -500,8 +496,8 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     [[view window] enableFlushWindow];
     [[view window] flushWindow];
     
-    [[view window] removeChildWindow:[self transitionWindow]];
-    [[self transitionWindow] orderOut:nil];
+    [[view window] removeChildWindow:[self window]];
+    [[self window] orderOut:nil];
     [[self transitionView] setAnimation:nil];
 }
 

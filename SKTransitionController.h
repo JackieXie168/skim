@@ -62,9 +62,7 @@ typedef NSUInteger SKAnimationTransitionStyle;
 
 @class CIImage;
 
-@interface SKTransitionController : NSObject {
-    NSWindow *transitionWindow;
-    
+@interface SKTransitionController : NSWindowController {
     NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
