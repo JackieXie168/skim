@@ -113,17 +113,20 @@
     }
 }
 
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        NSString *statusDescription = [self statusDescription];
-        if (statusDescription)
-            return [[super accessibilityAttributeValue:attribute] stringByAppendingFormat:@"\n%@", statusDescription];
-    }
-    return [super accessibilityAttributeValue:attribute];
-}
-
 - (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
     return NSZeroRect;
+}
+
+#pragma mark Accessibility
+
+- (id)accessibilityAttributeNames {
+    return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityDescriptionAttribute];
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityDescriptionAttribute])
+        return [self statusDescription];
+    return [super accessibilityAttributeValue:attribute];
 }
 
 @end
