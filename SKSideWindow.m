@@ -40,6 +40,7 @@
 #import "SKMainWindowController.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKStringConstants.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -175,7 +176,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSRect frame = [self frame];
     frame.size.width = width;
     frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
-    [[self animator] setFrame:frame display:YES];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        [self setFrame:frame display:YES];
+    else
+        [[self animator] setFrame:frame display:YES];
 }
 
 - (void)makeTransparent {

@@ -38,6 +38,7 @@
 
 #import "SKStatusBar.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKStringConstants.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -182,6 +183,9 @@
 - (void)toggleBelowView:(NSView *)view animate:(BOOL)animate {
     if (animating)
         return;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
     
 	NSRect viewFrame = [view frame];
 	NSView *contentView = [view superview];
