@@ -37,6 +37,7 @@
  */
 
 #import "SKSplitView.h"
+#import "SKStringConstants.h"
 
 #define POSITION_KEY @"position"
 #define DIVIDERINDEX_KEY @"dividerIndex"
@@ -90,6 +91,9 @@
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
+    
     if (animating) {
         return;
     } else if (animate == NO) {

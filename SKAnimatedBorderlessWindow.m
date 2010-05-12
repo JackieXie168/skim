@@ -37,6 +37,7 @@
  */
 
 #import "SKAnimatedBorderlessWindow.h"
+#import "SKStringConstants.h"
 
 #define ALPHA_VALUE 1.0
 #define FADE_IN_DURATION 0.3
@@ -125,11 +126,15 @@
     [self setAlphaValue:[self defaultAlphaValue]];
     [self willClose];
     
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
-    [[self animator] setAlphaValue:0.0];
-    [NSAnimationContext endGrouping];
-    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+        [self orderOut:nil];
+    } else {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
+        [[self animator] setAlphaValue:0.0];
+        [NSAnimationContext endGrouping];
+        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
+    }
 }
 
 - (void)fadeIn {
@@ -139,11 +144,15 @@
         [self setAlphaValue:0.0];
     [super orderFront:self];
     
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:[self fadeInDuration]];
-    [[self animator] setAlphaValue:[self defaultAlphaValue]];
-    [NSAnimationContext endGrouping];
-    [self fadeOutAfterTimeout];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+        [self setAlphaValue:[self defaultAlphaValue]];
+    } else {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:[self fadeInDuration]];
+        [[self animator] setAlphaValue:[self defaultAlphaValue]];
+        [NSAnimationContext endGrouping];
+        [self fadeOutAfterTimeout];
+    }
 }
 
 @end

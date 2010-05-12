@@ -125,3 +125,4 @@ NSString *SKTableFontSizeKey = @"SKTableFontSize";
 NSString *SKSequentialPageNumberingKey = @"SKSequentialPageNumbering";
 NSString *SKDisablePinchZoomKey = @"SKDisablePinchZoom";
 NSString *SKDisableModificationDateKey = @"SKDisableModificationDate";
+NSString *SKDisableAnimationsKey = @"SKDisableAnimations";

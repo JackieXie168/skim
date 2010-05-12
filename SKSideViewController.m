@@ -41,6 +41,7 @@
 #import "SKGradientView.h"
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKStringConstants.h"
 
 #define CONTENTVIEW_KEY @"contentView"
 #define BUTTONVIEW_KEY @"buttonView"
@@ -88,6 +89,9 @@
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
     if ([newView window] != nil)
         return;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
     
     NSView *oldView = [[currentView retain] autorelease];
     self.currentView = newView;

@@ -124,3 +124,4 @@ extern NSString *SKTableFontSizeKey;
 extern NSString *SKSequentialPageNumberingKey;
 extern NSString *SKDisablePinchZoomKey;
 extern NSString *SKDisableModificationDateKey;
+extern NSString *SKDisableAnimationsKey;
