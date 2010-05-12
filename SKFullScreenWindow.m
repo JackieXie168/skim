@@ -40,6 +40,7 @@
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Actions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKFullScreenWindow
@@ -128,15 +129,20 @@
 }
 
 - (void)fadeOutBlocking:(BOOL)block {
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-    [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
-    [animation setDuration:0.5];
-    [animation setDelegate:self];
-    [animation startAnimation];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+        [self orderOut:nil];
+        [self setAlphaValue:1.0];
+    } else {
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+        [fadeOutDict release];
+        
+        [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
+        [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
+        [animation setDuration:0.5];
+        [animation setDelegate:self];
+        [animation startAnimation];
+    }
 }
 
 - (void)fadeOutBlocking {
