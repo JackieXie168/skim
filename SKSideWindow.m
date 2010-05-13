@@ -194,7 +194,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
         if (hideWhenClosed != SKClosedSidePanelCollapse) {
-            [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+            NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
+            [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:delay];
         }
     }
 }
