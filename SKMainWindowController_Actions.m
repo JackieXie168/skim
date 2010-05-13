@@ -729,19 +729,19 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)searchPDF:(id)sender {
-    BOOL wasClosed = NO;
+    BOOL selectImmediate = YES;
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
             [leftSideWindow expand];
     } else if ([self leftSidePaneIsOpen] == NO) {
-        wasClosed = YES;
+        selectImmediate = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey];
         [self toggleLeftSidePane:sender];
     }
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
-    if (wasClosed)
-        [leftSideController.searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
-    else
+    if (selectImmediate)
         [leftSideController.searchField selectText:self];
+    else
+        [leftSideController.searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
 }
 
 - (IBAction)performFit:(id)sender {
@@ -1000,8 +1000,9 @@ static NSArray *allMainDocumentPDFViews() {
     
     if ([secondaryPdfView window]) {
         
+        NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
-        [secondaryPdfContentView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+        [secondaryPdfContentView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:delay];
         
     } else {
         
