@@ -124,20 +124,11 @@ static char SKMainDocumentDefaultsObservationContext;
     double openMetaRating;
 }
 
-- (PDFDocument *)pdfDocument;
-- (void)setPdfDocument:(PDFDocument *)newPdfDocument;
-
-- (NSArray *)noteDicts;
-- (void)setNoteDicts:(NSArray *)newNoteDicts;
-
-- (NSDictionary *)presentationOptions;
-- (void)setPresentationOptions:(NSDictionary *)newPresentationOptions;
-
-- (NSArray *)openMetaTags;
-- (void)setOpenMetaTags:(NSArray *)newOpenMetaTags;
-
-- (double)openMetaRating;
-- (void)setOpenMetaRating:(double)newOpenMetaRating;
+@property (nonatomic, retain) PDFDocument *pdfDocument;
+@property (nonatomic, copy) NSArray *noteDicts;
+@property (nonatomic, copy) NSDictionary *presentationOptions;
+@property (nonatomic, copy) NSArray *openMetaTags;
+@property (nonatomic) double openMetaRating;
 
 @end
 
@@ -2192,6 +2183,8 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
 
 @implementation SKTemporaryData
 
+@synthesize pdfDocument, noteDicts, presentationOptions, openMetaTags, openMetaRating;
+
 - (id)init {
     if (self = [super init]) {
         pdfDocument = nil;
@@ -2209,58 +2202,6 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     SKDESTROY(presentationOptions);
     SKDESTROY(openMetaTags);
     [super dealloc];
-}
-
-- (PDFDocument *)pdfDocument {
-    return pdfDocument;
-}
-
-- (void)setPdfDocument:(PDFDocument *)newPdfDocument {
-    if (pdfDocument != newPdfDocument) {
-        [pdfDocument release];
-        pdfDocument = [newPdfDocument retain];
-    }
-}
-
-- (NSArray *)noteDicts {
-    return noteDicts;
-}
-
-- (void)setNoteDicts:(NSArray *)newNoteDicts {
-    if (noteDicts != newNoteDicts) {
-        [noteDicts release];
-        noteDicts = [newNoteDicts copy];
-    }
-}
-
-- (NSDictionary *)presentationOptions {
-    return presentationOptions;
-}
-
-- (void)setPresentationOptions:(NSDictionary *)newPresentationOptions {
-    if (presentationOptions != newPresentationOptions) {
-        [presentationOptions release];
-        presentationOptions = [newPresentationOptions copy];
-    }
-}
-
-- (NSArray *)openMetaTags {
-    return openMetaTags;
-}
-
-- (void)setOpenMetaTags:(NSArray *)newOpenMetaTags {
-    if (openMetaTags != newOpenMetaTags) {
-        [openMetaTags release];
-        openMetaTags = [newOpenMetaTags copy];
-    }
-}
-
-- (double)openMetaRating {
-    return openMetaRating;
-}
-
-- (void)setOpenMetaRating:(double)newOpenMetaRating {
-    openMetaRating = newOpenMetaRating;
 }
 
 @end
