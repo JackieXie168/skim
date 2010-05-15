@@ -48,8 +48,8 @@
 - (id)initWithData:(NSData *)aData;
 - (id)initWithName:(NSString *)aName;
 
-- (NSString *)name;
-- (NSTextStorage *)richText;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSTextStorage *richText;
 
 @end
 

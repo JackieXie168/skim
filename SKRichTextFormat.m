@@ -43,6 +43,8 @@
 
 @implementation SKRichTextFormat
 
+@dynamic name, richText;
+
 + (id)richTextSpecifierWithData:(NSData *)aData {
     SKRichTextFormat *rtf = [[self alloc] initWithData:aData];
     NSScriptObjectSpecifier *rtfSpecifier = [rtf objectSpecifier];
