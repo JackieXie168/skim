@@ -452,6 +452,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     for (SKBookmark *bm in newBookmarks) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
             [bm addObserver:self forKeyPath:LABEL_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
+            [bm addObserver:self forKeyPath:PAGEINDEX_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
                 [bm addObserver:self forKeyPath:CHILDREN_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
                 [self startObservingBookmarks:[bm children]];
@@ -464,6 +465,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     for (SKBookmark *bm in oldBookmarks) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
             [bm removeObserver:self forKeyPath:LABEL_KEY];
+            [bm removeObserver:self forKeyPath:PAGEINDEX_KEY];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
                 [bm removeObserver:self forKeyPath:CHILDREN_KEY];
                 [self stopObservingBookmarks:[bm children]];
@@ -510,6 +512,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [[[self undoManager] prepareWithInvocationTarget:self] setChildren:[[oldValue copy] autorelease] ofBookmark:bookmark];
                 } else if ([keyPath isEqualToString:LABEL_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
+                } else if ([keyPath isEqualToString:PAGEINDEX_KEY]) {
+                    [[[self undoManager] prepareWithInvocationTarget:bookmark] setPageIndex:[oldValue unsignedIntegerValue]];
                 }
                 break;
             case NSKeyValueChangeInsertion:
@@ -589,7 +593,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             return [item path];
         }
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [[item pageNumber] stringValue];
+        return [item pageNumber];
     }
     return nil;
 }
@@ -600,6 +604,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSString *newlabel = [object valueForKey:SKTextWithIconCellStringKey] ?: @"";
         if ([newlabel isEqualToString:[item label]] == NO)
             [item setLabel:newlabel];
+    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
+        if ([object isEqual:[item pageNumber]] == NO)
+            [item setPageNumber:object];
     }
 }
 
@@ -676,7 +683,12 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    return [[tableColumn identifier] isEqualToString:LABEL_COLUMNID] && [item bookmarkType] != SKBookmarkTypeSeparator;
+    NSString *tcID = [tableColumn identifier];
+    if ([tcID isEqualToString:LABEL_COLUMNID])
+        return [item bookmarkType] != SKBookmarkTypeSeparator;
+    else if ([tcID isEqualToString:PAGE_COLUMNID])
+        return [item bookmarkType] == SKBookmarkTypeBookmark;
+    return NO;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation {
