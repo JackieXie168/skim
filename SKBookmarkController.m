@@ -174,7 +174,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
 }
@@ -249,6 +249,33 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if (folder == nil) folder = bookmarkRoot;
     if (bookmark = [SKBookmark bookmarkSessionWithChildren:children label:label])
         [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
+}
+
+- (BOOL)addBookmarksForPaths:(NSArray *)paths basePath:(NSString *)basePath toFolder:(SKBookmark *)folder atIndex:(NSUInteger)anIndex {
+    BOOL rv = NO;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    
+    for (NSString *file in paths) {
+        if ([[file lastPathComponent] hasPrefix:@"."] == NO) {
+            NSString *path = [basePath stringByAppendingPathComponent:file] ?: file;
+            NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
+            SKBookmark *bookmark;
+            if (SKIsFolderDocumentType(fileType)) {
+                if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
+                    [folder insertObject:bookmark inChildrenAtIndex:anIndex++];
+                    [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
+                    rv = YES;
+                }
+            } else if ([dc documentClassForType:fileType] == [SKMainDocument class]) {
+                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:0 label:[fm displayNameAtPath:path]]) {
+                    [folder insertObject:bookmark inChildrenAtIndex:anIndex++];
+                    rv = YES;
+                }
+            }
+        }
+    }
+    return rv;
 }
 
 - (NSArray *)draggedBookmarks {
@@ -619,9 +646,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     
-    if (type) {
+    if ([type isEqualToString:SKBookmarkRowsPboardType]) {
         if (anIndex == NSOutlineViewDropOnItemIndex) {
             if ([item bookmarkType] == SKBookmarkTypeFolder && [outlineView isItemExpanded:item]) {
                 [ov setDropItem:item dropChildIndex:0];
@@ -632,15 +659,17 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             }
         }
         return [item isDescendantOfArray:[self draggedBookmarks]] ? NSDragOperationNone : NSDragOperationMove;
+    } else if ([type isEqualToString:NSFilenamesPboardType]) {
+        return anIndex == NSOutlineViewDropOnItemIndex ? NSDragOperationNone : NSDragOperationEvery;
     }
     return NSDragOperationNone;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     
-    if (type) {
+    if ([type isEqualToString:SKBookmarkRowsPboardType]) {
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
@@ -657,6 +686,12 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
 		}
         return YES;
+    } else if ([type isEqualToString:NSFilenamesPboardType]) {
+        if (item == nil) item = bookmarkRoot;
+        
+        NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
+        [self endEditing];
+        return [self addBookmarksForPaths:paths basePath:nil toFolder:item atIndex:anIndex];
     }
     return NO;
 }
