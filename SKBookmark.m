@@ -186,7 +186,9 @@ static Class SKBookmarkClass = Nil;
 
 - (NSString *)path { return nil; }
 - (NSUInteger)pageIndex { return NSNotFound; }
+- (void)setPageIndex:(NSUInteger)newPageIndex {}
 - (NSNumber *)pageNumber { return nil; }
+- (void)setPageNumber:(NSNumber *)newPageNumber {}
 
 - (NSArray *)session { return nil; }
 
@@ -373,8 +375,16 @@ static Class SKBookmarkClass = Nil;
     return pageIndex;
 }
 
+- (void)setPageIndex:(NSUInteger)newPageIndex { pageIndex = newPageIndex; }
+
 - (NSNumber *)pageNumber {
     return pageIndex == NSNotFound ? nil : [NSNumber numberWithUnsignedInteger:pageIndex + 1];
+}
+
+- (void)setPageNumber:(NSNumber *)newPageNumber {
+    NSUInteger newNumber = [newPageNumber unsignedIntegerValue];
+    if (newNumber > 0)
+        [self setPageIndex:newNumber - 1];
 }
 
 - (NSString *)label {

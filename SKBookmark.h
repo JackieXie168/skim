@@ -72,8 +72,8 @@ typedef NSInteger SKBookmarkType;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, readonly) NSImage *icon;
 @property (nonatomic, readonly) NSString *path;
-@property (nonatomic, readonly) NSUInteger pageIndex;
-@property (nonatomic, readonly) NSNumber *pageNumber;
+@property (nonatomic) NSUInteger pageIndex;
+@property (nonatomic, retain) NSNumber *pageNumber;
 @property (nonatomic, assign) SKBookmark *parent;
 
 - (NSArray *)children;
