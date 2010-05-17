@@ -652,7 +652,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if (anIndex != NSOutlineViewDropOnItemIndex) {
         if ([type isEqualToString:NSFilenamesPboardType])
             dragOp = NSDragOperationEvery;
-        else if ([type isEqualToString:SKBookmarkRowsPboardType] && [item isDescendantOfArray:[self draggedBookmarks]])
+        else if ([type isEqualToString:SKBookmarkRowsPboardType] && [item isDescendantOfArray:[self draggedBookmarks]] == NO)
             dragOp = NSDragOperationMove;
     }
     return dragOp;
