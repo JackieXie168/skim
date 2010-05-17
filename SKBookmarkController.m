@@ -647,22 +647,15 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
+    NSDragOperation dragOp = NSDragOperationNone;
     
-    if ([type isEqualToString:SKBookmarkRowsPboardType]) {
-        if (anIndex == NSOutlineViewDropOnItemIndex) {
-            if ([item bookmarkType] == SKBookmarkTypeFolder && [outlineView isItemExpanded:item]) {
-                [ov setDropItem:item dropChildIndex:0];
-            } else if (item) {
-                [ov setDropItem:(SKBookmark *)[item parent] == bookmarkRoot ? nil : [item parent] dropChildIndex:[[[item parent] children] indexOfObject:item] + 1];
-            } else {
-                [ov setDropItem:nil dropChildIndex:[bookmarkRoot countOfChildren]];
-            }
-        }
-        return [item isDescendantOfArray:[self draggedBookmarks]] ? NSDragOperationNone : NSDragOperationMove;
-    } else if ([type isEqualToString:NSFilenamesPboardType]) {
-        return anIndex == NSOutlineViewDropOnItemIndex ? NSDragOperationNone : NSDragOperationEvery;
+    if (anIndex != NSOutlineViewDropOnItemIndex) {
+        if ([type isEqualToString:NSFilenamesPboardType])
+            dragOp = NSDragOperationEvery;
+        else if ([type isEqualToString:SKBookmarkRowsPboardType] && [item isDescendantOfArray:[self draggedBookmarks]])
+            dragOp = NSDragOperationMove;
     }
-    return NSDragOperationNone;
+    return dragOp;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
