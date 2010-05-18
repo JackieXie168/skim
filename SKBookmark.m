@@ -266,7 +266,9 @@ static Class SKBookmarkClass = Nil;
     } else if ([dictionary objectForKey:@"windowFrame"]) {
         return [[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     } else {
-        return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:ALIASDATA_KEY]] pageIndex:[[dictionary objectForKey:PAGEINDEX_KEY] unsignedIntegerValue] label:[dictionary objectForKey:LABEL_KEY]];
+        BDAlias *alias = [BDAlias aliasWithData:[dictionary objectForKey:ALIASDATA_KEY]];
+        NSNumber *pageIndex = [dictionary objectForKey:PAGEINDEX_KEY];
+        return [[SKFileBookmark alloc] initWithAlias:alias pageIndex:(pageIndex ? [pageIndex unsignedIntegerValue] : NSNotFound) label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
