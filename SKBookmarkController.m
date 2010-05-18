@@ -645,11 +645,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
-    NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     NSDragOperation dragOp = NSDragOperationNone;
-    
     if (anIndex != NSOutlineViewDropOnItemIndex) {
+        NSPasteboard *pboard = [info draggingPasteboard];
+        NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
         if ([type isEqualToString:NSFilenamesPboardType])
             dragOp = NSDragOperationEvery;
         else if ([type isEqualToString:SKBookmarkRowsPboardType] && [item isDescendantOfArray:[self draggedBookmarks]] == NO)
