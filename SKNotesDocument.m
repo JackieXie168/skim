@@ -72,6 +72,8 @@
 
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
+#define SKWindowFrameKey @"windowFrame"
+
 #define NOTES_KEY @"notes"
 #define PAGES_KEY @"pages"
 
@@ -315,6 +317,21 @@
 - (void)updateNoteFilterPredicate {
     [arrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[searchField stringValue] caseInsensitive:caseInsensitiveSearch]];
     [outlineView reloadData];
+}
+
+- (NSDictionary *)currentDocumentSetup {
+    NSMutableDictionary *setup = [[[super currentDocumentSetup] mutableCopy] autorelease];
+    NSWindow *window = [[[self windowControllers] lastObject] window];
+    if (window)
+        [setup setObject:NSStringFromRect([window frame]) forKey:SKWindowFrameKey];
+    return setup;
+}
+
+- (void)applySetup:(NSDictionary *)setup {
+    NSWindow *window = [[[self windowControllers] lastObject] window];
+    NSString *rectString = [setup objectForKey:SKWindowFrameKey];
+    if (rectString && window)
+        [window setFrame:NSRectFromString(rectString) display:YES];
 }
 
 #pragma mark Printing
