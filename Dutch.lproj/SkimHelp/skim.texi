@@ -580,6 +580,7 @@ U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te ver
 * Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
+* De randstijl of lijnstijl van notities wijzigen::
 @end menu
 
 @c ======================================================================================
@@ -655,6 +656,7 @@ U kunt lijnen wijzigen en verwijderen. Om een lijn of ŽŽn van zijn eindpunten te
 * Gedeelten van een PDF-document markeren::
 * De kleur van notities en markeringen wijzigen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
+* De randstijl of lijnstijl van notities wijzigen::
 @end menu
 
 @c ======================================================================================
@@ -680,7 +682,10 @@ In Skim kunt u de kleur van een notitie, markering of lijn die u met Skim heeft 
 * Gedeelten van een PDF-document markeren::
 * Lijnen aan een PDF-document toevoegen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
+* De randstijl of lijnstijl van notities wijzigen::
 @end menu
+
+@c ======================================================================================
 
 @topic Het lettertype en de lettergrootte van textnotities wijzigen
 
@@ -703,6 +708,35 @@ In Skim kunt u het lettertype en de lettergrootte van een tekstnotitie dat u met
 * Gedeelten van een PDF-document markeren::
 * Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
+* De randstijl of lijnstijl van notities wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic De randstijl of lijnstijl van notities wijzigen
+
+In Skim kunt u de randstijl van een notitie, of the lijnstijl van een lijn die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardlijnstijlen die gebruikt worden voor nieuwe notities en lijnen instellen.
+
+@box{taskbox}
+@heading Om de standaardlijnstijlen voor notities of lijnen te wijzigen:
+@itemize
+@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een lijnstijlcontrol behorende bij de type notitie of lijn die u wilt veranderen.
+@end itemize
+@heading Om de randstijl of ljnstijl van een enkele notitie of lijn te wijzigen:
+@itemize
+@item Selecteer de notitie of lijn in de PDF en kies Extra's > Toon lijnen.
+@end itemize
+@endbox
+
+Wanneer u een lijnstijlcontrol of een notitie heeft geselecteerd kunt u de stijl kiezen in het Lijnen paneel. U kunt de lijnbreedte, de stijl bvan de lijnen, en het streepjespatroon aanpassen. Om een gestreepte lijn te krijgen kiest u de gestreepte lijnstijl en typt u de lengtes voor het streepjespatroon in. Voor lijnen kunt u ook de begin- en eindstijl aanpassen.
+
+@heading See also
+@menu
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+* Lijnen aan een PDF-document toevoegen::
+* De kleur van notities en markeringen wijzigen::
+* Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
 
 @c ======================================================================================
