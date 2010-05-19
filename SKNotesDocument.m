@@ -63,6 +63,9 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "NSColor_SKExtensions.h"
+#import "SKBookmarkController.h"
+#import "SKBookmark.h"
+#import "SKTextFieldSheetController.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -455,6 +458,68 @@
     caseInsensitiveSearch = NO == caseInsensitiveSearch;
     if ([[searchField stringValue] length])
         [self searchNotes:searchField];
+}
+
+- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *path = [self fileName];
+        NSString *label = [controller stringValue];
+        [bmController addBookmarkForPath:path pageIndex:NSNotFound label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)setupBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSDictionary *setup = [self currentDocumentSetup];
+        NSString *label = [controller stringValue];
+        [bmController addBookmarkForSetup:setup label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSetupBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(setupBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *label = [controller stringValue];
+        NSMutableArray *setups = [NSMutableArray array];
+        for (id document in [NSApp orderedDocuments])
+            [setups addObject:[document currentDocumentSetup]];
+        [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSessionBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(sessionBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

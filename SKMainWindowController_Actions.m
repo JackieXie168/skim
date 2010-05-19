@@ -854,10 +854,8 @@ static NSArray *allMainDocumentPDFViews() {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *label = [controller stringValue];
         NSMutableArray *setups = [NSMutableArray array];
-        for (id document in [NSApp orderedDocuments]) {
-            if ([document isKindOfClass:[SKMainDocument class]])
-                [setups addObject:[document currentDocumentSetup]];
-        }
+        for (id document in [NSApp orderedDocuments])
+            [setups addObject:[document currentDocumentSetup]];
         [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
     }
 }
