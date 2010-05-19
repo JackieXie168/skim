@@ -241,9 +241,9 @@
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         
-        //[ownerController setContent:nil];
         [leftSideController setMainController:nil];
         [rightSideController setMainController:nil];
+        [toolbarController setMainController:nil];
     }
 }
 
