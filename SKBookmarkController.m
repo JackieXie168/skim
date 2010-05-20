@@ -260,6 +260,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if ([[file lastPathComponent] hasPrefix:@"."] == NO) {
             NSString *path = [basePath stringByAppendingPathComponent:file] ?: file;
             NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
+            Class docClass;
             SKBookmark *bookmark;
             if (SKIsFolderDocumentType(fileType)) {
                 if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
@@ -267,8 +268,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
                     rv = YES;
                 }
-            } else if ([dc documentClassForType:fileType] == [SKMainDocument class]) {
-                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:0 label:[fm displayNameAtPath:path]]) {
+            } else if (docClass = [dc documentClassForType:fileType]) {
+                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:(docClass == [SKMainDocument class] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
                     [folder insertObject:bookmark inChildrenAtIndex:anIndex++];
                     rv = YES;
                 }
