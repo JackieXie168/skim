@@ -53,6 +53,7 @@
     PDFDocument *pdfDocument;
     SKFloatMapTable *rowHeights;
     SKNoteTypeSheetController *noteTypeSheetController;
+    NSRect windowRect;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
 }

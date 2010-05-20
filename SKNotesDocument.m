@@ -94,6 +94,7 @@
         notes = [[NSArray alloc] init];
         pdfDocument = nil;
         rowHeights = [[SKFloatMapTable alloc] init];
+        windowRect = NSZeroRect;
         caseInsensitiveSearch = YES;
     }
     return self;
@@ -134,6 +135,9 @@
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
         [self toggleStatusBar:nil];
+    
+    if (NSEqualRects(windowRect, NSZeroRect) == NO)
+        [[aController window] setFrame:windowRect display:NO];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
@@ -331,10 +335,15 @@
 }
 
 - (void)applySetup:(NSDictionary *)setup {
-    NSWindow *window = [[[self windowControllers] lastObject] window];
     NSString *rectString = [setup objectForKey:SKWindowFrameKey];
-    if (rectString && window)
-        [window setFrame:NSRectFromString(rectString) display:YES];
+    if (rectString) {
+        NSWindowController *wc = [[self windowControllers] lastObject];
+        if ([wc isWindowLoaded] == NO) {
+            windowRect = NSRectFromString(rectString);
+        } else {
+            [[wc window] setFrame:NSRectFromString(rectString) display:YES];
+        }
+    }
 }
 
 #pragma mark Printing
