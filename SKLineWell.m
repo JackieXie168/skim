@@ -516,8 +516,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
-        if ([dashPattern count] && style != kPDFBorderStyleDashed)
-            [self setStyle:kPDFBorderStyleDashed];
         [self changedValueForKey:SKLineWellDashPatternKey];
     }
 }
