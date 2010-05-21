@@ -251,10 +251,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
 }
 
-- (BOOL)addBookmarksForPaths:(NSArray *)paths basePath:(NSString *)basePath toFolder:(SKBookmark *)folder atIndex:(NSUInteger)anIndex {
-    BOOL rv = NO;
+- (NSUInteger)addBookmarksForPaths:(NSArray *)paths basePath:(NSString *)basePath toFolder:(SKBookmark *)folder atIndex:(NSUInteger)anIndex {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+    NSUInteger insertIndex = anIndex;
     
     for (NSString *file in paths) {
         if ([[file lastPathComponent] hasPrefix:@"."] == NO) {
@@ -264,19 +264,17 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             SKBookmark *bookmark;
             if (SKIsFolderDocumentType(fileType)) {
                 if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
-                    [folder insertObject:bookmark inChildrenAtIndex:anIndex++];
+                    [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
-                    rv = YES;
                 }
             } else if (docClass = [dc documentClassForType:fileType]) {
                 if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:(docClass == [SKMainDocument class] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
-                    [folder insertObject:bookmark inChildrenAtIndex:anIndex++];
-                    rv = YES;
+                    [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                 }
             }
         }
     }
-    return rv;
+    return insertIndex - anIndex;
 }
 
 - (NSArray *)draggedBookmarks {
@@ -681,11 +679,14 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 		}
         return YES;
     } else if ([type isEqualToString:NSFilenamesPboardType]) {
-        if (item == nil) item = bookmarkRoot;
-        
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
         [self endEditing];
-        return [self addBookmarksForPaths:paths basePath:nil toFolder:item atIndex:anIndex];
+        NSUInteger count = [self addBookmarksForPaths:paths basePath:nil toFolder:(item ?: bookmarkRoot) atIndex:anIndex];
+        if (count > 0 && (item == nil || [outlineView isItemExpanded:item])) {
+            NSRange range = NSMakeRange((item ? [outlineView rowForItem:item] + 1 : 0) + anIndex, count);
+            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
+        }
+        return count > 0;
     }
     return NO;
 }
