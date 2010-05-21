@@ -716,7 +716,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if ([tcID isEqualToString:LABEL_COLUMNID])
         return [item bookmarkType] != SKBookmarkTypeSeparator;
     else if ([tcID isEqualToString:PAGE_COLUMNID])
-        return [item bookmarkType] == SKBookmarkTypeBookmark;
+        return [item pageIndex] != NSNotFound;
     return NO;
 }
 
