@@ -662,6 +662,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     
     if ([type isEqualToString:SKBookmarkRowsPboardType]) {
+        NSMutableArray *movedBookmarks = [NSMutableArray array];
+        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+        
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
@@ -676,7 +679,16 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             }
             [parent removeObjectFromChildrenAtIndex:bookmarkIndex];
             [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
+            [movedBookmarks addObject:bookmark];
 		}
+        for (SKBookmark *bookmark in movedBookmarks) {
+            NSInteger row = [outlineView rowForItem:bookmark];
+            if (row != -1)
+                [indexes addIndex:row];
+        }
+        if ([indexes count])
+            [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+        
         return YES;
     } else if ([type isEqualToString:NSFilenamesPboardType]) {
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
