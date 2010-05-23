@@ -175,6 +175,11 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
+- (void)dealloc {
+    parent = nil;
+    [super dealloc];
+}
+
 - (NSDictionary *)properties { return nil; }
 
 - (SKBookmarkType)bookmarkType { return SKBookmarkTypeSeparator; }
