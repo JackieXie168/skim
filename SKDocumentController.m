@@ -276,7 +276,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return document;
 }
 
-- (void)newDocumentFromClipboard:(id)sender {
+- (IBAction)newDocumentFromClipboard:(id)sender {
     NSError *error = nil;
     id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
     
