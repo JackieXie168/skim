@@ -85,7 +85,7 @@ extern NSString *SKDocumentDidShowNotification;
     NSArray *customExportTemplateFiles;
 }
 
-- (void)newDocumentFromClipboard:(id)sender;
+- (IBAction)newDocumentFromClipboard:(id)sender;
 // this method may return an SKDownload instance
 - (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
