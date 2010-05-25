@@ -336,7 +336,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return [self compare:aStr
                  options:NSCaseInsensitiveSearch | NSNumericSearch
                    range:NSMakeRange(0, [self length])
-                  locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
+                  locale:[NSLocale currentLocale]];
 }
 
 - (NSString *)lossyASCIIString {
