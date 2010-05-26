@@ -642,7 +642,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 	    NSAccessibilityParentAttribute,
 	    NSAccessibilityWindowAttribute,
 	    NSAccessibilityTopLevelUIElementAttribute,
-        NSAccessibilityTitleUIElementAttribute,
 	    NSAccessibilityPositionAttribute,
 	    NSAccessibilitySizeAttribute,
 	    nil];
@@ -673,8 +672,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTitleUIElementAttribute]) {
-        return titleUIElement;
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
         return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:[self bounds].origin toView:nil]]];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {

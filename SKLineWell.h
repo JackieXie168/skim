@@ -72,8 +72,6 @@ typedef NSInteger SKLineWellDisplayStyle;
     
     id target;
     SEL action;
-    
-    id titleUIElement;
 }
 
 @property (nonatomic) SEL action;
