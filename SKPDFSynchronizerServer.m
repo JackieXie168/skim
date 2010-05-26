@@ -310,11 +310,12 @@ struct SKServerFlags {
         NSMutableArray *array;
         unichar ch;
         NSScanner *sc = [[NSScanner alloc] initWithString:pdfsyncString];
+        NSCharacterSet *newlines = [NSCharacterSet newlineCharacterSet];
         
         [sc setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
         
-        if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
-            [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
+        if ([sc scanUpToCharactersFromSet:newlines intoString:&file] &&
+            [sc scanCharactersFromSet:newlines intoString:NULL]) {
             
             file = [self sourceFileForFileName:file isTeX:YES removeQuotes:YES];
             [files addObject:file];
@@ -326,7 +327,7 @@ struct SKServerFlags {
             // we ignore the version
             if ([sc scanString:@"version" intoString:NULL] && [sc scanInteger:NULL]) {
                 
-                [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+                [sc scanCharactersFromSet:newlines intoString:NULL];
                 
                 while ([self shouldKeepRunning] && [sc scanCharacter:&ch]) {
                     
@@ -363,7 +364,7 @@ struct SKServerFlags {
                             break;
                         case '(':
                             // start of a new source file
-                            if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+                            if ([sc scanUpToCharactersFromSet:newlines intoString:&file]) {
                                 file = [self sourceFileForFileName:file isTeX:YES removeQuotes:YES];
                                 [files addObject:file];
                                 if ([lines objectForKey:file] == nil) {
@@ -385,8 +386,8 @@ struct SKServerFlags {
                             break;
                     }
                     
-                    [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-                    [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+                    [sc scanUpToCharactersFromSet:newlines intoString:NULL];
+                    [sc scanCharactersFromSet:newlines intoString:NULL];
                 }
                 
                 NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"line" ascending:YES] autorelease];
