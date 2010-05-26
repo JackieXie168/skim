@@ -45,18 +45,18 @@ static NSString *localizedStringFromTable(NSString *string, NSString *table) {
     return [[NSBundle mainBundle] localizedStringForKey:string value:string table:table];
 }
 
-#define LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, property) \
+#define LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(property, table) \
 do { \
-    NSString *value = localizedStringFromTable(object.property, table); \
-    if (value) object.property = value; \
+    NSString *value = localizedStringFromTable(property, table); \
+    if (value) property = value; \
 } while (0)
 
-#define localizeTitleForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, title)
-#define localizeAlternateTitleForObjectFromTable(object, table)    LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, alternateTitle)
-#define localizeStringValueForObjectFromTable(object, table)       LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, stringValue)
-#define localizePlaceholderStringForObjectFromTable(object, table) LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, placeholderString)
-#define localizeLabelForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, label)
-#define localizeToolTipForObjectFromTable(object, table)           LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object, table, toolTip)
+#define localizeTitleForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.title, table)
+#define localizeAlternateTitleForObjectFromTable(object, table)    LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.alternateTitle, table)
+#define localizeStringValueForObjectFromTable(object, table)       LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.stringValue, table)
+#define localizePlaceholderStringForObjectFromTable(object, table) LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.placeholderString, table)
+#define localizeLabelForObjectFromTable(object, table)             LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.label, table)
+#define localizeToolTipForObjectFromTable(object, table)           LOCALIZE_STRING_FOR_OBJECT_FROM_TABLE(object.toolTip, table)
 
 @implementation NSObject (SKLocalization)
 
