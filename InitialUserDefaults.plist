@@ -165,7 +165,7 @@
 		<key>SKAutoHidePresentationContents</key>
 		<true/>
 		<key>SKEnableAppleRemote</key>
-		<true/>
+		<false/>
 		<key>SKEnableKeyspanFrontRowControl</key>
 		<false/>
 		<key>SKEnableKeyboardRemoteSimulation</key>
