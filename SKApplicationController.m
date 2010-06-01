@@ -444,7 +444,7 @@
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
-            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontNames", @"defaultIconType", nil];
+            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontSizes", @"defaultTextNoteFontColor", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
@@ -632,8 +632,8 @@
 - (NSDictionary *)defaultFontNames {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [sud colorForKey:SKFreeTextNoteFontNameKey], SKNFreeTextString, 
-        [sud colorForKey:SKAnchoredNoteFontNameKey], SKNNoteString, 
+        [sud stringForKey:SKFreeTextNoteFontNameKey], SKNFreeTextString, 
+        [sud stringForKey:SKAnchoredNoteFontNameKey], SKNNoteString, 
         nil];
 }
 
@@ -649,8 +649,8 @@
 - (NSDictionary *)defaultFontSizes {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [sud objectForKey:SKFreeTextNoteFontNameKey], SKNFreeTextString, 
-        [sud objectForKey:SKAnchoredNoteFontNameKey], SKNNoteString, 
+        [sud objectForKey:SKFreeTextNoteFontSizeKey], SKNFreeTextString, 
+        [sud objectForKey:SKAnchoredNoteFontSizeKey], SKNNoteString, 
         nil];
 }
 
@@ -658,9 +658,9 @@
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *fontSize;
     if (fontSize = [fontSizeDict objectForKey:SKNFreeTextString])
-        [sud setObject:fontSize forKey:SKFreeTextNoteFontNameKey];
+        [sud setObject:fontSize forKey:SKFreeTextNoteFontSizeKey];
     if (fontSize = [fontSizeDict objectForKey:SKNNoteString])
-        [sud setObject:fontSize forKey:SKAnchoredNoteFontNameKey];
+        [sud setObject:fontSize forKey:SKAnchoredNoteFontSizeKey];
 }
 
 - (NSColor *)defaultTextNoteFontColor {
