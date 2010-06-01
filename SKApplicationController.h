@@ -59,8 +59,8 @@
 - (IBAction)openBookmarkAction:(id)sender;
 
 @property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
-@property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor;
-@property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns;
+@property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
+@property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns, *defaultFontNames, *defaultFontSizes;
 @property (nonatomic) FourCharCode defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
 
 @end
