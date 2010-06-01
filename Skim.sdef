@@ -814,6 +814,18 @@
                 description="The default end line style used for new lines.">
                 <cocoa key="defaultEndLineStyle"/>
             </property>
+            <property name="default note font names" type="note font names" code="DNFN"
+                description="The default font names used for new notes.">
+                <cocoa key="defaultFontNames"/>
+            </property>
+            <property name="default note font sizes" type="note font sizes" code="DNFS"
+                description="The default font sizes used for new notes.">
+                <cocoa key="defaultFontSizes"/>
+            </property>
+            <property name="default text note font color" type="RGBA color" code="DNFC"
+                description="The default font color used for new text notes.">
+                <cocoa key="defaultTextNoteFontColor"/>
+            </property>
             <property name="default note icon type" type="icon type" code="DNtI"
                 description="The default icon type used for new anchored notes.">
                 <cocoa key="defaultIconType"/>
@@ -1348,6 +1360,28 @@
                 description="Default freehand dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="Ink"/>
+            </property>
+        </record-type>
+
+        <record-type name="note font names" code="NDFN">
+            <property name="text note font name" code="FNTx" type="text"
+                description="Default text note font name.">
+                <cocoa key="FreeText"/>
+            </property>
+            <property name="anchored note font name" code="FNAn" type="text"
+                description="Default anchored note font name.">
+                <cocoa key="Note"/>
+            </property>
+        </record-type>
+
+        <record-type name="note font sizes" code="NDFS">
+            <property name="text note font size" code="FSTx" type="integer"
+                description="Default text note font size.">
+                <cocoa key="FreeText"/>
+            </property>
+            <property name="anchored note font size" code="FSAn" type="integer"
+                description="Default anchored note font size.">
+                <cocoa key="Note"/>
             </property>
         </record-type>
 

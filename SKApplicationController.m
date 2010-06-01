@@ -107,7 +107,7 @@
 
 @implementation SKApplicationController
 
-@dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
+@dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultIconType;
 
 + (void)initialize{
     SKINITIALIZE;
@@ -444,7 +444,7 @@
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
-            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultIconType", nil];
+            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontNames", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
@@ -627,6 +627,48 @@
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
     if (array = [dict objectForKey:SKNInkString])
         [sud setObject:array forKey:SKInkNoteDashPatternKey];
+}
+
+- (NSDictionary *)defaultFontNames {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    return [NSDictionary dictionaryWithObjectsAndKeys: 
+        [sud colorForKey:SKFreeTextNoteFontNameKey], SKNFreeTextString, 
+        [sud colorForKey:SKAnchoredNoteFontNameKey], SKNNoteString, 
+        nil];
+}
+
+- (void)setDefaultFontNames:(NSDictionary *)fontNameDict {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSString *fontName;
+    if (fontName = [fontNameDict objectForKey:SKNFreeTextString])
+        [sud setObject:fontName forKey:SKFreeTextNoteFontNameKey];
+    if (fontName = [fontNameDict objectForKey:SKNNoteString])
+        [sud setObject:fontName forKey:SKAnchoredNoteFontNameKey];
+}
+
+- (NSDictionary *)defaultFontSizes {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    return [NSDictionary dictionaryWithObjectsAndKeys: 
+        [sud objectForKey:SKFreeTextNoteFontNameKey], SKNFreeTextString, 
+        [sud objectForKey:SKAnchoredNoteFontNameKey], SKNNoteString, 
+        nil];
+}
+
+- (void)setDefaultFontSizes:(NSDictionary *)fontSizeDict {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSNumber *fontSize;
+    if (fontSize = [fontSizeDict objectForKey:SKNFreeTextString])
+        [sud setObject:fontSize forKey:SKFreeTextNoteFontNameKey];
+    if (fontSize = [fontSizeDict objectForKey:SKNNoteString])
+        [sud setObject:fontSize forKey:SKAnchoredNoteFontNameKey];
+}
+
+- (NSColor *)defaultTextNoteFontColor {
+    return [[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteFontColorKey];
+}
+
+- (void)setDefaultTextNoteFontColor:(NSColor *)color {
+    [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 
 - (FourCharCode)defaultStartLineStyle {
