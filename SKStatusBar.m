@@ -51,8 +51,7 @@
 @interface SKStatusTextFieldCell : NSTextFieldCell {
     BOOL underlined;
 }
-- (BOOL)isUnderlined;
-- (void)setUnderlined:(BOOL)flag;
+@property (nonatomic, getter=isUnderlined) BOOL underlined;
 @end
 
 #pragma mark -
@@ -552,13 +551,7 @@
 
 @implementation SKStatusTextFieldCell
 
-- (BOOL)isUnderlined {
-    return underlined;
-}
-
-- (void)setUnderlined:(BOOL)flag {
-    underlined = flag;
-}
+@synthesize underlined;
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     if ([self isUnderlined]) {
