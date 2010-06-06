@@ -148,28 +148,24 @@
     return filterPredicate;
 }
 
-- (void)noteTypesUpdated {
-    [delegate noteTypeSheetControllerNoteTypesDidChange:self];
-}
-
 - (void)toggleDisplayNoteType:(id)sender {
     [sender setState:NO == [sender state]];
-    [self noteTypesUpdated];
+    [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }
 
 - (void)displayAllNoteTypes:(id)sender {
     NSUInteger i;
     for (i = 0; i < NOTETYPES_COUNT; i++)
         [[noteTypeMenu itemAtIndex:i] setState:NSOnState];
-    [self noteTypesUpdated];
+    [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }
 
 - (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
-    NSUInteger i;
+        NSUInteger i;
         for (i = 0; i < NOTETYPES_COUNT; i++)
             [[noteTypeMenu itemAtIndex:i] setState:[[matrix cellWithTag:i] state]];
-        [self noteTypesUpdated];
+        [delegate noteTypeSheetControllerNoteTypesDidChange:self];
     }
 }
 
