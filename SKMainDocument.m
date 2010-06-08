@@ -272,7 +272,7 @@ static char SKMainDocumentDefaultsObservationContext;
 	[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
-#pragma mark Document read/write
+#pragma mark Writing
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
@@ -590,36 +590,6 @@ static char SKMainDocumentDefaultsObservationContext;
     return didWrite;
 }
 
-- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[self windowForSheet] attachedSheet];
-    
-    if (disableAlert == NO) {
-        [[[self windowForSheet] attachedSheet] orderOut:self];
-        
-        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] setIndeterminate:YES];
-        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
-    }
-    
-    BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
-    
-    if (success) {
-        [self setDataFromTmpData];
-        [[self undoManager] removeAllActions];
-        // file watching could have been disabled if the file was deleted
-        if (watchedFile == nil && fileUpdateTimer == nil)
-            [self checkFileUpdatesIfNeeded];
-    }
-    
-    [tmpData release];
-    tmpData = nil;
-    
-    if (disableAlert == NO)
-        [[self progressController] dismissSheet:nil];
-    
-    return success;
-}
-
 - (NSDictionary *)fileAttributesToWriteToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation originalContentsURL:(NSURL *)absoluteOriginalContentsURL error:(NSError **)outError {
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
@@ -643,6 +613,8 @@ static char SKMainDocumentDefaultsObservationContext;
     
     return dict;
 }
+
+#pragma mark Reading
 
 - (void)setPDFData:(NSData *)data {
     if (pdfData != data) {
@@ -845,6 +817,36 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
+}
+
+- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[self windowForSheet] attachedSheet];
+    
+    if (disableAlert == NO) {
+        [[[self windowForSheet] attachedSheet] orderOut:self];
+        
+        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] setIndeterminate:YES];
+        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+    }
+    
+    BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
+    
+    if (success) {
+        [self setDataFromTmpData];
+        [[self undoManager] removeAllActions];
+        // file watching could have been disabled if the file was deleted
+        if (watchedFile == nil && fileUpdateTimer == nil)
+            [self checkFileUpdatesIfNeeded];
+    }
+    
+    [tmpData release];
+    tmpData = nil;
+    
+    if (disableAlert == NO)
+        [[self progressController] dismissSheet:nil];
+    
+    return success;
 }
 
 #pragma mark Actions
