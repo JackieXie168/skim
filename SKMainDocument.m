@@ -637,11 +637,8 @@ static char SKMainDocumentDefaultsObservationContext;
     }
 }
 
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
-{
-    BOOL didRead = NO;
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError {
     PDFDocument *pdfDoc = nil;
-    NSError *error = nil;
     
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
@@ -657,14 +654,13 @@ static char SKMainDocumentDefaultsObservationContext;
     if (pdfDoc) {
         [self setPDFData:data];
         [pdfDoc release];
-        didRead = YES;
         [self updateChangeCount:NSChangeDone];
+        return YES;
+    } else {
+        if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        return NO;
     }
-    
-    if (didRead == NO && outError != NULL)
-        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    
-    return didRead;
 }
 
 static BOOL isIgnorablePOSIXError(NSError *error) {
