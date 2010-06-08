@@ -357,10 +357,12 @@ static char SKMainDocumentDefaultsObservationContext;
                 if (fileExists)
                     saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
                 if ([[self notes] count]) {
-                    if (saveNotesOK)
-                        saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL];
-                    else
+                    if (saveNotesOK == NO) {
                         [fm removeItemAtPath:tmpPath error:NULL];
+                    } else if (saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL]) {
+                        NSDictionary *attrs = [self fileAttributesToWriteToURL:[NSURL fileURLWithPath:notesPath] ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation originalContentsURL:nil error:NULL];
+                        [fm setAttributes:attrs ofItemAtPath:notesPath error:NULL];
+                    }
                 }
             }
         }
