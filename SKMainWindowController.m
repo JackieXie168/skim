@@ -629,17 +629,17 @@ static char SKMainWindowDefaultsObservationContext;
     [tv sizeToFit];
 }
 
-- (NSDictionary *)openStateForOutline:(PDFOutline *)outline {
+- (NSDictionary *)openStateForOutline:(PDFOutline *)anOutline {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:[outline label] forKey:@"label"];
-    BOOL isOpen = ([outline parent] == nil || [leftSideController.tocOutlineView isItemExpanded:outline]);
+    [dict setValue:[anOutline label] forKey:@"label"];
+    BOOL isOpen = ([anOutline parent] == nil || [leftSideController.tocOutlineView isItemExpanded:anOutline]);
     [dict setValue:[NSNumber numberWithBool:isOpen] forKey:@"isOpen"];
     if (isOpen) {
-        NSUInteger i, iMax = [outline numberOfChildren];
+        NSUInteger i, iMax = [anOutline numberOfChildren];
         if (iMax > 0) {
             NSMutableArray *array = [[NSMutableArray alloc] init];
             for (i = 0; i < iMax; i++)
-                [array addObject:[self openStateForOutline:[outline childAtIndex:i]]];
+                [array addObject:[self openStateForOutline:[anOutline childAtIndex:i]]];
             [dict setValue:array forKey:@"children"];
             [array release];
         }
@@ -647,16 +647,16 @@ static char SKMainWindowDefaultsObservationContext;
     return dict;
 }
 
-- (void)openOutline:(PDFOutline *)outline forOpenState:(NSDictionary *)info {
-    BOOL isOpen = info ? [[info valueForKey:@"isOpen"] boolValue] : [outline isOpen];
+- (void)openOutline:(PDFOutline *)anOutline forOpenState:(NSDictionary *)info {
+    BOOL isOpen = info ? [[info valueForKey:@"isOpen"] boolValue] : [anOutline isOpen];
     if (isOpen) {
-        NSUInteger i, iMax = [outline numberOfChildren];
+        NSUInteger i, iMax = [anOutline numberOfChildren];
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (i = 0; i < iMax; i++)
-            [children addObject:[outline childAtIndex:i]];
+            [children addObject:[anOutline childAtIndex:i]];
         NSArray *childrenStates = [info valueForKey:@"children"];
-        if ([outline parent])
-            [leftSideController.tocOutlineView expandItem:outline];
+        if ([anOutline parent])
+            [leftSideController.tocOutlineView expandItem:anOutline];
         NSEnumerator *infoEnum = nil;
         if ([[children valueForKey:@"label"] isEqualToArray:[childrenStates valueForKey:@"label"]])
             infoEnum = [childrenStates objectEnumerator];
