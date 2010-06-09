@@ -352,19 +352,10 @@ static char SKMainDocumentDefaultsObservationContext;
         }
         
         if (saveNotesOK) {
-            NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-            if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
-                if (fileExists)
-                    saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
-                if ([[self notes] count]) {
-                    if (saveNotesOK == NO) {
-                        [fm removeItemAtPath:tmpPath error:NULL];
-                    } else if (saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL]) {
-                        NSDictionary *attrs = [self fileAttributesToWriteToURL:[NSURL fileURLWithPath:notesPath] ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation originalContentsURL:nil error:NULL];
-                        [fm setAttributes:attrs ofItemAtPath:notesPath error:NULL];
-                    }
-                }
-            }
+            if ([[self notes] count] > 0)
+                saveNotesOK = [self writeSafelyToURL:[NSURL fileURLWithPath:notesPath] ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
+            else if (fileExists)
+                saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
         }
     }
     
