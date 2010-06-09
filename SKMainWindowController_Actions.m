@@ -219,19 +219,6 @@
         [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
 }
 
-- (IBAction)toggleDisplayContinuous:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage) 
-        displayMode = kPDFDisplaySinglePageContinuous;
-    else if (displayMode == kPDFDisplaySinglePageContinuous)
-        displayMode = kPDFDisplaySinglePage;
-    else if (displayMode == kPDFDisplayTwoUp)
-        displayMode = kPDFDisplayTwoUpContinuous;
-    else if (displayMode == kPDFDisplayTwoUpContinuous)
-        displayMode = kPDFDisplayTwoUp;
-    [pdfView setDisplayMode:displayMode];
-}
-
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode tag = [sender tag];
     PDFDisplayMode displayMode = [pdfView displayMode];

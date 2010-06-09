@@ -51,7 +51,6 @@
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
 - (IBAction)changeDisplaySinglePages:(id)sender;
-- (IBAction)toggleDisplayContinuous:(id)sender;
 - (IBAction)changeDisplayContinuous:(id)sender;
 - (IBAction)changeDisplayMode:(id)sender;
 - (IBAction)toggleDisplayAsBook:(id)sender;
