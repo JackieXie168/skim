@@ -1345,10 +1345,6 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(changeDisplayMode:)) {
         [menuItem setState:[pdfView displayMode] == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
-    } else if (action == @selector(toggleDisplayContinuous:)) {
-        BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        [menuItem setState:displayContinuous ? NSOnState : NSOffState];
-        return [self isPresentation] == NO;
     } else if (action == @selector(toggleDisplayAsBook:)) {
         [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
         return [self isPresentation] == NO && ([pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous);
