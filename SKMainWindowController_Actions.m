@@ -146,10 +146,9 @@
 }
 
 - (IBAction)createNewNote:(id)sender{
-    if ([pdfView hideNotes] == NO) {
-        NSInteger type = [sender tag];
-        [pdfView addAnnotationWithType:type];
-    } else NSBeep();
+    if ([pdfView hideNotes] == NO)
+        [pdfView addAnnotationWithType:[sender tag]];
+    else NSBeep();
 }
 
 - (void)selectSelectedNote:(id)sender{
@@ -207,34 +206,37 @@
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
-    PDFDisplayMode tag = [sender tag];
     PDFDisplayMode displayMode = [pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplayTwoUp) 
-        [pdfView setDisplayMode:kPDFDisplayTwoUp];
-    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplayTwoUp)
-        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePage)
-        [pdfView setDisplayMode:kPDFDisplaySinglePage];
-    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
-        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+    if ([sender tag] == kPDFDisplaySinglePage) {
+        if (displayMode == kPDFDisplayTwoUp)
+            [pdfView setDisplayMode:kPDFDisplaySinglePage];
+        else if (displayMode == kPDFDisplayTwoUpContinuous)
+            [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+    } else {
+        if (displayMode == kPDFDisplaySinglePage) 
+            [pdfView setDisplayMode:kPDFDisplayTwoUp];
+        else if (displayMode == kPDFDisplaySinglePageContinuous)
+            [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    }
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
-    PDFDisplayMode tag = [sender tag];
     PDFDisplayMode displayMode = [pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplaySinglePageContinuous)
-        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplaySinglePage)
-        [pdfView setDisplayMode:kPDFDisplaySinglePage];
-    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePageContinuous)
-        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
-        [pdfView setDisplayMode:kPDFDisplayTwoUp];
+    if ([sender tag] == kPDFDisplaySinglePage) {
+        if (displayMode == kPDFDisplaySinglePageContinuous)
+            [pdfView setDisplayMode:kPDFDisplaySinglePage];
+        else if (displayMode == kPDFDisplayTwoUpContinuous)
+            [pdfView setDisplayMode:kPDFDisplayTwoUp];
+    } else {
+        if (displayMode == kPDFDisplaySinglePage)
+            [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+        else if (displayMode == kPDFDisplayTwoUp)
+            [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    }
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    PDFDisplayMode displayMode = [sender tag];
-    [pdfView setDisplayMode:displayMode];
+    [pdfView setDisplayMode:[sender tag]];
 }
 
 - (IBAction)toggleDisplayAsBook:(id)sender {
@@ -246,8 +248,7 @@
 }
 
 - (IBAction)changeDisplayBox:(id)sender {
-    PDFDisplayBox displayBox = [sender tag];
-    [pdfView setDisplayBox:displayBox];
+    [pdfView setDisplayBox:[sender tag]];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
@@ -689,8 +690,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    NSInteger newToolMode = [sender tag];
-    [pdfView setToolMode:newToolMode];
+    [pdfView setToolMode:[sender tag]];
 }
 
 - (IBAction)changeAnnotationMode:(id)sender {
