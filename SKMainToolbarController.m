@@ -930,29 +930,33 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
-    PDFDisplayMode tag = [sender selectedTag];
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplayTwoUp) 
-        [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
-    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplayTwoUp)
-        [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePage)
-        [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
-    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
-        [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+    if ([sender selectedTag] == kPDFDisplaySinglePage) {
+        if (displayMode == kPDFDisplayTwoUp)
+            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
+        else if (displayMode == kPDFDisplayTwoUpContinuous)
+            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+    } else {
+        if (displayMode == kPDFDisplaySinglePage) 
+            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
+        else if (displayMode == kPDFDisplaySinglePageContinuous)
+            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    }
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
-    PDFDisplayMode tag = [sender selectedTag];
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplaySinglePageContinuous)
-        [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplaySinglePage)
-        [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
-    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePageContinuous)
-        [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
-        [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
+    if ([sender selectedTag] == kPDFDisplaySinglePage) {
+        if (displayMode == kPDFDisplaySinglePageContinuous)
+            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
+        else if (displayMode == kPDFDisplayTwoUpContinuous)
+            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
+    } else {
+        if (displayMode == kPDFDisplaySinglePage)
+            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+        else if (displayMode == kPDFDisplayTwoUp)
+            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    }
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
