@@ -1216,7 +1216,7 @@ enum {
         [menu removeItemAtIndex:copyIdx];
         if ([menu numberOfItems] > copyIdx && [[menu itemAtIndex:copyIdx] isSeparatorItem] && (copyIdx == 0 || [[menu itemAtIndex:copyIdx - 1] isSeparatorItem]))
             [menu removeItemAtIndex:copyIdx];
-        if (copyIdx > 0 && copyIdx == [menu numberOfItems] - 1 && [[menu itemAtIndex:copyIdx - 1] isSeparatorItem])
+        if (copyIdx > 0 && copyIdx == [menu numberOfItems] && [[menu itemAtIndex:copyIdx - 1] isSeparatorItem])
             [menu removeItemAtIndex:copyIdx - 1];
     }
     
