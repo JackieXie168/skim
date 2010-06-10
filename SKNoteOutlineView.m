@@ -63,30 +63,17 @@
     id item = [self itemAtRow:row];
     NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     CGFloat startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
-	BOOL keepGoing = YES;
 	
     [[NSCursor resizeUpDownCursor] push];
     
-	while (keepGoing) {
+	while ([theEvent type] != NSLeftMouseUp) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-                NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                CGFloat currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
-                
-                [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
-                [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
-                
-                break;
-			}
+		if ([theEvent type] == NSLeftMouseDragged) {
+            NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            CGFloat currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
             
-            case NSLeftMouseUp:
-                keepGoing = NO;
-                break;
-			
-            default:
-                break;
+            [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
+            [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
         }
     }
     [NSCursor pop];
