@@ -1211,6 +1211,15 @@ enum {
     if (interactionMode == SKPresentationMode)
         return menu;
     
+    NSInteger copyIdx = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
+    if (copyIdx != -1) {
+        [menu removeItemAtIndex:copyIdx];
+        if ([menu numberOfItems] > copyIdx && [[menu itemAtIndex:copyIdx] isSeparatorItem] && (copyIdx == 0 || [[menu itemAtIndex:copyIdx - 1] isSeparatorItem]))
+            [menu removeItemAtIndex:copyIdx];
+        if (copyIdx > 0 && copyIdx == [menu numberOfItems] - 1 && [[menu itemAtIndex:copyIdx - 1] isSeparatorItem])
+            [menu removeItemAtIndex:copyIdx - 1];
+    }
+    
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
     submenu = [[NSMenu allocWithZone:[menu zone]] init];
