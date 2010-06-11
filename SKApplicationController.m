@@ -182,11 +182,11 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SKIsRelaunchKey];
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    
+    [sud removeObjectForKey:SKIsRelaunchKey];
     
     [NSApp setServicesProvider:self];
-    
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
     NSString *lastVersionString = [sud stringForKey:SKLastVersionLaunchedKey];
@@ -204,10 +204,8 @@
         [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
     if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
         [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
-    if ([remoteControl count] == 0) {
-        [remoteControl release];
-        remoteControl = nil;
-    }
+    if ([remoteControl count] == 0)
+        SKDESTROY(remoteControl);
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
@@ -239,8 +237,7 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [remoteControl setListeningToRemote:NO];
-    [remoteControl release];
-    remoteControl = nil;
+    SKDESTROY(remoteControl);
 }
 
 #pragma mark Updater
