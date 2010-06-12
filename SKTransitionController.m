@@ -125,8 +125,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @interface SKTransitionAnimation : NSAnimation {
     CIFilter *filter;
 }
+@property (nonatomic, readonly) CIImage *currentImage;
 - (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
-- (CIImage *)currentImage;
 SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
 @end
 
@@ -142,11 +142,9 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
     CIContext *context;
     BOOL needsReshape;
 }
-- (SKTransitionAnimation *)animation;
-- (void)setAnimation:(SKTransitionAnimation *)newAnimation;
-- (CIImage *)image;
-- (void)setImage:(CIImage *)newImage;
-- (CIImage *)currentImage;
+@property (nonatomic, retain) SKTransitionAnimation *animation;
+@property (nonatomic, retain) CIImage *image;
+@property (nonatomic, readonly) CIImage *currentImage;
 @end
 
 #pragma mark -
@@ -519,6 +517,8 @@ SUBCLASS_DELEGATE_DECLARATION(SKTransitionAnimationDelegate)
 
 @implementation SKTransitionAnimation
 
+@dynamic currentImage;
+
 - (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration {
     if (self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut]) {
         filter = [aFilter retain];
@@ -548,6 +548,9 @@ SUBCLASS_DELEGATE_DEFINITION(SKTransitionAnimationDelegate)
 #pragma mark -
 
 @implementation SKTransitionView
+
+@synthesize animation, image;
+@dynamic currentImage;
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -603,10 +606,6 @@ SUBCLASS_DELEGATE_DEFINITION(SKTransitionAnimationDelegate)
     [self display];
 }
 
-- (SKTransitionAnimation *)animation {
-    return animation;
-}
-
 - (void)setAnimation:(SKTransitionAnimation *)newAnimation {
     if (animation != newAnimation) {
         [animation release];
@@ -614,10 +613,6 @@ SUBCLASS_DELEGATE_DEFINITION(SKTransitionAnimationDelegate)
         [animation setDelegate:self];
         [self setNeedsDisplay:YES];
     }
-}
-
-- (CIImage *)image {
-    return image;
 }
 
 - (void)setImage:(CIImage *)newImage {
