@@ -634,8 +634,10 @@ static char SKMainDocumentDefaultsObservationContext;
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
-    if (SKIsPostScriptDocumentType(docType))
+    if (SKIsPostScriptDocumentType(docType)) {
+        [self setPSOrDVIData:data];
         data = [SKConversionProgressController PDFDataWithPostScriptData:data];
+    }
     
     if (data)
         pdfDoc = [[SKPDFDocument alloc] initWithData:data];
