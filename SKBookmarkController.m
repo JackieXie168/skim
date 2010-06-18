@@ -381,6 +381,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [self openFileBookmark:[bookmark objectInChildrenAtIndex:i]];
     } else if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
         [self openFileBookmark:bookmark];
+    } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
+        NSInteger i = [bookmark countOfChildren];
+        while (i--)
+            [self openBookmark:[bookmark objectInChildrenAtIndex:i]];
     }
 }
 
