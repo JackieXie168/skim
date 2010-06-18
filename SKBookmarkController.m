@@ -223,22 +223,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
 }
 
-- (void)addBookmarkForPaths:(NSArray *)paths pageIndexes:(NSArray *)pageIndexes label:(NSString *)label toFolder:(SKBookmark *)folder {
-    NSEnumerator *pathEnum = [paths objectEnumerator];
-    NSEnumerator *pageEnum = [pageIndexes objectEnumerator];
-    NSString *path;
-    NSNumber *page;
-    NSMutableArray *children = [NSMutableArray array];
-    SKBookmark *bookmark;
-    while ((path = [pathEnum nextObject]) && (page = [pageEnum nextObject])) {
-        if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:[page unsignedIntegerValue] label:[path lastPathComponent]])
-            [children addObject:bookmark];
-    }
-    if (folder == nil) folder = bookmarkRoot;
-    if (bookmark = [SKBookmark bookmarkSessionWithChildren:children label:label])
-        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
-}
-
 - (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder {
     NSMutableArray *children = [NSMutableArray array];
     SKBookmark *bookmark;

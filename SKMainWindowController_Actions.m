@@ -839,10 +839,8 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
         NSString *label = [controller stringValue];
-        NSMutableArray *setups = [NSMutableArray array];
-        for (id document in [NSApp orderedDocuments])
-            [setups addObject:[document currentDocumentSetup]];
         [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
     }
 }
