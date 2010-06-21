@@ -136,10 +136,7 @@
     [[NSApp mainMenu] localizeStringsFromTable:@"MainMenu"];
     
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
-    NSInteger i, count = [viewMenu numberOfItems];
-    
-    for (i = 0; i < count; i++) {
-        NSMenuItem *menuItem = [viewMenu itemAtIndex:i];
+    for (NSMenuItem *menuItem in [viewMenu itemArray]) {
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:)) 
             [menuItem setIndentationLevel:1];
     }
