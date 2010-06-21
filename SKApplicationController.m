@@ -273,17 +273,19 @@
 #pragma mark Actions
 
 - (IBAction)orderFrontLineInspector:(id)sender {
-    if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
-        [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
+    NSWindow *window = [[SKLineInspector sharedLineInspector] window];
+    if ([window isVisible])
+        [window orderOut:sender];
     else
-        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
+        [window orderFront:sender];
 }
 
 - (IBAction)orderFrontNotesPanel:(id)sender {
-    if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
-        [[[SKNotesPanelController sharedController] window] orderOut:sender];
+    NSWindow *window = [[SKNotesPanelController sharedController] window];
+    if ([window isVisible])
+        [window orderOut:sender];
     else
-        [[[SKNotesPanelController sharedController] window] orderFront:sender];
+        [window orderFront:sender];
 }
 
 - (IBAction)visitWebSite:(id)sender{
