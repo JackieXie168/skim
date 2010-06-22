@@ -250,11 +250,6 @@
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
 		CEEE7C520E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */; };
 		CEF1D608117EF9E90069E249 /* SkimHelp in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D5F8117EF9E90069E249 /* SkimHelp */; };
-		CEF1D622117EFB460069E249 /* skim.texi in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D620117EFB460069E249 /* skim.texi */; };
-		CEF1D623117EFB460069E249 /* version.texi in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D621117EFB460069E249 /* version.texi */; };
-		CEF1D625117EFB500069E249 /* skimhelp.css in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D624117EFB500069E249 /* skimhelp.css */; };
-		CEF1D628117EFB760069E249 /* applehelp.init in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D626117EFB760069E249 /* applehelp.init */; };
-		CEF1D629117EFB760069E249 /* postprocess-nontitle.py in Resources */ = {isa = PBXBuildFile; fileRef = CEF1D627117EFB760069E249 /* postprocess-nontitle.py */; };
 		CEF60CE3114C01CA0074ACC4 /* SKLocalization.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */; };
 		CEF60CF2114C07D90074ACC4 /* SKWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF60CF1114C07D90074ACC4 /* SKWindowController.m */; };
 		CEF60CF9114C08350074ACC4 /* SKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF60CF8114C08350074ACC4 /* SKViewController.m */; };
@@ -2281,11 +2276,6 @@
 				CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */,
 				CE9768A211611C0F008DCB8F /* DownloadPreferenceSheet.strings in Resources */,
 				CEF1D608117EF9E90069E249 /* SkimHelp in Resources */,
-				CEF1D622117EFB460069E249 /* skim.texi in Resources */,
-				CEF1D623117EFB460069E249 /* version.texi in Resources */,
-				CEF1D625117EFB500069E249 /* skimhelp.css in Resources */,
-				CEF1D628117EFB760069E249 /* applehelp.init in Resources */,
-				CEF1D629117EFB760069E249 /* postprocess-nontitle.py in Resources */,
 				CE121B2D1180770900951425 /* ScriptMenu.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
