@@ -41,9 +41,12 @@
 
 #define SKStandardModifierFlagsMask (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask)
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
 @interface NSEvent (SKSnowLeopardDeclarations)
 + (NSUInteger)modifierFlags;
 @end
+#endif
+
 
 @implementation NSEvent (SKExtensions)
 
