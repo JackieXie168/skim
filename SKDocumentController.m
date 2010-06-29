@@ -369,8 +369,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (NSArray *)customExportTemplateFilesResetting {
-    [customExportTemplateFiles release];
-    customExportTemplateFiles = nil;
+    SKDESTROY(customExportTemplateFiles);
     return [self customExportTemplateFiles];
 }
 
