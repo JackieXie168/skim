@@ -85,7 +85,7 @@
     
     for (;;) {
         if (memcmp(selfPtr, patternBytes, patternLength) == 0)
-            return NSMakeRange(selfPtr - selfBufferStart, 0);
+            return NSMakeRange(selfPtr - selfBufferStart, patternLength);
         
         if (anchored)
             break;
@@ -331,7 +331,7 @@ static unsigned char base64DecodeTable[256] =
 
 + (void)load {
     // this should do nothing on Snow Leopard
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
+    SKSetMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:), YES, SKAddOrReplace);
 }
 
 @end
