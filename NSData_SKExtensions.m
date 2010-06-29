@@ -331,7 +331,7 @@ static unsigned char base64DecodeTable[256] =
 
 + (void)load {
     // this should do nothing on Snow Leopard
-    SKSetMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:), YES, SKAddOrReplace);
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
 }
 
 @end
