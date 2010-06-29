@@ -472,7 +472,7 @@
 - (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
-        NSString *path = [self fileName];
+        NSString *path = [[self fileURL] path];
         NSString *label = [controller stringValue];
         [bmController addBookmarkForPath:path pageIndex:NSNotFound label:label toFolder:[controller selectedFolder]];
     }
