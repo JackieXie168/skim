@@ -372,6 +372,9 @@
     }
 }
 
+// avoid rebuilding the bookmarks menu on every key event
+- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
+
 - (void)sendRemoteButtonEvent:(RemoteControlEventIdentifier)event pressedDown:(BOOL)pressedDown remoteControl:(RemoteControl *)remoteControl {
     if (pressedDown) {
         if (event == kRemoteButtonMenu) {
