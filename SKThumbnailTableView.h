@@ -48,7 +48,10 @@
 
 @property (nonatomic, readonly) BOOL isScrolling;
 
-SUBCLASS_DELEGATE_DECLARATION(SKThumbnailTableViewDelegate)
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKThumbnailTableViewDelegate>)delegate;
+- (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate;
+#endif
 
 @end
 

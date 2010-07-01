@@ -263,7 +263,11 @@ static char SKOutlineViewDefaultsObservationContext;
         [[self delegate] outlineView:self typeSelectHelper:aTypeSelectHelper updateSearchString:searchString];
 }
 
-SUBCLASS_DELEGATE_DEFINITION(SKOutlineViewDelegate)
-SUBCLASS_DATASOURCE_DEFINITION(SKOutlineViewDataSource)
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKOutlineViewDelegate>)delegate { return (<SKOutlineViewDelegate>)[super delegate]; }
+- (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+- (id <SKOutlineViewDataSource>)dataSource { return (<SKOutlineViewDataSource>)[super dataSource]; }
+- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource { [super setDelegate:newDataSource]; }
+#endif
 
 @end
