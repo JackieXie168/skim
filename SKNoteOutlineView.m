@@ -181,6 +181,9 @@
 
 #pragma mark Delegate
 
-SUBCLASS_DELEGATE_DEFINITION(SKNoteOutlineViewDelegate)
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKNoteOutlineViewDelegate>)delegate { return (<SKNoteOutlineViewDelegate>)[super delegate]; }
+- (void)setDelegate:(id <SKNoteOutlineViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+#endif
 
 @end

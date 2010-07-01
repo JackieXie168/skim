@@ -192,6 +192,9 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
    	return [super dragImageForRowsWithIndexes:dragRows tableColumns:[[self tableColumns] subarrayWithRange:NSMakeRange(0, 1)] event:dragEvent offset:dragImageOffset];
 }
 
-SUBCLASS_DELEGATE_DEFINITION(SKThumbnailTableViewDelegate)
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKThumbnailTableViewDelegate>)delegate { return (<SKThumbnailTableViewDelegate>)[super delegate]; }
+- (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+#endif
 
 @end
