@@ -126,3 +126,4 @@ NSString *SKSequentialPageNumberingKey = @"SKSequentialPageNumbering";
 NSString *SKDisablePinchZoomKey = @"SKDisablePinchZoom";
 NSString *SKDisableModificationDateKey = @"SKDisableModificationDate";
 NSString *SKDisableAnimationsKey = @"SKDisableAnimations";
+NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
