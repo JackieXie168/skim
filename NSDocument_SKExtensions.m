@@ -46,6 +46,10 @@
 #import "SKFDFParser.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKTextFieldSheetController.h"
+#import "SKBookmarkController.h"
+#import "NSWindowController_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -73,6 +77,71 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     }
     
     return setup;
+}
+
+#pragma mark Bookmark Actions
+
+
+- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *path = [[self fileURL] path];
+        NSString *label = [controller stringValue];
+        PDFPage *page = [self currentPage];
+        NSUInteger pageIndex = page ? [page pageIndex] : NSNotFound;
+        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)setupBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSDictionary *setup = [self currentDocumentSetup];
+        NSString *label = [controller stringValue];
+        [bmController addBookmarkForSetup:setup label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSetupBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(setupBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+        NSString *label = [controller stringValue];
+        [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSessionBookmark:(id)sender {
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
+    
+	[bookmarkSheetController setStringValue:[self displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(sessionBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
 }
 
 #pragma mark PDF Document

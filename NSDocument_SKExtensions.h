@@ -59,6 +59,12 @@ enum {
 
 - (PDFDocument *)pdfDocument;
 
+#pragma mark Bookmark Actions
+
+- (IBAction)addBookmark:(id)sender;
+- (IBAction)addSetupBookmark:(id)sender;
+- (IBAction)addSessionBookmark:(id)sender;
+
 #pragma mark Notes
 
 - (NSArray *)notes;

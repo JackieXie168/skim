@@ -68,9 +68,6 @@
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
-- (IBAction)addBookmark:(id)sender;
-- (IBAction)addSetupBookmark:(id)sender;
-- (IBAction)addSessionBookmark:(id)sender;
 
 - (void)setupToolbarForWindow:(NSWindow *)aWindow;
 
