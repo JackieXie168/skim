@@ -115,8 +115,5 @@
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
 - (IBAction)toggleWholeWordSearch:(id)sender;
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender;
-- (IBAction)addBookmark:(id)sender;
-- (IBAction)addSetupBookmark:(id)sender;
-- (IBAction)addSessionBookmark:(id)sender;
 
 @end
