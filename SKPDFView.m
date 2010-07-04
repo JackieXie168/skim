@@ -96,7 +96,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 #define SKLargeMagnificationHeightKey @"SKLargeMagnificationHeight"
 #define SKMoveReadingBarModifiersKey @"SKMoveReadingBarModifiers"
 #define SKResizeReadingBarModifiersKey @"SKResizeReadingBarModifiers"
-#define SKDisableUpdateContentsFromEnclosedTextKey @"SKDisableUpdateContentsFromEnclosedText"
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"

@@ -941,6 +941,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if (newAnnotation) {
                     [[self pdfView] removeAnnotation:annotation];
                     [[self pdfView] addAnnotation:newAnnotation toPage:page];
+                    if ([[newAnnotation contents] length] == 0) {
+                        NSString *text = nil;
+                        if ([newAnnotation isMarkup]) {
+                            text = [[(PDFAnnotationMarkup *)newAnnotation selection] cleanedString];
+                        } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
+                                   ([[newAnnotation type] isEqualToString:SKNCircleString] || [[newAnnotation type] isEqualToString:SKNSquareString])) {
+                            text = [[page selectionForRect:[newAnnotation bounds]] cleanedString];
+                        }
+                        if ([text length])
+                            [newAnnotation setContents:text];
+                    }
                     [newAnnotation release];
                     didConvert = YES;
                 }
