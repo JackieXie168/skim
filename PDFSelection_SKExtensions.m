@@ -261,6 +261,10 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     return range;
 }
 
+#define TEXT_KEY @"text"
+#define RANGES_KEY @"ranges"
+#define CONTAINER_KEY @"container"
+
 static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous, BOOL continuousContainers) {
     if ([specifier isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
@@ -268,7 +272,11 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     NSMutableArray *rangeDicts = [NSMutableArray array];
     NSString *key = [specifier key];
     
-    if ([key isEqualToString:@"characters"] || [key isEqualToString:@"words"] || [key isEqualToString:@"paragraphs"] || [key isEqualToString:@"attributeRuns"]) {
+    static NSSet *richTextElementKeys = nil;
+    if (richTextElementKeys == nil)
+        richTextElementKeys = [[NSSet alloc] initWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", nil];
+    
+    if ([richTextElementKeys containsObject:key]) {
         
         // get the richText specifier and textStorage
         NSArray *dicts = characterRangesAndContainersForSpecifier([specifier containerSpecifier], continuousContainers, continuousContainers);
@@ -276,8 +284,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             return nil;
         
         for (NSMutableDictionary *dict in dicts) {
-            NSTextStorage *containerText = [dict objectForKey:@"text"];
-            NSPointerArray *textRanges = [dict objectForKey:@"ranges"];
+            NSTextStorage *containerText = [dict objectForKey:TEXT_KEY];
+            NSPointerArray *textRanges = [dict objectForKey:RANGES_KEY];
             NSUInteger ri, numRanges = [textRanges count];
             NSPointerArray *ranges = [[NSPointerArray alloc] initForRangePointers];
             
@@ -401,7 +409,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             }
             
             if ([ranges count]) {
-                [dict setObject:ranges forKey:@"ranges"];
+                [dict setObject:ranges forKey:RANGES_KEY];
                 [rangeDicts addObject:dict];
             }
             [ranges release];
@@ -433,7 +441,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSPointerArray *ranges = [[NSPointerArray alloc] initForRangePointers];
             NSRange range = NSMakeRange(0, [containerText length]);
             [ranges addPointer:&range];
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:ranges, @"ranges", containerText, @"text", container, @"container", nil];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:ranges, RANGES_KEY, containerText, TEXT_KEY, container, CONTAINER_KEY, nil];
             [rangeDicts addObject:dict];
             [dict release];
             [ranges release];
@@ -457,7 +465,10 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
         if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
             NSString *key = [spec key];
-            if ([[NSSet setWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", @"richText", @"pages", nil] containsObject:key] == NO) {
+            static NSSet *selectionKeys = nil;
+            if (selectionKeys == nil)
+                selectionKeys = [[NSSet alloc] initWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", @"richText", @"pages", nil];
+            if ([selectionKeys containsObject:key] == NO) {
                 // this allows to use selection properties directly
                 specifier = [spec objectsByEvaluatingSpecifier];
                 if ([specifier isKindOfClass:[NSArray class]] == NO)
@@ -476,8 +487,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         PDFDocument *doc = nil;
         
         for (NSDictionary *dict in dicts) {
-            id container = [dict objectForKey:@"container"];
-            NSPointerArray *ranges = [dict objectForKey:@"ranges"];
+            id container = [dict objectForKey:CONTAINER_KEY];
+            NSPointerArray *ranges = [dict objectForKey:RANGES_KEY];
             NSUInteger i, numRanges = [ranges count];
             
             if ([container isKindOfClass:[SKMainDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
