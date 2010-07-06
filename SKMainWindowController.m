@@ -956,6 +956,8 @@ static char SKMainWindowDefaultsObservationContext;
     NSInteger state;
     if ([self isFullScreen])
         state = [leftSideWindow state];
+    else if ([self isPresentation])
+        state = [leftSideWindow isVisible];
     else if (mwcFlags.usesDrawers)
         state = [leftSideDrawer state];
     else
@@ -967,6 +969,8 @@ static char SKMainWindowDefaultsObservationContext;
     NSInteger state;
     if ([self isFullScreen])
         state = [rightSideWindow state];
+    else if ([self isPresentation])
+        state = [rightSideWindow isVisible];
     else if (mwcFlags.usesDrawers)
         state = [rightSideDrawer state];
     else
