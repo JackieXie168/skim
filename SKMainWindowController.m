@@ -2037,6 +2037,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [rightSideWindow collapse];
 }
 
+- (NSRect)rowRectForSnapshotController:(SKSnapshotWindowController *)controller scrollToVisible:(BOOL)shouldScroll {
+    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+    if (shouldScroll)
+        [rightSideController.snapshotTableView scrollRowToVisible:row];
+    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
+    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
+    return rect;
+}
+
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
     if ([self isPresentation] == NO) {
         if ([self isFullScreen] == NO && [self rightSidePaneIsOpen] == NO) {
@@ -2047,29 +2057,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
-    
-    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    
-    [rightSideController.snapshotTableView scrollRowToVisible:row];
-    
-    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
-    
-    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
-    
-    return rect;
+    return [self rowRectForSnapshotController:controller scrollToVisible:YES];
 }
 
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
-    [[self document] addWindowController:controller];
-    
-    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
-        
-    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
-    
-    return rect;
+    if ([[[self document] windowControllers] containsObject:controller] == NO)
+        [[self document] addWindowController:controller];
+    return [self rowRectForSnapshotController:controller scrollToVisible:NO];
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
