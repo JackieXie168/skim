@@ -305,6 +305,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSRectFill(bounds);
     [[NSColor controlBackgroundColor] setFill];
     NSRectFill(NSInsetRect(bounds, 2.0, 2.0));
+    [[NSColor blackColor] setStroke];
     if (lineWidth > 0.0)
         [[self path] stroke];
     [image unlockFocus];
