@@ -1497,7 +1497,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
-    SKFullScreenWindow *bgWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
+    SKFullScreenWindow *bgWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]] autorelease];
     [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [bgWindow setLevel:[fullScreenWindow level]];
     [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
@@ -1522,11 +1522,7 @@ static char SKMainWindowDefaultsObservationContext;
     else
         [self applyPDFSettings:savedNormalSetup];
     
-    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
-    [fullScreenWindow displayIfNeeded];
-    [bgWindow orderOut:nil];
-    [bgWindow release];
-    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    [bgWindow setLevel:NSPopUpMenuWindowLevel];
     
     SetSystemUIMode(kUIModeNormal, 0);
     
@@ -1539,9 +1535,9 @@ static char SKMainWindowDefaultsObservationContext;
     }
     
     [self setWindow:mainWindow];
-    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    [mainWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
     [mainWindow display];
-    [fullScreenWindow fadeOut];
+    [bgWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
