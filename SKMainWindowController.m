@@ -1546,6 +1546,8 @@ static char SKMainWindowDefaultsObservationContext;
     [self synchronizeWindowTitleWithDocumentName];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
+    [[blankingWindows copy] autorelease];
+    [blankingWindows removeAllObjects];
 }
 
 #pragma mark Swapping tables
