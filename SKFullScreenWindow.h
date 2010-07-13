@@ -52,3 +52,7 @@
 - (void)fadeOut;
 
 @end
+
+
+@interface SKBlackingFullScreenWindow : SKFullScreenWindow
+@end
