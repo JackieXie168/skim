@@ -40,21 +40,17 @@
 #import "SKMainWindow.h"
 
 
-@interface SKBlackingFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
+@interface SKFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
     NSViewAnimation *animation;
+    BOOL canBecomeMain;
 }
 
+@property (nonatomic, retain) NSView *mainView;
+
 - (id)initWithScreen:(NSScreen *)screen;
+- (id)initWithScreen:(NSScreen *)screen canBecomeMain:(BOOL)flag;
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;
-
-@end
-
-#pragma mark -
-
-@interface SKFullScreenWindow : SKBlackingFullScreenWindow
-
-@property (nonatomic, retain) NSView *mainView;
 
 @end
