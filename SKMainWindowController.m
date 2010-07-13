@@ -1348,7 +1348,7 @@ static char SKMainWindowDefaultsObservationContext;
         [blankingWindows removeAllObjects];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
-                SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
+                SKFullScreenWindow *window = [[SKBlackingFullScreenWindow alloc] initWithScreen:screenToBlank];
                 [window setBackgroundColor:backgroundColor];
                 [window setLevel:NSFloatingWindowLevel];
                 [window setFrame:[screenToBlank frame] display:YES];
@@ -1497,7 +1497,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
-    SKFullScreenWindow *bgWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]] autorelease];
+    SKFullScreenWindow *bgWindow = [[[SKBlackingFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]] autorelease];
     [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [bgWindow setLevel:[fullScreenWindow level]];
     [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];

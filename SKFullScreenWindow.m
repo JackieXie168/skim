@@ -166,3 +166,12 @@
 }
 
 @end
+
+
+@implementation SKBlackingFullScreenWindow
+
+- (BOOL)canBecomeKeyWindow { return NO; }
+
+- (BOOL)canBecomeMainWindow { return NO; }
+
+@end
