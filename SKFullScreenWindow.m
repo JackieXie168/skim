@@ -43,17 +43,12 @@
 #import "SKStringConstants.h"
 
 
-@implementation SKFullScreenWindow
-
-@dynamic mainView;
+@implementation SKBlackingFullScreenWindow
 
 - (id)initWithScreen:(NSScreen *)screen {
     if (screen == nil)
         screen = [NSScreen mainScreen];
     if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
-        [self setReleasedWhenClosed:NO];
-        [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     }
@@ -70,45 +65,9 @@
     [super dealloc];
 }
 
-- (BOOL)canBecomeKeyWindow { return YES; }
+- (BOOL)canBecomeKeyWindow { return NO; }
 
-- (BOOL)canBecomeMainWindow { return YES; }
-
-- (void)keyDown:(NSEvent *)theEvent {
-    unichar ch = [theEvent firstCharacter];
-	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
-    
-    if (modifierFlags == 0) {
-        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if (ch == SKEscapeCharacter) {
-            [wc exitFullScreen:self];
-        } else {
-            [super keyDown:theEvent];
-        }
-    } else {
-        [super keyDown:theEvent];
-    }
-}
-
-- (NSView *)mainView {
-    return [[[self contentView] subviews] lastObject];
-}
-
-- (void)setMainView:(NSView *)view {
-    [view setFrame:[[self contentView] bounds]];
-    [[self contentView] addSubview:view];
-}
-
-- (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown) {
-        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if ([wc isPresentation] && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
-            [wc doGoToPreviousPage:self];
-            return;
-        }
-    }
-    [super sendEvent:theEvent];
-}
+- (BOOL)canBecomeMainWindow { return NO; }
 
 - (void)orderFront:(id)sender {
     [self stopAnimation];
@@ -167,11 +126,59 @@
 
 @end
 
+#pragma mark -
 
-@implementation SKBlackingFullScreenWindow
+@implementation SKFullScreenWindow
 
-- (BOOL)canBecomeKeyWindow { return NO; }
+@dynamic mainView;
 
-- (BOOL)canBecomeMainWindow { return NO; }
+- (id)initWithScreen:(NSScreen *)screen {
+    if (self = [super initWithScreen:screen]) {
+        [self setReleasedWhenClosed:NO];
+        [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setAcceptsMouseMovedEvents:YES];
+    }
+    return self;
+}
+
+- (BOOL)canBecomeKeyWindow { return YES; }
+
+- (BOOL)canBecomeMainWindow { return YES; }
+
+- (void)sendEvent:(NSEvent *)theEvent {
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown) {
+        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
+        if ([wc isPresentation] && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
+            [wc doGoToPreviousPage:self];
+            return;
+        }
+    }
+    [super sendEvent:theEvent];
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar ch = [theEvent firstCharacter];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
+    
+    if (modifierFlags == 0) {
+        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
+        if (ch == SKEscapeCharacter) {
+            [wc exitFullScreen:self];
+        } else {
+            [super keyDown:theEvent];
+        }
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
+- (NSView *)mainView {
+    return [[[self contentView] subviews] lastObject];
+}
+
+- (void)setMainView:(NSView *)view {
+    [view setFrame:[[self contentView] bounds]];
+    [[self contentView] addSubview:view];
+}
 
 @end
