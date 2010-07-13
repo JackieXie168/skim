@@ -1342,7 +1342,7 @@ static char SKMainWindowDefaultsObservationContext;
         [blankingWindows removeAllObjects];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
-                SKBlackingFullScreenWindow *window = [[SKBlackingFullScreenWindow alloc] initWithScreen:screenToBlank];
+                SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank canBecomeMain:NO];
                 [window setBackgroundColor:backgroundColor];
                 [window setLevel:NSFloatingWindowLevel];
                 [window setFrame:[screenToBlank frame] display:YES];
@@ -1490,12 +1490,18 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
-    SKBlackingFullScreenWindow *bgWindow = [[[SKBlackingFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]] autorelease];
-    [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
-    [bgWindow setLevel:[fullScreenWindow level]];
-    [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    // first fade out the pdfView so we can move the pdfView to the main window before it's revealed
+    // animating the view itself does no work as PDFView does not work nicely with CoreAnimation, so we use a temporary window
+    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] canBecomeMain:NO];
+    [fadeWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
+    [fadeWindow setLevel:[fullScreenWindow level]];
+    [fadeWindow setMainView:[fullScreenWindow mainView]];
+    [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
+    [fadeWindow display];
+    [fullScreenWindow display];
     [fullScreenWindow setDelegate:nil];
-    [fullScreenWindow fadeOutBlocking];
+    [fadeWindow fadeOutBlocking];
+    [fadeWindow release];
     
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     // this should be done before exitPresentationMode to get a smooth transition
@@ -1515,19 +1521,19 @@ static char SKMainWindowDefaultsObservationContext;
     else
         [self applyPDFSettings:savedNormalSetup];
     
-    [bgWindow setLevel:NSPopUpMenuWindowLevel];
-    
-    SetSystemUIMode(kUIModeNormal, 0);
-    
     for (NSWindowController *wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:NO];
     }
     
+    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    
+    SetSystemUIMode(kUIModeNormal, 0);
+    
     [self setWindow:mainWindow];
-    [mainWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
+    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow display];
-    [bgWindow fadeOut];
+    [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
