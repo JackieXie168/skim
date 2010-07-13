@@ -1315,21 +1315,15 @@ static char SKMainWindowDefaultsObservationContext;
     NSInteger level = [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
     
     // Create the full-screen window if it does not already  exist.
-    if (fullScreenWindow == nil) {
+    if (fullScreenWindow == nil)
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
-        [fullScreenWindow setExcludedFromWindowsMenu:NO];
-    }
         
     // explicitly set window frame; screen may have moved, or may be nil (in which case [fullScreenWindow frame] is wrong, which is weird); the first time through this method, [fullScreenWindow screen] is nil
     [fullScreenWindow setFrame:[screen frame] display:NO];
     
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
-    if ([self isPresentation]) {
-        [fullScreenWindow setMainView:pdfView];
-    } else {
-        [fullScreenWindow setMainView:pdfSplitView];
-    }
+    [fullScreenWindow setMainView:([self isPresentation] ? (id)pdfView : (id)pdfSplitView)];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:level];
     [pdfView setBackgroundColor:[self isPresentation] ? [NSColor clearColor] : backgroundColor];
@@ -1365,7 +1359,6 @@ static char SKMainWindowDefaultsObservationContext;
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
     [fullScreenWindow makeFirstResponder:pdfView];
-    [fullScreenWindow setAcceptsMouseMovedEvents:YES];
     [fullScreenWindow recalculateKeyViewLoop];
     [mainWindow orderOut:self];    
     [fullScreenWindow setDelegate:self];
@@ -1526,10 +1519,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     SetSystemUIMode(kUIModeNormal, 0);
     
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
+    for (NSWindowController *wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:NO];
     }

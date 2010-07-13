@@ -67,7 +67,7 @@
 
 - (BOOL)canBecomeKeyWindow { return NO; }
 
-- (BOOL)canBecomeMainWindow { return NO; }
+- (BOOL)canBecomeMainWindow { return YES; }
 
 - (void)orderFront:(id)sender {
     [self stopAnimation];
@@ -137,6 +137,7 @@
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
+        [self setExcludedFromWindowsMenu:NO];
     }
     return self;
 }
