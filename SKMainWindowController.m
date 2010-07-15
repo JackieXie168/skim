@@ -1392,7 +1392,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     [pdfView setBackgroundColor:[NSColor clearColor]];
     [fullScreenWindow setBackgroundColor:[NSColor blackColor]];
-    [fullScreenWindow setLevel:[[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
+    [fullScreenWindow setLevel:[[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
     
     SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
     if (notesPdfView)
