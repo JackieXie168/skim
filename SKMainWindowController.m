@@ -1312,7 +1312,7 @@ static char SKMainWindowDefaultsObservationContext;
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-    NSInteger level = [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
+    NSInteger level = [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
     
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil)
