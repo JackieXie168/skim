@@ -1466,7 +1466,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionDisableProcessSwitch);
     else
-        SetSystemUIMode(kUIModeNormal, kUIOptionDisableProcessSwitch);
+        SetSystemUIMode(kUIModeNormal, 0);
     
     if (wasFullScreen) {
         [pdfSplitView setFrame:[centerContentView bounds]];
