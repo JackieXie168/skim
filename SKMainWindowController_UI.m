@@ -1534,13 +1534,13 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey]) {
+    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO) {
         [fullScreenWindow setLevel:NSNormalWindowLevel];
     }
 }
 
 - (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey]) {
+    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO) {
         [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     }
 }
