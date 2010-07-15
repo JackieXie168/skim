@@ -1632,8 +1632,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)removeTemporaryAnnotations {
     [temporaryAnnotationTimer invalidate];
-    [temporaryAnnotationTimer release];
-    temporaryAnnotationTimer = nil;
+    SKDESTROY(temporaryAnnotationTimer);
     // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
     CFSetApplyFunction((CFSetRef)temporaryAnnotations, removeTemporaryAnnotations, self);
     [temporaryAnnotations removeAllObjects];
@@ -2504,8 +2503,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         if (snapshotTimer) {
             [snapshotTimer invalidate];
-            [snapshotTimer release];
-            snapshotTimer = nil;
+            SKDESTROY(snapshotTimer);
         }
         
         if ([self countOfSnapshots])
@@ -2547,8 +2545,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     if ([dirtySnapshots count] == 0) {
         [snapshotTimer invalidate];
-        [snapshotTimer release];
-        snapshotTimer = nil;
+        SKDESTROY(snapshotTimer);
     }
 }
 

@@ -228,13 +228,11 @@
         // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
         if (snapshotTimer) {
             [snapshotTimer invalidate];
-            [snapshotTimer release];
-            snapshotTimer = nil;
+            SKDESTROY(snapshotTimer);
         }
         if (temporaryAnnotationTimer) {
             [temporaryAnnotationTimer invalidate];
-            [temporaryAnnotationTimer release];
-            temporaryAnnotationTimer = nil;
+            SKDESTROY(temporaryAnnotationTimer);
         }
         if ([[pdfView document] isFinding])
             [[pdfView document] cancelFindString];
