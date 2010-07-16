@@ -57,7 +57,6 @@
     if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         canBecomeMain = flag;
         [self setBackgroundColor:[NSColor blackColor]];
-        [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         [self setReleasedWhenClosed:canBecomeMain == NO];
         [self setDisplaysWhenScreenProfileChanges:canBecomeMain];
         [self setAcceptsMouseMovedEvents:canBecomeMain];

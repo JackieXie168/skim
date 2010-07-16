@@ -1173,10 +1173,12 @@ enum {
     }
     
     if ([navWindow isVisible] == NO) {
-        if (navigationMode == SKNavigationEverywhere)
+        if (navigationMode == SKNavigationEverywhere) {
             [navWindow fadeIn];
-        else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0)
+            [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
+        } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0) {
             [self showNavWindow:YES];
+        }
     }
     if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
         [self doAutohide:YES];
@@ -2422,7 +2424,7 @@ enum {
     }
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self hasSlider:interactionMode == SKFullScreenMode];
     [navWindow moveToScreen:screen];
-    [navWindow setLevel:[[self window] level] + 1];
+    [navWindow setLevel:[[self window] level]];
     
     [self doAutohide:YES];
 }
@@ -2451,8 +2453,10 @@ enum {
 }
 
 - (void)showNavWindowDelayed {
-    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0)
+    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0) {
         [navWindow fadeIn];
+        [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
+    }
 }
 
 - (void)showNavWindow:(BOOL)flag {

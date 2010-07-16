@@ -154,6 +154,25 @@
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
+- (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
+    SystemUIMode currentMode, mode = kUIModeNormal;
+    SystemUIOptions currentOptions, options = 0;
+    GetSystemUIMode(&currentMode, &currentOptions);
+    id doc = [[[aNotification object] windowController] document];
+    SKMainWindowController *mwc = [doc respondsToSelector:@selector(mainWindowController)] ? [doc mainWindowController] : nil;
+    if ([[[mwc window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]]) {
+        if ([mwc isPresentation]) {
+            mode = kUIModeAllHidden;
+            options = kUIOptionDisableProcessSwitch;
+        } else if ([mwc isFullScreen]) {
+            mode = kUIModeAllHidden;
+            options = kUIOptionAutoShowMenuBar;
+        }
+    }
+    if (mode != currentMode || options != currentOptions)
+        SetSystemUIMode(mode, options);
+}
+
 #pragma mark NSApplication delegate
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
@@ -209,6 +228,8 @@
                              name:SKDocumentDidShowNotification object:nil];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
                              name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
+    [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
+                             name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
 }
 
@@ -230,6 +251,7 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver:self name:SKDocumentDidShowNotification object:nil];
     [nc removeObserver:self name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
+    [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

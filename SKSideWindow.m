@@ -88,7 +88,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
-        [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         
         controller = aController;
         edge = anEdge;

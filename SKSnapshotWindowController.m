@@ -301,7 +301,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     BOOL onTop = forceOnTop || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:onTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:onTop];
-    [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehaviorDefault];
 }
 
 - (NSDictionary *)currentSetup {
