@@ -52,6 +52,8 @@
 - (void)fadeIn;
 - (void)fadeOut;
 
+- (void)remove;
+
 - (void)orderOut:(id)sender;
 - (void)orderFront:(id)sender;
 - (void)orderFrontRegardless;
