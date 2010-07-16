@@ -2408,6 +2408,7 @@ enum {
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
     if ([self isEditing] && [self commitEditing] == NO)
         [self discardEditing];
+    [[navWindow parentWindow] removeChildWindow:navWindow];
     [navWindow orderOut:self];
 }
 
@@ -2416,6 +2417,7 @@ enum {
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
     if (navWindow != nil) {
+        [[navWindow parentWindow] removeChildWindow:navWindow];
         [navWindow orderOut:nil];
         [navWindow release];
     } else {
@@ -2434,6 +2436,7 @@ enum {
     
     [self showNavWindow:NO];
     [self doAutohide:NO];
+    [[navWindow parentWindow] removeChildWindow:navWindow];
     [navWindow orderOut:self];
 }
 
@@ -2442,8 +2445,10 @@ enum {
         return;
     if (interactionMode == SKPresentationMode)
         [NSCursor setHiddenUntilMouseMoves:YES];
-    if (interactionMode != SKNormalMode)
+    if (interactionMode != SKNormalMode) {
+        [[navWindow parentWindow] removeChildWindow:navWindow];
         [navWindow fadeOut];
+    }
 }
 
 - (void)doAutohide:(BOOL)flag {
