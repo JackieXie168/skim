@@ -90,7 +90,7 @@
 
 - (void)cancelDelayedAnimations {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(orderOut:) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(remove) object:nil];
 }
 
 - (void)fadeOutAfterTimeout {
@@ -120,6 +120,10 @@
     [self setAlphaValue:[self defaultAlphaValue]];
 }
 
+- (void)remove {
+    [self orderOut:nil];
+}
+
 - (void)fadeOut {
     [self stopAnimation];
     
@@ -127,13 +131,13 @@
     [self willClose];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
-        [self orderOut:nil];
+        [self remove];
     } else {
         [NSAnimationContext beginGrouping];
         [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
         [[self animator] setAlphaValue:0.0];
         [NSAnimationContext endGrouping];
-        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
+        [self performSelector:@selector(remove) withObject:nil afterDelay:[self fadeOutDuration]];
     }
 }
 
