@@ -185,7 +185,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)orderOut:(id)sender {
-    [[self parentWindow] removeChildWindow:self];
     [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super orderOut:sender];
 }
