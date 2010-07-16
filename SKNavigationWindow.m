@@ -76,7 +76,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setHidesOnDeactivate:YES];
         [self setMovableByWindowBackground:YES];
-        [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
@@ -186,8 +185,9 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)orderOut:(id)sender {
+    [[self parentWindow] removeChildWindow:self];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super orderOut:sender];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {

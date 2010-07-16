@@ -1490,6 +1490,9 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
+    // do this first, otherwise the navigation window may be covered by fadeWindow and then reveiled again, which looks odd
+    [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
+    
     // first fade out the pdfView so we can move the pdfView to the main window before it's revealed
     // animating the view itself does no work as PDFView does not work nicely with CoreAnimation, so we use a temporary window
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] canBecomeMain:NO];
@@ -1503,7 +1506,6 @@ static char SKMainWindowDefaultsObservationContext;
     [fadeWindow fadeOutBlocking];
     [fadeWindow release];
     
-    [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     // this should be done before exitPresentationMode to get a smooth transition
     if ([self isFullScreen]) {
         [pdfSplitView setFrame:[centerContentView bounds]];
