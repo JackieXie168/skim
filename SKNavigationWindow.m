@@ -184,6 +184,11 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [self setFrame:winFrame display:NO];
 }
 
+- (void)remove {
+    [[self parentWindow] removeChildWindow:self];
+    [super remove];
+}
+
 - (void)orderOut:(id)sender {
     [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super orderOut:sender];
@@ -274,17 +279,13 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [self setLevel:[[view window] level]];
     if ([self parentWindow] != [view window])
         [[self parentWindow] removeChildWindow:self];
-    if ([self parentWindow]  == nil)
+    if ([self parentWindow] == nil)
         [[view window] addChildWindow:self ordered:NSWindowAbove];
     [self orderFront:self];
 }
 
-- (void)remove {
-    [[self parentWindow] removeChildWindow:self];
-    [super remove];
-}
-
 - (void)orderOut:(id)sender {
+    [[self parentWindow] removeChildWindow:self];
     [super orderOut:sender];
     SKDESTROY(view);
 }
