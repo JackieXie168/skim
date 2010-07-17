@@ -66,7 +66,7 @@ enum {
 };
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
-@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKSplitView, SKFullScreenWindow, SKSideWindow;
+@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKSplitView, SKSideWindow;
 @class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
@@ -113,7 +113,6 @@ enum {
     double                              rating;
     
     NSWindow                            *mainWindow;
-    SKFullScreenWindow                  *fullScreenWindow;
     SKSideWindow                        *leftSideWindow;
     SKSideWindow                        *rightSideWindow;
     NSMutableArray                      *blankingWindows;

@@ -246,7 +246,7 @@
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)notification {
-    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:fullScreenWindow]) {
+    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:mainWindow] == NO) {
         NSScreen *screen = [[self window] screen];
         [[self window] setFrame:[screen frame] display:NO];
         if ([self isFullScreen]) {
@@ -265,7 +265,7 @@
 }
 
 - (void)windowDidMove:(NSNotification *)notification {
-    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:fullScreenWindow]) {
+    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:[self mainWindow]] == NO) {
         NSScreen *screen = [[self window] screen];
         NSRect screenFrame = [screen frame];
         if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
@@ -1535,13 +1535,13 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
     if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO) {
-        [fullScreenWindow setLevel:NSNormalWindowLevel];
+        [[self window] setLevel:NSNormalWindowLevel];
     }
 }
 
 - (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification {
     if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO) {
-        [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+        [[self window] setLevel:NSPopUpMenuWindowLevel];
     }
 }
 
