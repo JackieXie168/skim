@@ -1536,7 +1536,9 @@ static char SKMainWindowDefaultsObservationContext;
     // trick to make sure the main window shows up in the same space as the fullscreen window
     [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
     [fullScreenWindow removeChildWindow:mainWindow];
-    [mainWindow setLevel:NSNormalWindowLevel]; // this can change due to the child window trick
+    // these can change due to the child window trick
+    [mainWindow setLevel:NSNormalWindowLevel];
+    [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
     [mainWindow display];
     [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
