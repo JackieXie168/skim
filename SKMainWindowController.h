@@ -60,6 +60,13 @@ enum {
 typedef NSInteger SKFindPaneState;
 
 enum {
+    SKNormalMode,
+    SKFullScreenMode,
+    SKPresentationMode
+};
+typedef NSInteger SKInteractionMode;
+
+enum {
     SKDefaultWindowOption,
     SKMaximizeWindowOption,
     SKFitWindowOption
@@ -117,6 +124,8 @@ enum {
     SKSideWindow                        *rightSideWindow;
     NSMutableArray                      *blankingWindows;
     
+    SKInteractionMode                   interactionMode;
+    
     SKProgressController                *progressController;
     
     SKPresentationOptionsSheetController *presentationSheetController;
@@ -170,7 +179,6 @@ enum {
         unsigned int updatingFontAttributes:1;
         unsigned int updatingLine:1;
         unsigned int settingUpWindow:1;
-        unsigned int isPresentation:1;
         unsigned int usesDrawers:1;
         unsigned int isEditingPDF:1;
         unsigned int isEditingTable:1;
@@ -256,7 +264,9 @@ enum {
 @property (nonatomic) NSUInteger pageNumber;
 @property (nonatomic, copy) NSString *pageLabel;
 
-@property (nonatomic, readonly) BOOL isFullScreen, isPresentation, autoScales;
+@property (nonatomic, readonly) SKInteractionMode interactionMode;
+
+@property (nonatomic, readonly) BOOL autoScales;
 
 @property (nonatomic) SKLeftSidePaneState leftSidePaneState;
 @property (nonatomic) SKRightSidePaneState rightSidePaneState;

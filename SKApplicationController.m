@@ -161,10 +161,10 @@
     id doc = [[[aNotification object] windowController] document];
     SKMainWindowController *mwc = [doc respondsToSelector:@selector(mainWindowController)] ? [doc mainWindowController] : nil;
     if ([[[mwc window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]]) {
-        if ([mwc isPresentation]) {
+        if ([mwc interactionMode] == SKPresentationMode) {
             mode = kUIModeAllHidden;
             options = kUIOptionDisableProcessSwitch;
-        } else if ([mwc isFullScreen]) {
+        } else if ([mwc interactionMode] == SKFullScreenMode) {
             mode = kUIModeAllHidden;
             options = kUIOptionAutoShowMenuBar;
         }

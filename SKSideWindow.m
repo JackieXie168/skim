@@ -262,7 +262,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             [controller closeSideWindow:self];
         else
             [controller exitFullScreen:self];
-    } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
+    } else if (ch == 'p' && modifierFlags == 0 && [controller interactionMode] == SKPresentationMode) {
         [controller closeSideWindow:self];
     } else {
         [super keyDown:theEvent];

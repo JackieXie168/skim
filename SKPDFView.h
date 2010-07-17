@@ -82,13 +82,6 @@ enum {
 };
 typedef NSInteger SKNoteType;
 
-enum {
-    SKNormalMode,
-    SKFullScreenMode,
-    SKPresentationMode
-};
-typedef NSInteger SKInteractionMode;
-
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow;
 
 @interface SKPDFView : PDFView <NSTextFieldDelegate> {

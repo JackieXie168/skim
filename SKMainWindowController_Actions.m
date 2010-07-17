@@ -426,7 +426,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleAutoScale:(id)sender {
-    if ([self isPresentation])
+    if ([self interactionMode] == SKPresentationMode)
         [pdfView toggleAutoActualSize:sender];
     else
         [pdfView setAutoScales:[pdfView autoScales] == NO];
@@ -716,7 +716,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)searchPDF:(id)sender {
     BOOL selectImmediate = YES;
-    if ([self isFullScreen]) {
+    if ([self interactionMode] == SKFullScreenMode) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
             [leftSideWindow expand];
     } else if ([self leftSidePaneIsOpen] == NO) {
@@ -731,7 +731,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)performFit:(id)sender {
-    if ([self isFullScreen] || [self isPresentation]) {
+    if ([self interactionMode] != SKNormalMode) {
         NSBeep();
         return;
     }
@@ -799,9 +799,9 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)savePDFSettingToDefaults:(id)sender {
-    if ([self isFullScreen])
+    if ([self interactionMode] == SKFullScreenMode)
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
-    else if ([self isPresentation] == NO)
+    else if ([self interactionMode] == SKNormalMode)
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
@@ -838,13 +838,13 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
-    if ([self isFullScreen]) {
+    if ([self interactionMode] == SKFullScreenMode) {
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
         if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
         else
             [leftSideWindow expand];
-    } else if ([self isPresentation]) {
+    } else if ([self interactionMode] == SKPresentationMode) {
         if ([leftSideWindow isVisible])
             [self hideLeftSideWindow];
         else
@@ -873,12 +873,12 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
-    if ([self isFullScreen]) {
+    if ([self interactionMode] == SKFullScreenMode) {
         if ([self rightSidePaneIsOpen])
             [rightSideWindow collapse];
         else
             [rightSideWindow expand];
-    } else if ([self isPresentation]) {
+    } else if ([self interactionMode] == SKPresentationMode) {
         if ([rightSideWindow isVisible])
             [self hideRightSideWindow];
         else
@@ -966,19 +966,19 @@ static NSArray *allMainDocumentPDFViews() {
     }
     
     [[self window] recalculateKeyViewLoop];
-    if ([self isFullScreen])
+    if ([self interactionMode] == SKFullScreenMode)
         [[self window] makeFirstResponder:pdfView];
 }
 
 - (IBAction)toggleFullScreen:(id)sender {
-    if ([self isFullScreen])
+    if ([self interactionMode] == SKFullScreenMode)
         [self exitFullScreen:sender];
     else
         [self enterFullScreen:sender];
 }
 
 - (IBAction)togglePresentation:(id)sender {
-    if ([self isPresentation])
+    if ([self interactionMode] == SKPresentationMode)
         [self exitFullScreen:sender];
     else
         [self enterPresentation:sender];
