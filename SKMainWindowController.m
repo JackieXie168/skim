@@ -1264,11 +1264,6 @@ static char SKMainWindowDefaultsObservationContext;
         [leftSideController.view setFrame:rect];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if ([self isPresentation]) {
-            [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
-            [leftSideWindow setAlphaValue:1.0];
-            [leftSideWindow setEnabled:YES];
-        }
         SKDESTROY(leftSideWindow);
     }
 }
@@ -1287,10 +1282,6 @@ static char SKMainWindowDefaultsObservationContext;
         [rightSideController.view setFrame:rect];
         [rightSideContentView addSubview:rightSideController.view];
         
-        if ([self isPresentation]) {
-            [rightSideWindow setAlphaValue:1.0];
-            [rightSideWindow setEnabled:YES];
-        }
         SKDESTROY(rightSideWindow);
     }
 }
@@ -1553,8 +1544,8 @@ static char SKMainWindowDefaultsObservationContext;
     [self synchronizeWindowTitleWithDocumentName];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
-    [[blankingWindows copy] autorelease];
-    [blankingWindows removeAllObjects];
+    [[blankingWindows retain] autorelease];
+    SKDESTROY(blankingWindows);
 }
 
 #pragma mark Swapping tables
