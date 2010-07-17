@@ -1269,6 +1269,7 @@ static char SKMainWindowDefaultsObservationContext;
             [leftSideWindow setAlphaValue:1.0];
             [leftSideWindow setEnabled:YES];
         }
+        SKDESTROY(leftSideWindow);
     }
 }
 
@@ -1290,6 +1291,7 @@ static char SKMainWindowDefaultsObservationContext;
             [rightSideWindow setAlphaValue:1.0];
             [rightSideWindow setEnabled:YES];
         }
+        SKDESTROY(rightSideWindow);
     }
 }
 
@@ -1541,6 +1543,8 @@ static char SKMainWindowDefaultsObservationContext;
     [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
     [mainWindow display];
     [fullScreenWindow fadeOut];
+    [[fullScreenWindow retain] autorelease];
+    SKDESTROY(fullScreenWindow);
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
