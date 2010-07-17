@@ -1533,7 +1533,10 @@ static char SKMainWindowDefaultsObservationContext;
     SetSystemUIMode(kUIModeNormal, 0);
     
     [self setWindow:mainWindow];
-    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    // trick to make sure the main window shows up in the same space as the fullscreen window
+    [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
+    [fullScreenWindow removeChildWindow:mainWindow];
+    [mainWindow setLevel:NSNormalWindowLevel]; // this can change due to the child window trick
     [mainWindow display];
     [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
