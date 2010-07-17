@@ -82,7 +82,7 @@
 - (void)sendEvent:(NSEvent *)theEvent {
     if (canBecomeMain && ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)) {
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if ([wc isPresentation] && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
+        if ([wc interactionMode] == SKPresentationMode && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
             [wc doGoToPreviousPage:self];
             return;
         }
