@@ -1321,15 +1321,15 @@ static char SKMainWindowDefaultsObservationContext;
         [blankingWindows removeAllObjects];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
-                SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank canBecomeMain:NO];
-                [window setBackgroundColor:backgroundColor];
-                [window setLevel:NSFloatingWindowLevel];
-                [window setFrame:[screenToBlank frame] display:YES];
-                [window orderFront:nil];
-                [window setReleasedWhenClosed:YES];
-                [window setHidesOnDeactivate:YES];
-                [blankingWindows addObject:window];
-                [window release];
+                SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank canBecomeMain:NO];
+                [aWindow setBackgroundColor:backgroundColor];
+                [aWindow setLevel:NSFloatingWindowLevel];
+                [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+                [aWindow orderFront:nil];
+                [aWindow setReleasedWhenClosed:YES];
+                [aWindow setHidesOnDeactivate:YES];
+                [blankingWindows addObject:aWindow];
+                [aWindow release];
             }
         }
     }
