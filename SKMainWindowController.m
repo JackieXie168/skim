@@ -1000,12 +1000,7 @@ static char SKMainWindowDefaultsObservationContext;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
     PDFAnnotation *note = [notes objectAtIndex:theIndex];
     
-    for (NSWindowController *wc in [[self document] windowControllers]) {
-        if ([wc isNoteWindowController] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
-            [[wc window] orderOut:self];
-            break;
-        }
-    }
+    [[[self windowControllerForNote:note] window] orderOut:self];
     
     if ([[note texts] count])
         [rowHeights removeFloatForKey:[[note texts] lastObject]];
@@ -1292,6 +1287,13 @@ static char SKMainWindowDefaultsObservationContext;
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
+- (void)forceSubwindowsOnTop:(BOOL)flag {
+    for (NSWindowController *wc in [[self document] windowControllers]) {
+        if ([wc respondsToSelector:@selector(setForceOnTop:)])
+            [(id)wc setForceOnTop:flag];
+    }
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self interactionMode] == SKPresentationMode ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
@@ -1310,10 +1312,7 @@ static char SKMainWindowDefaultsObservationContext;
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
-    for (NSWindowController *wc in [[self document] windowControllers]) {
-        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
-            [(id)wc setForceOnTop:YES];
-    }
+    [self forceSubwindowsOnTop:YES];
         
     if (NO == [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey] && [[NSScreen screens] count] > 1) {
         if (nil == blankingWindows)
@@ -1507,10 +1506,7 @@ static char SKMainWindowDefaultsObservationContext;
     else
         [self applyPDFSettings:savedNormalSetup];
     
-    for (NSWindowController *wc in [[self document] windowControllers]) {
-        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
-            [(id)wc setForceOnTop:NO];
-    }
+    [self forceSubwindowsOnTop:NO];
     
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
@@ -2053,11 +2049,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
-    NSWindowController *wc = nil;
-    for (wc in [[self document] windowControllers]) {
-        if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation)
-            break;
-    }
+    NSWindowController *wc = [self windowControllerForNote:annotation];
     if (wc == nil) {
         wc = [[SKNoteWindowController alloc] initWithNote:annotation];
         [(SKNoteWindowController *)wc setForceOnTop:[self interactionMode] != SKNormalMode];
@@ -2065,6 +2057,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [wc release];
     }
     [wc showWindow:self];
+}
+
+- (NSWindowController *)windowControllerForNote:(PDFAnnotation *)annotation {
+    for (id wc in [[self document] windowControllers]) {
+        if ([wc isNoteWindowController] && [[wc note] isEqual:annotation])
+            return wc;
+    }
+    return nil;
 }
 
 #pragma mark Observer registration

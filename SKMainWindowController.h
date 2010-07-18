@@ -212,6 +212,8 @@ enum {
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
 
+- (NSWindowController *)windowControllerForNote:(PDFAnnotation *)annotation;
+
 @property (nonatomic, readonly) SKPDFView *pdfView;
 @property (nonatomic, retain) PDFDocument *pdfDocument;
 

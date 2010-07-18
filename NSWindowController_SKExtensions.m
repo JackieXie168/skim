@@ -67,8 +67,6 @@
 
 - (BOOL)isNoteWindowController { return NO; }
 
-- (BOOL)isSnapshotWindowController { return NO; }
-
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
 	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
     if (invocation) {
