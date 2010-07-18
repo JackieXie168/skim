@@ -1593,12 +1593,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([[self selectedNotes] containsObject:annotation])
             [rightSideController.noteOutlineView deselectAll:self];
         
-        for (NSWindowController *wc in [[self document] windowControllers]) {
-            if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation) {
-                [wc close];
-                break;
-            }
-        }
+        [[self windowControllerForNote:annotation] close];
         
         mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] removeObject:annotation];

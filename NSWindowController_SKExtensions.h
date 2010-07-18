@@ -44,7 +44,6 @@
 - (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name;
 
 - (BOOL)isNoteWindowController;
-- (BOOL)isSnapshotWindowController;
 
 - (void)beginSheetModalForWindow:(NSWindow *)window;
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo;

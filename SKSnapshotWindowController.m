@@ -111,8 +111,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return [NSString stringWithFormat:@"%@ %C %@", displayName, EM_DASH_CHARACTER, [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self pageLabel]]];
 }
 
-- (BOOL)isSnapshotWindowController { return YES; }
-
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [pdfView convertRect:rect fromPage:page];
     CGFloat scale = [pdfView scaleFactor];
