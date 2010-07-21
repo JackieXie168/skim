@@ -294,6 +294,7 @@
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFC7EDA1137FDE20055D1E2 /* NotesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
+		CEFDEA9111F6FF8300D6FEBA /* NSScreen_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDEA9011F6FF8300D6FEBA /* NSScreen_SKExtensions.m */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		CEFE71951129AAA30018CD74 /* ServicesMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFE71941129AAA30018CD74 /* ServicesMenu.strings */; };
 		CEFF22F711412E51008DB4DC /* DownloadsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFF22F611412E51008DB4DC /* DownloadsWindow.xib */; };
@@ -1201,6 +1202,8 @@
 		CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFormatCommand.m; sourceTree = "<group>"; };
 		CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotesPanel.xib; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
+		CEFDEA8F11F6FF8300D6FEBA /* NSScreen_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScreen_SKExtensions.h; sourceTree = "<group>"; };
+		CEFDEA9011F6FF8300D6FEBA /* NSScreen_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScreen_SKExtensions.m; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		CEFE718E1129AA540018CD74 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ServicesMenu.strings; sourceTree = "<group>"; };
@@ -1951,6 +1954,8 @@
 				CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */,
 				CE0A3C8C0EBF3AAA00526C74 /* NSResponder_SKExtensions.h */,
 				CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */,
+				CEFDEA8F11F6FF8300D6FEBA /* NSScreen_SKExtensions.h */,
+				CEFDEA9011F6FF8300D6FEBA /* NSScreen_SKExtensions.m */,
 				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
@@ -2566,6 +2571,7 @@
 				CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */,
 				CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */,
 				CE121AC81180644A00951425 /* SKScriptMenu.m in Sources */,
+				CEFDEA9111F6FF8300D6FEBA /* NSScreen_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

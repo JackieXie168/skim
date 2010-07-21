@@ -102,6 +102,7 @@
 #import "SKColorCell.h"
 #import "PDFDocument_SKExtensions.h"
 #import "SKPDFPage.h"
+#import "NSScreen_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -1403,7 +1404,7 @@ static char SKMainWindowDefaultsObservationContext;
     BOOL wasPresentation = [self interactionMode] == SKPresentationMode;
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
-    if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
+    if ([screen isEqual:[NSScreen primaryScreen]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     else if (wasPresentation)
         SetSystemUIMode(kUIModeNormal, 0);
@@ -1443,7 +1444,7 @@ static char SKMainWindowDefaultsObservationContext;
     [self enterPresentationMode];
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
-    if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
+    if ([screen isEqual:[NSScreen primaryScreen]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionDisableProcessSwitch);
     else
         SetSystemUIMode(kUIModeNormal, 0);
