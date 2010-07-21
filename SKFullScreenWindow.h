@@ -42,17 +42,19 @@
 
 @interface SKFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
     NSViewAnimation *animation;
-    BOOL canBecomeMain;
 }
 
 @property (nonatomic, retain) NSView *mainView;
 
 - (id)initWithScreen:(NSScreen *)screen;
-- (id)initWithScreen:(NSScreen *)screen canBecomeMain:(BOOL)flag;
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;
 - (void)fadeInBlocking;
 - (void)fadeIn;
 
+@end
+
+
+@interface SKMainFullScreenWindow : SKFullScreenWindow
 @end
