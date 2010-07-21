@@ -76,6 +76,7 @@
 #import "SKFDFParser.h"
 #import "SKLocalization.h"
 #import "SKScriptMenu.h"
+#import "NSScreen_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/apps/mediawiki/skim-app/"
@@ -160,7 +161,7 @@
     GetSystemUIMode(&currentMode, &currentOptions);
     id doc = [[[aNotification object] windowController] document];
     SKMainWindowController *mwc = [doc respondsToSelector:@selector(mainWindowController)] ? [doc mainWindowController] : nil;
-    if ([[[mwc window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]]) {
+    if ([[[mwc window] screen] isEqual:[NSScreen primaryScreen]]) {
         if ([mwc interactionMode] == SKPresentationMode) {
             mode = kUIModeAllHidden;
             options = kUIOptionDisableProcessSwitch;

@@ -38,6 +38,7 @@
 
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSScreen_SKExtensions.h"
 
 #define WINDOW_OFFSET           20.0
 #define ALPHA_VALUE             0.95
@@ -45,11 +46,6 @@
 #define AUTO_HIDE_TIME_INTERVAL 7.0
 #define DEFAULT_SHOW_DELAY      1.0
 #define ALT_SHOW_DELAY          0.1
-
-
-@interface NSScreen (SKExtensions)
-+ (NSScreen *)screenForPoint:(NSPoint)point;
-@end
 
 
 @implementation SKImageToolTipWindow
@@ -142,52 +138,6 @@
         
         [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? ALT_SHOW_DELAY : DEFAULT_SHOW_DELAY];
     }
-}
-
-@end
-
-
-static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect) {
-    CGFloat dx, dy;
-
-    if (point.x < NSMinX(rect))
-        dx = NSMinX(rect) - point.x;
-    else if (point.x > NSMaxX(rect))
-        dx = point.x - NSMaxX(rect);
-    else
-        dx = 0.0;
-
-    if (point.y < NSMinY(rect))
-        dy = NSMinY(rect) - point.y;
-    else if (point.y > NSMaxY(rect))
-        dy = point.y - NSMaxY(rect);
-    else
-        dy = 0.0;
-    
-    return dx * dx + dy * dy;
-}
-
-
-@implementation NSScreen (SKExtensions)
-
-+ (NSScreen *)screenForPoint:(NSPoint)point {
-    NSScreen *screen = nil;
-    CGFloat distanceSquared = CGFLOAT_MAX;
-    
-    for (NSScreen *aScreen in [NSScreen screens]) {
-        NSRect frame = [aScreen frame];
-        
-        if (NSPointInRect(point, frame))
-            return aScreen;
-        
-        CGFloat aDistanceSquared = SKSquaredDistanceFromPointToRect(point, frame);
-        if (aDistanceSquared < distanceSquared) {
-            distanceSquared = aDistanceSquared;
-            screen = aScreen;
-        }
-    }
-    
-    return screen;
 }
 
 @end
