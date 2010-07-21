@@ -1326,7 +1326,7 @@ static char SKMainWindowDefaultsObservationContext;
                 [aWindow setLevel:NSFloatingWindowLevel];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
                 [aWindow orderFront:nil];
-                [aWindow setReleasedWhenClosed:YES];
+                [aWindow setReleasedWhenClosed:NO];
                 [aWindow setHidesOnDeactivate:YES];
                 [blankingWindows addObject:aWindow];
                 [aWindow release];
