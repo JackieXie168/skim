@@ -136,6 +136,26 @@
     }
 }
 
+- (void)fadeInBlocking:(BOOL)block {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+        [self setAlphaValue:1.0];
+        [self orderFront:nil];
+    } else {
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+        [fadeInDict release];
+        
+        [self setAlphaValue:0.0];
+        [super orderFront:nil];
+        
+        [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
+        [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
+        [animation setDuration:0.5];
+        [animation setDelegate:self];
+        [animation startAnimation];
+    }
+}
+
 - (void)fadeOutBlocking {
     [self fadeOutBlocking:YES];
 }
@@ -144,9 +164,19 @@
     [self fadeOutBlocking:NO];
 }
 
+- (void)fadeInBlocking {
+    [self fadeInBlocking:YES];
+}
+
+- (void)fadeIn {
+    [self fadeInBlocking:NO];
+}
+
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
+    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
     SKDESTROY(animation);
-    [self orderOut:nil];
+    if (isFadeOut)
+        [self orderOut:nil];
     [self setAlphaValue:1.0];
 }
 

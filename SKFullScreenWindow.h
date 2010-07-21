@@ -52,5 +52,7 @@
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;
+- (void)fadeInBlocking;
+- (void)fadeIn;
 
 @end
