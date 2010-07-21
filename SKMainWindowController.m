@@ -1301,7 +1301,7 @@ static char SKMainWindowDefaultsObservationContext;
     NSInteger level = [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
     
     // create a new full screen window
-    SKFullScreenWindow *fullScreenWindow = [[[SKFullScreenWindow alloc] initWithScreen:screen] autorelease];
+    SKMainFullScreenWindow *fullScreenWindow = [[[SKMainFullScreenWindow alloc] initWithScreen:screen] autorelease];
     
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
@@ -1321,7 +1321,7 @@ static char SKMainWindowDefaultsObservationContext;
         [blankingWindows removeAllObjects];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
-                SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank canBecomeMain:NO];
+                SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
                 [aWindow setBackgroundColor:backgroundColor];
                 [aWindow setLevel:NSFloatingWindowLevel];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
@@ -1478,8 +1478,8 @@ static char SKMainWindowDefaultsObservationContext;
     
     // first fade out the pdfView so we can move the pdfView to the main window before it's revealed
     // animating the view itself does no work as PDFView does not work nicely with CoreAnimation, so we use a temporary window
-    SKFullScreenWindow *fullScreenWindow = [[[self window] retain] autorelease];
-    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] canBecomeMain:NO];
+    SKMainFullScreenWindow *fullScreenWindow = [[[self window] retain] autorelease];
+    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
     [fadeWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [fadeWindow setLevel:[fullScreenWindow level]];
     [fadeWindow setMainView:[fullScreenWindow mainView]];
