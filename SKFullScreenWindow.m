@@ -93,7 +93,6 @@
 - (void)fadeOutBlocking:(BOOL)block {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self orderOut:nil];
-        [self setAlphaValue:1.0];
     } else {
         NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
         animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
@@ -109,7 +108,6 @@
 
 - (void)fadeInBlocking:(BOOL)block {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
-        [self setAlphaValue:1.0];
         [self orderFront:nil];
     } else {
         NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
