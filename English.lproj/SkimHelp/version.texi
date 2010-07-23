@@ -1,1 +1,1 @@
-@set VERSION 1.3.6
+@set VERSION 1.3.7
