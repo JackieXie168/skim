@@ -1486,6 +1486,7 @@ static char SKMainWindowDefaultsObservationContext;
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
     [fadeWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [fadeWindow setLevel:[fullScreenWindow level]];
+    [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setMainView:[fullScreenWindow mainView]];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow display];
