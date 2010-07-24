@@ -1303,9 +1303,6 @@ static char SKMainWindowDefaultsObservationContext;
     // create a new full screen window
     SKMainFullScreenWindow *fullScreenWindow = [[[SKMainFullScreenWindow alloc] initWithScreen:screen] autorelease];
     
-    // appartently this is needed due to a bug on 10.5
-    [fullScreenWindow setFrame:[screen frame] display:NO]; 
-    
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:([self interactionMode] == SKPresentationMode ? (id)pdfView : (id)pdfSplitView)];
@@ -1328,7 +1325,6 @@ static char SKMainWindowDefaultsObservationContext;
                 [aWindow setBackgroundColor:backgroundColor];
                 [aWindow setLevel:NSFloatingWindowLevel];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-                [aWindow setFrame:[screenToBlank frame] display:YES]; 
                 [aWindow orderFront:nil];
                 [aWindow setReleasedWhenClosed:NO];
                 [aWindow setHidesOnDeactivate:YES];
@@ -1486,7 +1482,6 @@ static char SKMainWindowDefaultsObservationContext;
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
     [fadeWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [fadeWindow setLevel:[fullScreenWindow level]];
-    [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setMainView:[fullScreenWindow mainView]];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow display];
