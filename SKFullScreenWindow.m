@@ -54,6 +54,8 @@
         [self setBackgroundColor:[NSColor blackColor]];
         [self setReleasedWhenClosed:NO];
         [self setExcludedFromWindowsMenu:YES];
+        // appartently this is needed due to a bug on 10.5
+        [self setFrame:[screen frame] display:NO];
     }
     return self;
 }
