@@ -50,12 +50,13 @@
 - (id)initWithScreen:(NSScreen *)screen {
     if (screen == nil)
         screen = [NSScreen mainScreen];
-    if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    NSRect screenFrame = [screen frame];
+    if (self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
         [self setBackgroundColor:[NSColor blackColor]];
         [self setReleasedWhenClosed:NO];
         [self setExcludedFromWindowsMenu:YES];
-        // appartently this is needed due to a bug on 10.5
-        [self setFrame:[screen frame] display:NO];
+        // appartently this is needed for secondary screens
+        [self setFrame:screenFrame display:NO];
     }
     return self;
 }
