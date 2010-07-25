@@ -1512,8 +1512,6 @@ static char SKMainWindowDefaultsObservationContext;
     
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
-    SetSystemUIMode(kUIModeNormal, 0);
-    
     interactionMode = SKNormalMode;
     
     [self setWindow:mainWindow];
