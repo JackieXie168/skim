@@ -43,7 +43,6 @@
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
 #import <Quartz/Quartz.h>
-#import <Carbon/Carbon.h>
 #import "SKStringConstants.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
