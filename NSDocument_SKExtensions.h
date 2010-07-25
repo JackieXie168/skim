@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import <Carbon/Carbon.h>
 
 extern NSString *SKDocumentErrorDomain;
 
@@ -48,6 +49,8 @@ enum {
 };
 
 @interface NSDocument (SKExtensions)
+
+- (void)getRequiredSystemUIMode:(SystemUIMode *)mode systemUIOptions:(SystemUIOptions *)options;
 
 #pragma mark Document Setup
 

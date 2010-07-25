@@ -80,6 +80,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "SKSyncPreferences.h"
+#import "NSScreen_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -270,6 +271,24 @@ static char SKMainDocumentDefaultsObservationContext;
 - (void)undoableActionDoesntDirtyDocument {
 	// This action, while undoable, shouldn't mark the document dirty
 	[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
+}
+
+
+- (void)getRequiredSystemUIMode:(SystemUIMode *)mode systemUIOptions:(SystemUIOptions *)options {
+    SystemUIMode aMode = kUIModeNormal;
+    SystemUIOptions anOptions = 0;
+    SKMainWindowController *mwc = [self mainWindowController];
+    if ([[[mwc window] screen] isEqual:[NSScreen primaryScreen]]) {
+        if ([mwc interactionMode] == SKPresentationMode) {
+            aMode = kUIModeAllHidden;
+            anOptions = kUIOptionDisableProcessSwitch;
+        } else if ([mwc interactionMode] == SKFullScreenMode) {
+            aMode = kUIModeAllHidden;
+            anOptions = kUIOptionAutoShowMenuBar;
+        }
+    }
+    if (mode) *mode = aMode;
+    if (options) *options = anOptions;
 }
 
 #pragma mark Writing
