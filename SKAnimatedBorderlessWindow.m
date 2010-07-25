@@ -50,7 +50,7 @@
 @dynamic defaultAlphaValue, fadeInDuration, fadeOutDuration, autoHideTimeInterval;
 
 - (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen {
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setAlphaValue:[self defaultAlphaValue]];

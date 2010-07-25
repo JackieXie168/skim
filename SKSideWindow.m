@@ -82,7 +82,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSDivideRect([screen frame], &contentRect, &ignored, DEFAULT_WINDOW_WIDTH, anEdge);
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
 		[self setHasShadow:YES];
