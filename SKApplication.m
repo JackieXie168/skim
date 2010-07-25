@@ -39,6 +39,7 @@
 #import "SKApplication.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
@@ -83,6 +84,16 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     if ([[self delegate] respondsToSelector:@selector(applicationStartsTerminating:)])
         [[self delegate] applicationStartsTerminating:notification];
     [super terminate:sender];
+}
+
+- (void)updatePresentationOptions {
+    SystemUIMode currentMode, mode = kUIModeNormal;
+    SystemUIOptions currentOptions, options = 0;
+    GetSystemUIMode(&currentMode, &currentOptions);
+    NSDocument *doc = [[[self mainWindow] windowController] document];
+    [doc getRequiredSystemUIMode:&mode systemUIOptions:&options];
+    if (mode != currentMode || options != currentOptions)
+        SetSystemUIMode(mode, options);
 }
 
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {

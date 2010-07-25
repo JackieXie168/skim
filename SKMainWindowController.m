@@ -1411,10 +1411,6 @@ static char SKMainWindowDefaultsObservationContext;
     BOOL wasPresentation = [self interactionMode] == SKPresentationMode;
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
-    if ([screen isEqual:[NSScreen primaryScreen]])
-        SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-    else if (wasPresentation)
-        SetSystemUIMode(kUIModeNormal, 0);
     
     interactionMode = SKFullScreenMode;
     
@@ -1423,6 +1419,7 @@ static char SKMainWindowDefaultsObservationContext;
         [pdfView setFrame:[pdfContentView bounds]];
         [pdfContentView addSubview:pdfView];
         [(SKFullScreenWindow *)[self window] setMainView:pdfSplitView];
+        [NSApp updatePresentationOptions];
     } else {
         [self saveNormalSetup];
         [self goFullScreen];
@@ -1451,14 +1448,11 @@ static char SKMainWindowDefaultsObservationContext;
     [self enterPresentationMode];
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
-    if ([screen isEqual:[NSScreen primaryScreen]])
-        SetSystemUIMode(kUIModeAllHidden, kUIOptionDisableProcessSwitch);
-    else
-        SetSystemUIMode(kUIModeNormal, 0);
     
     interactionMode = SKPresentationMode;
     
     if (wasFullScreen) {
+        [NSApp updatePresentationOptions];
         [pdfSplitView setFrame:[centerContentView bounds]];
         [centerContentView addSubview:pdfSplitView];
         [(SKFullScreenWindow *)[self window] setMainView:pdfView];
@@ -1530,11 +1524,11 @@ static char SKMainWindowDefaultsObservationContext;
     [mainWindow setLevel:NSNormalWindowLevel];
     [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
     [mainWindow display];
-    [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
+    [fullScreenWindow fadeOut];
     // the page number may have changed
     [self synchronizeWindowTitleWithDocumentName];
     
