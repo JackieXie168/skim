@@ -482,6 +482,7 @@ static char SKMainWindowDefaultsObservationContext;
     // as the fullscreen window has no title we have to do this manually
     if ([self interactionMode] == SKFullScreenMode)
         [NSApp changeWindowsItem:[self window] title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
+    [super synchronizeWindowTitleWithDocumentName];
 }
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
