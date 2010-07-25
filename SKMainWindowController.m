@@ -478,6 +478,12 @@ static char SKMainWindowDefaultsObservationContext;
     mwcFlags.settingUpWindow = 0;
 }
 
+- (void)synchronizeWindowTitleWithDocumentName {
+    // as the fullscreen window has no title we have to do this manually
+    if ([self interactionMode] == SKFullScreenMode)
+        [NSApp changeWindowsItem:[self window] title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
+}
+
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
     if (mwcFlags.usesDrawers == 0) {
         [splitView setPosition:leftSideWidth ofDividerAtIndex:0];
