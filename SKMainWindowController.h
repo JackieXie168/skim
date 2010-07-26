@@ -40,6 +40,7 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import "SKSnapshotWindowController.h"
 #import "SKThumbnail.h"
+#import "NSDocument_SKExtensions.h"
 
 enum {
     SKThumbnailSidePaneState,
@@ -58,13 +59,6 @@ enum {
     SKGroupedFindPaneState
 };
 typedef NSInteger SKFindPaneState;
-
-enum {
-    SKNormalMode,
-    SKFullScreenMode,
-    SKPresentationMode
-};
-typedef NSInteger SKInteractionMode;
 
 enum {
     SKDefaultWindowOption,

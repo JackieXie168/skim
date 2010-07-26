@@ -41,6 +41,7 @@
 #import "SKMainWindowController.h"
 #import "SKTransitionController.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewAnnotationModeChangedNotification;
