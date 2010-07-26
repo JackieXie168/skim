@@ -70,7 +70,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     if (hasSlider)
         width += SLIDER_WIDTH;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
-    if (self = [super initWithContentRect:contentRect screen:screen]) {
+    if (self = [super initWithContentRect:contentRect]) {
         
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setLevel:[[pdfView window] level]];
