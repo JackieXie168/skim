@@ -41,7 +41,6 @@
 
 @interface SKAnimatedBorderlessWindow : NSWindow
 
-- (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen;
 - (id)initWithContentRect:(NSRect)contentRect;
 
 - (void)willClose;
