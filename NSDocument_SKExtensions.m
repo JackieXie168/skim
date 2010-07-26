@@ -57,10 +57,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 @implementation NSDocument (SKExtensions)
 
-- (void)getRequiredSystemUIMode:(SystemUIMode *)mode systemUIOptions:(SystemUIOptions *)options {
-    if (mode) *mode = kUIModeNormal;
-    if (options) *options = 0;
-}
+- (SKInteractionMode)systemInteractionMode { return SKNormalMode; }
 
 #pragma mark Document Setup
 

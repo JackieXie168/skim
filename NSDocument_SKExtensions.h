@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import <Carbon/Carbon.h>
+#import "SKMainWindowController.h"
 
 extern NSString *SKDocumentErrorDomain;
 
@@ -50,7 +50,7 @@ enum {
 
 @interface NSDocument (SKExtensions)
 
-- (void)getRequiredSystemUIMode:(SystemUIMode *)mode systemUIOptions:(SystemUIOptions *)options;
+- (SKInteractionMode)systemInteractionMode;
 
 #pragma mark Document Setup
 
