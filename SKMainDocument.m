@@ -273,22 +273,11 @@ static char SKMainDocumentDefaultsObservationContext;
 	[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
-
-- (void)getRequiredSystemUIMode:(SystemUIMode *)mode systemUIOptions:(SystemUIOptions *)options {
-    SystemUIMode aMode = kUIModeNormal;
-    SystemUIOptions anOptions = 0;
-    SKMainWindowController *mwc = [self mainWindowController];
-    if ([[[mwc window] screen] isEqual:[NSScreen primaryScreen]]) {
-        if ([mwc interactionMode] == SKPresentationMode) {
-            aMode = kUIModeAllHidden;
-            anOptions = kUIOptionDisableProcessSwitch;
-        } else if ([mwc interactionMode] == SKFullScreenMode) {
-            aMode = kUIModeAllHidden;
-            anOptions = kUIOptionAutoShowMenuBar;
-        }
-    }
-    if (mode) *mode = aMode;
-    if (options) *options = anOptions;
+- (SKInteractionMode)systemInteractionMode {
+    // only return the real interaction mode when the fullscreen window is on the primary screen, otherwise no need to block main menu and dock
+    if ([[[[self mainWindowController] window] screen] isEqual:[NSScreen primaryScreen]])
+        return [[self mainWindowController] interactionMode];
+    return SKNormalMode;
 }
 
 #pragma mark Writing

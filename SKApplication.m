@@ -40,6 +40,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import <Carbon/Carbon.h>
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
@@ -91,7 +92,14 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     SystemUIOptions currentOptions, options = 0;
     GetSystemUIMode(&currentMode, &currentOptions);
     NSDocument *doc = [[[self mainWindow] windowController] document];
-    [doc getRequiredSystemUIMode:&mode systemUIOptions:&options];
+    SKInteractionMode interactionMode = [doc systemInteractionMode];
+    if (interactionMode == SKPresentationMode) {
+        mode = kUIModeAllHidden;
+        options = kUIOptionDisableProcessSwitch;
+    } else if (interactionMode == SKFullScreenMode) {
+        mode = kUIModeAllHidden;
+        options = kUIOptionAutoShowMenuBar;
+    }
     if (mode != currentMode || options != currentOptions)
         SetSystemUIMode(mode, options);
 }
