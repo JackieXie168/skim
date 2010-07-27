@@ -1315,24 +1315,23 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (void)goFullScreen {
-    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen];
     
-    // create a new full screen window
+    // create a new full screen window, it may have to be displayed on a different screen or space
     SKMainFullScreenWindow *fullScreenWindow = [[[SKMainFullScreenWindow alloc] initWithScreen:screen] autorelease];
     
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
-    [fullScreenWindow setMainView:([self interactionMode] == SKPresentationMode ? (id)pdfView : (id)pdfSplitView)];
+    [fullScreenWindow setMainView:([self interactionMode] == SKPresentationMode ? (NSView *)pdfView : (NSView *)pdfSplitView)];
     [self applyBackgroundColorAndLevelForWindow:fullScreenWindow];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
     [self forceSubwindowsOnTop:YES];
-        
-    if (NO == [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey] && [[NSScreen screens] count] > 1) {
+    
+    if ([self interactionMode] == SKFullScreenMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey] && [[NSScreen screens] count] > 1) {
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
-        [blankingWindows removeAllObjects];
         NSColor *backgroundColor = [fullScreenWindow backgroundColor];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
@@ -1340,9 +1339,8 @@ static char SKMainWindowDefaultsObservationContext;
                 [aWindow setBackgroundColor:backgroundColor];
                 [aWindow setLevel:NSFloatingWindowLevel];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-                [aWindow orderFront:nil];
-                [aWindow setReleasedWhenClosed:NO];
                 [aWindow setHidesOnDeactivate:YES];
+                [aWindow orderFront:nil];
                 [blankingWindows addObject:aWindow];
                 [aWindow release];
             }
@@ -1411,7 +1409,7 @@ static char SKMainWindowDefaultsObservationContext;
     if (wasInteractionMode == SKFullScreenMode)
         return;
     
-    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen];
     
     interactionMode = SKFullScreenMode;
     
@@ -1445,7 +1443,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     [self enterPresentationMode];
     
-    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen];
     
     interactionMode = SKPresentationMode;
     
