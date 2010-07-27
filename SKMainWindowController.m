@@ -1529,8 +1529,8 @@ static char SKMainWindowDefaultsObservationContext;
     [self synchronizeWindowTitleWithDocumentName];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
-    [[blankingWindows retain] autorelease];
-    SKDESTROY(blankingWindows);
+    [blankingWindows autorelease];
+    blankingWindows = nil;
 }
 
 #pragma mark Swapping tables
