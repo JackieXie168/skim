@@ -48,7 +48,7 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 @property (nonatomic, getter=isUserAttentionDisabled) BOOL userAttentionDisabled;
 
-- (void)updatePresentationOptions;
+- (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow;
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate;
