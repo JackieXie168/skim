@@ -1301,10 +1301,21 @@ static char SKMainWindowDefaultsObservationContext;
     }
 }
 
+- (void)applyBackgroundColorAndLevelForWindow:(NSWindow *)fullScreenWindow {
+    BOOL isPresentation = [self interactionMode] == SKPresentationMode;
+    NSColor *backgroundColor = isPresentation ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSInteger level = isPresentation && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
+
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:level];
+    [pdfView setBackgroundColor:isPresentation ? [NSColor clearColor] : backgroundColor];
+    [secondaryPdfView setBackgroundColor:backgroundColor];
+    [pdfView layoutDocumentView];
+    [pdfView setNeedsDisplay:YES];
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
-    NSColor *backgroundColor = [self interactionMode] == SKPresentationMode ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-    NSInteger level = [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
     
     // create a new full screen window
     SKMainFullScreenWindow *fullScreenWindow = [[[SKMainFullScreenWindow alloc] initWithScreen:screen] autorelease];
@@ -1312,10 +1323,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:([self interactionMode] == SKPresentationMode ? (id)pdfView : (id)pdfSplitView)];
-    [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:level];
-    [pdfView setBackgroundColor:[self interactionMode] == SKPresentationMode ? [NSColor clearColor] : backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
+    [self applyBackgroundColorAndLevelForWindow:fullScreenWindow];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
@@ -1325,6 +1333,7 @@ static char SKMainWindowDefaultsObservationContext;
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
         [blankingWindows removeAllObjects];
+        NSColor *backgroundColor = [fullScreenWindow backgroundColor];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
                 SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
@@ -1375,12 +1384,6 @@ static char SKMainWindowDefaultsObservationContext;
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
-    [pdfView setBackgroundColor:[NSColor clearColor]];
-    if ([self window] != mainWindow) {
-        [[self window] setBackgroundColor:[NSColor blackColor]];
-        [[self window] setLevel:[[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] == NO ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
-    }
-    
     SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
     if (notesPdfView)
         [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
@@ -1404,31 +1407,28 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (IBAction)enterFullScreen:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode)
+    SKInteractionMode wasInteractionMode = [self interactionMode];
+    if (wasInteractionMode == SKFullScreenMode)
         return;
-    
-    BOOL wasPresentation = [self interactionMode] == SKPresentationMode;
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     
     interactionMode = SKFullScreenMode;
     
-    if (wasPresentation) {
+    if (wasInteractionMode == SKPresentationMode) {
         [self exitPresentationMode];
+        
+        [NSApp updatePresentationOptions];
+        
         [pdfView setFrame:[pdfContentView bounds]];
         [pdfContentView addSubview:pdfView];
         [(SKFullScreenWindow *)[self window] setMainView:pdfSplitView];
-        [NSApp updatePresentationOptions];
+        
+        [self applyBackgroundColorAndLevelForWindow:[self window]];
     } else {
         [self saveNormalSetup];
         [self goFullScreen];
     }
-    
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-    [pdfView setBackgroundColor:backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
-    [[self window] setBackgroundColor:backgroundColor];
-    [[self window] setLevel:NSNormalWindowLevel];
     
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     if ([fullScreenSetup count])
@@ -1439,10 +1439,9 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (IBAction)enterPresentation:(id)sender {
-    if ([self interactionMode] == SKPresentationMode)
+    SKInteractionMode wasInteractionMode = [self interactionMode];
+    if (wasInteractionMode == SKPresentationMode)
         return;
-    
-    BOOL wasFullScreen = [self interactionMode] == SKFullScreenMode;
     
     [self enterPresentationMode];
     
@@ -1450,11 +1449,15 @@ static char SKMainWindowDefaultsObservationContext;
     
     interactionMode = SKPresentationMode;
     
-    if (wasFullScreen) {
+    if (wasInteractionMode == SKFullScreenMode) {
         [NSApp updatePresentationOptions];
+        
         [pdfSplitView setFrame:[centerContentView bounds]];
         [centerContentView addSubview:pdfSplitView];
         [(SKFullScreenWindow *)[self window] setMainView:pdfView];
+        
+        [self applyBackgroundColorAndLevelForWindow:[self window]];
+        
         [self hideSideWindows];
     } else {
         [self goFullScreen];
@@ -1464,10 +1467,11 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (IBAction)exitFullScreen:(id)sender {
-    if ([self interactionMode] == SKNormalMode)
+    SKInteractionMode wasInteractionMode = [self interactionMode];
+    if (wasInteractionMode == SKNormalMode)
         return;
     
-    if ([self interactionMode] == SKFullScreenMode)
+    if (wasInteractionMode == SKFullScreenMode)
         [self hideSideWindows];
     
     if ([[[self window] firstResponder] isDescendantOf:pdfView])
@@ -1480,9 +1484,10 @@ static char SKMainWindowDefaultsObservationContext;
     // animating the view itself does no work as PDFView does not work nicely with CoreAnimation, so we use a temporary window
     SKMainFullScreenWindow *fullScreenWindow = [[[self window] retain] autorelease];
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
+    NSView *mainView = [fullScreenWindow mainView];
     [fadeWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [fadeWindow setLevel:[fullScreenWindow level]];
-    [fadeWindow setMainView:[fullScreenWindow mainView]];
+    [fadeWindow setMainView:mainView];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow display];
     [fullScreenWindow display];
@@ -1491,18 +1496,14 @@ static char SKMainWindowDefaultsObservationContext;
     [fadeWindow release];
     
     // this should be done before exitPresentationMode to get a smooth transition
-    if ([self interactionMode] == SKFullScreenMode) {
-        [pdfSplitView setFrame:[centerContentView bounds]];
-        [centerContentView addSubview:pdfSplitView];
-    } else {
-        [pdfView setFrame:[pdfContentView bounds]];
-        [pdfContentView addSubview:pdfView]; 
-    }
+    NSView *contentView = [self interactionMode] == SKFullScreenMode ? centerContentView : pdfContentView;
+    [mainView setFrame:[contentView bounds]];
+    [contentView addSubview:mainView];
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView layoutDocumentView];
     
-    if ([self interactionMode] == SKPresentationMode)
+    if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
     else
         [self applyPDFSettings:savedNormalSetup];
