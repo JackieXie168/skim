@@ -1416,7 +1416,7 @@ static char SKMainWindowDefaultsObservationContext;
     if (wasInteractionMode == SKPresentationMode) {
         [self exitPresentationMode];
         
-        [NSApp updatePresentationOptions];
+        [NSApp updatePresentationOptionsForWindow:[self window]];
         
         [pdfView setFrame:[pdfContentView bounds]];
         [pdfContentView addSubview:pdfView];
@@ -1448,7 +1448,7 @@ static char SKMainWindowDefaultsObservationContext;
     interactionMode = SKPresentationMode;
     
     if (wasInteractionMode == SKFullScreenMode) {
-        [NSApp updatePresentationOptions];
+        [NSApp updatePresentationOptionsForWindow:[self window]];
         
         [pdfSplitView setFrame:[centerContentView bounds]];
         [centerContentView addSubview:pdfSplitView];

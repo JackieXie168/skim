@@ -156,7 +156,7 @@
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    [NSApp updatePresentationOptions];
+    [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 
 #pragma mark NSApplication delegate

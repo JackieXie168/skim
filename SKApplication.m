@@ -87,11 +87,11 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [super terminate:sender];
 }
 
-- (void)updatePresentationOptions {
+- (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
     SystemUIMode currentMode, mode;
     SystemUIOptions currentOptions, options;
     GetSystemUIMode(&currentMode, &currentOptions);
-    switch ([[[[self mainWindow] windowController] document] systemInteractionMode]) {
+    switch ([[[aWindow windowController] document] systemInteractionMode]) {
         case SKPresentationMode:
             mode = kUIModeAllHidden;
             options = kUIOptionDisableProcessSwitch;
