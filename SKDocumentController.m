@@ -95,6 +95,8 @@ NSString *SKDocumentControllerDidAddDocumentNotification = @"SKDocumentControlle
 NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
 NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
+NSString *SKDocumentControllerDocumentKey = @"document";
+
 @implementation SKDocumentController
 
 + (void)initialize {
@@ -119,13 +121,13 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 - (void)addDocument:(NSDocument *)document {
     [super addDocument:document];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidAddDocumentNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, SKDocumentControllerDocumentKey, nil]];
 }
 
 - (void)removeDocument:(NSDocument *)document {
     [super removeDocument:[[document retain] autorelease]];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidRemoveDocumentNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, SKDocumentControllerDocumentKey, nil]];
 }
 
 

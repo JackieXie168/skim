@@ -81,6 +81,8 @@ extern NSString *SKDocumentControllerDidAddDocumentNotification;
 extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
 extern NSString *SKDocumentDidShowNotification;
 
+NSString *SKDocumentControllerDocumentKey;
+
 @interface SKDocumentController : NSDocumentController {
     NSArray *customExportTemplateFiles;
 }

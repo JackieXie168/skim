@@ -1642,7 +1642,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleDidRemoveDocumentNotification:(NSNotification *)notification {
-    if ([[notification userInfo] objectForKey:@"document"] == presentationNotesDocument)
+    if ([[notification userInfo] objectForKey:SKDocumentControllerDocumentKey] == presentationNotesDocument)
         [self setPresentationNotesDocument:nil];
 }
 
