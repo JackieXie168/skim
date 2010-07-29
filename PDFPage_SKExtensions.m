@@ -373,7 +373,7 @@ static BOOL usesSequentialPageNumbering = NO;
         [self setRotation:angle];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionKey, SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
     }
 }
 
@@ -397,7 +397,7 @@ static BOOL usesSequentialPageNumbering = NO;
         [self setBounds:newBounds forBox:kPDFDisplayBoxCropBox];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
     }
 }
 
@@ -421,7 +421,7 @@ static BOOL usesSequentialPageNumbering = NO;
         [self setBounds:newBounds forBox:kPDFDisplayBoxMediaBox];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
     }
 }
 
