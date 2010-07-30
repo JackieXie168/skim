@@ -252,11 +252,11 @@
         if ([self interactionMode] == SKFullScreenMode) {
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 [leftSideWindow remove];
-                [leftSideWindow attachToWindow:[self window] onScreen:screen];
+                [leftSideWindow attachToWindow:[self window]];
             }
             if ([[rightSideWindow screen] isEqual:screen] == NO) {
                 [rightSideWindow remove];
-                [rightSideWindow attachToWindow:[self window] onScreen:screen];
+                [rightSideWindow attachToWindow:[self window]];
             }
         }
         [pdfView layoutDocumentView];
@@ -272,9 +272,9 @@
             [[self window] setFrame:screenFrame display:NO];
             if ([self interactionMode] == SKFullScreenMode) {
                 [leftSideWindow remove];
-                [leftSideWindow attachToWindow:[self window] onScreen:screen];
+                [leftSideWindow attachToWindow:[self window]];
                 [rightSideWindow remove];
-                [rightSideWindow attachToWindow:[self window] onScreen:screen];
+                [rightSideWindow attachToWindow:[self window]];
             }
             [pdfView layoutDocumentView];
             [pdfView setNeedsDisplay:YES];

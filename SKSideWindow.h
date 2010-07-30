@@ -54,7 +54,7 @@
     BOOL acceptsMouseOver;
 }
 
-+ (BOOL)isAutoHideEnabled;
++ (CGFloat)requiredMargin;
 
 @property (nonatomic, retain) NSView *mainView;
 @property (nonatomic, readonly) NSRectEdge edge;
@@ -63,7 +63,7 @@
 @property (nonatomic) BOOL acceptsMouseOver;
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
-- (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen;
+- (void)attachToWindow:(NSWindow *)window;
 - (void)slideIn;
 - (void)slideOut;
 - (void)expand;

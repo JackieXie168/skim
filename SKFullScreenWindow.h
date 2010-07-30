@@ -44,9 +44,7 @@
     NSViewAnimation *animation;
 }
 
-@property (nonatomic, retain) NSView *mainView;
-
-- (id)initWithScreen:(NSScreen *)screen;
+- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level;
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;

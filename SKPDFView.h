@@ -139,7 +139,7 @@ typedef NSInteger SKNoteType;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 @property (nonatomic, readonly) NSUndoManager *undoManager;
 
-- (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen;
+- (void)setInteractionMode:(SKInteractionMode)newInteractionMode;
 - (void)toggleReadingBar;
 
 - (IBAction)delete:(id)sender;
