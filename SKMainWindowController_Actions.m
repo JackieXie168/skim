@@ -848,7 +848,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([leftSideWindow isVisible])
             [self hideLeftSideWindow];
         else
-            [self showLeftSideWindowOnScreen:[[self window] screen]];
+            [self showLeftSideWindow];
     } else if (mwcFlags.usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
             if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[leftSideController.searchField stringValue] length])
@@ -882,7 +882,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([rightSideWindow isVisible])
             [self hideRightSideWindow];
         else
-            [self showRightSideWindowOnScreen:[[self window] screen]];
+            [self showRightSideWindow];
     } else if (mwcFlags.usesDrawers) {
         if ([self rightSidePaneIsOpen])
             [rightSideDrawer close];

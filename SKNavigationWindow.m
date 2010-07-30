@@ -62,9 +62,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationWindow
 
-- (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider screen:(NSScreen *)screen {
-    if (screen == nil)
-        screen = [[pdfView window] screen] ?: [NSScreen mainScreen];
+- (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider {
+    NSScreen *screen = [[pdfView window] screen] ?: [NSScreen mainScreen];
     CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * BUTTON_MARGIN;
     if (hasSlider)
         width += SLIDER_WIDTH;
@@ -73,7 +72,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setLevel:[[pdfView window] level]];
-        [self setHidesOnDeactivate:YES];
         [self setMovableByWindowBackground:YES];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];

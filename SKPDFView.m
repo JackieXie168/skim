@@ -139,7 +139,7 @@ enum {
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
 
-- (void)enableNavigationForScreen:(NSScreen *)screen;
+- (void)enableNavigation;
 - (void)disableNavigation;
 
 - (void)doAutohide:(BOOL)flag;
@@ -483,7 +483,7 @@ enum {
     }
 }
 
-- (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen {
+- (void)setInteractionMode:(SKInteractionMode)newInteractionMode {
     if (interactionMode != newInteractionMode) {
         if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
             [[self documentView] setHidden:NO];
@@ -491,7 +491,7 @@ enum {
         if (interactionMode == SKNormalMode)
             [self disableNavigation];
         else
-            [self enableNavigationForScreen:screen];
+            [self enableNavigation];
         [self resetPDFToolTipRects];
     }
 }
@@ -2412,7 +2412,7 @@ enum {
     [navWindow remove];
 }
 
-- (void)enableNavigationForScreen:(NSScreen *)screen {
+- (void)enableNavigation {
     navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKPresentationNavigationOptionKey : SKFullScreenNavigationOptionKey];
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
@@ -2423,7 +2423,7 @@ enum {
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                      name: NSWindowWillCloseNotification object: [self window]];
     }
-    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self hasSlider:interactionMode == SKFullScreenMode screen:screen];
+    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self hasSlider:interactionMode == SKFullScreenMode];
     
     [self doAutohide:YES];
 }

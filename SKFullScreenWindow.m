@@ -45,14 +45,11 @@
 
 @implementation SKFullScreenWindow
 
-@dynamic mainView;
-
-- (id)initWithScreen:(NSScreen *)screen {
-    if (screen == nil)
-        screen = [NSScreen mainScreen];
-    NSRect screenFrame = [screen frame];
+- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
+    NSRect screenFrame = [(screen ?: [NSScreen mainScreen]) frame];
     if (self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
-        [self setBackgroundColor:[NSColor blackColor]];
+        [self setBackgroundColor:backgroundColor];
+        [self setLevel:level];
         [self setReleasedWhenClosed:NO];
         [self setExcludedFromWindowsMenu:YES];
         // appartently this is needed for secondary screens
@@ -102,8 +99,7 @@
         [fadeOutDict release];
         
         [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-        [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
-        [animation setDuration:0.5];
+        [animation setDuration:0.25];
         [animation setDelegate:self];
         [animation startAnimation];
     }
@@ -121,8 +117,7 @@
         [super orderFront:nil];
         
         [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-        [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
-        [animation setDuration:0.5];
+        [animation setDuration:0.25];
         [animation setDelegate:self];
         [animation startAnimation];
     }
@@ -158,21 +153,12 @@
     [self setAlphaValue:1.0];
 }
 
-- (NSView *)mainView {
-    return [[[self contentView] subviews] lastObject];
-}
-
-- (void)setMainView:(NSView *)view {
-    [view setFrame:[[self contentView] bounds]];
-    [[self contentView] addSubview:view];
-}
-
 @end
 
 @implementation SKMainFullScreenWindow
 
-- (id)initWithScreen:(NSScreen *)screen canBecomeMain:(BOOL)flag {
-    if (self = [super initWithScreen:screen]) {
+- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
+    if (self = [super initWithScreen:screen backgroundColor:backgroundColor level:level]) {
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
         [self setExcludedFromWindowsMenu:NO];

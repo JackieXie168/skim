@@ -72,8 +72,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         WINDOW_OFFSET = 0.0;
 }
 
-+ (BOOL)isAutoHideEnabled {
-    return hideWhenClosed != SKClosedSidePanelHide;
++ (CGFloat)requiredMargin {
+    return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
@@ -152,9 +152,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (BOOL)canBecomeKeyWindow { return YES; }
 
-- (void)attachToWindow:(NSWindow *)window onScreen:(NSScreen *)screen {
+- (void)attachToWindow:(NSWindow *)window {
     NSRect frame, ignored;
-    NSDivideRect([screen frame], &frame, &ignored, WINDOW_OFFSET, edge);
+    NSDivideRect([[window screen] frame], &frame, &ignored, WINDOW_OFFSET, edge);
     [self setFrame:NSInsetRect(frame, 0.0, WINDOW_INSET) display:NO];
     state = NSDrawerClosedState;
     if (hideWhenClosed != SKClosedSidePanelCollapse)

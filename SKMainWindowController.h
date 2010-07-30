@@ -37,10 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <IOKit/pwr_mgt/IOPMLib.h>
 #import "SKSnapshotWindowController.h"
 #import "SKThumbnail.h"
 #import "NSDocument_SKExtensions.h"
+#import <IOKit/pwr_mgt/IOPMLib.h>
 
 enum {
     SKThumbnailSidePaneState,
@@ -268,8 +268,8 @@ enum {
 @property (nonatomic) SKRightSidePaneState rightSidePaneState;
 @property (nonatomic) SKFindPaneState findPaneState;
 
-- (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
-- (void)showRightSideWindowOnScreen:(NSScreen *)screen;
+- (void)showLeftSideWindow;
+- (void)showRightSideWindow;
 - (void)hideLeftSideWindow;
 - (void)hideRightSideWindow;
 
