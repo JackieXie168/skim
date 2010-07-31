@@ -1305,8 +1305,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HASVERTICALSCROLLER_KEY] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];
-    
-    [self hideLeftSideWindow];
 }
 
 - (void)fadeInFullScreenWindowWithBackgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
@@ -1422,6 +1420,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     if (wasInteractionMode == SKPresentationMode) {
         [self exitPresentationMode];
+        [self hideLeftSideWindow];
         
         [NSApp updatePresentationOptionsForWindow:[self window]];
         
@@ -1511,12 +1510,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (wasInteractionMode == SKFullScreenMode) {
         view = pdfSplitView;
         contentView = centerContentView;
-        [self hideLeftSideWindow];
-        [self hideRightSideWindow];
     } else {
         view = pdfView;
         contentView = pdfContentView;
     }
+    
+    [self hideLeftSideWindow];
+    [self hideRightSideWindow];
     
     // do this first, otherwise the navigation window may be covered by fadeWindow and then reveiled again, which looks odd
     [pdfView setInteractionMode:SKNormalMode];
