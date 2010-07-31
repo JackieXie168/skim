@@ -1327,6 +1327,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [mainWindow orderOut:nil];  
     [fullScreenWindow setLevel:level];
     [fullScreenWindow orderFront:nil];
+    [NSApp addWindowsItem:fullScreenWindow title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
     [fullScreenWindow release];
 }
 
@@ -1380,6 +1381,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
+    [NSApp removeWindowsItem:fullScreenWindow];
     [fullScreenWindow fadeOut];
 }
 
@@ -1444,8 +1446,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [self applyPDFSettings:fullScreenSetup];
         
         [self fadeInFullScreenView:pdfSplitView inset:[SKSideWindow requiredMargin]];
-        
-        [NSApp addWindowsItem:[self window] title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
     }
     
     [self forceSubwindowsOnTop:YES];
