@@ -42,6 +42,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 
+#define DURATION 0.25
 
 @implementation SKFullScreenWindow
 
@@ -90,7 +91,7 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)fadeOutBlocking:(BOOL)block {
+- (void)fadeOutWithBlockingMode:(NSAnimationBlockingMode)blockingMode {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self orderOut:nil];
     } else {
@@ -98,14 +99,14 @@
         animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
         [fadeOutDict release];
         
-        [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-        [animation setDuration:0.25];
+        [animation setAnimationBlockingMode:blockingMode];
+        [animation setDuration:DURATION];
         [animation setDelegate:self];
         [animation startAnimation];
     }
 }
 
-- (void)fadeInBlocking:(BOOL)block {
+- (void)fadeInWithBlockingMode:(NSAnimationBlockingMode)blockingMode {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self orderFront:nil];
     } else {
@@ -116,27 +117,27 @@
         [self setAlphaValue:0.0];
         [super orderFront:nil];
         
-        [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-        [animation setDuration:0.25];
+        [animation setAnimationBlockingMode:blockingMode];
+        [animation setDuration:DURATION];
         [animation setDelegate:self];
         [animation startAnimation];
     }
 }
 
 - (void)fadeOutBlocking {
-    [self fadeOutBlocking:YES];
+    [self fadeOutWithBlockingMode:NSAnimationBlocking];
 }
 
 - (void)fadeOut {
-    [self fadeOutBlocking:NO];
+    [self fadeOutWithBlockingMode:NSAnimationNonblockingThreaded];
 }
 
 - (void)fadeInBlocking {
-    [self fadeInBlocking:YES];
+    [self fadeInWithBlockingMode:NSAnimationBlocking];
 }
 
 - (void)fadeIn {
-    [self fadeInBlocking:NO];
+    [self fadeInWithBlockingMode:NSAnimationNonblockingThreaded];
 }
 
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
