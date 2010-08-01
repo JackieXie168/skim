@@ -1174,9 +1174,11 @@ enum {
     
     if ([navWindow isVisible] == NO) {
         if (navigationMode == SKNavigationEverywhere) {
-            [navWindow fadeIn];
-            if ([navWindow parentWindow] == nil)
+            if ([navWindow parentWindow] == nil) {
+                [navWindow setAlphaValue:0.0];
                 [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
+            }
+            [navWindow fadeIn];
         } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0) {
             [self showNavWindow:YES];
         }
@@ -2453,9 +2455,11 @@ enum {
 
 - (void)showNavWindowDelayed {
     if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0) {
-        [navWindow fadeIn];
-        if ([navWindow parentWindow] == nil)
+        if ([navWindow parentWindow] == nil) {
+            [navWindow setAlphaValue:0.0];
             [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
+        }
+        [navWindow fadeIn];
     }
 }
 
