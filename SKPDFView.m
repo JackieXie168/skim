@@ -927,6 +927,9 @@ enum {
 
 #pragma mark Event Handling
 
+// PDFView has duplicated key equivalents for Cmd-+/- as well as Opt-Cmd-+/-, which is totoally unnecessary and harmful
+- (BOOL)performKeyEquivalent:(NSEvent *)theEvent { return NO; }
+
 - (void)keyDown:(NSEvent *)theEvent
 {
     unichar eventChar = [theEvent firstCharacter];
