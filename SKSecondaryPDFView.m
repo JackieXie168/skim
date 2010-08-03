@@ -432,6 +432,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     return i > 2;
 }
 
+- (BOOL)performKeyEquivalent:(NSEvent *)theEvent { return NO; }
 
 - (IBAction)toggleDisplayAsBookFromMenu:(id)sender {
     [self setDisplaysAsBook:[self displaysAsBook] == NO];
