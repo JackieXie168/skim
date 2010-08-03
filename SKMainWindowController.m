@@ -692,20 +692,20 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self allSnapshotsNeedUpdate];
     [rightSideController.noteOutlineView reloadData];
     
+    PDFOutline *outlineRoot = [[pdfView document] outlineRoot];
+    
     mwcFlags.updatingOutlineSelection = 1;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [leftSideController.tocOutlineView reloadData];
-    [self openOutline:[[pdfView document] outlineRoot] forOpenState:info];
+    [self openOutline:outlineRoot forOpenState:info];
     mwcFlags.updatingOutlineSelection = 0;
     [self updateOutlineSelection];
     
     // handle the case as above where the outline has disappeared in a reload situation
-    if (nil == [[pdfView document] outlineRoot] && leftSideController.currentView == leftSideController.tocOutlineView.enclosingScrollView) {
-        [self displayThumbnailViewAnimating:NO];
-        [leftSideController.button setSelectedSegment:SKThumbnailSidePaneState];
-    }
+    if (nil == outlineRoot)
+        [self setLeftSidePaneState:SKThumbnailSidePaneState];
 
-    [leftSideController.button setEnabled:[[pdfView document] outlineRoot] != nil forSegment:SKOutlineSidePaneState];
+    [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKOutlineSidePaneState];
 }
 
 - (SKProgressController *)progressController {
