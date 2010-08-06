@@ -661,7 +661,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         if ([anOutline parent])
             [leftSideController.tocOutlineView expandItem:anOutline];
         NSEnumerator *infoEnum = nil;
-        if ([[children valueForKey:@"label"] isEqualToArray:[childrenStates valueForKey:@"label"]])
+        if (childrenStates && [[children valueForKey:@"label"] isEqualToArray:[childrenStates valueForKey:@"label"]])
             infoEnum = [childrenStates objectEnumerator];
         for (PDFOutline *child in children)
             [self openOutline:child forOpenState:[infoEnum nextObject]];
