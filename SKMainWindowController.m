@@ -651,6 +651,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)openOutline:(PDFOutline *)anOutline forOpenState:(NSDictionary *)info {
+    if (anOutline == nil)
+        return nil;
     BOOL isOpen = info ? [[info valueForKey:@"isOpen"] boolValue] : [anOutline isOpen];
     if (isOpen) {
         NSUInteger i, iMax = [anOutline numberOfChildren];
