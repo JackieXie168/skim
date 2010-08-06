@@ -697,7 +697,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     mwcFlags.updatingOutlineSelection = 1;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [leftSideController.tocOutlineView reloadData];
-    [self openOutline:outlineRoot forOpenState:info];
+    if (outlineRoot)
+        [self openOutline:outlineRoot forOpenState:info];
     mwcFlags.updatingOutlineSelection = 0;
     [self updateOutlineSelection];
     
