@@ -637,6 +637,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 #define CHILDREN_KEY @"children"
 
 - (NSDictionary *)expansionStateForOutline:(PDFOutline *)anOutline {
+    if (anOutline == nil)
+        return nil;
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:[anOutline label] forKey:LABEL_KEY];
     BOOL isExpanded = ([anOutline parent] == nil || [leftSideController.tocOutlineView isItemExpanded:anOutline]);
