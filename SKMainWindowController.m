@@ -632,39 +632,43 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [tv sizeToFit];
 }
 
-- (NSDictionary *)openStateForOutline:(PDFOutline *)anOutline {
+#define LABEL_KEY @"label"
+#define EXPANDED_KEY @"expanded"
+#define CHILDREN_KEY @"children"
+
+- (NSDictionary *)expansionStateForOutline:(PDFOutline *)anOutline {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:[anOutline label] forKey:@"label"];
-    BOOL isOpen = ([anOutline parent] == nil || [leftSideController.tocOutlineView isItemExpanded:anOutline]);
-    [dict setValue:[NSNumber numberWithBool:isOpen] forKey:@"isOpen"];
-    if (isOpen) {
+    [dict setValue:[anOutline label] forKey:LABEL_KEY];
+    BOOL isExpanded = ([anOutline parent] == nil || [leftSideController.tocOutlineView isItemExpanded:anOutline]);
+    [dict setValue:[NSNumber numberWithBool:isExpanded] forKey:EXPANDED_KEY];
+    if (isExpanded) {
         NSUInteger i, iMax = [anOutline numberOfChildren];
         if (iMax > 0) {
             NSMutableArray *array = [[NSMutableArray alloc] init];
             for (i = 0; i < iMax; i++)
-                [array addObject:[self openStateForOutline:[anOutline childAtIndex:i]]];
-            [dict setValue:array forKey:@"children"];
+                [array addObject:[self expansionStateForOutline:[anOutline childAtIndex:i]]];
+            [dict setValue:array forKey:CHILDREN_KEY];
             [array release];
         }
     }
     return dict;
 }
 
-- (void)openOutline:(PDFOutline *)anOutline forOpenState:(NSDictionary *)info {
-    BOOL isOpen = info ? [[info valueForKey:@"isOpen"] boolValue] : [anOutline isOpen];
-    if (isOpen && anOutline) {
+- (void)expandOutline:(PDFOutline *)anOutline forExpansionState:(NSDictionary *)info {
+    BOOL isExpanded = info ? [[info valueForKey:EXPANDED_KEY] boolValue] : [anOutline isOpen];
+    if (isExpanded && anOutline) {
         NSUInteger i, iMax = [anOutline numberOfChildren];
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (i = 0; i < iMax; i++)
             [children addObject:[anOutline childAtIndex:i]];
-        NSArray *childrenStates = [info valueForKey:@"children"];
         if ([anOutline parent])
             [leftSideController.tocOutlineView expandItem:anOutline];
+        NSArray *childrenStates = [info valueForKey:CHILDREN_KEY];
         NSEnumerator *infoEnum = nil;
-        if (childrenStates && [[children valueForKey:@"label"] isEqualToArray:[childrenStates valueForKey:@"label"]])
+        if (childrenStates && [[children valueForKey:LABEL_KEY] isEqualToArray:[childrenStates valueForKey:LABEL_KEY]])
             infoEnum = [childrenStates objectEnumerator];
         for (PDFOutline *child in children)
-            [self openOutline:child forOpenState:[infoEnum nextObject]];
+            [self expandOutline:child forExpansionState:[infoEnum nextObject]];
         [children release];
     }
 }
@@ -698,7 +702,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [leftSideController.tocOutlineView reloadData];
     if (outlineRoot)
-        [self openOutline:outlineRoot forOpenState:info];
+        [self expandOutline:outlineRoot forExpansionState:info];
     mwcFlags.updatingOutlineSelection = 0;
     [self updateOutlineSelection];
     
@@ -737,7 +741,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 secondaryPageIndex = [[secondaryPdfView currentPage] pageIndex];
                 secondaryVisibleRect = [secondaryPdfView convertRect:[secondaryPdfView convertRect:[[secondaryPdfView documentView] visibleRect] fromView:[secondaryPdfView documentView]] toPage:[secondaryPdfView currentPage]];
             }
-            openState = [self openStateForOutline:[[pdfView document] outlineRoot]];
+            openState = [self expansionStateForOutline:[[pdfView document] outlineRoot]];
             
             [[pdfView document] cancelFindString];
             [temporaryAnnotationTimer invalidate];
@@ -1889,7 +1893,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
-    [self updatePageLabelsAndOutlineForOpenState:[self openStateForOutline:[[pdfView document] outlineRoot]]];
+    [self updatePageLabelsAndOutlineForOpenState:[self expansionStateForOutline:[[pdfView document] outlineRoot]]];
 }
 
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {log_method();
