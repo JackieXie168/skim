@@ -959,11 +959,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([self interactionMode] == SKFullScreenMode)
         state = [leftSideWindow state];
     else if ([self interactionMode] == SKPresentationMode)
-        state = [leftSideWindow isVisible];
+        state = [leftSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
     else if (mwcFlags.usesDrawers)
         state = [leftSideDrawer state];
     else
-        state = [splitView isSubviewCollapsed:leftSideContentView] == NO;
+        state = [splitView isSubviewCollapsed:leftSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -972,11 +972,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([self interactionMode] == SKFullScreenMode)
         state = [rightSideWindow state];
     else if ([self interactionMode] == SKPresentationMode)
-        state = [rightSideWindow isVisible];
+        state = [rightSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
     else if (mwcFlags.usesDrawers)
         state = [rightSideDrawer state];
     else
-        state = [splitView isSubviewCollapsed:rightSideContentView] == NO;
+        state = [splitView isSubviewCollapsed:rightSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
