@@ -938,8 +938,8 @@ static NSArray *allMainDocumentPDFViews() {
             lastSplitPDFHeight = floor(0.3 * NSHeight(frame));
         
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
-        NSPoint point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
-        PDFPage *page = [pdfView pageForPoint:point nearest:YES];
+        NSPoint point = NSZeroPoint;
+        PDFPage *page = nil;
         
         if (secondaryPdfView == nil) {
             secondaryPdfContentView = [[NSView alloc] init];
@@ -957,6 +957,8 @@ static NSArray *allMainDocumentPDFViews() {
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];
+            point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
+            page = [pdfView pageForPoint:point nearest:YES];
         } else {
             [secondaryPdfContentView setHidden:YES];
             [pdfSplitView addSubview:secondaryPdfContentView];
@@ -964,10 +966,12 @@ static NSArray *allMainDocumentPDFViews() {
         
         [pdfSplitView setPosition:position ofDividerAtIndex:0 animate:YES];
         
-        point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
-        [secondaryPdfView goToPage:page];
-        [[secondaryPdfView documentView] scrollPoint:point];
-        [secondaryPdfView layoutDocumentView];
+        if (page) {
+            point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
+            [secondaryPdfView goToPage:page];
+            [[secondaryPdfView documentView] scrollPoint:point];
+            [secondaryPdfView layoutDocumentView];
+        }
     }
     
     [[self window] recalculateKeyViewLoop];
