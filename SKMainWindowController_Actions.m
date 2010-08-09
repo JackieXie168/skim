@@ -915,6 +915,11 @@ static NSArray *allMainDocumentPDFViews() {
     [self setFindPaneState:[sender tag]];
 }
 
+- (void)removeSecondaryPdfContentView {
+    [secondaryPdfContentView removeFromSuperview];
+    [pdfSplitView adjustSubviews];
+}
+
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([pdfSplitView isAnimating])
         return;
@@ -923,7 +928,7 @@ static NSArray *allMainDocumentPDFViews() {
         
         NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
-        [secondaryPdfContentView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:delay];
+        [self performSelector:@selector(removeSecondaryPdfContentView) withObject:nil afterDelay:delay];
         
     } else {
         
