@@ -561,7 +561,7 @@
         <command name="read notes" code="SKIMRNot"
             description="Convert in a document PDF annotations to Skim notes.">
             <direct-parameter type="document"
-                description="The document(s) for which to convert notes."/>
+                description="The document(s) for which to read notes."/>
 			<parameter name="from" code="from" type="file" 
 				description="The file from which to read the notes."> 
 				<cocoa key="File"/> 
