@@ -1072,7 +1072,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
                        @"activate\n"
-                       @"set m to make new draft window with properties {subject:\"%@\"}\n"
+                       @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
                        @"tell m\n"
                        @"make new attachment with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
@@ -1080,7 +1080,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
         scriptFormat = @"tell application \"Mailsmith\"\n"
                        @"activate\n"
-                       @"set m to make new message window with properties {subject:\"%@\"}\n"
+                       @"set m to make new message window with properties {subject:\"%@\", visible:true}\n"
                        @"tell m\n"
                        @"make new enclosure with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
@@ -1088,9 +1088,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([mailAppName rangeOfString:@"Mailplane" options:NSCaseInsensitiveSearch].length) {
         scriptFormat = @"tell application \"Mailplane\"\n"
                        @"activate\n"
-                       @"set m to make new outgoing message with properties {subject: \"%@\", visible:true}\n"
+                       @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
                        @"tell m\n"
-                       @"make new mail attachment with properties {path: \"%@\"}\n"
+                       @"make new mail attachment with properties {path:\"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
     } else {
