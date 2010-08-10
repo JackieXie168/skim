@@ -855,27 +855,30 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo{
+- (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
+    NSString *extension = [[notesURL path] pathExtension];
+    NSArray *array = nil;
+    
+    if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
+        array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
+    } else {
+        NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
+        if (fdfData)
+            array = [SKFDFParser noteDictionariesFromFDFData:fdfData];
+    }
+    
+    if (array) {
+        [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace];
+        [[self undoManager] setActionName:replace ? NSLocalizedString(@"Replace Notes", @"Undo action name") : NSLocalizedString(@"Add Notes", @"Undo action name")];
+    } else
+        NSBeep();
+}
+
+- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
-        NSString *extension = [[notesURL path] pathExtension];
-        NSArray *array = nil;
-        
-        if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
-            array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
-        } else {
-            NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
-            if (fdfData)
-                array = [SKFDFParser noteDictionariesFromFDFData:fdfData];
-        }
-        
-        if (array) {
-            BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
-            [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace];
-            [[self undoManager] setActionName:replace ? NSLocalizedString(@"Replace Notes", @"Undo action name") : NSLocalizedString(@"Add Notes", @"Undo action name")];
-        } else
-            NSBeep();
-        
+        BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
+        [self readNotesFromURL:notesURL replace:replace];
     }
 }
 
@@ -2124,6 +2127,23 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
     if (SKIsPDFDocumentType([self fileType]) || SKIsPDFBundleDocumentType([self fileType]))
         [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+    else
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+}
+
+- (void)handleReadNotesScriptCommand:(NSScriptCommand *)command {
+    NSDictionary *args = [command evaluatedArguments];
+    NSURL *notesURL = [args objectForKey:@"File"];
+    if (notesURL == nil) {
+        [command setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+    } else {
+        NSNumber *replaceNumber = [args objectForKey:@"Replace"];
+        NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:notesURL error:NULL];
+        if (SKIsNotesDocumentType(fileType) || SKIsNotesFDFDocumentType(fileType))
+            [self readNotesFromURL:notesURL replace:(replaceNumber ? [replaceNumber boolValue] : YES)];
+        else
+            [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+    }
 }
 
 @end
