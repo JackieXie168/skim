@@ -558,6 +558,20 @@
                 description="The document(s) for which to convert notes."/>
         </command>
 
+        <command name="read notes" code="SKIMRNot"
+            description="Convert in a document PDF annotations to Skim notes.">
+            <direct-parameter type="document"
+                description="The document(s) for which to convert notes."/>
+			<parameter name="from" code="from" type="file" 
+				description="The file from which to read the notes."> 
+				<cocoa key="File"/> 
+			</parameter>
+			<parameter name="replacing" code="Repl" type="boolean" optional="yes" 
+				description="Whether to replace the currently existing notes. Default is true."> 
+				<cocoa key="Replace"/> 
+			</parameter>
+        </command>
+
         <command name="find" code="SKIMFind"
             description="Find text in a document.">
             <direct-parameter type="document"
@@ -892,6 +906,9 @@
             </responds-to>
             <responds-to name="convert notes">
                 <cocoa method="handleConvertNotesScriptCommand:"/>
+            </responds-to>
+            <responds-to name="read notes">
+                <cocoa method="handleReadNotesScriptCommand:"/>
             </responds-to>
             <responds-to name="find">
                 <cocoa method="handleFindScriptCommand:"/>

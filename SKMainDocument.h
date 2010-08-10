@@ -139,6 +139,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
 - (void)handleShowTeXScriptCommand:(NSScriptCommand *)command;
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command;
+- (void)handleReadNotesScriptCommand:(NSScriptCommand *)command;
 
 @end
 
