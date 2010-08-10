@@ -190,8 +190,6 @@ static Class SKBookmarkClass = Nil;
 - (NSNumber *)pageNumber { return nil; }
 - (void)setPageNumber:(NSNumber *)newPageNumber {}
 
-- (NSArray *)session { return nil; }
-
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
