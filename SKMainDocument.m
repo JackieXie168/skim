@@ -1093,7 +1093,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([mailAppName rangeOfString:@"Mailplane" options:NSCaseInsensitiveSearch].length) {
         scriptString = [NSMutableString stringWithString:@"tell application \"Mailplane\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject: \"%@\"}\n", subject];
+        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject: \"%@\", visible:true}\n", subject];
         [scriptString appendString:@"tell m\n"];
         //[scriptString appendFormat:@"set content to \"%@\"\n", body];
         [scriptString appendFormat:@"make new mail attachment with properties {path: \"%@\"}\n", fileName];
