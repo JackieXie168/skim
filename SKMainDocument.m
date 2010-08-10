@@ -1062,68 +1062,60 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)emailAttachmentFile:(NSString *)fileName {
-    NSMutableString *scriptString = nil;
-    
+    NSString *scriptFormat = nil;
     NSString *mailAppName = nil;
     CFURLRef mailAppURL = NULL;
-    OSStatus status = LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL);
-    if (status == noErr)
+    
+    if (noErr == LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL))
         mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
     
-    NSString *subject = [self displayName];
-    
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
-        scriptString = [NSMutableString stringWithString:@"tell application \"Microsoft Entourage\"\n"];
-        [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new draft window with properties {subject:\"%@\"}\n", subject];
-        [scriptString appendString:@"tell m\n"];
-        //[scriptString appendFormat:@"set content to \"%@\"\n", body];
-        [scriptString appendFormat:@"make new attachment with properties {file:POSIX file \"%@\"}\n", fileName];
-        [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"end tell\n"];
+        scriptFormat = @"tell application \"Microsoft Entourage\"\n"
+                       @"activate\n"
+                       @"set m to make new draft window with properties {subject:\"%@\"}\n"
+                       @"tell m\n"
+                       @"make new attachment with properties {file:POSIX file \"%@\"}\n"
+                       @"end tell\n"
+                       @"end tell\n";
     } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
-        scriptString = [NSMutableString stringWithString:@"tell application \"Mailsmith\"\n"];
-        [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new message window with properties {subject:\"%@\"}\n", subject];
-        [scriptString appendString:@"tell m\n"];
-        //[scriptString appendFormat:@"set contents to \"%@\"\n", body];
-        [scriptString appendFormat:@"make new enclosure with properties {file:POSIX file \"%@\"}\n", fileName];
-        [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"end tell\n"];
+        scriptFormat = @"tell application \"Mailsmith\"\n"
+                       @"activate\n"
+                       @"set m to make new message window with properties {subject:\"%@\"}\n"
+                       @"tell m\n"
+                       @"make new enclosure with properties {file:POSIX file \"%@\"}\n"
+                       @"end tell\n"
+                       @"end tell\n";
     } else if ([mailAppName rangeOfString:@"Mailplane" options:NSCaseInsensitiveSearch].length) {
-        scriptString = [NSMutableString stringWithString:@"tell application \"Mailplane\"\n"];
-        [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject: \"%@\", visible:true}\n", subject];
-        [scriptString appendString:@"tell m\n"];
-        //[scriptString appendFormat:@"set content to \"%@\"\n", body];
-        [scriptString appendFormat:@"make new mail attachment with properties {path: \"%@\"}\n", fileName];
-        [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"end tell\n"];
+        scriptFormat = @"tell application \"Mailplane\"\n"
+                       @"activate\n"
+                       @"set m to make new outgoing message with properties {subject: \"%@\", visible:true}\n"
+                       @"tell m\n"
+                       @"make new mail attachment with properties {path: \"%@\"}\n"
+                       @"end tell\n"
+                       @"end tell\n";
     } else {
-        scriptString = [NSMutableString stringWithString:@"tell application \"Mail\"\n"];
-        [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n", subject];
-        //[scriptString appendFormat:@"set content of m to \"%@\"\n", body];
-        [scriptString appendString:@"tell content of m\n"];
-        [scriptString appendFormat:@"make new attachment at after last character with properties {file name:\"%@\"}\n", fileName];
-        [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"end tell\n"];
+        scriptFormat = @"tell application \"Mail\"\n"
+                       @"activate\n"
+                       @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
+                       @"tell content of m\n"
+                       @"make new attachment at after last character with properties {file name:\"%@\"}\n"
+                       @"end tell\n"
+                       @"end tell\n";
     }
     
-    if (scriptString) {
-        NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
-        NSDictionary *errorDict = nil;
-        if ([script compileAndReturnError:&errorDict] == NO) {
-            NSLog(@"Error compiling mail to script: %@", errorDict);
-            return NO;
-        }
-        if ([script executeAndReturnError:&errorDict] == NO) {
-            NSLog(@"Error running mail to script: %@", errorDict);
-            return NO;
-        }
-        return YES;
+    
+    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self displayName], fileName];
+    NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
+    NSDictionary *errorDict = nil;
+    if ([script compileAndReturnError:&errorDict] == NO) {
+        NSLog(@"Error compiling mail to script: %@", errorDict);
+        return NO;
     }
-    return NO;
+    if ([script executeAndReturnError:&errorDict] == NO) {
+        NSLog(@"Error running mail to script: %@", errorDict);
+        return NO;
+    }
+    return YES;
 }
 
 - (IBAction)emailArchive:(id)sender {
