@@ -1068,7 +1068,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     if (noErr == LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL))
         mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
-    
+    mailAppName = @"PostboxExpress";
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
                        @"activate\n"
@@ -1092,6 +1092,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        @"tell m\n"
                        @"make new mail attachment with properties {path:\"%@\"}\n"
                        @"end tell\n"
+                       @"end tell\n";
+    } else if ([mailAppName rangeOfString:@"PostboxExpress" options:NSCaseInsensitiveSearch].length) {
+        scriptFormat = @"tell application \"PostboxExpress\"\n"
+                       @"activate\n"
+                       @"send message subject \"%@\" attachment \"%@\"\n"
+                       @"end tell\n";
+    } else if ([mailAppName rangeOfString:@"Postbox" options:NSCaseInsensitiveSearch].length) {
+        scriptFormat = @"tell application \"Postbox\"\n"
+                       @"activate\n"
+                       @"send message subject \"%@\" attachment \"%@\"\n"
                        @"end tell\n";
     } else {
         scriptFormat = @"tell application \"Mail\"\n"
