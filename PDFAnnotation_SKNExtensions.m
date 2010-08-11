@@ -199,10 +199,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
                     [self setBorder:[[[PDFBorder alloc] init] autorelease]];
                 if ([lineWidth respondsToSelector:@selector(floatValue)])
                     [[self border] setLineWidth:[lineWidth floatValue]];
-                if ([borderStyle respondsToSelector:@selector(intValue)])
-                    [[self border] setStyle:[borderStyle intValue]];
                 if ([dashPattern isKindOfClass:arrayClass])
                     [[self border] setDashPattern:dashPattern];
+                if ([borderStyle respondsToSelector:@selector(intValue)])
+                    [[self border] setStyle:[borderStyle intValue]];
             }
         }
         
