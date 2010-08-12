@@ -304,4 +304,9 @@ static NSSet *richTextTypes() {
     [command setScriptErrorString:@"Notes document does not understand the 'convert notes' command."];
 }
 
+- (void)handleReadNotesScriptCommand:(NSScriptCommand *)command {
+    [command setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+    [command setScriptErrorString:@"Notes document does not understand the 'read notes' command."];
+}
+
 @end
