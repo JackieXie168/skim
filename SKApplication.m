@@ -44,11 +44,6 @@
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
-@interface NSApplication (NSApplicationPrivateDeclarations)
-- (id)handleOpenScriptCommand:(NSScriptCommand *)command;
-@end
-
-
 @implementation SKApplication
 
 @synthesize userAttentionDisabled;
@@ -218,6 +213,15 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [super changeWindowsItem:aWindow title:aString filename:isFilename];
     
     [self reorganizeWindowsItem:aWindow];
+}
+
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"orderedDocuments"]) {
+        [[NSScriptCommand currentCommand] setScriptErrorNumber:NSOperationNotSupportedForKeyScriptError];
+        [[NSScriptCommand currentCommand] setScriptErrorString:@"Cannot create new empty documents"];
+        return nil;
+    }
+    return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
