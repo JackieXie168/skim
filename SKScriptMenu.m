@@ -44,6 +44,7 @@
 #define SCRIPTS_MENU_TITLE  @"Scripts"
 #define SCRIPTS_FOLDER_NAME @"Scripts"
 #define FILENAME_KEY        @"filename"
+#define TITLE_KEY           @"title"
 #define CONTENT_KEY         @"content"
 
 @interface SKScriptMenuController : NSObject <NSMenuDelegate> {
@@ -161,15 +162,15 @@ static NSString *menuItemTitle(NSString *path) {
     for (NSDictionary *scriptInfo in scripts) {
         NSString *scriptFilename = [scriptInfo objectForKey:FILENAME_KEY];
 		NSArray *folderContent = [scriptInfo objectForKey:CONTENT_KEY];
-        NSString *title = menuItemTitle(scriptFilename);
+        NSString *title = [scriptInfo objectForKey:TITLE_KEY];
         
-        if (folderContent) {
+        if (title == nil) {
+            [menu addItem:[NSMenuItem separatorItem]];
+        } else if (folderContent) {
             NSMenu *submenu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:title];
             [menu addItemWithTitle:title submenu:submenu];
             [self updateSubmenu:submenu withScripts:folderContent];
             [submenu release];
-        } else if ([title isEqualToString:@"-"]) {
-            [menu addItem:[NSMenuItem separatorItem]];
         } else {
             NSMenuItem *item = [menu addItemWithTitle:title action:@selector(executeScript:) target:self];
             [item setRepresentedObject:scriptFilename];
@@ -226,27 +227,29 @@ static BOOL isFolderUTI(NSString *theUTI) {
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
+        if ([file hasPrefix:@"."]) continue;
+        
         NSString *filePath = [path stringByAppendingPathComponent:file];
         NSDictionary *fileAttributes = [fm attributesOfItemAtPath:filePath error:NULL];
         NSString *fileType = [fileAttributes valueForKey:NSFileType];
         BOOL isDir = [fileType isEqualToString:NSFileTypeDirectory];
         NSString *theUTI = [ws typeOfFile:[[filePath stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
+        NSString *title = menuItemTitle(file);
         
         NSMutableDictionary *dict;
         
-        if ([file hasPrefix:@"."]) {
-        } else if ([menuItemTitle(file) isEqualToString:@"-"]) {
+        if ([title isEqualToString:@"-"] || [title length] == 0) {
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
             [files addObject:dict];
             [dict release];
         } else if (isAppleScriptUTI(theUTI) || isApplicationUTI(theUTI) || isAutomatorWorkflowUTI(theUTI) || ([fm isExecutableFileAtPath:filePath] && isDir == NO)) {
-            dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
+            dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, nil];
             [files addObject:dict];
             [dict release];
         } else if (isDir && isFolderUTI(theUTI) && depth < 3) {
             NSArray *content = [self directoryContentsAtPath:filePath recursionDepth:depth + 1];
             if ([content count] > 0) {
-                dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, content, CONTENT_KEY, nil];
+                dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, content, CONTENT_KEY, nil];
                 [files addObject:dict];
                 [dict release];
             }
