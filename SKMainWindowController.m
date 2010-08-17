@@ -1308,7 +1308,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         activityAssertionID = kIOPMNullAssertionID;
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-    [self applyPDFSettings:savedNormalSetup];
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HASVERTICALSCROLLER_KEY] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];
@@ -1443,7 +1442,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [[self window] setLevel:NSNormalWindowLevel];
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
-        [self applyPDFSettings:fullScreenSetup];
+        [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup];
         [pdfView layoutDocumentView];
         [pdfView setNeedsDisplay:YES];
     } else {
@@ -1544,13 +1543,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [contentView addSubview:view];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
-    [pdfView layoutDocumentView];
-    [pdfView setNeedsDisplay:YES];
     
     if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
-    else
-        [self applyPDFSettings:savedNormalSetup];
+    [self applyPDFSettings:savedNormalSetup];
+    
+    [pdfView layoutDocumentView];
+    [pdfView setNeedsDisplay:YES];
     
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
         [[self pdfView] goToPage:page];
