@@ -552,10 +552,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
-    if (number = [setup objectForKey:SCALEFACTOR_KEY])
-        [pdfView setScaleFactor:[number doubleValue]];
     if (number = [setup objectForKey:AUTOSCALES_KEY])
         [pdfView setAutoScales:[number boolValue]];
+    if ([pdfView autoScales] == NO && (number = [setup objectForKey:SCALEFACTOR_KEY]))
+        [pdfView setScaleFactor:[number doubleValue]];
     if (number = [setup objectForKey:DISPLAYPAGEBREAKS_KEY])
         [pdfView setDisplaysPageBreaks:[number boolValue]];
     if (number = [setup objectForKey:DISPLAYASBOOK_KEY])
