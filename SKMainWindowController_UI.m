@@ -1493,10 +1493,13 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     PDFPage *page = [pdfView currentPage];
+    NSNumber *number = [NSNumber numberWithUnsignedInteger:[page pageIndex]];
     
-    [lastViewedPages insertObject:[NSNumber numberWithUnsignedInteger:[page pageIndex]] atIndex:0];
-    if ([lastViewedPages count] > 5)
-        [lastViewedPages removeLastObject];
+    if ([[lastViewedPages lastObject] isEqual:number] == NO) {
+        [lastViewedPages insertObject:number atIndex:0];
+        if ([lastViewedPages count] > 5)
+            [lastViewedPages removeLastObject];
+    }
     [leftSideController.thumbnailTableView setNeedsDisplay:YES];
     [leftSideController.tocOutlineView setNeedsDisplay:YES];
     
