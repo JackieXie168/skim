@@ -176,6 +176,7 @@ enum {
         unsigned int usesDrawers:1;
         unsigned int isEditingPDF:1;
         unsigned int isEditingTable:1;
+        unsigned int isSwitchingFullScreen:1;
     } mwcFlags;
 }
 

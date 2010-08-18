@@ -1492,6 +1492,12 @@ static NSArray *allMainDocumentPDFViews() {
 
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
+    // When the PDFView is changing scale, or when view settings change when switching fullscreen modes, 
+    // a lot of wrong page change notifications may be send, which we better ignore. 
+    // Full screen switching and zooming should not change the current page anyway.
+    if ([pdfView isZooming] || mwcFlags.isSwitchingFullScreen)
+        return;
+    
     PDFPage *page = [pdfView currentPage];
     NSNumber *number = [NSNumber numberWithUnsignedInteger:[page pageIndex]];
     
