@@ -516,8 +516,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         if (leftWidth && rightWidth)
             [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
         
-        NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
-        if (pageIndex != NSNotFound)
+        NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
+        NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
+        if (pageIndexNumber && pageIndex != NSNotFound)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
