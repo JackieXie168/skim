@@ -436,8 +436,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
-    if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
+    if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex && [[pdfView currentPage] pageIndex] != pageIndex) {
+        [lastViewedPages removeAllObjects];
         [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+    }
     
     // We can fit only after the PDF has been loaded
     if (windowSizeOption == SKFitWindowOption && hasWindowSetup == NO)
@@ -518,8 +520,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
         NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
-        if (pageIndexNumber && pageIndex != NSNotFound)
+        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
+            [lastViewedPages removeAllObjects];
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        }
         
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
         if ([snapshotSetups count])
