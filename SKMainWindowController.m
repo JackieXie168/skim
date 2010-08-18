@@ -520,10 +520,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
         NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
-        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
-            [lastViewedPages removeAllObjects];
+        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex])
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
-        }
         
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
         if ([snapshotSetups count])
