@@ -106,7 +106,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             [zoomSlider setAction:@selector(zoomLog:)];
             [zoomSlider setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
             [zoomSlider setMinValue:log(0.1)];
-            [zoomSlider setMaxValue:log(20.0)];
+            [zoomSlider setMaxValue:log(10.0)];
             [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
             [[self contentView] addSubview:zoomSlider];
         }
