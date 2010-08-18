@@ -174,7 +174,7 @@ enum {
 @implementation SKPDFView
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper;
-@synthesize currentMagnification=magnification;
+@synthesize currentMagnification=magnification, isZooming;
 @dynamic isEditing, hasReadingBar, currentSelectionPage, currentSelectionRect, undoManager;
 
 + (void)initialize {
@@ -924,6 +924,24 @@ enum {
     if (annotation)
         [self setActiveAnnotation:annotation];
     [[NSFontManager sharedFontManager] orderFrontFontPanel:sender];
+}
+
+- (void)zoomIn:(id)sender {
+    isZooming = YES;
+    [super zoomIn:sender];
+    isZooming = NO;
+}
+
+- (void)zoomOut:(id)sender {
+    isZooming = YES;
+    [super zoomOut:sender];
+    isZooming = NO;
+}
+
+- (void)setScaleFactor:(CGFloat)scale {
+    isZooming = YES;
+    [super setScaleFactor:scale];
+    isZooming = NO;
 }
 
 #pragma mark Event Handling

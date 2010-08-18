@@ -118,6 +118,7 @@ typedef NSInteger SKNoteType;
     NSColor *pathColor;
     CGFloat gestureRotation;
     NSUInteger gesturePageIndex;
+    BOOL isZooming;
     
     NSTrackingArea *trackingArea;
     
@@ -128,7 +129,7 @@ typedef NSInteger SKNoteType;
 @property (nonatomic) SKNoteType annotationMode;
 @property (nonatomic, readonly) SKInteractionMode interactionMode;
 @property (nonatomic, retain) PDFAnnotation *activeAnnotation;
-@property (nonatomic, readonly) BOOL isEditing;
+@property (nonatomic, readonly) BOOL isEditing, isZooming;
 @property (nonatomic) NSRect currentSelectionRect;
 @property (nonatomic, retain) PDFPage *currentSelectionPage;
 @property (nonatomic, readonly) CGFloat currentMagnification;

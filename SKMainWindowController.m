@@ -1426,6 +1426,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
     
+    mwcFlags.isSwitchingFullScreen = 1;
+    
     interactionMode = SKFullScreenMode;
     
     if (wasInteractionMode == SKPresentationMode) {
@@ -1459,6 +1461,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
         [[self pdfView] goToPage:page];
     
+    mwcFlags.isSwitchingFullScreen = 0;
+    
     [self forceSubwindowsOnTop:YES];
     
     [pdfView setInteractionMode:SKFullScreenMode];
@@ -1476,6 +1480,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSColor *backgroundColor = [NSColor blackColor];
     NSInteger level = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSNormalWindowLevel : NSPopUpMenuWindowLevel;
     PDFPage *page = [[self pdfView] currentPage];
+    
+    mwcFlags.isSwitchingFullScreen = 1;
     
     interactionMode = SKPresentationMode;
     
@@ -1510,6 +1516,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
         [[self pdfView] goToPage:page];
     
+    mwcFlags.isSwitchingFullScreen = 0;
+    
     [pdfView setInteractionMode:SKPresentationMode];
 }
 
@@ -1522,6 +1530,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSView *view;
     NSView *contentView;
     PDFPage *page = [[self pdfView] currentPage];
+    
+    mwcFlags.isSwitchingFullScreen = 1;
     
     if (wasInteractionMode == SKFullScreenMode) {
         view = pdfSplitView;
@@ -1554,6 +1564,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
         [[self pdfView] goToPage:page];
+    
+    mwcFlags.isSwitchingFullScreen = 0;
     
     [self forceSubwindowsOnTop:NO];
     
