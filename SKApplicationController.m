@@ -77,6 +77,7 @@
 #import "SKLocalization.h"
 #import "SKScriptMenu.h"
 #import "NSScreen_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/apps/mediawiki/skim-app/"
@@ -181,6 +182,7 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
+    [PDFAnnotation checkPDFKit];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{

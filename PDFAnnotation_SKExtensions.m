@@ -56,6 +56,7 @@
 #import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
+#import "SKVersionNumber.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -90,11 +91,22 @@ NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
 NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
 NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
+BOOL SKPDFAnnotationLeaksBorder = NO;
+
 enum {
     SKPDFAnnotationScriptingNoteClassCode = 'Note'
 };
 
 @implementation PDFAnnotation (SKExtensions)
+
++ (void)checkPDFKit {
+    // Some PDFAnnotation subclasses over-retain the initial PDFBorder ivar, at least on PDFKit version 2.5 (MacOSX 10.6.0-2) and 2.5.1 (MacOSX 10.6.3-4)
+    SKVersionNumber *PDFKitVersion = [[SKVersionNumber alloc] initWithVersionString:[[NSBundle bundleForClass:self] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]];
+    SKVersionNumber *minVersion = [[SKVersionNumber alloc] initWithVersionString:@"2.5"];
+    SKVersionNumber *maxVersion = [[SKVersionNumber alloc] initWithVersionString:@"2.5.1"];
+    if ([PDFKitVersion compareToVersionNumber:minVersion] != NSOrderedAscending && [PDFKitVersion compareToVersionNumber:maxVersion] != NSOrderedDescending)
+        SKPDFAnnotationLeaksBorder = YES;
+}
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [NSMutableString string];
