@@ -179,20 +179,19 @@ static NSString *menuItemTitle(NSString *path) {
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    if (streamRef == NULL || menuNeedsUpdate == NO)
-        return;
-    
-    NSMutableArray *scripts = [NSMutableArray array];
-    for (NSString *folder in scriptFolders)
-        [scripts addObjectsFromArray:[self directoryContentsAtPath:folder recursionDepth:0]];
-    [scripts sortUsingDescriptors:sortDescriptors];
-    
-    [self updateSubmenu:menu withScripts:scripts];
-    
-    if ([menu numberOfItems] == 0)
-        [menu addItemWithTitle:NSLocalizedString(@"No Script", @"Menu item title") action:NULL keyEquivalent:@""];
-    
-    menuNeedsUpdate = NO;
+    if (menuNeedsUpdate) {
+        NSMutableArray *scripts = [NSMutableArray array];
+        for (NSString *folder in scriptFolders)
+            [scripts addObjectsFromArray:[self directoryContentsAtPath:folder recursionDepth:0]];
+        [scripts sortUsingDescriptors:sortDescriptors];
+        
+        [self updateSubmenu:menu withScripts:scripts];
+        
+        if ([menu numberOfItems] == 0)
+            [menu addItemWithTitle:NSLocalizedString(@"No Script", @"Menu item title") action:NULL keyEquivalent:@""];
+        
+        menuNeedsUpdate = NO;
+    }
 }
 
 static BOOL isAppleScriptUTI(NSString *theUTI) {
