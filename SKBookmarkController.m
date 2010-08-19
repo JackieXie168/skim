@@ -274,30 +274,26 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 #pragma mark Recent Documents
 
-- (NSUInteger)indexOfRecentDocumentAtPath:(NSString *)path {
-    NSUInteger idx = NSNotFound, i, iMax = [recentDocuments count];
-    for (i = 0; i < iMax; i++) {
-        NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
+- (NSDictionary *)recentDocumentInfoAtPath:(NSString *)path {
+    for (NSMutableDictionary *info in recentDocuments) {
         BDAlias *alias = [info valueForKey:ALIAS_KEY];
         if (alias == nil) {
             alias = [BDAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
             [info setValue:alias forKey:ALIAS_KEY];
         }
-        if ([[alias fullPathNoUI] isEqualToString:path]) {
-            idx = i;
-            break;
-        }
+        if ([[alias fullPathNoUI] isEqualToString:path])
+            return info;
     }
-    return idx;
+    return nil;
 }
 
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups {
     if (path == nil)
         return;
     
-    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
-    if (idx != NSNotFound)
-        [recentDocuments removeObjectAtIndex:idx];
+    NSDictionary *info = [self recentDocumentInfoAtPath:path];
+    if (info)
+        [recentDocuments removeObjectIdenticalTo:info];
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
     if (alias) {
@@ -311,15 +307,14 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return NSNotFound;
-    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
-    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
+    NSDictionary *info = [self recentDocumentInfoAtPath:path];
+    return info == nil ? NSNotFound : [[info objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
 }
 
 - (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return nil;
-    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
-    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SNAPSHOTS_KEY];
+    NSArray *setups = [[self recentDocumentInfoAtPath:path] objectForKey:SNAPSHOTS_KEY];
     return [setups count] ? setups : nil;
 }
 
