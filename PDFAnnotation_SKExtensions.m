@@ -101,9 +101,9 @@ enum {
 
 + (void)checkPDFKit {
     // Some PDFAnnotation subclasses over-retain the initial PDFBorder ivar, at least on PDFKit version 2.5 (MacOSX 10.6.0-2) and 2.5.1 (MacOSX 10.6.3-4)
-    SKVersionNumber *PDFKitVersion = [[SKVersionNumber alloc] initWithVersionString:[[NSBundle bundleForClass:self] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]];
-    SKVersionNumber *minVersion = [[SKVersionNumber alloc] initWithVersionString:@"2.5"];
-    SKVersionNumber *maxVersion = [[SKVersionNumber alloc] initWithVersionString:@"2.5.1"];
+    SKVersionNumber *PDFKitVersion = [[[SKVersionNumber alloc] initWithVersionString:[[NSBundle bundleForClass:self] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]] autorelease];
+    SKVersionNumber *minVersion = [[[SKVersionNumber alloc] initWithVersionString:@"2.5"] autorelease];
+    SKVersionNumber *maxVersion = [[[SKVersionNumber alloc] initWithVersionString:@"2.5.1"] autorelease];
     if ([PDFKitVersion compareToVersionNumber:minVersion] != NSOrderedAscending && [PDFKitVersion compareToVersionNumber:maxVersion] != NSOrderedDescending)
         SKPDFAnnotationLeaksBorder = YES;
 }
