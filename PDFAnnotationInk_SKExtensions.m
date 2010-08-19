@@ -52,6 +52,8 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
     if (self = [super initSkimNoteWithBounds:bounds]) { 	 
+        if (SKPDFAnnotationLeaksBorder)
+            [[self border] release];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]]; 	 
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init]; 	 
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]]; 	 
