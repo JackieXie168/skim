@@ -138,24 +138,6 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
     [scriptMenu setDelegate:nil];
 }
 
-static NSString *menuItemTitle(NSString *path) {
-    static NSSet *scriptExtensions = nil;
-    if (scriptExtensions == nil)
-        scriptExtensions = [[NSSet alloc] initWithObjects:@"scpt", @"scptd", @"applescript", @"sh", @"csh", @"command", @"py", @"rb", @"pl", @"pm", @"app", @"workflow", nil];
-    
-    NSString *name = [path lastPathComponent];
-    
-    if ([scriptExtensions containsObject:[[name pathExtension] lowercaseString]])
-        name = [name stringByDeletingPathExtension];
-    
-    NSScanner *scanner = [NSScanner scannerWithString:name];
-    [scanner setCharactersToBeSkipped:nil];
-    if ([scanner scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:NULL] && [scanner scanString:@"-" intoString:NULL])
-        name = [name substringFromIndex:[scanner scanLocation]];
-    
-    return name;
-}
-
 - (void)updateSubmenu:(NSMenu *)menu withScripts:(NSArray *)scripts {
     [menu removeAllItems];
     
@@ -233,25 +215,31 @@ static BOOL isFolderUTI(NSString *theUTI) {
         NSString *fileType = [fileAttributes valueForKey:NSFileType];
         BOOL isDir = [fileType isEqualToString:NSFileTypeDirectory];
         NSString *theUTI = [ws typeOfFile:[[filePath stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
-        NSString *title = menuItemTitle(file);
+        NSString *title = [path lastPathComponent];
+        NSDictionary *dict = nil;
         
-        NSMutableDictionary *dict;
+        NSScanner *scanner = [NSScanner scannerWithString:title];
+        [scanner setCharactersToBeSkipped:nil];
+        if ([scanner scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:NULL] && [scanner scanString:@"-" intoString:NULL])
+            title = [title substringFromIndex:[scanner scanLocation]];
         
         if ([title isEqualToString:@"-"] || [title length] == 0) {
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, nil];
-            [files addObject:dict];
-            [dict release];
         } else if (isAppleScriptUTI(theUTI) || isApplicationUTI(theUTI) || isAutomatorWorkflowUTI(theUTI) || ([fm isExecutableFileAtPath:filePath] && isDir == NO)) {
+            static NSSet *scriptExtensions = nil;
+            if (scriptExtensions == nil)
+                scriptExtensions = [[NSSet alloc] initWithObjects:@"scpt", @"scptd", @"applescript", @"sh", @"csh", @"command", @"py", @"rb", @"pl", @"pm", @"app", @"workflow", nil];
+            if ([scriptExtensions containsObject:[[title pathExtension] lowercaseString]])
+                title = [title stringByDeletingPathExtension];
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, nil];
-            [files addObject:dict];
-            [dict release];
         } else if (isDir && isFolderUTI(theUTI) && depth < 3) {
             NSArray *content = [self directoryContentsAtPath:filePath recursionDepth:depth + 1];
-            if ([content count] > 0) {
+            if ([content count] > 0)
                 dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, content, CONTENT_KEY, nil];
-                [files addObject:dict];
-                [dict release];
-            }
+        }
+        if (dict) {
+            [files addObject:dict];
+            [dict release];
         }
     }
     [files sortUsingDescriptors:sortDescriptors];
