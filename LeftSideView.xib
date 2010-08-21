@@ -1503,6 +1503,7 @@
 						<int key="objectID">100</int>
 						<reference key="object" ref="7515970"/>
 						<reference key="parent" ref="443171535"/>
+						<string key="objectName">Vertical Scroller</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">99</int>
@@ -1770,6 +1771,7 @@
 				<object class="NSArray" key="dict.sortedKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>-3.IBPluginDependency</string>
+					<string>100.CustomClassName</string>
 					<string>100.IBPluginDependency</string>
 					<string>100.ImportedFromIB2</string>
 					<string>101.CustomClassName</string>
@@ -1886,6 +1888,7 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>SKScroller</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>SKThumbnailTableView</string>
@@ -3639,6 +3642,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKScroller</string>
+					<string key="superclassName">NSScroller</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="371493357">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKThumbnailTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKSideViewController</string>
 					<string key="superclassName">NSViewController</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -3778,10 +3789,7 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKThumbnailTableView</string>
 					<string key="superclassName">SKTableView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKThumbnailTableView.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="371493357"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKTocOutlineView</string>

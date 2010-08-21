@@ -37,32 +37,11 @@
  */
 
 #import "SKThumbnailTableView.h"
-#import "SKRuntime.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 
 #define SKScrollerWillScrollNotification @"SKScrollerWillScrollNotification"
 #define SKScrollerDidScrollNotification @"SKScrollerDidScrollNotification"
-
-
-@interface NSScroller (SKExtensions)
-@end
-
-@implementation NSScroller (SKExtensions)
-
-static void (*original_trackKnob)(id, SEL, id) = NULL;
-
-- (void)replacement_trackKnob:(NSEvent *)theEvent {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerWillScrollNotification object:self];
-    original_trackKnob(self, _cmd, theEvent);
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
-}
-
-+ (void)load {
-    original_trackKnob = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacement_trackKnob:));
-}
-
-@end
 
 @implementation SKThumbnailTableView
 
@@ -196,5 +175,17 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
 - (id <SKThumbnailTableViewDelegate>)delegate { return (<SKThumbnailTableViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 #endif
+
+@end
+
+#pragma mark -
+
+@implementation SKScroller
+
+- (void)trackKnob:(NSEvent *)theEvent {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerWillScrollNotification object:self];
+    [super trackKnob:theEvent];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
+}
 
 @end

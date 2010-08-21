@@ -63,3 +63,7 @@
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 
 @end
+
+
+@interface SKScroller : NSScroller
+@end
