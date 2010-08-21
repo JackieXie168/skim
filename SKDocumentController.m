@@ -296,6 +296,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if (document = [self documentForURL:fileURL]) {
             // the document was already open, don't call makeWindowControllers because that adds new empty windows
             [document applySetup:setup];
+            [document showWindows];
         } else if (document = [self openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
             [document makeWindowControllers];
             [document applySetup:setup];
