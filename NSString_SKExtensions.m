@@ -257,79 +257,35 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return [[self stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
 }
 
+- (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet {
+    NSUInteger location = [self rangeOfCharacterFromSet:charSet].location;
+    if (location == NSNotFound)
+        return self;
+    
+    NSRange range;
+    NSMutableString *string = [self mutableCopy];
+    
+    while (location != NSNotFound) {
+        [string insertString:@"\\" atIndex:location];
+        range = NSMakeRange(location + 2, [string length] - location - 2);
+        location = [string rangeOfCharacterFromSet:charSet options:0 range:range].location;
+    }
+    return [string autorelease];
+}
+
 // Escape those characters that are special, to the shell, inside a "quoted" string
 - (NSString *)stringByEscapingShellChars {
     static NSCharacterSet *shellSpecialChars = nil;
     if (shellSpecialChars == nil)
         shellSpecialChars = [[NSCharacterSet characterSetWithCharactersInString:@"$\"`\\"] retain];
-
-    NSMutableString *result = [self mutableCopy];
-    NSUInteger i = 0;
-    while (i < [result length]) {
-        i = [result rangeOfCharacterFromSet:shellSpecialChars options:0 range:NSMakeRange(i, [result length] - i)].location;
-        if (i != NSNotFound) {
-            [result insertString:@"\\" atIndex: i];
-            i += 2;
-        }
-    }
-
-    return [result autorelease];
+    return [self stringByBackslashEscapingCharactersFromSet:shellSpecialChars];
 }
 
-// parses a space separated list of shell script argments
-// allows quoting parts of an argument and escaped characters outside quotes, according to shell rules
-- (NSArray *)shellScriptArgumentsArray;
-{
-    static NSCharacterSet *specialChars = nil;
-    static NSCharacterSet *quoteChars = nil;
-    
-    if (specialChars == nil) {
-        NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
-        [tmpSet addCharactersInString:@"\\\"'`"];
-        specialChars = [tmpSet copy];
-        [tmpSet release];
-        quoteChars = [[NSCharacterSet characterSetWithCharactersInString:@"\"'`"] retain];
-    }
-    
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSString *s = nil;
-    unichar ch = 0;
-    NSMutableString *currArg = [scanner isAtEnd] ? nil : [NSMutableString string];
-    NSMutableArray *arguments = [NSMutableArray array];
-    
-    [scanner setCharactersToBeSkipped:nil];
-    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-    
-    while ([scanner isAtEnd] == NO) {
-        if ([scanner scanUpToCharactersFromSet:specialChars intoString:&s])
-            [currArg appendString:s];
-        if ([scanner scanCharacter:&ch] == NO)
-            break;
-        if ([[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:ch]) {
-            // argument separator, add the last one we found and ignore more whitespaces
-            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-            [arguments addObject:currArg];
-            currArg = [scanner isAtEnd] ? nil : [NSMutableString string];
-        } else if (ch == '\\') {
-            // escaped character
-            if ([scanner scanCharacter:&ch] == NO)
-                [NSException raise:NSInternalInconsistencyException format:@"Missing character"];
-            if ([currArg length] == 0 && [[NSCharacterSet newlineCharacterSet] characterIsMember:ch])
-                // ignore escaped newlines between arguments, as they should be considered whitespace
-                [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-            else // real escaped character, just add the character, so we can ignore it if it is a special character
-                [currArg appendFormat:@"%C", ch];
-        } else if ([quoteChars characterIsMember:ch]) {
-            // quoted part of an argument, scan up to the matching quote
-            if ([scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithRange:NSMakeRange(ch, 1)] intoString:&s])
-                [currArg appendString:s];
-            if ([scanner scanCharacter:NULL] == NO)
-                [NSException raise:NSInternalInconsistencyException format:@"Unmatched %C", ch];
-        }
-    }
-    if (currArg)
-        [arguments addObject:currArg];
-    return arguments;
+- (NSString *)stringByEscapingParenthesis {
+    static NSCharacterSet *parenAndBackslashCharSet = nil;
+    if (parenAndBackslashCharSet == nil)
+        parenAndBackslashCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"()\\"] retain];
+    return [self stringByBackslashEscapingCharactersFromSet:parenAndBackslashCharSet];
 }
 
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr{
@@ -345,27 +301,6 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 
 - (NSString *)lossyISOLatin1String {
     return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSISOLatin1StringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
-}
-
-- (NSString *)stringByEscapingParenthesis {
-    static NSCharacterSet *parenAndBackslashCharSet = nil;
-    
-    if (parenAndBackslashCharSet == nil)
-        parenAndBackslashCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"()\\"] retain];
-    
-    NSUInteger location = [self rangeOfCharacterFromSet:parenAndBackslashCharSet].location;
-    if (location == NSNotFound)
-        return self;
-    
-    NSRange range;
-    NSMutableString *string = [self mutableCopy];
-    
-    while (location != NSNotFound) {
-        [string insertString:@"\\" atIndex:location];
-        range = NSMakeRange(location + 2, [string length] - location - 2);
-        location = [string rangeOfCharacterFromSet:parenAndBackslashCharSet options:0 range:range].location;
-    }
-    return [string autorelease];
 }
 
 #pragma mark Templating support

@@ -51,14 +51,14 @@
 
 - (NSString *)stringByReplacingPathExtension:(NSString *)ext;
 
+- (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet;
 - (NSString *)stringByEscapingShellChars;
-- (NSArray *)shellScriptArgumentsArray;
+- (NSString *)stringByEscapingParenthesis;
+
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;
 
 - (NSString *)lossyASCIIString;
 - (NSString *)lossyISOLatin1String;
-
-- (NSString *)stringByEscapingParenthesis;
 
 - (NSString *)typeName;
 
