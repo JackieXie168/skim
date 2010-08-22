@@ -40,7 +40,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "SKDownloadController.h"
-#import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKApplicationController.h"
@@ -313,7 +312,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (SKIsNotesDocumentType(type)) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-            NSString *pdfFile = [[absoluteURL path] stringByReplacingPathExtension:@"pdf"];
+            NSString *pdfFile = [absoluteURL pathReplacingPathExtension:@"pdf"];
             BOOL isDir;
             if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
                 absoluteURL = [NSURL fileURLWithPath:pdfFile];

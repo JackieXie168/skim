@@ -85,6 +85,10 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     return theURL;
 }
 
+- (NSString *)pathReplacingPathExtension:(NSString *)ext {
+    return [[[self path] stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
+}
+
 - (NSAttributedString *)icon {
     NSAttributedString *attrString = nil;
     
