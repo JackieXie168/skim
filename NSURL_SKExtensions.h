@@ -44,6 +44,8 @@ extern NSString *SKWeblocFilePboardType;
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard;
 
+- (NSString *)pathReplacingPathExtension:(NSString *)ext;
+
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 

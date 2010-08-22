@@ -44,7 +44,6 @@
 #import "NSScanner_SKExtensions.h"
 #import <CoreFoundation/CoreFoundation.h>
 #import "NSFileManager_SKExtensions.h"
-#import "NSString_SKExtensions.h"
 #import "NSMapTable_SKExtensions.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
@@ -596,7 +595,7 @@ struct SKServerFlags {
         } else {
             rv = [self loadSynctexFileForFile:theFileName];
             if (rv == NO) {
-                theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
+                theSyncFileName = [[theFileName stringByDeletingPathExtension] stringByAppendingPathExtension:SKPDFSynchronizerPdfsyncExtension];
                 if ([fileManager fileExistsAtPath:theSyncFileName])
                     rv = [self loadPdfsyncFile:theSyncFileName];
             }

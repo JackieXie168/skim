@@ -38,6 +38,7 @@
 
 #import "SKConversionProgressController.h"
 #import "NSString_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
@@ -323,7 +324,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueTemporaryDirectory();
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
-    NSString *outFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
+    NSString *outFile = [tmpDir stringByAppendingPathComponent:[dviFile lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
     BOOL success = NO;
     

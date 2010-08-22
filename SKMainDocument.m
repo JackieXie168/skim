@@ -81,6 +81,7 @@
 #import "NSInvocation_SKExtensions.h"
 #import "SKSyncPreferences.h"
 #import "NSScreen_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -344,7 +345,7 @@ static char SKMainDocumentDefaultsObservationContext;
     BOOL saveNotesOK = NO;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-        NSString *notesPath = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
+        NSString *notesPath = [absoluteURL pathReplacingPathExtension:@"skim"];
         BOOL fileExists = [fm fileExistsAtPath:notesPath];
         
         if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
@@ -744,7 +745,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     }
                 }
                 if (pdfDoc) {
-                    NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
+                    NSString *path = [absoluteURL pathReplacingPathExtension:@"skim"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
                         NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                         if (readOption == NSAlertOtherReturn) {
@@ -901,7 +902,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
-                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"skim"]
+                              file:[path lastPathComponentReplacingPathExtension:@"skim"]
                              types:[NSArray arrayWithObjects:@"skim", @"fdf", nil]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
@@ -1050,7 +1051,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [sp setRequiredFileType:@"tgz"];
         [sp setCanCreateDirectories:YES];
         [sp beginSheetForDirectory:nil
-                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"tgz"]
+                              file:[path lastPathComponentReplacingPathExtension:@"tgz"]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
@@ -1132,7 +1133,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"tgz"]];
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[self fileURL] path] lastPathComponentReplacingPathExtension:@"tgz"]];
         if ([self saveArchiveToFile:tmpFile] == NO || [self emailAttachmentFile:tmpFile] == NO)
             NSBeep();
     } else {
@@ -1181,7 +1182,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [sp setRequiredFileType:@"dmg"];
         [sp setCanCreateDirectories:YES];
         [sp beginSheetForDirectory:nil
-                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"dmg"]
+                              file:[path lastPathComponentReplacingPathExtension:@"dmg"]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:)
@@ -1196,7 +1197,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"dmg"]];
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[self fileURL] path] lastPathComponentReplacingPathExtension:@"dmg"]];
         [self saveDiskImageToFile:tmpFile email:YES];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -2069,7 +2070,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
             source = [self fileURL];
-        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"] options:options];
+        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[source pathReplacingPathExtension:@"tex"] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([selection hasCharacters]) {

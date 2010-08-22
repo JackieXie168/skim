@@ -42,7 +42,7 @@
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
 #import "NSValue_SKExtensions.h"
-#import "NSString_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNotesPage.h"
@@ -236,7 +236,7 @@
     } else if (SKIsNotesRTFDocumentType(typeName)) {
         data = [self notesRTFData];
     } else if (SKIsNotesFDFDocumentType(typeName)) {
-        NSString *filename = [[[self fileURL] path] stringByReplacingPathExtension:@"pdf"];
+        NSString *filename = [[self fileURL] pathReplacingPathExtension:@"pdf"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:filename])
             filename = [filename lastPathComponent];
         else
@@ -375,7 +375,7 @@
 #pragma mark Actions
 
 - (IBAction)openPDF:(id)sender {
-    NSString *path = [[[self fileURL] path] stringByReplacingPathExtension:@"pdf"];
+    NSString *path = [[self fileURL] pathReplacingPathExtension:@"pdf"];
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         // resolve symlinks and aliases
@@ -747,7 +747,7 @@
     if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
-        return [[NSFileManager defaultManager] fileExistsAtPath:[[[self fileURL] path] stringByReplacingPathExtension:@"pdf"]];
+        return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] pathReplacingPathExtension:@"pdf"]];
     return YES;
 }
 
