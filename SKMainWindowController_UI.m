@@ -600,6 +600,28 @@
     }
 }
 
+- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
+    NSDragOperation dragOp = NSDragOperationNone;
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        NSPasteboard *pboard = [info draggingPasteboard];
+        if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]] &&
+            anIndex == NSOutlineViewDropOnItemIndex && [item type] != nil)
+            dragOp = NSDragOperationEvery;
+    }
+    return dragOp;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        NSPasteboard *pboard = [info draggingPasteboard];
+        if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]]) {
+            [item setColor:[NSColor colorFromPasteboard:pboard]];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 #pragma mark NSOutlineView delegate protocol
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
@@ -778,6 +800,22 @@
 - (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [items count] > 0;
+    }
+    return NO;
+}
+
+- (void)outlineViewPaste:(NSOutlineView *)ov {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]])
+            [[self selectedNotes] setValue:[NSColor colorFromPasteboard:pboard] forKey:SKNPDFAnnotationColorKey];
+    }
+}
+
+- (BOOL)outlineViewCanPaste:(NSOutlineView *)ov {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        return [ov numberOfSelectedRows] > 0 &&
+               [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]] != nil;
     }
     return NO;
 }
