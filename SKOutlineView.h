@@ -48,11 +48,12 @@
 + (BOOL)usesDefaultFontSize;
 
 @property (nonatomic, readonly) NSArray *selectedItems;
-@property (nonatomic, readonly) BOOL canDelete, canCopy;
+@property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (void)delete:(id)sender;
 - (void)copy:(id)sender;
+- (void)paste:(id)sender;
 
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
@@ -75,6 +76,9 @@
 
 - (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
+
+- (void)outlineViewPaste:(NSOutlineView *)anOutlineView;
+- (BOOL)outlineViewCanPaste:(NSOutlineView *)anOutlineView;
 
 - (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
