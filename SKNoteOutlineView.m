@@ -72,7 +72,7 @@
             NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
             CGFloat currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
             
-            [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
+            [[self delegate] outlineView:self setHeight:currentHeight ofRowByItem:item];
             [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
         }
     }
@@ -80,7 +80,7 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
+    if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSInteger row = [self rowAtPoint:mouseLoc];
         
