@@ -936,6 +936,12 @@
     [self outlineView:rightSideController.noteOutlineView copyItems:[sender representedObject]];
 }
 
+- (void)pasteOnNotes:(id)sender {
+    NSColor *color = [NSColor colorFromPasteboard:[NSPasteboard generalPasteboard]];
+    if (color)
+        [[self noteItems:[sender representedObject]] setValue:color forKey:SKNPDFAnnotationColorKey];
+}
+
 - (void)editNoteFromTable:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     NSInteger row = [rightSideController.noteOutlineView rowForItem:annotation];
@@ -1041,6 +1047,10 @@
             }
             if ([self outlineView:rightSideController.noteOutlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
+                [item setRepresentedObject:items];
+            }
+            if (nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]]) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(pasteOnNotes:) target:self];
                 [item setRepresentedObject:items];
             }
             if ([pdfView hideNotes] == NO && [items count] == 1) {
