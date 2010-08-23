@@ -350,6 +350,26 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return bookmarksPath;
 }
 
+- (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {
+    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
+    SKBookmark *item = bookmarkRoot;
+    NSUInteger idx = [bookmarkRoot countOfChildren];
+    
+    if (rowIndex != NSNotFound) {
+        SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
+        if ([outlineView isItemExpanded:selectedItem]) {
+            item = selectedItem;
+            idx = [item countOfChildren];
+        } else {
+            item = [selectedItem parent];
+            idx = [[item children] indexOfObject:selectedItem] + 1;
+        }
+    }
+    
+    *bookmarkPtr = item;
+    *indexPtr = idx;
+}
+
 - (void)openFileBookmark:(SKBookmark *)bookmark {
     id document = nil;
     NSError *error = nil;
@@ -394,20 +414,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (IBAction)insertBookmarkFolder:(id)sender {
     SKBookmark *folder = [SKBookmark bookmarkFolderWithLabel:NSLocalizedString(@"Folder", @"default folder name")];
-    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
-    SKBookmark *item = bookmarkRoot;
-    NSUInteger idx = [bookmarkRoot countOfChildren];
+    SKBookmark *item = nil;
+    NSUInteger idx = 0;
     
-    if (rowIndex != NSNotFound) {
-        SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
-        if ([outlineView isItemExpanded:selectedItem]) {
-            item = selectedItem;
-            idx = [item countOfChildren];
-        } else {
-            item = [selectedItem parent];
-            idx = [[item children] indexOfObject:selectedItem] + 1;
-        }
-    }
+    [self getInsertionFolder:&item childIndex:&idx];
     [item insertObject:folder inChildrenAtIndex:idx];
     
     NSInteger row = [outlineView rowForItem:folder];
@@ -417,20 +427,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (IBAction)insertBookmarkSeparator:(id)sender {
     SKBookmark *separator = [SKBookmark bookmarkSeparator];
-    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
-    SKBookmark *item = bookmarkRoot;
-    NSUInteger idx = [bookmarkRoot countOfChildren];
+    SKBookmark *item = nil;
+    NSUInteger idx = 0;
     
-    if (rowIndex != NSNotFound) {
-        SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
-        if ([outlineView isItemExpanded:selectedItem]) {
-            item = selectedItem;
-            idx = [item countOfChildren];
-        } else {
-            item = [selectedItem parent];
-            idx = [[item children] indexOfObject:selectedItem] + 1;
-        }
-    }
+    [self getInsertionFolder:&item childIndex:&idx];
     [item insertObject:separator inChildrenAtIndex:idx];
     
     NSInteger row = [outlineView rowForItem:separator];
@@ -747,6 +747,28 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items {
     return [items count] > 0;
+}
+
+- (void)outlineViewPaste:(NSOutlineView *)ov {
+    NSUInteger count = 0;
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
+        NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
+        SKBookmark *item = nil;
+        NSUInteger anIndex = 0;
+        [self getInsertionFolder:&item childIndex:&anIndex];
+        count = [self addBookmarksForPaths:paths basePath:nil toFolder:item atIndex:anIndex];
+        if (count > 0 && (item == bookmarkRoot || [outlineView isItemExpanded:item])) {
+            NSRange range = NSMakeRange((item == bookmarkRoot ? 0 : [outlineView rowForItem:item] + 1) + anIndex, count);
+            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
+        }
+    }
+    if (count == 0)
+        NSBeep();
+}
+
+- (BOOL)outlineViewCanPaste:(NSOutlineView *)ov {
+    return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {

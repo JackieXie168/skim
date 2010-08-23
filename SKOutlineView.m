@@ -51,7 +51,7 @@ static char SKOutlineViewDefaultsObservationContext;
 @implementation SKOutlineView
 
 @synthesize typeSelectHelper;
-@dynamic selectedItems, canDelete, canCopy;
+@dynamic selectedItems, canDelete, canCopy, canPaste;
 
 + (BOOL)usesDefaultFontSize { return NO; }
 
@@ -192,11 +192,30 @@ static char SKOutlineViewDefaultsObservationContext;
         NSBeep();
 }
 
+- (BOOL)canPaste {
+    if ([[self delegate] respondsToSelector:@selector(outlineViewPaste:)]) {
+        if ([[self delegate] respondsToSelector:@selector(outlineViewCanPaste:)])
+            return [[self delegate] outlineViewCanPaste:self];
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)paste:(id)sender {
+    if ([self canPaste])
+        [[self delegate] outlineViewPaste:self];
+    else
+        NSBeep();
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(delete:))
         return [self canDelete];
     else if ([menuItem action] == @selector(copy:))
         return [self canCopy];
+    else if ([menuItem action] == @selector(paste:))
+        return [self canPaste];
     else if ([menuItem action] == @selector(selectAll:))
         return [self allowsMultipleSelection];
     else if ([menuItem action] == @selector(deselectAll:))
