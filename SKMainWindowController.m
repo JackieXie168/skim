@@ -458,6 +458,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [noteTypeSheetController setDelegate:self];
     [[rightSideController.noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
+    [rightSideController.noteOutlineView registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+    
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
     [[self window] recalculateKeyViewLoop];
