@@ -70,6 +70,7 @@
 #import "SKFindController.h"
 #import "NSColor_SKExtensions.h"
 #import "SKSplitView.h"
+#import "NSEvent_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -615,7 +616,12 @@
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
         if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]]) {
-            [item setColor:[NSColor colorFromPasteboard:pboard]];
+            if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setInteriorColor:)])
+                [item setInteriorColor:[NSColor colorFromPasteboard:pboard]];
+            else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setFontColor:)])
+                [item setFontColor:[NSColor colorFromPasteboard:pboard]];
+            else
+                [item setColor:[NSColor colorFromPasteboard:pboard]];
             return YES;
         }
     }
