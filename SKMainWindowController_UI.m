@@ -699,7 +699,7 @@
     return NO;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
+- (void)outlineView:(NSOutlineView *)ov setHeight:(CGFloat)newHeight ofRowByItem:(id)item {
     [rowHeights setFloat:newHeight forKey:item];
 }
 

@@ -55,7 +55,7 @@
 @optional
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView setHeight:(CGFloat)newHeight ofRowByItem:(id)item;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 
 @end
