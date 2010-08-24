@@ -64,6 +64,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 
 
 @interface SKMainWindowController (SKPrivateUI)
@@ -860,6 +861,8 @@ static NSArray *allMainDocumentPDFViews() {
     } else {
         CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
         if ([self leftSidePaneIsOpen]) {
+            if ([[[self window] firstResponder] isDescendantOf:leftSideContentView])
+                [[self window] makeFirstResponder:pdfView];
             lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
         } else {
             if(lastLeftSidePaneWidth <= 0.0)
@@ -891,6 +894,8 @@ static NSArray *allMainDocumentPDFViews() {
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
         if ([self rightSidePaneIsOpen]) {
+            if ([[[self window] firstResponder] isDescendantOf:rightSideContentView])
+                [[self window] makeFirstResponder:pdfView];
             lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
         } else {
             if(lastRightSidePaneWidth <= 0.0)
