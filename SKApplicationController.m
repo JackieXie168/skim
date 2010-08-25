@@ -452,9 +452,33 @@
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
-        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
+        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"bookmarks", 
+            @"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
             @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontSizes", @"defaultTextNoteFontColor", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
+}
+
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"bookmarks"])
+        return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+    else
+        return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
+
+- (NSArray *)bookmarks {
+    return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] bookmarks];
+}
+
+- (void)insertInBookmarks:(SKBookmark *)bookmark {
+    [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] insertInBookmarks:bookmark];
+}
+
+- (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {
+    [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] insertObject:bookmark inBookmarksAtIndex:anIndex];
+}
+
+- (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {
+    [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] removeObjectFromBookmarksAtIndex:anIndex];
 }
 
 - (NSDictionary *)defaultPdfViewSettings {

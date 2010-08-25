@@ -46,6 +46,13 @@ enum {
 };
 typedef NSInteger SKBookmarkType;
 
+enum {
+    SKScriptingBookmarkTypeBookmark = 'BmFl',
+    SKScriptingBookmarkTypeFolder = 'BmFd',
+    SKScriptingBookmarkTypeSession = 'BmSs',
+    SKScriptingBookmarkTypeSeparator = 'BmSp'
+};
+
 @interface SKBookmark : NSObject {
     SKBookmark *parent;
 }
@@ -81,6 +88,15 @@ typedef NSInteger SKBookmarkType;
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex;
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
+
+@property (nonatomic, readonly) FourCharCode scriptingBookmarkType;
+@property (nonatomic, readonly) NSURL *scriptingFile;
+@property (nonatomic, readonly) SKBookmark *scriptingParent;
+
+- (NSArray *)bookmarks;
+- (void)insertInBookmarks:(SKBookmark *)bookmark;
+- (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;

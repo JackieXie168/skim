@@ -39,6 +39,7 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
+#import "SKBookmarkController.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -87,7 +88,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber;
+@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingBookmarkType, scriptingFile, scriptingParent;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -193,8 +194,97 @@ static Class SKBookmarkClass = Nil;
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
+- (void)insertInChildren:(SKBookmark *)child {}
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
+
+- (id)objectSpecifier {
+    NSUInteger idx = [[parent children] indexOfObjectIdenticalTo:self];
+    if (idx != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = nil;
+        NSScriptClassDescription *containerClassDescription = nil;
+        if ([parent parent]) {
+            containerRef = [parent objectSpecifier];
+            containerClassDescription = [containerRef keyClassDescription];
+        } else {
+            containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[NSApp class]];
+        }
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:containerRef key:@"bookmarks" index:idx] autorelease];
+    } else {
+        return nil;
+    }
+}
+
+- (FourCharCode)scriptingBookmarkType { return 0; }
+
+- (NSURL *)scriptingFile {
+    NSString *path = [self path];
+    return path ? [NSURL fileURLWithPath:path] : nil;
+}
+
+- (SKBookmark *)scriptingParent {
+    return [parent parent] == nil ? nil : parent;
+};
+
+- (NSArray *)bookmarks {
+    return [self children];
+}
+
+- (void)insertInBookmarks:(SKBookmark *)bookmark {
+    return [self insertObject:bookmark inChildrenAtIndex:[self countOfChildren]];
+}
+
+- (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {
+    [self insertObject:bookmark inChildrenAtIndex:anIndex];
+}
+
+- (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {
+    [self removeObjectFromChildrenAtIndex:anIndex];
+}
+
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"bookmarks"]) {
+        SKBookmark *bookmark = nil;
+        FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
+        if (type == 0 && [contentsValue isKindOfClass:[NSURL class]])
+            type = SKScriptingBookmarkTypeBookmark;
+        switch (type) {
+            case SKScriptingBookmarkTypeBookmark:
+            {
+                NSString *aPath = [[properties objectForKey:@"scriptingFile"] path];
+                if (aPath == nil && [contentsValue isKindOfClass:[NSURL class]])
+                    aPath = [contentsValue path];
+                NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
+                if (aPath == nil) {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a path."];
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing path."];
+                } else {
+                    NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
+                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:(aPageNumber > 0 ? aPageNumber - 1 : 0) label:aLabel];
+                }
+                break;
+            }
+            case SKScriptingBookmarkTypeFolder:
+            {
+                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
+                bookmark = [[SKBookmark alloc] initFolderWithLabel:aLabel];
+                break;
+            }
+            case SKScriptingBookmarkTypeSeparator:
+                bookmark = [[SKBookmark alloc] initSeparator];
+                break;
+            default:
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark require a supported bookmark type."];
+                break;
+        }
+        return bookmark;
+    }
+    return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark {
     if (self == bookmark)
@@ -395,6 +485,10 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
+- (FourCharCode)scriptingBookmarkType {
+    return SKScriptingBookmarkTypeBookmark;
+}
+
 @end
 
 #pragma mark -
@@ -455,6 +549,10 @@ static Class SKBookmarkClass = Nil;
     return [children objectAtIndex:anIndex];
 }
 
+- (void)insertInChildren:(SKBookmark *)child {
+    [self insertObject:child inChildrenAtIndex:[children count]];
+}
+
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {
     [children insertObject:child atIndex:anIndex];
     [child setParent:self];
@@ -463,6 +561,10 @@ static Class SKBookmarkClass = Nil;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {
     [[children objectAtIndex:anIndex] setParent:nil];
     [children removeObjectAtIndex:anIndex];
+}
+
+- (FourCharCode)scriptingBookmarkType {
+    return SKScriptingBookmarkTypeFolder;
 }
 
 @end
@@ -536,6 +638,13 @@ static Class SKBookmarkClass = Nil;
 - (NSImage *)icon {
     return [NSImage imageNamed:NSImageNameMultipleDocuments];
 }
+- (FourCharCode)scriptingBookmarkType {
+    return SKScriptingBookmarkTypeSession;
+}
+
+- (NSArray *)bookmarks { return nil; }
+- (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {}
+- (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {}
 
 @end
 
@@ -553,6 +662,10 @@ static Class SKBookmarkClass = Nil;
 
 - (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeSeparator;
+}
+
+- (FourCharCode)scriptingBookmarkType {
+    return SKScriptingBookmarkTypeSeparator;
 }
 
 @end
