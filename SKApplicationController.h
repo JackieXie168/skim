@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKApplication.h"
 
-@class RemoteControlContainer;
+@class RemoteControlContainer, SKBookmark;
 
 @interface SKApplicationController : NSObject <SKApplicationDelegate, NSMenuDelegate> {
     RemoteControlContainer *remoteControl;
@@ -62,5 +62,11 @@
 @property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
 @property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns, *defaultFontNames, *defaultFontSizes;
 @property (nonatomic) FourCharCode defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
+
+- (NSArray *)bookmarks;
+- (SKBookmark *)valueInBookmarksWithName:(NSString *)aName;
+- (void)insertInBookmarks:(SKBookmark *)bookmark;
+- (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
 
 @end

@@ -469,6 +469,10 @@
     return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] bookmarks];
 }
 
+- (SKBookmark *)valueInBookmarksWithName:(NSString *)aName {
+    return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] valueInBookmarksWithName:aName];
+}
+
 - (void)insertInBookmarks:(SKBookmark *)bookmark {
     [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] insertInBookmarks:bookmark];
 }
