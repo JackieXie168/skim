@@ -642,7 +642,6 @@ static Class SKBookmarkClass = Nil;
     return SKScriptingBookmarkTypeSession;
 }
 
-- (NSArray *)bookmarks { return nil; }
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {}
 
