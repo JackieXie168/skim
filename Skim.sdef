@@ -776,6 +776,10 @@
         <class-extension extends="application"
             description="Skim's top level scripting object.">
             <cocoa class="SKApplication"/>
+            <element type="bookmark"
+                description="The top level bookmarks.">
+                <cocoa key="bookmarks"/>
+            </element>
             <element type="TeX line" access="r" hidden="yes"
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
@@ -1122,6 +1126,35 @@
 			<responds-to name="format">
 				<cocoa method=""/>
 			</responds-to>
+        </class>
+
+        <class name="bookmark" plural="bookmarks" code="Bkmk"
+            description="A bookmark.">
+            <cocoa class="SKBookmark"/>
+            <element type="bookmark"
+                description="The children of the bookmark.">
+                <cocoa key="bookmarks"/>
+            </element>
+            <property name="name" code="pnam" type="text"
+                description="The name for the bookmark.">
+                <cocoa key="label"/>
+            </property>
+            <property name="type" code="rtyp" type="bookmark type" access="r"
+                description="The bookmark type.">
+                <cocoa key="scriptingBookmarkType"/>
+            </property>
+            <contents name="file" code="file" type="file" access="r"
+                description="The file for the bookmark.">
+                <cocoa key="scriptingFile"/>
+            </contents>
+            <property name="page index" code="PIdx" type="integer"
+                description="The page index for the bookmark.">
+                <cocoa key="pageNumber"/>
+            </property>
+            <property name="parent" code="Parn" type="bookmark" access="r"
+                description="The parent for the bookmark.">
+                <cocoa key="scriptingParent"/>
+            </property>
         </class>
 
         <class name="point list" plural="point lists" code="PtLi"
@@ -1551,6 +1584,17 @@
                 description="Display pages side-by-side."/>
             <enumerator name="two up continuous" code="2UpC"
                 description="Display pages side-by-side vertically continuously."/>
+        </enumeration>
+
+        <enumeration name="bookmark type" code="BmkE">
+            <enumerator name="file bookmark" code="BmFl"
+                description="File bookmark."/>
+            <enumerator name="folder bookmark" code="BmFd"
+                description="Bookmark folder."/>
+            <enumerator name="session bookmark" code="BmSs"
+                description="Session bookmark."/>
+            <enumerator name="separator bookmark" code="BmSp"
+                description="Bookmark separator."/>
         </enumeration>
 
     </suite>
