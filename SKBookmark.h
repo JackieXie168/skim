@@ -94,7 +94,6 @@ enum {
 @property (nonatomic, readonly) SKBookmark *scriptingParent;
 
 - (NSArray *)bookmarks;
-- (SKBookmark *)valueInBookmarksWithName:(NSString *)aName;
 - (void)insertInBookmarks:(SKBookmark *)bookmark;
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
