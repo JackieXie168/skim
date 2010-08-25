@@ -230,14 +230,6 @@ static Class SKBookmarkClass = Nil;
     return [self children];
 }
 
-- (SKBookmark *)valueInBookmarksWithName:(NSString *)aName {
-    for (SKBookmark *bookmark in [self children]) {
-        if ([[bookmark label] isEqualToString:aName])
-            return bookmark;
-    }
-    return nil;
-}
-
 - (void)insertInBookmarks:(SKBookmark *)bookmark {
     return [self insertObject:bookmark inChildrenAtIndex:[self countOfChildren]];
 }
