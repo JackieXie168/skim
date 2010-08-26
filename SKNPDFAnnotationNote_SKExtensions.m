@@ -59,6 +59,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         NSRect bounds = NSRectFromString([properties objectForKey:SKNPDFAnnotationBoundsKey]);
         NSString *contents = [properties objectForKey:SKNPDFAnnotationContentsKey];
         [mutableProperties setObject:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
+        bounds.origin.y = NSMaxY(bounds) - SKNPDFAnnotationNoteSize.height;
         bounds.size = SKNPDFAnnotationNoteSize;
         [mutableProperties setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
         if (contents) {
