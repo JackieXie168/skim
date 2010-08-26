@@ -1151,8 +1151,8 @@
                 description="The page index for the bookmark.">
                 <cocoa key="pageNumber"/>
             </property>
-            <property name="parent" code="Parn" type="bookmark" access="r"
-                description="The parent for the bookmark.">
+            <property name="container" code="ctnr" type="bookmark" access="r"
+                description="The folder or session bookmark containing this bookmark.">
                 <cocoa key="scriptingParent"/>
             </property>
         </class>
