@@ -55,14 +55,15 @@
     }
     if (self = [self initWithURL:pdfURL]) {
         NSArray *noteDicts = nil;
+        NSArray *annotations = nil;
         if (isPDFBundle)
             noteDicts = [fm readSkimNotesFromPDFBundleAtURL:url error:NULL];
         else
             noteDicts = [fm readSkimNotesFromExtendedAttributesAtURL:url error:NULL];
         if ([noteDicts count])
-            [self addSkimNotesWithProperties:noteDicts];
+            annotations = [self addSkimNotesWithProperties:noteDicts];
         if (notes)
-            *notes = [noteDicts count] ? noteDicts : nil;
+            *notes = annotations;
     }
     return self;
 }
@@ -92,5 +93,4 @@
     
     return notes;
 }
-
 @end
