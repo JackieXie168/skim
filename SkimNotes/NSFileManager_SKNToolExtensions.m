@@ -164,16 +164,15 @@
                     rtfNotesData = SKNSkimRTFNotes(notes);
             }
         }
-        NSData *textNotesData = [textNotes dataUsingEncoding:NSUTF8StringEncoding];
         if ([extension caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
             NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
             if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
                 name = [name stringByAppendingString:@"1"];
             NSString *notePath = [[path stringByAppendingPathComponent:name] stringByAppendingPathExtension:SKIM_EXTENSION];
             success = [notesData writeToFile:notePath options:0 error:&error];
-            if (textNotesData) {
+            if (textNotes) {
                 notePath = [[path stringByAppendingPathComponent:name] stringByAppendingPathExtension:TXT_EXTENSION];
-                [textNotesData writeToFile:notePath options:0 error:NULL];
+                [textNotes writeToFile:notePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
             }
             if (rtfNotesData) {
                 notePath = [[path stringByAppendingPathComponent:name] stringByAppendingPathExtension:RTF_EXTENSION];
@@ -182,8 +181,8 @@
         } else {
             SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
             success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:notesData atPath:path options:0 error:&error];
-            if (textNotesData)
-                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toValue:textNotesData atPath:path options:0 error:NULL];
+            if (textNotes)
+                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:textNotes atPath:path options:0 error:NULL];
             if (rtfNotesData)
                 [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:rtfNotesData atPath:path options:0 error:NULL];
         }
