@@ -109,11 +109,12 @@ static char *SKTransitionPropertiesObservationContext;
     while ([notesDocumentPopUpButton numberOfItems] > 1)
         [notesDocumentPopUpButton removeItemAtIndex:[notesDocumentPopUpButton numberOfItems] - 1];
     
-    id doc;
+    NSDocument *doc;
+    NSDocument *document = [controller document];
     NSMutableArray *documents = [NSMutableArray array];
-    NSUInteger pageCount = [[controller pdfDocument] pageCount];
+    NSUInteger pageCount = [[document pdfDocument] pageCount];
     for (doc in [[NSDocumentController sharedDocumentController] documents]) {
-        if ([doc isPDFDocument] && doc != [controller document] && [[doc pdfDocument] pageCount] == pageCount)
+        if ([doc isPDFDocument] && doc != document && [[doc pdfDocument] pageCount] == pageCount)
             [documents addObject:doc];
     }
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];
@@ -176,7 +177,7 @@ static char *SKTransitionPropertiesObservationContext;
     [typeSelectHelper setCyclesSimilarResults:NO];
     [tableView setTypeSelectHelper:typeSelectHelper];
     
-    if ([[[controller pdfView] transitionController] pageTransitions]) {
+    if ([transitionController pageTransitions]) {
         [[self undoManager] disableUndoRegistration];
         [self setSeparate:YES];
         [[self undoManager] enableUndoRegistration];
