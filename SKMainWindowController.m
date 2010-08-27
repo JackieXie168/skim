@@ -680,7 +680,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
 }
 
-- (void)updatePageLabelsAndOutlineForOpenState:(NSDictionary *)info {
+- (void)updatePageLabelsAndOutlineForExpansionState:(NSDictionary *)info {
     // update page labels, also update the size of the table columns displaying the labels
     [self willChangeValueForKey:PAGELABELS_KEY];
     [pageLabels setArray:[[pdfView document] pageLabels]];
@@ -784,7 +784,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         [self registerForDocumentNotifications];
         
-        [self updatePageLabelsAndOutlineForOpenState:openState];
+        [self updatePageLabelsAndOutlineForExpansionState:openState];
         [self updateNoteSelection];
         
         [self showSnapshotsWithSetups:snapshotDicts];
@@ -1921,7 +1921,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
-    [self updatePageLabelsAndOutlineForOpenState:[self expansionStateForOutline:[[pdfView document] outlineRoot]]];
+    [self updatePageLabelsAndOutlineForExpansionState:[self expansionStateForOutline:[[pdfView document] outlineRoot]]];
 }
 
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {log_method();
