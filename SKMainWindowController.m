@@ -1299,9 +1299,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
-    SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
-    if (notesPdfView)
-        [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
+    [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
     // prevent sleep
     if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &activityAssertionID))

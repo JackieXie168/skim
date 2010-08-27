@@ -41,7 +41,7 @@
 #import "SKTransitionController.h"
 #import "SKThumbnailTableView.h"
 
-@class SKMainWindowController, SKMainDocument, SKThumbnail, SKTransitionInfo;
+@class SKMainWindowController, SKThumbnail, SKTransitionInfo;
 
 @interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource> {
     NSPopUpButton *notesDocumentPopUpButton;
@@ -70,7 +70,7 @@
 @property (nonatomic, readonly) SKTransitionInfo *transition;
 @property (nonatomic, copy) NSArray *transitions;
 @property (nonatomic, readonly) NSArray *pageTransitions;
-@property (nonatomic, readonly) SKMainDocument *notesDocument;
+@property (nonatomic, readonly) NSDocument *notesDocument;
 @property (nonatomic, readonly) BOOL isScrolling;
 @property (nonatomic, readonly) NSUndoManager *undoManager;
 

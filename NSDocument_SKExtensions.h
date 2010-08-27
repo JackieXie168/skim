@@ -95,6 +95,7 @@ typedef NSInteger SKInteractionMode;
 - (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex;
 
 - (PDFPage *)currentPage;
+- (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
 - (NSTextStorage *)richText;
 - (id)selectionSpecifier;
