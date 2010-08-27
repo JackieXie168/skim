@@ -1550,11 +1550,8 @@ static NSArray *allMainDocumentPDFViews() {
     [self synchronizeWindowTitleWithDocumentName];
     [self updateLeftStatus];
     
-    if ([self interactionMode] == SKPresentationMode) {
-        SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
-        if (notesPdfView)
-            [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[page pageIndex]]];
-    }
+    if ([self interactionMode] == SKPresentationMode)
+        [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[page pageIndex]]];
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {

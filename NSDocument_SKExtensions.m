@@ -253,6 +253,8 @@ static NSSet *richTextTypes() {
 
 - (PDFPage *)currentPage { return nil; }
 
+- (void)setCurrentPage:(PDFPage *)page {}
+
 - (id)activeNote { return nil; }
 
 - (NSTextStorage *)richText { return nil; }

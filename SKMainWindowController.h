@@ -68,7 +68,7 @@ enum {
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKSplitView, SKSideWindow;
-@class SKMainDocument, SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
+@class SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
     SKSplitView                         *splitView;
@@ -124,7 +124,7 @@ enum {
     
     SKPresentationOptionsSheetController *presentationSheetController;
     
-    SKMainDocument                      *presentationNotesDocument;
+    NSDocument                          *presentationNotesDocument;
     
     NSButton                            *colorAccessoryView;
     NSButton                            *textColorAccessoryView;
@@ -251,7 +251,7 @@ enum {
 
 @property (nonatomic, copy) NSDictionary *presentationOptions;
 
-@property (nonatomic, retain) SKMainDocument *presentationNotesDocument;
+@property (nonatomic, retain) NSDocument *presentationNotesDocument;
 
 @property (nonatomic, copy) NSArray *tags;
 @property (nonatomic) double rating;
