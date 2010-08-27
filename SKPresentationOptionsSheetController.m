@@ -59,6 +59,7 @@
 #define TRANSITIONSTYLE_KEY @"transitionStyle"
 #define DURATION_KEY @"duration"
 #define SHOULDRESTRICT_KEY @"shouldRestrict"
+#define PROPERTIES_KEY @"properties"
 #define CONTENTOBJECT_BINDINGNAME @"contentObject"
 
 static NSString *SKTransitionPboardType = @"SKTransitionPboardType";
@@ -302,7 +303,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (NSArray *)pageTransitions {
     if (separate && [transitions count])
-        return [transitions valueForKey:@"properties"];
+        return [transitions valueForKey:PROPERTIES_KEY];
     else
         return nil;
 }
@@ -378,16 +379,21 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
-    if (row >= 0 && row < (NSInteger)[transitions count] && operation == NSTableViewDropOn &&
-        nil != [[info draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]])
+    if (nil != [[info draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]) {
+        if (operation == NSTableViewDropAbove)
+            [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
         return NSDragOperationEvery;
+    }
     return NSDragOperationNone;
 }
 
 - (BOOL)tableView:(NSTableView *)tv acceptDrop:(id < NSDraggingInfo >)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
     NSPasteboard *pboard = [info draggingPasteboard];
-    if ([pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]) {
-        [[transitions objectAtIndex:row] setProperties:[pboard propertyListForType:SKTransitionPboardType]];
+    if (operation == NSTableViewDropOn && [pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]) {
+        if (row == -1)
+            [transitions setValue:[pboard propertyListForType:SKTransitionPboardType] forKey:PROPERTIES_KEY];
+        else
+            [[transitions objectAtIndex:row] setProperties:[pboard propertyListForType:SKTransitionPboardType]];
         return YES;
     }
     return NO;
