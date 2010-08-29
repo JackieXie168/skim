@@ -298,6 +298,7 @@
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		CEFE71951129AAA30018CD74 /* ServicesMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFE71941129AAA30018CD74 /* ServicesMenu.strings */; };
 		CEFF22F711412E51008DB4DC /* DownloadsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFF22F611412E51008DB4DC /* DownloadsWindow.xib */; };
+		CEFF6B9D122B1495008CDE73 /* skimconvert in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1411451229B66B00C9EBA0 /* skimconvert */; };
 		F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* SKSnapshotPDFView.m */; };
 		F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */; };
 		F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKConversionProgressController.m */; };
@@ -308,6 +309,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE1411441229B66B00C9EBA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CE14113F1229B64D00C9EBA0;
+			remoteInfo = "SkimConvert Tool";
+		};
 		CE2BD81F0BD4127A00A5F4DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */;
@@ -420,6 +428,13 @@
 			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
 			remoteInfo = SkimImporter;
 		};
+		CEFF6B9B122B1478008CDE73 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CE14113E1229B64D00C9EBA0 /* SkimConvert Tool */;
+			remoteInfo = "SkimConvert Tool";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -453,6 +468,7 @@
 			dstSubfolderSpec = 12;
 			files = (
 				CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */,
+				CEFF6B9D122B1495008CDE73 /* skimconvert in Copy Files: Shared Support */,
 				CEE22EA30BFB8672002B746B /* displayline in Copy Files: Shared Support */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */,
 			);
@@ -1844,6 +1860,7 @@
 				CE7DC7320E09286500D6D76D /* SkimNotes.framework */,
 				CEA5F5440E2CED1100F65088 /* SkimNotesBase.framework */,
 				CE7DC7340E09286500D6D76D /* skimnotes */,
+				CE1411451229B66B00C9EBA0 /* skimconvert */,
 				CEDB9AE40E2E9EA50057FD09 /* SkimNotesTest.app */,
 			);
 			name = Products;
@@ -2054,6 +2071,7 @@
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
 				CE816A030D70F8F7008D807D /* PBXTargetDependency */,
 				CE7DC7E20E093C1A00D6D76D /* PBXTargetDependency */,
+				CEFF6B9C122B1478008CDE73 /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -2111,6 +2129,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		CE1411451229B66B00C9EBA0 /* skimconvert */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = skimconvert;
+			remoteRef = CE1411441229B66B00C9EBA0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -2607,6 +2632,11 @@
 			isa = PBXTargetDependency;
 			name = SkimImporter;
 			targetProxy = CEFD68700C01D3E50027B933 /* PBXContainerItemProxy */;
+		};
+		CEFF6B9C122B1478008CDE73 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SkimConvert Tool";
+			targetProxy = CEFF6B9B122B1478008CDE73 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
