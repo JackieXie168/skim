@@ -28,6 +28,7 @@
 				CEBA2EA60E0673D40000B2E6 /* PBXTargetDependency */,
 				CEEE7B620E7BD90F00B7B208 /* PBXTargetDependency */,
 				CEBA2EAC0E067F420000B2E6 /* PBXTargetDependency */,
+				CE1414351229B8F800C9EBA0 /* PBXTargetDependency */,
 				CEA5F6090E2D270500F65088 /* PBXTargetDependency */,
 			);
 			name = Archive;
@@ -37,6 +38,17 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE1412881229B73100C9EBA0 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
+		CE1412891229B73100C9EBA0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		CE1413C11229B74800C9EBA0 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1F649B0E34FAC300E07E76 /* Quartz.framework */; };
+		CE1414151229B74F00C9EBA0 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
+		CE1414231229B80300C9EBA0 /* skimconvert.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1414221229B80300C9EBA0 /* skimconvert.m */; };
+		CE1414261229B8AD00C9EBA0 /* SKNExtendedAttributeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */; };
+		CE1414271229B8AE00C9EBA0 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
+		CE1414281229B8B200C9EBA0 /* NSFileManager_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */; };
+		CE1414291229B8B300C9EBA0 /* PDFAnnotation_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */; };
+		CE14142A1229B8B400C9EBA0 /* PDFDocument_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */; };
+		CE14142B1229B8B500C9EBA0 /* SKNPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */; };
 		CE1F649C0E34FAC300E07E76 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1F649B0E34FAC300E07E76 /* Quartz.framework */; };
 		CE1F64E20E34FF7F00E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		CE1F64E30E34FF8000E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
@@ -83,6 +95,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE1414341229B8F800C9EBA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE14113E1229B64D00C9EBA0;
+			remoteInfo = "SkimConvert Tool";
+		};
 		CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -147,6 +166,10 @@
 		32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SkimNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE14113F1229B64D00C9EBA0 /* skimconvert */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimconvert; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE1414161229B7A000C9EBA0 /* SkimConvert-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimConvert-Tool.xcconfig"; sourceTree = "<group>"; };
+		CE1414221229B80300C9EBA0 /* skimconvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = skimconvert.m; sourceTree = "<group>"; };
+		CE1414251229B86500C9EBA0 /* SkimConvert_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimConvert_Tool_Prefix.pch; sourceTree = "<group>"; };
 		CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Debug.xcconfig"; sourceTree = "<group>"; };
 		CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Framework.xcconfig"; sourceTree = "<group>"; };
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
@@ -217,6 +240,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE14113D1229B64D00C9EBA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE1412891229B73100C9EBA0 /* Foundation.framework in Frameworks */,
+				CE1412881229B73100C9EBA0 /* AppKit.framework in Frameworks */,
+				CE1413C11229B74800C9EBA0 /* Quartz.framework in Frameworks */,
+				CE1414151229B74F00C9EBA0 /* libbz2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEA5F53B0E2CED0E00F65088 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,6 +289,7 @@
 				CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */,
 				CEBA2B550E0566B00000B2E6 /* skimnotes */,
 				CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */,
+				CE14113F1229B64D00C9EBA0 /* skimconvert */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -340,6 +375,7 @@
 				32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */,
 				CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */,
 				CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */,
+				CE1414251229B86500C9EBA0 /* SkimConvert_Tool_Prefix.pch */,
 				CEA5F5870E2CF63000F65088 /* SKNCompatibility.h */,
 				CEA5F5E40E2D0FDB00F65088 /* SkimNotes.hdoc */,
 			);
@@ -355,6 +391,7 @@
 				CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */,
 				CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */,
 				CEBA2B5C0E0566DF0000B2E6 /* SKNAgentListenerProtocol.h */,
+				CE1414221229B80300C9EBA0 /* skimconvert.m */,
 			);
 			name = "Tool Classes";
 			sourceTree = "<group>";
@@ -378,6 +415,7 @@
 				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
 				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
 				CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */,
+				CE1414161229B7A000C9EBA0 /* SkimConvert-Tool.xcconfig */,
 				CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */,
 				CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */,
 			);
@@ -455,6 +493,22 @@
 			productName = SkimNotes;
 			productReference = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		CE14113E1229B64D00C9EBA0 /* SkimConvert Tool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE1411461229B66F00C9EBA0 /* Build configuration list for PBXNativeTarget "SkimConvert Tool" */;
+			buildPhases = (
+				CE14113C1229B64D00C9EBA0 /* Sources */,
+				CE14113D1229B64D00C9EBA0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SkimConvert Tool";
+			productName = "SkimConvert Tool";
+			productReference = CE14113F1229B64D00C9EBA0 /* skimconvert */;
+			productType = "com.apple.product-type.tool";
 		};
 		CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */ = {
 			isa = PBXNativeTarget;
@@ -539,6 +593,7 @@
 				8DC2EF4F0486A6940098B216 /* SkimNotes */,
 				CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */,
 				CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */,
+				CE14113E1229B64D00C9EBA0 /* SkimConvert Tool */,
 				CE665A840E1C086D00D0704D /* HeaderDocs */,
 				CEBA2EA20E0673B60000B2E6 /* Archive */,
 				CEDB9AE80E2E9F090057FD09 /* SkimNotesTest */,
@@ -607,7 +662,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf,ReleaseNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
+			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,skimconvert,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf,ReleaseNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -622,6 +677,20 @@
 				CEBA2BD60E05826D0000B2E6 /* NSFileManager_SKNExtensions.m in Sources */,
 				CEBA2BE30E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m in Sources */,
 				CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE14113C1229B64D00C9EBA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE1414231229B80300C9EBA0 /* skimconvert.m in Sources */,
+				CE1414261229B8AD00C9EBA0 /* SKNExtendedAttributeManager.m in Sources */,
+				CE1414271229B8AE00C9EBA0 /* SKNUtilities.m in Sources */,
+				CE1414281229B8B200C9EBA0 /* NSFileManager_SKNExtensions.m in Sources */,
+				CE1414291229B8B300C9EBA0 /* PDFAnnotation_SKNExtensions.m in Sources */,
+				CE14142A1229B8B400C9EBA0 /* PDFDocument_SKNExtensions.m in Sources */,
+				CE14142B1229B8B500C9EBA0 /* SKNPDFAnnotationNote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +729,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE1414351229B8F800C9EBA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE14113E1229B64D00C9EBA0 /* SkimConvert Tool */;
+			targetProxy = CE1414341229B8F800C9EBA0 /* PBXContainerItemProxy */;
+		};
 		CEA5F6090E2D270500F65088 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CE665A840E1C086D00D0704D /* HeaderDocs */;
@@ -756,6 +830,20 @@
 			};
 			name = Release;
 		};
+		CE1411411229B64D00C9EBA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimConvert-Tool.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		CE1411421229B64D00C9EBA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimConvert-Tool.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
 		CE665A860E1C086F00D0704D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -843,6 +931,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE1411461229B66F00C9EBA0 /* Build configuration list for PBXNativeTarget "SkimConvert Tool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE1411411229B64D00C9EBA0 /* Debug */,
+				CE1411421229B64D00C9EBA0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
