@@ -322,7 +322,7 @@ int main (int argc, const char * argv[]) {
             
         } else if (action == SKNActionExtract) {
             
-            if ([outPath caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:ODD_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:EVEN_OPTION_STRING] == NSOrderedSame) {
+            if (argc < 4 || [[args objectAtIndex:3] hasPrefix:@"-"]) {
                 offset = 0;
                 outPath = inPath;
                 outURL = inURL;
