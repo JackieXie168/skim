@@ -216,7 +216,7 @@ int main (int argc, const char * argv[]) {
             } else {
                 
                 NSArray *inNotes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                NSMutableArray *notes = [[NSMutableArray alloc] initWithArray:inNotes];
+                NSMutableArray *notes = [NSMutableArray arrayWithArray:inNotes];
                 NSUInteger i, iMax = [pdfDoc pageCount];
                 NSSet *convertibleTypes = [NSSet setWithObjects:SKNFreeTextString, SKNTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNMarkUpString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
                 
@@ -265,8 +265,12 @@ int main (int argc, const char * argv[]) {
                 } else if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
                     
 #if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
+                    if ([fm fileExistsAtPath:outPath])
+                        [fm removeItemAtPath:outPath error:NULL];
                     success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
 #else
+                    if ([fm fileExistsAtPath:outPath])
+                        [fm removeFileAtPath:outPath handler:nil];
                     success = [fm copyPath:inPath toPath:outPath handler:nil];
 #endif
                     if (success == NO) {
