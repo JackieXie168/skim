@@ -328,28 +328,27 @@ int main (int argc, const char * argv[]) {
                 offset = 1;
             }
             
-            if (argc < 5 + offset) {
-                WRITE_ERROR;
-                [pool release];
-                exit(EXIT_FAILURE);
-            }
-            
             PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
-            
-            NSString *option = [args objectAtIndex:offset + 3];
+            NSUInteger pageCount = [pdfDoc pageCount];
             NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
             
-            if ([option caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame) {
-                NSInteger start = [[args objectAtIndex:offset + 4] intValue];
-                NSInteger length = argc < 6 + offset ? (NSInteger)[pdfDoc pageCount] - start + 1 : [[args objectAtIndex:offset + 5] intValue];
-                if (start > 0 && length > 0)
-                    [indexes addIndexesInRange:NSMakeRange(start - 1, length)];
-            } else if ([option caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame) {
-                NSInteger i;
-                for (i = offset + 4; i < argc; i++) {
-                    NSUInteger page = [[args objectAtIndex:i] intValue];
-                    if (page > 0)
-                        [indexes addIndex:page - 1];
+            if (argc < 5 + offset) {
+                [indexes addIndexesInRange:NSMakeRange(0, pageCount)];
+            } else {
+                NSString *option = [args objectAtIndex:offset + 3];
+                
+                if ([option caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame) {
+                    NSInteger start = [[args objectAtIndex:offset + 4] intValue];
+                    NSInteger length = argc < 6 + offset ? (NSInteger)pageCount - start + 1 : [[args objectAtIndex:offset + 5] intValue];
+                    if (start > 0 && length > 0)
+                        [indexes addIndexesInRange:NSMakeRange(start - 1, length)];
+                } else if ([option caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame) {
+                    NSInteger i;
+                    for (i = offset + 4; i < argc; i++) {
+                        NSUInteger page = [[args objectAtIndex:i] intValue];
+                        if (page > 0)
+                            [indexes addIndex:page - 1];
+                    }
                 }
             }
             
@@ -357,13 +356,13 @@ int main (int argc, const char * argv[]) {
                 
                 error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
                 
-            } else if ([indexes count] == 0 || [indexes lastIndex] > [pdfDoc pageCount]) {
+            } else if ([indexes count] == 0 || [indexes lastIndex] > pageCount) {
                 
                 error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Invalid page range", NSLocalizedDescriptionKey, nil]];
                 
             } else {
                 
-                NSUInteger i = [pdfDoc pageCount];
+                NSUInteger i = pageCount;
                 while (i-- > 0) {
                     if ([indexes containsIndex:i] == NO)
                         [pdfDoc removePageAtIndex:i];
