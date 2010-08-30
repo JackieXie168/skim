@@ -106,6 +106,34 @@ static inline NSString *SKNNormalizedPath(NSString *path) {
     return path;
 }
 
+static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSArray *notes, NSError **error) {
+    BOOL success = YES;
+    if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
+        if ([fm fileExistsAtPath:outPath])
+            [fm removeItemAtPath:outPath error:NULL];
+        success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
+#else
+        if ([fm fileExistsAtPath:outPath])
+            [fm removeFileAtPath:outPath handler:nil];
+        success = [fm copyPath:inPath toPath:outPath handler:nil];
+#endif
+        if (success == NO) {
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
+        } else {
+            NSURL *inURL = [NSURL fileURLWithPath:inPath];
+            NSURL *outURL = [NSURL fileURLWithPath:outPath];
+            NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:inURL error:NULL];
+            NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
+            success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL error:error];
+        }
+        
+    }
+    return success;
+}
+
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
  
@@ -171,11 +199,20 @@ int main (int argc, const char * argv[]) {
         }
         
         NSString *inPath = SKNNormalizedPath([args objectAtIndex:2]);
-        NSString *inPath2 = action == SKNActionMerge ? SKNNormalizedPath([args objectAtIndex:3]) : nil;
-        NSString *outPath = argc < offset + 4 ? inPath : SKNNormalizedPath([args objectAtIndex:offset + 3]);
         NSURL *inURL = [NSURL fileURLWithPath:inPath];
-        NSURL *inURL2 = inPath2 ? [NSURL fileURLWithPath:inPath2] : nil;
+        PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
+        NSString *inPath2 = nil;
+        NSURL *inURL2 = nil;
+        PDFDocument *pdfDoc2 = nil;
+        NSString *outPath = argc < offset + 4 ? inPath : SKNNormalizedPath([args objectAtIndex:offset + 3]);
         NSURL *outURL = [NSURL fileURLWithPath:outPath];
+        
+        if (action == SKNActionMerge) {
+            inPath2 = SKNNormalizedPath([args objectAtIndex:3]);
+            inURL2 = [NSURL fileURLWithPath:inPath2];
+            pdfDoc2 = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
+        }
+        
         NSFileManager *fm = [NSFileManager defaultManager];
         NSError *error = nil;
         
@@ -183,18 +220,19 @@ int main (int argc, const char * argv[]) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
+        } else if (pdfDoc == nil || [pdfDoc isLocked] || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 isLocked]))) {
+            
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
+            
         } else if (action == SKNActionEmbed) {
             
-            PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL readSkimNotes:NULL] autorelease];
+            NSArray *notes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
             
-            if (pdfDoc == nil || [pdfDoc isLocked]) {
-                
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
-                
-            } else {
+            if ([notes count]) {
                 
                 BOOL didExist = [fm fileExistsAtPath:outPath];
                 
+                [pdfDoc addSkimNotesWithProperties:notes];
                 success = [pdfDoc writeToURL:outURL];
                 
                 if (success == NO) {
@@ -203,118 +241,54 @@ int main (int argc, const char * argv[]) {
                     [fm writeSkimNotes:nil toExtendedAttributesAtURL:outURL error:NULL];
                 }
                 
+            } else {
+                
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
+                
             }
             
         } else if (action == SKNActionUnembed) {
             
-            PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
+            NSArray *inNotes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
+            NSMutableArray *notes = [NSMutableArray arrayWithArray:inNotes];
+            NSUInteger i, iMax = [pdfDoc pageCount];
+            NSSet *convertibleTypes = [NSSet setWithObjects:SKNFreeTextString, SKNTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNMarkUpString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
             
-            if (pdfDoc == nil || [pdfDoc isLocked]) {
+            for (i = 0; i < iMax; i++) {
+                PDFPage *page = [pdfDoc pageAtIndex:i];
+                NSEnumerator *e = [[[[page annotations] copy] autorelease] objectEnumerator];
+                PDFAnnotation *annotation;
                 
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
-                
-            } else {
-                
-                NSArray *inNotes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                NSMutableArray *notes = [NSMutableArray arrayWithArray:inNotes];
-                NSUInteger i, iMax = [pdfDoc pageCount];
-                NSSet *convertibleTypes = [NSSet setWithObjects:SKNFreeTextString, SKNTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNMarkUpString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
-                
-                for (i = 0; i < iMax; i++) {
-                    PDFPage *page = [pdfDoc pageAtIndex:i];
-                    NSEnumerator *e = [[[[page annotations] copy] autorelease] objectEnumerator];
-                    PDFAnnotation *annotation;
-                    
-                    while (annotation = [e nextObject]) {
-                        if ([convertibleTypes containsObject:[annotation type]]) {
-                            NSDictionary *note = [annotation SkimNoteProperties];
-                            if ([[annotation type] isEqualToString:SKNTextString]) {
-                                NSMutableDictionary *mutableNote = [[note mutableCopy] autorelease];
-                                NSRect bounds = NSRectFromString([note objectForKey:SKNPDFAnnotationBoundsKey]);
-                                NSString *contents = [note objectForKey:SKNPDFAnnotationContentsKey];
-                                [mutableNote setObject:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
-                                bounds.origin.y = NSMaxY(bounds) - SKNPDFAnnotationNoteSize.height;
-                                bounds.size = SKNPDFAnnotationNoteSize;
-                                [mutableNote setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
-                                if (contents) {
-                                    NSRange r = [contents rangeOfString:@"  "];
-                                    if (NSMaxRange(r) < [contents length]) {
-                                        NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]] autorelease];
-                                        [mutableNote setObject:attrString forKey:SKNPDFAnnotationTextKey];
-                                        [mutableNote setObject:[contents substringToIndex:r.location] forKey:SKNPDFAnnotationContentsKey];
-                                    }
+                while (annotation = [e nextObject]) {
+                    if ([convertibleTypes containsObject:[annotation type]]) {
+                        NSDictionary *note = [annotation SkimNoteProperties];
+                        if ([[annotation type] isEqualToString:SKNTextString]) {
+                            NSMutableDictionary *mutableNote = [[note mutableCopy] autorelease];
+                            NSRect bounds = NSRectFromString([note objectForKey:SKNPDFAnnotationBoundsKey]);
+                            NSString *contents = [note objectForKey:SKNPDFAnnotationContentsKey];
+                            [mutableNote setObject:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
+                            bounds.origin.y = NSMaxY(bounds) - SKNPDFAnnotationNoteSize.height;
+                            bounds.size = SKNPDFAnnotationNoteSize;
+                            [mutableNote setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
+                            if (contents) {
+                                NSRange r = [contents rangeOfString:@"  "];
+                                if (NSMaxRange(r) < [contents length]) {
+                                    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]] autorelease];
+                                    [mutableNote setObject:attrString forKey:SKNPDFAnnotationTextKey];
+                                    [mutableNote setObject:[contents substringToIndex:r.location] forKey:SKNPDFAnnotationContentsKey];
                                 }
-                                note = mutableNote;
                             }
-                            [notes addObject:note];
-                            [page removeAnnotation:annotation];
+                            note = mutableNote;
                         }
+                        [notes addObject:note];
+                        [page removeAnnotation:annotation];
                     }
                 }
-                
-                if ([notes count] > [inNotes count]) {
-                    
-                    success = [pdfDoc writeToURL:outURL];
-                    
-                    if (success == NO) {
-                        error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-                    } else {
-                        success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
-                    }
-                    
-                } else if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
-                    
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
-                    if ([fm fileExistsAtPath:outPath])
-                        [fm removeItemAtPath:outPath error:NULL];
-                    success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
-#else
-                    if ([fm fileExistsAtPath:outPath])
-                        [fm removeFileAtPath:outPath handler:nil];
-                    success = [fm copyPath:inPath toPath:outPath handler:nil];
-#endif
-                    if (success == NO) {
-                        error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-                    } else {
-                        NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                        NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                        success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL error:&error];
-                    }
-                    
-                }
-                
             }
             
-        } else if (action == SKNActionMerge) {
-            
-            PDFDocument *pdfDoc1 = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
-            PDFDocument *pdfDoc2 = [[[PDFDocument alloc] initWithURL:inURL2] autorelease];
-            
-            if (pdfDoc1 == nil || pdfDoc2 == nil || [pdfDoc1 isLocked] || [pdfDoc2 isLocked]) {
+            if ([notes count] > [inNotes count]) {
                 
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
-                
-            } else {
-                
-                NSUInteger i, count1 = [pdfDoc1 pageCount], count2 = [pdfDoc2 pageCount];
-                for (i = 0; i < count2; i++)
-                    [pdfDoc1 insertPage:[pdfDoc2 pageAtIndex:i] atIndex:i + count1];
-                
-                NSArray *notes1 = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                NSArray *notes2 = [fm readSkimNotesFromExtendedAttributesAtURL:inURL2 error:NULL];
-                NSMutableArray *notes = [NSMutableArray arrayWithArray:notes1];
-                NSEnumerator *e = [notes2 objectEnumerator];
-                NSDictionary *note;
-                
-                while (note = [e nextObject]) {
-                    NSMutableDictionary *mutableNote = [note mutableCopy];
-                    NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue] + count1;
-                    [mutableNote setObject:[NSNumber numberWithUnsignedInt:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
-                    [notes addObject:mutableNote];
-                    [mutableNote release];
-                }
-                
-                success = [pdfDoc1 writeToURL:outURL];
+                success = [pdfDoc writeToURL:outURL];
                 
                 if (success == NO) {
                     error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
@@ -322,6 +296,38 @@ int main (int argc, const char * argv[]) {
                     success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
                 }
                 
+            } else {
+                
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
+                
+            }
+            
+        } else if (action == SKNActionMerge) {
+            
+            NSUInteger i, count = [pdfDoc pageCount], count2 = [pdfDoc2 pageCount];
+            for (i = 0; i < count2; i++)
+                [pdfDoc insertPage:[pdfDoc2 pageAtIndex:i] atIndex:i + count];
+            
+            NSArray *notes1 = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
+            NSArray *notes2 = [fm readSkimNotesFromExtendedAttributesAtURL:inURL2 error:NULL];
+            NSMutableArray *notes = [NSMutableArray arrayWithArray:notes1];
+            NSEnumerator *e = [notes2 objectEnumerator];
+            NSDictionary *note;
+            
+            while (note = [e nextObject]) {
+                NSMutableDictionary *mutableNote = [note mutableCopy];
+                NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue] + count;
+                [mutableNote setObject:[NSNumber numberWithUnsignedInt:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
+                [notes addObject:mutableNote];
+                [mutableNote release];
+            }
+            
+            success = [pdfDoc writeToURL:outURL];
+            
+            if (success == NO) {
+                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
+            } else {
+                success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
             }
             
         } else if (action == SKNActionExtract) {
@@ -334,7 +340,6 @@ int main (int argc, const char * argv[]) {
                 offset = 1;
             }
             
-            PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
             NSUInteger pageCount = [pdfDoc pageCount];
             NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
             
@@ -366,15 +371,11 @@ int main (int argc, const char * argv[]) {
                 }
             }
             
-            if (pdfDoc == nil || [pdfDoc isLocked]) {
-                
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
-                
-            } else if ([indexes count] == 0 || [indexes lastIndex] > pageCount) {
+            if ([indexes count] == 0 || [indexes lastIndex] > pageCount) {
                 
                 error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Invalid page range", NSLocalizedDescriptionKey, nil]];
                 
-            } else {
+            } else if ([indexes count] < pageCount) {
                 
                 NSUInteger i = pageCount;
                 while (i-- > 0) {
@@ -409,6 +410,11 @@ int main (int argc, const char * argv[]) {
                 } else {
                     success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
                 }
+                
+            } else {
+                
+                NSArray *notes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
                 
             }
             
