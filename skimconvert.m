@@ -43,7 +43,7 @@
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
 
-static char *usageStr = "Usage:\n skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START LENGTH | -page PAGE1...]\n skimnotes help [VERB]\n skimnotes version";
+static char *usageStr = "Usage:\n skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1...]\n skimnotes help [VERB]\n skimnotes version";
 static char *versionStr = "SkimConvert command-line client, version 1.0";
 
 static char *embedHelpStr = "skimconvert embed: embed Skim notes in a PDF\nUsage: skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n\nWrites PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
