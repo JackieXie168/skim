@@ -43,13 +43,13 @@
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
 
-static char *usageStr = "Usage:\n skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1...]\n skimnotes help [VERB]\n skimnotes version";
+static char *usageStr = "Usage:\n skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n skimnotes help [VERB]\n skimnotes version";
 static char *versionStr = "SkimConvert command-line client, version 1.0";
 
 static char *embedHelpStr = "skimconvert embed: embed Skim notes in a PDF\nUsage: skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n\nWrites PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
 static char *unembedHelpStr = "skimconvert unembed: converts annotations embedded in a PDF to Skim notes\nUsage: skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n\nConverts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
 static char *mergeHelpStr = "skimconvert merge: Merges two PDF files with attached Skim notes\nUsage: skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\nMerges IN_PDF_FILE_1 and IN_PDF_FILE_2 and Skim notes from their extended attributes and writes to OUT_PDF_FILE.\nWrites to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided.";
-static char *extractHelpStr = "skimconvert extract: Extracts part of a PDF with attached Skim notes\nUsage: skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1...]\n\nExtracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+static char *extractHelpStr = "skimconvert extract: Extracts part of a PDF with attached Skim notes\nUsage: skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\nExtracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
 static char *helpHelpStr = "skimconvert help: get help on the skimconvert tool\nUsage: skimconvert help [VERB]\n\nGet help on the verb VERB.";
 static char *versionHelpStr = "skimconvert version: get version of the skimconvert tool\nUsage: skimconvert version\n\nGet the version of the tool and exit.";
 
@@ -62,6 +62,8 @@ static char *versionHelpStr = "skimconvert version: get version of the skimconve
 
 #define RANGE_OPTION_STRING @"-range"
 #define PAGE_OPTION_STRING  @"-page"
+#define ODD_OPTION_STRING   @"-odd"
+#define EVEN_OPTION_STRING  @"-even"
 
 #define WRITE_OUT(msg)         fprintf(stdout, "%s\n", msg)
 #define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
@@ -320,7 +322,7 @@ int main (int argc, const char * argv[]) {
             
         } else if (action == SKNActionExtract) {
             
-            if ([outPath caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame) {
+            if ([outPath caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:ODD_OPTION_STRING] == NSOrderedSame || [outPath caseInsensitiveCompare:EVEN_OPTION_STRING] == NSOrderedSame) {
                 offset = 0;
                 outPath = inPath;
                 outURL = inURL;
@@ -332,13 +334,13 @@ int main (int argc, const char * argv[]) {
             NSUInteger pageCount = [pdfDoc pageCount];
             NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
             
-            if (argc < 5 + offset) {
+            if (argc < 4 + offset) {
                 [indexes addIndexesInRange:NSMakeRange(0, pageCount)];
             } else {
                 NSString *option = [args objectAtIndex:offset + 3];
                 
                 if ([option caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame) {
-                    NSInteger start = [[args objectAtIndex:offset + 4] intValue];
+                    NSInteger start = argc < 5 + offset ? 1 : [[args objectAtIndex:offset + 4] intValue];
                     NSInteger length = argc < 6 + offset ? (NSInteger)pageCount - start + 1 : [[args objectAtIndex:offset + 5] intValue];
                     if (start > 0 && length > 0)
                         [indexes addIndexesInRange:NSMakeRange(start - 1, length)];
@@ -349,6 +351,14 @@ int main (int argc, const char * argv[]) {
                         if (page > 0)
                             [indexes addIndex:page - 1];
                     }
+                } else if ([option caseInsensitiveCompare:ODD_OPTION_STRING] == NSOrderedSame) {
+                    NSUInteger i;
+                    for (i = 0; i < pageCount; i += 2)
+                        [indexes addIndex:i];
+                } else if ([option caseInsensitiveCompare:EVEN_OPTION_STRING] == NSOrderedSame) {
+                    NSUInteger i;
+                    for (i = 1; i < pageCount; i += 2)
+                        [indexes addIndex:i];
                 }
             }
             
