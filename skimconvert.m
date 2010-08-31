@@ -358,9 +358,11 @@ int main (int argc, const char * argv[]) {
                 } else if ([option caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame) {
                     NSInteger i;
                     for (i = offset + 4; i < argc; i++) {
-                        NSUInteger page = [[args objectAtIndex:i] intValue];
-                        if (page != 0)
-                            [indexes addIndex:page > 0 ? page - 1 : page + pageCount];
+                        NSInteger page = [[args objectAtIndex:i] intValue];
+                        if (page < 0)
+                            page += pageCount + 1;
+                        if (page > 0)
+                            [indexes addIndex:page - 1];
                     }
                 } else if ([option caseInsensitiveCompare:ODD_OPTION_STRING] == NSOrderedSame) {
                     NSUInteger i;
