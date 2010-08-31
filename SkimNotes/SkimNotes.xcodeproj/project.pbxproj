@@ -302,7 +302,8 @@
 				CE83E4251059A831007E3D28 /* ReleaseNotes.rtf */,
 				CEBA2B620E0567290000B2E6 /* Shared Classes */,
 				08FB77AEFE84172EC02AAC07 /* Framework Classes */,
-				CEBA2B610E0566E60000B2E6 /* Tool Classes */,
+				CEBA2B610E0566E60000B2E6 /* SkimNotes Tool Classes */,
+				CE4A4FDB122D79750095AE41 /* SkimConvert Tool Classes */,
 				CEDB9ABF0E2E9D2D0057FD09 /* Test App Classes */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Framework Resources */,
@@ -382,7 +383,15 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
-		CEBA2B610E0566E60000B2E6 /* Tool Classes */ = {
+		CE4A4FDB122D79750095AE41 /* SkimConvert Tool Classes */ = {
+			isa = PBXGroup;
+			children = (
+				CE1414221229B80300C9EBA0 /* skimconvert.m */,
+			);
+			name = "SkimConvert Tool Classes";
+			sourceTree = "<group>";
+		};
+		CEBA2B610E0566E60000B2E6 /* SkimNotes Tool Classes */ = {
 			isa = PBXGroup;
 			children = (
 				CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */,
@@ -391,9 +400,8 @@
 				CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */,
 				CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */,
 				CEBA2B5C0E0566DF0000B2E6 /* SKNAgentListenerProtocol.h */,
-				CE1414221229B80300C9EBA0 /* skimconvert.m */,
 			);
-			name = "Tool Classes";
+			name = "SkimNotes Tool Classes";
 			sourceTree = "<group>";
 		};
 		CEBA2B620E0567290000B2E6 /* Shared Classes */ = {
