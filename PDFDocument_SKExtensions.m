@@ -95,8 +95,7 @@
         if (catalog) {
             if(false == CGPDFDictionaryGetDictionary(catalog, "PageLabels", &labelsDict)) {
                 useSequential = YES;
-            } else {
-                CGPDFDictionaryGetArray(labelsDict, "Nums", &labelsArray)) {
+            } else if (CGPDFDictionaryGetArray(labelsDict, "Nums", &labelsArray)) {
                 size_t i = CGPDFArrayGetCount(labelsArray);
                 CGPDFInteger j = pageCount;
                 while (i > 0) {
