@@ -350,6 +350,8 @@ int main (int argc, const char * argv[]) {
                 
                 if ([option caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame) {
                     NSInteger start = argc < 5 + offset ? 1 : [[args objectAtIndex:offset + 4] intValue];
+                    if (start < 0)
+                        start += pageCount + 1;
                     NSInteger length = argc < 6 + offset ? (NSInteger)pageCount - start + 1 : [[args objectAtIndex:offset + 5] intValue];
                     if (start > 0 && length > 0)
                         [indexes addIndexesInRange:NSMakeRange(start - 1, length)];
@@ -357,8 +359,8 @@ int main (int argc, const char * argv[]) {
                     NSInteger i;
                     for (i = offset + 4; i < argc; i++) {
                         NSUInteger page = [[args objectAtIndex:i] intValue];
-                        if (page > 0)
-                            [indexes addIndex:page - 1];
+                        if (page != 0)
+                            [indexes addIndex:page > 0 ? page - 1 : page + pageCount];
                     }
                 } else if ([option caseInsensitiveCompare:ODD_OPTION_STRING] == NSOrderedSame) {
                     NSUInteger i;
