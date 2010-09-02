@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'skimconvert' target in the 'SkimNotes' project.
+// Prefix header for all source files of the 'skimpdf' target in the 'SkimNotes' project.
 //
 
 #ifdef __OBJC__
