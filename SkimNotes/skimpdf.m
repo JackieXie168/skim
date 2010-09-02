@@ -1,5 +1,5 @@
 //
-//  skimconvert.m
+//  skimpdf.m
 //  SkimNotes
 //
 //  Created by Christiaan Hofman on 08/28/10.
@@ -43,15 +43,15 @@
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
 
-static char *usageStr = "Usage:\n skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n skimnotes help [VERB]\n skimnotes version";
+static char *usageStr = "Usage:\n skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimpdf merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimpdf extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n skimnotes help [VERB]\n skimnotes version";
 static char *versionStr = "SkimConvert command-line client, version 1.0";
 
-static char *embedHelpStr = "skimconvert embed: embed Skim notes in a PDF\nUsage: skimconvert embed IN_PDF_FILE [OUT_PDF_FILE]\n\nWrites PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
-static char *unembedHelpStr = "skimconvert unembed: converts annotations embedded in a PDF to Skim notes\nUsage: skimconvert unembed IN_PDF_FILE [OUT_PDF_FILE]\n\nConverts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
-static char *mergeHelpStr = "skimconvert merge: Merges two PDF files with attached Skim notes\nUsage: skimconvert merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\nMerges IN_PDF_FILE_1 and IN_PDF_FILE_2 and Skim notes from their extended attributes and writes to OUT_PDF_FILE.\nWrites to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided.";
-static char *extractHelpStr = "skimconvert extract: Extracts part of a PDF with attached Skim notes\nUsage: skimconvert extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\nExtracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
-static char *helpHelpStr = "skimconvert help: get help on the skimconvert tool\nUsage: skimconvert help [VERB]\n\nGet help on the verb VERB.";
-static char *versionHelpStr = "skimconvert version: get version of the skimconvert tool\nUsage: skimconvert version\n\nGet the version of the tool and exit.";
+static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\nUsage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\nWrites PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+static char *unembedHelpStr = "skimpdf unembed: converts annotations embedded in a PDF to Skim notes\nUsage: skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n\nConverts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+static char *mergeHelpStr = "skimpdf merge: Merges two PDF files with attached Skim notes\nUsage: skimpdf merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\nMerges IN_PDF_FILE_1 and IN_PDF_FILE_2 and Skim notes from their extended attributes and writes to OUT_PDF_FILE.\nWrites to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided.";
+static char *extractHelpStr = "skimpdf extract: Extracts part of a PDF with attached Skim notes\nUsage: skimpdf extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\nExtracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+static char *helpHelpStr = "skimpdf help: get help on the skimpdf tool\nUsage: skimpdf help [VERB]\n\nGet help on the verb VERB.";
+static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\nUsage: skimpdf version\n\nGet the version of the tool and exit.";
 
 #define ACTION_EMBED_STRING     @"embed"
 #define ACTION_UNEMBED_STRING   @"unembed"
