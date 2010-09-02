@@ -127,7 +127,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
 
 - (void)setDocument:(PDFDocument *)document {
     if ([self document])
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:PDFViewPageChangedNotification object:[self document]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:PDFDocumentDidUnlockNotification object:[self document]];
     [super setDocument:document];
     [self reloadPagePopUpButton];
     if (document && [document isLocked])
