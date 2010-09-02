@@ -40,6 +40,7 @@
 #import "NSScrollView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
@@ -165,7 +166,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)reloadPagePopUpButton {
-    PDFDocument *pdfDoc = [self document];
+    NSArray *labels = [[self document] pageLabels];
     NSUInteger i, count = [pagePopUpButton numberOfItems];
     NSString *label;
     CGFloat width, maxWidth = 0.0;
@@ -176,9 +177,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     while (count--)
         [pagePopUpButton removeItemAtIndex:count];
     
-    if (count = [pdfDoc pageCount]) {
+    if (count = [labels count]) {
         for (i = 0; i < count; i++) {
-            label = [[pdfDoc pageAtIndex:i] displayLabel];
+            label = [labels objectAtIndex:i];
             width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
             if (width > maxWidth) {
                 maxWidth = width;
@@ -189,7 +190,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
-        [pagePopUpButton selectItemAtIndex:[pdfDoc indexForPage:[self currentPage]]];
+        [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
     }
 }
 
