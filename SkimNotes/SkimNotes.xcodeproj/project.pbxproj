@@ -166,7 +166,7 @@
 		32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SkimNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE14113F1229B64D00C9EBA0 /* skimconvert */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimconvert; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE14113F1229B64D00C9EBA0 /* skimpdf */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimpdf; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1414161229B7A000C9EBA0 /* SkimPDF-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimPDF-Tool.xcconfig"; sourceTree = "<group>"; };
 		CE1414221229B80300C9EBA0 /* skimpdf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = skimpdf.m; sourceTree = "<group>"; };
 		CE1414251229B86500C9EBA0 /* SkimPDF_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimPDF_Tool_Prefix.pch; sourceTree = "<group>"; };
@@ -289,7 +289,7 @@
 				CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */,
 				CEBA2B550E0566B00000B2E6 /* skimnotes */,
 				CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */,
-				CE14113F1229B64D00C9EBA0 /* skimconvert */,
+				CE14113F1229B64D00C9EBA0 /* skimpdf */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -515,7 +515,7 @@
 			);
 			name = "SkimPDF Tool";
 			productName = "SkimConvert Tool";
-			productReference = CE14113F1229B64D00C9EBA0 /* skimconvert */;
+			productReference = CE14113F1229B64D00C9EBA0 /* skimpdf */;
 			productType = "com.apple.product-type.tool";
 		};
 		CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */ = {
