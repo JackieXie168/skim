@@ -298,7 +298,7 @@
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		CEFE71951129AAA30018CD74 /* ServicesMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFE71941129AAA30018CD74 /* ServicesMenu.strings */; };
 		CEFF22F711412E51008DB4DC /* DownloadsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFF22F611412E51008DB4DC /* DownloadsWindow.xib */; };
-		CEFF6B9D122B1495008CDE73 /* skimconvert in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1411451229B66B00C9EBA0 /* skimconvert */; };
+		CEFF6B9D122B1495008CDE73 /* skimpdf in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1411451229B66B00C9EBA0 /* skimpdf */; };
 		F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* SKSnapshotPDFView.m */; };
 		F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */; };
 		F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKConversionProgressController.m */; };
@@ -468,7 +468,7 @@
 			dstSubfolderSpec = 12;
 			files = (
 				CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */,
-				CEFF6B9D122B1495008CDE73 /* skimconvert in Copy Files: Shared Support */,
+				CEFF6B9D122B1495008CDE73 /* skimpdf in Copy Files: Shared Support */,
 				CEE22EA30BFB8672002B746B /* displayline in Copy Files: Shared Support */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */,
 			);
@@ -1860,7 +1860,7 @@
 				CE7DC7320E09286500D6D76D /* SkimNotes.framework */,
 				CEA5F5440E2CED1100F65088 /* SkimNotesBase.framework */,
 				CE7DC7340E09286500D6D76D /* skimnotes */,
-				CE1411451229B66B00C9EBA0 /* skimconvert */,
+				CE1411451229B66B00C9EBA0 /* skimpdf */,
 				CEDB9AE40E2E9EA50057FD09 /* SkimNotesTest.app */,
 			);
 			name = Products;
@@ -2129,10 +2129,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		CE1411451229B66B00C9EBA0 /* skimconvert */ = {
+		CE1411451229B66B00C9EBA0 /* skimpdf */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
-			path = skimconvert;
+			path = skimpdf;
 			remoteRef = CE1411441229B66B00C9EBA0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
