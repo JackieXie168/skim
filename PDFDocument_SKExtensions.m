@@ -40,7 +40,6 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSNumber_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
-#import "SKStringConstants.h"
 
 
 @interface PDFDocument (SKApplePrivateDeclarations)
@@ -86,7 +85,7 @@
 - (NSArray *)pageLabels {
     NSUInteger pageCount = [self pageCount];
     NSMutableArray *pageLabels = [NSMutableArray array];
-    BOOL useSequential = [[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey];
+    BOOL useSequential = [[self pageClass] usesSequentialPageNumbering];
     if (useSequential == NO && [self respondsToSelector:@selector(documentRef)]) {
         CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
         CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
