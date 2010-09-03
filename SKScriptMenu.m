@@ -258,7 +258,7 @@ static BOOL isFolderUTI(NSString *theUTI) {
             NSBeep();
         } else {
             NSAppleEventDescriptor *result = [script executeAndReturnError:&errorDictionary];
-            if (result == nil) {
+            if (result == nil && [[errorDictionary objectForKey:NSAppleScriptErrorNumber] integerValue] != -128) {
                 NSLog(@"AppleScript file '%@' failed to execute: %@", scriptFilename, errorDictionary);
                 NSBeep();
             }
