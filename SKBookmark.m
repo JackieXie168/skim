@@ -88,7 +88,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingBookmarkType, scriptingFile, scriptingParent;
+@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingBookmarkType, scriptingFile, scriptingParent, entireContents;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -225,6 +225,15 @@ static Class SKBookmarkClass = Nil;
 - (SKBookmark *)scriptingParent {
     return [parent parent] == nil ? nil : parent;
 };
+
+- (NSArray *)entireContents {
+    NSMutableArray *contents = [NSMutableArray array];
+    for (SKBookmark *bookmark in [self children]) {
+        [contents addObject:bookmark];
+        [contents addObjectsFromArray:[bookmark entireContents]];
+    }
+    return contents;
+}
 
 - (NSArray *)bookmarks {
     return [self children];

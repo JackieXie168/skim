@@ -92,6 +92,7 @@ enum {
 @property (nonatomic, readonly) FourCharCode scriptingBookmarkType;
 @property (nonatomic, readonly) NSURL *scriptingFile;
 @property (nonatomic, readonly) SKBookmark *scriptingParent;
+@property (nonatomic, readonly) NSArray *entireContents;
 
 - (NSArray *)bookmarks;
 - (void)insertInBookmarks:(SKBookmark *)bookmark;
