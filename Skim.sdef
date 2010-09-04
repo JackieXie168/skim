@@ -1135,6 +1135,11 @@
                 description="The children of the bookmark.">
                 <cocoa key="bookmarks"/>
             </element>
+            <property name="entire contents" code="ects" access="r"
+                description="The entire contents of the bookmark, including the contents of its children">
+                <type type="bookmark" list="yes"/>
+                <cocoa key="entireContents"/>
+            </property>
             <property name="name" code="pnam" type="text"
                 description="The name for the bookmark.">
                 <cocoa key="label"/>
