@@ -1924,7 +1924,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self updatePageLabelsAndOutlineForExpansionState:[self expansionStateForOutline:[[pdfView document] outlineRoot]]];
 }
 
-- (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {log_method();
+- (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {
     [[self document] savePasswordInKeychain:password];
 }
 
