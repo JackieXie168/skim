@@ -88,10 +88,11 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
     NSMutableString *string = [NSMutableString string];
     NSUInteger letter, number = [self unsignedIntegerValue];
     
-    while (number > 0) {
-        letter = number % 26;
-        number /= 26;
-        [string insertString:[NSString stringWithFormat:@"%C", 'a' + letter - 1] atIndex:0];
+    if (number > 0) {
+        letter = (number - 1) % 26;
+        number = ((number - 1) / 26) + 1;
+        while (number-- > 0)
+            [string appendFormat:@"%C", 'a' + letter];
     }
     return string;
 }
@@ -100,10 +101,11 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
     NSMutableString *string = [NSMutableString string];
     NSUInteger letter, number = [self unsignedIntegerValue];
     
-    while (number > 0) {
-        letter = number % 24;
-        number /= 24;
-        [string insertString:[NSString stringWithFormat:@"%C", ALPHA_CHARACTER + letter - 1] atIndex:0];
+    if (number > 0) {
+        letter = (number - 1) % 24;
+        number = ((number - 1) / 24) + 1;
+        while (number-- > 0)
+            [string appendFormat:@"%C", ALPHA_CHARACTER + letter];
     }
     return string;
 }
