@@ -255,14 +255,17 @@ static Class SKBookmarkClass = Nil;
     if ([key isEqualToString:@"bookmarks"]) {
         SKBookmark *bookmark = nil;
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
-        if (type == 0 && ([contentsValue isKindOfClass:[NSURL class]] || [properties objectForKey:@"scriptingFile"]))
-            type = SKScriptingBookmarkTypeBookmark;
+        if (type == 0) {
+            if (contentsValue || [properties objectForKey:@"scriptingFile"])
+                type = SKScriptingBookmarkTypeBookmark;
+            else if ([properties objectForKey:@"label"])
+                type = SKScriptingBookmarkTypeFolder;
+        }
         switch (type) {
             case SKScriptingBookmarkTypeBookmark:
             {
-                NSString *aPath = [[properties objectForKey:@"scriptingFile"] path];
-                if (aPath == nil && [contentsValue isKindOfClass:[NSURL class]])
-                    aPath = [contentsValue path];
+                NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
+                NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
                 NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
                 if (aPath == nil) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
@@ -287,7 +290,7 @@ static Class SKBookmarkClass = Nil;
                 break;
             default:
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
-                [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark require a supported bookmark type."];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark requires a supported bookmark type."];
                 break;
         }
         return bookmark;
