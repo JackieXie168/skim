@@ -255,7 +255,7 @@ static Class SKBookmarkClass = Nil;
     if ([key isEqualToString:@"bookmarks"]) {
         SKBookmark *bookmark = nil;
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
-        if (type == 0 && [contentsValue isKindOfClass:[NSURL class]])
+        if (type == 0 && ([contentsValue isKindOfClass:[NSURL class]] || [properties objectForKey:@"scriptingFile"]))
             type = SKScriptingBookmarkTypeBookmark;
         switch (type) {
             case SKScriptingBookmarkTypeBookmark:
