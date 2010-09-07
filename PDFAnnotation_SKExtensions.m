@@ -324,6 +324,14 @@ enum {
     return properties;
 }
 
+- (void)setScriptingProperties:(NSDictionary *)properties {
+    [super setScriptingProperties:properties];
+    // set the borderStyle afterwards, as this may have been changed when setting the dash pattern
+    id style = [properties objectForKey:SKPDFAnnotationScriptingBorderStyleKey];
+    if ([style respondsToSelector:@selector(integerValue)] && [properties objectForKey:SKNPDFAnnotationDashPatternKey])
+        [self setScriptingBorderStyle:[style integerValue]];
+}
+
 - (FourCharCode)scriptingNoteType {
     return 0;
 }
