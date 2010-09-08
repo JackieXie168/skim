@@ -260,15 +260,24 @@ static Class SKBookmarkClass = Nil;
                 NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
                 NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
                 NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
+                NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+                Class docClass;
                 if (aPath == nil) {
-                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
-                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a path."];
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
-                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing path."];
-                } else {
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a file."];
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
+                } else if (docClass = [dc documentClassForType:[dc typeForContentsOfURL:aURL error:NULL]]) {
                     NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
-                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:(aPageNumber > 0 ? aPageNumber - 1 : 0) label:aLabel];
+                    if (aPageNumber > 0)
+                        aPageNumber--;
+                    else
+                        aPageNumber = [docClass instancesRespondToSelector:@selector(mainWindowController)] ? 0 : NSNotFound;
+                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel];
+                } else {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"Unsupported file type for new bookmark."];
                 }
                 break;
             }
