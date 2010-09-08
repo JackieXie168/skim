@@ -226,14 +226,7 @@ static Class SKBookmarkClass = Nil;
     return [parent parent] == nil ? nil : parent;
 };
 
-- (NSArray *)entireContents {
-    NSMutableArray *contents = [NSMutableArray array];
-    for (SKBookmark *bookmark in [self children]) {
-        [contents addObject:bookmark];
-        [contents addObjectsFromArray:[bookmark entireContents]];
-    }
-    return contents;
-}
+- (NSArray *)entireContents { return nil; }
 
 - (NSArray *)bookmarks {
     return [self children];
@@ -253,7 +246,7 @@ static Class SKBookmarkClass = Nil;
 
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"bookmarks"]) {
-        SKBookmark *bookmark = nil;
+        SKBookmark *bookmark = nil;NSLog(@"%@ %@",[contentsValue class],contentsValue);
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
         if (type == 0) {
             if (contentsValue || [properties objectForKey:@"scriptingFile"])
@@ -577,6 +570,15 @@ static Class SKBookmarkClass = Nil;
 
 - (FourCharCode)scriptingBookmarkType {
     return SKScriptingBookmarkTypeFolder;
+}
+
+- (NSArray *)entireContents {
+    NSMutableArray *contents = [NSMutableArray array];
+    for (SKBookmark *bookmark in [self children]) {
+        [contents addObject:bookmark];
+        [contents addObjectsFromArray:[bookmark entireContents]];
+    }
+    return contents;
 }
 
 @end
