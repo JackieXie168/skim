@@ -246,7 +246,7 @@ static Class SKBookmarkClass = Nil;
 
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"bookmarks"]) {
-        SKBookmark *bookmark = nil;NSLog(@"%@ %@",[contentsValue class],contentsValue);
+        SKBookmark *bookmark = nil;
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
         if (type == 0) {
             if (contentsValue || [properties objectForKey:@"scriptingFile"])
