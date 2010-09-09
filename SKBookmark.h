@@ -95,7 +95,6 @@ enum {
 @property (nonatomic, readonly) NSArray *entireContents;
 
 - (NSArray *)bookmarks;
-- (void)insertInBookmarks:(SKBookmark *)bookmark;
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
 

@@ -196,7 +196,6 @@ static Class SKBookmarkClass = Nil;
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
-- (void)insertInChildren:(SKBookmark *)child {}
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
 
@@ -232,10 +231,6 @@ static Class SKBookmarkClass = Nil;
 
 - (NSArray *)bookmarks {
     return [self children];
-}
-
-- (void)insertInBookmarks:(SKBookmark *)bookmark {
-    return [self insertObject:bookmark inChildrenAtIndex:[self countOfChildren]];
 }
 
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {
@@ -577,10 +572,6 @@ static Class SKBookmarkClass = Nil;
 
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex {
     return [children objectAtIndex:anIndex];
-}
-
-- (void)insertInChildren:(SKBookmark *)child {
-    [self insertObject:child inChildrenAtIndex:[children count]];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {

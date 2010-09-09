@@ -1860,7 +1860,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return [[self mainWindowController] notes];
 }
 
-- (void)insertInNotes:(PDFAnnotation *)newNote {
+- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex {
     PDFPage *page = [newNote page];
     if (page && [[page annotations] containsObject:newNote] == NO) {
         SKPDFView *pdfView = [self pdfView];
@@ -1870,10 +1870,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     } else {
         [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
     }
-}
-
-- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex {
-    [self insertInNotes:newNote];
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {

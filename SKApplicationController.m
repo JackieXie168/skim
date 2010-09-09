@@ -469,10 +469,6 @@
     return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] bookmarks];
 }
 
-- (void)insertInBookmarks:(SKBookmark *)bookmark {
-    [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] insertInBookmarks:bookmark];
-}
-
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {
     [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] insertObject:bookmark inBookmarksAtIndex:anIndex];
 }

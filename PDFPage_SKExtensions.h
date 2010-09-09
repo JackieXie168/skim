@@ -93,7 +93,6 @@ extern NSString *SKPDFPageActionRotate;
 - (NSArray *)lineBoundsAsQDRects;
 - (NSTextStorage *)richText;
 - (NSArray *)notes;
-- (void)insertInNotes:(id)newNote;
 - (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)index;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)index;
 
