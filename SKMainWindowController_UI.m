@@ -1142,7 +1142,7 @@
     NSError *error = nil;
     NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
     id document = nil;
-    if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKMainDocument class]) {
+    if ([[sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] isPDFDocument]) {
         if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
             NSUInteger pageIndex = [action pageIndex];
             if (pageIndex < [[document pdfDocument] pageCount]) {

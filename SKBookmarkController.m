@@ -252,7 +252,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
                 }
             } else if (docClass = [dc documentClassForType:fileType]) {
-                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:(docClass == [SKMainDocument class] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
+                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
                     [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                 }
             }
@@ -381,7 +381,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
         if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
             (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
-            [document respondsToSelector:@selector(mainWindowController)] &&
+            [document isPDFDocument] &&
             [bookmark pageIndex] != NSNotFound)
             [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }

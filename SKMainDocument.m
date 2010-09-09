@@ -159,6 +159,7 @@ static char SKMainDocumentDefaultsObservationContext;
 @synthesize mainWindowController;
 @dynamic pdfDocument, pdfView, fileIDStrings, synchronizer, snapshots, tags, rating, currentPage, activeNote, richText, selectionSpecifier, selectionQDRect,selectionPage, pdfViewSettings;
 
++ (BOOL)isPDFDocument { return YES; }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

@@ -56,6 +56,8 @@ typedef NSInteger SKInteractionMode;
 
 @interface NSDocument (SKExtensions)
 
++ (BOOL)isPDFDocument;
+
 - (SKInteractionMode)systemInteractionMode;
 
 #pragma mark Document Setup
