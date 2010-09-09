@@ -778,7 +778,7 @@
             <cocoa class="SKApplication"/>
             <element type="bookmark"
                 description="The top level bookmarks.">
-                <cocoa key="bookmarks"/>
+                <cocoa key="bookmarks" insert-at-beginning="no"/>
             </element>
             <element type="TeX line" access="r" hidden="yes"
                 description="Lines in a TeX source file.">
@@ -954,7 +954,7 @@
             <cocoa class="PDFPage"/>
             <element type="note"
                 description="Notes in the page">
-                <cocoa key="notes"/>
+                <cocoa key="notes" insert-at-beginning="no"/>
             </element>
             <element type="TeX line" access="r" hidden="yes"
                 description="Lines in a TeX source file.">
@@ -1133,7 +1133,7 @@
             <cocoa class="SKBookmark"/>
             <element type="bookmark"
                 description="The children of the bookmark.">
-                <cocoa key="bookmarks"/>
+                <cocoa key="bookmarks" insert-at-beginning="no"/>
             </element>
             <property name="entire contents" code="ects" access="r"
                 description="The entire contents of the bookmark, including the contents of its children">
