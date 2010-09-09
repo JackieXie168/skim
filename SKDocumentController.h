@@ -95,6 +95,8 @@ NSString *SKDocumentControllerDocumentKey;
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
 
+- (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
+
 - (NSArray *)customExportTemplateFiles;
 - (NSArray *)customExportTemplateFilesResetting;
 

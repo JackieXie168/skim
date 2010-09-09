@@ -178,6 +178,10 @@ NSString *SKDocumentControllerDocumentKey = @"document";
     return type;
 }
 
+- (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL {
+    return [self documentClassForType:[self typeForContentsOfURL:inAbsoluteURL error:NULL]];
+}
+
 static NSData *convertTIFFDataToPDF(NSData *tiffData)
 {
     // this should accept any image data types we're likely to run across, but PICT returns a zero size image
@@ -326,8 +330,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         while (path = [dirEnum nextObject]) {
             NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
-            NSString *aType = [self typeForContentsOfURL:url error:NULL];
-            if ([self documentClassForType:aType])
+            if ([self documentClassForContentsOfURL:url])
                 doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error] ?: doc;
         }
         
