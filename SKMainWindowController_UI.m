@@ -71,6 +71,7 @@
 #import "NSColor_SKExtensions.h"
 #import "SKSplitView.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKDocumentController.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1140,9 +1141,9 @@
 - (void)PDFViewOpenPDF:(PDFView *)sender forRemoteGoToAction:(PDFActionRemoteGoTo *)action {
     NSURL *fileURL = [action URL];
     NSError *error = nil;
-    NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
+    SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
     id document = nil;
-    if ([[sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] isPDFDocument]) {
+    if ([[sdc documentClassForContentsOfURL:fileURL] isPDFDocument]) {
         if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
             NSUInteger pageIndex = [action pageIndex];
             if (pageIndex < [[document pdfDocument] pageCount]) {

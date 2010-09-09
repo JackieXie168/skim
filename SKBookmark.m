@@ -41,6 +41,7 @@
 #import "NSImage_SKExtensions.h"
 #import "SKBookmarkController.h"
 #import "NSDocument_SKExtensions.h"
+#import "SKDocumentController.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -261,7 +262,6 @@ static Class SKBookmarkClass = Nil;
                 NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
                 NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
                 NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
-                NSDocumentController *dc = [NSDocumentController sharedDocumentController];
                 Class docClass;
                 if (aPath == nil) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
@@ -269,7 +269,7 @@ static Class SKBookmarkClass = Nil;
                 } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
-                } else if (docClass = [dc documentClassForType:[dc typeForContentsOfURL:aURL error:NULL]]) {
+                } else if (docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL]) {
                     NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
                     if (aPageNumber > 0)
                         aPageNumber--;
