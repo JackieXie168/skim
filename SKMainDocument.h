@@ -122,7 +122,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 @property (nonatomic, readonly) double rating;
 
 - (NSArray *)notes;
-- (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
 

@@ -64,7 +64,6 @@
 @property (nonatomic) FourCharCode defaultStartLineStyle, defaultEndLineStyle, defaultIconType;
 
 - (NSArray *)bookmarks;
-- (void)insertInBookmarks:(SKBookmark *)bookmark;
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
 

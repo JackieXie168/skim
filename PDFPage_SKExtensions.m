@@ -453,17 +453,13 @@ static BOOL usesSequentialPageNumbering = NO;
     return notes;
 }
 
-- (void)insertInNotes:(id)newNote {
+- (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
     if ([self isNotesPage] == NO) {
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
         [pdfView addAnnotation:newNote toPage:self];
         [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
     }
-}
-
-- (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
-    [self insertInNotes:newNote];
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
