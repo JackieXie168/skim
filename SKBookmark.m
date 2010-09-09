@@ -40,6 +40,7 @@
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
 #import "SKBookmarkController.h"
+#import "NSDocument_SKExtensions.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -273,7 +274,7 @@ static Class SKBookmarkClass = Nil;
                     if (aPageNumber > 0)
                         aPageNumber--;
                     else
-                        aPageNumber = [docClass instancesRespondToSelector:@selector(mainWindowController)] ? 0 : NSNotFound;
+                        aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
                     bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel];
                 } else {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];

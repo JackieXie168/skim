@@ -57,6 +57,8 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 @implementation NSDocument (SKExtensions)
 
++ (BOOL)isPDFDocument { return NO; }
+
 - (SKInteractionMode)systemInteractionMode { return SKNormalMode; }
 
 #pragma mark Document Setup
