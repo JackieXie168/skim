@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKAnimatedBorderlessWindow : NSWindow
+@interface SKAnimatedBorderlessWindow : NSPanel
 
 - (id)initWithContentRect:(NSRect)contentRect;
 

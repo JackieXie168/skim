@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKBorderlessImageWindow : NSWindow {
+@interface SKBorderlessImageWindow : NSPanel {
 }
 
 - (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image;
