@@ -233,6 +233,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
+        [self setHidesOnDeactivate:NO];
         
         toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
         [[self contentView] addSubview:toolTipView];
