@@ -57,7 +57,7 @@
 @end
 
 
-@interface SKNavigationToolTipWindow : NSWindow {
+@interface SKNavigationToolTipWindow : NSPanel {
     SKNavigationToolTipView *toolTipView;
     NSView *view;
 }
