@@ -55,6 +55,7 @@
 		[self setOpaque:NO];
         [self setAlphaValue:[self defaultAlphaValue]];
         [self setReleasedWhenClosed:NO];
+        [self setHidesOnDeactivate:NO];
     }
     return self;
 }
