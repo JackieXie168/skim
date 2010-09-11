@@ -107,6 +107,16 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [self setHasWindow:YES];
 }
 
+- (void)willRemove {
+    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]]; }
+    @catch (id e) {}
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
+        [[self delegate] snapshotControllerWindowWillClose:self];
+    delegate = nil;
+    // this is necessary to break a retain loop between the popup and its parent
+	[NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton]) accessibilitySetOverrideValue:nil forAttribute:NSAccessibilityParentAttribute];
+}
+
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
     return [NSString stringWithFormat:@"%@ %C %@", displayName, EM_DASH_CHARACTER, [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self pageLabel]]];
 }
@@ -172,9 +182,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]];
-    if (miniaturizing == NO && [[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
-        [[self delegate] snapshotControllerWindowWillClose:self];
+    if (miniaturizing == NO)
+        [self willRemove];
     if ([[self window] isKeyWindow])
         [[[[self document] mainWindowController] window] makeKeyWindow];
     else if ([[self window] isMainWindow])
@@ -269,6 +278,13 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (BOOL)isPageVisible:(PDFPage *)page {
     return [[page document] isEqual:[pdfView document]] && [[pdfView visiblePages] containsObject:page];
+}
+
+- (void)remove {
+    if ([[self window] isVisible])
+        [[self window] orderOut:nil];
+    else
+        [self willRemove];
 }
 
 #pragma mark Acessors

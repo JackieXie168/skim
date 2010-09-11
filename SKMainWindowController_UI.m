@@ -423,8 +423,7 @@
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSArray *controllers = [[rightSideController.snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
-        [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
-        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObjectsInArray:controllers];
+        [controllers makeObjectsPerformSelector:@selector(remove)];
     }
 }
 
@@ -900,9 +899,7 @@
 }
 
 - (void)deleteSnapshot:(id)sender {
-    SKSnapshotWindowController *controller = [sender representedObject];
-    [[controller window] orderOut:nil];
-    [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
+    [[sender representedObject] remove];
 }
 
 - (void)showSnapshot:(id)sender {

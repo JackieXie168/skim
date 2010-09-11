@@ -80,6 +80,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (void)miniaturize;
 - (void)deminiaturize;
 
+- (void)remove;
+
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
