@@ -2053,11 +2053,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
 }
 
-- (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller {
+- (void)snapshotControllerRemove:(SKSnapshotWindowController *)controller {
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
 }
 
-- (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller {
+- (void)snapshotControllerChanged:(SKSnapshotWindowController *)controller {
     [self snapshotNeedsUpdate:controller];
 }
 
