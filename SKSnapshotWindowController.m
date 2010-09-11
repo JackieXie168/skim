@@ -107,11 +107,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [self setHasWindow:YES];
 }
 
-- (void)willRemove {
+- (void)doRemove {
     @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]]; }
     @catch (id e) {}
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
-        [[self delegate] snapshotControllerWindowWillClose:self];
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerRemove:)])
+        [[self delegate] snapshotControllerRemove:self];
     delegate = nil;
     // this is necessary to break a retain loop between the popup and its parent
 	[NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton]) accessibilitySetOverrideValue:nil forAttribute:NSAccessibilityParentAttribute];
@@ -151,15 +151,15 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerViewDidChange:)]) {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerChanged:)]) {
         NSNotification *note = [NSNotification notificationWithName:SKSnapshotViewChangedNotification object:self];
         [[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnName forModes:nil];
     }
 }
 
 - (void)handleViewChangedNotification:(NSNotification *)notification {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerViewDidChange:)])
-        [[self delegate] snapshotControllerViewDidChange:self];
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerChanged:)])
+        [[self delegate] snapshotControllerChanged:self];
 }
 
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification {
@@ -183,7 +183,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)windowWillClose:(NSNotification *)notification {
     if (miniaturizing == NO)
-        [self willRemove];
+        [self doRemove];
     if ([[self window] isKeyWindow])
         [[[[self document] mainWindowController] window] makeKeyWindow];
     else if ([[self window] isMainWindow])
@@ -284,7 +284,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     if ([[self window] isVisible])
         [[self window] orderOut:nil];
     else
-        [self willRemove];
+        [self doRemove];
 }
 
 #pragma mark Acessors

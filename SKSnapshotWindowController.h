@@ -99,8 +99,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @optional
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerRemove:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerChanged:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller;
 
