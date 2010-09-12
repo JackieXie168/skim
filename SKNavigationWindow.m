@@ -235,22 +235,9 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:NO];
         
-        toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
-        [[self contentView] addSubview:toolTipView];
+        [self setContentView:[[[SKNavigationToolTipView alloc] init] autorelease]];
     }
     return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
-        toolTipView = [decoder decodeObjectForKey:@"toolTipView"];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeConditionalObject:toolTipView forKey:@"toolTipView"];
 }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
@@ -260,11 +247,11 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)showToolTip:(NSString *)toolTip forView:(NSView *)aView {
     [view release];
     view = [aView retain];
-    [toolTipView setStringValue:toolTip];
-    [toolTipView sizeToFit];
-    NSRect newFrame = [self frameRectForContentRect:[toolTipView frame]];
+    [[self contentView] setStringValue:toolTip];
+    NSRect newFrame;
     NSRect viewRect = [view convertRect:[view bounds] toView:nil];
     viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
+    newFrame.size = [[self contentView] fitSize];
     newFrame.origin = NSMakePoint(ceil(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
     [self setFrame:newFrame display:YES];
     [self setLevel:[[view window] level]];
@@ -334,11 +321,9 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 
-- (void)sizeToFit {
-    NSSize size = [[self attributedStringValue] size];
-    size.width = ceil(size.width + 2 * LABEL_TEXT_MARGIN);
-    size.height += 2 * LABEL_TEXT_MARGIN;
-    [self setFrameSize:size];
+- (NSSize)fitSize {
+    NSSize stringSize = [[self attributedStringValue] size];
+    return NSMakeSize(ceil(stringSize.width + 2 * LABEL_TEXT_MARGIN), ceil(stringSize.height + 2 * LABEL_TEXT_MARGIN));
 }
 
 - (void)drawRect:(NSRect)rect {
