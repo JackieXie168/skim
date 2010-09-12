@@ -423,7 +423,7 @@
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSArray *controllers = [[rightSideController.snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
-        [controllers makeObjectsPerformSelector:@selector(remove)];
+        [controllers makeObjectsPerformSelector:@selector(close)];
     }
 }
 
@@ -899,7 +899,7 @@
 }
 
 - (void)deleteSnapshot:(id)sender {
-    [[sender representedObject] remove];
+    [[sender representedObject] close];
 }
 
 - (void)showSnapshot:(id)sender {

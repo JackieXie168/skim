@@ -107,16 +107,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [self setHasWindow:YES];
 }
 
-- (void)doRemove {
-    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]]; }
-    @catch (id e) {}
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerRemove:)])
-        [[self delegate] snapshotControllerRemove:self];
-    delegate = nil;
-    // this is necessary to break a retain loop between the popup and its parent
-	[NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton]) accessibilitySetOverrideValue:nil forAttribute:NSAccessibilityParentAttribute];
-}
-
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
     return [NSString stringWithFormat:@"%@ %C %@", displayName, EM_DASH_CHARACTER, [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self pageLabel]]];
 }
@@ -151,15 +141,15 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerChanged:)]) {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidChange:)]) {
         NSNotification *note = [NSNotification notificationWithName:SKSnapshotViewChangedNotification object:self];
         [[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnName forModes:nil];
     }
 }
 
 - (void)handleViewChangedNotification:(NSNotification *)notification {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerChanged:)])
-        [[self delegate] snapshotControllerChanged:self];
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidChange:)])
+        [[self delegate] snapshotControllerDidChange:self];
 }
 
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification {
@@ -182,8 +172,13 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    if (miniaturizing == NO)
-        [self doRemove];
+    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKPageBackgroundColorKey, nil]]; }
+    @catch (id e) {}
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerWillClose:)])
+        [[self delegate] snapshotControllerWillClose:self];
+    [self setDelegate:nil];
+    // this is necessary to break a retain loop between the popup and its parent
+	[NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton]) accessibilitySetOverrideValue:nil forAttribute:NSAccessibilityParentAttribute];
     if ([[self window] isKeyWindow])
         [[[[self document] mainWindowController] window] makeKeyWindow];
     else if ([[self window] isMainWindow])
@@ -278,13 +273,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (BOOL)isPageVisible:(PDFPage *)page {
     return [[page document] isEqual:[pdfView document]] && [[pdfView visiblePages] containsObject:page];
-}
-
-- (void)remove {
-    if ([[self window] isVisible])
-        [[self window] orderOut:nil];
-    else
-        [self doRemove];
 }
 
 #pragma mark Acessors
@@ -492,7 +480,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)miniaturize {
-    miniaturizing = YES;
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerTargetRectForMiniaturize:)]) {
         NSRect startRect, endRect, dockRect = [[self delegate] snapshotControllerTargetRectForMiniaturize:self];
         
@@ -509,7 +496,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     } else {
         [[self window] orderOut:self];
     }
-    miniaturizing = NO;
     [self setHasWindow:NO];
 }
 
