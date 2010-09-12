@@ -58,7 +58,6 @@
 
 
 @interface SKNavigationToolTipWindow : NSPanel {
-    SKNavigationToolTipView *toolTipView;
     NSView *view;
 }
 + (id)sharedToolTipWindow;
@@ -71,7 +70,7 @@
 }
 @property (nonatomic, retain) NSString *stringValue;
 @property (nonatomic, readonly) NSAttributedString *attributedStringValue;
-- (void)sizeToFit;
+@property (nonatomic, readonly) NSSize fitSize;
 @end
 
 
