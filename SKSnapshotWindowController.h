@@ -49,7 +49,6 @@ extern NSString *SKSnapshotCurrentSetupKey;
     id <SKSnapshotWindowControllerDelegate> delegate;
     NSString *pageLabel;
     BOOL hasWindow;
-    BOOL miniaturizing;
     BOOL forceOnTop;
 }
 
@@ -80,8 +79,6 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (void)miniaturize;
 - (void)deminiaturize;
 
-- (void)remove;
-
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
@@ -99,8 +96,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @optional
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerRemove:(SKSnapshotWindowController *)controller;
-- (void)snapshotControllerChanged:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller;
 
