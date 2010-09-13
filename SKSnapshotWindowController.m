@@ -480,8 +480,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)miniaturize {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerTargetRectForMiniaturize:)]) {
-        NSRect startRect, endRect, dockRect = [[self delegate] snapshotControllerTargetRectForMiniaturize:self];
+    if ([[self delegate] respondsToSelector:@selector(snapshotController:miniaturizedRect:)]) {
+        NSRect startRect, endRect, dockRect = [[self delegate] snapshotController:self miniaturizedRect:YES];
         
         [self getMiniRect:&endRect maxiRect:&startRect forDockingRect:dockRect];
         
@@ -500,8 +500,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)deminiaturize {
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerSourceRectForDeminiaturize:)]) {
-        NSRect startRect, endRect, dockRect = [[self delegate] snapshotControllerSourceRectForDeminiaturize:self];
+    if ([[self delegate] respondsToSelector:@selector(snapshotController:miniaturizedRect:)]) {
+        NSRect startRect, endRect, dockRect = [[self delegate] snapshotController:self miniaturizedRect:NO];
         
         [self getMiniRect:&startRect maxiRect:&endRect forDockingRect:dockRect];
         
