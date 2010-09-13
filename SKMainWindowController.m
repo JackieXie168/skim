@@ -2065,18 +2065,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [rightSideWindow collapse];
 }
 
-- (NSRect)rowRectForSnapshotController:(SKSnapshotWindowController *)controller scrollToVisible:(BOOL)shouldScroll {
+- (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
     NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    if (shouldScroll)
-        [rightSideController.snapshotTableView scrollRowToVisible:row];
-    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
-    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
-    return rect;
-}
-
-- (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
-    if ([self interactionMode] != SKPresentationMode) {
+    if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
         if ([self interactionMode] == SKNormalMode && [self rightSidePaneIsOpen] == NO) {
             [self toggleRightSidePane:self];
         } else if ([self interactionMode] == SKFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
@@ -2084,12 +2075,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
         }
         [self setRightSidePaneState:SKSnapshotSidePaneState];
+        [rightSideController.snapshotTableView scrollRowToVisible:row];
     }
-    return [self rowRectForSnapshotController:controller scrollToVisible:YES];
-}
-
-- (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
-    return [self rowRectForSnapshotController:controller scrollToVisible:NO];
+    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
+    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
+    return rect;
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
