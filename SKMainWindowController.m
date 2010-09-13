@@ -1017,7 +1017,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
     PDFAnnotation *note = [notes objectAtIndex:theIndex];
     
-    [[[self windowControllerForNote:note] window] orderOut:self];
+    [[self windowControllerForNote:note] close];
     
     if ([[note texts] count])
         [rowHeights removeFloatForKey:[[note texts] lastObject]];
@@ -1036,7 +1036,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         for (NSWindowController *wc in [[self document] windowControllers]) {
             if ([wc isNoteWindowController])
-                [[wc window] orderOut:self];
+                [wc close];
         }
         
         [rowHeights removeAllFloats];
