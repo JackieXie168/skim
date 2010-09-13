@@ -2089,8 +2089,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
-    if ([[[self document] windowControllers] containsObject:controller] == NO)
-        [[self document] addWindowController:controller];
     return [self rowRectForSnapshotController:controller scrollToVisible:NO];
 }
 
