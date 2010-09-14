@@ -52,6 +52,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKNoteTextView.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -178,7 +179,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
         [textView setRichText:NO];
-        [textView setUsesFontPanel:NO];
+        [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
         
         NSSize minimumSize = [[self window] minSize];
@@ -356,4 +357,5 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
+
 @end

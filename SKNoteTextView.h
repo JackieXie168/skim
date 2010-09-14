@@ -1,10 +1,10 @@
 //
-//  SKNoteWindowController.h
+//  SKNoteTextView.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 12/15/06.
+//  Created by Christiaan on 9/14/10.
 /*
- This software is Copyright (c) 2006-2010
+ This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,44 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
-#import "SKDragImageView.h"
 
 
-@class PDFAnnotation, SKStatusBar, SKGradientView, SKNoteTextView;
-
-@interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate> {
-    SKNoteTextView *textView;
-    SKGradientView *gradientView;
-    SKDragImageView *imageView;
-    SKStatusBar *statusBar;
-    NSPopUpButton *iconTypePopUpButton;
-    NSTextField *iconLabelField;
-    NSButton *checkButton;
-    NSObjectController *noteController;
-    
-    PDFAnnotation *note;
-    
-    BOOL keepOnTop;
-    BOOL forceOnTop;
-    BOOL isEditing;
-    
-    NSUndoManager *textViewUndoManager;
+@interface SKNoteTextView : NSTextView {
+    BOOL usesDefaultFontSize;
 }
 
-@property (nonatomic, retain) IBOutlet SKNoteTextView *textView;
-@property (nonatomic, retain) IBOutlet SKGradientView *gradientView;
-@property (nonatomic, retain) IBOutlet SKDragImageView *imageView;
-@property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
-@property (nonatomic, retain) IBOutlet NSPopUpButton *iconTypePopUpButton;
-@property (nonatomic, retain) IBOutlet NSTextField *iconLabelField;
-@property (nonatomic, retain) IBOutlet NSButton *checkButton;
-@property (nonatomic, retain) IBOutlet NSObjectController *noteController;
-@property (nonatomic, readonly) PDFAnnotation *note;
-@property (nonatomic) BOOL keepOnTop, forceOnTop, isNoteType;
-
-- (id)initWithNote:(PDFAnnotation *)aNote;
-
-- (void)statusBarClicked:(id)sender;
+@property (nonatomic) BOOL usesDefaultFontSize;
 
 @end
