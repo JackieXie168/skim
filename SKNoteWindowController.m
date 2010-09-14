@@ -178,6 +178,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
         [textView setRichText:NO];
+        [textView setUsesFontPanel:NO];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
         
         NSSize minimumSize = [[self window] minSize];
