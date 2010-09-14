@@ -37,6 +37,7 @@
  */
 
 #import "SKNoteTextView.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 static char SKNoteTextViewDefaultsObservationContext;
 
@@ -48,7 +49,7 @@ static char SKNoteTextViewDefaultsObservationContext;
 
 - (void)dealloc {
     if (usesDefaultFontSize)
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:[@"values." stringByAppendingString:SKNoteTextFontSizeKey]];
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKNoteTextFontSizeKey];
     [super dealloc];
 }
 
@@ -58,12 +59,9 @@ static char SKNoteTextViewDefaultsObservationContext;
         if (usesDefaultFontSize) {
             CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKNoteTextFontSizeKey];
             [self setFont:[NSFont userFontOfSize:fontSize]];
-            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-                forKeyPath:[@"values." stringByAppendingString:SKNoteTextFontSizeKey]
-                   options:0
-                   context:&SKNoteTextViewDefaultsObservationContext];
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKNoteTextFontSizeKey context:&SKNoteTextViewDefaultsObservationContext];
         } else {
-            [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:[@"values." stringByAppendingString:SKNoteTextFontSizeKey]];
+            [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKNoteTextFontSizeKey];
         }
     }
 }
