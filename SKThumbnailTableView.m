@@ -137,6 +137,7 @@
 }
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     NSScroller *scroller = [[self enclosingScrollView] verticalScroller];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
                                                  name:SKScrollerWillScrollNotification object:scroller];
