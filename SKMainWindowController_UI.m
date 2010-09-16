@@ -1099,6 +1099,11 @@
 - (void)discardEditing {
     [rightSideController.noteOutlineView abortEditing];
     [pdfView discardEditing];
+    // when using abortEditing the control does not call the controlTextDidEndEditing: delegate method
+    if (mwcFlags.isEditingTable || mwcFlags.isEditingPDF)
+        [[self document] objectDidEndEditing:self];
+    mwcFlags.isEditingTable = NO;
+    mwcFlags.isEditingPDF = NO;
 }
 
 - (BOOL)commitEditing {
