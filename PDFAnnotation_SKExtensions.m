@@ -430,6 +430,10 @@ enum {
     return nil;
 }
 
+- (FourCharCode)scriptingAlignment {
+    return SKScriptingAlignmentLeft;
+}
+
 - (FourCharCode)scriptingBorderStyle {
     return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }

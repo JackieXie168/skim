@@ -128,6 +128,7 @@ extern BOOL SKPDFAnnotationLeaksBorder;
 - (id)richText;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
+- (FourCharCode)scriptingAlignment;
 - (NSString *)fontName;
 - (CGFloat)fontSize;
 - (NSColor *)scriptingFontColor;
