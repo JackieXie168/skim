@@ -63,6 +63,7 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "NSColor_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
