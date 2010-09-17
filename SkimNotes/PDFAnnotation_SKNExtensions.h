@@ -141,6 +141,7 @@ extern NSString *SKNPDFAnnotationModificationDateKey;
     @discussion  Global string for annotation user name key.
 */
 extern NSString *SKNPDFAnnotationUserNameKey;
+
 /*!
     @discussion  Global string for annotation interior color key.
 */
@@ -179,6 +180,10 @@ extern NSString *SKNPDFAnnotationFontNameKey;
     @discussion  Global string for annotation font size key.
 */
 extern NSString *SKNPDFAnnotationFontSizeKey;
+/*!
+    @discussion  Global string for annotation text alignment key.
+*/
+extern NSString *SKNPDFAnnotationAlignmentKey;
 /*!
     @discussion  Global string for annotation rotation key.
 */
