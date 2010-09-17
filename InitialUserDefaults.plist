@@ -99,6 +99,8 @@
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZgAAhg==</data>
 		<key>SKSquareNoteInteriorColor</key>
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZgAAhg==</data>
+		<key>SKLineNoteInteriorColor</key>
+		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZgAAhg==</data>
 		<key>SKFreeTextNoteFontColor</key>
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAAAAAYY=</data>
 		<key>SKFreeTextNoteAlignment</key>
@@ -253,6 +255,7 @@
 			<string>SKInkNoteColor</string>
 			<string>SKCircleNoteInteriorColor</string>
 			<string>SKSquareNoteInteriorColor</string>
+			<string>SKLineNoteInteriorColor</string>
 			<string>SKFreeTextNoteFontColor</string>
 			<string>SKFreeTextNoteFontName</string>
 			<string>SKFreeTextNoteFontSize</string>

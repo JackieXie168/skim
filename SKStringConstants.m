@@ -79,6 +79,7 @@ NSString *SKLineNoteColorKey = @"SKLineNoteColor";
 NSString *SKInkNoteColorKey = @"SKInkNoteColor";
 NSString *SKCircleNoteInteriorColorKey = @"SKCircleNoteInteriorColor";
 NSString *SKSquareNoteInteriorColorKey = @"SKSquareNoteInteriorColor";
+NSString *SKLineNoteInteriorColorKey = @"SKLineNoteInteriorColor";
 NSString *SKFreeTextNoteFontColorKey = @"SKFreeTextNoteFontColor";
 NSString *SKFreeTextNoteAlignmentKey = @"SKFreeTextNoteAlignment";
 NSString *SKFreeTextNoteLineWidthKey = @"SKFreeTextNoteLineWidth";

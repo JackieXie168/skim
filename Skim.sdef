@@ -1077,7 +1077,7 @@
                 <cocoa key="scriptingIconType"/>
             </property>
             <property name="interior color" code="IClr" type="RGBA color"
-                description="The fill color of a circle or box.">
+                description="The fill color of a circle, box, or line.">
                 <cocoa key="scriptingInteriorColor"/>
             </property>
             <property name="line width" code="LnWd" type="real"

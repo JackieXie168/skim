@@ -101,6 +101,7 @@
 
 #define SKCircleInteriorString  @"CircleInterior"
 #define SKSquareInteriorString  @"SquareInterior"
+#define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
 @interface SKApplicationController (SKPrivate)
@@ -548,6 +549,7 @@
         [sud colorForKey:SKInkNoteColorKey], SKNInkString, 
         [sud colorForKey:SKCircleNoteInteriorColorKey], SKCircleInteriorString, 
         [sud colorForKey:SKSquareNoteInteriorColorKey], SKSquareInteriorString, 
+        [sud colorForKey:SKLineNoteInteriorColorKey], SKLineInteriorString, 
         [sud colorForKey:SKFreeTextNoteFontColorKey], SKFreeTextFontString, 
         nil];
 }
@@ -577,6 +579,8 @@
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
     if (color = [colorDict objectForKey:SKSquareInteriorString])
         [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
+    if (color = [colorDict objectForKey:SKLineInteriorString])
+        [sud setColor:color forKey:SKLineNoteInteriorColorKey];
     if (color = [colorDict objectForKey:SKFreeTextFontString])
         [sud setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
