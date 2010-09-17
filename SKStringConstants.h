@@ -79,6 +79,7 @@ extern NSString *SKInkNoteColorKey;
 extern NSString *SKCircleNoteInteriorColorKey;
 extern NSString *SKSquareNoteInteriorColorKey;
 extern NSString *SKFreeTextNoteFontColorKey;
+extern NSString *SKFreeTextNoteAlignmentKey;
 extern NSString *SKAnchoredNoteIconTypeKey;
 extern NSString *SKFreeTextNoteLineWidthKey;
 extern NSString *SKFreeTextNoteLineStyleKey;

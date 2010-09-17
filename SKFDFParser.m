@@ -66,6 +66,7 @@ SKFDFString SKFDFAnnotationBorderStyleKey = "S";
 SKFDFString SKFDFAnnotationBorderKey = "Border";
 SKFDFString SKFDFAnnotationModificationDateKey = "M";
 SKFDFString SKFDFAnnotationUserNameKey = "T";
+SKFDFString SKFDFAnnotationAlignmentKey = "Q";
 SKFDFString SKFDFAnnotationIconTypeKey = "Name";
 SKFDFString SKFDFAnnotationLineStylesKey = "LE";
 SKFDFString SKFDFAnnotationLinePointsKey = "L";
@@ -123,6 +124,24 @@ SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle) {
         case kPDFBorderStyleInset: return SKFDFBorderStyleInset;
         case kPDFBorderStyleUnderline: return SKFDFBorderStyleUnderline;
         default: return SKFDFBorderStyleSolid;
+    }
+}
+
+NSTextAlignment SKPDFFreeTextAnnotationAlignmentFromFDFFreeTextAnnotationAlignment(NSInteger anInt) {
+    switch (anInt) {
+        case 0: return NSLeftTextAlignment;
+        case 1: return NSCenterTextAlignment;
+        case 2: return NSRightTextAlignment;
+        default: return NSLeftTextAlignment;
+    }
+}
+
+NSInteger SKFDFFreeTextAnnotationAlignmentFromPDFFreeTextAnnotationAlignment(NSTextAlignment alignment) {
+    switch (alignment) {
+        case NSLeftTextAlignment: return 0;
+        case NSRightTextAlignment: return 2;
+        case NSCenterTextAlignment: return 1;
+        default: return 0;
     }
 }
 
@@ -330,6 +349,10 @@ NSString *SKFDFStringFromDate(NSDate *date) {
         if (userName)
             [dictionary setObject:userName forKey:SKNPDFAnnotationUserNameKey];
         [userName release];
+    }
+    
+    if (success && CGPDFDictionaryGetInteger(annot, SKFDFAnnotationPageIndexKey, &integer)) {
+        [dictionary setObject:[NSNumber numberWithInteger:SKPDFFreeTextAnnotationAlignmentFromFDFFreeTextAnnotationAlignment(integer)] forKey:SKNPDFAnnotationAlignmentKey];
     }
     
     if (success && CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {

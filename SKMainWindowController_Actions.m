@@ -115,6 +115,27 @@
     }
 }
 
+- (IBAction)alignLeft:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+        [(PDFAnnotationFreeText *)annotation setAlignment:NSLeftTextAlignment];
+    }
+}
+
+- (IBAction)alignRight:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+        [(PDFAnnotationFreeText *)annotation setAlignment:NSRightTextAlignment];
+    }
+}
+
+- (IBAction)alignCenter:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+        [(PDFAnnotationFreeText *)annotation setAlignment:NSCenterTextAlignment];
+    }
+}
+
 - (void)changeLineAttribute:(id)sender {
     SKLineChangeAction action = [sender currentLineChangeAction];
     PDFAnnotation *annotation = [pdfView activeAnnotation];
