@@ -248,7 +248,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [view release];
     view = [aView retain];
     [[self contentView] setStringValue:toolTip];
-    NSRect newFrame;
+    NSRect newFrame = NSZeroRect;
     NSRect viewRect = [view convertRect:[view bounds] toView:nil];
     viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
     newFrame.size = [[self contentView] fitSize];
