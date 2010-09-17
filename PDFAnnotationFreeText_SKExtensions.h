@@ -46,7 +46,7 @@ enum {
     SKScriptingAlignmentCenter = 'CeTA'
 };
 
-extern FourCharCode SKScriptingAlignmentFromIconAlignment(NSTextAlignment alignment);
+extern FourCharCode SKScriptingAlignmentFromAlignment(NSTextAlignment alignment);
 extern NSTextAlignment SKAlignmentFromScriptingAlignment(FourCharCode alignment);
 
 
