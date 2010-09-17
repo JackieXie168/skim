@@ -302,10 +302,12 @@ static void replacement_dealloc(id self, SEL _cmd) {
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
     if (self = [super initSkimNoteWithProperties:dict]) {
         Class stringClass = [NSString class];
+        Class colorClass = [NSColor class];
         NSString *startPoint = [dict objectForKey:SKNPDFAnnotationStartPointKey];
         NSString *endPoint = [dict objectForKey:SKNPDFAnnotationEndPointKey];
         NSNumber *startLineStyle = [dict objectForKey:SKNPDFAnnotationStartLineStyleKey];
         NSNumber *endLineStyle = [dict objectForKey:SKNPDFAnnotationEndLineStyleKey];
+        NSColor *interiorColor = [dict objectForKey:SKNPDFAnnotationInteriorColorKey];
         if ([startPoint isKindOfClass:stringClass])
             [self setStartPoint:NSPointFromString(startPoint)];
         if ([endPoint isKindOfClass:stringClass])
@@ -314,6 +316,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
             [self setStartLineStyle:[startLineStyle intValue]];
         if ([endLineStyle respondsToSelector:@selector(intValue)])
             [self setEndLineStyle:[endLineStyle intValue]];
+        if ([interiorColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setInteriorColor:)])
+            [self setInteriorColor:interiorColor];
     }
     return self;
 }
@@ -324,6 +328,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
     [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKNPDFAnnotationEndLineStyleKey];
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKNPDFAnnotationStartPointKey];
     [dict setValue:NSStringFromPoint([self endPoint]) forKey:SKNPDFAnnotationEndPointKey];
+    if ([self respondsToSelector:@selector(interiorColor)])
+        [dict setValue:[self interiorColor] forKey:SKNPDFAnnotationInteriorColorKey];
     return dict;
 }
 
