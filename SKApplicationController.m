@@ -70,6 +70,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationLine_SKExtensions.h"
+#import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
 #import "SKRemoteStateWindow.h"
 #import "NSMenu_SKExtensions.h"
