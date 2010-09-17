@@ -79,6 +79,7 @@ NSString *SKNPDFAnnotationFontKey = @"font";
 NSString *SKNPDFAnnotationFontColorKey = @"fontColor";
 NSString *SKNPDFAnnotationFontNameKey = @"fontName";
 NSString *SKNPDFAnnotationFontSizeKey = @"fontSize";
+NSString *SKNPDFAnnotationAlignmentKey = @"alignment";
 NSString *SKNPDFAnnotationRotationKey = @"rotation";
 
 NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
@@ -346,11 +347,14 @@ static void replacement_dealloc(id self, SEL _cmd) {
         Class colorClass = [NSColor class];
         NSFont *font = [dict objectForKey:SKNPDFAnnotationFontKey];
         NSColor *fontColor = [dict objectForKey:SKNPDFAnnotationFontColorKey];
+        NSNumber *alignment = [dict objectForKey:SKNPDFAnnotationAlignmentKey];
         NSNumber *rotation = [dict objectForKey:SKNPDFAnnotationRotationKey];
         if ([font isKindOfClass:fontClass])
             [self setFont:font];
         if ([fontColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setFontColor:)])
             [self setFontColor:fontColor];
+        if ([alignment respondsToSelector:@selector(intValue)])
+            [self setAlignment:[alignment intValue]];
         if ([rotation respondsToSelector:@selector(intValue)] && [self respondsToSelector:@selector(setRotation:)])
             [self setRotation:[rotation intValue]];
     }
@@ -362,6 +366,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
     [dict setValue:[self font] forKey:SKNPDFAnnotationFontKey];
     if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
         [dict setValue:[self fontColor] forKey:SKNPDFAnnotationFontColorKey];
+    [dict setValue:[NSNumber numberWithInt:[self alignment]] forKey:SKNPDFAnnotationAlignmentKey];
     if ([self respondsToSelector:@selector(rotation)])
         [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKNPDFAnnotationRotationKey];
     return dict;
