@@ -39,6 +39,7 @@
 #import "PDFAnnotationLine_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
@@ -83,6 +84,9 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
     if (self = [super initSkimNoteWithBounds:bounds]) { 	 
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]]; 	 
+        NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteInteriorColorKey];
+        if ([color alphaComponent] > 0.0)
+            [self setInteriorColor:color];
         [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]]; 	 
         [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]]; 	 
         [self setStartPoint:NSMakePoint(0.0, 0.0)]; 	 
@@ -108,6 +112,12 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSPoint endPoint = SKAddPoints([self endPoint], [self bounds].origin);
     [fdfString appendFDFName:SKFDFAnnotationLinePointsKey];
     [fdfString appendFormat:@"[%f %f %f %f]", startPoint.x, startPoint.y, endPoint.x, endPoint.y];
+    CGFloat r, g, b, a = 0.0;
+    [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
+    if (a > 0.0) {
+        [fdfString appendFDFName:SKFDFAnnotationInteriorColorKey];
+        [fdfString appendFormat:@"[%f %f %f]", r, g, b];
+    }
     return fdfString;
 }
 
@@ -136,6 +146,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         [mutableKeys addObject:SKNPDFAnnotationEndLineStyleKey];
         [mutableKeys addObject:SKNPDFAnnotationStartPointKey];
         [mutableKeys addObject:SKNPDFAnnotationEndPointKey];
+        [mutableKeys addObject:SKNPDFAnnotationInteriorColorKey];
         lineKeys = [mutableKeys copy];
         [mutableKeys release];
     }
@@ -152,6 +163,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         [customKeys addObject:SKPDFAnnotationEndPointAsQDPointKey];
         [customKeys addObject:SKPDFAnnotationScriptingStartLineStyleKey];
         [customKeys addObject:SKPDFAnnotationScriptingEndLineStyleKey];
+        [customKeys addObject:SKPDFAnnotationScriptingInteriorColorKey];
         customLineScriptingKeys = [customKeys copy];
         [customKeys release];
     }
@@ -251,6 +263,16 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (void)setScriptingEndLineStyle:(FourCharCode)style {
     if ([self isEditable]) {
         [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+    }
+}
+
+- (NSColor *)scriptingInteriorColor {
+    return [self interiorColor];
+}
+
+- (void)setScriptingInteriorColor:(NSColor *)newColor {
+    if ([self isEditable]) {
+        [self setInteriorColor:newColor];
     }
 }
 

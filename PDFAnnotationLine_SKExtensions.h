@@ -65,5 +65,6 @@ extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setScriptingStartLineStyle:(FourCharCode)style;
 - (void)setScriptingEndLineStyle:(FourCharCode)style;
+- (void)setScriptingInteriorColor:(NSColor *)newColor;
 
 @end
