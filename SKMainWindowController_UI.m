@@ -1347,6 +1347,9 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]);
+    } else if (action == @selector(alignLeft:) || action == @selector(alignRight:) || action == @selector(alignCenter:)) {
+        PDFAnnotation *annotation = [pdfView activeAnnotation];
+        return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]) && [annotation respondsToSelector:@selector(setAlignment:)];
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
