@@ -101,6 +101,8 @@
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZgAAhg==</data>
 		<key>SKFreeTextNoteFontColor</key>
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAAAAAYY=</data>
+		<key>SKFreeTextNoteAlignment</key>
+		<integer>0</integer>
 		<key>SKFreeTextNoteLineWidth</key>
 		<real>1</real>
 		<key>SKFreeTextNoteLineStyle</key>
@@ -259,6 +261,7 @@
 			<string>SKFreeTextNoteLineWidth</string>
 			<string>SKFreeTextNoteLineStyle</string>
 			<string>SKFreeTextNoteDashPattern</string>
+			<string>SKFreeTextNoteAlignment</string>
 			<string>SKAnchoredNoteIconType</string>
 			<string>SKCircleNoteLineWidth</string>
 			<string>SKCircleNoteLineStyle</string>

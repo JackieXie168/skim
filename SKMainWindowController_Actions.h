@@ -44,6 +44,10 @@
 
 - (IBAction)changeColor:(id)sender;
 - (IBAction)changeFont:(id)sender;
+- (IBAction)changeAttributes:(id)sender;
+- (IBAction)alignLeft:(id)sender;
+- (IBAction)alignRight:(id)sender;
+- (IBAction)alignCenter:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)editNote:(id)sender;
 - (IBAction)toggleHideNotes:(id)sender;

@@ -63,6 +63,7 @@ extern SKFDFString SKFDFAnnotationBorderStyleKey;
 extern SKFDFString SKFDFAnnotationBorderKey;
 extern SKFDFString SKFDFAnnotationModificationDateKey;
 extern SKFDFString SKFDFAnnotationUserNameKey;
+extern SKFDFString SKFDFAnnotationAlignmentKey;
 extern SKFDFString SKFDFAnnotationIconTypeKey;
 extern SKFDFString SKFDFAnnotationLineStylesKey;
 extern SKFDFString SKFDFAnnotationLinePointsKey;
@@ -97,6 +98,9 @@ extern NSString *SKFDFStringFromDate(NSDate *date);
 
 extern PDFBorderStyle SKPDFBorderStyleFromFDFBorderStyle(SKFDFString name);
 extern SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle);
+
+extern NSTextAlignment SKPDFFreeTextAnnotationAlignmentFromFDFFreeTextAnnotationAlignment(NSInteger anInt);
+extern NSInteger SKFDFFreeTextAnnotationAlignmentFromPDFFreeTextAnnotationAlignment(NSTextAlignment alignment);
 
 extern PDFTextAnnotationIconType SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(SKFDFString name);
 extern SKFDFString SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(PDFTextAnnotationIconType iconType);

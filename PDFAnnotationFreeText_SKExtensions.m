@@ -62,6 +62,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
             [self setFont:font];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]];
         [self setFontColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteFontColorKey]];
+        [self setAlignment:[[NSUserDefaults standardUserDefaults] integerForKey:SKFreeTextNoteAlignmentKey]];
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKFreeTextNoteDashPatternKey]];
@@ -84,6 +85,8 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     [fdfString appendString:@")"];
     [fdfString appendFDFName:SKFDFDefaultStyleKey];
     [fdfString appendFormat:@"(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFDFName:SKFDFAnnotationAlignmentKey];
+    [fdfString appendFormat:@" %ld", (long)SKFDFFreeTextAnnotationAlignmentFromPDFFreeTextAnnotationAlignment([self alignment])];
     return fdfString;
 }
 
@@ -99,6 +102,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
         [mutableKeys addObject:SKNPDFAnnotationFontKey];
         [mutableKeys addObject:SKNPDFAnnotationFontColorKey];
+        [mutableKeys addObject:SKNPDFAnnotationAlignmentKey];
         freeTextKeys = [mutableKeys copy];
         [mutableKeys release];
     }
