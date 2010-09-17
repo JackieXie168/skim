@@ -109,7 +109,7 @@
 
 @implementation SKApplicationController
 
-@dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultIconType;
+@dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultAlignment, defaultIconType;
 
 + (void)initialize{
     SKINITIALIZE;
@@ -454,7 +454,7 @@
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"bookmarks", 
             @"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
-            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontSizes", @"defaultTextNoteFontColor", @"defaultIconType", nil];
+            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontSizes", @"defaultTextNoteFontColor", @"defaultAlignment", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
@@ -714,6 +714,14 @@
 
 - (void)setDefaultEndLineStyle:(FourCharCode)style {
     [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
+}
+
+- (FourCharCode)defaultAlignment {
+    return SKScriptingAlignmentFromAlignment([[NSUserDefaults standardUserDefaults] integerForKey:SKFreeTextNoteAlignmentKey]);
+}
+
+- (void)setDefaultAlignment:(FourCharCode)alignment {
+    [[NSUserDefaults standardUserDefaults] setInteger:SKAlignmentFromScriptingAlignment(alignment) forKey:SKFreeTextNoteAlignmentKey];
 }
 
 - (FourCharCode)defaultIconType {

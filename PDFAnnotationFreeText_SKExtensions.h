@@ -39,12 +39,25 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+
+enum {
+    SKScriptingAlignmentLeft = 'LeTA',
+    SKScriptingAlignmentRight = 'RiTA',
+    SKScriptingAlignmentCenter = 'CeTA'
+};
+
+extern FourCharCode SKScriptingAlignmentFromIconAlignment(NSTextAlignment alignment);
+extern NSTextAlignment SKAlignmentFromScriptingAlignment(FourCharCode alignment);
+
+
 extern NSString *SKPDFAnnotationScriptingFontColorKey;
+
 
 @interface PDFAnnotationFreeText (SKExtensions)
 
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(CGFloat)pointSize;
 - (void)setScriptingFontColor:(NSColor *)newScriptingFontColor;
+- (void)setScriptingAlignment:(FourCharCode)alignment;
 
 @end
