@@ -2003,6 +2003,7 @@ enum {
         [editField setBackgroundColor:color];
         [editField setTextColor:fontColor];
         [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
+        [editField setAlignment:[(PDFAnnotationFreeText *)activeAnnotation alignment]];
         [editField setStringValue:[activeAnnotation string]];
         [editField setDelegate:self];
         [[self documentView] addSubview:editField];
