@@ -67,29 +67,6 @@
 										<object class="NSTextView" id="315707833">
 											<reference key="NSNextResponder" ref="470158365"/>
 											<int key="NSvFlags">2322</int>
-											<object class="NSMutableSet" key="NSDragTypes">
-												<bool key="EncodedWithXMLCoder">YES</bool>
-												<object class="NSArray" key="set.sortedObjects">
-													<bool key="EncodedWithXMLCoder">YES</bool>
-													<string>Apple HTML pasteboard type</string>
-													<string>Apple PDF pasteboard type</string>
-													<string>Apple PICT pasteboard type</string>
-													<string>Apple PNG pasteboard type</string>
-													<string>Apple URL pasteboard type</string>
-													<string>CorePasteboardFlavorType 0x6D6F6F76</string>
-													<string>NSColor pasteboard type</string>
-													<string>NSFilenamesPboardType</string>
-													<string>NSStringPboardType</string>
-													<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-													<string>NeXT RTFD pasteboard type</string>
-													<string>NeXT Rich Text Format v1.0 pasteboard type</string>
-													<string>NeXT TIFF v4.0 pasteboard type</string>
-													<string>NeXT font pasteboard type</string>
-													<string>NeXT ruler pasteboard type</string>
-													<string>WebURLsWithTitlesPboardType</string>
-													<string>public.url</string>
-												</object>
-											</object>
 											<string key="NSFrameSize">{331, 14}</string>
 											<reference key="NSSuperview" ref="470158365"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="335718065">
@@ -175,7 +152,6 @@
 									</object>
 									<string key="NSFrameSize">{331, 173}</string>
 									<reference key="NSSuperview" ref="740348933"/>
-									<reference key="NSNextKeyView" ref="315707833"/>
 									<reference key="NSDocView" ref="315707833"/>
 									<reference key="NSBGColor" ref="814770805"/>
 									<object class="NSCursor" key="NSCursor">
@@ -208,7 +184,6 @@
 							</object>
 							<string key="NSFrame">{{0, 22}, {342, 173}}</string>
 							<reference key="NSSuperview" ref="123586400"/>
-							<reference key="NSNextKeyView" ref="470158365"/>
 							<int key="NSsFlags">16</int>
 							<reference key="NSVScroller" ref="17499870"/>
 							<reference key="NSHScroller" ref="375396715"/>
@@ -638,35 +613,6 @@
 						</object>
 					</object>
 					<int key="connectionID">179</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">attributedString: selection.text</string>
-						<reference key="source" ref="315707833"/>
-						<reference key="destination" ref="1033251953"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="315707833"/>
-							<reference key="NSDestination" ref="1033251953"/>
-							<string key="NSLabel">attributedString: selection.text</string>
-							<string key="NSBinding">attributedString</string>
-							<string key="NSKeyPath">selection.text</string>
-							<object class="NSDictionary" key="NSOptions">
-								<bool key="EncodedWithXMLCoder">YES</bool>
-								<object class="NSArray" key="dict.sortedKeys">
-									<bool key="EncodedWithXMLCoder">YES</bool>
-									<string>NSAllowsEditingMultipleValuesSelection</string>
-									<string>NSConditionallySetsEditable</string>
-								</object>
-								<object class="NSMutableArray" key="dict.values">
-									<bool key="EncodedWithXMLCoder">YES</bool>
-									<boolean value="NO"/>
-									<boolean value="NO"/>
-								</object>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">182</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
