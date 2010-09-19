@@ -94,18 +94,23 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     return self;
 }
 
+static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
+    switch (alignment) {
+        case NSLeftTextAlignment: return @"left";
+        case NSRightTextAlignment: return @"right";
+        case NSCenterTextAlignment: return @"center";
+        default: return @"left";
+    }
+}
+
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
+    CGFloat r = 0.0, g = 0.0, b = 0.0, a;
+    [[self fontColor] getRed:&r green:&g blue:&b alpha:&a];
     [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
-    [fdfString appendFormat:@"(/%@ %f Tf", [[self font] fontName], [[self font] pointSize]];
-    if ([[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO) {
-        CGFloat r = 0.0, g = 0.0, b = 0.0, a;
-        [[self fontColor] getRed:&r green:&g blue:&b alpha:&a];
-        [fdfString appendFormat:@" %f %f %f rg", r, g, b];
-    }
-    [fdfString appendString:@")"];
+    [fdfString appendFormat:@"(/%@ %f Tf %f %f %f rg)", [self fontName], [self fontSize], r, g, b];
     [fdfString appendFDFName:SKFDFDefaultStyleKey];
-    [fdfString appendFormat:@"(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFormat:@"(font: %@ %fpt; text-align:%@; color:#%.2x%.2x%.2x)", [self fontName], [self fontSize], alignmentStyleKeyword([self alignment]), (unsigned int)(255*r), (unsigned int)(255*g), (unsigned int)(255*b)];
     [fdfString appendFDFName:SKFDFAnnotationAlignmentKey];
     [fdfString appendFormat:@" %ld", (long)SKFDFFreeTextAnnotationAlignmentFromPDFFreeTextAnnotationAlignment([self alignment])];
     return fdfString;
