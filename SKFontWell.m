@@ -106,7 +106,7 @@ static char SKFontWellFontSizeObservationContext;
     [super setAction:@selector(changeActive:)];
     [super setTarget:self];
     bindingInfo = [[NSMutableDictionary alloc] init];
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, NSColorPboardType, nil]];
 }
 
 - (id)initWithFrame:(NSRect)frame {
@@ -360,7 +360,7 @@ static char SKFontWellFontSizeObservationContext;
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]]) {
         [[self cell] setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -370,7 +370,7 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]]) {
         [[self cell] setHighlighted:NO];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -378,13 +378,14 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
-    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]];
 } 
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]];
     NSFont *droppedFont = nil;
+    NSColor *droppedColor = nil;
     
     @try {
         if ([type isEqualToString:SKNSFontPanelDescriptorsPboardType]) {
@@ -404,6 +405,8 @@ static char SKFontWellFontSizeObservationContext;
             NSString *family = ([families isKindOfClass:[NSArray class]] && [families count]) ? [families objectAtIndex:0] : nil;
             if ([family isKindOfClass:[NSString class]])
                 droppedFont = [[NSFontManager sharedFontManager] convertFont:[self font] toFamily:family];
+        } else if ([type isEqualToString:NSColorPboardType]) {
+            droppedColor = [NSColor colorFromPasteboard:pboard];
         }
     }
     @catch (id exception) {
@@ -415,12 +418,17 @@ static char SKFontWellFontSizeObservationContext;
         [self notifyFontBinding];
         [self sendAction:[self action] to:[self target]];
     }
+    if (droppedColor) {
+        [self setTextColor:droppedColor];
+        [self notifyTextColorBinding];
+        [self sendAction:[self action] to:[self target]];
+    }
     
     [[self cell] setHighlighted:NO];
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
     
-	return droppedFont != nil;
+	return droppedFont != nil || droppedColor != nil;
 }
 
 @end
