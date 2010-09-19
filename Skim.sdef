@@ -1346,6 +1346,10 @@
                 description="Default box fill color.">
                 <cocoa key="SquareInterior"/>
             </property>
+            <property name="line note interior color" code="CLiI" type="RGBA color"
+                description="Default line fill color.">
+                <cocoa key="LineInterior"/>
+            </property>
             <property name="text note font color" code="CTxF" type="RGBA color"
                 description="Default text note font color.">
                 <cocoa key="FreeTextFont"/>
