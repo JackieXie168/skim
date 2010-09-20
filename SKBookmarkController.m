@@ -749,9 +749,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return [items count] > 0;
 }
 
-- (void)outlineViewPaste:(NSOutlineView *)ov {
+- (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
     NSUInteger count = 0;
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
         SKBookmark *item = nil;
@@ -767,8 +766,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSBeep();
 }
 
-- (BOOL)outlineViewCanPaste:(NSOutlineView *)ov {
-    return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+- (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
+    return nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
