@@ -421,14 +421,13 @@ static char *SKTransitionPropertiesObservationContext;
     return YES;
 }
 
-- (void)tableViewPaste:(NSTableView *)tv {
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+- (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
     if ([pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]])
         [[transitions objectAtIndex:[tableView selectedRow]] setProperties:[pboard propertyListForType:SKTransitionPboardType]];
 }
 
-- (BOOL)tableViewCanPaste:(NSTableView *)tv {
-    return ([tableView selectedRow] != -1 && [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]);
+- (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
+    return ([tableView selectedRow] != -1 && [pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]);
 }
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {

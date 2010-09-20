@@ -412,8 +412,7 @@ static char SKDownloadPropertiesObservationContext;
     return YES;
 }
 
-- (void)tableViewPaste:(NSTableView *)tv {
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+- (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
     NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
     
     if ([theURL isFileURL])
@@ -422,8 +421,8 @@ static char SKDownloadPropertiesObservationContext;
         [self addDownloadForURL:theURL];
 }
 
-- (BOOL)tableViewCanPaste:(NSTableView *)tv {
-    return (nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
+- (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
+    return (nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
 }
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {

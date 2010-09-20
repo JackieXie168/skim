@@ -193,9 +193,9 @@ static char SKOutlineViewDefaultsObservationContext;
 }
 
 - (BOOL)canPaste {
-    if ([[self delegate] respondsToSelector:@selector(outlineViewPaste:)]) {
-        if ([[self delegate] respondsToSelector:@selector(outlineViewCanPaste:)])
-            return [[self delegate] outlineViewCanPaste:self];
+    if ([[self delegate] respondsToSelector:@selector(outlineView:pasteFromPasteboard:)]) {
+        if ([[self delegate] respondsToSelector:@selector(outlineView:canPasteFromPasteboard:)])
+            return [[self delegate] outlineView:self canPasteFromPasteboard:[NSPasteboard generalPasteboard]];
         else
             return YES;
     }
@@ -204,7 +204,7 @@ static char SKOutlineViewDefaultsObservationContext;
 
 - (void)paste:(id)sender {
     if ([self canPaste])
-        [[self delegate] outlineViewPaste:self];
+        [[self delegate] outlineView:self pasteFromPasteboard:[NSPasteboard generalPasteboard]];
     else
         NSBeep();
 }

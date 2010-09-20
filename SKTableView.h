@@ -76,8 +76,8 @@
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 
-- (void)tableViewPaste:(NSTableView *)aTableView;
-- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
+- (void)tableView:(NSTableView *)aTableView pasteFromPasteboard:(NSPasteboard *)pboard;
+- (BOOL)tableView:(NSTableView *)aTableView canPasteFromPasteboard:(NSPasteboard *)pboard;
 
 - (BOOL)tableView:(NSTableView *)aTableView hasImageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 - (id<SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;

@@ -179,9 +179,9 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (BOOL)canPaste {
-    if ([[self delegate] respondsToSelector:@selector(tableViewPaste:)]) {
-        if ([[self delegate] respondsToSelector:@selector(tableViewCanPaste:)])
-            return [[self delegate] tableViewCanPaste:self];
+    if ([[self delegate] respondsToSelector:@selector(tableView:pasteFromPasteboard:)]) {
+        if ([[self delegate] respondsToSelector:@selector(tableView:canPasteFromPasteboard:)])
+            return [[self delegate] tableView:self canPasteFromPasteboard:[NSPasteboard generalPasteboard]];
         else
             return YES;
     }
@@ -190,7 +190,7 @@ static char SKTableViewDefaultsObservationContext;
 
 - (void)paste:(id)sender {
     if ([self canPaste])
-        [[self delegate] tableViewPaste:self];
+        [[self delegate] tableView:self pasteFromPasteboard:[NSPasteboard generalPasteboard]];
     else
         NSBeep();
 }
