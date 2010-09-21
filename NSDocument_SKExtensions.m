@@ -136,11 +136,11 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSArray *)notes { return nil; }
 
-static NSSet *richTextTypes() {
+static BOOL isRichTextType(NSString *type) {
     static NSSet *types = nil;
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
-    return types;
+    return [types containsObject:type];
 }
 
 - (NSData *)notesData {
@@ -151,7 +151,7 @@ static NSSet *richTextTypes() {
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSString *string = nil;
-    if ([richTextTypes() containsObject:fileType] == NO) {
+    if (isRichTextType(fileType) == NO) {
         NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
@@ -164,7 +164,7 @@ static NSSet *richTextTypes() {
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
-    if ([richTextTypes() containsObject:fileType]) {
+    if (isRichTextType(fileType)) {
         NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
