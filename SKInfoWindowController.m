@@ -106,7 +106,7 @@
                             PDFDocumentProducerAttribute,
                             PDFDocumentCreationDateAttribute,
                             PDFDocumentModificationDateAttribute,
-                            PDFDocumentKeywordsAttribute, nil];
+                            SKInfoKeywordsStringKey, nil];
     }
     return self;
 }
@@ -323,7 +323,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         return NSLocalizedString(@"Creation date:", @"Info label");
     if ([key isEqualToString:PDFDocumentModificationDateAttribute])
         return NSLocalizedString(@"Modification date:", @"Info label");
-    if ([key isEqualToString:PDFDocumentKeywordsAttribute])
+    if ([key isEqualToString:SKInfoKeywordsStringKey])
         return NSLocalizedString(@"Keywords:", @"Info label");
     return [key stringByAppendingString:@":"];
 }
@@ -364,8 +364,6 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
                 value = [shortDateFormatter stringFromDate:value];
             else if ([value isKindOfClass:[NSNumber class]])
                 value = ([key isEqualToString:SKInfoPageCountKey] ? [value stringValue] : ([value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"")));
-            else if ([value isKindOfClass:[NSArray class]])
-                value = [value componentsJoinedByString:@", "];
         }
     }
     return value;
