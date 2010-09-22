@@ -27,7 +27,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CE14113F1229B64D00C9EBA0 /* skimpdf */;
+			remoteGlobalIDString = CE14113F1229B64D00C9EBA0;
 			remoteInfo = "SkimPDF Tool";
 		};
 		CEE23E510ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
