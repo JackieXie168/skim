@@ -364,6 +364,8 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
                 value = [shortDateFormatter stringFromDate:value];
             else if ([value isKindOfClass:[NSNumber class]])
                 value = ([key isEqualToString:SKInfoPageCountKey] ? [value stringValue] : ([value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"")));
+            else if ([value isKindOfClass:[NSArray class]])
+                value = [value componentsJoinedByString:@", "];
         }
     }
     return value;
