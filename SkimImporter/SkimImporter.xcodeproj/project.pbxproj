@@ -23,6 +23,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE27EFBD124A1FA70069AE9F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CE14113F1229B64D00C9EBA0 /* skimpdf */;
+			remoteInfo = "SkimPDF Tool";
+		};
 		CEE23E510ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
@@ -206,6 +213,7 @@
 				CEE23E520ECFA8D20013CDF7 /* SkimNotes.framework */,
 				CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */,
 				CEE23E560ECFA8D20013CDF7 /* skimnotes */,
+				CE27EFBE124A1FA70069AE9F /* skimpdf */,
 				CEE23E580ECFA8D20013CDF7 /* SkimNotesTest.app */,
 			);
 			name = Products;
@@ -244,6 +252,7 @@
 			isa = PBXProject;
 			buildConfigurationList = 70138C880896BE9A00968C2F /* Build configuration list for PBXProject "SkimImporter" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -274,6 +283,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		CE27EFBE124A1FA70069AE9F /* skimpdf */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = skimpdf;
+			remoteRef = CE27EFBD124A1FA70069AE9F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CEE23E520ECFA8D20013CDF7 /* SkimNotes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;

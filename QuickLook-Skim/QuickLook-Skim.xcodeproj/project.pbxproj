@@ -202,6 +202,7 @@
 			isa = PBXProject;
 			buildConfigurationList = 2CA326220896AD4900168862 /* Build configuration list for PBXProject "QuickLook-Skim" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
