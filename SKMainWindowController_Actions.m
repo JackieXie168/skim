@@ -884,7 +884,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([self leftSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:leftSideContentView])
                 [[self window] makeFirstResponder:pdfView];
-            lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
+            lastLeftSidePaneWidth = fmaxf(100.0, NSWidth([leftSideContentView frame]));
         } else {
             if(lastLeftSidePaneWidth <= 0.0)
                 lastLeftSidePaneWidth = 250.0; // a reasonable value to start
@@ -917,7 +917,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([self rightSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:rightSideContentView])
                 [[self window] makeFirstResponder:pdfView];
-            lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
+            lastRightSidePaneWidth = fmaxf(100.0, NSWidth([rightSideContentView frame]));
         } else {
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
