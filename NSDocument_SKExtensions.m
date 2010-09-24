@@ -139,7 +139,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 static BOOL isRichTextType(NSString *templateFile) {
     static NSSet *types = nil;
     if (types == nil)
-        types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
+        types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
     return [types containsObject:[[templateFile pathExtension] lowercaseString]];
 }
 
