@@ -78,8 +78,6 @@ typedef NSInteger SKDownloadStatus;
 @property (nonatomic, readonly, retain) NSImage *fileIcon;
 @property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
 
-@property (nonatomic, readonly) NSURLDownload *URLDownload;
-
 @property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
 
 @property (nonatomic, readonly) NSDictionary *info;
