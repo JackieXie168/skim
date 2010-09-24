@@ -53,6 +53,8 @@
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
+#define SKDisableExportAttributesKey @"SKDisableExportAttributes"
+
 #define TEMPLATES_FOLDER_NAME @"Templates"
 
 @implementation NSDocument (SKExtensions)
@@ -168,6 +170,11 @@ static BOOL isRichTextType(NSString *templateFile) {
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExportAttributesKey] == NO) {
+            NSMutableDictionary *mutableAttributes = [[docAttributes mutableCopy] autorelease];
+            [mutableAttributes addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:NSFullUserName(), NSAuthorDocumentAttribute, [NSDate date], NSCreationTimeDocumentAttribute, [[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension], NSTitleDocumentAttribute, nil]];
+            docAttributes = mutableAttributes;
+        }
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
     } else {
