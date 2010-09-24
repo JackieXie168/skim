@@ -190,6 +190,11 @@ static BOOL isRichTextType(NSString *templateFile) {
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExportAttributesKey] == NO) {
+            NSMutableDictionary *mutableAttributes = [[docAttributes mutableCopy] autorelease];
+            [mutableAttributes addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:NSFullUserName(), NSAuthorDocumentAttribute, [NSDate date], NSCreationTimeDocumentAttribute, [[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension], NSTitleDocumentAttribute, nil]];
+            docAttributes = mutableAttributes;
+        }
         fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
         [templateAttrString release];
     }
