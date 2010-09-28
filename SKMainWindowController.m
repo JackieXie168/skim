@@ -343,6 +343,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [leftSideController.groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
     [leftSideController.groupedFindTableView setTarget:self];
     
+    NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
+    [leftSideController.tocOutlineView setFont:font];
+    [rightSideController.noteOutlineView setFont:font];
+    [leftSideController.findTableView setFont:font];
+    [leftSideController.groupedFindTableView setFont:font];
+    
     if (mwcFlags.usesDrawers) {
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
         [leftSideDrawer setParentWindow:[self window]];
@@ -2221,7 +2227,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         } else if ([key isEqualToString:SKTableFontSizeKey]) {
             NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
             [leftSideController.tocOutlineView setFont:font];
+            [rightSideController.noteOutlineView setFont:font];
+            [leftSideController.findTableView setFont:font];
+            [leftSideController.groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
+            [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
+            [self updatePageColumnWidthForTableView:leftSideController.findTableView];
+            [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
         }
         
     } else if (context == &SKNPDFAnnotationPropertiesObservationContext) {

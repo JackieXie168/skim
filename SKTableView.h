@@ -47,8 +47,6 @@
     SKTypeSelectHelper *typeSelectHelper;
 }
 
-+ (BOOL)usesDefaultFontSize;
-
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 

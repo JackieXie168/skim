@@ -45,46 +45,16 @@
 
 #define SPACE_CHARACTER 0x20
 
-static char SKOutlineViewDefaultsObservationContext;
-
 
 @implementation SKOutlineView
 
 @synthesize typeSelectHelper;
 @dynamic selectedItems, canDelete, canCopy, canPaste;
 
-+ (BOOL)usesDefaultFontSize { return NO; }
-
 - (void)dealloc {
-    if ([[self class] usesDefaultFontSize]) {
-        @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
-        @catch (id e) {}
-    }
     [typeSelectHelper setDataSource:nil];
     SKDESTROY(typeSelectHelper);
     [super dealloc];
-}
-
-- (void)awakeFromNib {
-    if ([[self class] usesDefaultFontSize]) {
-        NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-        if (fontSize)
-            [self setFont:[NSFont systemFontOfSize:[fontSize doubleValue]]];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:&SKOutlineViewDefaultsObservationContext];
-    }
-    if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
-        [super awakeFromNib];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKOutlineViewDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKTableFontSizeKey]) {
-            [self setFont:[NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]]];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 - (NSArray *)selectedItems {

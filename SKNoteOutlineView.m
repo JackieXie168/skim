@@ -49,8 +49,6 @@
 
 @implementation SKNoteOutlineView
 
-+ (BOOL)usesDefaultFontSize { return YES; }
-
 - (void)awakeFromNib {
     [super awakeFromNib];
     
