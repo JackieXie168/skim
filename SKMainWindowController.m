@@ -146,7 +146,7 @@
 
 #define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
-static char SKNPDFAnnotationPropertiesObservationContext;
+static char SKPDFAnnotationPropertiesObservationContext;
 
 static char SKMainWindowDefaultsObservationContext;
 
@@ -2139,7 +2139,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     for (PDFAnnotation *note in newNotes) {
         for (NSString *key in [note keysForValuesToObserveForUndo]) {
             // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
-            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKNPDFAnnotationPropertiesObservationContext];
+            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKPDFAnnotationPropertiesObservationContext];
         }
     }
 }
@@ -2236,7 +2236,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
         }
         
-    } else if (context == &SKNPDFAnnotationPropertiesObservationContext) {
+    } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
         
         // The value of some note's property has changed
         PDFAnnotation *note = (PDFAnnotation *)object;
