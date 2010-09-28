@@ -45,8 +45,6 @@
     SKTypeSelectHelper *typeSelectHelper;
 }
 
-+ (BOOL)usesDefaultFontSize;
-
 @property (nonatomic, readonly) NSArray *selectedItems;
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;

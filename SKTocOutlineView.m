@@ -44,8 +44,6 @@
 
 @implementation SKTocOutlineView
 
-+ (BOOL)usesDefaultFontSize { return YES; }
-
 - (void)dealloc {
     SKDESTROY(trackingAreas);
     [super dealloc];
