@@ -1983,22 +1983,24 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)registerForDocumentNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    PDFDocument *pdfDoc = [pdfView document];
     [nc addObserver:self selector:@selector(handleDocumentBeginWrite:) 
-                             name:PDFDocumentDidBeginWriteNotification object:[pdfView document]];
+                             name:PDFDocumentDidBeginWriteNotification object:pdfDoc];
     [nc addObserver:self selector:@selector(handleDocumentEndWrite:) 
-                             name:PDFDocumentDidEndWriteNotification object:[pdfView document]];
+                             name:PDFDocumentDidEndWriteNotification object:pdfDoc];
     [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
-                             name:PDFDocumentDidEndPageWriteNotification object:[pdfView document]];
+                             name:PDFDocumentDidEndPageWriteNotification object:pdfDoc];
     [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
-                             name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
+                             name:SKPDFPageBoundsDidChangeNotification object:pdfDoc];
 }
 
 - (void)unregisterForDocumentNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver:self name:PDFDocumentDidBeginWriteNotification object:[pdfView document]];
-    [nc removeObserver:self name:PDFDocumentDidEndWriteNotification object:[pdfView document]];
-    [nc removeObserver:self name:PDFDocumentDidEndPageWriteNotification object:[pdfView document]];
-    [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
+    PDFDocument *pdfDoc = [pdfView document];
+    [nc removeObserver:self name:PDFDocumentDidBeginWriteNotification object:pdfDoc];
+    [nc removeObserver:self name:PDFDocumentDidEndWriteNotification object:pdfDoc];
+    [nc removeObserver:self name:PDFDocumentDidEndPageWriteNotification object:pdfDoc];
+    [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:pdfDoc];
 }
 
 #pragma mark Subwindows
