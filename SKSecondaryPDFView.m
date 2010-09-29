@@ -444,6 +444,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self setDisplaysPageBreaks:[self displaysPageBreaks] == NO];
 }
 
+- (void)doActualSize:(id)sender {
+    [self setScaleFactor:1.0];
+}
+
 - (void)printDocument:(id)sender{
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
@@ -481,6 +485,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         item = [menu insertItemWithTitle:NSLocalizedString(@"Page Breaks", @"Menu item title") action:@selector(toggleDisplayPageBreaksFromMenu:) keyEquivalent:@"" atIndex:++i];
         [item setTarget:self];
     }
+    i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
+    if (i != -1)
+        [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
     
     return menu;
 }
@@ -491,6 +498,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         return YES;
     } else if ([menuItem action] == @selector(toggleDisplayPageBreaksFromMenu:)) {
         [menuItem setState:[self displaysPageBreaks] ? NSOnState : NSOffState];
+        return YES;
+    } else if ([menuItem action] == @selector(doActualSize:)) {
+        [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
         return YES;
     } else if ([menuItem action] == @selector(printDocument:)) {
         return [[self document] allowsPrinting];

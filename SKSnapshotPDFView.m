@@ -312,6 +312,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self setAutoFits:YES];
 }
 
+- (void)doActualSize:(id)sender {
+    [self setScaleFactor:1.0];
+}
+
 - (void)printDocument:(id)sender{
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
@@ -338,6 +342,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     NSInteger i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
     if (i != -1)
         [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
+    i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
+    if (i != -1)
+        [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
     
     return menu;
 }
@@ -345,6 +352,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(doAutoFit:)) {
         [menuItem setState:[self autoFits] ? NSOnState : NSOffState];
+        return YES;
+    } else if ([menuItem action] == @selector(doActualSize:)) {
+        [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
         return YES;
     } else if ([menuItem action] == @selector(printDocument:)) {
         return [[self document] allowsPrinting];
