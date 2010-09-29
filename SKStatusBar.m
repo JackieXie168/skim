@@ -59,7 +59,7 @@
 @implementation SKStatusBar
 
 @synthesize animating, iconCell;
-@dynamic isVisible, leftStringValue, leftAttributedStringValue, rightStringValue, rightAttributedStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, state, font, progressIndicator, progressIndicatorStyle;
+@dynamic isVisible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -269,32 +269,12 @@
     [self updateTrackingAreas];
 }
 
-- (NSAttributedString *)leftAttributedStringValue {
-	return [leftCell attributedStringValue];
-}
-
-- (void)setLeftAttributedStringValue:(NSAttributedString *)object {
-	[leftCell setAttributedStringValue:object];
-	[self setNeedsDisplay:YES];
-    [self updateTrackingAreas];
-}
-
 - (NSString *)rightStringValue {
 	return [rightCell stringValue];
 }
 
 - (void)setRightStringValue:(NSString *)aString {
 	[rightCell setStringValue:aString];
-	[self setNeedsDisplay:YES];
-    [self updateTrackingAreas];
-}
-
-- (NSAttributedString *)rightAttributedStringValue {
-	return [rightCell attributedStringValue];
-}
-
-- (void)setRightAttributedStringValue:(NSAttributedString *)object {
-	[rightCell setAttributedStringValue:object];
 	[self setNeedsDisplay:YES];
     [self updateTrackingAreas];
 }
@@ -373,14 +353,6 @@
 
 - (void)setRightState:(NSInteger)newState {
     [rightCell setState:newState];
-}
-
-- (NSInteger)state {
-    return [self rightState];
-}
-
-- (void)setState:(NSInteger)newState {
-    [self setRightState:newState];
 }
 
 - (void)setIconCell:(id)newIconCell {
