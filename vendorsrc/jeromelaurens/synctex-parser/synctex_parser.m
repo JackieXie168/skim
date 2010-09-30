@@ -2483,6 +2483,8 @@ bail:
 	goto next_sheet;
 }
 
+int _synctex_open(const char * output, const char * build_directory, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_modeRef);
+
 /*  Where the synctex scanner is created. */
 synctex_scanner_t synctex_scanner_new_with_output_file(const char * output, const char * build_directory, int parse) {
 	gzFile file = NULL;
