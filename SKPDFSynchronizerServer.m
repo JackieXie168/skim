@@ -275,6 +275,8 @@ struct SKServerFlags {
 }
 
 - (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep isTeX:(BOOL)isTeX {
+    if (fileRep == NULL)
+        return nil;
     NSString *file = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
     return [self sourceFileForFileName:[file autorelease] isTeX:isTeX removeQuotes:NO];
 }
@@ -536,8 +538,8 @@ struct SKServerFlags {
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
-            filename = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease];
-            [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
+            if (filename = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease])
+                [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
         } while (node = synctex_node_next(node));
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
@@ -552,7 +554,7 @@ struct SKServerFlags {
         if (node) {
             *linePtr = MAX(synctex_node_line(node), 1) - 1;
             *filePtr = [self sourceFileForFileSystemRepresentation:synctex_scanner_get_name(scanner, synctex_node_tag(node)) isTeX:YES];
-            rv = YES;
+            rv = *filePtr != nil;
         }
     }
     return rv;
