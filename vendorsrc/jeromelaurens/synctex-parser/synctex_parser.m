@@ -93,6 +93,8 @@ Thu Jun 19 09:39:21 UTC 2008
 #include "synctex_parser.h"
 #include "synctex_parser_utils.h"
 
+static const char * synctex_io_modes[synctex_io_mode_append+2] = {"r","rb","a","ab"};
+
 /*  each synctex node has a class */
 typedef struct __synctex_class_t _synctex_class_t;
 typedef _synctex_class_t * synctex_class_t;
