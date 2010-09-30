@@ -528,7 +528,7 @@ struct SKServerFlags {
     BOOL rv = NO;
     if (scanner)
         synctex_scanner_free(scanner);
-    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation]);
+    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation], NULL, 1);
     if (scanner) {
         [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) isTeX:NO]];
         if (filenames)
