@@ -322,7 +322,7 @@ int _synctex_get_name(const char * output, const char * build_directory, char **
 			char * build_quoted = NULL;
 			char * build_quoted_gz = NULL;
 			struct stat buf;
-			time_t time = 0;
+			time_t t = 0;
 			/*  Create corename: let temp point to the dot before the path extension of basename;
 			 *  We start form the \0 terminating character and scan the string upward until we find a dot.
 			 *  The first dot is not accepted. */
@@ -418,8 +418,8 @@ int _synctex_get_name(const char * output, const char * build_directory, char **
 					free(FILENAME);\
 					FILENAME = NULL;\
 				} else { \
-					if(buf.st_mtime>time) { \
-						time=buf.st_mtime; \
+					if(buf.st_mtime>t) { \
+						t=buf.st_mtime; \
 						synctex_name = FILENAME; \
 						compress_mode = COMPRESS_MODE; \
 					} \
