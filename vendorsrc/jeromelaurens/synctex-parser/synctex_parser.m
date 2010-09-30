@@ -91,7 +91,7 @@ Thu Jun 19 09:39:21 UTC 2008
  */
 
 #include "synctex_parser.h"
-#include <synctex_parser_utils.h>
+#include "synctex_parser_utils.h"
 
 /*  each synctex node has a class */
 typedef struct __synctex_class_t _synctex_class_t;
