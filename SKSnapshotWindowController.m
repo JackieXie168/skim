@@ -218,7 +218,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [self performSelector:@selector(notifiyDidFinishSetup) withObject:nil afterDelay:0.1];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
     [self window];
     
     [pdfView setScaleFactor:factor];
@@ -260,9 +260,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
     [self setPdfDocument:pdfDocument
-             scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
           goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntegerValue]
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
+             scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
                 autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]];
     
     if ([setup objectForKey:WINDOWFRAME_KEY])

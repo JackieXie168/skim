@@ -2012,9 +2012,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [swc setDelegate:self];
     
     [swc setPdfDocument:[pdfView document]
-            scaleFactor:scaleFactor
          goToPageNumber:pageNum
                    rect:rect
+            scaleFactor:scaleFactor
                autoFits:autoFits];
     
     [swc setForceOnTop:[self interactionMode] != SKNormalMode];

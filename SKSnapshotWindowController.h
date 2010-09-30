@@ -64,7 +64,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 @property (nonatomic, readonly) NSAttributedString *thumbnailAttachment, *thumbnail512Attachment, *thumbnail256Attachment, *thumbnail128Attachment, *thumbnail64Attachment, *thumbnail32Attachment;
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits;
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup;
 
 - (BOOL)isPageVisible:(PDFPage *)page;
