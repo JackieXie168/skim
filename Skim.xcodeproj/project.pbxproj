@@ -182,6 +182,7 @@
 		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
 		CE8D12381140303400301B9F /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8D12371140303400301B9F /* FindPanel.xib */; };
+		CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94D17A125535DE0053A520 /* synctex_parser_utils.m */; };
 		CE9767901160D65F008DCB8F /* MainToolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE97678E1160D65F008DCB8F /* MainToolbar.strings */; };
 		CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */; };
 		CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */; };
@@ -811,6 +812,8 @@
 		CE8BF068115F859A0029020F /* LeftSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftSideView.xib; sourceTree = "<group>"; };
 		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
 		CE8D12371140303400301B9F /* FindPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindPanel.xib; sourceTree = "<group>"; };
+		CE94D179125535DE0053A520 /* synctex_parser_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_utils.h; sourceTree = "<group>"; };
+		CE94D17A125535DE0053A520 /* synctex_parser_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser_utils.m; sourceTree = "<group>"; };
 		CE97678F1160D65F008DCB8F /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MainToolbar.strings; sourceTree = "<group>"; };
 		CE9767911160D66D008DCB8F /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/MainToolbar.strings; sourceTree = "<group>"; };
 		CE9767921160D66F008DCB8F /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/MainToolbar.strings; sourceTree = "<group>"; };
@@ -1791,8 +1794,10 @@
 		CE33639E0E26E086005F99E6 /* SyncTeX */ = {
 			isa = PBXGroup;
 			children = (
-				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
+				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
+				CE94D179125535DE0053A520 /* synctex_parser_utils.h */,
+				CE94D17A125535DE0053A520 /* synctex_parser_utils.m */,
 			);
 			name = SyncTeX;
 			path = "jeromelaurens/synctex-parser";
@@ -2604,6 +2609,7 @@
 				CE121AC81180644A00951425 /* SKScriptMenu.m in Sources */,
 				CEFDEA9111F6FF8300D6FEBA /* NSScreen_SKExtensions.m in Sources */,
 				CE1C77B6123FB41E00C73F1A /* SKNoteTextView.m in Sources */,
+				CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
