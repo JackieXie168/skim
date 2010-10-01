@@ -275,8 +275,6 @@ struct SKServerFlags {
 }
 
 - (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep isTeX:(BOOL)isTeX {
-    if (fileRep == NULL)
-        return nil;
     NSString *file = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
     return [self sourceFileForFileName:[file autorelease] isTeX:isTeX removeQuotes:NO];
 }
@@ -535,11 +533,15 @@ struct SKServerFlags {
             [filenames removeAllObjects];
         else
             filenames = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
+        const char *fileRep;
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
-            if (filename = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease])
+            if (fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node))) {
+                filename = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
                 [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
+                [filename release];
+            }
         } while (node = synctex_node_next(node));
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
