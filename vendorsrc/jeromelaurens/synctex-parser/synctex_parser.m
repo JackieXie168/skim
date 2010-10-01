@@ -2535,14 +2535,12 @@ int __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_
 /*	This functions opens the file at the "output" given location.
  *  It manages the problem of quoted filenames that appear with pdftex an filenames containing the space character.
  *  In TeXLive 2008, the synctex file created with pdftex did contain unexpected quotes.
- *	This function will remove them if possible.
  *	0 on success, non 0 on error. */
 int __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_modeRef) {
 #	define synctex_name (*synctex_name_ref)
 #	define the_file (*file_ref)
 #	define io_mode (*io_modeRef)
 	if(synctex_name_ref && file_ref) {
-		char * quoteless = NULL;
 		const char * mode = synctex_io_modes[io_mode];
 		size_t size = 0;
 		/*  now create the synctex file name */
@@ -2561,7 +2559,6 @@ return_on_error:
 			synctex_name = NULL;/*  Don't forget to reinitialize. */
 			the_file = NULL;	/*  Here as well */
 			io_mode &= ~synctex_compress_mode_gz;/*  Here as well */
-			free(quoteless);
 			return 2;
 		}
 		/*  remove the last path extension if any */
@@ -2576,18 +2573,13 @@ return_on_error:
 				/*	There was an error or quoting does not make sense: */
 				goto return_on_error;
 			}
-			quoteless = synctex_name;
+			free(synctex_name);
 			synctex_name = quoted;
 		}
 		/*	Now add the first path extension. */
 		if(synctex_name != strcat(synctex_name,synctex_suffix)){
 			_synctex_error("!  __synctex_open: Concatenation problem (can't add suffix '%s')\n",synctex_suffix);
 			goto return_on_error;
-		}
-		/*	To quoteless as well. */
-		if(quoteless && (quoteless != strcat(quoteless,synctex_suffix))){
-			free(quoteless);
-			quoteless = NULL;
 		}
 		if(NULL == (the_file = gzopen(synctex_name,mode))) {
 			/*  Could not open this file */
@@ -2603,11 +2595,6 @@ return_on_error:
 			}
 			io_mode |= synctex_compress_mode_gz;
 			mode = synctex_io_modes[io_mode]; /* the file is a compressed and is a binary file, this caused errors on Windows */
-			/*	To quoteless as well. */
-			if(quoteless && (quoteless != strcat(quoteless,synctex_suffix_gz))){
-				free(quoteless);
-				quoteless = NULL;
-			}
 			if(NULL == (the_file = gzopen(synctex_name,mode))) {
 				/*  Could not open this file */
 				if(errno != ENOENT) {
@@ -2615,38 +2602,6 @@ return_on_error:
 					_synctex_error("SyncTeX: could not open %s, error %i\n",synctex_name,errno);
 				}
 				goto return_on_error;
-			}
-		}
-		/*	At this point, the file is properly open.
-		 *  If we are in the add_quotes mode, we change the file name by removing the quotes. */
-		if(quoteless) {
-			free(quoteless);
-			return 0;
-			gzclose(the_file);
-			if(rename(synctex_name,quoteless)) {
-				_synctex_error("SyncTeX: could not rename %s to %s, error %i\n",synctex_name,quoteless,errno);
-				/*	Reopen the file. */
-				if(NULL == (the_file = gzopen(synctex_name,mode))) {
-					/*  Could not open this file */
-					if(errno != ENOENT) {
-						/*  The file does exist, this is a lower lever error, I can't do anything. */
-						_synctex_error("SyncTeX: could not open again %s, error %i\n",synctex_name,errno);
-					}
-					goto return_on_error;
-				}
-			} else {
-				if(NULL == (the_file = gzopen(quoteless,mode))) {
-					/*  Could not open this file */
-					if(errno != ENOENT) {
-						/*  The file does exist, this is a lower lever error, I can't do anything. */
-						_synctex_error("SyncTeX: could not open renamed %s, error %i\n",quoteless,errno);
-					}
-					goto return_on_error;
-				}
-				/*  The quote free file name should replace the old one:*/
-				free(synctex_name);
-				synctex_name = quoteless;
-				quoteless = NULL;
 			}
 		}
 		return 0;
