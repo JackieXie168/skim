@@ -2620,6 +2620,8 @@ return_on_error:
 		/*	At this point, the file is properly open.
 		 *  If we are in the add_quotes mode, we change the file name by removing the quotes. */
 		if(quoteless) {
+			free(quoteless);
+			return 0;
 			gzclose(the_file);
 			if(rename(synctex_name,quoteless)) {
 				_synctex_error("SyncTeX: could not rename %s to %s, error %i\n",synctex_name,quoteless,errno);
