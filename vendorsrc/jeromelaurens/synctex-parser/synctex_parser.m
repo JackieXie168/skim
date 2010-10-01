@@ -2560,6 +2560,7 @@ return_on_error:
 			free(synctex_name);
 			synctex_name = NULL;/*  Don't forget to reinitialize. */
 			the_file = NULL;	/*  Here as well */
+			io_mode &= ~synctex_compress_mode_gz;/*  Here as well */
 			free(quoteless);
 			return 2;
 		}
@@ -2600,7 +2601,7 @@ return_on_error:
 				_synctex_error("!  __synctex_open: Concatenation problem (can't add suffix '%s')\n",synctex_suffix_gz);
 				goto return_on_error;
 			}
-			++io_mode;
+			io_mode |= synctex_compress_mode_gz;
 			mode = synctex_io_modes[io_mode]; /* the file is a compressed and is a binary file, this caused errors on Windows */
 			/*	To quoteless as well. */
 			if(quoteless && (quoteless != strcat(quoteless,synctex_suffix_gz))){
