@@ -50,6 +50,8 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
                                      {@"LyX",            @"lyxeditor",   @"\"%file\" %line"}, 
                                      {@"TeXMaker",       @"texmaker",    @"\"%file\" -line %line"}, 
                                      {@"AlphaX",         @"alphac",      @"+%line \"%file\""}};
+#define SKTeXEditorCount (sizeof(SKTeXEditors) / sizeof(SKTeXEditor))
+#define SKNullTeXEditor ((SKTeXEditor){nil, nil, nil})
 
 @implementation SKSyncPreferences
 
@@ -71,7 +73,7 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
     SKAutoSizeLabelFields(texEditorLabels, texEditorControls, YES);
     
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
-    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
+    NSInteger i = SKTeXEditorCount;
     NSInteger idx = -1;
     NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
     
@@ -97,13 +99,13 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 - (NSImage *)icon { return [NSImage imageNamed:@"SyncPreferences"]; }
 
 + (SKTeXEditor)TeXEditorForPreset:(NSString *)name {
-    NSInteger i = sizeof(SKTeXEditors) / sizeof(SKTeXEditor);
+    NSInteger i = SKTeXEditorCount;
     while (i--) {
         SKTeXEditor editor = SKTeXEditors[i];
         if ([editor.name isEqualToString:name])
             return editor;
     }
-    return (SKTeXEditor){nil, nil, nil};
+    return SKNullTeXEditor;
 }
 
 #pragma mark Actions
