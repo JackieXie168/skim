@@ -2,7 +2,7 @@
 //  SKPDFPage.h
 //  Skim
 //
-//  Created by Christiaan on 9/4/09.
+//  Created by Christiaan Hofman on 9/4/09.
 /*
  This software is Copyright (c) 2009-2010
  Christiaan Hofman. All rights reserved.

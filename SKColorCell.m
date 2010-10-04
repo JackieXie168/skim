@@ -2,7 +2,7 @@
 //  SKColorCell.m
 //  Skim
 //
-//  Created by Christiaan on 10/5/09.
+//  Created by Christiaan Hofman on 10/5/09.
 /*
  This software is Copyright (c) 2009-2010
  Christiaan Hofman. All rights reserved.

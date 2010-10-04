@@ -2,7 +2,7 @@
 //  SKDisplayPreferences.m
 //  Skim
 //
-//  Created by Christiaan on 3/14/10.
+//  Created by Christiaan Hofman on 3/14/10.
 /*
  This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.

@@ -2,7 +2,7 @@
 //  SKScriptMenu.m
 //  Skim
 //
-//  Created by Christiaan on 4/22/10.
+//  Created by Christiaan Hofman on 4/22/10.
 /*
  This software is Copyright (c) 2010
  Christiaan Hofman. All rights reserved.

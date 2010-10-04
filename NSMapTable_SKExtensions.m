@@ -2,7 +2,7 @@
 //  NSMapTable_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan on 10/19/09.
+//  Created by Christiaan Hofman on 10/19/09.
 /*
  This software is Copyright (c) 2009-2010
  Christiaan Hofman. All rights reserved.
