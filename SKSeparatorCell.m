@@ -2,7 +2,7 @@
 //  SKSeparatorCell.m
 //  Skim
 //
-//  Created by Christiaan on 9/25/09.
+//  Created by Christiaan Hofman on 9/25/09.
 /*
  This software is Copyright (c) 2009-2010
  Christiaan Hofman. All rights reserved.
