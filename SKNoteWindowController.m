@@ -120,6 +120,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)dealloc {
+    @try { [textView unbind:[self isNoteType] ? @"attributedString" : @"value"]; }
+    @catch (id e) {}
     [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
     [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
     [note removeObserver:self forKeyPath:SKNPDFAnnotationStringKey];
