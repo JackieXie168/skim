@@ -335,6 +335,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [colors setArray:newColors];
     if (shouldResize)
         [self sizeToFit];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
 }
 
 - (NSColor *)color {
