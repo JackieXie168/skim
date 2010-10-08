@@ -158,7 +158,7 @@ do { \
     NSArray *cells = [self cells];
     NSString *toolTip;
     [cells localizeStringsFromTable:table];
-    for (id cell in [self cells]) {
+    for (id cell in cells) {
         if (toolTip = localizedStringFromTable([self toolTipForCell:cell], table))
             [self setToolTip:toolTip forCell:cell];
     }
