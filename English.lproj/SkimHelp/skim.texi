@@ -1325,7 +1325,7 @@ For example, you can change the colors of all notes or highlights of a certain t
 @heading Open this for me
 @multitable {}
 @item @uref{http://sourceforge.net/apps/mediawiki/skim/index.php?title=AppleScript, AppleScript page on the Skim Wiki}
-@item @uref{help:runscript=Skim%20Help/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim dictionary in Script Editor}
+@item @uref{help:runscript=SkimHelp/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim dictionary in Script Editor}
 @item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
 @item @uref{http://www.apple.com/macosx/features/applescript/, AppleScript website}
 @end multitable
