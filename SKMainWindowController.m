@@ -1291,6 +1291,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     // Set up presentation mode
     [pdfView setBackgroundColor:[NSColor clearColor]];
     [pdfView setAutoScales:YES];
@@ -1323,13 +1326,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)fadeInFullScreenWindowWithBackgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
-    // remember normal setup to return to
-    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-    [savedNormalSetup setDictionary:[self currentPDFSettings]];
-    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
-    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
-    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
-    
     if ([[mainWindow firstResponder] isDescendantOf:pdfSplitView])
         [mainWindow makeFirstResponder:nil];
     
@@ -1436,6 +1432,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     mwcFlags.isSwitchingFullScreen = 1;
     
+    // remember normal setup to return to, we must do this before changing the interactionMode
+    if (wasInteractionMode == SKNormalMode)
+        [savedNormalSetup setDictionary:[self currentPDFSettings]];
+    
     interactionMode = SKFullScreenMode;
     
     if (wasInteractionMode == SKPresentationMode) {
@@ -1488,6 +1488,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSColor *backgroundColor = [NSColor blackColor];
     NSInteger level = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSNormalWindowLevel : NSPopUpMenuWindowLevel;
     PDFPage *page = [[self pdfView] currentPage];
+    
+    // remember normal setup to return to, we must do this before changing the interactionMode
+    if (wasInteractionMode == SKNormalMode)
+        [savedNormalSetup setDictionary:[self currentPDFSettings]];
     
     mwcFlags.isSwitchingFullScreen = 1;
     
