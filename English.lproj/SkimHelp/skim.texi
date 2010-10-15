@@ -249,7 +249,7 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 @item To jump to the next page, press the Down Arrow or Page Down key. To jump to the previous page, press the Up Arrow or Page Up key.
 @end itemize
 @itemize
-@item To use the vertical scroll bar to scroll through a PDF with several pages, choose PDF > PDF Display > Continuous.
+@item To use the vertical scroll bar to scroll through a PDF with several pages, choose PDF > PDF Display > Single Page Continuous or PDF > PDF Display > Two Pages Continuous.
 @end itemize
 @itemize
 @item To view a specific page in a PDF document, type the page number that you want to view in the Page Number field in the toolbar, then press Return.
@@ -277,7 +277,7 @@ You can also scroll pages by dragging with the mouse.
 @box{taskbox}
 @heading To use the vertical scroll bar to scroll through the pages of the document:
 @itemize
-@item Choose PDF > PDF Display > Continuous.
+@item Choose PDF > PDF Display > Single Page Continuous or PDF > PDF Display > Two Pages Continuous.
 @end itemize
 @heading To scroll by dragging:
 @itemize
@@ -500,10 +500,10 @@ Viewing pages side-by-side lets you display more of a document on the screen.
 
 @box{taskbox}
 @itemize
-@item To view two pages side-by-side, choose PDF > PDF Display > Facing Pages. If you want the first page to be a right-hand page, as it would be in a book, choose PDF > PDF Display > Book Mode. Otherwise, the first page will be a left-hand page. 
+@item To view two pages side-by-side, choose PDF > PDF Display > Two Pages or PDF > PDF Display > Two Pages Continuous. If you want the first page to be a right-hand page, as it would be in a book, choose PDF > PDF Display > Book Mode. Otherwise, the first page will be a left-hand page. 
 @end itemize
 @itemize
-@item To stop viewing pages side-by-side, choose PDF > PDF Display > Single Pages.
+@item To stop viewing pages side-by-side, choose PDF > PDF Display > Single Page or PDF > PDF Display > Single Page Continuous.
 @end itemize
 @endbox
 

@@ -250,7 +250,7 @@ Als u in Skim een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geo
 @item Om naar de volgende pagina te gaan, drukt u op de Pijl-Omlaagtoets of de Pagina Omlaag-toets. Om naar de vorige pagina te gaan, drukt u op de Pijl-Omhoogtoets of de Pagina Omhoog-toets. 
 @end itemize
 @itemize
-@item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u PDF > PDF Weergave > Doorlopend. 
+@item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u PDF > 'PDF weergave' > 'Enkele pagina's doorlopend' of PDF > 'PDF weergave' > 'Twee pagina's doorlopend'. 
 @end itemize
 @itemize
 @item Om een bepaalde pagina in een PDF-bestand te bekijken, typt u het paginanummer dat u wilt bekijken in het veld Pagina in de knoppenbalk en drukt u vervolgens op de Return-toets.
@@ -279,7 +279,7 @@ U kunt ook bladeren met behulp van de muis.
 @box{taskbox}
 @heading Om met de verticale schuifbalk door de pagina's van een document bladeren:
 @itemize
-@item Kies PDF > PDF Weergave > Doorlopend.
+@item Kies PDF > 'PDF weergave' > 'Enkele pagina's doorlopend' of PDF > 'PDF weergave' > 'Twee pagina's doorlopend'.
 @end itemize
 @heading Om te bladeren door te slepen:
 @itemize
@@ -502,10 +502,10 @@ Als u pagina's naast elkaar weergeeft, is een groter gedeelte van een document z
 
 @box{taskbox}
 @itemize
-@item Om twee PDF-pagina's naast elkaar weer te geven, kiest u PDF > 'PDF weergave' > 'Tegenoverliggende pagina's'. Als u wilt dat de eerste pagina een rechterpagina is, net als in een boek, kiest u PDF > 'PDF weergave' > Boekmodus. Als deze optie uitgeschakeld is, wordt de eerste pagina weergegeven als een linkerpagina.
+@item Om twee PDF-pagina's naast elkaar weer te geven, kiest u PDF > 'PDF weergave' > 'Twee pagina's' of PDF > 'PDF weergave' > 'Twee pagina's doorlopend'. Als u wilt dat de eerste pagina een rechterpagina is, net als in een boek, kiest u PDF > 'PDF weergave' > Boekmodus. Als deze optie uitgeschakeld is, wordt de eerste pagina weergegeven als een linkerpagina.
 @end itemize
 @itemize
-@item Als u de weergave van twee PDF-pagina's naast elkaar wilt stoppen, kiest u PDF > 'PDF weergave' > 'Enkele pagina's'.
+@item Als u de weergave van twee PDF-pagina's naast elkaar wilt stoppen, kiest u PDF > 'PDF weergave' > 'Enkele pagina's' of PDF > 'PDF weergave' > 'Enkele pagina's doorlopend'.
 @end itemize
 @endbox
 
