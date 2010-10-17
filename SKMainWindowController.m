@@ -133,8 +133,8 @@
 #define RIGHTSIDEPANEWIDTH_KEY      @"rightSidePaneWidth"
 #define SCALEFACTOR_KEY             @"scaleFactor"
 #define AUTOSCALES_KEY              @"autoScales"
-#define DISPLAYPAGEBREAKS_KEY       @"displaysPageBreaks"
-#define DISPLAYASBOOK_KEY           @"displaysAsBook" 
+#define DISPLAYSPAGEBREAKS_KEY      @"displaysPageBreaks"
+#define DISPLAYSASBOOK_KEY          @"displaysAsBook" 
 #define DISPLAYMODE_KEY             @"displayMode"
 #define DISPLAYBOX_KEY              @"displayBox"
 #define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
@@ -567,9 +567,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [pdfView setAutoScales:[number boolValue]];
     if ([pdfView autoScales] == NO && (number = [setup objectForKey:SCALEFACTOR_KEY]))
         [pdfView setScaleFactor:[number doubleValue]];
-    if (number = [setup objectForKey:DISPLAYPAGEBREAKS_KEY])
+    if (number = [setup objectForKey:DISPLAYSPAGEBREAKS_KEY])
         [pdfView setDisplaysPageBreaks:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAYASBOOK_KEY])
+    if (number = [setup objectForKey:DISPLAYSASBOOK_KEY])
         [pdfView setDisplaysAsBook:[number boolValue]];
     if (number = [setup objectForKey:DISPLAYMODE_KEY])
         [pdfView setDisplayMode:[number integerValue]];
@@ -581,8 +581,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
     if ([self interactionMode] == SKNormalMode) {
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYPAGEBREAKS_KEY];
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYASBOOK_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYSPAGEBREAKS_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYSASBOOK_KEY];
         [setup setObject:[NSNumber numberWithInteger:[pdfView displayBox]] forKey:DISPLAYBOX_KEY];
         [setup setObject:[NSNumber numberWithDouble:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
         [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTOSCALES_KEY];
