@@ -39,8 +39,6 @@
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSFileManager_SKExtensions.h"
-#import "NSURL_SKExtensions.h"
-#import "NSString_SKExtensions.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
@@ -171,11 +169,11 @@ static NSSet *infoKeys = nil;
     NSString *fileName = [filePath lastPathComponent];
     if (fileName == nil) {
         if ([[URL path] length] > 1) {
-            fileName = [URL lastPathComponent];
+            fileName = [[URL path] lastPathComponent];
         } else {
             fileName = [URL host];
             if (fileName == nil)
-                fileName = [[[URL resourceSpecifier] lastPathComponent] stringByReplacingPercentEscapes];
+                fileName = [[[URL resourceSpecifier] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }
     }
     return fileName;
