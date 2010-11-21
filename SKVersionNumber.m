@@ -47,7 +47,7 @@
 {
     SKVersionNumber *versionNumber = [[self alloc] initWithVersionString:versionString];
     SKVersionNumber *otherVersionNumber = [[self alloc] initWithVersionString:otherVersionString];
-    NSComparisonResult result = [versionNumber compareToVersionNumber:otherVersionNumber];
+    NSComparisonResult result = [versionNumber compare:otherVersionNumber];
     [versionNumber release];
     [otherVersionNumber release];
     return result;
@@ -185,10 +185,10 @@
 {
     if ([otherObject isMemberOfClass:[self class]] == NO)
         return NO;
-    return [self compareToVersionNumber:(SKVersionNumber *)otherObject] == NSOrderedSame;
+    return [self compare:(SKVersionNumber *)otherObject] == NSOrderedSame;
 }
 
-- (NSComparisonResult)compareToVersionNumber:(SKVersionNumber *)otherVersion;
+- (NSComparisonResult)compare:(SKVersionNumber *)otherVersion;
 {
     if (otherVersion == nil)
         return NSOrderedAscending;
