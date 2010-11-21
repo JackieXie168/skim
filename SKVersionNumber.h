@@ -66,6 +66,6 @@ enum {
 
 - (NSInteger)componentAtIndex:(NSUInteger)componentIndex;
 
-- (NSComparisonResult)compareToVersionNumber:(SKVersionNumber *)otherVersion;
+- (NSComparisonResult)compare:(SKVersionNumber *)otherVersion;
 
 @end
