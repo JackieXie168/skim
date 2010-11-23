@@ -1070,7 +1070,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     if (noErr == LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL))
         mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
-    mailAppName = @"PostboxExpress";
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
                        @"activate\n"
