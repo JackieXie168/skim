@@ -562,13 +562,15 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     NSIndexSpecifier *startSpec = nil;
     NSIndexSpecifier *endSpec = nil;
     NSScriptObjectSpecifier *textSpec = [[NSPropertySpecifier alloc] initWithContainerSpecifier:[page objectSpecifier] key:@"richText"];
+    NSScriptClassDescription *containerClassDescription = nil;
     
     if (textSpec) {
-        if (startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:range.location]) {
+        containerClassDescription = [textSpec keyClassDescription];
+        if (startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:range.location]) {
             if (range.length == 1) {
                 [ranges addObject:startSpec];
-            } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&
-                       (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec])) {
+            } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&
+                       (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec])) {
                 [ranges addObject:rangeSpec];
                 [rangeSpec release];
             }
