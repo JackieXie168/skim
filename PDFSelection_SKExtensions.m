@@ -571,7 +571,7 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
                 [ranges addObject:startSpec];
             } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&
                        (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec])) {
-                // in theory we should set the contentSpecifier of startSpec and endSpec to nil, and set containerIsRangeContainerObject to YES, but then AppleScript raises an errAEImpossibleRange error
+                // in theory we should set the contentSpecifier of startSpec and endSpec to nil, and set containerIsRangeContainerObject to YES, but then AppleScript raises an errAENoSuchObject error
                 [ranges addObject:rangeSpec];
                 [rangeSpec release];
             }
