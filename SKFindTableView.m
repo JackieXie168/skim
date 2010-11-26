@@ -43,7 +43,8 @@
 @implementation SKFindTableView
 
 - (void)awakeFromNib {
-    [super awakeFromNib];
+    if ([[SKFindTableView superclass] instancesRespondToSelector:_cmd])
+        [super awakeFromNib];
     [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
 }
 

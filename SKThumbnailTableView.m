@@ -137,7 +137,8 @@
 }
 
 - (void)awakeFromNib {
-    [super awakeFromNib];
+    if ([[SKThumbnailTableView superclass] instancesRespondToSelector:_cmd])
+        [super awakeFromNib];
     NSScroller *scroller = [[self enclosingScrollView] verticalScroller];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
                                                  name:SKScrollerWillScrollNotification object:scroller];
