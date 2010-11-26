@@ -1,8 +1,8 @@
 //
-//  SKJoinCommand.h
+//  SKScriptCommand.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 6/4/08.
+//  Created by Christiaan Hofman on 11/26/10.
 /*
  This software is Copyright (c) 2008-2010
  Christiaan Hofman. All rights reserved.
@@ -37,8 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKScriptCommand.h"
 
 
-@interface SKJoinCommand : SKScriptCommand
+@interface SKScriptCommand : NSScriptCommand
 @end
