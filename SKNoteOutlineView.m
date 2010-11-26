@@ -50,7 +50,8 @@
 @implementation SKNoteOutlineView
 
 - (void)awakeFromNib {
-    [super awakeFromNib];
+    if ([[SKNoteOutlineView superclass] instancesRespondToSelector:_cmd])
+        [super awakeFromNib];
     
     [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
