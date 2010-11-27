@@ -46,6 +46,11 @@
 
 #define ELLIPSIS_CHARACTER 0x2026
 
+@interface NSTextStorage (SKNSSubTextStoragePrivateDeclarations)
+- (NSRange)range;
+@end
+
+
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
 // defined on 10.6
 - (NSIndexSet *)indexOfCharactersOnPage:(PDFPage *)page;
@@ -373,21 +378,35 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     }
                 } else {
                     // translate from subtext ranges to character ranges
-                    NSString *string = [textStorage string];
-                    NSArray *substrings = [[textStorage valueForKey:key] valueForKey:@"string"];
-                    if ([substrings count]) {
+                    NSArray *subTextStorages = [textStorage valueForKey:key];
+                    if ([subTextStorages count]) {
+                        NSString *string = nil;
+                        NSArray *substrings = nil;
+                        // The private subclass NSSubTextStorage has a -range method
+                        BOOL knowsRange = [[subTextStorages objectAtIndex:0] respondsToSelector:@selector(range)];
+                        if (knowsRange == NO) {
+                            // if we can't get the range directly, we try to search a substring
+                            string = [textStorage string];
+                            substrings = [subTextStorages valueForKey:@"string"];
+                        }
                         for (i = 0; i < count; i++) {
                             NSRange range = *(NSRange *)[tmpRanges pointerAtIndex:i];
-                            startIndex = MIN(range.location, [substrings count] - 1);
-                            endIndex = MIN(NSMaxRange(range) - 1, [substrings count] - 1);
+                            startIndex = MIN(range.location, [subTextStorages count] - 1);
+                            endIndex = MIN(NSMaxRange(range) - 1, [subTextStorages count] - 1);
                             if (endIndex == startIndex) endIndex = -1;
                             if (continuous) {
-                                range = rangeOfSubstringOfStringAtIndex(string, substrings, startIndex);
+                                if (knowsRange)
+                                    range = [[subTextStorages objectAtIndex:startIndex] range];
+                                else
+                                    range = rangeOfSubstringOfStringAtIndex(string, substrings, startIndex);
                                 if (range.location == NSNotFound)
                                     continue;
                                 startIndex = range.location;
                                 if (endIndex >= 0) {
-                                    range = rangeOfSubstringOfStringAtIndex(string, substrings, endIndex);
+                                    if (knowsRange)
+                                        range = [[subTextStorages objectAtIndex:endIndex] range];
+                                    else
+                                        range = rangeOfSubstringOfStringAtIndex(string, substrings, endIndex);
                                     if (range.location == NSNotFound)
                                         continue;
                                 }
@@ -398,7 +417,10 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                 if (endIndex == -1) endIndex = startIndex;
                                 NSInteger j;
                                 for (j = startIndex; j <= endIndex; j++) {
-                                    range = rangeOfSubstringOfStringAtIndex(string, substrings, j);
+                                    if (knowsRange)
+                                        range = [[subTextStorages objectAtIndex:j] range];
+                                    else
+                                        range = rangeOfSubstringOfStringAtIndex(string, substrings, j);
                                     if (range.location == NSNotFound)
                                         continue;
                                     range.location += textRange.location;
