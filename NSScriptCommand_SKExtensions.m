@@ -1,5 +1,5 @@
 //
-//  SKScriptCommand.m
+//  NSScriptCommand_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 11/26/10.
@@ -36,10 +36,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKScriptCommand.h"
+#import "NSScriptCommand_SKExtensions.h"
+#import "SKRuntime.h"
 
 
-@implementation SKScriptCommand
+@implementation NSScriptCommand (SKExtensions)
 
 // Workaround for Cocoa Scripting and AppleScript bugs.
 // Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSselection
@@ -58,17 +59,25 @@ static void fixRangeSpecifier(NSScriptObjectSpecifier *specifier) {
     }
 }
 
-- (NSScriptObjectSpecifier *)receiversSpecifier {
-    NSScriptObjectSpecifier *specifier = [super receiversSpecifier];
+static id (*original_receiversSpecifier)(id, SEL) = NULL;
+static id (*original_arguments)(id, SEL) = NULL;
+
+- (NSScriptObjectSpecifier *)replacement_receiversSpecifier {log_method();
+    NSScriptObjectSpecifier *specifier = original_receiversSpecifier(self, _cmd);
     fixRangeSpecifier(specifier);
     return specifier;
 }
 
-- (NSDictionary *)arguments {
-    NSDictionary *arguments = [super arguments];
+- (NSDictionary *)replacement_arguments {
+    NSDictionary *arguments = original_arguments(self, _cmd);
     for (NSString *key in arguments)
         fixRangeSpecifier([arguments objectForKey:key]);
     return arguments;
+}
+
++ (void)load {
+    original_receiversSpecifier = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(receiversSpecifier), @selector(replacement_receiversSpecifier));
+    original_arguments = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(arguments), @selector(original_arguments));
 }
 
 @end
