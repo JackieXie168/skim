@@ -62,7 +62,7 @@ static void fixRangeSpecifier(NSScriptObjectSpecifier *specifier) {
 static id (*original_receiversSpecifier)(id, SEL) = NULL;
 static id (*original_arguments)(id, SEL) = NULL;
 
-- (NSScriptObjectSpecifier *)replacement_receiversSpecifier {log_method();
+- (NSScriptObjectSpecifier *)replacement_receiversSpecifier {
     NSScriptObjectSpecifier *specifier = original_receiversSpecifier(self, _cmd);
     fixRangeSpecifier(specifier);
     return specifier;
