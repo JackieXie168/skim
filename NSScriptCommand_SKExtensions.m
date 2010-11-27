@@ -59,25 +59,23 @@ static void fixRangeSpecifier(NSScriptObjectSpecifier *specifier) {
     }
 }
 
-static id (*original_receiversSpecifier)(id, SEL) = NULL;
-static id (*original_arguments)(id, SEL) = NULL;
+static void (*original_setReceiversSpecifier)(id, SEL, id) = NULL;
+static void (*original_setArguments)(id, SEL, id) = NULL;
 
-- (NSScriptObjectSpecifier *)replacement_receiversSpecifier {
-    NSScriptObjectSpecifier *specifier = original_receiversSpecifier(self, _cmd);
-    fixRangeSpecifier(specifier);
-    return specifier;
+- (void)replacement_setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
+    fixRangeSpecifier(receiversSpec);
+    original_setReceiversSpecifier(self, _cmd, receiversSpec);
 }
 
-- (NSDictionary *)replacement_arguments {
-    NSDictionary *arguments = original_arguments(self, _cmd);
-    for (NSString *key in arguments)
-        fixRangeSpecifier([arguments objectForKey:key]);
-    return arguments;
+- (void)replacement_setArguments:(NSDictionary *)args {
+    for (NSString *key in args)
+        fixRangeSpecifier([args objectForKey:key]);
+    original_setArguments(self, _cmd, args);
 }
 
 + (void)load {
-    original_receiversSpecifier = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(receiversSpecifier), @selector(replacement_receiversSpecifier));
-    original_arguments = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(arguments), @selector(original_arguments));
+    original_setReceiversSpecifier = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setReceiversSpecifier:), @selector(replacement_setReceiversSpecifier:));
+    original_setArguments = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setArguments:), @selector(original_setArguments:));
 }
 
 @end
