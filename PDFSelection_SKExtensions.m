@@ -345,7 +345,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     NSRange range = NSMakeRange(0, 0);
                     for (i = 0; i < count; i++) {
                         NSUInteger idx = indices[i];
-                        if (range.length = 0 || idx > NSMaxRange(range)) {
+                        if (range.length == 0 || idx > NSMaxRange(range)) {
                             if (range.length)
                                 [tmpRanges addPointer:&range];
                             range = NSMakeRange(idx, 1);
