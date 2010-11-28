@@ -496,6 +496,35 @@ static char SKMainDocumentDefaultsObservationContext;
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
 
+- (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
+    if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
+        name = [name stringByAppendingString:@"1"];
+    NSData *data;
+    NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
+    NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
+    NSDictionary *options = [[self mainWindowController] presentationOptions];
+    if (options) {
+        info = [[info mutableCopy] autorelease];
+        [(NSMutableDictionary *)info setObject:options forKey:SKPresentationOptionsKey];
+    }
+    [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
+    if (data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding])
+        [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
+    if (data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL])
+        [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
+    if ([[self notes] count] > 0) {
+        if (data = [self notesData])
+            [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"skim"]];
+        if (data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding])
+            [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
+        if (data = [self notesRTFData])
+            [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
+        if (data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]])
+            [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
+    }
+    return [fileWrapper autorelease];
+}
+
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     NSError *error = nil;
@@ -515,34 +544,11 @@ static char SKMainDocumentDefaultsObservationContext;
         if ([[self fileType] isEqualToString:SKXDVDocumentType])
             didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
-        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
-        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
-            name = [name stringByAppendingString:@"1"];
-        NSData *data;
-        NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
-        NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
-        NSDictionary *options = [[self mainWindowController] presentationOptions];
-        if (options) {
-            info = [[info mutableCopy] autorelease];
-            [(NSMutableDictionary *)info setObject:options forKey:SKPresentationOptionsKey];
-        }
-        [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
-        if (data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding])
-            [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
-        if (data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL])
-            [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
-        if ([[self notes] count] > 0) {
-            if (data = [self notesData])
-                [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"skim"]];
-            if (data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding])
-                [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
-            if (data = [self notesRTFData])
-                [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
-            if (data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]])
-                [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
-        }
-        didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
-        [fileWrapper release];
+        NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension]];
+        if (fileWrapper)
+            didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+        else
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] toSkimFileAtURL:absoluteURL error:&error];
     } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
