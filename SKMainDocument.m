@@ -341,7 +341,7 @@ static char SKMainDocumentDefaultsObservationContext;
 #define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
 #endif
 
-- (void)saveNotesToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation {
+- (void)saveNotesToURL:(NSURL *)absoluteURL forSaveOperation:(NSSaveOperationType)saveOperation {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL saveNotesOK = NO;
     
@@ -420,7 +420,7 @@ static char SKMainDocumentDefaultsObservationContext;
         
         if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) {
             // we check for notes and may save a .skim as well:
-            [self saveNotesToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation];
+            [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
         } else if ([typeName isEqualToString:SKPDFBundleDocumentType] && tmpPath) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
