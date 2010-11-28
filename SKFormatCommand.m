@@ -92,6 +92,8 @@
                         docType = NSOfficeOpenXMLTextDocumentType;
                     else if ([ext isEqualToString:@"odt"])
                         docType = NSOpenDocumentTextDocumentType;
+                    else if ([ext isEqualToString:@"webarchive"])
+                        docType = NSWebArchiveTextDocumentType;
                     if (docType && [docType isEqualToString:NSRTFTextDocumentType] == NO) {
                         [mutableDocAttrs setObject:docType forKey:NSDocumentTypeDocumentAttribute];
                         data = [attrText dataFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs error:NULL];
