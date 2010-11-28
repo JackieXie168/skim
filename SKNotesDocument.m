@@ -213,9 +213,9 @@
 - (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError **)outError {
     NSFileWrapper *fileWrapper = nil;
     
-    if (SKIsNotesDocumentType(typeName) || SKIsNotesTextDocumentType(typeName) || SKIsNotesRTFDocumentType(typeName) || SKIsNotesFDFDocumentType(typeName) || [[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
+    if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
         fileWrapper = [super fileWrapperOfType:typeName error:outError];
-    } else if (SKIsNotesRTFDocumentType(typeName)) {
+    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
         fileWrapper = [self notesRTFDFileWrapper];
     } else {
         fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
@@ -230,13 +230,13 @@
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
     NSData *data = nil;
     
-    if (SKIsNotesDocumentType(typeName)) {
+    if ([typeName isEqualToString:SKNotesDocumentType]) {
         data = [self notesData];
-    } else if (SKIsNotesTextDocumentType(typeName)) {
+    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
-    } else if (SKIsNotesRTFDocumentType(typeName)) {
+    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
         data = [self notesRTFData];
-    } else if (SKIsNotesFDFDocumentType(typeName)) {
+    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
         NSString *filename = [[self fileURL] pathReplacingPathExtension:@"pdf"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:filename])
             filename = [filename lastPathComponent];
@@ -257,9 +257,9 @@
     BOOL didRead = NO;
     NSArray *array = nil;
     
-    if (SKIsNotesDocumentType(typeName)) {
+    if ([typeName isEqualToString:SKNotesDocumentType]) {
         array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    } else if (SKIsNotesFDFDocumentType(typeName)) {
+    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }
     
@@ -306,14 +306,14 @@
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && SKIsNotesDocumentType(typeName))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && [typeName isEqualToString:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || SKIsNotesDocumentType(typeName))
+    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || SKIsNotesRTFDocumentType(typeName))
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || SKIsNotesTextDocumentType(typeName))
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;

@@ -246,7 +246,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
             Class docClass;
             SKBookmark *bookmark;
-            if (SKIsFolderDocumentType(fileType)) {
+            if ([fileType isEqualToString:SKFolderDocumentType]) {
                 if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
                     [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];

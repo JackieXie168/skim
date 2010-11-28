@@ -38,25 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-// these functions are compatible for 10.4 and 10.5
-
-extern BOOL SKIsPDFDocumentType(NSString *docType);
-extern BOOL SKIsPDFBundleDocumentType(NSString *docType);
-extern BOOL SKIsEmbeddedPDFDocumentType(NSString *docType);
-extern BOOL SKIsBarePDFDocumentType(NSString *docType);
-extern BOOL SKIsNotesDocumentType(NSString *docType);
-extern BOOL SKIsNotesTextDocumentType(NSString *docType);
-extern BOOL SKIsNotesRTFDocumentType(NSString *docType);
-extern BOOL SKIsNotesRTFDDocumentType(NSString *docType);
-extern BOOL SKIsNotesFDFDocumentType(NSString *docType);
-extern BOOL SKIsPostScriptDocumentType(NSString *docType);
-extern BOOL SKIsBarePostScriptDocumentType(NSString *docType);
-extern BOOL SKIsDVIDocumentType(NSString *docType);
-extern BOOL SKIsBareDVIDocumentType(NSString *docType);
-extern BOOL SKIsXDVDocumentType(NSString *docType);
-extern BOOL SKIsBareXDVDocumentType(NSString *docType);
-extern BOOL SKIsFolderDocumentType(NSString *docType);
-
 extern NSString *SKPDFDocumentType;
 extern NSString *SKPDFBundleDocumentType;
 extern NSString *SKEmbeddedPDFDocumentType;
