@@ -68,25 +68,6 @@ NSString *SKXDVDocumentType = @"XDV document";
 NSString *SKBareXDVDocumentType = @"XDV Without Notes";
 NSString *SKFolderDocumentType = @"Folder";
 
-#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentType]; }
-
-DEFINE_IS_DOCUMENT_TYPE(PDF)
-DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
-DEFINE_IS_DOCUMENT_TYPE(Notes)
-DEFINE_IS_DOCUMENT_TYPE(PostScript)
-DEFINE_IS_DOCUMENT_TYPE(DVI)
-DEFINE_IS_DOCUMENT_TYPE(XDV)
-DEFINE_IS_DOCUMENT_TYPE(EmbeddedPDF)
-DEFINE_IS_DOCUMENT_TYPE(BarePDF)
-DEFINE_IS_DOCUMENT_TYPE(NotesText)
-DEFINE_IS_DOCUMENT_TYPE(NotesRTF)
-DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
-DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
-DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
-DEFINE_IS_DOCUMENT_TYPE(BareDVI)
-DEFINE_IS_DOCUMENT_TYPE(BareXDV)
-DEFINE_IS_DOCUMENT_TYPE(Folder)
-
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
@@ -166,7 +147,7 @@ NSString *SKDocumentControllerDocumentKey = @"document";
         }
         if (type == nil && outError)
             *outError = error;
-    } else if (SKIsNotesFDFDocumentType(type)) {
+    } else if ([type isEqualToString:SKNotesFDFDocumentType]) {
         // Springer sometimes sends PDF files with an .fdf extension for review, huh?
         NSString *fileName = [inAbsoluteURL path];
         NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
@@ -313,7 +294,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    if (SKIsNotesDocumentType(type)) {
+    if ([type isEqualToString:SKNotesDocumentType]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
             NSString *pdfFile = [absoluteURL pathReplacingPathExtension:@"pdf"];
@@ -321,7 +302,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
                 absoluteURL = [NSURL fileURLWithPath:pdfFile];
         }
-    } else if (SKIsFolderDocumentType(type)) {
+    } else if ([type isEqualToString:SKFolderDocumentType]) {
         NSDocument *doc = nil;
         NSError *error = nil;
         NSString *basePath = [absoluteURL path];
