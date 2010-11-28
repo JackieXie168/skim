@@ -61,6 +61,7 @@ static void fixRangeSpecifier(NSScriptObjectSpecifier *specifier) {
 
 static void (*original_setReceiversSpecifier)(id, SEL, id) = NULL;
 static void (*original_setArguments)(id, SEL, id) = NULL;
+static void (*original_setDirectParameter)(id, SEL, id) = NULL;
 
 - (void)replacement_setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
     fixRangeSpecifier(receiversSpec);
@@ -73,9 +74,15 @@ static void (*original_setArguments)(id, SEL, id) = NULL;
     original_setArguments(self, _cmd, args);
 }
 
+- (void)replacement_setDirectParameter:(id)directParameter {
+    fixRangeSpecifier(directParameter);
+    original_setDirectParameter(self, _cmd, directParameter);
+}
+
 + (void)load {
     original_setReceiversSpecifier = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setReceiversSpecifier:), @selector(replacement_setReceiversSpecifier:));
-    original_setArguments = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setArguments:), @selector(original_setArguments:));
+    original_setArguments = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setArguments:), @selector(replacement_setArguments:));
+    original_setDirectParameter = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setDirectParameter:), @selector(replacement_setDirectParameter:));
 }
 
 @end
