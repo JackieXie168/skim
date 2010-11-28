@@ -61,7 +61,7 @@
         attrString = template;
     else if ([template isKindOfClass:[NSURL class]] == NO)
 		[self setScriptErrorNumber:NSArgumentsWrongScriptError]; 
-    else if ([[NSSet setWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil] containsObject:[[[template path] pathExtension] lowercaseString]])
+    else if ([[NSSet setWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil] containsObject:[[[template path] pathExtension] lowercaseString]])
         attrString = [[[NSAttributedString alloc] initWithURL:template documentAttributes:&docAttrs] autorelease];
     else
         string = [NSString stringWithContentsOfURL:template encoding:NSUTF8StringEncoding error:NULL];
