@@ -311,13 +311,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         while (path = [dirEnum nextObject]) {
             NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
-            if ([self documentClassForContentsOfURL:url])
-                doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error] ?: doc;
+            if ([self documentClassForContentsOfURL:url]) {
+                // if we had a previous error and the caller isn't ignoring errors, we should inform the user now, as we will lose this error
+                if (outError && error)
+                    [self presentError:error];
+                if (doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error])
+                    error = nil;
+            }
         }
-        
         if (doc == nil && outError)
             *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
-        
         return doc;
     }
     return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
