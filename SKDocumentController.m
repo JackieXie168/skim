@@ -308,16 +308,31 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSString *basePath = [absoluteURL path];
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:basePath];
         NSString *path;
+        NSMutableArray *urls = [NSMutableArray array];
         
         while (path = [dirEnum nextObject]) {
             NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
-            if ([self documentClassForContentsOfURL:url]) {
-                // if we had a previous error and the caller isn't ignoring errors, we should inform the user now, as we will lose this error
-                if (outError && error)
-                    [self presentError:error];
-                if (doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error])
-                    error = nil;
-            }
+            if ([self documentClassForContentsOfURL:url])
+                [urls addObject:url];
+        }
+        
+        if ([urls count] > 10) {
+            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]
+                                             defaultButton:NSLocalizedString(@"Cancel", @"Button title")
+                                           alternateButton:NSLocalizedString(@"Open", @"Button title")
+                                               otherButton:nil
+                                 informativeTextWithFormat:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+            
+            if (NSAlertDefaultReturn == [alert runModal])
+                [urls removeAllObjects];
+        }
+        
+        for (NSURL *url in urls) {
+            // if we had a previous error and the caller isn't ignoring errors, we should inform the user now, as we will lose this error
+            if (outError && error)
+                [self presentError:error];
+            if (doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error])
+                error = nil;
         }
         if (doc == nil && outError)
             *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
