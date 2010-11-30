@@ -309,6 +309,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:basePath];
         NSString *path;
         NSMutableArray *urls = [NSMutableArray array];
+        BOOL failed = NO;
         
         while (path = [dirEnum nextObject]) {
             NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
@@ -324,16 +325,17 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                                  informativeTextWithFormat:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
             
             if (NSAlertDefaultReturn == [alert runModal])
-                [urls removeAllObjects];
+                urls = nil;
         }
         
         for (NSURL *url in urls) {
-            // if we had a previous error and the caller isn't ignoring errors, we should inform the user now, as we will lose this error
-            if (outError && error)
-                [self presentError:error];
-            if (doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error])
-                error = nil;
+           doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error];
+           if (doc == nil)
+                failed = YES;
         }
+        
+        if (failed)
+            doc = nil;
         if (doc == nil && outError)
             *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
         return doc;
