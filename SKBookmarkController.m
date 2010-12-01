@@ -133,6 +133,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
                     SKBookmark *bookmark = [SKBookmark bookmarkWithProperties:dict];
                     if (bookmark)
                         [bookmarks addObject:bookmark];
+                    else
+                        NSLog(@"Failed to read bookmark: %@", dict);
                 }
             }
             

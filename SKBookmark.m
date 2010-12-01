@@ -358,8 +358,13 @@ static Class SKBookmarkClass = Nil;
     } else if ([type isEqualToString:FOLDER_STRING] || [type isEqualToString:SESSION_STRING]) {
         Class bookmarkClass = [type isEqualToString:FOLDER_STRING] ? [SKFolderBookmark class] : [SKSessionBookmark class];
         NSMutableArray *newChildren = [NSMutableArray array];
-        for (NSDictionary *dict in [dictionary objectForKey:CHILDREN_KEY])
-            [newChildren addObject:[SKBookmark bookmarkWithProperties:dict]];
+        SKBookmark *child;
+        for (NSDictionary *dict in [dictionary objectForKey:CHILDREN_KEY]) {
+            if (child = [SKBookmark bookmarkWithProperties:dict])
+                [newChildren addObject:child];
+            else
+                NSLog(@"Failed to read child bookmark: %@", dict);
+        }
         return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
     } else if ([dictionary objectForKey:@"windowFrame"]) {
         return [[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
@@ -475,7 +480,10 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSData *)aliasData {
-    return [self path] ? [alias aliasData] : aliasData;
+    NSData *data = nil;
+    if ([self path])
+        data = [alias aliasData];
+    return data ?: aliasData;
 }
 
 - (NSImage *)icon {
