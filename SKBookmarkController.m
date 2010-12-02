@@ -250,8 +250,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             SKBookmark *bookmark;
             if ([fileType isEqualToString:SKFolderDocumentType]) {
                 if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
-                    [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
+                    if ([bookmark countOfChildren])
+                        [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
                 }
             } else if (docClass = [dc documentClassForType:fileType]) {
                 if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
