@@ -324,8 +324,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                                                otherButton:nil
                                  informativeTextWithFormat:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
             
-            if (NSAlertDefaultReturn == [alert runModal])
+            if (NSAlertDefaultReturn == [alert runModal]) {
                 urls = nil;
+                error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+            }
         }
         
         for (NSURL *url in urls) {
@@ -341,6 +343,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         return doc;
     }
     return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+}
+
+- (BOOL)presentError:(NSError *)error {
+    NSLog(@"%@",error);
+    return [super presentError:error];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
