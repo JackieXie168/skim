@@ -102,6 +102,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 #define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
+#define SKAnnotationKey @"SKAnnotation"
+
 static char SKPDFViewDefaultsObservationContext;
 static char SKPDFViewTransitionsObservationContext;
 
@@ -287,7 +289,7 @@ enum {
     NSView *docView = [self documentView];
     NSArray *trackingAreas = [[[docView trackingAreas] copy] autorelease];
     for (NSTrackingArea *area in trackingAreas) {
-        if ([area owner] == self && [[area userInfo] objectForKey:@"SKAnnotation"])
+        if ([area owner] == self && [[area userInfo] objectForKey:SKAnnotationKey])
             [docView removeTrackingArea:area];
     }
 }
@@ -308,7 +310,7 @@ enum {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:docView];
-                        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, @"SKAnnotation", nil];
+                        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, SKAnnotationKey, nil];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                         [docView addTrackingArea:area];
                         [area release];
@@ -1462,7 +1464,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:NSZeroPoint];
     } else {
         [super mouseEntered:theEvent];
@@ -1474,7 +1476,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
-    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:@"SKAnnotation"])) {
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
     } else {
