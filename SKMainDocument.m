@@ -708,6 +708,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         data = nil;
                         [pdfDoc release];
                         pdfDoc = nil;
+                        error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
                     }
                 } else if ([array count]) {
                     [tmpData setNoteDicts:array];
@@ -749,6 +750,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         data = nil;
                         [pdfDoc release];
                         pdfDoc = nil;
+                        error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
                     }
                 }
                 if (pdfDoc) {
