@@ -345,11 +345,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
 }
 
-- (BOOL)presentError:(NSError *)error {
-    NSLog(@"%@",error);
-    return [super presentError:error];
-}
-
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
         NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
