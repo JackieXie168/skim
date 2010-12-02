@@ -45,6 +45,8 @@
 #import "SKRuntime.h"
 #import "SKAccessibilityFauxUIElement.h"
 
+#define SKDisableExtendedPDFViewAccessibilityKey @"SKDisableExtendedPDFViewAccessibility"
+
 @interface NSView (SKPDFDisplayViewPrivateDeclarations)
 - (NSRange)accessibilityRangeForSelection:(id)selection;
 - (id)selectionForAccessibilityRange:(NSRange)range;
@@ -212,7 +214,7 @@ void SKSwizzlePDFDisplayViewMethods() {
     if (PDFDisplayViewClass) {
         original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey]) return;
         
         original_accessibilityAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacement_accessibilityAttributeNames);
         original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
