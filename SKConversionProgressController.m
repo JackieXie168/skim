@@ -235,7 +235,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 }    
 
 - (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
-    NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
+    NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     fileType = SKPostScriptDocumentType;
     
@@ -350,11 +350,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSMutableData *pdfData = [info objectForKey:PDFDATA_KEY];
     
     if (outputPS && success) {
-        NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
-        
-        // pass self as info
-        converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
-        NSAssert(converter != NULL, @"unable to create PS converter");
+        NSAssert(NULL != converter, @"PS converter was not created");
         
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)outData);
         CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
@@ -383,12 +379,20 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 }
 
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType {
+    NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
+    
     NSMutableData *pdfData = nil;
     
     fileType = aFileType;
     convertingPS = 0;
     taskShouldStop = 0;
     pdfData = [[NSMutableData alloc] init];
+    
+    if ([[toolPath lastPathComponent] isEqualToString:@"dvips"]) {
+        // create this on the main thread for thread safety, as we may access this ivar from cancel:
+        converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
+        NSAssert(converter != NULL, @"unable to create PS converter");
+    }
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, INPUTFILE_KEY, pdfData, PDFDATA_KEY, toolPath, TOOLPATH_KEY, nil];
     
