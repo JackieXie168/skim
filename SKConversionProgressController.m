@@ -45,6 +45,7 @@
 #import "SKDocumentController.h"
 #import <libkern/OSAtomic.h>
 #import "NSGeometry_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
@@ -65,8 +66,8 @@ enum {
 @interface SKConversionProgressController (Private)
 + (NSString *)dviToolPath;
 + (NSString *)xdvToolPath;
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType;
+- (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -109,23 +110,23 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @synthesize cancelButton, progressBar, textField;
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
-    return [[[[self alloc] init] autorelease] PDFDataWithPostScriptData:psData];
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
+    return [[[[self alloc] init] autorelease] PDFDataWithPostScriptData:psData error:outError];
 }
 
-+ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
++ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError {
     NSString *dviToolPath = [self dviToolPath];
     if (dviToolPath)
-        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:dviFile toolPath:dviToolPath fileType:SKDVIDocumentType];
+        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:dviFile toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
     else
         NSBeep();
     return nil;
 }
 
-+ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile {
++ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError {
     NSString *xdvToolPath = [self xdvToolPath];
     if (xdvToolPath)
-        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:xdvFile toolPath:xdvToolPath fileType:SKXDVDocumentType];
+        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:xdvFile toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
     else
         NSBeep();
     return nil;
@@ -152,13 +153,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender {
     OSMemoryBarrier();
-    if (convertingPS) {
-        if (CGPSConverterAbort(converter) == false)
-            [self converterWasStopped];
-    } else if (taskShouldStop == 0) {
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&taskShouldStop);
-    } else {
+    if (cancelled == 1) {
         [self converterWasStopped];
+    } else {
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&cancelled);
+        if (convertingPS)
+            CGPSConverterAbort(converter);
     }
 }
 
@@ -220,6 +220,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     SKAutoSizeButtons([NSArray arrayWithObjects:cancelButton, nil], YES);
 }
 
+- (BOOL)shouldKeepRunning {
+    OSMemoryBarrier();
+    return cancelled == 0;
+}
+
 #pragma mark PostScript
 
 - (void)doPSConversionWithInfo:(NSDictionary *)info {
@@ -234,13 +239,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }    
 
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
+- (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
     NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     fileType = SKPostScriptDocumentType;
     
     convertingPS = 1;
-    taskShouldStop = 1;
+    cancelled = 0;
     
     // pass self as info
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
@@ -260,6 +265,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     if (rv != SKConversionSucceeded) {
         SKCFDESTROY(pdfData);
+        if (outError) {
+            if ([self shouldKeepRunning])
+                *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            else
+                *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+        }
     }
     
     return [(id)pdfData autorelease];
@@ -309,11 +320,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         xdvToolPath = [self newToolPath:commandPath supportedTools:supportedTools];
     }
     return xdvToolPath;
-}
-
-- (BOOL)shouldKeepRunning {
-    OSMemoryBarrier();
-    return taskShouldStop == 0;
 }
 
 - (void)doDVIConversionWithInfo:(NSDictionary *)info {
@@ -378,14 +384,14 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }
 
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType {
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
     NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     NSMutableData *pdfData = nil;
     
     fileType = aFileType;
     convertingPS = 0;
-    taskShouldStop = 0;
+    cancelled = 0;
     pdfData = [[NSMutableData alloc] init];
     
     if ([[toolPath lastPathComponent] isEqualToString:@"dvips"]) {
@@ -398,8 +404,15 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
     
-    if (rv != SKConversionSucceeded)
+    if (rv != SKConversionSucceeded) {
         SKDESTROY(pdfData);
+        if (outError) {
+            if ([self shouldKeepRunning])
+                *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            else
+                *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+        }
+    }
     
     return [pdfData autorelease];
 }

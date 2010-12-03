@@ -646,13 +646,14 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError {
     PDFDocument *pdfDoc = nil;
+    NSError *error = nil;
     
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
     if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [self setPSOrDVIData:data];
-        data = [SKConversionProgressController PDFDataWithPostScriptData:data];
+        data = [SKConversionProgressController PDFDataWithPostScriptData:data error:&error];
     }
     
     if (data)
@@ -667,7 +668,7 @@ static char SKMainDocumentDefaultsObservationContext;
         return YES;
     } else {
         if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
         return NO;
     }
 }
@@ -721,13 +722,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if (data = [fileData retain])
                     pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData] retain])
+                if (data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData error:&error] retain])
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKDVIDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
+                if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path] error:&error] retain])
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKXDVDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path]] retain])
+                if (data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path] error:&error] retain])
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
