@@ -46,16 +46,16 @@
     NSString *fileType;
     CGPSConverterRef converter;
     volatile int32_t convertingPS;
-    volatile int32_t taskShouldStop;
+    volatile int32_t cancelled;
 }
 
 @property (nonatomic, retain) IBOutlet NSButton *cancelButton;
 @property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
-+ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
-+ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile;
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
++ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError;
++ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;
