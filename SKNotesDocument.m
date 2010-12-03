@@ -253,6 +253,15 @@
     return data;
 }
 
++ (NSArray *)readableTypes {
+    NSArray *types = [super readableTypes];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
+        return types;
+    NSMutableArray *mutableTypes = [[types mutableCopy] autorelease];
+    [mutableTypes removeObject:SKNotesFDFDocumentType];
+    return mutableTypes;
+}
+
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
     BOOL didRead = NO;
     NSArray *array = nil;
