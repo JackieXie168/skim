@@ -130,10 +130,11 @@ static NSUInteger maxRecentDocumentsCount = 0;
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
                 [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
                 for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
-                    SKBookmark *bookmark = [SKBookmark bookmarkWithProperties:dict];
-                    if (bookmark)
+                    SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
+                    if (bookmark) {
                         [bookmarks addObject:bookmark];
-                    else
+                        [bookmark release];
+                    } else
                         NSLog(@"Failed to read bookmark: %@", dict);
                 }
             }
@@ -244,14 +245,16 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             Class docClass;
             SKBookmark *bookmark;
             if ([fileType isEqualToString:SKFolderDocumentType]) {
-                if (bookmark = [SKBookmark bookmarkFolderWithLabel:[fm displayNameAtPath:path]]) {
+                if (bookmark = [[SKBookmark alloc] initFolderWithLabel:[fm displayNameAtPath:path]]) {
                     [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
                     if ([bookmark countOfChildren])
                         [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
+                    [bookmark release];
                 }
             } else if (docClass = [dc documentClassForType:fileType]) {
-                if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
+                if (bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
                     [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
+                    [bookmark release];
                 }
             }
         }

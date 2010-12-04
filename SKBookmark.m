@@ -354,8 +354,10 @@ static Class SKBookmarkClass = Nil;
     NSMutableArray *aChildren = [NSMutableArray array];
     SKBookmark *child;
     for (NSDictionary *setup in aSetupDicts) {
-        if (child = [SKBookmark bookmarkWithSetup:setup label:@""])
+        if (child = [[SKBookmark alloc] initWithSetup:setup label:@""]) {
             [aChildren addObject:child];
+            [child release];
+        }
     }
     return [[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
@@ -373,9 +375,10 @@ static Class SKBookmarkClass = Nil;
         NSMutableArray *newChildren = [NSMutableArray array];
         SKBookmark *child;
         for (NSDictionary *dict in [dictionary objectForKey:CHILDREN_KEY]) {
-            if (child = [SKBookmark bookmarkWithProperties:dict])
+            if (child = [[SKBookmark alloc] initWithProperties:dict]) {
                 [newChildren addObject:child];
-            else
+                [child release];
+            } else
                 NSLog(@"Failed to read child bookmark: %@", dict);
         }
         return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
