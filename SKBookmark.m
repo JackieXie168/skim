@@ -356,8 +356,6 @@ static Class SKBookmarkClass = Nil;
     for (NSDictionary *setup in aSetupDicts) {
         if (child = [SKBookmark bookmarkWithSetup:setup label:@""])
             [aChildren addObject:child];
-        else
-            NSLog(@"Failed to get child bookmark: %@", setup);
     }
     return [[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
