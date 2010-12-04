@@ -290,7 +290,7 @@ static Class SKBookmarkClass = Nil;
             {
                 NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
                 NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
-                bookmark = [SKBookmark bookmarkSessionWithSetups:setups label:aLabel];
+                bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel];
                 break;
             }
             default:
