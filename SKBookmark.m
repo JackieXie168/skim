@@ -113,10 +113,6 @@ static Class SKBookmarkClass = Nil;
     return [[[self alloc] initWithSetup:aSetupDict label:aLabel] autorelease];
 }
 
-+ (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[[self alloc] initFolderWithChildren:aChildren label:aLabel] autorelease];
-}
-
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel {
     return [[[self alloc] initFolderWithLabel:aLabel] autorelease];
 }
@@ -127,10 +123,6 @@ static Class SKBookmarkClass = Nil;
 
 + (id)bookmarkSeparator {
     return [[[self alloc] initSeparator] autorelease];
-}
-
-+ (id)bookmarkWithProperties:(NSDictionary *)dictionary {
-    return [[[self alloc] initWithProperties:dictionary] autorelease];
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
