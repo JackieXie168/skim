@@ -61,7 +61,7 @@ enum {
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 + (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel;
-+ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
++ (id)bookmarkSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel;
 + (id)bookmarkSeparator;
 + (id)bookmarkWithProperties:(NSDictionary *)dictionary;
 
@@ -70,7 +70,7 @@ enum {
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
 - (id)initRootWithChildren:(NSArray *)aChildren;
-- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
+- (id)initSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel;
 - (id)initSeparator;
 - (id)initWithProperties:(NSDictionary *)dictionary;
 

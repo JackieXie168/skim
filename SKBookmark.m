@@ -121,8 +121,8 @@ static Class SKBookmarkClass = Nil;
     return [[[self alloc] initFolderWithLabel:aLabel] autorelease];
 }
 
-+ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[[self alloc] initSessionWithChildren:aChildren label:aLabel] autorelease];
++ (id)bookmarkSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel {
+    return [[[self alloc] initSessionWithSetups:aSetupDicts label:aLabel] autorelease];
 }
 
 + (id)bookmarkSeparator {
@@ -158,7 +158,7 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
-- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
+- (id)initSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
@@ -288,14 +288,9 @@ static Class SKBookmarkClass = Nil;
                 break;
             case SKScriptingBookmarkTypeSession:
             {
-                NSMutableArray *children = [NSMutableArray array];
-                SKBookmark *child;
-                for (NSDictionary *setup in [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"]) {
-                    if (child = [SKBookmark bookmarkWithSetup:setup label:@""])
-                        [children addObject:child];
-                }
+                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
                 NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
-                bookmark = [SKBookmark bookmarkSessionWithChildren:children label:aLabel];
+                bookmark = [SKBookmark bookmarkSessionWithSetups:setups label:aLabel];
                 break;
             }
             default:
@@ -355,7 +350,15 @@ static Class SKBookmarkClass = Nil;
     return [[SKRootBookmark alloc] initFolderWithChildren:aChildren label:NSLocalizedString(@"Bookmarks Menu", @"Menu item title")];
 }
 
-- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
+- (id)initSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel {
+    NSMutableArray *aChildren = [NSMutableArray array];
+    SKBookmark *child;
+    for (NSDictionary *setup in aSetupDicts) {
+        if (child = [SKBookmark bookmarkWithSetup:setup label:@""])
+            [aChildren addObject:child];
+        else
+            NSLog(@"Failed to get child bookmark: %@", setup);
+    }
     return [[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
 
