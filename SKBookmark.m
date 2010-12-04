@@ -286,6 +286,18 @@ static Class SKBookmarkClass = Nil;
             case SKScriptingBookmarkTypeSeparator:
                 bookmark = [[SKBookmark alloc] initSeparator];
                 break;
+            case SKScriptingBookmarkTypeSession:
+            {
+                NSMutableArray *children = [NSMutableArray array];
+                SKBookmark *child;
+                for (NSDictionary *setup in [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"]) {
+                    if (child = [SKBookmark bookmarkWithSetup:setup label:@""])
+                        [children addObject:child];
+                }
+                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
+                bookmark = [SKBookmark bookmarkSessionWithChildren:children label:aLabel];
+                break;
+            }
             default:
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                 [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark requires a supported bookmark type."];
