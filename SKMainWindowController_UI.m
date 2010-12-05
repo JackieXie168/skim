@@ -1153,7 +1153,7 @@
                 PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
                 [[document pdfView] goToDestination:dest];
             }
-        } else if (error) {
+        } else if (error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError)) {
             [NSApp presentError:error];
         }
     } else if (fileURL) {

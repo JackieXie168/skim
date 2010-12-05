@@ -1217,7 +1217,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSError *error = nil;
-        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
+        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] &&
+            ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError)) {
             [[alert window] orderOut:nil];
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         }
@@ -1358,7 +1359,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error])
             docFlags.receivedFileUpdateNotification = NO;
-        else if (error)
+        else if (error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         if (returnCode == NSAlertAlternateReturn)
             docFlags.autoUpdate = YES;

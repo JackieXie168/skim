@@ -174,7 +174,8 @@
         
         while (dict = [fileEnum nextObject]) {
             error = nil;
-            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error)
+            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error &&
+                ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
                 [NSApp presentError:error];
         }
     }
