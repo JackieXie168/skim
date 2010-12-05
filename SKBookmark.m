@@ -235,62 +235,9 @@ static Class SKBookmarkClass = Nil;
 
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"bookmarks"]) {
-        SKBookmark *bookmark = nil;
-        FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
-        if (type == 0) {
-            if (contentsValue || [properties objectForKey:@"scriptingFile"])
-                type = SKScriptingBookmarkTypeBookmark;
-            else if ([properties objectForKey:@"label"])
-                type = SKScriptingBookmarkTypeFolder;
-        }
-        switch (type) {
-            case SKScriptingBookmarkTypeBookmark:
-            {
-                NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
-                NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
-                NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
-                Class docClass;
-                if (aPath == nil) {
-                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
-                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a file."];
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
-                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
-                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
-                } else if (docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL]) {
-                    NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
-                    if (aPageNumber > 0)
-                        aPageNumber--;
-                    else
-                        aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
-                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel];
-                } else {
-                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
-                    [[NSScriptCommand currentCommand] setScriptErrorString:@"Unsupported file type for new bookmark."];
-                }
-                break;
-            }
-            case SKScriptingBookmarkTypeFolder:
-            {
-                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
-                bookmark = [[SKBookmark alloc] initFolderWithLabel:aLabel];
-                break;
-            }
-            case SKScriptingBookmarkTypeSeparator:
-                bookmark = [[SKBookmark alloc] initSeparator];
-                break;
-            case SKScriptingBookmarkTypeSession:
-            {
-                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
-                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
-                bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel];
-                break;
-            }
-            default:
-                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
-                [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark requires a supported bookmark type."];
-                break;
-        }
-        return bookmark;
+        [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+        [[NSScriptCommand currentCommand] setScriptErrorString:@"Invalid container for new bookmark."];
+        return nil;
     }
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
@@ -613,6 +560,68 @@ static Class SKBookmarkClass = Nil;
     return contents;
 }
 
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"bookmarks"]) {
+        SKBookmark *bookmark = nil;
+        FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
+        if (type == 0) {
+            if (contentsValue || [properties objectForKey:@"scriptingFile"])
+                type = SKScriptingBookmarkTypeBookmark;
+            else if ([properties objectForKey:@"label"])
+                type = SKScriptingBookmarkTypeFolder;
+        }
+        switch (type) {
+            case SKScriptingBookmarkTypeBookmark:
+            {
+                NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
+                NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
+                NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
+                Class docClass;
+                if (aPath == nil) {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a file."];
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
+                } else if (docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL]) {
+                    NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
+                    if (aPageNumber > 0)
+                        aPageNumber--;
+                    else
+                        aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
+                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel];
+                } else {
+                    [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                    [[NSScriptCommand currentCommand] setScriptErrorString:@"Unsupported file type for new bookmark."];
+                }
+                break;
+            }
+            case SKScriptingBookmarkTypeFolder:
+            {
+                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
+                bookmark = [[SKBookmark alloc] initFolderWithLabel:aLabel];
+                break;
+            }
+            case SKScriptingBookmarkTypeSeparator:
+                bookmark = [[SKBookmark alloc] initSeparator];
+                break;
+            case SKScriptingBookmarkTypeSession:
+            {
+                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
+                bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel];
+                break;
+            }
+            default:
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark requires a supported bookmark type."];
+                break;
+        }
+        return bookmark;
+    }
+    return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
+
 @end
 
 #pragma mark -
@@ -692,6 +701,15 @@ static Class SKBookmarkClass = Nil;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
 
 - (NSArray *)entireContents { return nil; }
+
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"bookmarks"]) {
+        [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+        [[NSScriptCommand currentCommand] setScriptErrorString:@"Invalid container for new bookmark."];
+        return nil;
+    }
+    return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
 
 @end
 
