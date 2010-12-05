@@ -400,7 +400,8 @@
         }
         if (url == nil)
             url = [NSURL fileURLWithPath:path];
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error])
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error] &&
+            ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
             [NSApp presentError:error];
     } else NSBeep();
 }

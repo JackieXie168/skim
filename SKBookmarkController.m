@@ -386,7 +386,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [bookmark pageIndex] != NSNotFound)
             [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }
-    if (document == nil && error)
+    if (document == nil && error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
         [NSApp presentError:error];
 }
 
