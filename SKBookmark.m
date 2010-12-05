@@ -691,6 +691,8 @@ static Class SKBookmarkClass = Nil;
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
 
+- (NSArray *)entireContents { return nil; }
+
 @end
 
 #pragma mark -
