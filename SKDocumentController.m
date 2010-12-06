@@ -116,6 +116,10 @@ NSString *SKDocumentControllerDocumentKey = @"document";
     return [super runModalOpenPanel:openPanel forTypes:extensions];
 }
 
+static BOOL isFolderAtPath(NSString *path) {
+    return [[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:path error:NULL] conformsToType:(NSString *)kUTTypeFolder];
+}
+
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
     NSUInteger headerLength = 5;
     
@@ -134,7 +138,7 @@ NSString *SKDocumentControllerDocumentKey = @"document";
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
     
     // folders are not recognized, so we have to check for those ourselves, rdar://problem/7056540
-    if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:[inAbsoluteURL path] error:NULL] conformsToType:(NSString *)kUTTypeFolder]) {
+    if (isFolderAtPath([inAbsoluteURL path])) {
         type = SKFolderDocumentType;
     } else if ([self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
@@ -312,9 +316,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         BOOL failed = NO;
         
         while (path = [dirEnum nextObject]) {
-            NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
+            NSString *fullPath = [basePath stringByAppendingPathComponent:path];
+            NSURL *url = [NSURL fileURLWithPath:fullPath];
             if ([self documentClassForContentsOfURL:url])
                 [urls addObject:url];
+            if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory] &&
+                ([[path lastPathComponent] hasPrefix:@"."] || NO == isFolderAtPath(fullPath)))
+                [dirEnum skipDescendents];
         }
         
         if ([urls count] > 10) {
