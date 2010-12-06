@@ -40,6 +40,7 @@
 #import "SKPDFPage.h"
 #import "SKPrintAccessoryController.h"
 
+NSString *SKSuppressPrintPanel = @"SKSuppressPrintPanel";
 
 @interface PDFDocument (SKPrivateDeclarations)
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
@@ -56,7 +57,7 @@
     NSPrintOperation *printOperation = nil;
     if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
         printOperation = [super getPrintOperationForPrintInfo:printInfo autoRotate:autoRotate];
-        if ([[[[printOperation printInfo] dictionary] objectForKey:@"SKSuppressPrintPanel"] boolValue])
+        if ([[[[printOperation printInfo] dictionary] objectForKey:SKSuppressPrintPanel] boolValue])
             [printOperation setShowsPrintPanel:NO];
         
         NSPrintPanel *printPanel = [printOperation printPanel];

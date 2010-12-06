@@ -43,6 +43,8 @@
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
 
+#define SKBoolStringTransformerName @"SKBoolStringTransformer"
+
 #define SKInfoVersionKey @"Version"
 #define SKInfoPageCountKey @"PageCount"
 #define SKInfoPageSizeKey @"PageSize"
@@ -74,7 +76,7 @@
     SKINITIALIZE;
     
     SKBoolStringTransformer *transformer = [[SKBoolStringTransformer alloc] init];
-    [NSValueTransformer setValueTransformer:transformer forName:@"SKBoolStringTransformer"];
+    [NSValueTransformer setValueTransformer:transformer forName:SKBoolStringTransformerName];
     [transformer release];
 }
 

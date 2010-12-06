@@ -2038,7 +2038,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     }
     
     if (showPanel && [showPanel boolValue] == NO)
-        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"SKSuppressPrintPanel"];
+        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
     
     [[self pdfView] printWithInfo:printInfo autoRotate:YES];
     

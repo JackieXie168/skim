@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKSuppressPrintPanel;
 
 @interface SKPDFDocument : PDFDocument
 @end
