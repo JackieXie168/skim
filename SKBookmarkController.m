@@ -233,35 +233,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
 }
 
-- (NSUInteger)addBookmarksForPaths:(NSArray *)paths basePath:(NSString *)basePath toFolder:(SKBookmark *)folder atIndex:(NSUInteger)anIndex {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSDocumentController *dc = [NSDocumentController sharedDocumentController];
-    NSUInteger insertIndex = anIndex;
-    
-    for (NSString *file in paths) {
-        if ([[file lastPathComponent] hasPrefix:@"."] == NO) {
-            NSString *path = [basePath stringByAppendingPathComponent:file] ?: file;
-            NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
-            Class docClass;
-            SKBookmark *bookmark;
-            if ([fileType isEqualToString:SKFolderDocumentType]) {
-                if (bookmark = [[SKBookmark alloc] initFolderWithLabel:[fm displayNameAtPath:path]]) {
-                    [self addBookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] basePath:path toFolder:bookmark atIndex:0];
-                    if ([bookmark countOfChildren])
-                        [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
-                    [bookmark release];
-                }
-            } else if (docClass = [dc documentClassForType:fileType]) {
-                if (bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
-                    [folder insertObject:bookmark inChildrenAtIndex:insertIndex++];
-                    [bookmark release];
-                }
-            }
-        }
-    }
-    return insertIndex - anIndex;
-}
-
 - (NSArray *)draggedBookmarks {
     return draggedBookmarks;
 }
