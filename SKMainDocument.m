@@ -1074,12 +1074,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (BOOL)emailAttachmentFile:(NSString *)fileName {
     NSString *scriptFormat = nil;
-    NSString *mailAppName = nil;
-    CFURLRef mailAppURL = NULL;
+    NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease];
     
-    if (noErr == LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL))
-        mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
-    if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
+    if ([@"com.microsoft.entourage" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
                        @"activate\n"
                        @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
@@ -1087,7 +1084,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        @"make new attachment with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
+    } else if ([@"com.barebones.mailsmith" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
         scriptFormat = @"tell application \"Mailsmith\"\n"
                        @"activate\n"
                        @"set m to make new message window with properties {subject:\"%@\", visible:true}\n"
@@ -1095,7 +1092,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        @"make new enclosure with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([mailAppName rangeOfString:@"Mailplane" options:NSCaseInsensitiveSearch].length) {
+    } else if ([@"com.mailplaneapp.Mailplane" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
         scriptFormat = @"tell application \"Mailplane\"\n"
                        @"activate\n"
                        @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
@@ -1103,12 +1100,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        @"make new mail attachment with properties {path:\"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([mailAppName rangeOfString:@"PostboxExpress" options:NSCaseInsensitiveSearch].length) {
+    } else if ([@"com.postbox-inc.postboxexpress" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
         scriptFormat = @"tell application \"PostboxExpress\"\n"
                        @"activate\n"
                        @"send message subject \"%@\" attachment \"%@\"\n"
                        @"end tell\n";
-    } else if ([mailAppName rangeOfString:@"Postbox" options:NSCaseInsensitiveSearch].length) {
+    } else if ([@"com.postbox-inc.postbox" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
         scriptFormat = @"tell application \"Postbox\"\n"
                        @"activate\n"
                        @"send message subject \"%@\" attachment \"%@\"\n"
