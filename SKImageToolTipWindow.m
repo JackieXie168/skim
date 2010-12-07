@@ -106,7 +106,7 @@
         contentRect.size = [image size];
         contentRect.origin.x = thePoint.x;
         contentRect.origin.y = thePoint.y - WINDOW_OFFSET - NSHeight(contentRect);
-        contentRect = SKConstrainRect(contentRect, [[NSScreen screenForPoint:thePoint] visibleFrame]);
+        contentRect = [self constrainFrameRect:contentRect toScreen:[NSScreen screenForPoint:thePoint]];
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
         [self stopAnimation];
