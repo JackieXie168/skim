@@ -230,16 +230,17 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setDocument:pdfDocument];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
-    NSRect contentRect = [pdfView convertRect:rect fromPage:page];
-    contentRect = [pdfView convertRect:contentRect toView:nil];
-    NSRect frame = [[self window] frame];
-    
-    contentRect.size.width += [NSScroller scrollerWidth];
-    contentRect.size.height += [NSScroller scrollerWidth];
-    frame.size = [[self window] frameRectForContentRect:contentRect].size;
-    frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
+    NSRect frame = [pdfView convertRect:rect fromPage:page];
+    frame = [pdfView convertRect:frame toView:nil];
     
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
+    
+    frame.size.width += [NSScroller scrollerWidth];
+    frame.size.height += [NSScroller scrollerWidth];
+    frame = [[self window] frameRectForContentRect:frame];
+    frame.origin.x = NSMinX([[self window] frame]);
+    frame.origin.y = NSMaxY([[self window] frame]) - NSHeight(frame);
+    frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
     [pdfView goToPage:page];
