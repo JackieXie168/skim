@@ -795,7 +795,7 @@ static NSArray *allMainDocumentPDFViews() {
     // Align the window frame from the old topleft point and constrain to the screen
     frame.origin.y = NSMaxY(frame) - size.height;
     frame.size = size;
-    frame = SKConstrainRect(frame, [([[self window] screen] ?: [NSScreen mainScreen]) visibleFrame]);
+    frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
 }

@@ -237,7 +237,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     contentRect.size.width += [NSScroller scrollerWidth];
     contentRect.size.height += [NSScroller scrollerWidth];
     frame.size = [[self window] frameRectForContentRect:contentRect].size;
-    frame = SKConstrainRect(frame, [([[self window] screen] ?: [NSScreen mainScreen]) visibleFrame]);
+    frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
     
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
