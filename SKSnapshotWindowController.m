@@ -240,7 +240,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     frame = [[self window] frameRectForContentRect:frame];
     frame.origin.x = NSMinX([[self window] frame]);
     frame.origin.y = NSMaxY([[self window] frame]) - NSHeight(frame);
-    frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
     [pdfView goToPage:page];
