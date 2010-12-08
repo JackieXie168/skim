@@ -697,7 +697,14 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if ([tcID isEqualToString:LABEL_COLUMNID]) {
         return [item label];
     } else if ([tcID isEqualToString:FILE_COLUMNID]) {
-        return [item path];
+        if ([item bookmarkType] == SKBookmarkTypeSession) {
+            return [[[item children] valueForKey:@"path"] componentsJoinedByString:@"\n"];
+        } else if ([item bookmarkType] == SKBookmarkTypeFolder) {
+            NSInteger count = [item countOfChildren];
+            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
+        } else {
+            return [item path];
+        }
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [[item pageNumber] stringValue];
     }
