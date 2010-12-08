@@ -570,10 +570,14 @@ static Class SKBookmarkClass = Nil;
         NSString *aLabel = [properties objectForKey:@"label"];
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
         if (type == 0) {
-            if (aURL)
-                type = SKScriptingBookmarkTypeBookmark;
-            else if (aLabel)
+            if (aURL) {
+                if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:aPath error:NULL] conformsToType:(NSString *)kUTTypeFolder])
+                    type = SKScriptingBookmarkTypeFolder;
+                else
+                    type = SKScriptingBookmarkTypeBookmark;
+            } else if (aLabel) {
                 type = SKScriptingBookmarkTypeSession;
+            }
         }
         switch (type) {
             case SKScriptingBookmarkTypeBookmark:
