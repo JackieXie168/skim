@@ -565,19 +565,19 @@ static Class SKBookmarkClass = Nil;
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"bookmarks"]) {
         SKBookmark *bookmark = nil;
+        NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
+        NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
+        NSString *aLabel = [properties objectForKey:@"label"];
         FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
         if (type == 0) {
-            if (contentsValue || [properties objectForKey:@"scriptingFile"])
+            if (aURL)
                 type = SKScriptingBookmarkTypeBookmark;
-            else if ([properties objectForKey:@"label"])
-                type = SKScriptingBookmarkTypeFolder;
+            else if (aLabel)
+                type = SKScriptingBookmarkTypeSession;
         }
         switch (type) {
             case SKScriptingBookmarkTypeBookmark:
             {
-                NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
-                NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
-                NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
                 Class docClass;
                 if (aPath == nil) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
@@ -591,7 +591,9 @@ static Class SKBookmarkClass = Nil;
                         aPageNumber--;
                     else
                         aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
-                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel];
+                    if (aLabel == nil && aPath)
+                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
+                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel ?: @""];
                 } else {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"Unsupported file type for new bookmark."];
@@ -600,24 +602,22 @@ static Class SKBookmarkClass = Nil;
             }
             case SKScriptingBookmarkTypeFolder:
             {
-                NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
-                NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
-                NSString *aLabel = [properties objectForKey:@"label"] ?: [aPath lastPathComponent] ?: @"";
-                bookmark = [[SKBookmark alloc] initFolderWithLabel:aLabel];
+                if (aLabel == nil && aPath)
+                    aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
+                bookmark = [[SKBookmark alloc] initFolderWithLabel:aLabel ?: @""];
                 if (aPath)
                     [bookmark insertBookmarksForPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:aPath error:NULL] relativeToPath:aPath atIndex:0];
+                break;
+            }
+            case SKScriptingBookmarkTypeSession:
+            {
+                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+                bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel ?: @""];
                 break;
             }
             case SKScriptingBookmarkTypeSeparator:
                 bookmark = [[SKBookmark alloc] initSeparator];
                 break;
-            case SKScriptingBookmarkTypeSession:
-            {
-                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
-                NSString *aLabel = [properties objectForKey:@"label"] ?: @"";
-                bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel];
-                break;
-            }
             default:
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                 [[NSScriptCommand currentCommand] setScriptErrorString:@"New bookmark requires a supported bookmark type."];
