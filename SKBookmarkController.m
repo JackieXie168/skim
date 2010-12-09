@@ -652,7 +652,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSUInteger oldCount = [item countOfChildren];
         [item insertBookmarksForPaths:paths relativeToPath:nil atIndex:anIndex];
         NSUInteger newCount = [item countOfChildren];
-        if (newCount > oldCount && (item == nil || [outlineView isItemExpanded:item])) {
+        if (newCount > oldCount && (item == bookmarkRoot || [outlineView isItemExpanded:item])) {
             NSRange range = NSMakeRange((item == bookmarkRoot ? 0 : [outlineView rowForItem:item] + 1) + anIndex, newCount - oldCount);
             [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
         }
