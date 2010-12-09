@@ -651,10 +651,13 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if ([newBookmarks count] > 0) {
             [self endEditing];
             if (item == nil) item = bookmarkRoot;
-            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
+            NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
             [[item mutableArrayValueForKey:@"children"] insertObjects:newBookmarks atIndexes:indexes];
-            if (item == bookmarkRoot || [outlineView isItemExpanded:item])
+            if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
+                if (item != bookmarkRoot)
+                    [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
                 [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+            }
             return YES;
         }
         return NO;
@@ -740,10 +743,13 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             SKBookmark *item = nil;
             NSUInteger anIndex = 0;
             [self getInsertionFolder:&item childIndex:&anIndex];
-            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
+            NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
             [[item mutableArrayValueForKey:@"children"] insertObjects:newBookmarks atIndexes:indexes];
-            if (item == bookmarkRoot || [outlineView isItemExpanded:item])
+            if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
+                if (item != bookmarkRoot)
+                    [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
                 [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+            }
         } else NSBeep();
     } else NSBeep();
 }
