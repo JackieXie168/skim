@@ -4,7 +4,7 @@
     puts "There's already a #{file} here! Move it aside or be more careful!"
   end
 end
-`openssl dsaparam 2048 < /dev/urandom > dsaparam.pem`
+`openssl dsaparam 1024 < /dev/urandom > dsaparam.pem`
 `openssl gendsa dsaparam.pem -out dsa_priv.pem`
 `openssl dsa -in dsa_priv.pem -pubout -out dsa_pub.pem`
 `rm dsaparam.pem`
