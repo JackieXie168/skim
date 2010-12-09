@@ -63,6 +63,8 @@ enum {
 + (id)bookmarkSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel;
 + (id)bookmarkSeparator;
 
++ (NSArray *)bookmarksForPaths:(NSArray *)paths relativeToPath:(NSString *)basePath;
+
 - (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
@@ -86,8 +88,6 @@ enum {
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex;
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
-
-- (void)insertBookmarksForPaths:(NSArray *)paths relativeToPath:(NSString *)basePath atIndex:(NSUInteger)anIndex;
 
 @property (nonatomic, readonly) FourCharCode scriptingBookmarkType;
 @property (nonatomic, readonly) NSURL *scriptingFile;
