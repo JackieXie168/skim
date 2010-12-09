@@ -731,7 +731,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return [items count] > 0;
 }
 
-- (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
+- (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
     NSUInteger oldCount = 0, newCount = 0;
     if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
@@ -750,7 +750,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSBeep();
 }
 
-- (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
+- (BOOL)outlineView:(NSOutlineView *)ov canPasteFromPasteboard:(NSPasteboard *)pboard {
     return nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 }
 
