@@ -246,7 +246,7 @@ static Class SKBookmarkClass = Nil;
 
 - (SKBookmark *)scriptingParent {
     return [parent parent] == nil ? nil : parent;
-};
+}
 
 - (NSArray *)entireContents { return nil; }
 
