@@ -137,13 +137,13 @@ static Class SKBookmarkClass = Nil;
             Class docClass;
             SKBookmark *bookmark;
             if ([fileType isEqualToString:SKFolderDocumentType]) {
-                NSArray *children = [SKBookmark bookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] relativeToPath:path];
-                if ([children count] && (bookmark = [[SKBookmark alloc] initFolderWithChildren:children label:[fm displayNameAtPath:path]])) {
+                NSArray *children = [self bookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] relativeToPath:path];
+                if ([children count] && (bookmark = [[self alloc] initFolderWithChildren:children label:[fm displayNameAtPath:path]])) {
                     [array addObject:bookmark];
                     [bookmark release];
                 }
             } else if (docClass = [dc documentClassForType:fileType]) {
-                if (bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
+                if (bookmark = [[self alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
                     [array addObject:bookmark];
                     [bookmark release];
                 }
