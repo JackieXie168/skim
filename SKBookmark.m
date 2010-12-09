@@ -620,7 +620,7 @@ static Class SKBookmarkClass = Nil;
                         aPageNumber--;
                     else
                         aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
-                    if (aLabel == nil && aPath)
+                    if (aLabel == nil)
                         aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
                     bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel ?: @""];
                 } else {
@@ -631,11 +631,12 @@ static Class SKBookmarkClass = Nil;
             }
             case SKScriptingBookmarkTypeFolder:
             {
-                if (aLabel == nil && aPath)
-                    aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
                 NSArray *aChildren = nil;
-                if (aPath)
+                if (aPath) {
                     aChildren = [SKBookmark bookmarksForPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:aPath error:NULL] relativeToPath:aPath];
+                    if (aLabel == nil)
+                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
+                }
                 bookmark = [[SKBookmark alloc] initFolderWithChildren:aChildren label:aLabel ?: @""];
                 break;
             }
