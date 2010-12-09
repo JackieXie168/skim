@@ -647,16 +647,17 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         return YES;
     } else if ([type isEqualToString:NSFilenamesPboardType]) {
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
-        [self endEditing];
-        if (item == nil) item = bookmarkRoot;
-        NSUInteger oldCount = [item countOfChildren];
-        [item insertBookmarksForPaths:paths relativeToPath:nil atIndex:anIndex];
-        NSUInteger newCount = [item countOfChildren];
-        if (newCount > oldCount && (item == bookmarkRoot || [outlineView isItemExpanded:item])) {
-            NSRange range = NSMakeRange((item == bookmarkRoot ? 0 : [outlineView rowForItem:item] + 1) + anIndex, newCount - oldCount);
-            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
+        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:paths relativeToPath:nil];
+        if ([newBookmarks count] > 0) {
+            [self endEditing];
+            if (item == nil) item = bookmarkRoot;
+            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
+            [[item mutableArrayValueForKey:@"children"] insertObjects:newBookmarks atIndexes:indexes];
+            if (item == bookmarkRoot || [outlineView isItemExpanded:item])
+                [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+            return YES;
         }
-        return newCount > oldCount;
+        return NO;
     }
     return NO;
 }
@@ -732,22 +733,19 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
-    NSUInteger oldCount = 0, newCount = 0;
     if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
-        SKBookmark *item = nil;
-        NSUInteger anIndex = 0;
-        [self getInsertionFolder:&item childIndex:&anIndex];
-        oldCount = [item countOfChildren];
-        [item insertBookmarksForPaths:paths relativeToPath:nil atIndex:anIndex];
-        newCount = [item countOfChildren];
-        if (newCount > oldCount && (item == bookmarkRoot || [outlineView isItemExpanded:item])) {
-            NSRange range = NSMakeRange((item == bookmarkRoot ? 0 : [outlineView rowForItem:item] + 1) + anIndex, newCount - oldCount);
-            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
-        }
-    }
-    if (newCount == oldCount)
-        NSBeep();
+        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:paths relativeToPath:nil];
+        if ([newBookmarks count] > 0) {
+            SKBookmark *item = nil;
+            NSUInteger anIndex = 0;
+            [self getInsertionFolder:&item childIndex:&anIndex];
+            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
+            [[item mutableArrayValueForKey:@"children"] insertObjects:newBookmarks atIndexes:indexes];
+            if (item == bookmarkRoot || [outlineView isItemExpanded:item])
+                [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+        } else NSBeep();
+    } else NSBeep();
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canPasteFromPasteboard:(NSPasteboard *)pboard {
