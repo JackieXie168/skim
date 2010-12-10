@@ -482,6 +482,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (hasWindowSetup)
         [savedNormalSetup removeAllObjects];
     
+    if ([[pdfView document] isLocked])
+        [[self window] makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
+    
     mwcFlags.settingUpWindow = 0;
 }
 
