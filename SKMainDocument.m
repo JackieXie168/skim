@@ -1783,25 +1783,19 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             
             OSStatus err;
             SecKeychainItemRef itemRef = NULL;    
-            const void *passwordData = NULL;
-            UInt32 passwordLength = 0;
+            const void *passwordData = [password UTF8String];
             
             // first see if the password exists in the keychain
-            err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, (void **)&passwordData, &itemRef);
+            err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, NULL, NULL, &itemRef);
             
             if(err == noErr){
-                // password was on keychain, so flush the buffer and then modify the keychain
-                SecKeychainItemFreeContent(NULL, (void *)passwordData);
-                passwordData = NULL;
-                
-                passwordData = [password UTF8String];
+                // password was on keychain, so modify the keychain
                 SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
                 const SecKeychainAttributeList attributes = { comment == NULL ? 0 : 1, attrs };
                 
                 err = SecKeychainItemModifyAttributesAndData(itemRef, (comment == NULL ? NULL : &attributes), strlen(passwordData), passwordData);
             } else if(err == errSecItemNotFound){
                 // password not on keychain, so add it
-                passwordData = [password UTF8String];
                 err = SecKeychainAddGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, strlen(passwordData), passwordData, &itemRef);    
                 if (err == noErr && comment != NULL) {
                     SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(comment), (char *)comment } };
