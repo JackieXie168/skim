@@ -1812,6 +1812,8 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
                     
                     err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
                 }
+                // accroding to the docs we should release the itemRef, even though the function name does not contain Copy or Create
+                SKCFDESTROY(itemRef);
             } else 
                 NSLog(@"Error %d occurred setting password", err);
         }
