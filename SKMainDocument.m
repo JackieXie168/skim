@@ -1795,13 +1795,10 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
                 passwordData = NULL;
                 
                 passwordData = [password UTF8String];
-                SecKeychainAttribute attrs[] = {
-                    { kSecAccountItemAttr, strlen(userName), (char *)userName },
-                    { kSecServiceItemAttr, strlen(serviceName), (char *)serviceName },
-                    { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
-                const SecKeychainAttributeList attributes = { comment == NULL ? 2 : 3, attrs };
+                SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
+                const SecKeychainAttributeList attributes = { comment == NULL ? 0 : 1, attrs };
                 
-                err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
+                err = SecKeychainItemModifyAttributesAndData(itemRef, (comment == NULL ? NULL : &attributes), strlen(passwordData), passwordData);
             } else if(err == errSecItemNotFound){
                 // password not on keychain, so add it
                 passwordData = [password UTF8String];
