@@ -1085,8 +1085,18 @@ enum {
             switch (toolMode) {
                 case SKTextToolMode:
                 case SKNoteToolMode:
-                    if ([self doSelectAnnotationWithEvent:theEvent] == NO &&
-                        (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                    // [super mouseDown:] since 10.5 runs a mouse-tracking loop
+                    if ([self doSelectAnnotationWithEvent:theEvent]) {
+                        if ([activeAnnotation isLink] && mouseDownInAnnotation) {
+                            [super mouseDown:theEvent];
+                            p = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+                            page = [self pageForPoint:p nearest:NO];
+                            if (page == [activeAnnotation page] && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 
+                                [self editActiveAnnotation:nil];
+                            else
+                                [self setActiveAnnotation:nil];
+                        }
+                    } else if (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) {
                         if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
                         } else {
@@ -1094,13 +1104,13 @@ enum {
                                 [self doSelectTextWithEvent:theEvent];
                             else
                                 [super mouseDown:theEvent];
-                            mouseDownInAnnotation = NO; 	 
                             if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
                         }
                     }
+                    mouseDownInAnnotation = NO; 	 
                     break;
                 case SKMoveToolMode:
                     if (area & kPDFLinkArea)
@@ -1116,73 +1126,6 @@ enum {
                     break;
             }
         }
-    }
-}
-
-- (void)mouseUp:(NSEvent *)theEvent{
-    if ([[self document] isLocked]) {
-        [super mouseUp:theEvent];
-        return;
-    }
-    
-    switch (toolMode) {
-        case SKTextToolMode:
-        case SKNoteToolMode:
-            // is this code path still needed, now that since 10.5 mouseDown: already tracks the mouse?
-            if (mouseDownInAnnotation) {
-                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
-                    [self setNeedsDisplayInRect:selectionRect];
-                    selectionRect = NSZeroRect;
-                    selectionPageIndex = NSNotFound;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-                 } else if ([activeAnnotation isLink]) {
-                    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                    PDFPage *page = [self pageForPoint:p nearest:NO];
-                    if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 
-                        [self editActiveAnnotation:nil];
-                    else
-                        [self setActiveAnnotation:nil];
-                 }
-                 mouseDownInAnnotation = NO;
-                 dragMask = 0;
-            }
-            if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
-                [self addAnnotationWithType:annotationMode];
-                [self setCurrentSelection:nil];
-                [super mouseUp:theEvent]; // this may be necssary to clean up a selection rect
-            } else
-                [super mouseUp:theEvent];
-            break;
-        case SKMoveToolMode:
-            [super mouseUp:theEvent];
-            break;
-        case SKMagnifyToolMode:
-        case SKSelectToolMode:
-            // shouldn't reach this
-            break;
-    }
-}
-
-- (void)mouseDragged:(NSEvent *)theEvent {
-    if ([[self document] isLocked]) {
-        [super mouseDragged:theEvent];
-        return;
-    }
-    
-    switch (toolMode) {
-        case SKTextToolMode:
-        case SKNoteToolMode:
-            // is this check still necessary?
-            if (nil == activeAnnotation)
-                [super mouseDragged:theEvent];
-            break;
-        case SKMoveToolMode:
-            [super mouseDragged:theEvent];
-            break;
-        case SKMagnifyToolMode:
-        case SKSelectToolMode:
-            // shouldn't reach this
-            break;
     }
 }
 
