@@ -1975,7 +1975,7 @@ enum {
 }
 
 - (void)editActiveAnnotation:(id)sender {
-    if (nil == activeAnnotation || hideNotes)
+    if (nil == activeAnnotation)
         return;
     
     [self commitEditing];
@@ -1991,7 +1991,7 @@ enum {
             [[NSWorkspace sharedWorkspace] openURL:[(PDFAnnotationLink *)activeAnnotation URL]];
         [self setActiveAnnotation:nil];
         
-    } else if ([type isEqualToString:SKNFreeTextString]) {
+    } else if (hideNotes == NO && [type isEqualToString:SKNFreeTextString]) {
         
         NSRect editBounds = [activeAnnotation bounds];
         NSFont *font = [(PDFAnnotationFreeText *)activeAnnotation font];
@@ -2016,7 +2016,7 @@ enum {
         if ([[self delegate] respondsToSelector:@selector(PDFViewDidBeginEditing:)])
             [[self delegate] PDFViewDidBeginEditing:self];
         
-    } else if ([activeAnnotation isEditable]) {
+    } else if (hideNotes == NO && [activeAnnotation isEditable]) {
         
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         
