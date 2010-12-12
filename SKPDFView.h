@@ -111,7 +111,6 @@ typedef NSInteger SKNoteType;
     NSUInteger selectionPageIndex;
     CGFloat magnification;
     BOOL didSelect;
-    BOOL mouseDownInAnnotation;
     SKRectEdges dragMask;
     NSArray *bezierPaths;
     NSUInteger pathPageIndex;

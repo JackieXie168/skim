@@ -154,7 +154,7 @@ enum {
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
-- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent hitAnnotation:(BOOL *)hitAnnotation;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
@@ -220,7 +220,6 @@ enum {
     selectionPageIndex = NSNotFound;
     magnification = 0.0;
     didSelect = NO;
-    mouseDownInAnnotation = NO;
     
     gestureRotation = 0.0;
     gesturePageIndex = NSNotFound;
@@ -1081,26 +1080,17 @@ enum {
         } else if (area == kPDFNoArea) {
             [self doDragWithEvent:theEvent];
         } else {
-            
+            BOOL hitAnnotation = NO;
             switch (toolMode) {
                 case SKTextToolMode:
                 case SKNoteToolMode:
-                    // [super mouseDown:] since 10.5 runs a mouse-tracking loop
-                    if ([self doSelectAnnotationWithEvent:theEvent]) {
-                        if ([activeAnnotation isLink] && mouseDownInAnnotation) {
-                            [super mouseDown:theEvent];
-                            p = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
-                            page = [self pageForPoint:p nearest:NO];
-                            if (page == [activeAnnotation page] && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 
-                                [self editActiveAnnotation:nil];
-                            else
-                                [self setActiveAnnotation:nil];
-                        }
-                    } else if (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) {
+                    if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO &&
+                        (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                         if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
                         } else {
-                            if (nil == activeAnnotation && mouseDownInAnnotation)
+                            // [super mouseDown:] since 10.5 runs a mouse-tracking loop
+                            if (nil == activeAnnotation && hitAnnotation)
                                 [self doSelectTextWithEvent:theEvent];
                             else
                                 [super mouseDown:theEvent];
@@ -1110,7 +1100,6 @@ enum {
                             }
                         }
                     }
-                    mouseDownInAnnotation = NO; 	 
                     break;
                 case SKMoveToolMode:
                     if (area & kPDFLinkArea)
@@ -3029,7 +3018,32 @@ enum {
     [activeAnnotation setBounds:newBounds];
 }
 
-- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
+- (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent {
+	PDFAnnotation *linkAnnotation = activeAnnotation;
+    PDFPage *annotationPage = [linkAnnotation page];
+    NSRect bounds = [linkAnnotation bounds];
+    NSPoint p = NSZeroPoint;
+    PDFPage *page = nil;
+    
+    while (YES) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        
+        p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        page = [self pageForPoint:p nearest:NO];
+        
+        if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
+            [self setActiveAnnotation:linkAnnotation];
+        else
+            [self setActiveAnnotation:nil];
+        
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+	}
+    
+    [self editActiveAnnotation:nil];
+}
+
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent hitAnnotation:(BOOL *)hitAnnotation {
     PDFAnnotation *newActiveAnnotation = nil;
     NSArray *annotations;
     NSInteger i;
@@ -3040,6 +3054,7 @@ enum {
     mouseDownLoc = [theEvent locationInWindow];
     
     NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
+    BOOL mouseDownInAnnotation = NO;
     
     // Page we're on.
     page = [self pageForPoint:mouseDownOnPage nearest:YES];
@@ -3151,9 +3166,12 @@ enum {
         if (activeAnnotation != newActiveAnnotation)
             [self setActiveAnnotation:newActiveAnnotation];
         
-        if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
+        if ([activeAnnotation isLink]) {
+            [self doSelectLinkAnnotationWithEvent:theEvent];
+        } else if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
             [self editActiveAnnotation:self];
         } else { 
+            
             // Old (current) annotation location and click point relative to it
             NSRect originalBounds = [activeAnnotation bounds];
             
@@ -3230,22 +3248,24 @@ enum {
                         [activeAnnotation setString:selString];
                 }
                 [self setNeedsDisplayForAnnotation:activeAnnotation];
-                mouseDownInAnnotation = NO;
                 dragMask = 0;
             }
         }
         
+        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
         return YES;
         
     } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
         
         [self doDrawFreehandNoteWithEvent:theEvent];
         
+        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
         return YES;
         
     } else {
         // no new active annotation
         [self setActiveAnnotation:nil];
+        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
         return NO;
     }
 }
