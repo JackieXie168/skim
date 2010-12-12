@@ -1089,11 +1089,12 @@ enum {
                         (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                         if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
-                        } else if (nil == activeAnnotation && mouseDownInAnnotation) {
-                            [self doSelectTextWithEvent:theEvent];
-                            mouseDownInAnnotation = NO; 	 
                         } else {
-                            [super mouseDown:theEvent];
+                            if (nil == activeAnnotation && mouseDownInAnnotation)
+                                [self doSelectTextWithEvent:theEvent];
+                            else
+                                [super mouseDown:theEvent];
+                            mouseDownInAnnotation = NO; 	 
                             if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
@@ -1127,22 +1128,23 @@ enum {
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
+            // is this code path still needed, now that since 10.5 mouseDown: already tracks the mouse?
             if (mouseDownInAnnotation) {
-                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) { 	 
-                     [self setNeedsDisplayInRect:selectionRect]; 	 
-                     selectionRect = NSZeroRect;
-                     selectionPageIndex = NSNotFound;	 
-                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self]; 	 
-                 } else if ([activeAnnotation isLink]) { 	 
-                     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil]; 	 
-                     PDFPage *page = [self pageForPoint:p nearest:NO]; 	 
-                     if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 	 
-                         [self editActiveAnnotation:nil]; 	 
-                     else 	 
-                         [self setActiveAnnotation:nil]; 	 
-                 } 	 
-                 mouseDownInAnnotation = NO; 	 
-                 dragMask = 0; 	 
+                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
+                    [self setNeedsDisplayInRect:selectionRect];
+                    selectionRect = NSZeroRect;
+                    selectionPageIndex = NSNotFound;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
+                 } else if ([activeAnnotation isLink]) {
+                    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                    PDFPage *page = [self pageForPoint:p nearest:NO];
+                    if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 
+                        [self editActiveAnnotation:nil];
+                    else
+                        [self setActiveAnnotation:nil];
+                 }
+                 mouseDownInAnnotation = NO;
+                 dragMask = 0;
             }
             if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                 [self addAnnotationWithType:annotationMode];
@@ -3673,11 +3675,6 @@ enum {
         } else {
             selectionRect = NSZeroRect;
         }
-    }
-    
-    if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
-        [self addAnnotationWithType:annotationMode];
-        [self setCurrentSelection:nil];
     }
 }
 
