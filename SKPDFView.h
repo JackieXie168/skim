@@ -106,7 +106,6 @@ typedef NSInteger SKNoteType;
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
     NSTextField *editField;
-	NSPoint mouseDownLoc;
     NSRect selectionRect;
     NSUInteger selectionPageIndex;
     CGFloat magnification;

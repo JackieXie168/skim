@@ -215,7 +215,6 @@ enum {
     readingBar = nil;
     
     activeAnnotation = nil;
-    mouseDownLoc = NSZeroPoint;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
     magnification = 0.0;
@@ -1041,7 +1040,6 @@ enum {
     // 10.6 does not automatically make us firstResponder, that's annoying
     [[self window] makeFirstResponder:self];
     
-    mouseDownLoc = [theEvent locationInWindow];
 	NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
     if ([[self document] isLocked]) {
@@ -1067,7 +1065,7 @@ enum {
             [self doSelectSnapshotWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-        NSPoint p = mouseDownLoc;
+        NSPoint p = [theEvent locationInWindow];
         p = [self convertPoint:p fromView:nil];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
@@ -2857,20 +2855,18 @@ enum {
     }
 }
 
-- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent originalBounds:(NSRect)originalBounds originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint {
+- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds = originalBounds;
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:page];
-    NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
-    NSPoint relPoint = SKSubstractPoints(endPt, startPoint);
+    NSPoint currentPagePoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+    NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
     
     if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
         
         PDFAnnotationLine *annotation = (PDFAnnotationLine *)activeAnnotation;
         NSPoint endPoint = originalEndPoint;
-        startPoint = originalStartPoint;
+        NSPoint startPoint = originalStartPoint;
         NSPoint *draggedPoint = (dragMask & SKMinXEdgeMask) ? &startPoint : &endPoint;
         
         *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
@@ -3085,7 +3081,7 @@ enum {
         if (dragMask == 0)
             [self doMoveAnnotationWithEvent:lastMouseEvent offset:offset];
         else
-            [self doResizeAnnotationWithEvent:lastMouseEvent originalBounds:originalBounds originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint];
+            [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint];
     }
     [NSEvent stopPeriodicEvents];
     if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
@@ -3135,9 +3131,7 @@ enum {
     PDFPage *page;
     
     // Mouse in display view coordinates.
-    mouseDownLoc = [theEvent locationInWindow];
-    
-    NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
+    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     BOOL mouseDownInAnnotation = NO;
     
     // Page we're on.
@@ -3566,6 +3560,7 @@ enum {
 
 - (void)doSelectTextWithEvent:(NSEvent *)theEvent {
     // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
+    NSPoint mouseDownLoc = [theEvent locationInWindow];
     PDFSelection *wasSelection = nil;
     NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     BOOL rectSelection = (modifiers & NSAlternateKeyMask) != 0;
