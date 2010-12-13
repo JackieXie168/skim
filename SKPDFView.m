@@ -2895,7 +2895,7 @@ enum {
             } else {
                 if ((dragMask & SKMinXEdgeMask) && (dragMask & SKMaxXEdgeMask))
                     dragMask &= relPoint.x < 0.0 ? ~SKMaxXEdgeMask : ~SKMinXEdgeMask;
-                else if ((dragMask & SKMinYEdgeMask) && (dragMask & SKMaxYEdgeMask))
+                if ((dragMask & SKMinYEdgeMask) && (dragMask & SKMaxYEdgeMask))
                     dragMask &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
             }
             
