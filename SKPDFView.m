@@ -3193,6 +3193,10 @@ enum {
         } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
+        } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && ([theEvent modifierFlags] & NSShiftKeyMask) == 0 && newActiveAnnotation && newActiveAnnotation != activeAnnotation && 
+                   NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+            newActiveAnnotation = nil;
+            mouseDownInAnnotation = YES;
         } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
             if ([activeAnnotation isMarkup]) {
                 NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
@@ -3329,6 +3333,7 @@ enum {
                 [activeAnnotation setBorder:border];
                 [activeAnnotation setString:text];
             }
+            [self setActiveAnnotation:nil];
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         }
     }
