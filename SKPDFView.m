@@ -3190,11 +3190,10 @@ enum {
                 newActiveAnnotation = activeAnnotation;
                 mouseDownInAnnotation = YES;
             }
-        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
-            newActiveAnnotation = nil;
-            mouseDownInAnnotation = YES;
-        } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && ([theEvent modifierFlags] & NSShiftKeyMask) == 0 && newActiveAnnotation && newActiveAnnotation != activeAnnotation && 
+        } else if (([newActiveAnnotation isMarkup] || 
+                    (toolMode == SKNoteToolMode && annotationMode == SKInkNote && newActiveAnnotation && newActiveAnnotation != activeAnnotation)) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+            // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
         } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
