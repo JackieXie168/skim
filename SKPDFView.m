@@ -333,10 +333,10 @@ enum {
 	
     [pdfPage transformContextForBox:[self displayBox]];
     
-    if (bezierPaths && pathPageIndex == [pdfPage pageIndex]) {
+    if (bezierPath && pathPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
         [(pathColor ?: [[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]) setStroke];
-        [bezierPaths makeObjectsPerformSelector:@selector(stroke)];
+        [bezierPath stroke];
         [NSGraphicsContext restoreGraphicsState];
     }
     
@@ -1801,8 +1801,8 @@ enum {
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             break;
         case SKInkNote:
-            if (bezierPaths)
-                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:[[[NSArray alloc] initWithArray:bezierPaths copyItems:YES] autorelease]];
+            if (bezierPath)
+                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:[NSArray arrayWithObjects:[[bezierPath copy] autorelease], nil]];
             break;
 	}
     if (newAnnotation) {
@@ -3191,7 +3191,7 @@ enum {
                 mouseDownInAnnotation = YES;
             }
         } else if (([newActiveAnnotation isMarkup] || 
-                    (toolMode == SKNoteToolMode && annotationMode == SKInkNote && newActiveAnnotation && newActiveAnnotation != activeAnnotation)) && 
+                    (toolMode == SKNoteToolMode && annotationMode == SKInkNote && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || ([theEvent modifierFlags] & NSShiftKeyMask)))) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
@@ -3262,76 +3262,69 @@ enum {
 }
 
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
-    NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
-    NSString *text = nil;
-    PDFBorder *border = nil;
-    NSBezierPath *path;
+    NSPoint mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     BOOL didDraw = NO;
-    BOOL isExtension = ([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page];
     
-    if (isExtension) {
-        bezierPaths = [[(PDFAnnotationInk *)activeAnnotation pagePaths] copy];
-        text = [[[activeAnnotation string] retain] autorelease];
-        border = [[[activeAnnotation border] retain] autorelease];
+    bezierPath = [[NSBezierPath alloc] init];
+    [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
+    [bezierPath setLineCapStyle:NSRoundLineCapStyle];
+    [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
+    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
         pathColor = [[activeAnnotation color] retain];
-        for (path in bezierPaths) {
-            [path setLineCapStyle:NSRoundLineCapStyle];
-            [path setLineJoinStyle:NSRoundLineJoinStyle];
-            [path setLineWidth:[border lineWidth]];
-            if ([border style] == kPDFBorderStyleDashed) {
-                [path setDashPattern:[border dashPattern]];
-                [path setLineCapStyle:NSButtLineCapStyle];
-            }
+        [bezierPath setLineWidth:[activeAnnotation lineWidth]];
+        if ([activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
+            [bezierPath setDashPattern:[activeAnnotation dashPattern]];
+            [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
-        [self removeActiveAnnotation:nil];
-        path = [bezierPaths lastObject];
-        [path lineToPoint:pagePoint];
-        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
-        didDraw = YES;
     } else {
-        path = [NSBezierPath bezierPath];
-        [path setLineCapStyle:NSRoundLineCapStyle];
-        [path setLineJoinStyle:NSRoundLineJoinStyle];
-        [path setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        [self setActiveAnnotation:nil];
+        [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
         if ((PDFBorderStyle)[[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
-            [path setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];
-            [path setLineCapStyle:NSButtLineCapStyle];
+            [bezierPath setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];
+            [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
-        [path moveToPoint:pagePoint];
-        bezierPaths = [[NSArray alloc] initWithObjects:path, nil];
     }
     pathPageIndex = [page pageIndex];
-    
-    [self setActiveAnnotation:nil];
     
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
             break;
-        [path lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
-        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
+        [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         didDraw = YES;
     }
     
     if (didDraw) {
-        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
+        NSMutableArray *paths = [[NSMutableArray alloc] init];
+        if (activeAnnotation)
+            [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
+        [paths addObject:bezierPath];
+        
+        PDFAnnotationInk *annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
         if (activeAnnotation) {
-            if (isExtension) {
-                [activeAnnotation setColor:pathColor];
-                [activeAnnotation setBorder:border];
-                [activeAnnotation setString:text];
-            }
-            [self setActiveAnnotation:nil];
-            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            [annotation setColor:pathColor];
+            [annotation setBorder:[activeAnnotation border]];
+            [annotation setString:[activeAnnotation string]];
+        }
+        [annotation registerUserName]; 
+        [self addAnnotation:annotation toPage:page];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        
+        [paths release];
+        [annotation release];
+        
+        if (activeAnnotation) {
+            [self removeActiveAnnotation:nil];
+            [self setActiveAnnotation:annotation];
+        } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
+            [self setActiveAnnotation:annotation];
         }
     }
     
-    [bezierPaths release];
-    bezierPaths = nil;
-    [pathColor release];
-    pathColor = nil;
+    SKDESTROY(bezierPath);
+    SKDESTROY(pathColor);
 }
 
 - (void)doDragWithEvent:(NSEvent *)theEvent {
