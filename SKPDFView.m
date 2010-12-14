@@ -3204,8 +3204,6 @@ enum {
                 
                 [self removeActiveAnnotation:nil];
                 [self removeAnnotation:newActiveAnnotation];
-                [accessibilityChildren release];
-                accessibilityChildren = nil;
                 
                 newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
                 [newActiveAnnotation setString:[sel cleanedString]];
