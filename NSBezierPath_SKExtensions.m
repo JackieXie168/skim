@@ -97,6 +97,27 @@
     return path;
 }
 
+- (NSArray *)dashPattern {
+    NSInteger i, count = 0;
+    NSMutableArray *array = [NSMutableArray array];
+    [self getLineDash:NULL count:&count phase:NULL];
+    if (count > 0) {
+        CGFloat pattern[count];
+        [self getLineDash:pattern count:&count phase:NULL];
+        for (i = 0; i < count; i++)
+            [array addObject:[NSNumber numberWithDouble:pattern[i]]];
+    }
+    return array;
+}
+
+- (void)setDashPattern:(NSArray *)newPattern {
+    NSInteger i, count = [newPattern count];
+    CGFloat pattern[count];
+    for (i = 0; i< count; i++)
+        pattern[i] = [[newPattern objectAtIndex:i] doubleValue];
+    [self setLineDash:pattern count:count phase:0];
+}
+
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex {
     NSPoint points[3];
     if (NSCurveToBezierPathElement == [self elementAtIndex:anIndex associatedPoints:points])
