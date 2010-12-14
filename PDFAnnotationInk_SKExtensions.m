@@ -84,6 +84,15 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     return self;
 }
 
+- (NSArray *)pagePaths {
+    NSMutableArray *paths = [[[NSMutableArray alloc] initWithArray:[self paths] copyItems:YES] autorelease];
+    NSRect bounds = [self bounds];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+    [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+    return paths;
+}
+
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     NSPoint point;

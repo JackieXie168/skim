@@ -3211,19 +3211,8 @@ enum {
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
-                NSMutableArray *paths = [[NSMutableArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
-                NSArray *newPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)newActiveAnnotation paths] copyItems:YES];
-                
-                NSAffineTransform *transform = [NSAffineTransform transform];
-                NSRect bounds = [activeAnnotation bounds];
-                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-                [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                transform = [NSAffineTransform transform];
-                bounds = [newActiveAnnotation bounds];
-                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-                [newPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                [paths addObjectsFromArray:newPaths];
-                [newPaths release];
+                NSMutableArray *paths = [[(PDFAnnotationInk *)activeAnnotation pagePaths] mutableCopy];
+                [paths addObjectsFromArray:[(PDFAnnotationInk *)newActiveAnnotation pagePaths]];
                 
                 [self removeAnnotation:newActiveAnnotation];
                 newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
@@ -3283,11 +3272,7 @@ enum {
     BOOL isExtension = ([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page];
     
     if (isExtension) {
-        bezierPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        NSRect bounds = [activeAnnotation bounds];
-        [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-        [bezierPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+        bezierPaths = [[(PDFAnnotationInk *)activeAnnotation pagePaths] copy];
         text = [[[activeAnnotation string] retain] autorelease];
         border = [[[activeAnnotation border] retain] autorelease];
         pathColor = [[activeAnnotation color] retain];
