@@ -43,6 +43,9 @@
 + (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius;
 + (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius;
 
+- (NSArray *)dashPattern;
+- (void)setDashPattern:(NSArray *)newPattern;
+
 - (NSRect)nonEmptyBounds;
 
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex;

@@ -3295,6 +3295,10 @@ enum {
             [path setLineCapStyle:NSRoundLineCapStyle];
             [path setLineJoinStyle:NSRoundLineJoinStyle];
             [path setLineWidth:[border lineWidth]];
+            if ([border style] == kPDFBorderStyleDashed) {
+                [path setDashPattern:[border dashPattern]];
+                [path setLineCapStyle:NSButtLineCapStyle];
+            }
         }
         [self removeActiveAnnotation:nil];
         path = [bezierPaths lastObject];
@@ -3306,6 +3310,10 @@ enum {
         [path setLineCapStyle:NSRoundLineCapStyle];
         [path setLineJoinStyle:NSRoundLineJoinStyle];
         [path setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        if ((PDFBorderStyle)[[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+            [path setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];
+            [path setLineCapStyle:NSButtLineCapStyle];
+        }
         [path moveToPoint:pagePoint];
         bezierPaths = [[NSArray alloc] initWithObjects:path, nil];
     }
