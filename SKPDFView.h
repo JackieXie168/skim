@@ -111,7 +111,7 @@ typedef NSInteger SKNoteType;
     CGFloat magnification;
     BOOL didSelect;
     SKRectEdges dragMask;
-    NSArray *bezierPaths;
+    NSBezierPath *bezierPath;
     NSUInteger pathPageIndex;
     NSColor *pathColor;
     CGFloat gestureRotation;
