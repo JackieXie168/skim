@@ -3202,12 +3202,12 @@ enum {
                 PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
                 [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
                 
-                [self removeActiveAnnotation:nil];
                 [self removeAnnotation:newActiveAnnotation];
-                
                 newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
                 [newActiveAnnotation setString:[sel cleanedString]];
+                [newActiveAnnotation setColor:[activeAnnotation color]];
                 [newActiveAnnotation registerUserName];
+                [self removeActiveAnnotation:nil];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
@@ -3227,11 +3227,11 @@ enum {
                 
                 [self removeAnnotation:newActiveAnnotation];
                 newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
-                [(PDFAnnotationInk *)newActiveAnnotation setString:[activeAnnotation string]];
-                [(PDFAnnotationInk *)newActiveAnnotation setColor:[activeAnnotation color]];
-                [(PDFAnnotationInk *)newActiveAnnotation setBorder:[activeAnnotation border]];
-                [self removeActiveAnnotation:nil];
+                [newActiveAnnotation setString:[activeAnnotation string]];
+                [newActiveAnnotation setColor:[activeAnnotation color]];
+                [newActiveAnnotation setBorder:[activeAnnotation border]];
                 [newActiveAnnotation registerUserName];
+                [self removeActiveAnnotation:nil];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 
