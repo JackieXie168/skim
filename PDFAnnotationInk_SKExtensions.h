@@ -45,6 +45,8 @@ extern NSString *SKPDFAnnotationScriptingPointListsKey;
 
 - (id)initSkimNoteWithPaths:(NSArray *)paths;
 
+- (NSArray *)pagePaths;
+
 - (NSArray *)pointLists;
 
 @end
