@@ -109,7 +109,6 @@ typedef NSInteger SKNoteType;
     NSRect selectionRect;
     NSUInteger selectionPageIndex;
     CGFloat magnification;
-    BOOL didSelect;
     SKRectEdges dragMask;
     NSBezierPath *bezierPath;
     NSUInteger pathPageIndex;
