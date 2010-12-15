@@ -335,7 +335,7 @@ enum {
     
     if (bezierPath && pathPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
-        [(pathColor ?: [[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]) setStroke];
+        [pathColor setStroke];
         [bezierPath stroke];
         [NSGraphicsContext restoreGraphicsState];
     }
@@ -3279,9 +3279,11 @@ enum {
         }
     } else {
         [self setActiveAnnotation:nil];
-        [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && (PDFBorderStyle)[[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
-            [bezierPath setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];
+        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        pathColor = [[sud colorForKey:SKInkNoteColorKey] retain];
+        [bezierPath setLineWidth:[sud floatForKey:SKInkNoteLineWidthKey]];
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && (PDFBorderStyle)[sud integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+            [bezierPath setDashPattern:[sud arrayForKey:SKInkNoteDashPatternKey]];
             [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
     }
