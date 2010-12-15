@@ -124,7 +124,7 @@ typedef NSInteger SKNoteType;
 
 @property (nonatomic) SKToolMode toolMode;
 @property (nonatomic) SKNoteType annotationMode;
-@property (nonatomic, readonly) SKInteractionMode interactionMode;
+@property (nonatomic) SKInteractionMode interactionMode;
 @property (nonatomic, retain) PDFAnnotation *activeAnnotation;
 @property (nonatomic, readonly) BOOL isEditing, isZooming;
 @property (nonatomic) NSRect currentSelectionRect;
@@ -137,7 +137,6 @@ typedef NSInteger SKNoteType;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 @property (nonatomic, readonly) NSUndoManager *undoManager;
 
-- (void)setInteractionMode:(SKInteractionMode)newInteractionMode;
 - (void)toggleReadingBar;
 
 - (IBAction)delete:(id)sender;
