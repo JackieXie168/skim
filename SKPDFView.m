@@ -72,6 +72,8 @@
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
 
+#define ANNOTATION_MODE_IS_MARKUP (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)
+
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -1082,7 +1084,7 @@ enum {
                 case SKTextToolMode:
                 case SKNoteToolMode:
                     if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO &&
-                        (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                        (toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP)) {
                         if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
                         } else {
@@ -1091,7 +1093,7 @@ enum {
                                 [self doSelectTextWithEvent:theEvent];
                             else
                                 [super mouseDown:theEvent];
-                            if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
+                            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
@@ -1715,7 +1717,7 @@ enum {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         else if (annotationType == SKAnchoredNote)
             bounds.size = SKNPDFAnnotationNoteSize;
-	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
+	} else if (ANNOTATION_MODE_IS_MARKUP == NO) {
         
 		// First try the current mouse position
         NSPoint center = [self convertPoint:point fromView:nil];
@@ -3132,6 +3134,7 @@ enum {
     // Mouse in display view coordinates.
     NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     BOOL mouseDownInAnnotation = NO;
+    BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
     
     // Page we're on.
     page = [self pageForPoint:mouseDownOnPage nearest:YES];
@@ -3162,7 +3165,7 @@ enum {
                 // register this, so we can do our own selection later
                 mouseDownInAnnotation = YES;
             } else if ([annotation isLink]) {
-                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote))
+                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP))
                     newActiveAnnotation = annotation;
                 break;
             }
@@ -3170,6 +3173,7 @@ enum {
     }
     
     if (hideNotes == NO && page != nil) {
+        BOOL isShift = 0 != ([theEvent modifierFlags] & NSShiftKeyMask);
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
@@ -3179,7 +3183,7 @@ enum {
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
         } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote && annotationMode != SKInkNote &&
+                   ANNOTATION_MODE_IS_MARKUP == NO && annotationMode != SKInkNote &&
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
@@ -3190,12 +3194,12 @@ enum {
                 mouseDownInAnnotation = YES;
             }
         } else if (([newActiveAnnotation isMarkup] || 
-                    (toolMode == SKNoteToolMode && annotationMode == SKInkNote && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || ([theEvent modifierFlags] & NSShiftKeyMask)))) && 
+                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || isShift))) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
-        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
+        } else if (isShift && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
             if ([activeAnnotation isMarkup]) {
                 NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
                 PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
@@ -3243,7 +3247,7 @@ enum {
         if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
         return YES;
         
-    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
+    } else if (isInk && hideNotes == NO && page != nil) {
         
         [self doDrawFreehandNoteWithEvent:theEvent];
         
@@ -4119,7 +4123,7 @@ enum {
                 p = [self convertPoint:p toPage:page];
                 if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
                     area = kPDFAnnotationArea;
-                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
