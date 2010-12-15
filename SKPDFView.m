@@ -3273,14 +3273,14 @@ enum {
     if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
         pathColor = [[activeAnnotation color] retain];
         [bezierPath setLineWidth:[activeAnnotation lineWidth]];
-        if ([activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && [activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
             [bezierPath setDashPattern:[activeAnnotation dashPattern]];
             [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
     } else {
         [self setActiveAnnotation:nil];
         [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-        if ((PDFBorderStyle)[[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && (PDFBorderStyle)[[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
             [bezierPath setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];
             [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
