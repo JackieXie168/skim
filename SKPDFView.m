@@ -218,7 +218,6 @@ enum {
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
     magnification = 0.0;
-    didSelect = NO;
     
     gestureRotation = 0.0;
     gesturePageIndex = NSNotFound;
@@ -404,7 +403,7 @@ enum {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         [[NSColor blackColor] setStroke];
         [NSBezierPath strokeRect:rect];
-    } else if (toolMode == SKSelectToolMode && (didSelect || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
+    } else if (toolMode == SKSelectToolMode && selectionPageIndex != NSNotFound) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = 4.0 / [self scaleFactor];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
@@ -3362,14 +3361,12 @@ enum {
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
+    if (page == nil) // should never get here, see mouseDown:
+        return;
+    
     CGFloat margin = 4.0 / [self scaleFactor];
     
-    if (page == nil) {
-        selectionRect = NSZeroRect;
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-        [self setNeedsDisplay:YES];
-        return;
-    } else if ([page pageIndex] != selectionPageIndex && selectionPageIndex != NSNotFound) {
+    if (selectionPageIndex != NSNotFound && [page pageIndex] != selectionPageIndex) {
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:[self currentSelectionPage]];
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
@@ -3377,6 +3374,7 @@ enum {
     selectionPageIndex = [page pageIndex];
     
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
+    BOOL didSelect = NO;
     
     dragMask = 0;
     
