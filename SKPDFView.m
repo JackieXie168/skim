@@ -166,6 +166,7 @@ enum {
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
+- (void)doNothingWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
 - (void)doUpdateCursor;
 
@@ -1054,10 +1055,7 @@ enum {
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
-            while (YES) {
-                if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-                    break;
-            }
+            [self doNothingWithEvent:theEvent];
         }
     } else if (modifiers & NSCommandKeyMask) {
         if (modifiers & NSShiftKeyMask)
@@ -3237,12 +3235,16 @@ enum {
         if (activeAnnotation != newActiveAnnotation)
             [self setActiveAnnotation:newActiveAnnotation];
         
-        if ([activeAnnotation isLink])
+        if ([activeAnnotation isLink]) {
             [self doSelectLinkAnnotationWithEvent:theEvent];
-        else if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote])
+        } else if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
+            [self doNothingWithEvent:theEvent];
             [self editActiveAnnotation:self];
-        else if ([activeAnnotation isMovable]) 
+        } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent atPoint:pagePoint pageRotation:[page rotation]];
+        } else {
+            [self doNothingWithEvent:theEvent];
+        }
         
         if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
         return YES;
@@ -3365,8 +3367,11 @@ enum {
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
-    if (page == nil) // should never get here, see mouseDown:
+    if (page == nil) {
+        // should never get here, see mouseDown:
+        [self doNothingWithEvent:theEvent];
         return;
+    }
     
     CGFloat margin = 4.0 / [self scaleFactor];
     
@@ -4015,11 +4020,7 @@ enum {
 }
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
-    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
-    while (YES) {
-        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-            break;
-    }
+    [self doNothingWithEvent:theEvent];
     
     SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
     
@@ -4033,6 +4034,14 @@ enum {
         NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         
         [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
+    }
+}
+
+- (void)doNothingWithEvent:(NSEvent *)theEvent {
+    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+    while (YES) {
+        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+            break;
     }
 }
 
