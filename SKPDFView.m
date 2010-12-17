@@ -3539,8 +3539,6 @@ enum {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
 	}
     
-    didSelect = NO;
-    
     if (NSIsEmptyRect(selectionRect)) {
         selectionRect = NSZeroRect;
         selectionPageIndex = NSNotFound;
