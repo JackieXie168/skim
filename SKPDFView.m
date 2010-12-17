@@ -1082,20 +1082,21 @@ enum {
             switch (toolMode) {
                 case SKTextToolMode:
                 case SKNoteToolMode:
-                    if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO &&
-                        (toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP)) {
+                    if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO) {
                         if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
-                        } else {
-                            // [super mouseDown:] since 10.5 runs a mouse-tracking loop
-                            if (nil == activeAnnotation && hitAnnotation)
+                        } else if (toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) {
+                            // before 10.6 PDFView did not select behind an annotation
+                            if (hitAnnotation && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
                                 [self doSelectTextWithEvent:theEvent];
-                            else
+                            else // [super mouseDown:] since 10.5 runs a mouse-tracking loop, 
                                 [super mouseDown:theEvent];
                             if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
+                        } else {
+                            [self doNothingWithEvent:theEvent];
                         }
                     }
                     break;
