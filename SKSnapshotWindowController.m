@@ -414,6 +414,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     }
     bounds.origin = NSZeroPoint;
     NSRectFill(bounds);
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     [NSGraphicsContext restoreGraphicsState];
     [imageRep drawInRect:bounds];
     [image unlockFocus];

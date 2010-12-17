@@ -81,6 +81,7 @@
         [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
         [self drawWithBox:box]; 
         [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         [NSGraphicsContext restoreGraphicsState];
     }
     return imageRep;

@@ -126,6 +126,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
         }
         [img drawInRect:drawFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
         
+        [ctxt setImageInterpolation:NSImageInterpolationDefault];
         [ctxt restoreGraphicsState];
     }
 }
