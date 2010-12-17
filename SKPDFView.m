@@ -1083,9 +1083,13 @@ enum {
                 case SKTextToolMode:
                 case SKNoteToolMode:
                     if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO) {
-                        if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
+                        if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page) {
+                            [self doDrawFreehandNoteWithEvent:theEvent];
+                        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
+                            [self doNothingWithEvent:theEvent];
+                        } else if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
-                        } else if (toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) {
+                        } else {
                             // before 10.6 PDFView did not select behind an annotation
                             if (hitAnnotation && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
                                 [self doSelectTextWithEvent:theEvent];
@@ -1095,8 +1099,6 @@ enum {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
-                        } else {
-                            [self doNothingWithEvent:theEvent];
                         }
                     }
                     break;
@@ -3232,40 +3234,24 @@ enum {
         }
     }
     
-    if (newActiveAnnotation) {
+    if (newActiveAnnotation || isInk == NO || hideNotes || page == nil) {
+        [self setActiveAnnotation:newActiveAnnotation];
         
-        if (activeAnnotation != newActiveAnnotation)
-            [self setActiveAnnotation:newActiveAnnotation];
-        
-        if ([activeAnnotation isLink]) {
+        if ([newActiveAnnotation isLink]) {
             [self doSelectLinkAnnotationWithEvent:theEvent];
-        } else if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
+        } else if ([theEvent clickCount] == 2 && [newActiveAnnotation isEditable]) {
             [self doNothingWithEvent:theEvent];
             [self editActiveAnnotation:self];
-        } else if ([activeAnnotation isMovable]) {
+        } else if ([newActiveAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent atPoint:pagePoint pageRotation:[page rotation]];
-        } else {
+        } else if (newActiveAnnotation) {
             [self doNothingWithEvent:theEvent];
         }
         
-        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
-        return YES;
-        
-    } else if (isInk && hideNotes == NO && page != nil) {
-        
-        [self doDrawFreehandNoteWithEvent:theEvent];
-        
-        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
-        return YES;
-        
-    } else {
-        // no new active annotation
-        [self setActiveAnnotation:nil];
-        
-        if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
-        return NO;
-        
     }
+    
+    if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
+    return newActiveAnnotation != nil;
 }
 
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
