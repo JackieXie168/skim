@@ -3450,14 +3450,12 @@ enum {
             else if (dragMask & SKMinYEdgeMask)
                 height -= delta.y;
             
-            if (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
-                if (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask))
-                    square = fmax(fabs(width), fabs(height));
-                else
-                    square = fabs(width);
-            } else {
+            if (0 == (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)))
                 square = fabs(height);
-            }
+            else if (0 == (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask)))
+                square = fabs(width);
+            else
+                square = fmax(fabs(width), fabs(height));
             
             if (dragMask & SKMinXEdgeMask) {
                 if (width >= 0.0 && NSMaxX(newRect) - square < NSMinX(pageBounds))
