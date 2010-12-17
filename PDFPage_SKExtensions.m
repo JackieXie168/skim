@@ -121,9 +121,9 @@ static BOOL usesSequentialPageNumbering = NO;
     
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     
     [NSGraphicsContext saveGraphicsState];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     [[NSColor whiteColor] set];
     if (hasShadow) {
         NSShadow *aShadow = [[NSShadow alloc] init];
@@ -138,6 +138,7 @@ static BOOL usesSequentialPageNumbering = NO;
     pageRect.origin.x -= shadowOffset.width;
     pageRect.origin.y -= shadowOffset.height;
     NSRectFill(pageRect);
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     [NSGraphicsContext restoreGraphicsState];
     
     if (isScaled || hasShadow) {

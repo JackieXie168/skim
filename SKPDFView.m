@@ -421,6 +421,7 @@ enum {
         SKDrawGrabHandles(selectionRect, radius, 0);
     }
     
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     [NSGraphicsContext restoreGraphicsState];
 }
 
