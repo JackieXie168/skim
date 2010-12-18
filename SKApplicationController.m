@@ -207,25 +207,17 @@
     [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
+    
+    // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+        [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
+        [[HIDRemote sharedHIDRemote] setDelegate:self];
+    }
 }
 
 // we don't want to reopen last open files when re-activating the app
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
     return flag;
-}
-
-- (void)applicationDidBecomeActive:(NSNotification *)aNotification {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
-        if ([[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusive])
-            [[HIDRemote sharedHIDRemote] setDelegate:self];
-    }
-}
-
-- (void)applicationWillResignActive:(NSNotification *)aNotification {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
-        [[HIDRemote sharedHIDRemote] stopRemoteControl];
-        [[HIDRemote sharedHIDRemote] setDelegate:nil];
-    }
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
