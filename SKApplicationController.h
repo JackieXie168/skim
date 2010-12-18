@@ -38,11 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKApplication.h"
+#import "HIDRemote.h"
 
-@class RemoteControlContainer, SKBookmark;
+@class SKBookmark;
 
-@interface SKApplicationController : NSObject <SKApplicationDelegate, NSMenuDelegate> {
-    RemoteControlContainer *remoteControl;
+@interface SKApplicationController : NSObject <SKApplicationDelegate, NSMenuDelegate, HIDRemoteDelegate> {
     BOOL remoteScrolling;
 }
 
