@@ -3235,7 +3235,8 @@ enum {
     }
     
     if (newActiveAnnotation || isInk == NO || hideNotes || page == nil) {
-        [self setActiveAnnotation:newActiveAnnotation];
+        if (newActiveAnnotation != activeAnnotation)
+            [self setActiveAnnotation:newActiveAnnotation];
         
         if ([newActiveAnnotation isLink]) {
             [self doSelectLinkAnnotationWithEvent:theEvent];
