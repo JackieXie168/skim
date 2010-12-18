@@ -169,11 +169,7 @@
 		<key>SKAutoHidePresentationContents</key>
 		<true/>
 		<key>SKEnableAppleRemote</key>
-		<false/>
-		<key>SKEnableKeyspanFrontRowControl</key>
-		<false/>
-		<key>SKEnableKeyboardRemoteSimulation</key>
-		<false/>
+		<true/>
 		<key>SKAppleRemoteSwitchIndicationTimeout</key>
 		<real>2</real>
 		<key>SKReadMissingNotesFromSkimFileOption</key>
@@ -298,8 +294,6 @@
 			<string>SKActivatePresentationNavigationAtBottom</string>
 			<string>SKReadMissingNotesFromSkimFileOption</string>
 			<string>SKEnableAppleRemote</string>
-			<string>SKEnableKeyspanFrontRowControl</string>
-			<string>SKEnableKeyboardRemoteSimulation</string>
 			<string>SKAppleRemoteSwitchIndicationTimeout</string>
 		</array>
 	</dict>

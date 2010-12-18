@@ -92,7 +92,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
-#import "RemoteControl.h"
+#import "HIDRemote.h"
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "PDFOutline_SKExtensions.h"
@@ -2596,11 +2596,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark Remote Control
 
 - (void)remoteButtonPressed:(NSEvent *)theEvent {
-    RemoteControlEventIdentifier remoteButton = (RemoteControlEventIdentifier)[theEvent data1];
+    HIDRemoteButtonCode remoteButton = (HIDRemoteButtonCode)[theEvent data1];
     BOOL remoteScrolling = (BOOL)[theEvent data2];
     
     switch (remoteButton) {
-        case kRemoteButtonPlus:
+        case kHIDRemoteButtonCodeUp:
             if (remoteScrolling)
                 [[[self pdfView] documentView] scrollLineUp];
             else if ([self interactionMode] == SKPresentationMode)
@@ -2608,7 +2608,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             else
                 [self doZoomIn:nil];
             break;
-        case kRemoteButtonMinus:
+        case kHIDRemoteButtonCodeDown:
             if (remoteScrolling)
                 [[[self pdfView] documentView] scrollLineDown];
             else if ([self interactionMode] == SKPresentationMode)
@@ -2616,21 +2616,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             else
                 [self doZoomOut:nil];
             break;
-        case kRemoteButtonRight_Hold:
-        case kRemoteButtonRight:
+        case kHIDRemoteButtonCodeRightHold:
+        case kHIDRemoteButtonCodeRight:
             if (remoteScrolling)
                 [[[self pdfView] documentView] scrollLineRight];
             else 
                 [self doGoToNextPage:nil];
             break;
-        case kRemoteButtonLeft_Hold:
-        case kRemoteButtonLeft:
+        case kHIDRemoteButtonCodeLeftHold:
+        case kHIDRemoteButtonCodeLeft:
             if (remoteScrolling)
                 [[[self pdfView] documentView] scrollLineLeft];
             else 
                 [self doGoToPreviousPage:nil];
             break;
-        case kRemoteButtonPlay:        
+        case kHIDRemoteButtonCodeCenter:        
             [self togglePresentation:nil];
             break;
         default:

@@ -53,11 +53,6 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
-#import "RemoteControl.h"
-#import "AppleRemote.h"
-#import "KeyspanFrontRowControl.h"
-#import "GlobalKeyboardDevice.h"
-#import "RemoteControlContainer.h"
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
 #import "SKDownloadController.h"
@@ -204,16 +199,6 @@
 	
     [self doSpotlightImportIfNeeded];
     
-    remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
-    if ([sud boolForKey:SKEnableAppleRemoteKey])
-        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
-    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey])
-        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
-    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
-        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
-    if ([remoteControl count] == 0)
-        SKDESTROY(remoteControl);
-    
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
                              name:SKDocumentDidShowNotification object:nil];
@@ -230,11 +215,17 @@
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
-    [remoteControl startListening:self];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+        if ([[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusive])
+            [[HIDRemote sharedHIDRemote] setDelegate:self];
+    }
 }
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification {
-	[remoteControl stopListening:self];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+        [[HIDRemote sharedHIDRemote] stopRemoteControl];
+        [[HIDRemote sharedHIDRemote] setDelegate:nil];
+    }
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
@@ -243,11 +234,6 @@
     [nc removeObserver:self name:SKDocumentDidShowNotification object:nil];
     [nc removeObserver:self name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
     [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:nil];
-}
-
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [remoteControl setListeningToRemote:NO];
-    SKDESTROY(remoteControl);
 }
 
 #pragma mark Updater
@@ -388,9 +374,9 @@
 // avoid rebuilding the bookmarks menu on every key event
 - (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
 
-- (void)sendRemoteButtonEvent:(RemoteControlEventIdentifier)event pressedDown:(BOOL)pressedDown remoteControl:(RemoteControl *)remoteControl {
-    if (pressedDown) {
-        if (event == kRemoteButtonMenu) {
+- (void)hidRemote:(HIDRemote *)hidRemote eventWithButton:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed fromHardwareWithAttributes:(NSMutableDictionary *)attributes {
+    if (isPressed) {
+        if (buttonCode == kHIDRemoteButtonCodeMenu) {
             remoteScrolling = !remoteScrolling;
             if ([[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey] > 0.0) {
                 NSRect rect = [[NSScreen mainScreen] frame];
@@ -406,7 +392,7 @@
                                                windowNumber:0
                                                     context:nil
                                                     subtype:SKRemoteButtonEvent
-                                                      data1:event
+                                                      data1:buttonCode
                                                       data2:remoteScrolling];
             [NSApp postEvent:theEvent atStart:YES];
         }
