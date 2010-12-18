@@ -157,6 +157,8 @@ enum {
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent hitAnnotation:(BOOL *)hitAnnotation;
+- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
@@ -1043,7 +1045,7 @@ enum {
     // 10.6 does not automatically make us firstResponder, that's annoying
     [[self window] makeFirstResponder:self];
     
-	NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+	NSUInteger modifiers = [theEvent standardModifierFlags];
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
@@ -1058,17 +1060,16 @@ enum {
             // Eat up drag events because we don't want to select
             [self doNothingWithEvent:theEvent];
         }
-    } else if (modifiers & NSCommandKeyMask) {
-        if (modifiers & NSShiftKeyMask)
-            [self doPdfsyncWithEvent:theEvent];
-        else
-            [self doSelectSnapshotWithEvent:theEvent];
+    } else if (modifiers == NSCommandKeyMask) {
+        [self doPdfsyncWithEvent:theEvent];
+    } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
+        [self doSelectSnapshotWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-        NSPoint p = [theEvent locationInWindow];
-        p = [self convertPoint:p fromView:nil];
+        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
+        BOOL hitAnnotation = NO;
         
         if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && area != kPDFLinkArea && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
             if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
@@ -1077,43 +1078,44 @@ enum {
                 [self doDragReadingBarWithEvent:theEvent];
         } else if (area == kPDFNoArea) {
             [self doDragWithEvent:theEvent];
+        } else if (toolMode == SKMoveToolMode) {
+            if (area & kPDFLinkArea)
+                [super mouseDown:theEvent];
+            else
+                [self doDragWithEvent:theEvent];	
+        } else if (toolMode == SKSelectToolMode) {
+            [self doSelectWithEvent:theEvent];
+        } else if (toolMode == SKMagnifyToolMode) {
+            [self doMagnifyWithEvent:theEvent];
+        } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
+            if ([activeAnnotation isLink]) {
+                [self doSelectLinkAnnotationWithEvent:theEvent];
+            } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
+                [self doNothingWithEvent:theEvent];
+                [self editActiveAnnotation:nil];
+            } else if ([activeAnnotation isMovable]) {
+                [self doDragAnnotationWithEvent:theEvent];
+            } else if (activeAnnotation) {
+                [self doNothingWithEvent:theEvent];
+            }
+        } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page) {
+            [self doDrawFreehandNoteWithEvent:theEvent];
         } else {
-            BOOL hitAnnotation = NO;
-            switch (toolMode) {
-                case SKTextToolMode:
-                case SKNoteToolMode:
-                    if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation] == NO) {
-                        if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page) {
-                            [self doDrawFreehandNoteWithEvent:theEvent];
-                        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
-                            [self doNothingWithEvent:theEvent];
-                        } else if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
-                            [self doDragWithEvent:theEvent];
-                        } else {
-                            // before 10.6 PDFView did not select behind an annotation
-                            if (hitAnnotation && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
-                                [self doSelectTextWithEvent:theEvent];
-                            else // [super mouseDown:] since 10.5 runs a mouse-tracking loop, 
-                                [super mouseDown:theEvent];
-                            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
-                                [self addAnnotationWithType:annotationMode];
-                                [self setCurrentSelection:nil];
-                            }
-                        }
-                    }
-                    break;
-                case SKMoveToolMode:
-                    if (area & kPDFLinkArea)
-                        [super mouseDown:theEvent];
-                    else
-                        [self doDragWithEvent:theEvent];	
-                    break;
-                case SKSelectToolMode:
-                    [self doSelectWithEvent:theEvent];
-                    break;
-                case SKMagnifyToolMode:
-                    [self doMagnifyWithEvent:theEvent];
-                    break;
+            [self setActiveAnnotation:nil];
+            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
+                [self doNothingWithEvent:theEvent];
+            } else if (area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
+                [self doDragWithEvent:theEvent];
+            } else {
+                // before 10.6 PDFView did not select behind an annotation
+                if (hitAnnotation && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
+                    [self doSelectTextWithEvent:theEvent];
+                else // [super mouseDown:] since 10.5 runs a mouse-tracking loop, 
+                    [super mouseDown:theEvent];
+                if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
+                    [self addAnnotationWithType:annotationMode];
+                    [self setCurrentSelection:nil];
+                }
             }
         }
     }
@@ -3015,12 +3017,16 @@ enum {
     [activeAnnotation setBounds:newBounds];
 }
 
-- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent atPoint:(NSPoint)pagePoint pageRotation:(NSInteger)rotation {
+- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
     // activeAnnotation should be movable
     
     // Old (current) annotation location and click point relative to it
     NSRect originalBounds = [activeAnnotation bounds];
     BOOL isLine = [[activeAnnotation type] isEqualToString:SKNLineString];
+    NSPoint mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
+    NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];
+    NSInteger rotation = [page rotation];
     
     // Hit-test for resize box.
     dragMask = 0;
@@ -3234,22 +3240,8 @@ enum {
         }
     }
     
-    if (newActiveAnnotation || isInk == NO || hideNotes || page == nil) {
-        if (newActiveAnnotation != activeAnnotation)
-            [self setActiveAnnotation:newActiveAnnotation];
-        
-        if ([newActiveAnnotation isLink]) {
-            [self doSelectLinkAnnotationWithEvent:theEvent];
-        } else if ([theEvent clickCount] == 2 && [newActiveAnnotation isEditable]) {
-            [self doNothingWithEvent:theEvent];
-            [self editActiveAnnotation:self];
-        } else if ([newActiveAnnotation isMovable]) {
-            [self doDragAnnotationWithEvent:theEvent atPoint:pagePoint pageRotation:[page rotation]];
-        } else if (newActiveAnnotation) {
-            [self doNothingWithEvent:theEvent];
-        }
-        
-    }
+    if (newActiveAnnotation && newActiveAnnotation != activeAnnotation)
+        [self setActiveAnnotation:newActiveAnnotation];
     
     if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
     return newActiveAnnotation != nil;
