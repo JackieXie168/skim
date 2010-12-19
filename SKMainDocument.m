@@ -209,6 +209,7 @@ static char SKMainDocumentDefaultsObservationContext;
     [printDict setValue:[NSNumber numberWithInteger:kPDFPrintPageScaleNone] forKey:@"PDFPrintScalingMode"];
     [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
     [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
+    [printDict setValue:[NSNumber numberWithBool:YES] forKey:NSPrintAllPages];
     [self setPrintInfo:printInfo];
     
     [self setDataFromTmpData];
@@ -1751,15 +1752,10 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 - (NSPrintInfo *)printInfo {
     NSPrintInfo *printInfo = [super printInfo];
-    NSUInteger pageCount = [[self pdfDocument] pageCount];
-    if (pageCount) {
+    if ([[self pdfDocument] pageCount]) {
         PDFPage *page = [[self pdfDocument] pageAtIndex:0];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
         BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
-        
-        [[printInfo dictionary] setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
-        [[printInfo dictionary] setValue:[NSNumber numberWithInteger:pageCount] forKey:NSPrintLastPage];
-        [[printInfo dictionary] setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
         [printInfo setOrientation:isLandscape ? NSLandscapeOrientation : NSPortraitOrientation];
     }
     return printInfo;
@@ -2036,8 +2032,13 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
-        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage])
+        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
             [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
+            if ([settings objectForKey:NSPrintFirstPage] == nil)
+                [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
+            if ([settings objectForKey:NSPrintLastPage] == nil)
+                [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
+        }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
     
