@@ -184,8 +184,6 @@ static char SKMainDocumentDefaultsObservationContext;
 }
 
 - (void)setDataFromTmpData {
-    [[self undoManager] disableUndoRegistration];
-    
     if ([[tmpData pdfDocument] isLocked])
         [self tryToUnlockDocument:[tmpData pdfDocument]];
     [[self mainWindowController] setPdfDocument:[tmpData pdfDocument]];
@@ -199,13 +197,25 @@ static char SKMainDocumentDefaultsObservationContext;
     
     [[self mainWindowController] setRating:[tmpData openMetaRating]];
     
-    [[self undoManager] enableUndoRegistration];
+    [[[self printInfo] dictionary] setValue:[NSNumber numberWithInteger:[[tmpData pdfDocument] pageCount]] forKey:NSPrintLastPage];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
+    [[self undoManager] disableUndoRegistration];
+    
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+    NSMutableDictionary *printDict = [printInfo dictionary];
+    [printDict setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
+    [printDict setValue:[NSNumber numberWithInteger:kPDFPrintPageScaleNone] forKey:@"PDFPrintScalingMode"];
+    [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
+    [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
+    [self setPrintInfo:printInfo];
+    
     [self setDataFromTmpData];
     [tmpData release];
     tmpData = nil;
+    
+    [[self undoManager] enableUndoRegistration];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKMainDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
@@ -843,7 +853,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
     if (success) {
+        [[self undoManager] disableUndoRegistration];
         [self setDataFromTmpData];
+        [[self undoManager] enableUndoRegistration];
         [[self undoManager] removeAllActions];
         // file watching could have been disabled if the file was deleted
         if (watchedFile == nil && fileUpdateTimer == nil)
@@ -863,7 +875,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (IBAction)printDocument:(id)sender{
     BOOL autoRotate = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
-    [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate];
+    PDFPrintScalingMode pageScaling = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintScalingMode"] integerValue];
+    [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate pageScaling:pageScaling];
 }
 
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
@@ -1738,11 +1751,14 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 - (NSPrintInfo *)printInfo {
     NSPrintInfo *printInfo = [super printInfo];
-    if ([[self pdfDocument] pageCount]) {
+    NSUInteger pageCount = [[self pdfDocument] pageCount];
+    if (pageCount) {
         PDFPage *page = [[self pdfDocument] pageAtIndex:0];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
         BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
         
+        [[printInfo dictionary] setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
+        [[printInfo dictionary] setValue:[NSNumber numberWithInteger:pageCount] forKey:NSPrintLastPage];
         [[printInfo dictionary] setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
         [printInfo setOrientation:isLandscape ? NSLandscapeOrientation : NSPortraitOrientation];
     }
@@ -2020,13 +2036,8 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
-        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
+        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage])
             [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
-            if ([settings objectForKey:NSPrintFirstPage] == nil)
-                [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
-            if ([settings objectForKey:NSPrintLastPage] == nil)
-                [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
-        }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
     
