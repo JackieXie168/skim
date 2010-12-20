@@ -880,18 +880,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate pageScaling:pageScaling];
 }
 
-- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
-    NSPrintOperation *printOperation = nil;
-    SKPDFDocument *pdfDoc = (SKPDFDocument *)[self pdfDocument];
-    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-    BOOL autoRotate = [[printInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
-    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
-    printOperation = [pdfDoc getPrintOperationForPrintInfo:printInfo autoRotate:autoRotate];
-    if (printOperation == nil)
-        printOperation = [super printOperationWithSettings:printSettings error:outError];
-    return printOperation;
-}
-
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
     NSString *extension = [[notesURL path] pathExtension];
     NSArray *array = nil;
@@ -1981,6 +1969,26 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return YES;
 }
 
+- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel {
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+    
+    if ([printSettings objectForKey:NSPrintFirstPage] || [printSettings objectForKey:NSPrintLastPage]) {
+        NSMutableDictionary *settings = [[settings mutableCopy] autorelease];
+        [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
+        if ([settings objectForKey:NSPrintFirstPage] == nil)
+            [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
+        if ([settings objectForKey:NSPrintLastPage] == nil)
+            [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
+        printSettings = settings;
+    }
+    
+    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
+    if (showPrintPanel == NO)
+        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
+    
+    [[self pdfView] printWithInfo:printInfo autoRotate:YES];
+}
+
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
@@ -2044,20 +2052,10 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
-        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
-            [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
-            if ([settings objectForKey:NSPrintFirstPage] == nil)
-                [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
-            if ([settings objectForKey:NSPrintLastPage] == nil)
-                [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
-        }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
     
-    if ([showPanel boolValue] == NO)
-        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
-    
-    [[self pdfView] printWithInfo:printInfo autoRotate:YES];
+    [self printDocumentWithSettings:settings showPrintPanel:[showPanel boolValue]];
     
     return nil;
 }
