@@ -224,6 +224,39 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
+- (id)handlePrintScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id settings = [args objectForKey:@"PrintSettings"];
+    BOOL showPanel = [[args objectForKey:@"ShowPrintDialog"] boolValue];
+    id dP = [command directParameter];
+    NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
+    
+    if ([settings isKindOfClass:[NSDictionary class]]) {
+        settings = [[settings mutableCopy] autorelease];
+        id value;
+        if (value = [settings objectForKey:NSPrintDetailedErrorReporting])
+            [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
+        if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
+            [settings setObject:value forKey:NSPrintPrinter];
+    }
+    
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dP = [NSArray arrayWithObjects:dP, nil];
+    
+    for (NSURL *url in dP) {
+        if ([url isKindOfClass:[NSURL class]] == NO)
+            continue;
+        id doc = [sdc documentForURL:url];
+        if (doc == nil)
+            doc = [sdc openDocumentWithContentsOfURL:url display:YES error:NULL];
+        if (doc == nil)
+            continue;
+        [doc printDocumentWithSettings:settings showPrintPanel:showPanel];
+    }
+    
+    return nil;
+}
+
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate { return (<SKApplicationDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }

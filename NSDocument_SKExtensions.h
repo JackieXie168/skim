@@ -107,6 +107,8 @@ typedef NSInteger SKInteractionMode;
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;
 
+- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel;
+
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
