@@ -880,6 +880,18 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate pageScaling:pageScaling];
 }
 
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
+    NSPrintOperation *printOperation = nil;
+    SKPDFDocument *pdfDoc = (SKPDFDocument *)[self pdfDocument];
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+    BOOL autoRotate = [[printInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
+    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
+    printOperation = [pdfDoc getPrintOperationForPrintInfo:printInfo autoRotate:autoRotate];
+    if (printOperation == nil)
+        printOperation = [super printOperationWithSettings:printSettings error:outError];
+    return printOperation;
+}
+
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
     NSString *extension = [[notesURL path] pathExtension];
     NSArray *array = nil;
