@@ -876,7 +876,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 #pragma mark Printing
 
 - (void)handleWindowDidEndPrintSheetNotification:(NSNotification *)notification {
-    // This is only called to delay a print callback
     if (notification)
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
     if (printCallback) {
