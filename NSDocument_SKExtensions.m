@@ -285,10 +285,6 @@ static BOOL isRichTextType(NSString *templateFile) {
 
 - (BOOL)isPDFDocument { return NO; }
 
-- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel {
-    [self printDocumentWithSettings:printSettings showPrintPanel:showPrintPanel delegate:nil didPrintSelector:NULL contextInfo:NULL];
-}
-
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {

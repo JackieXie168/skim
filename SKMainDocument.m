@@ -174,6 +174,7 @@ static char SKMainDocumentDefaultsObservationContext;
     SKDESTROY(lastModifiedDate);
     SKDESTROY(progressController);
     SKDESTROY(tmpData);
+    SKDESTROY(printCallback);
     [super dealloc];
 }
 
@@ -872,13 +873,48 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     return success;
 }
 
-#pragma mark Actions
+#pragma mark Printing
 
-- (IBAction)printDocument:(id)sender{
-    BOOL autoRotate = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
-    PDFPrintScalingMode pageScaling = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintScalingMode"] integerValue];
-    [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate pageScaling:pageScaling];
+- (void)handleWindowDidEndPrintSheetNotification:(NSNotification *)notification {
+    // This is only called to delay a print callback
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
+    if (printCallback) {
+        BOOL didPrint = YES;
+        [printCallback setArgument:&didPrint atIndex:3];
+        [printCallback invoke];
+        SKDESTROY(printCallback);
+    }
 }
+
+- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo {
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+    NSMutableDictionary *infoDict = [printInfo dictionary];
+    
+    [infoDict addEntriesFromDictionary:printSettings];
+    if (showPrintPanel == NO)
+        [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
+    
+    BOOL autoRotate = [[infoDict objectForKey:@"PDFPrintAutoRotate"] boolValue];
+    PDFPrintScalingMode pageScaling = [[infoDict objectForKey:@"PDFPrintScalingMode"] integerValue];
+    
+    [[self pdfView] printWithInfo:printInfo autoRotate:autoRotate pageScaling:pageScaling];
+    
+    if (delegate && didPrintSelector) {
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didPrintSelector];
+        [invocation setArgument:&self atIndex:2];
+        [invocation setArgument:&contextInfo atIndex:4];
+        if (showPrintPanel && [[[self mainWindowController] window] attachedSheet]) {
+            printCallback = [invocation retain];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
+        } else {
+            BOOL didPrint = YES;
+            [invocation setArgument:&didPrint atIndex:3];
+            [invocation invoke];
+        }
+    }
+}
+
+#pragma mark Actions
 
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
     NSString *extension = [[notesURL path] pathExtension];
@@ -1969,26 +2005,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return YES;
 }
 
-- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel {
-    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-    
-    if ([printSettings objectForKey:NSPrintFirstPage] || [printSettings objectForKey:NSPrintLastPage]) {
-        NSMutableDictionary *settings = [[settings mutableCopy] autorelease];
-        [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
-        if ([settings objectForKey:NSPrintFirstPage] == nil)
-            [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
-        if ([settings objectForKey:NSPrintLastPage] == nil)
-            [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
-        printSettings = settings;
-    }
-    
-    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
-    if (showPrintPanel == NO)
-        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
-    
-    [[self pdfView] printWithInfo:printInfo autoRotate:YES];
-}
-
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
@@ -2036,28 +2052,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
         }
     }
     return [super handleSaveScriptCommand:command];
-}
-
-- (id)handlePrintScriptCommand:(NSScriptCommand *)command {
-	NSDictionary *args = [command evaluatedArguments];
-    id settings = [args objectForKey:@"PrintSettings"];
-    id showPanel = [args objectForKey:@"ShowPrintDialog"];
-    
-    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-    
-    if ([settings isKindOfClass:[NSDictionary class]]) {
-        settings = [[settings mutableCopy] autorelease];
-        id value;
-        if (value = [settings objectForKey:NSPrintDetailedErrorReporting])
-            [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
-        if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
-            [settings setObject:value forKey:NSPrintPrinter];
-        [[printInfo dictionary] addEntriesFromDictionary:settings];
-    }
-    
-    [self printDocumentWithSettings:settings showPrintPanel:[showPanel boolValue]];
-    
-    return nil;
 }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {

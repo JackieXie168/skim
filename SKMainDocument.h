@@ -92,6 +92,8 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     // only used for network filesystems; fileUpdateTimer is not retained by the doc
     NSDate *lastModifiedDate;
     NSTimer *fileUpdateTimer;
+    
+    NSInvocation *printCallback;
 }
 
 - (void)undoableActionDoesntDirtyDocument;
