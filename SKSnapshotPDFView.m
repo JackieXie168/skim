@@ -316,12 +316,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self setScaleFactor:1.0];
 }
 
-- (void)printDocument:(id)sender{
-    id document = [[[self window] windowController] document];
-    if ([document respondsToSelector:_cmd])
-        [document printDocument:sender];
-    else if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
-        [(id)super printDocument:sender];
+// we don't want to steal the printDocument: action from the responder chain
+- (void)printDocument:(id)sender{}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return aSelector != @selector(printDocument:) && [super respondsToSelector:aSelector];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -356,8 +355,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     } else if ([menuItem action] == @selector(doActualSize:)) {
         [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
         return YES;
-    } else if ([menuItem action] == @selector(printDocument:)) {
-        return [[self document] allowsPrinting];
     } else if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
     }

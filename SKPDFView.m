@@ -678,14 +678,6 @@ enum {
         [super goToPreviousPage:sender];
 }
 
-- (IBAction)printDocument:(id)sender{
-    id document = [[[self window] windowController] document];
-    if ([document respondsToSelector:_cmd])
-        [document printDocument:sender];
-    else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
-        [(id)super printDocument:sender];
-}
-
 - (IBAction)delete:(id)sender
 {
 	if ([activeAnnotation isSkimNote])
@@ -947,6 +939,13 @@ enum {
     isZooming = YES;
     [super setScaleFactor:scale];
     isZooming = NO;
+}
+
+// we don't want to steal the printDocument: action from the responder chain
+- (void)printDocument:(id)sender{}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return aSelector != @selector(printDocument:) && [super respondsToSelector:aSelector];
 }
 
 #pragma mark Event Handling
@@ -2312,8 +2311,6 @@ enum {
         return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSRTFPboardType, NSStringPboardType, nil]];
     } else if (action == @selector(delete:)) {
         return [activeAnnotation isSkimNote];
-    } else if (action == @selector(printDocument:)) {
-        return [[self document] allowsPrinting];
     } else if (action == @selector(selectAll:)) {
         return toolMode == SKTextToolMode;
     } else if (action == @selector(deselectAll:)) {
