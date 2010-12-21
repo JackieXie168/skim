@@ -877,11 +877,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)handleWindowDidEndPrintSheetNotification:(NSNotification *)notification {
     // This is only called to delay a print callback
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
+    if (notification)
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
     if (printCallback) {
         BOOL didPrint = YES;
         [printCallback setArgument:&didPrint atIndex:3];
-        [printCallback invoke];
+        [printCallback performSelector:@selector(invoke) withObject:nil afterDelay:0.0];
         SKDESTROY(printCallback);
     }
 }
@@ -900,17 +901,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self pdfView] printWithInfo:printInfo autoRotate:autoRotate pageScaling:pageScaling];
     
     if (delegate && didPrintSelector) {
-        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didPrintSelector];
-        [invocation setArgument:&self atIndex:2];
-        [invocation setArgument:&contextInfo atIndex:4];
-        if (showPrintPanel && [[[self mainWindowController] window] attachedSheet]) {
-            printCallback = [invocation retain];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
-        } else {
-            BOOL didPrint = YES;
-            [invocation setArgument:&didPrint atIndex:3];
-            [invocation invoke];
-        }
+        printCallback = [[NSInvocation invocationWithTarget:delegate selector:didPrintSelector] retain];
+        [printCallback setArgument:&self atIndex:2];
+        [printCallback setArgument:&contextInfo atIndex:4];
+        NSWindow *printWindow = [[self pdfView] window];
+        if (showPrintPanel && [printWindow attachedSheet])
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:printWindow];
+        else
+            [self handleWindowDidEndPrintSheetNotification:nil];
     }
 }
 
