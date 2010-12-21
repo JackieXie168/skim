@@ -110,6 +110,9 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKTagsKey                   @"Tags"
 #define SKRatingKey                 @"Rating"
 
+#define SKPDFPrintAutoRotate  @"PDFPrintAutoRotate"
+#define SKPDFPrintScalingMode @"PDFPrintScalingMode"
+
 static char SKMainDocumentDefaultsObservationContext;
 
 
@@ -206,8 +209,8 @@ static char SKMainDocumentDefaultsObservationContext;
     
     NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
     NSMutableDictionary *printDict = [printInfo dictionary];
-    [printDict setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
-    [printDict setValue:[NSNumber numberWithInteger:kPDFPrintPageScaleNone] forKey:@"PDFPrintScalingMode"];
+    [printDict setValue:[NSNumber numberWithBool:YES] forKey:SKPDFPrintAutoRotate];
+    [printDict setValue:[NSNumber numberWithInteger:kPDFPrintPageScaleNone] forKey:SKPDFPrintScalingMode];
     [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
     [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
     [printDict setValue:[NSNumber numberWithBool:YES] forKey:NSPrintAllPages];
@@ -894,8 +897,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (showPrintPanel == NO)
         [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
     
-    BOOL autoRotate = [[infoDict objectForKey:@"PDFPrintAutoRotate"] boolValue];
-    PDFPrintScalingMode pageScaling = [[infoDict objectForKey:@"PDFPrintScalingMode"] integerValue];
+    BOOL autoRotate = [[infoDict objectForKey:SKPDFPrintAutoRotate] boolValue];
+    PDFPrintScalingMode pageScaling = [[infoDict objectForKey:SKPDFPrintScalingMode] integerValue];
     
     [[self pdfView] printWithInfo:printInfo autoRotate:autoRotate pageScaling:pageScaling];
     
