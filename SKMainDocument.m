@@ -110,9 +110,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKTagsKey                   @"Tags"
 #define SKRatingKey                 @"Rating"
 
-#define SKPDFPrintAutoRotate  @"PDFPrintAutoRotate"
-#define SKPDFPrintScalingMode @"PDFPrintScalingMode"
-
 static char SKMainDocumentDefaultsObservationContext;
 
 
@@ -200,21 +197,13 @@ static char SKMainDocumentDefaultsObservationContext;
     [[self mainWindowController] setTags:[tmpData openMetaTags]];
     
     [[self mainWindowController] setRating:[tmpData openMetaRating]];
-    
-    [[[self printInfo] dictionary] setValue:[NSNumber numberWithInteger:[[tmpData pdfDocument] pageCount]] forKey:NSPrintLastPage];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
     [[self undoManager] disableUndoRegistration];
     
-    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-    NSMutableDictionary *printDict = [printInfo dictionary];
-    [printDict setValue:[NSNumber numberWithBool:YES] forKey:SKPDFPrintAutoRotate];
-    [printDict setValue:[NSNumber numberWithInteger:kPDFPrintPageScaleNone] forKey:SKPDFPrintScalingMode];
-    [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintFirstPage];
-    [printDict setValue:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
-    [printDict setValue:[NSNumber numberWithBool:YES] forKey:NSPrintAllPages];
-    [self setPrintInfo:printInfo];
+    // set a copy, because we change the printInfo, and we don't want to change the shared instance
+    [self setPrintInfo:[[[self printInfo] copy] autorelease]];
     
     [self setDataFromTmpData];
     [tmpData release];
@@ -897,10 +886,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (showPrintPanel == NO)
         [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
     
-    BOOL autoRotate = [[infoDict objectForKey:SKPDFPrintAutoRotate] boolValue];
-    PDFPrintScalingMode pageScaling = [[infoDict objectForKey:SKPDFPrintScalingMode] integerValue];
-    
-    [[self pdfView] printWithInfo:printInfo autoRotate:autoRotate pageScaling:pageScaling];
+    [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleNone];
     
     if (delegate && didPrintSelector) {
         printCallback = [[NSInvocation invocationWithTarget:delegate selector:didPrintSelector] retain];
