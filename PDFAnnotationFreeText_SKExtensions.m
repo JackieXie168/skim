@@ -46,6 +46,7 @@
 
 
 NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
+NSString *SKPDFAnnotationScriptingAlignmentKey = @"scriptingAlignment";
 
 
 @interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
@@ -125,6 +126,7 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
         [customKeys addObject:SKNPDFAnnotationFontNameKey];
         [customKeys addObject:SKNPDFAnnotationFontSizeKey];
         [customKeys addObject:SKPDFAnnotationScriptingFontColorKey];
+        [customKeys addObject:SKPDFAnnotationScriptingAlignmentKey];
         customFreeTextScriptingKeys = [customKeys copy];
         [customKeys release];
     }
