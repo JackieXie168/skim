@@ -879,24 +879,34 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo {
-    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-    NSMutableDictionary *infoDict = [printInfo dictionary];
-    
-    [infoDict addEntriesFromDictionary:printSettings];
-    if (showPrintPanel == NO)
-        [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
-    
-    [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleNone];
-    
-    if (delegate && didPrintSelector) {
-        printCallback = [[NSInvocation invocationWithTarget:delegate selector:didPrintSelector] retain];
-        [printCallback setArgument:&self atIndex:2];
-        [printCallback setArgument:&contextInfo atIndex:4];
-        NSWindow *printWindow = [[self pdfView] window];
-        if (showPrintPanel && [printWindow attachedSheet])
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:printWindow];
-        else
-            [self handleWindowDidEndPrintSheetNotification:nil];
+    NSWindow *printWindow = [[self pdfView] window];
+    if (showPrintPanel == NO || [printWindow attachedSheet] == nil) {
+        NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+        NSMutableDictionary *infoDict = [printInfo dictionary];
+        
+        [infoDict addEntriesFromDictionary:printSettings];
+        if (showPrintPanel == NO)
+            [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
+        
+        [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleNone];
+        
+        if (delegate && didPrintSelector) {
+            printCallback = [[NSInvocation invocationWithTarget:delegate selector:didPrintSelector] retain];
+            [printCallback setArgument:&self atIndex:2];
+            [printCallback setArgument:&contextInfo atIndex:4];
+            NSWindow *printWindow = [[self pdfView] window];
+            if (showPrintPanel && [printWindow attachedSheet])
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:printWindow];
+            else
+                [self handleWindowDidEndPrintSheetNotification:nil];
+        }
+    } else if (delegate && didPrintSelector) {
+        BOOL didPrint = NO;
+        NSInvocation *callback = [NSInvocation invocationWithTarget:delegate selector:didPrintSelector];
+        [callback setArgument:&self atIndex:2];
+        [callback setArgument:&didPrint atIndex:3];
+        [callback setArgument:&contextInfo atIndex:4];
+        [callback invoke];
     }
 }
 
