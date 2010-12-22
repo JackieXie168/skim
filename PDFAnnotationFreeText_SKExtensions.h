@@ -41,6 +41,7 @@
 
 
 extern NSString *SKPDFAnnotationScriptingFontColorKey;
+extern NSString *SKPDFAnnotationScriptingAlignmentKey;
 
 
 @interface PDFAnnotationFreeText (SKExtensions)
