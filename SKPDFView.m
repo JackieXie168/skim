@@ -1060,9 +1060,9 @@ enum {
             [self doNothingWithEvent:theEvent];
         }
     } else if (modifiers == NSCommandKeyMask) {
-        [self doPdfsyncWithEvent:theEvent];
-    } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         [self doSelectSnapshotWithEvent:theEvent];
+    } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
+        [self doPdfsyncWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
         NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
