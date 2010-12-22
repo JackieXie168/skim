@@ -459,7 +459,7 @@
 }
 
 - (NSDictionary *)defaultPdfViewSettings {
-    return SKScriptingPDFViewSettingsFromPDFViewSettings([[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]);
+    return [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (void)setDefaultPdfViewSettings:(NSDictionary *)settings {
@@ -467,12 +467,12 @@
         return;
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
-    [setup addEntriesFromDictionary:SKPDFViewSettingsFromScriptingPDFViewSettings(settings)];
+    [setup addEntriesFromDictionary:settings];
     [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (NSDictionary *)defaultFullScreenPdfViewSettings {
-    return SKScriptingPDFViewSettingsFromPDFViewSettings([[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]);
+    return [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
 
 - (void)setDefaultFullScreenPdfViewSettings:(NSDictionary *)settings {
@@ -482,7 +482,7 @@
     if ([settings count]) {
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]];
-        [setup addEntriesFromDictionary:SKPDFViewSettingsFromScriptingPDFViewSettings(settings)];
+        [setup addEntriesFromDictionary:settings];
     }
     [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
@@ -593,11 +593,11 @@
 - (NSDictionary *)defaultLineStyles {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], SKNFreeTextString, 
-        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], SKNCircleString, 
-        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], SKNSquareString, 
-        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], SKNLineString,
-        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKInkNoteLineStyleKey])], SKNInkString,
+        [NSNumber numberWithInteger:[sud integerForKey:SKFreeTextNoteLineStyleKey]], SKNFreeTextString, 
+        [NSNumber numberWithInteger:[sud integerForKey:SKCircleNoteLineStyleKey]], SKNCircleString, 
+        [NSNumber numberWithInteger:[sud integerForKey:SKSquareNoteLineStyleKey]], SKNSquareString, 
+        [NSNumber numberWithInteger:[sud integerForKey:SKLineNoteLineStyleKey]], SKNLineString,
+        [NSNumber numberWithInteger:[sud integerForKey:SKInkNoteLineStyleKey]], SKNInkString,
         nil];
 }
 
@@ -605,15 +605,15 @@
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
     if (number = [dict objectForKey:SKNFreeTextString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKFreeTextNoteLineStyleKey];
+        [sud setInteger:[number integerValue] forKey:SKFreeTextNoteLineStyleKey];
     if (number = [dict objectForKey:SKNCircleString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKCircleNoteLineStyleKey];
+        [sud setInteger:[number integerValue] forKey:SKCircleNoteLineStyleKey];
     if (number = [dict objectForKey:SKNSquareString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKSquareNoteLineStyleKey];
+        [sud setInteger:[number integerValue] forKey:SKSquareNoteLineStyleKey];
     if (number = [dict objectForKey:SKNLineString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKLineNoteLineStyleKey];
+        [sud setInteger:[number integerValue] forKey:SKLineNoteLineStyleKey];
     if (number = [dict objectForKey:SKNInkString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKInkNoteLineStyleKey];
+        [sud setInteger:[number integerValue] forKey:SKInkNoteLineStyleKey];
 }
 
 - (NSDictionary *)defaultDashPatterns {
@@ -684,36 +684,36 @@
     [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 
-- (FourCharCode)defaultStartLineStyle {
-    return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]);
+- (PDFLineStyle)defaultStartLineStyle {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey];
 }
 
-- (void)setDefaultStartLineStyle:(FourCharCode)style {
-    [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteStartLineStyleKey];
+- (void)setDefaultStartLineStyle:(PDFLineStyle)style {
+    [[NSUserDefaults standardUserDefaults] setInteger:style forKey:SKLineNoteStartLineStyleKey];
 }
 
-- (FourCharCode)defaultEndLineStyle {
-    return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]);
+- (PDFLineStyle)defaultEndLineStyle {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey];
 }
 
-- (void)setDefaultEndLineStyle:(FourCharCode)style {
-    [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
+- (void)setDefaultEndLineStyle:(PDFLineStyle)style {
+    [[NSUserDefaults standardUserDefaults] setInteger:style forKey:SKLineNoteEndLineStyleKey];
 }
 
-- (FourCharCode)defaultAlignment {
-    return SKScriptingAlignmentFromAlignment([[NSUserDefaults standardUserDefaults] integerForKey:SKFreeTextNoteAlignmentKey]);
+- (NSTextAlignment)defaultAlignment {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:SKFreeTextNoteAlignmentKey];
 }
 
-- (void)setDefaultAlignment:(FourCharCode)alignment {
-    [[NSUserDefaults standardUserDefaults] setInteger:SKAlignmentFromScriptingAlignment(alignment) forKey:SKFreeTextNoteAlignmentKey];
+- (void)setDefaultAlignment:(NSTextAlignment)alignment {
+    [[NSUserDefaults standardUserDefaults] setInteger:alignment forKey:SKFreeTextNoteAlignmentKey];
 }
 
-- (FourCharCode)defaultIconType {
-    return SKScriptingIconTypeFromIconType([[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]);
+- (PDFTextAnnotationIconType)defaultIconType {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey];
 }
 
-- (void)setDefaultIconType:(FourCharCode)type {
-    [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
+- (void)setDefaultIconType:(PDFTextAnnotationIconType)type {
+    [[NSUserDefaults standardUserDefaults] setInteger:type forKey:SKAnchoredNoteIconTypeKey];
 }
 
 @end

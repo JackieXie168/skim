@@ -43,33 +43,6 @@
 #import "SKFDFParser.h"
 
 
-FourCharCode SKScriptingIconTypeFromIconType(PDFTextAnnotationIconType iconType) {
-    switch (iconType) {
-        case kPDFTextAnnotationIconComment: return SKScriptingTextAnnotationIconComment;
-        case kPDFTextAnnotationIconKey: return SKScriptingTextAnnotationIconKey;
-        case kPDFTextAnnotationIconNote: return SKScriptingTextAnnotationIconNote;
-        case kPDFTextAnnotationIconHelp: return SKScriptingTextAnnotationIconHelp;
-        case kPDFTextAnnotationIconNewParagraph: return SKScriptingTextAnnotationIconNewParagraph;
-        case kPDFTextAnnotationIconParagraph: return SKScriptingTextAnnotationIconParagraph;
-        case kPDFTextAnnotationIconInsert: return SKScriptingTextAnnotationIconInsert;
-        default: return kPDFTextAnnotationIconNote;
-    }
-}
-
-PDFTextAnnotationIconType SKIconTypeFromScriptingIconType(FourCharCode iconType) {
-    switch (iconType) {
-        case SKScriptingTextAnnotationIconComment: return kPDFTextAnnotationIconComment;
-        case SKScriptingTextAnnotationIconKey: return kPDFTextAnnotationIconKey;
-        case SKScriptingTextAnnotationIconNote: return kPDFTextAnnotationIconNote;
-        case SKScriptingTextAnnotationIconHelp: return kPDFTextAnnotationIconHelp;
-        case SKScriptingTextAnnotationIconNewParagraph: return kPDFTextAnnotationIconNewParagraph;
-        case SKScriptingTextAnnotationIconParagraph: return kPDFTextAnnotationIconParagraph;
-        case SKScriptingTextAnnotationIconInsert: return kPDFTextAnnotationIconInsert;
-        default: return kPDFTextAnnotationIconNote;
-    }
-}
-
-
 NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 
 @implementation PDFAnnotationText (SKExtensions)
@@ -123,17 +96,13 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     return customTextScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingAnchoredNote;
+- (PDFTextAnnotationIconType)scriptingIconType {
+    return [self iconType];
 }
 
-- (FourCharCode)scriptingIconType {
-    return SKScriptingIconTypeFromIconType([self iconType]);
-}
-
-- (void)setScriptingIconType:(FourCharCode)type {
+- (void)setScriptingIconType:(PDFTextAnnotationIconType)iconType {
     if ([self isEditable]) {
-        [self setIconType:SKIconTypeFromScriptingIconType(type)];
+        [self setIconType:iconType];
     }
 }
 

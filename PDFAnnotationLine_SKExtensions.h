@@ -40,19 +40,6 @@
 #import <Quartz/Quartz.h>
 
 
-enum {
-    SKScriptingLineStyleNone = 'LSNo',
-    SKScriptingLineStyleSquare = 'LSSq',
-    SKScriptingLineStyleCircle = 'LSCi',
-    SKScriptingLineStyleDiamond = 'LSDi',
-    SKScriptingLineStyleOpenArrow = 'LSOA',
-    SKScriptingLineStyleClosedArrow = 'LSCA'
-};
-
-extern FourCharCode SKScriptingLineStyleFromLineStyle(PDFLineStyle lineStyle);
-extern PDFLineStyle SKLineStyleFromScriptingLineStyle(FourCharCode lineStyle);
-
-
 extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
 extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
 extern NSString *SKPDFAnnotationScriptingStartLineStyleKey;
@@ -63,8 +50,8 @@ extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
-- (void)setScriptingStartLineStyle:(FourCharCode)style;
-- (void)setScriptingEndLineStyle:(FourCharCode)style;
+- (void)setScriptingStartLineStyle:(PDFLineStyle)style;
+- (void)setScriptingEndLineStyle:(PDFLineStyle)style;
 - (void)setScriptingInteriorColor:(NSColor *)newColor;
 
 @end

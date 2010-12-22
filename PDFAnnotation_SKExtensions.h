@@ -40,31 +40,6 @@
 #import <Quartz/Quartz.h>
 
 
-enum {
-    SKScriptingTextNote = 'NTxt',
-    SKScriptingAnchoredNote = 'NAnc',
-    SKScriptingCircleNote = 'NCir',
-    SKScriptingSquareNote = 'NSqu',
-    SKScriptingHighlightNote = 'NHil',
-    SKScriptingUnderlineNote = 'NUnd',
-    SKScriptingStrikeOutNote = 'NStr',
-    SKScriptingLineNote = 'NLin',
-    SKScriptingInkNote = 'NInk'
-};
-
-enum {
-    SKScriptingBorderStyleSolid = 'Soli',
-    SKScriptingBorderStyleDashed = 'Dash',
-    SKScriptingBorderStyleBeveled = 'Bevl',
-    SKScriptingBorderStyleInset = 'Inst',
-    SKScriptingBorderStyleUnderline = 'Undl'
-};
-
-
-extern FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle);
-extern PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderStyle);
-
-extern NSString *SKPDFAnnotationScriptingNoteTypeKey;
 extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 extern NSString *SKPDFAnnotationScriptingColorKey;
 extern NSString *SKPDFAnnotationScriptingModificationDateKey;
@@ -114,7 +89,6 @@ extern BOOL SKPDFAnnotationLeaksBorder;
 
 + (NSSet *)customScriptingKeys;
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (FourCharCode)scriptingNoteType;
 - (NSColor *)scriptingColor;
 - (void)setScriptingColor:(NSColor *)newColor;
 - (PDFPage *)scriptingPage;
@@ -122,23 +96,23 @@ extern BOOL SKPDFAnnotationLeaksBorder;
 - (void)setScriptingModificationDate:(NSDate *)date;
 - (NSString *)scriptingUserName;
 - (void)setScriptingUserName:(NSString *)name;
-- (FourCharCode)scriptingIconType;
+- (PDFTextAnnotationIconType)scriptingIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
-- (FourCharCode)scriptingAlignment;
+- (NSTextAlignment)scriptingAlignment;
 - (NSString *)fontName;
 - (CGFloat)fontSize;
 - (NSColor *)scriptingFontColor;
 - (NSColor *)scriptingInteriorColor;
-- (FourCharCode)scriptingBorderStyle;
-- (void)setScriptingBorderStyle:(NSInteger)style;
+- (PDFBorderStyle)scriptingBorderStyle;
+- (void)setScriptingBorderStyle:(PDFBorderStyle)style;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
-- (FourCharCode)scriptingStartLineStyle;
-- (FourCharCode)scriptingEndLineStyle;
+- (PDFLineStyle)scriptingStartLineStyle;
+- (PDFLineStyle)scriptingEndLineStyle;
 - (id)selectionSpecifier;
 - (NSArray *)scriptingPointLists;
 

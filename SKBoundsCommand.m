@@ -55,7 +55,7 @@
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
     NSNumber *boxNumber = [args objectForKey:@"Box"];
-    PDFDisplayBox box = [boxNumber integerValue] == SKScriptingMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
+    PDFDisplayBox box = boxNumber ? [boxNumber integerValue] : kPDFDisplayBoxCropBox;
     NSRect bounds = NSZeroRect;
     
     if ([dPO isKindOfClass:[NSDocument class]]) {

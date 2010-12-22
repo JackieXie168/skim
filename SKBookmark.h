@@ -89,7 +89,6 @@ enum {
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
 
-@property (nonatomic, readonly) FourCharCode scriptingBookmarkType;
 @property (nonatomic, readonly) NSURL *scriptingFile;
 @property (nonatomic, readonly) SKBookmark *scriptingParent;
 @property (nonatomic, readonly) NSArray *entireContents;

@@ -1026,7 +1026,7 @@
             </element>
             <property name="type" code="NTyp" type="note type" access="r"
                 description="The type of note.">
-                <cocoa key="scriptingNoteType"/>
+                <cocoa key="type"/>
             </property>
             <contents name="text" code="ctxt" type="rich text"
                 description="The text of the note. Attributes are ignored.">
@@ -1154,7 +1154,7 @@
             </property>
             <property name="type" code="rtyp" type="bookmark type" access="r"
                 description="The bookmark type.">
-                <cocoa key="scriptingBookmarkType"/>
+                <cocoa key="bookmarkType"/>
             </property>
             <contents name="file" code="file" type="file" access="r"
                 description="The file for the bookmark.">
@@ -1521,106 +1521,186 @@
 
         <enumeration name="note type" code="NTpE">
             <enumerator name="text note" code="NTxt"
-                description="Text note."/>
+                description="Text note.">
+                <cocoa string-value="FreeText"/>
+            </enumerator>
             <enumerator name="anchored note" code="NAnc"
-                description="Anchored note."/>
+                description="Anchored note.">
+                <cocoa string-value="Note"/>
+            </enumerator>
             <enumerator name="circle note" code="NCir"
-                description="Circle."/>
+                description="Circle.">
+                <cocoa string-value="Circle"/>
+            </enumerator>
             <enumerator name="box note" code="NSqu"
-                description="Box."/>
+                description="Box.">
+                <cocoa string-value="Square"/>
+            </enumerator>
             <enumerator name="highlight note" code="NHil"
-                description="Highlight."/>
+                description="Highlight.">
+                <cocoa string-value="Highlight"/>
+            </enumerator>
             <enumerator name="underline note" code="NUnd"
-                description="Underline highlight."/>
+                description="Underline highlight.">
+                <cocoa string-value="Underline"/>
+            </enumerator>
             <enumerator name="strike out note" code="NStr"
-                description="Strike out highlight."/>
+                description="Strike out highlight.">
+                <cocoa string-value="StrikeOut"/>
+            </enumerator>
             <enumerator name="line note" code="NLin"
-                description="Line."/>
+                description="Line.">
+                <cocoa string-value="Line"/>
+            </enumerator>
             <enumerator name="freehand note" code="NInk"
-                description="Freehand."/>
+                description="Freehand.">
+                <cocoa string-value="Ink"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="text alignment" code="TAlE">
             <enumerator name="left alignment" code="LeTA"
-                description="Left text alignment."/>
+                description="Left text alignment.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="right alignment" code="RiTA"
-                description="Right text alignment."/>
+                description="Right text alignment.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="center alignment" code="CeTA"
-                description="Center text alignment."/>
+                description="Center text alignment.">
+                <cocoa integer-value="2"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="icon type" code="ITpE">
             <enumerator name="comment icon" code="ICmt"
-                description="Comment icon."/>
+                description="Comment icon.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="key icon" code="IKey"
-                description="Key icon."/>
+                description="Key icon.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="note icon" code="INot"
-                description="Note icon."/>
+                description="Note icon.">
+                <cocoa integer-value="2"/>
+            </enumerator>
             <enumerator name="help icon" code="IHlp"
-                description="Help icon."/>
+                description="Help icon.">
+                <cocoa integer-value="3"/>
+            </enumerator>
             <enumerator name="new paragraph icon" code="INPa"
-                description="New paragraph icon."/>
+                description="New paragraph icon.">
+                <cocoa integer-value="4"/>
+            </enumerator>
             <enumerator name="paragraph icon" code="IPar"
-                description="Paragraph icon."/>
+                description="Paragraph icon.">
+                <cocoa integer-value="5"/>
+            </enumerator>
             <enumerator name="insert icon" code="IIns"
-                description="Insert icon."/>
+                description="Insert icon.">
+                <cocoa integer-value="6"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="line ending style" code="LESE">
             <enumerator name="no line ending" code="LSNo"
-                description="No line ending."/>
+                description="No line ending.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="square line ending" code="LSSq"
-                description="Square line ending."/>
+                description="Square line ending.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="circle line ending" code="LSCi"
-                description="Circle line ending."/>
+                description="Circle line ending.">
+                <cocoa integer-value="2"/>
+            </enumerator>
             <enumerator name="diamond line ending" code="LSDi"
-                description="Diamond line ending."/>
+                description="Diamond line ending.">
+                <cocoa integer-value="3"/>
+            </enumerator>
             <enumerator name="open arrow line ending" code="LSOA"
-                description="Open arrow line ending."/>
+                description="Open arrow line ending.">
+                <cocoa integer-value="4"/>
+            </enumerator>
             <enumerator name="closed arrow line ending" code="LSCA"
-                description="Closed arrow line ending."/>
+                description="Closed arrow line ending.">
+                <cocoa integer-value="5"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="note line style" code="LnSE">
             <enumerator name="solid line" code="Soli"
-                description="Solid line."/>
+                description="Solid line.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="dashed line" code="Dash"
-                description="Dashed line."/>
+                description="Dashed line.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="beveled line" code="Bevl"
-                description="Beveled line."/>
+                description="Beveled line.">
+                <cocoa integer-value="2"/>
+            </enumerator>
             <enumerator name="inset line" code="Inst"
-                description="Inset line."/>
+                description="Inset line.">
+                <cocoa integer-value="3"/>
+            </enumerator>
             <enumerator name="underline line" code="Undl"
-                description="Underline line."/>
+                description="Underline line.">
+                <cocoa integer-value="4"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="PDF display box" code="BoxE">
             <enumerator name="media box" code="Mdia"
-                description="Media box."/>
+                description="Media box.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="crop box" code="Crop"
-                description="Crop box."/>
+                description="Crop box.">
+                <cocoa integer-value="1"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="PDF display mode" code="ModE">
             <enumerator name="single page" code="1Pg "
-                description="Display single pages."/>
+                description="Display single pages.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="single page continuous" code="1PgC"
-                description="Display single pages vertically continuously."/>
+                description="Display single pages vertically continuously.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="two up" code="2Up "
-                description="Display pages side-by-side."/>
+                description="Display pages side-by-side.">
+                <cocoa integer-value="2"/>
+            </enumerator>
             <enumerator name="two up continuous" code="2UpC"
-                description="Display pages side-by-side vertically continuously."/>
+                description="Display pages side-by-side vertically continuously.">
+                <cocoa integer-value="3"/>
+            </enumerator>
         </enumeration>
 
         <enumeration name="bookmark type" code="BmkE">
             <enumerator name="file bookmark" code="BmFl"
-                description="File bookmark."/>
+                description="File bookmark.">
+                <cocoa integer-value="0"/>
+            </enumerator>
             <enumerator name="folder bookmark" code="BmFd"
-                description="Bookmark folder."/>
+                description="Bookmark folder.">
+                <cocoa integer-value="1"/>
+            </enumerator>
             <enumerator name="session bookmark" code="BmSs"
-                description="Session bookmark."/>
+                description="Session bookmark.">
+                <cocoa integer-value="2"/>
+            </enumerator>
             <enumerator name="separator bookmark" code="BmSp"
-                description="Bookmark separator."/>
+                description="Bookmark separator.">
+                <cocoa integer-value="3"/>
+            </enumerator>
         </enumeration>
 
     </suite>

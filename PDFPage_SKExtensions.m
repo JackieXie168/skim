@@ -483,10 +483,10 @@ static BOOL usesSequentialPageNumbering = NO;
         bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
         bounds = NSIntegralRect(SKRectFromCenterAndSize(SKIntegralPoint(SKCenterPoint([self boundsForBox:kPDFDisplayBoxCropBox])), bounds.size));
         
-        FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedIntValue];
-        [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
+        NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
+        [props removeObjectForKey:SKNPDFAnnotationTypeKey];
         
-        if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
+        if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
             id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
@@ -495,15 +495,15 @@ static BOOL usesSequentialPageNumbering = NO;
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
             } else if (selection = [PDFSelection selectionWithSpecifier:selSpec]) {
-                if (type == SKScriptingHighlightNote)
+                if ([type isEqualToString:SKNHighlightString])
                     markupType = kPDFMarkupTypeHighlight;
-                else if (type == SKScriptingUnderlineNote)
+                else if ([type isEqualToString:SKNUnderlineString])
                     markupType = kPDFMarkupTypeUnderline;
-                else if (type == SKScriptingStrikeOutNote)
+                else if ([type isEqualToString:SKNStrikeOutString])
                     markupType = kPDFMarkupTypeStrikeOut;
                 annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
             }
-        } else if (type == SKScriptingInkNote) {
+        } else if ([type isEqualToString:SKNInkString]) {
             NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
             [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
             if ([pointLists isKindOfClass:[NSArray class]] == NO) {
@@ -537,16 +537,16 @@ static BOOL usesSequentialPageNumbering = NO;
                 annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
                 [paths release];
             }
-        } else if (type == SKScriptingTextNote) {
+        } else if ([type isEqualToString:SKNFreeTextString]) {
             annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
-        } else if (type == SKScriptingAnchoredNote) {
+        } else if ([type isEqualToString:SKNNoteString]) {
             bounds.size = SKNPDFAnnotationNoteSize;
             annotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
-        } else if (type == SKScriptingCircleNote) {
+        } else if ([type isEqualToString:SKNCircleString]) {
             annotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
-        } else if (type == SKScriptingSquareNote) {
+        } else if ([type isEqualToString:SKNSquareString]) {
             annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
-        } else if (type == SKScriptingLineNote) {
+        } else if ([type isEqualToString:SKNLineString]) {
             annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
         } else if (contentsValue) {
             annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];

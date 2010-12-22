@@ -40,16 +40,6 @@
 #import <Quartz/Quartz.h>
 
 
-enum {
-    SKScriptingAlignmentLeft = 'LeTA',
-    SKScriptingAlignmentRight = 'RiTA',
-    SKScriptingAlignmentCenter = 'CeTA'
-};
-
-extern FourCharCode SKScriptingAlignmentFromAlignment(NSTextAlignment alignment);
-extern NSTextAlignment SKAlignmentFromScriptingAlignment(FourCharCode alignment);
-
-
 extern NSString *SKPDFAnnotationScriptingFontColorKey;
 
 
@@ -58,6 +48,6 @@ extern NSString *SKPDFAnnotationScriptingFontColorKey;
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(CGFloat)pointSize;
 - (void)setScriptingFontColor:(NSColor *)newScriptingFontColor;
-- (void)setScriptingAlignment:(FourCharCode)alignment;
+- (void)setScriptingAlignment:(NSTextAlignment)alignment;
 
 @end
