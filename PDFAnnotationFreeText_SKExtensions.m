@@ -45,25 +45,6 @@
 #import "NSUserDefaults_SKExtensions.h"
 
 
-FourCharCode SKScriptingAlignmentFromAlignment(NSTextAlignment alignment) {
-    switch (alignment) {
-        case NSLeftTextAlignment: return SKScriptingAlignmentLeft;
-        case NSRightTextAlignment: return SKScriptingAlignmentRight;
-        case NSCenterTextAlignment: return SKScriptingAlignmentCenter;
-        default: return SKScriptingAlignmentLeft;
-    }
-}
-
-NSTextAlignment SKAlignmentFromScriptingAlignment(FourCharCode alignment) {
-    switch (alignment) {
-        case SKScriptingAlignmentLeft: return NSLeftTextAlignment;
-        case SKScriptingAlignmentRight: return NSRightTextAlignment;
-        case SKScriptingAlignmentCenter: return NSCenterTextAlignment;
-        default: return NSLeftTextAlignment;
-    }
-}
-
-
 NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 
 
@@ -150,10 +131,6 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
     return customFreeTextScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingTextNote;
-}
-
 - (id)textContents {
     NSTextStorage *textContents = [super textContents];
     if ([self font])
@@ -197,13 +174,13 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
     }
 }
 
-- (FourCharCode)scriptingAlignment {
-    return SKScriptingAlignmentFromAlignment([self alignment]);
+- (NSTextAlignment)scriptingAlignment {
+    return [self alignment];
 }
 
-- (void)setScriptingAlignment:(FourCharCode)alignment {
+- (void)setScriptingAlignment:(NSTextAlignment)alignment {
     if ([self isEditable]) {
-        [self setAlignment:SKAlignmentFromScriptingAlignment(alignment)];
+        [self setAlignment:alignment];
     }
 }
 

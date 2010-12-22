@@ -48,31 +48,6 @@
 #import "NSData_SKExtensions.h"
 
 
-FourCharCode SKScriptingLineStyleFromLineStyle(PDFLineStyle lineStyle) {
-    switch (lineStyle) {
-        case kPDFLineStyleNone: return SKScriptingLineStyleNone;
-        case kPDFLineStyleSquare: return SKScriptingLineStyleSquare;
-        case kPDFLineStyleCircle: return SKScriptingLineStyleCircle;
-        case kPDFLineStyleDiamond: return SKScriptingLineStyleDiamond;
-        case kPDFLineStyleOpenArrow: return SKScriptingLineStyleOpenArrow;
-        case kPDFLineStyleClosedArrow: return SKScriptingLineStyleClosedArrow;
-        default: return SKScriptingLineStyleNone;
-    }
-}
-
-PDFLineStyle SKLineStyleFromScriptingLineStyle(FourCharCode lineStyle) {
-    switch (lineStyle) {
-        case kPDFLineStyleNone: return SKScriptingLineStyleNone;
-        case kPDFLineStyleSquare: return SKScriptingLineStyleSquare;
-        case kPDFLineStyleCircle: return SKScriptingLineStyleCircle;
-        case kPDFLineStyleDiamond: return SKScriptingLineStyleDiamond;
-        case kPDFLineStyleOpenArrow: return SKScriptingLineStyleOpenArrow;
-        case kPDFLineStyleClosedArrow: return SKScriptingLineStyleClosedArrow;
-        default: return SKScriptingLineStyleNone;
-    }
-}
-
-
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
 NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
 NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
@@ -170,10 +145,6 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return customLineScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingLineNote;
-}
-
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([self isEditable] && inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
         NSPoint startPoint = [inQDPointAsData pointValueAsQDPoint];
@@ -246,23 +217,23 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return [NSData dataWithPointAsQDPoint:endPoint];
 }
 
-- (FourCharCode)scriptingStartLineStyle {
-    return SKScriptingLineStyleFromLineStyle([self startLineStyle]);
+- (PDFLineStyle)scriptingStartLineStyle {
+    return [self startLineStyle];
 }
 
-- (FourCharCode)scriptingEndLineStyle {
-    return SKScriptingLineStyleFromLineStyle([self endLineStyle]);
+- (PDFLineStyle)scriptingEndLineStyle {
+    return [self endLineStyle];
 }
 
-- (void)setScriptingStartLineStyle:(FourCharCode)style {
+- (void)setScriptingStartLineStyle:(PDFLineStyle)style {
     if ([self isEditable]) {
-        [self setStartLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+        [self setStartLineStyle:style];
     }
 }
 
-- (void)setScriptingEndLineStyle:(FourCharCode)style {
+- (void)setScriptingEndLineStyle:(PDFLineStyle)style {
     if ([self isEditable]) {
-        [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
+        [self setEndLineStyle:style];
     }
 }
 

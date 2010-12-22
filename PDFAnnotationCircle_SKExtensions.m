@@ -104,10 +104,6 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     return customCircleScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingCircleNote;
-}
-
 - (NSColor *)scriptingInteriorColor {
     return [self interiorColor];
 }

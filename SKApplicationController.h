@@ -61,7 +61,9 @@
 @property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
 @property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
 @property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns, *defaultFontNames, *defaultFontSizes;
-@property (nonatomic) FourCharCode defaultStartLineStyle, defaultEndLineStyle, defaultAlignment, defaultIconType;
+@property (nonatomic) PDFLineStyle defaultStartLineStyle, defaultEndLineStyle;
+@property (nonatomic) NSTextAlignment defaultAlignment;
+@property (nonatomic) PDFTextAnnotationIconType defaultIconType;
 
 - (NSArray *)bookmarks;
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;

@@ -62,40 +62,12 @@
 #define SKUserNameKey @"SKUserName"
 
 
-FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {
-    switch (borderStyle) {
-        case kPDFBorderStyleSolid: return SKScriptingBorderStyleSolid;
-        case kPDFBorderStyleDashed: return SKScriptingBorderStyleDashed;
-        case kPDFBorderStyleBeveled: return SKScriptingBorderStyleBeveled;
-        case kPDFBorderStyleInset: return SKScriptingBorderStyleInset;
-        case kPDFBorderStyleUnderline: return SKScriptingBorderStyleUnderline;
-        default: return SKScriptingBorderStyleSolid;
-    }
-}
-
-PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderStyle) {
-    switch (borderStyle) {
-        case SKScriptingBorderStyleSolid: return kPDFBorderStyleSolid;
-        case SKScriptingBorderStyleDashed: return kPDFBorderStyleDashed;
-        case SKScriptingBorderStyleBeveled: return kPDFBorderStyleBeveled;
-        case SKScriptingBorderStyleInset: return kPDFBorderStyleInset;
-        case SKScriptingBorderStyleUnderline: return kPDFBorderStyleUnderline;
-        default: return kPDFBorderStyleSolid;
-    }
-}
-
-
-NSString *SKPDFAnnotationScriptingNoteTypeKey = @"scriptingNoteType";
 NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
 NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
 NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
 BOOL SKPDFAnnotationLeaksBorder = NO;
-
-enum {
-    SKPDFAnnotationScriptingNoteClassCode = 'Note'
-};
 
 @implementation PDFAnnotation (SKExtensions)
 
@@ -319,6 +291,7 @@ enum {
     // remove all custom properties that are not valid for this class
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     NSMutableSet *customKeys = [allCustomScriptingKeys mutableCopy];
+    [customKeys minusSet:[[self class] customScriptingKeys]];
     [properties removeObjectsForKeys:[customKeys allObjects]];
     [customKeys release];
     return properties;
@@ -330,10 +303,6 @@ enum {
     id style = [properties objectForKey:SKPDFAnnotationScriptingBorderStyleKey];
     if ([style respondsToSelector:@selector(integerValue)] && [properties objectForKey:SKNPDFAnnotationDashPatternKey])
         [self setScriptingBorderStyle:[style integerValue]];
-}
-
-- (FourCharCode)scriptingNoteType {
-    return 0;
 }
 
 - (NSColor *)scriptingColor {
@@ -370,8 +339,8 @@ enum {
     }
 }
 
-- (FourCharCode)scriptingIconType {
-    return SKScriptingTextAnnotationIconNote;
+- (PDFTextAnnotationIconType)scriptingIconType {
+    return kPDFTextAnnotationIconNote;
 }
 
 - (id)textContents;
@@ -430,17 +399,17 @@ enum {
     return nil;
 }
 
-- (FourCharCode)scriptingAlignment {
-    return SKScriptingAlignmentLeft;
+- (NSTextAlignment)scriptingAlignment {
+    return NSLeftTextAlignment;
 }
 
-- (FourCharCode)scriptingBorderStyle {
-    return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
+- (PDFBorderStyle)scriptingBorderStyle {
+    return [self borderStyle];
 }
 
-- (void)setScriptingBorderStyle:(NSInteger)borderStyle {
+- (void)setScriptingBorderStyle:(PDFBorderStyle)borderStyle {
     if ([self isEditable]) {
-        [self setBorderStyle:SKBorderStyleFromScriptingBorderStyle(borderStyle)];
+        [self setBorderStyle:borderStyle];
     }
 }
 
@@ -452,12 +421,12 @@ enum {
     return nil;
 }
 
-- (FourCharCode)scriptingStartLineStyle {
-    return SKScriptingLineStyleNone;
+- (PDFLineStyle)scriptingStartLineStyle {
+    return kPDFLineStyleNone;
 }
 
-- (FourCharCode)scriptingEndLineStyle {
-    return SKScriptingLineStyleNone;
+- (PDFLineStyle)scriptingEndLineStyle {
+    return kPDFLineStyleNone;
 }
 
 - (id)selectionSpecifier {

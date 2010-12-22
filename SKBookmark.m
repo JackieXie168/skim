@@ -90,7 +90,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingBookmarkType, scriptingFile, scriptingParent, entireContents;
+@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingFile, scriptingParent, entireContents;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -236,8 +236,6 @@ static Class SKBookmarkClass = Nil;
         return nil;
     }
 }
-
-- (FourCharCode)scriptingBookmarkType { return 0; }
 
 - (NSURL *)scriptingFile {
     NSString *path = [self path];
@@ -502,10 +500,6 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
-- (FourCharCode)scriptingBookmarkType {
-    return SKScriptingBookmarkTypeBookmark;
-}
-
 @end
 
 #pragma mark -
@@ -576,10 +570,6 @@ static Class SKBookmarkClass = Nil;
     [children removeObjectAtIndex:anIndex];
 }
 
-- (FourCharCode)scriptingBookmarkType {
-    return SKScriptingBookmarkTypeFolder;
-}
-
 - (NSArray *)entireContents {
     NSMutableArray *contents = [NSMutableArray array];
     for (SKBookmark *bookmark in [self children]) {
@@ -595,17 +585,17 @@ static Class SKBookmarkClass = Nil;
         NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
         NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
         NSString *aLabel = [properties objectForKey:@"label"];
-        FourCharCode type = [[properties objectForKey:@"scriptingBookmarkType"] unsignedIntValue];
+        NSInteger type = [[properties objectForKey:@"scriptingBookmarkType"] integerValue];
         if (type == 0) {
             if (aURL == nil)
-                type = SKScriptingBookmarkTypeSession;
+                type = SKBookmarkTypeSession;
             else if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:aPath error:NULL] conformsToType:(NSString *)kUTTypeFolder])
-                type = SKScriptingBookmarkTypeFolder;
+                type = SKBookmarkTypeFolder;
             else
-                type = SKScriptingBookmarkTypeBookmark;
+                type = SKBookmarkTypeBookmark;
         }
         switch (type) {
-            case SKScriptingBookmarkTypeBookmark:
+            case SKBookmarkTypeBookmark:
             {
                 Class docClass;
                 if (aPath == nil) {
@@ -629,7 +619,7 @@ static Class SKBookmarkClass = Nil;
                 }
                 break;
             }
-            case SKScriptingBookmarkTypeFolder:
+            case SKBookmarkTypeFolder:
             {
                 NSArray *aChildren = nil;
                 if (aPath) {
@@ -640,13 +630,13 @@ static Class SKBookmarkClass = Nil;
                 bookmark = [[SKBookmark alloc] initFolderWithChildren:aChildren label:aLabel ?: @""];
                 break;
             }
-            case SKScriptingBookmarkTypeSession:
+            case SKBookmarkTypeSession:
             {
                 NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
                 bookmark = [[SKBookmark alloc] initSessionWithSetups:setups label:aLabel ?: @""];
                 break;
             }
-            case SKScriptingBookmarkTypeSeparator:
+            case SKBookmarkTypeSeparator:
                 bookmark = [[SKBookmark alloc] initSeparator];
                 break;
             default:
@@ -730,9 +720,6 @@ static Class SKBookmarkClass = Nil;
 - (NSImage *)icon {
     return [NSImage imageNamed:NSImageNameMultipleDocuments];
 }
-- (FourCharCode)scriptingBookmarkType {
-    return SKScriptingBookmarkTypeSession;
-}
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
@@ -764,10 +751,6 @@ static Class SKBookmarkClass = Nil;
 
 - (SKBookmarkType)bookmarkType {
     return SKBookmarkTypeSeparator;
-}
-
-- (FourCharCode)scriptingBookmarkType {
-    return SKScriptingBookmarkTypeSeparator;
 }
 
 @end

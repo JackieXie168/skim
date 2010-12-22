@@ -1980,11 +1980,11 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 }
 
 - (NSDictionary *)pdfViewSettings {
-    return SKScriptingPDFViewSettingsFromPDFViewSettings([[self mainWindowController] currentPDFSettings]);
+    return [[self mainWindowController] currentPDFSettings];
 }
 
 - (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings {
-    [[self mainWindowController] applyPDFSettings:SKPDFViewSettingsFromScriptingPDFViewSettings(pdfViewSettings)];
+    [[self mainWindowController] applyPDFSettings:pdfViewSettings];
 }
 
 - (BOOL)isPDFDocument {
@@ -2171,56 +2171,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 }
 
 @end
-
-
-NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settings) {
-    NSMutableDictionary *setup = [[settings mutableCopy] autorelease];
-    
-    FourCharCode displayMode = 0;
-    switch ([[setup objectForKey:@"displayMode"] integerValue]) {
-        case kPDFDisplaySinglePage: displayMode = SKScriptingDisplaySinglePage; break;
-        case kPDFDisplaySinglePageContinuous: displayMode = SKScriptingDisplaySinglePageContinuous; break;
-        case kPDFDisplayTwoUp: displayMode = SKScriptingDisplayTwoUp; break;
-        case kPDFDisplayTwoUpContinuous: displayMode = SKScriptingDisplayTwoUpContinuous; break;
-    }
-    [setup setObject:[NSNumber numberWithUnsignedInt:displayMode] forKey:@"displayMode"];
-    
-    FourCharCode displayBox = 0;
-    switch ([[setup objectForKey:@"displayBox"] integerValue]) {
-        case kPDFDisplayBoxMediaBox: displayBox = SKScriptingMediaBox; break;
-        case kPDFDisplayBoxCropBox: displayBox = SKScriptingCropBox; break;
-    }
-    [setup setObject:[NSNumber numberWithUnsignedInt:displayBox] forKey:@"displayBox"];
-    
-    return setup;
-}
-
-NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings) {
-    NSMutableDictionary *setup = [[settings mutableCopy] autorelease];
-    NSNumber *number;
-    
-    if (number = [setup objectForKey:@"displayMode"]) {
-        NSInteger displayMode = 0;
-        switch ([number unsignedIntValue]) {
-            case SKScriptingDisplaySinglePage: displayMode = kPDFDisplaySinglePage; break;
-            case SKScriptingDisplaySinglePageContinuous: displayMode = kPDFDisplaySinglePageContinuous; break;
-            case SKScriptingDisplayTwoUp: displayMode = kPDFDisplayTwoUp; break;
-            case SKScriptingDisplayTwoUpContinuous: displayMode = kPDFDisplayTwoUpContinuous; break;
-        }
-        [setup setObject:[NSNumber numberWithInteger:displayMode] forKey:@"displayMode"];
-    }
-    
-    if (number = [setup objectForKey:@"displayBox"]) {
-        NSInteger displayBox = 0;
-        switch ([number unsignedIntValue]) {
-            case SKScriptingMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
-            case SKScriptingCropBox: displayBox = kPDFDisplayBoxCropBox; break;
-        }
-        [setup setObject:[NSNumber numberWithInteger:displayBox] forKey:@"displayBox"];
-    }
-    
-    return setup;
-}
 
 
 @implementation SKTemporaryData

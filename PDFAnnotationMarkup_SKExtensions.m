@@ -315,18 +315,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return customMarkupScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    switch ([self markupType]) {
-        case kPDFMarkupTypeUnderline:
-            return SKScriptingUnderlineNote;
-        case kPDFMarkupTypeStrikeOut:
-            return SKScriptingStrikeOutNote;
-        case kPDFMarkupTypeHighlight:
-        default:
-            return SKScriptingHighlightNote;
-    }
-}
-
 - (id)selectionSpecifier {
     PDFSelection *sel = [self selection];
     return [sel hasCharacters] ? [sel objectSpecifier] : [NSArray array];

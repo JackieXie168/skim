@@ -104,10 +104,6 @@
     return customSquareScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingSquareNote;
-}
-
 - (NSColor *)scriptingInteriorColor {
     return [self interiorColor];
 }

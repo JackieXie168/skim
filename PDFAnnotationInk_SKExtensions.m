@@ -179,10 +179,6 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     return customInkScriptingKeys;
 }
 
-- (FourCharCode)scriptingNoteType {
-    return SKScriptingInkNote;
-}
-
 - (NSArray *)scriptingPointLists {
     NSPoint origin = [self bounds].origin;
     NSMutableArray *pointLists = [NSMutableArray array];

@@ -41,23 +41,6 @@
 
 extern NSString *SKSkimFileDidSaveNotification;
 
-enum {
-    SKScriptingDisplaySinglePage = '1Pg ',
-    SKScriptingDisplaySinglePageContinuous = '1PgC',
-    SKScriptingDisplayTwoUp = '2Up ',
-    SKScriptingDisplayTwoUpContinuous = '2UpC'
-};
-
-enum {
-    SKScriptingMediaBox = 'Mdia',
-    SKScriptingCropBox = 'Crop'
-};
-
-
-extern NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settings);
-extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings);
-
-
 @class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData;
 
 @interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
