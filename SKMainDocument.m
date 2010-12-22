@@ -880,7 +880,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo {
     NSWindow *printWindow = [[self pdfView] window];
-    if (showPrintPanel == NO || [printWindow attachedSheet] == nil) {
+    if ([[self pdfDocument] allowsPrinting]  && (showPrintPanel == NO || [printWindow attachedSheet] == nil)) {
         NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
         NSMutableDictionary *infoDict = [printInfo dictionary];
         
