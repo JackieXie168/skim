@@ -42,7 +42,6 @@
 extern NSString *SKSuppressPrintPanel;
 
 @interface SKPDFDocument : PDFDocument
-- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 @end
 
 @interface NSObject (SKPDFDocumentDelegate)
