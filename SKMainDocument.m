@@ -55,7 +55,6 @@
 #import "SKDocumentController.h"
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
-#import "UKKQueue.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKInfoWindowController.h"
 #import "SKLine.h"
@@ -82,6 +81,7 @@
 #import "SKSyncPreferences.h"
 #import "NSScreen_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "SKFileUpdateChecker.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -91,7 +91,6 @@
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
-#define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
 #define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
 #define URL_KEY             @"URL"
@@ -104,13 +103,9 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define TARGETPATH_KEY  @"targetPath"
 #define EMAIL_KEY       @"email"
 
-#define PATH_KEY @"path"
-
 #define SKPresentationOptionsKey    @"PresentationOptions"
 #define SKTagsKey                   @"Tags"
 #define SKRatingKey                 @"Rating"
-
-static char SKMainDocumentDefaultsObservationContext;
 
 
 @interface PDFAnnotation (SKPrivateDeclarations)
@@ -139,13 +134,6 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (BOOL)tryToUnlockDocument:(PDFDocument *)document;
 
-- (void)checkFileUpdatesIfNeeded;
-- (void)stopCheckingFileUpdates;
-- (void)fileUpdated;
-- (void)handleFileUpdateNotification:(NSNotification *)notification;
-- (void)handleFileMoveNotification:(NSNotification *)notification;
-- (void)handleFileDeleteNotification:(NSNotification *)notification;
-- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 - (SKProgressController *)progressController;
@@ -161,17 +149,23 @@ static char SKMainDocumentDefaultsObservationContext;
 
 + (BOOL)isPDFDocument { return YES; }
 
+- (id)init {
+    if (self = [super init]) {
+        fileUpdateChecker = [[SKFileUpdateChecker alloc] initForDocument:self];
+    }
+    return self;
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(mainWindowController);
     [synchronizer terminate];
     [synchronizer setDelegate:nil];
     SKDESTROY(synchronizer);
-    SKDESTROY(watchedFile);
+    SKDESTROY(fileUpdateChecker);
     SKDESTROY(pdfData);
     SKDESTROY(psOrDviData);
     SKDESTROY(readNotesAccessoryView);
-    SKDESTROY(lastModifiedDate);
     SKDESTROY(progressController);
     SKDESTROY(tmpData);
     SKDESTROY(printCallback);
@@ -211,7 +205,6 @@ static char SKMainDocumentDefaultsObservationContext;
     
     [[self undoManager] enableUndoRegistration];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKMainDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
 }
@@ -318,7 +311,7 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
-    if (success && docFlags.exportUsingPanel) {
+    if (success && exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
         if (formatPopup && lastExportedType) {
@@ -335,7 +328,7 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
-    docFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
+    exportUsingPanel = (saveOperation == NSSaveToOperation);
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
@@ -436,9 +429,7 @@ static char SKMainDocumentDefaultsObservationContext;
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
-            docFlags.fileChangedOnDisk = NO;
-            [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate] retain];
+            [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         }
     
         if ([[self class] isNativeType:typeName])
@@ -449,12 +440,12 @@ static char SKMainDocumentDefaultsObservationContext;
         [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [self checkFileUpdatesIfNeeded];
-        docFlags.isSaving = NO;
+        [fileUpdateChecker checkFileUpdatesIfNeeded];
+        isSaving = NO;
     }
     
     // in case we saved using the panel we should reset this for the next save
-    docFlags.exportUsingPanel = NO;
+    exportUsingPanel = NO;
     
     NSInvocation *invocation = [info objectForKey:CALLBACK_KEY];
     if (invocation) {
@@ -467,9 +458,9 @@ static char SKMainDocumentDefaultsObservationContext;
 // Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDoucment needs to ask the user for permission, for instance to override a file lock
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [self stopCheckingFileUpdates];
-        docFlags.isSaving = YES;
-    } else if (docFlags.exportUsingPanel) {
+        [fileUpdateChecker stopCheckingFileUpdates];
+        isSaving = YES;
+    } else if (exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
@@ -791,9 +782,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKXDVDocumentType])
                 [self setPSOrDVIData:fileData];
             [pdfDoc release];
-            docFlags.fileChangedOnDisk = NO;
-            [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[absoluteURL path] error:NULL] fileModificationDate] retain];
+            [fileUpdateChecker didUpdateFromURL:absoluteURL];
             
             NSDictionary *dictionary = nil;
             NSArray *array = nil;
@@ -851,9 +840,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [self setDataFromTmpData];
         [[self undoManager] enableUndoRegistration];
         [[self undoManager] removeAllActions];
-        // file watching could have been disabled if the file was deleted
-        if (watchedFile == nil && fileUpdateTimer == nil)
-            [self checkFileUpdatesIfNeeded];
+        [fileUpdateChecker checkFileUpdatesIfNeeded];
     }
     
     [tmpData release];
@@ -1270,7 +1257,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
      if ([self fileURL]) { 	 
          if ([self isDocumentEdited]) { 	 
              [super revertDocumentToSaved:sender]; 	 
-         } else if (docFlags.fileChangedOnDisk) { 	 
+         } else if ([fileUpdateChecker fileChangedOnDisk]) { 	 
              NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[[self fileURL] path] lastPathComponent]] 	 
                                               defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
                                             alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
@@ -1295,7 +1282,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         NSString *fileName = [[self fileURL] path];
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
-        return [self isDocumentEdited] || docFlags.fileChangedOnDisk;
+        return [self isDocumentEdited] || [fileUpdateChecker fileChangedOnDisk];
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
@@ -1311,248 +1298,15 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     [[self mainWindowController] remoteButtonPressed:theEvent];
 }
 
-
-#pragma mark File update checking
-
-- (void)stopCheckingFileUpdates {
-    if (watchedFile) {
-        // remove from kqueue and invalidate timer; maybe we've changed filesystems
-        UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
-        [kQueue removePath:watchedFile];
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:UKFileWatcherWriteNotification object:kQueue];
-        [nc removeObserver:self name:UKFileWatcherRenameNotification object:kQueue];
-        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:kQueue];
-        [watchedFile release];
-        watchedFile = nil;
-    }
-    if (fileUpdateTimer) {
-        [fileUpdateTimer invalidate];
-        fileUpdateTimer = nil;
-    }
-}
-
-static BOOL isFileOnHFSVolume(NSString *fileName)
-{
-    FSRef fileRef;
-    OSStatus err;
-    err = FSPathMakeRef((const UInt8 *)[fileName fileSystemRepresentation], &fileRef, NULL);
-    
-    FSCatalogInfo fileInfo;
-    if (noErr == err)
-        err = FSGetCatalogInfo(&fileRef, kFSCatInfoVolume, &fileInfo, NULL, NULL, NULL);
-    
-    FSVolumeInfo volInfo;
-    if (noErr == err)
-        err = FSGetVolumeInfo(fileInfo.volume, 0, NULL, kFSVolInfoFSInfo, &volInfo, NULL, NULL);
-    
-    // HFS and HFS+ are documented to have zero for filesystemID; AFP at least is non-zero
-    BOOL isHFSVolume = (noErr == err) ? (0 == volInfo.filesystemID) : NO;
-    
-    return isHFSVolume;
-}
-
-- (void)checkForFileModification:(NSTimer *)timer {
-    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate];
-    if (nil == lastModifiedDate) {
-        lastModifiedDate = [currentFileModifiedDate copy];
-    } else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending) {
-        // Always reset mod date to prevent repeating messages; note that the kqueue also notifies only once
-        [lastModifiedDate release];
-        lastModifiedDate = [currentFileModifiedDate copy];
-        [self handleFileUpdateNotification:nil];
-    }
-        
-}
-
-- (void)checkFileUpdatesIfNeeded {
-    if ([self fileURL]) {
-        [self stopCheckingFileUpdates];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
-            
-            // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isFileOnHFSVolume([[self fileURL] path])) {
-                watchedFile = [[[self fileURL] path] retain];
-                
-                UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
-                [kQueue addPath:watchedFile];
-                NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:kQueue];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:kQueue];
-                [nc addObserver:self selector:@selector(handleFileDeleteNotification:) name:UKFileWatcherDeleteNotification object:kQueue];
-            } else if (nil == fileUpdateTimer) {
-                // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
-                fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
-            }
-        }
-    }
-}
-
-- (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    
-    if (returnCode == NSAlertOtherReturn) {
-        docFlags.autoUpdate = NO;
-        docFlags.disableAutoReload = YES;
-    } else {
-        NSError *error = nil;
-        
-        [[alert window] orderOut:nil];
-        
-        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error])
-            docFlags.receivedFileUpdateNotification = NO;
-        else if (error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
-            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
-        if (returnCode == NSAlertAlternateReturn)
-            docFlags.autoUpdate = YES;
-        docFlags.disableAutoReload = NO;
-        if (docFlags.receivedFileUpdateNotification)
-            [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
-    }
-    docFlags.isUpdatingFile = NO;
-    docFlags.receivedFileUpdateNotification = NO;
-}
-
-- (BOOL)canUpdateFromFile:(NSString *)fileName {
-    NSString *extension = [fileName pathExtension];
-    BOOL isDVI = NO;
-    if (extension) {
-        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:[[fileName stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
-        if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
-            fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
-            if (fileName == nil)
-                return NO;
-        } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame || [extension caseInsensitiveCompare:@"xdv"] == NSOrderedSame) {
-            isDVI = YES;
-        }
-    }
-    
-    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-    
-    // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
-    unsigned long long fileEnd = [fh seekToEndOfFile];
-    unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
-    [fh seekToFileOffset:startPos];
-    NSData *trailerData = [fh readDataToEndOfFile];
-    NSRange range = NSMakeRange(0, [trailerData length]);
-    NSData *pattern = [NSData dataWithBytes:"%%EOF" length:5];
-    NSDataSearchOptions options = NSDataSearchBackwards;
-    
-    if (isDVI) {
-        const char bytes[4] = {0xDF, 0xDF, 0xDF, 0xDF};
-        pattern = [NSData dataWithBytes:bytes length:4];
-        options |= NSDataSearchAnchored;
-    }
-    return NSNotFound != [trailerData rangeOfData:pattern options:options range:range].location;
-}
-
-- (void)fileUpdated {
-    NSString *fileName = [[self fileURL] path];
-    
-    // should never happen
-    if (docFlags.isUpdatingFile)
-        NSLog(@"*** already busy updating file %@", fileName);
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
-        
-        docFlags.fileChangedOnDisk = YES;
-        
-        docFlags.isUpdatingFile = YES;
-        docFlags.receivedFileUpdateNotification = NO;
-        
-        // check for attached sheet, since reloading the document while an alert is up looks a bit strange
-        if ([[self windowForSheet] attachedSheet]) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
-                                                         name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
-        } else if ([self canUpdateFromFile:fileName]) {
-            BOOL shouldAutoUpdate = docFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
-            if (docFlags.disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
-                // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
-            } else {
-                NSString *message;
-                if ([self isDocumentEdited] || [[self notes] count] > 0)
-                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                else 
-                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
-                
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
-                                                   otherButton:NSLocalizedString(@"No", @"Button title")
-                                     informativeTextWithFormat:message];
-                [alert beginSheetModalForWindow:[self windowForSheet]
-                                  modalDelegate:self
-                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:NULL];
-            }
-        } else {
-            docFlags.isUpdatingFile = NO;
-            docFlags.receivedFileUpdateNotification = NO;
-        }
-    } else {
-        docFlags.isUpdatingFile = NO;
-        docFlags.receivedFileUpdateNotification = NO;
-    }
-}
-
-- (void)handleFileUpdateNotification:(NSNotification *)notification {
-    NSString *path = [[notification userInfo] objectForKey:PATH_KEY];
-    
-    if ([watchedFile isEqualToString:path] || notification == nil) {
-        // should never happen
-        if (notification && [path isEqualToString:[[self fileURL] path]] == NO)
-            NSLog(@"*** received change notice for %@", path);
-        
-        if (docFlags.isUpdatingFile)
-            docFlags.receivedFileUpdateNotification = YES;
-        else
-            [self fileUpdated];
-    }
-}
-
-- (void)handleFileMoveNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
-        [self stopCheckingFileUpdates];
-    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
-}
-
-- (void)handleFileDeleteNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
-        [self stopCheckingFileUpdates];
-    docFlags.fileChangedOnDisk = YES;
-}
-
-- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
-    // This is only called to delay a file update handling
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
-    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
-    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
-}
-
 #pragma mark Notification handlers
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
-        [self stopCheckingFileUpdates];
+        [fileUpdateChecker stopCheckingFileUpdates];
+        SKDESTROY(fileUpdateChecker);
         [self saveRecentDocumentInfo];
-    }
-}
-
-#pragma mark Notification observation
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKMainDocumentDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
-            [self checkFileUpdatesIfNeeded];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -1561,15 +1315,18 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)setFileURL:(NSURL *)absoluteURL {
     // this shouldn't be necessary, but better be sure
     if ([self fileURL] && [[self fileURL] isEqual:absoluteURL] == NO)
-        [self stopCheckingFileUpdates];
+        [fileUpdateChecker stopCheckingFileUpdates];
+    
     [super setFileURL:absoluteURL];
+    
+    // if we're saving this will be called when saving has finished
+    if (isSaving == NO)
+        [fileUpdateChecker checkFileUpdatesIfNeeded];
+    
     if ([absoluteURL isFileURL])
         [synchronizer setFileName:[absoluteURL path]];
     else
         [synchronizer setFileName:nil];
-    // if we're saving this will be called when saving has finished
-    if (docFlags.isSaving == NO)
-        [self checkFileUpdatesIfNeeded];
 }
 
 - (SKPDFSynchronizer *)synchronizer {
@@ -2050,7 +1807,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
-        if (docFlags.isUpdatingFile == NO && [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
+        if ([fileUpdateChecker isUpdatingFile] == NO && [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];
         }
@@ -2205,4 +1962,3 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 }
 
 @end
-
