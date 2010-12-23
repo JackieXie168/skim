@@ -56,7 +56,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     if ([anEvent type] == NSScrollWheel && ([anEvent modifierFlags] & NSAlternateKeyMask)) {
         id target = [self targetForAction:@selector(magnifyWheel:)];
         if (target) {
-            [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
+            [target magnifyWheel:anEvent];
             return;
         }
     } else if ([anEvent type] == NSApplicationDefined && [anEvent subtype] == SKRemoteButtonEvent) {
@@ -67,7 +67,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 target = nil;
         }
         if (target) {
-            [target performSelector:@selector(remoteButtonPressed:) withObject:anEvent];
+            [target remoteButtonPressed:anEvent];
             return;
         }
     }
