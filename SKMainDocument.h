@@ -41,7 +41,7 @@
 
 extern NSString *SKSkimFileDidSaveNotification;
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData, SKFileUpdateChecker;
 
 @interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
 {
@@ -60,21 +60,11 @@ extern NSString *SKSkimFileDidSaveNotification;
     SKProgressController *progressController;
     
     SKPDFSynchronizer *synchronizer;
-    NSString *watchedFile;
     
-    struct _docFlags {
-        unsigned int autoUpdate:1;
-        unsigned int disableAutoReload:1;
-        unsigned int isSaving:1;
-        unsigned int isUpdatingFile:1;
-        unsigned int receivedFileUpdateNotification:1;
-        unsigned int fileChangedOnDisk:1;
-        unsigned int exportUsingPanel:1;
-    } docFlags;
+    SKFileUpdateChecker *fileUpdateChecker;
     
-    // only used for network filesystems; fileUpdateTimer is not retained by the doc
-    NSDate *lastModifiedDate;
-    NSTimer *fileUpdateTimer;
+    BOOL isSaving;
+    BOOL exportUsingPanel;
     
     NSInvocation *printCallback;
 }
