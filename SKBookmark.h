@@ -53,7 +53,7 @@ enum {
     SKScriptingBookmarkTypeSeparator = 'BmSp'
 };
 
-@interface SKBookmark : NSObject {
+@interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
 }
 

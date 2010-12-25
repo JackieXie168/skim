@@ -194,6 +194,10 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
+- (id)copyWithZone:(NSZone *)aZone { 	 
+    return [[SKBookmark alloc] initWithProperties:[self properties]];
+}
+
 - (void)dealloc {
     parent = nil;
     [super dealloc];
