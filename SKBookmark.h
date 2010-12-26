@@ -46,13 +46,6 @@ enum {
 };
 typedef NSInteger SKBookmarkType;
 
-enum {
-    SKScriptingBookmarkTypeBookmark = 'BmFl',
-    SKScriptingBookmarkTypeFolder = 'BmFd',
-    SKScriptingBookmarkTypeSession = 'BmSs',
-    SKScriptingBookmarkTypeSeparator = 'BmSp'
-};
-
 @interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
 }
