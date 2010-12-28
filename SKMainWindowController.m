@@ -479,9 +479,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self registerForNotifications];
     [self registerAsObserver];
     
-    if (hasWindowSetup)
-        [savedNormalSetup removeAllObjects];
-    
     if ([[pdfView document] isLocked])
         [[self window] makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
     
@@ -1929,8 +1926,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
-    // when the PDF was locked the default PDF view settings will be lost, unfortunately changing them back here makes no difference, because this method is sent too early
     [self updatePageLabelsAndOutlineForExpansionState:nil];
+    // when the PDF was locked, PDFView resets the display settings, so we need to reapply them, however if don't delay it's reset again immediately
+    [self performSelector:@selector(applyPDFSettings:) withObject:[savedNormalSetup count] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey] afterDelay:0.0];
 }
 
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {
