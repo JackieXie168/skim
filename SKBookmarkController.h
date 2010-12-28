@@ -66,6 +66,8 @@
 
 - (void)openBookmark:(SKBookmark *)bookmark;
 
+- (IBAction)openBookmarkAction:(id)sender;
+
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;
 - (IBAction)insertBookmarkSeparator:(id)sender;

@@ -50,6 +50,7 @@
 #import "SKStringConstants.h"
 #import "SKDocumentController.h"
 #import "SKSeparatorCell.h"
+#import "NSMenu_SKExtensions.h"
 
 #define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
@@ -375,6 +376,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     }
 }
 
+- (IBAction)openBookmarkAction:(id)sender {
+    [self openBookmark:[sender representedObject]];
+}
+
 - (IBAction)doubleClickBookmark:(id)sender {
     NSInteger row = [outlineView clickedRow];
     if (row == -1)
@@ -417,6 +422,53 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowBookmarkStatusBarKey];
     [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    NSMenu *supermenu = [menu supermenu];
+    NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
+    SKBookmark *bm = nil;
+    NSMenuItem *item;
+    
+    if (supermenu == [NSApp mainMenu])
+        bm = [self bookmarkRoot];
+    else if (idx >= 0)
+        bm = [[supermenu itemAtIndex:idx] representedObject];
+    
+    if ([bm isKindOfClass:[SKBookmark class]]) {
+        NSArray *bookmarks = [bm children];
+        NSInteger i = [menu numberOfItems];
+        while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
+            [menu removeItemAtIndex:i];
+        if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
+            [menu addItem:[NSMenuItem separatorItem]];
+        for (bm in bookmarks) {
+            switch ([bm bookmarkType]) {
+                case SKBookmarkTypeFolder:
+                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
+                    [item setRepresentedObject:bm];
+                    [item setImageAndSize:[bm icon]];
+                    [[item submenu] setDelegate:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
+                    [item setRepresentedObject:bm];
+                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+                    [item setAlternate:YES];
+                    [item setImageAndSize:[bm alternateIcon]];
+                    break;
+                case SKBookmarkTypeSeparator:
+                    [menu addItem:[NSMenuItem separatorItem]];
+                    break;
+                default:
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
+                    [item setRepresentedObject:bm];
+                    [item setImageAndSize:[bm icon]];
+                    break;
+            }
+        }
+    }
+}
+
+// avoid rebuilding the bookmarks menu on every key event
+- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
 
 #pragma mark Undo support
 

@@ -42,7 +42,7 @@
 
 @class SKBookmark;
 
-@interface SKApplicationController : NSObject <SKApplicationDelegate, NSMenuDelegate, HIDRemoteDelegate> {
+@interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
     BOOL remoteScrolling;
 }
 
@@ -54,9 +54,6 @@
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
 - (IBAction)showDownloads:(id)sender;
-
-- (IBAction)editBookmarks:(id)sender;
-- (IBAction)openBookmarkAction:(id)sender;
 
 @property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
 @property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
