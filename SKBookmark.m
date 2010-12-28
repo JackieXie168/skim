@@ -90,7 +90,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, path, pageIndex, pageNumber, scriptingFile, scriptingParent, entireContents;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, path, pageIndex, pageNumber, scriptingFile, scriptingParent, entireContents;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -208,6 +208,7 @@ static Class SKBookmarkClass = Nil;
 - (SKBookmarkType)bookmarkType { return SKBookmarkTypeSeparator; }
 
 - (NSImage *)icon { return nil; }
+- (NSImage *)alternateIcon { return [self icon]; }
 
 - (NSString *)label { return nil; }
 - (void)setLabel:(NSString *)newLabel {}
@@ -539,6 +540,10 @@ static Class SKBookmarkClass = Nil;
 
 - (NSImage *)icon {
     return [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+}
+
+- (NSImage *)alternateIcon {
+    return [NSImage imageNamed:NSImageNameMultipleDocuments];
 }
 
 - (NSString *)label {
