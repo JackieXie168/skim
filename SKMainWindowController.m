@@ -1929,6 +1929,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
+    // when the PDF was locked the default PDF view settings will be lost, unfortunately changing them back here makes no difference, because this method is sent too early
     [self updatePageLabelsAndOutlineForExpansionState:nil];
 }
 
