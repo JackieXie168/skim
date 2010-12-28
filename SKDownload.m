@@ -166,7 +166,7 @@ static NSSet *infoKeys = nil;
 }
 
 - (NSString *)fileName {
-    NSString *fileName = [filePath lastPathComponent];
+    NSString *fileName = [[NSFileManager defaultManager] displayNameAtPath:filePath];
     if (fileName == nil) {
         if ([[URL path] length] > 1) {
             fileName = [[URL path] lastPathComponent];
