@@ -215,7 +215,7 @@ static BOOL isFolderUTI(NSString *theUTI) {
         NSString *fileType = [fileAttributes valueForKey:NSFileType];
         BOOL isDir = [fileType isEqualToString:NSFileTypeDirectory];
         NSString *theUTI = [ws typeOfFile:[[filePath stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
-        NSString *title = [file lastPathComponent];
+        NSString *title = [[NSFileManager defaultManager] displayNameAtPath:filePath];
         NSDictionary *dict = nil;
         
         NSScanner *scanner = [NSScanner scannerWithString:title];
