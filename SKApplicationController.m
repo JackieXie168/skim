@@ -349,6 +349,11 @@
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
                     [[item submenu] setDelegate:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
+                    [item setRepresentedObject:bm];
+                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+                    [item setAlternate:YES];
+                    [item setImageAndSize:[bm alternateIcon]];
                     break;
                 case SKBookmarkTypeSeparator:
                     [menu addItem:[NSMenuItem separatorItem]];
