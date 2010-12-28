@@ -423,6 +423,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }
 
+#pragma mark NSMenu delegate methods
+
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     NSMenu *supermenu = [menu supermenu];
     NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
