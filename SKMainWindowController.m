@@ -489,6 +489,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     if ([[pdfView document] isLocked])
         [[self window] makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
+    else
+        [savedNormalSetup removeAllObjects];
     
     mwcFlags.settingUpWindow = 0;
 }
@@ -1584,6 +1586,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
     [self applyPDFSettings:savedNormalSetup];
+    [savedNormalSetup removeAllObjects];
     
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
@@ -1957,6 +1960,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([snapshotSetups count]) {
         [self showSnapshotsWithSetups:snapshotSetups];
     }
+    [savedNormalSetup removeAllObjects];
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
