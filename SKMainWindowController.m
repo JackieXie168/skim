@@ -442,9 +442,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
-    if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex && [[pdfView currentPage] pageIndex] != pageIndex) {
-        [lastViewedPages removeAllObjects];
-        [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+    if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex) {
+        if ([[pdfView document] isLocked]) {
+            [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
+        } else if ([[pdfView currentPage] pageIndex] != pageIndex) {
+            [lastViewedPages removeAllObjects];
+            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        }
     }
     
     // We can fit only after the PDF has been loaded
@@ -457,8 +461,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
         snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtPath:[[[self document] fileURL] path]];
-    if ([snapshotSetups count])
-        [self showSnapshotsWithSetups:snapshotSetups];
+    if ([snapshotSetups count]) {
+        if ([[pdfView document] isLocked])
+            [savedNormalSetup setObject:snapshotSetups forKey:SNAPSHOTS_KEY];
+        else
+            [self showSnapshotsWithSetups:snapshotSetups];
+    }
     
     noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
     [noteTypeSheetController setDelegate:self];
@@ -788,14 +796,25 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [self updatePageLabelsAndOutlineForExpansionState:openState];
         [self updateNoteSelection];
         
-        [self showSnapshotsWithSetups:snapshotDicts];
+        if ([snapshotDicts count]) {
+            if ([document isLocked] && [self presentationOptions] == SKNormalMode)
+                [savedNormalSetup setObject:snapshotDicts forKey:SNAPSHOTS_KEY];
+            else
+                [self showSnapshotsWithSetups:snapshotDicts];
+        }
         
         if ([document pageCount] && (pageIndex != NSNotFound || secondaryPageIndex != NSNotFound)) {
             PDFPage *page = nil;
             PDFPage *secondaryPage = nil;
             if (pageIndex != NSNotFound) {
-                page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
-                [pdfView goToPage:page];
+                if (pageIndex >= [document pageCount])
+                    pageIndex = [document pageCount] - 1;
+                if ([document isLocked] && [self presentationOptions] == SKNormalMode) {
+                    [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
+                } else {
+                    page = [document pageAtIndex:pageIndex];
+                    [pdfView goToPage:page];
+                }
             }
             if (secondaryPageIndex != NSNotFound) {
                 secondaryPage = [document pageAtIndex:MIN(secondaryPageIndex, [document pageCount] - 1)];
@@ -1925,10 +1944,26 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (void)documentDidUnlockDelayed {
+    NSUInteger pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
+    NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
+    if ([savedNormalSetup objectForKey:AUTOSCALES_KEY]) {
+        [self applyPDFSettings:[savedNormalSetup count] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    }
+    if (pageIndex != NSNotFound) {
+        [lastViewedPages removeAllObjects];
+        [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+    }
+    if ([snapshotSetups count]) {
+        [self showSnapshotsWithSetups:snapshotSetups];
+    }
+}
+
 - (void)documentDidUnlock:(NSNotification *)notification {
     [self updatePageLabelsAndOutlineForExpansionState:nil];
     // when the PDF was locked, PDFView resets the display settings, so we need to reapply them, however if don't delay it's reset again immediately
-    [self performSelector:@selector(applyPDFSettings:) withObject:[savedNormalSetup count] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey] afterDelay:0.0];
+    if ([self presentationOptions] == SKNormalMode)
+        [self performSelector:@selector(documentDidUnlockDelayed) withObject:nil afterDelay:0.0];
 }
 
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {
