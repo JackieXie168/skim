@@ -68,7 +68,6 @@
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
 #import "SKRemoteStateWindow.h"
-#import "NSMenu_SKExtensions.h"
 #import "SKFDFParser.h"
 #import "SKLocalization.h"
 #import "SKScriptMenu.h"
@@ -83,7 +82,6 @@
 #define RESETTABLE_KEYS_KEY             @"ResettableKeys"
 
 #define VIEW_MENU_INDEX      4
-#define BOOKMARKS_MENU_INDEX 8
 
 #define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
@@ -139,8 +137,6 @@
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:)) 
             [menuItem setIndentationLevel:1];
     }
-    
-    [[[NSApp mainMenu] itemAtIndex:BOOKMARKS_MENU_INDEX] setRepresentedObject:[[SKBookmarkController sharedBookmarkController] bookmarkRoot]];
     
     // this creates the script menu if needed
     (void)[NSApp scriptMenu];
@@ -301,14 +297,6 @@
     [[SKDownloadController sharedDownloadController] showWindow:self];
 }
 
-- (IBAction)editBookmarks:(id)sender {
-    [[SKBookmarkController sharedBookmarkController] showWindow:self];
-}
-
-- (IBAction)openBookmarkAction:(id)sender {
-    [[SKBookmarkController sharedBookmarkController] openBookmark:[sender representedObject]];
-}
-
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(orderFrontLineInspector:)) {
@@ -326,50 +314,6 @@
     }
     return YES;
 }
-
-#pragma mark Support
-
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenu *supermenu = [menu supermenu];
-    NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
-    SKBookmark *bm = idx == -1 ? nil : [[supermenu itemAtIndex:idx] representedObject];
-    NSMenuItem *item;
-    
-    if ([bm isKindOfClass:[SKBookmark class]]) {
-        NSArray *bookmarks = [bm children];
-        NSInteger i = [menu numberOfItems];
-        while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
-            [menu removeItemAtIndex:i];
-        if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
-            [menu addItem:[NSMenuItem separatorItem]];
-        for (bm in bookmarks) {
-            switch ([bm bookmarkType]) {
-                case SKBookmarkTypeFolder:
-                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
-                    [item setRepresentedObject:bm];
-                    [item setImageAndSize:[bm icon]];
-                    [[item submenu] setDelegate:self];
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
-                    [item setRepresentedObject:bm];
-                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
-                    [item setAlternate:YES];
-                    [item setImageAndSize:[bm alternateIcon]];
-                    break;
-                case SKBookmarkTypeSeparator:
-                    [menu addItem:[NSMenuItem separatorItem]];
-                    break;
-                default:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
-                    [item setRepresentedObject:bm];
-                    [item setImageAndSize:[bm icon]];
-                    break;
-            }
-        }
-    }
-}
-
-// avoid rebuilding the bookmarks menu on every key event
-- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
 
 - (void)hidRemote:(HIDRemote *)hidRemote eventWithButton:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed fromHardwareWithAttributes:(NSMutableDictionary *)attributes {
     if (isPressed) {
