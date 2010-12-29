@@ -1950,9 +1950,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)documentDidUnlockDelayed {
     NSUInteger pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
     NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
-    if ([savedNormalSetup objectForKey:AUTOSCALES_KEY]) {
-        [self applyPDFSettings:[savedNormalSetup count] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
-    }
+    [self applyPDFSettings:[savedNormalSetup objectForKey:AUTOSCALES_KEY] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     if (pageIndex != NSNotFound) {
         [lastViewedPages removeAllObjects];
         [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
