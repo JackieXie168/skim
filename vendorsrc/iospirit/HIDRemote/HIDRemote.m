@@ -184,6 +184,9 @@ static HIDRemote *sHIDRemote = nil;
 							return (YES);
 						}
 					break;
+					case kHIDRemoteModeShared:
+					case kHIDRemoteModeNone:
+					break;
 				}
 			break;
 		}
