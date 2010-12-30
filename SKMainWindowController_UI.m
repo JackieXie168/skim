@@ -1144,14 +1144,17 @@
     NSURL *fileURL = [action URL];
     NSError *error = nil;
     SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
+    Class docClass = [sdc documentClassForContentsOfURL:fileURL];
     id document = nil;
-    if ([[sdc documentClassForContentsOfURL:fileURL] isPDFDocument]) {
+    if (docClass) {
         if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-            NSUInteger pageIndex = [action pageIndex];
-            if (pageIndex < [[document pdfDocument] pageCount]) {
-                PDFPage *page = [[document pdfDocument] pageAtIndex:pageIndex];
-                PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
-                [[document pdfView] goToDestination:dest];
+            if ([docClass isPDFDocument]) {
+                NSUInteger pageIndex = [action pageIndex];
+                if (pageIndex < [[document pdfDocument] pageCount]) {
+                    PDFPage *page = [[document pdfDocument] pageAtIndex:pageIndex];
+                    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
+                    [[document pdfView] goToDestination:dest];
+                }
             }
         } else if (error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError)) {
             [NSApp presentError:error];
@@ -1159,6 +1162,19 @@
     } else if (fileURL) {
         // fall back to just opening the file and ignore the destination
         [[NSWorkspace sharedWorkspace] openURL:fileURL];
+    }
+}
+
+- (void)PDFViewWillClickOnLink:(PDFView *)sender withURL:(NSURL *)url {
+    NSError *error = nil;
+    SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
+    id document = nil;
+    if ([sdc documentClassForContentsOfURL:url]) {
+        document = [sdc openDocumentWithContentsOfURL:url display:YES error:&error];
+        if (document == nil && error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+            [NSApp presentError:error];
+    } else {
+        [[NSWorkspace sharedWorkspace] openURL:url];
     }
 }
 
