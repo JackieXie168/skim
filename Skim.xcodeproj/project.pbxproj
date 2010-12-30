@@ -2052,6 +2052,7 @@
 				CEFD68720C01D3FE0027B933 /* Copy Files: Spotlight */,
 				CE816A0A0D70F9B6008D807D /* Copy Files: QuickLook */,
 				CE4B67590BF4DC3000A73E42 /* Run Script: Strip headers and .DS_Store */,
+				CE21E24512CD013A00A6D4A2 /* Run Script: Codesign */,
 			);
 			buildRules = (
 			);
@@ -2304,6 +2305,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		CE21E24512CD013A00A6D4A2 /* Run Script: Codesign */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script: Codesign";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f /usr/bin/codesign ]; then\n\tif ! /usr/bin/codesign -f -s \"Skim Signing Certificate\" -v ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\n\tthen\n         # lie about exit status so developers aren't forced to have a cert\n\t\techo \"warning: codesign failed\" >&2\n\t\techo \"warning: you need a certificate named \\\"Skim Signing Certificate\\\"\" >&2\n\t\texit 0\n\tfi\nfi\n";
+		};
 		CE4B67590BF4DC3000A73E42 /* Run Script: Strip headers and .DS_Store */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
