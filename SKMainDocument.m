@@ -1589,7 +1589,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     attr.data = (void *)data;
     return attr;
 }
- 
+
 - (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     NSString *password = [(NSString *)contextInfo autorelease];
     if (returnCode == NSAlertDefaultReturn) {
@@ -1648,6 +1648,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (BOOL)tryToUnlockDocument:(PDFDocument *)document {
+    BOOL didUnlock = NO;
     if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
         if (fileID) {
@@ -1660,11 +1661,13 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
                 
                 SecKeychainItemFreeContent(NULL, passwordData);
                 
-                return [document unlockWithPassword:password];
+                didUnlock = [document unlockWithPassword:password];
+                
+                // should we modify the password when it was in the old format and we succeeded?
             }
         }
     }
-    return NO;
+    return didUnlock;
 }
 
 #pragma mark Scripting support
