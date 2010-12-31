@@ -385,7 +385,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if (row == -1)
         row = [outlineView selectedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
-    if (bm && [bm bookmarkType] == SKBookmarkTypeBookmark)
+    if (bm && ([bm bookmarkType] == SKBookmarkTypeBookmark || [bm bookmarkType] == SKBookmarkTypeSession))
         [self openBookmark:bm];
 }
 
