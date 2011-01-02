@@ -1588,9 +1588,8 @@ enum {
         err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : 0, password ? &passwordData : NULL, itemRef);
         
         status = (err == noErr ? SKPDFPasswordStatusFoundOldFormat : err == errSecItemNotFound ? SKPDFPasswordStatusNotFound : SKPDFPasswordStatusError);
-        
     } else {
-        status = err == noErr ? SKPDFPasswordStatusFound : SKPDFPasswordStatusError;
+        status = (err == noErr ? SKPDFPasswordStatusFound : SKPDFPasswordStatusError);
     }
     
     if (err == noErr && password) {
@@ -1599,7 +1598,7 @@ enum {
     }
     
     if (err != noErr && err != errSecItemNotFound)
-        NSLog(@"Error %d occurred finding password", err);
+        NSLog(@"Error %d occurred finding password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     
     return status;
 }
@@ -1631,15 +1630,17 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     attributes.count = attrCount;
     attributes.attr = attrs;
     
-    if (itemRef)
+    if (itemRef) {
         // password was on keychain, so modify the keychain
         err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, passwordLength, passwordData);
-    else
+        if (err != noErr)
+            NSLog(@"Error %d occurred modifying password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+    } else {
         // password not on keychain, so add it
         err = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass, &attributes, passwordLength, passwordData, NULL, NULL, NULL);
-    
-    if (err != noErr)
-        NSLog(@"Error %d occurred %@ password", err, itemRef ? @"modifying" : @"adding");
+        if (err != noErr)
+            NSLog(@"Error %d occurred adding password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+    }
 }
 
 - (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
