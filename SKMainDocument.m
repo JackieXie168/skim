@@ -182,8 +182,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 - (void)setDataFromTmpData {
     PDFDocument *pdfDoc = [tmpData pdfDocument];
-    if ([pdfDoc isLocked])
-        [self tryToUnlockDocument:pdfDoc];
+    [self tryToUnlockDocument:pdfDoc];
     [[self mainWindowController] setPdfDocument:pdfDoc];
     
     [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES];
@@ -962,8 +961,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         return;
     }
     
-    if (pdfDocWithoutNotes && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
-        [[controller window] orderOut:self];
+    if (pdfDocWithoutNotes && [pdfDocWithoutNotes isLocked] && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
+        [[controller window] orderOut:nil];
         
         SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
         
@@ -975,8 +974,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         return;
     }
     
-    [[[self windowForSheet] attachedSheet] orderOut:self];
-        
+    [[controller window] orderOut:nil];
+    
     [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
     [[self progressController] setIndeterminate:YES];
     [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
@@ -1016,10 +1015,9 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     }
     
     if (didConvert) {
+        // if pdfDocWithoutNotes was nil, the document was not encrypted, so no need to try to unlock
         if (pdfDocWithoutNotes == nil)
             pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
-        if ([pdfDocWithoutNotes isLocked])
-            [self tryToUnlockDocument:pdfDocWithoutNotes];
         count = [pdfDocWithoutNotes pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
@@ -1048,8 +1046,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     
     if ([[self pdfDocument] isEncrypted]) {
         pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
-        if ([pdfDocWithoutNotes isLocked] && [self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
-            [[[self windowForSheet] attachedSheet] orderOut:self];
+        if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
+            [[alert window] orderOut:nil];
             
             SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
             
@@ -1682,7 +1680,9 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 
 - (BOOL)tryToUnlockDocument:(PDFDocument *)document {
     BOOL didUnlock = NO;
-    if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
+    if ([document isLocked] == NO) {
+        didUnlock = YES;
+    } else if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
         if (fileID) {
             NSString *password = nil;
