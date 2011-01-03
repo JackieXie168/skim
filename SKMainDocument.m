@@ -874,9 +874,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         callback = [NSInvocation invocationWithTarget:delegate selector:didPrintSelector argument:&self];
         [callback setArgument:&contextInfo atIndex:4];
     }
-    if ([[self pdfDocument] allowsPrinting] == NO || (showPrintPanel && [printWindow attachedSheet])) {
-        invokePrintCallback(callback, NO);
-    } else if (callback) {
+    if ([[self pdfDocument] allowsPrinting] && (showPrintPanel == NO || [printWindow attachedSheet] == nil)) {
         NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
         NSMutableDictionary *infoDict = [printInfo dictionary];
         
@@ -894,6 +892,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                 invokePrintCallback(callback, YES);
             }
         }
+    } else if (callback) {
+        invokePrintCallback(callback, NO);
     }
 }
 
