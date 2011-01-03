@@ -181,9 +181,10 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 }
 
 - (void)setDataFromTmpData {
-    if ([[tmpData pdfDocument] isLocked])
-        [self tryToUnlockDocument:[tmpData pdfDocument]];
-    [[self mainWindowController] setPdfDocument:[tmpData pdfDocument]];
+    PDFDocument *pdfDoc = [tmpData pdfDocument];
+    if ([pdfDoc isLocked])
+        [self tryToUnlockDocument:pdfDoc];
+    [[self mainWindowController] setPdfDocument:pdfDoc];
     
     [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES];
     
