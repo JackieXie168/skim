@@ -953,29 +953,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                        contextInfo:NULL];		
 }
 
-- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
-    
-    if (returnCode == NSCancelButton) {
-        [pdfDocWithoutNotes release];
-        return;
-    }
-    
-    if (pdfDocWithoutNotes && [pdfDocWithoutNotes isLocked] && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
-        [[controller window] orderOut:nil];
-        
-        SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
-        
-        [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
-            modalDelegate:self 
-           didEndSelector:@selector(convertNotesPasswordSheetDidEnd:returnCode:contextInfo:)
-              contextInfo:pdfDocWithoutNotes];
-        
-        return;
-    }
-    
-    [[controller window] orderOut:nil];
-    
+- (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
     [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
     [[self progressController] setIndeterminate:YES];
     [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
@@ -1033,9 +1011,24 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
     }
     
-    [pdfDocWithoutNotes release];
-    
     [[self progressController] dismissSheet:nil];
+}
+
+- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
+    
+    if (returnCode == NSCancelButton) {
+        [pdfDocWithoutNotes release];
+    } else {
+        [[controller window] orderOut:nil];
+        
+        if (pdfDocWithoutNotes && [pdfDocWithoutNotes isLocked] && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
+            SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+            [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] modalDelegate:self didEndSelector:_cmd contextInfo:pdfDocWithoutNotes];
+        } else {
+            [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
+        }
+    }
 }
 
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
@@ -1059,7 +1052,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
             return;
         }
     }
-    [self convertNotesPasswordSheetDidEnd:nil returnCode:NSOKButton contextInfo:pdfDocWithoutNotes];
+    [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
 }
 
 - (IBAction)convertNotes:(id)sender {
@@ -1642,28 +1635,31 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     }
 }
 
-- (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    NSString *password = [(NSString *)contextInfo autorelease];
-    if (returnCode == NSAlertDefaultReturn) {
-        NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
-        if (fileID) {
-            // first see if the password exists in the keychain
-            SecKeychainItemRef itemRef = NULL;
-            NSInteger status = [self getPDFPassword:nil item:&itemRef forFileID:fileID];
-            
-            if (status != SKPDFPasswordStatusError)
-                [self setPDFPassword:password item:itemRef forFileID:fileID];
-        }
+- (void)doSavePasswordInKeychain:(NSString *)password {
+    NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
+    if (fileID) {
+        // first see if the password exists in the keychain
+        SecKeychainItemRef itemRef = NULL;
+        NSInteger status = [self getPDFPassword:nil item:&itemRef forFileID:fileID];
+        
+        if (status != SKPDFPasswordStatusError)
+            [self setPDFPassword:password item:itemRef forFileID:fileID];
     }
 }
 
-- (void)savePasswordInKeychain:(NSString *)aPassword {
+- (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    NSString *password = [(NSString *)contextInfo autorelease];
+    if (returnCode == NSAlertDefaultReturn)
+        [self doSavePasswordInKeychain:password];   
+}
+
+- (void)savePasswordInKeychain:(NSString *)password {
     if ([[self pdfDocument] isLocked])
         return;
     
     NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption == NSAlertDefaultReturn) {
-        [self passwordAlertDidEnd:nil returnCode:saveOption contextInfo:[aPassword retain]];
+        [self doSavePasswordInKeychain:password];
     } else if (saveOption == NSAlertOtherReturn) {
         NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]
                                          defaultButton:NSLocalizedString(@"Yes", @"Button title")
@@ -1671,10 +1667,10 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
                                            otherButton:nil
                              informativeTextWithFormat:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
         NSWindow *window = [[self mainWindowController] window];
-        if ([window attachedSheet])
-            [self passwordAlertDidEnd:nil returnCode:[alert runModal] contextInfo:[aPassword retain]];
-        else
-            [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[aPassword retain]];
+        if ([window attachedSheet] == nil)
+            [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[password retain]];
+        else if (NSAlertDefaultReturn == [alert runModal])
+            [self doSavePasswordInKeychain:password];
     }
 }
 
