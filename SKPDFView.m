@@ -948,6 +948,30 @@ enum {
     return aSelector != @selector(printDocument:) && [super respondsToSelector:aSelector];
 }
 
+- (BOOL)canZoomIn {
+    return [[self document] isLocked] == NO && [super canZoomIn];
+}
+
+- (BOOL)canZoomOut {
+    return [[self document] isLocked] == NO && [super canZoomOut];
+}
+
+- (BOOL)canGoToNextPage {
+    return [[self document] isLocked] == NO && [super canGoToNextPage];
+}
+
+- (BOOL)canGoToPreviousPage {
+    return [[self document] isLocked] == NO && [super canGoToPreviousPage];
+}
+
+- (BOOL)canGoBack {
+    return [[self document] isLocked] == NO && [super canGoBack];
+}
+
+- (BOOL)canGoForward {
+    return [[self document] isLocked] == NO && [super canGoForward];
+}
+
 #pragma mark Event Handling
 
 // PDFView has duplicated key equivalents for Cmd-+/- as well as Opt-Cmd-+/-, which is totoally unnecessary and harmful

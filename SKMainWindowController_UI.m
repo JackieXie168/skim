@@ -1437,13 +1437,13 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(doZoomOut:)) {
         return [self interactionMode] != SKPresentationMode && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return [[self pdfDocument] isLocked] == NO && fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(doZoomToSelection:)) {
-        return [self interactionMode] != SKPresentationMode && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
-        return [self interactionMode] != SKPresentationMode && [pdfView autoScales] == NO;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(alternateZoomToFit:)) {
         PDFDisplayMode displayMode = [pdfView displayMode];
         if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
@@ -1453,14 +1453,14 @@ static NSArray *allMainDocumentPDFViews() {
         }
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(doAutoScale:)) {
-        return [pdfView autoScales] == NO;
+        return [[self pdfDocument] isLocked] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
-        return YES;
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(cropAll:) || action == @selector(crop:) || action == @selector(autoCropAll:) || action == @selector(smartAutoCropAll:)) {
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(autoSelectContent:)) {
-        return [self interactionMode] != SKPresentationMode && [pdfView toolMode] == SKSelectToolMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self leftSidePaneIsOpen])
             [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
