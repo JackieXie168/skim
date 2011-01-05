@@ -768,11 +768,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([[toolbarItem toolbar] customizationPaletteIsRunning]) {
         return NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01;
+        return [mainController.pdfView.document isLocked] == NO && fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
-        return [mainController.pdfView autoScales] == NO;
+        return [mainController.pdfView.document isLocked] == NO && [mainController.pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
-        return NSIsEmptyRect([mainController.pdfView currentSelectionRect]) == NO;
+        return [mainController.pdfView.document isLocked] == NO && NSIsEmptyRect([mainController.pdfView currentSelectionRect]) == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
         return ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
@@ -783,6 +783,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
         return ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
+        return [mainController.pdfView.document isLocked] == NO;
     }
     return YES;
 }
@@ -1040,9 +1042,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:1];
     [zoomInActualOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
-    [zoomInActualOutButton setEnabled:fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [zoomInActualOutButton setEnabled:[mainController.pdfView.document isLocked] == NO && fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
     [zoomInActualOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:2];
-    [zoomActualButton setEnabled:fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01];
+    [zoomActualButton setEnabled:[mainController.pdfView.document isLocked] == NO && fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
