@@ -1359,7 +1359,7 @@ static NSArray *allMainDocumentPDFViews() {
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
-        return [self interactionMode] != SKPresentationMode && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]);
@@ -1375,33 +1375,33 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(displaySinglePages:)) {
         BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(displayFacingPages:)) {
         BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplaySinglePages:)) {
         BOOL displaySinglePages1 = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         BOOL displaySinglePages2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePage;
         [menuItem setState:displaySinglePages1 == displaySinglePages2 ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayContinuous:)) {
         BOOL displayContinuous1 = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         BOOL displayContinuous2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displayContinuous1 == displayContinuous2 ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayMode:)) {
         [menuItem setState:[pdfView displayMode] == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(toggleDisplayAsBook:)) {
         [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode && ([pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous);
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && ([pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous);
     } else if (action == @selector(toggleDisplayPageBreaks:)) {
         [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayBox:)) {
         [menuItem setState:[pdfView displayBox] == (PDFDisplayBox)[menuItem tag] ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(delete:) || action == @selector(copy:) || action == @selector(cut:) || action == @selector(paste:) || action == @selector(alternatePaste:) || action == @selector(pasteAsPlainText:) || action == @selector(deselectAll:) || action == @selector(changeAnnotationMode:) || action == @selector(changeToolMode:) || action == @selector(changeToolMode:)) {
         return [pdfView validateMenuItem:menuItem];
     } else if (action == @selector(doGoToNextPage:)) {
@@ -1412,6 +1412,8 @@ static NSArray *allMainDocumentPDFViews() {
         return [pdfView canGoToFirstPage];
     } else if (action == @selector(doGoToLastPage:)) {
         return [pdfView canGoToLastPage];
+    } else if (action == @selector(doGoToPage:)) {
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(allGoToNextPage:)) {
         return [[allMainDocumentPDFViews() valueForKeyPath:@"@min.canGoToNextPage"] boolValue];
     } else if (action == @selector(allGoToPreviousPage:)) {
@@ -1432,6 +1434,8 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Go To Marked Page", @"Menu item title")];
             return markedPageIndex != NSNotFound && markedPageIndex != [[pdfView currentPage] pageIndex];
         }
+    } else if (action == @selector(markPage:)) {
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(doZoomIn:)) {
         return [self interactionMode] != SKPresentationMode && [pdfView canZoomIn];
     } else if (action == @selector(doZoomOut:)) {
@@ -1439,7 +1443,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(doZoomToActualSize:)) {
         return [[self pdfDocument] isLocked] == NO && fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(doZoomToSelection:)) {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
@@ -1451,11 +1455,13 @@ static NSArray *allMainDocumentPDFViews() {
         } else {
             [menuItem setTitle:NSLocalizedString(@"Zoom To Height", @"Menu item title")];
         }
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(doAutoScale:)) {
         return [[self pdfDocument] isLocked] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
+        return [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(rotateRight:) || action == @selector(rotateLeft:) || action == @selector(rotateAllRight:) || action == @selector(rotateAllLeft:)) {
         return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(cropAll:) || action == @selector(crop:) || action == @selector(autoCropAll:) || action == @selector(smartAutoCropAll:)) {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
@@ -1505,10 +1511,12 @@ static NSArray *allMainDocumentPDFViews() {
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
         return [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(enterFullScreen:) || action == @selector(enterPresentation:)) {
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(performFit:)) {
-        return [self interactionMode] == SKNormalMode;
+        return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(password:)) {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked];
     } else if (action == @selector(toggleReadingBar:)) {
@@ -1516,13 +1524,13 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
         if ([self interactionMode] == SKFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
-        return [self interactionMode] != SKPresentationMode;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(chooseTransition:)) {
         return [[self pdfDocument] pageCount] > 1;
     } else if (action == @selector(toggleCaseInsensitiveSearch:)) {

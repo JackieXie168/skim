@@ -964,6 +964,14 @@ enum {
     return [[self document] isLocked] == NO && [super canGoToPreviousPage];
 }
 
+- (BOOL)canGoToFirstPage {
+    return [[self document] isLocked] == NO && [super canGoToFirstPage];
+}
+
+- (BOOL)canGoToLastPage {
+    return [[self document] isLocked] == NO && [super canGoToLastPage];
+}
+
 - (BOOL)canGoBack {
     return [[self document] isLocked] == NO && [super canGoBack];
 }
