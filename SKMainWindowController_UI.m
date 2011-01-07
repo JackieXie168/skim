@@ -1506,13 +1506,13 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        return [[self pdfDocument] isLocked] == NO;
+        return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(togglePresentation:)) {
         if ([self interactionMode] == SKPresentationMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
-        return [[self pdfDocument] isLocked] == NO;
+        return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(enterFullScreen:) || action == @selector(enterPresentation:)) {
         return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
