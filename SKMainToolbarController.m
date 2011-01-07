@@ -800,6 +800,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarRotateRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
+    } else if ([identifier isEqualToString:NSToolbarPrintItemIdentifier]) {
+        return [mainController.pdfView.document isLocked] == NO;
     }
     return YES;
 }
