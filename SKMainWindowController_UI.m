@@ -1467,6 +1467,8 @@ static NSArray *allMainDocumentPDFViews() {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(autoSelectContent:)) {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && [pdfView toolMode] == SKSelectToolMode;
+    } else if (action == @selector(takeSnapshot:)) {
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self leftSidePaneIsOpen])
             [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];

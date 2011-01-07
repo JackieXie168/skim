@@ -2349,6 +2349,8 @@ enum {
         return [[self currentSelection] hasCharacters] != 0;
     } else if (action == @selector(autoSelectContent:)) {
         return toolMode == SKSelectToolMode;
+    } else if (action == @selector(takeSnapshot:)) {
+        return [[self document] isLocked] == NO;
     } else {
         return [super validateMenuItem:menuItem];
     }
