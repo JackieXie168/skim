@@ -778,6 +778,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [mainController.pdfView.document isLocked] == NO && [mainController.pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO && NSIsEmptyRect([mainController.pdfView currentSelectionRect]) == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarScaleItemIdentifier]) {
+        return [mainController.pdfView.document isLocked] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarPageNumberItemIdentifier]) {
+        return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarDisplayModeItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarSingleTwoUpItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarContinuousItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
@@ -802,15 +806,17 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
-    if (action == @selector(createNewTextNote:)) {
+    if (action == @selector(chooseScale:)) {
+        return [mainController.pdfView.document isLocked] == NO;
+    } else if (action == @selector(createNewTextNote:)) {
         [menuItem setState:[textNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
-        return [mainController interactionMode] != SKPresentationMode && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
+        return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     } else if (action == @selector(createNewCircleNote:)) {
         [menuItem setState:[circleNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
-        return [mainController interactionMode] != SKPresentationMode && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
+        return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     } else if (action == @selector(createNewMarkupNote:)) {
         [menuItem setState:[markupNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
-        return [mainController interactionMode] != SKPresentationMode && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [[mainController.pdfView currentSelection] hasCharacters];
+        return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [[mainController.pdfView currentSelection] hasCharacters];
     }
     return YES;
 }
