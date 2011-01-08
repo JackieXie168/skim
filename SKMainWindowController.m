@@ -2484,6 +2484,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
         imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
         [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        if ([[pdfView document] isLocked])
+            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
