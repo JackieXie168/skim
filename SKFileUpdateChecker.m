@@ -43,6 +43,7 @@
 #import "NSData_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
 
@@ -184,11 +185,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (extension) {
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
         NSString *theUTI = [ws typeOfFile:[[fileName stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
-        if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
+        if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
             fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
             if (fileName == nil)
                 return NO;
-        } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame || [extension caseInsensitiveCompare:@"xdv"] == NSOrderedSame) {
+        } else if ([extension :@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
             isDVI = YES;
         }
     }

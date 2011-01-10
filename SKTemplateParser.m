@@ -38,6 +38,7 @@
 
 #import "SKTemplateParser.h"
 #import "SKTemplateTag.h"
+#import "NSString_SKExtensions.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
 #define END_TAG_OPEN_DELIM              @"</$"
@@ -200,7 +201,7 @@ static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, S
         NSString *stringValue = [keyValue templateStringValue] ?: @"";
         switch (matchType) {
             case SKTemplateTagMatchEqual:
-                return [stringValue caseInsensitiveCompare:matchString] == NSOrderedSame;
+                return [stringValue isCaseInsensitiveEqual:matchString];
             case SKTemplateTagMatchContain:
                 return [stringValue rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
             case SKTemplateTagMatchSmaller:
