@@ -2468,7 +2468,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)resetThumbnails {
     NSUInteger i, count = [pageLabels count];
     // cancel all delayed perform requests for makeImageForThumbnail:
-    [[self class] cancelPreviousPerformRequestsWithTarget:self];
+    for (SKThumbnail *tn in thumbnails)
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if (count) {
