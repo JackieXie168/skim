@@ -494,7 +494,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
-    if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
+    if ([name isCaseInsensitiveEqual:BUNDLE_DATA_FILENAME])
         name = [name stringByAppendingString:@"1"];
     NSData *data;
     NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
@@ -576,7 +576,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
+    } else if ([[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
         NSFileWrapper *fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
@@ -903,7 +903,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     NSString *extension = [[notesURL path] pathExtension];
     NSArray *array = nil;
     
-    if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
+    if ([extension isCaseInsensitiveEqual:@"skim"]) {
         array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
     } else {
         NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
@@ -1101,7 +1101,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     NSString *scriptFormat = nil;
     NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease];
     
-    if ([@"com.microsoft.entourage" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
+    if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
                        @"activate\n"
                        @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
@@ -1109,7 +1109,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                        @"make new attachment with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([@"com.barebones.mailsmith" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
+    } else if ([@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Mailsmith\"\n"
                        @"activate\n"
                        @"set m to make new message window with properties {subject:\"%@\", visible:true}\n"
@@ -1117,7 +1117,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                        @"make new enclosure with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([@"com.mailplaneapp.Mailplane" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
+    } else if ([@"com.mailplaneapp.Mailplane" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Mailplane\"\n"
                        @"activate\n"
                        @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
@@ -1125,12 +1125,12 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                        @"make new mail attachment with properties {path:\"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
-    } else if ([@"com.postbox-inc.postboxexpress" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
+    } else if ([@"com.postbox-inc.postboxexpress" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"PostboxExpress\"\n"
                        @"activate\n"
                        @"send message subject \"%@\" attachment \"%@\"\n"
                        @"end tell\n";
-    } else if ([@"com.postbox-inc.postbox" caseInsensitiveCompare:mailAppID] == NSOrderedSame) {
+    } else if ([@"com.postbox-inc.postbox" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Postbox\"\n"
                        @"activate\n"
                        @"send message subject \"%@\" attachment \"%@\"\n"

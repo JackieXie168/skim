@@ -38,6 +38,7 @@
 
 #import "SKTypeSelectHelper.h"
 #import "SKRuntime.h"
+#import "NSString_SKExtensions.h"
 
 #define SKWindowDidChangeFirstResponderNotification @"SKWindowDidChangeFirstResponderNotification"
 
@@ -365,7 +366,7 @@
         label = [[self searchCache] objectAtIndex:labelIndex];
         
         if (tshFlags.matchOption == SKFullStringMatch) {
-            if ([label caseInsensitiveCompare:searchString] == NSOrderedSame)
+            if ([label isCaseInsensitiveEqual:searchString])
                 return labelIndex;
         } else {
             if ([label containsStringStartingAtWord:searchString options:options range:NSMakeRange(0, [label length])]) {

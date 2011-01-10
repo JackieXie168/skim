@@ -213,13 +213,12 @@
 - (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError **)outError {
     NSFileWrapper *fileWrapper = nil;
     
-    if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
-        fileWrapper = [super fileWrapperOfType:typeName error:outError];
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
+    if ([typeName isEqualToString:SKNotesRTFDocumentType])
         fileWrapper = [self notesRTFDFileWrapper];
-    } else {
+    else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"] == NO)
+        fileWrapper = [super fileWrapperOfType:typeName error:outError];
+    else
         fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
-    }
     
     if (fileWrapper == nil && outError != NULL)
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];

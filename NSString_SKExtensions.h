@@ -57,6 +57,8 @@
 
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;
 
+- (BOOL)isCaseInsensitiveEqual:(NSString *)aString;
+
 - (NSString *)lossyASCIIString;
 - (NSString *)lossyISOLatin1String;
 

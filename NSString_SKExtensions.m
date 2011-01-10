@@ -295,6 +295,10 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
                   locale:[NSLocale currentLocale]];
 }
 
+- (BOOL)isCaseInsensitiveEqual:(NSString *)aString {
+    return [aString caseInsensitiveCompare:aString] == NSOrderedSame;
+}
+
 - (NSString *)lossyASCIIString {
     return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
 }
