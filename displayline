@@ -5,18 +5,21 @@
 # Usage: displayline [-r] [-b] LINE PDFFILE [TEXSOURCEFILE]
 
 if [ $# == 0 -o "$1" == "-h" -o "$1" == "-help" ]; then
-  echo "Usage: displayline [-r] [-b] LINE PDFFILE [TEXSOURCEFILE]"
+  echo "Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]"
   exit 0
 fi
 
 # get arguments
 revert=0
 bar=0
+activate=1
 while [ "${1:0:1}" == "-" ]; do
   if [ "$1" == "-r" -o "$1" == "-revert" ]; then
     revert=1;
   elif [ "$1" == "-b" -o "$1" == "-readingbar" ]; then
     bar=1
+  elif [ "$1" == "-g" -o "$1" == "-background" ]; then
+    activate=0
   fi
   shift
 done
@@ -30,19 +33,20 @@ file="$2"
 
 # pass arguments as NULL-separated string to osascript
 # pass through cat to get them as raw bytes to preserve non-ASCII characters
-echo -ne "${line}\x00${file}\x00${source}\x00${revert}\x00${bar}\x00" | \
+echo -ne "${line}\x00${file}\x00${source}\x00${revert}\x00${bar}\x00${activate}\x00" | \
 /usr/bin/osascript \
   -e "set theArgv to do shell script \"/bin/cat\"" \
   -e "set AppleScript's text item delimiters to ASCII character 0" \
-  -e "set {theLine, theFile, theSource, shouldRevert, shouldShowBar} to text items of theArgv" \
+  -e "set {theLine, theFile, theSource, shouldRevert, shouldShowBar, shouldActivate} to text items of theArgv" \
   -e "set theLine to theLine as integer" \
   -e "set theFile to POSIX file theFile" \
   -e "set theSource to POSIX file theSource" \
   -e "set shouldRevert to (shouldRevert as integer) as boolean" \
   -e "set shouldShowBar to (shouldShowBar as integer) as boolean" \
+  -e "set shouldActivate to (shouldActivate as integer) as boolean" \
   -e "set thePath to POSIX path of (theFile as alias)" \
   -e "tell application \"Skim\"" \
-  -e "  activate" \
+  -e "  if shouldActivate then activate" \
   -e "  if shouldRevert then" \
   -e "    try" \
   -e "      set theDocs to get documents whose path is thePath" \
