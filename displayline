@@ -2,10 +2,14 @@
 
 # displayline (Skim)
 #
-# Usage: displayline [-r] [-b] LINE PDFFILE [TEXSOURCEFILE]
+# Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
 
 if [ $# == 0 -o "$1" == "-h" -o "$1" == "-help" ]; then
-  echo "Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]"
+  echo "Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
+Options:
+-r, -revert      Revert the file from disk if it was open
+-b, -readingbar  Indicate the line using the reading bar
+-g, -background  Do not bring Skim to the foreground"
   exit 0
 fi
 
