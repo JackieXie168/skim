@@ -918,8 +918,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         NSBeep();
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
+- (void)readNotesPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSFileHandlingPanelOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
         BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
         [self readNotesFromURL:notesURL replace:replace];
@@ -949,7 +949,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                              types:[NSArray arrayWithObjects:@"skim", @"fdf", nil]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
-                    didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
+                    didEndSelector:@selector(readNotesPanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];		
 }
 
@@ -1075,7 +1075,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 }
 
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
-    if (NSOKButton == returnCode && [self fileURL])
+    if (NSFileHandlingPanelOKButton == returnCode && [self fileURL])
         [self saveArchiveToFile:[sheet filename]];
 }
 
@@ -1202,7 +1202,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 }
 
 - (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
-    if (NSOKButton == returnCode && [self fileURL])
+    if (NSFileHandlingPanelOKButton == returnCode && [self fileURL])
         [self saveDiskImageToFile:[sheet filename] email:NO];
 }
 
