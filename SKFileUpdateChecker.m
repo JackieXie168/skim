@@ -189,7 +189,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
             if (fileName == nil)
                 return NO;
-        } else if ([extension :@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
+        } else if ([extension isCaseInsensitiveEqual:@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
             isDVI = YES;
         }
     }
