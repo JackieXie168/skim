@@ -286,6 +286,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
         [self stopCheckingFileUpdates];
     // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
+    fucFlags.fileChangedOnDisk = YES;
 }
 
 - (void)handleFileDeleteNotification:(NSNotification *)notification {
