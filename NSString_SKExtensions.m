@@ -296,7 +296,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 }
 
 - (BOOL)isCaseInsensitiveEqual:(NSString *)aString {
-    return [aString caseInsensitiveCompare:aString] == NSOrderedSame;
+    return [self caseInsensitiveCompare:aString] == NSOrderedSame;
 }
 
 - (NSString *)lossyASCIIString {
