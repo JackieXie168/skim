@@ -946,7 +946,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
                               file:[path lastPathComponentReplacingPathExtension:@"skim"]
-                             types:[NSArray arrayWithObjects:@"skim", @"fdf", nil]
+                             types:[NSArray arrayWithObjects:@"skim", NSAppKitVersionNumber > NSAppKitVersionNumber10_5 ? nil : @"fdf", nil]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(readNotesPanelDidEnd:returnCode:contextInfo:)
