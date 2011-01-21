@@ -73,6 +73,7 @@
 #import "SKScriptMenu.h"
 #import "NSScreen_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "NSError_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/apps/mediawiki/skim-app/"
@@ -165,8 +166,7 @@
         
         while (dict = [fileEnum nextObject]) {
             error = nil;
-            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error &&
-                ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
                 [NSApp presentError:error];
         }
     }

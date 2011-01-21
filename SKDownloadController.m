@@ -48,6 +48,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKDownloadPreferenceController.h"
+#import "NSError_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -269,8 +270,7 @@ static char SKDownloadPropertiesObservationContext;
     } else {
         NSURL *fileURL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error;
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error] &&
-            ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error] && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
     }
 }
@@ -307,7 +307,7 @@ static char SKDownloadPropertiesObservationContext;
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error = nil;
         id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
-        if (document == nil && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+        if (document == nil && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {

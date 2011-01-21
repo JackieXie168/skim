@@ -53,4 +53,6 @@ enum {
 + (id)readPasteboardErrorWithLocalizedDescription:(NSString *)description;
 + (id)userCancelledErrorWithUnderlyingError:(NSError *)error;
 
+- (BOOL)isUserCancelledError;
+
 @end

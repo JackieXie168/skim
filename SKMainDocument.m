@@ -1240,8 +1240,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 - (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSError *error = nil;
-        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] &&
-            ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError)) {
+        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] && [error isUserCancelledError] == NO) {
             [[alert window] orderOut:nil];
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         }
