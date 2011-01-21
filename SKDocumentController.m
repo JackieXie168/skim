@@ -46,6 +46,7 @@
 #import "NSFileManager_SKExtensions.h"
 #import "BDAlias.h"
 #import "SKMainWindowController.h"
+#import "NSError_SKExtensions.h"
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
@@ -232,7 +233,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
     } else if (outError) {
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadPasteboardError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
     }
     
     return document;
@@ -249,7 +250,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
             [[SKDownloadController sharedDownloadController] showWindow:self];
     } else if (outError) {
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadPasteboardError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
     }
     
     return document;
@@ -334,7 +335,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             
             if (NSAlertDefaultReturn == [alert runModal]) {
                 urls = nil;
-                error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+                error = [NSError userCancelledErrorWithUnderlyingError:nil];
             }
         }
         
@@ -347,7 +348,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if (failed)
             doc = nil;
         if (doc == nil && outError)
-            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
         return doc;
     }
     return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];

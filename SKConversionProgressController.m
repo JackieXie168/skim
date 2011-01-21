@@ -46,6 +46,7 @@
 #import <libkern/OSAtomic.h>
 #import "NSGeometry_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSError_SKExtensions.h"
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
@@ -267,9 +268,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         SKCFDESTROY(pdfData);
         if (outError) {
             if ([self shouldKeepRunning])
-                *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+                *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
             else
-                *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+                *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
         }
     }
     
@@ -408,9 +409,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         SKDESTROY(pdfData);
         if (outError) {
             if ([self shouldKeepRunning])
-                *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+                *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
             else
-                *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+                *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
         }
     }
     

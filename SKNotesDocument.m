@@ -64,6 +64,7 @@
 #import "SKFloatMapTable.h"
 #import "NSColor_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSError_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -221,7 +222,7 @@
         fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
     
     if (fileWrapper == nil && outError != NULL)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes", @"Error description")];
     
     return fileWrapper;
 }
@@ -247,7 +248,7 @@
     }
     
     if (data == nil && outError != NULL)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes", @"Error description")];
     
     return data;
 }
@@ -305,7 +306,7 @@
     }
     
     if (didRead == NO && outError != NULL)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     
     return didRead;
 }
