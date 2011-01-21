@@ -58,4 +58,8 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     return [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
 }
 
+- (BOOL)isUserCancelledError {
+    return [[self domain] isEqualToString:NSCocoaErrorDomain] && [self code] == NSUserCancelledError;
+}
+
 @end

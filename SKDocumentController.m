@@ -271,7 +271,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSError *error = nil;
     id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
     
-    if (document == nil && error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+    if (document == nil && error && [error isUserCancelledError] == NO)
         [NSApp presentError:error];
 }
 

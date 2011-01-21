@@ -72,6 +72,7 @@
 #import "SKSplitView.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKDocumentController.h"
+#import "NSError_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1156,7 +1157,7 @@
                     [[document pdfView] goToDestination:dest];
                 }
             }
-        } else if (error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError)) {
+        } else if (error && [error isUserCancelledError] == NO) {
             [NSApp presentError:error];
         }
     } else if (fileURL) {
@@ -1171,7 +1172,7 @@
     id document = nil;
     if ([sdc documentClassForContentsOfURL:url]) {
         document = [sdc openDocumentWithContentsOfURL:url display:YES error:&error];
-        if (document == nil && error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+        if (document == nil && error && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
     } else {
         [[NSWorkspace sharedWorkspace] openURL:url];

@@ -44,6 +44,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSError_SKExtensions.h"
 
 #define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
 
@@ -153,8 +154,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (BOOL)revertDocument {
     NSError *error = nil;
     BOOL didRevert = [document revertToContentsOfURL:[document fileURL] ofType:[document fileType] error:&error];
-    if (didRevert == NO && error != nil && 
-        ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+    if (didRevert == NO && error != nil && [error isUserCancelledError] == NO)
         [document presentError:error modalForWindow:[document windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
     return didRevert;
 }

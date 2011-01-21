@@ -51,6 +51,7 @@
 #import "SKDocumentController.h"
 #import "SKSeparatorCell.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSError_SKExtensions.h"
 
 #define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
@@ -358,7 +359,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [bookmark pageIndex] != NSNotFound)
             [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }
-    if (document == nil && error && ([[error domain] isEqualToString:NSCocoaErrorDomain] == NO || [error code] != NSUserCancelledError))
+    if (document == nil && error && [error isUserCancelledError] == NO)
         [NSApp presentError:error];
 }
 
