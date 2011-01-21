@@ -51,8 +51,6 @@
 #import "NSWindowController_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 
-NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
-
 #define SKDisableExportAttributesKey @"SKDisableExportAttributes"
 
 #define TEMPLATES_FOLDER_NAME @"Templates"

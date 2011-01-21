@@ -39,14 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern NSString *SKDocumentErrorDomain;
-
-enum {
-    SKWriteFileError = 1,
-    SKReadFileError = 2,
-    SKReadPasteboardError = 3
-};
-
 enum {
     SKNormalMode,
     SKFullScreenMode,

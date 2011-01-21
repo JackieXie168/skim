@@ -82,6 +82,7 @@
 #import "NSScreen_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "SKFileUpdateChecker.h"
+#import "NSError_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -545,7 +546,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] toSkimFileAtURL:absoluteURL error:&error];
     } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
@@ -553,19 +554,19 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTF", @"Error description")];
     } else if ([typeName isEqualToString:SKNotesRTFDDocumentType]) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description")];
     } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
         NSString *string = [self notesString];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
     } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
@@ -575,23 +576,23 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as FDF", @"Error description")];
     } else if ([[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
         NSFileWrapper *fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes using template", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes using template", @"Error description")];
     } else {
         NSData *data = [self notesDataUsingTemplateFile:typeName];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
-            error = [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes using template", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes using template", @"Error description")];
     }
     
     if (didWrite == NO && outError != NULL)
-        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ?: [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
     
     return didWrite;
 }
@@ -665,7 +666,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         return YES;
     } else {
         if (outError != NULL)
-            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
         return NO;
     }
 }
@@ -706,7 +707,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         data = nil;
                         [pdfDoc release];
                         pdfDoc = nil;
-                        error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
+                        error = [NSError userCancelledErrorWithUnderlyingError:error];
                     }
                 } else if ([array count]) {
                     [tmpData setNoteDicts:array];
@@ -748,7 +749,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         data = nil;
                         [pdfDoc release];
                         pdfDoc = nil;
-                        error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
+                        error = [NSError userCancelledErrorWithUnderlyingError:error];
                     }
                 }
                 if (pdfDoc) {
@@ -819,7 +820,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [fileData release];
     
     if (didRead == NO && outError != NULL)
-        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     
     return didRead;
 }
