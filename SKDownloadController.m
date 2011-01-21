@@ -319,6 +319,8 @@ static char SKDownloadPropertiesObservationContext;
                 [[self window] close];
         }
     }
+    // binding does not notice the change to canRemove
+    [clearButton setEnabled:[[downloads valueForKeyPath:@"@max.canRemove"] boolValue]];
 }
 
 #pragma mark NSTableViewDataSource
