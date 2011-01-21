@@ -701,7 +701,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                      defaultButton:NSLocalizedString(@"No", @"Button title")
                                                    alternateButton:NSLocalizedString(@"Yes", @"Button title")
                                                        otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
                         [data release];
                         data = nil;
@@ -741,7 +741,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                      defaultButton:NSLocalizedString(@"No", @"Button title")
                                                    alternateButton:NSLocalizedString(@"Yes", @"Button title")
                                                        otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
                         [fileData release];
                         fileData = nil;
