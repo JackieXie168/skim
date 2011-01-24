@@ -39,19 +39,14 @@
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
 #import "BDAlias.h"
-#import "SKMainDocument.h"
-#import "SKMainWindowController.h"
-#import "NSFileManager_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
 #import "SKTextWithIconCell.h"
 #import "SKToolbarItem.h"
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKDocumentController.h"
 #import "SKSeparatorCell.h"
 #import "NSMenu_SKExtensions.h"
-#import "NSError_SKExtensions.h"
 
 #define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
@@ -344,41 +339,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     *indexPtr = idx;
 }
 
-- (void)openFileBookmark:(SKBookmark *)bookmark {
-    id document = nil;
-    NSError *error = nil;
-    NSDictionary *dict = [bookmark properties];
-    if ([dict objectForKey:@"windowFrame"]) {
-        document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error];
-    } else {
-        NSString *path = [bookmark path];
-        NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
-        if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
-            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
-            [document isPDFDocument] &&
-            [bookmark pageIndex] != NSNotFound)
-            [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
-    }
-    if (document == nil && error && [error isUserCancelledError] == NO)
-        [NSApp presentError:error];
-}
-
-- (void)openBookmark:(SKBookmark *)bookmark {
-    if ([bookmark bookmarkType] == SKBookmarkTypeSession) {
-        NSInteger i = [bookmark countOfChildren];
-        while (i--)
-            [self openFileBookmark:[bookmark objectInChildrenAtIndex:i]];
-    } else if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
-        [self openFileBookmark:bookmark];
-    } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
-        NSInteger i = [bookmark countOfChildren];
-        while (i--)
-            [self openBookmark:[bookmark objectInChildrenAtIndex:i]];
-    }
-}
-
-- (IBAction)openBookmarkAction:(id)sender {
-    [self openBookmark:[sender representedObject]];
+- (IBAction)openBookmark:(id)sender {
+    [[sender representedObject] open];
 }
 
 - (IBAction)doubleClickBookmark:(id)sender {
@@ -387,7 +349,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         row = [outlineView selectedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
     if (bm && ([bm bookmarkType] == SKBookmarkTypeBookmark || [bm bookmarkType] == SKBookmarkTypeSession))
-        [self openBookmark:bm];
+        [bm open];
 }
 
 - (IBAction)insertBookmarkFolder:(id)sender {
@@ -451,7 +413,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
                     [[item submenu] setDelegate:self];
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
                     [item setRepresentedObject:bm];
                     [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
                     [item setAlternate:YES];
@@ -461,7 +423,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [menu addItem:[NSMenuItem separatorItem]];
                     break;
                 default:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmarkAction:) target:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
                     break;

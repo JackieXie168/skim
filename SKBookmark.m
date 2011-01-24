@@ -39,9 +39,12 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
-#import "SKBookmarkController.h"
 #import "NSDocument_SKExtensions.h"
 #import "SKDocumentController.h"
+#import "NSFileManager_SKExtensions.h"
+#import "SKMainDocument.h"
+#import "SKMainWindowController.h"
+#import "NSError_SKExtensions.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -291,6 +294,8 @@ static Class SKBookmarkClass = Nil;
     return NO;
 }
 
+- (void)open {}
+
 @end
 
 #pragma mark -
@@ -505,6 +510,23 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
+- (void)open {
+    id document = nil;
+    NSError *error = nil;
+    if (setup) {
+        document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] error:&error];
+    } else {
+        NSString *path = [self path];
+        NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
+        if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
+            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
+            [document isPDFDocument] && [self pageIndex] != NSNotFound)
+            [[document mainWindowController] setPageNumber:[self pageIndex] + 1];
+    }
+    if (document == nil && error && [error isUserCancelledError] == NO)
+        [NSApp presentError:error];
+}
+
 @end
 
 #pragma mark -
@@ -656,6 +678,12 @@ static Class SKBookmarkClass = Nil;
         return bookmark;
     }
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
+
+- (void)open {
+    NSInteger i = [children count];
+    while (i--)
+        [[children objectAtIndex:i] open];
 }
 
 @end
