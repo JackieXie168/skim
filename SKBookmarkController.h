@@ -64,9 +64,7 @@
 - (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder;
 
-- (void)openBookmark:(SKBookmark *)bookmark;
-
-- (IBAction)openBookmarkAction:(id)sender;
+- (IBAction)openBookmark:(id)sender;
 
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;

@@ -93,4 +93,6 @@ typedef NSInteger SKBookmarkType;
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
 
+- (void)open;
+
 @end
