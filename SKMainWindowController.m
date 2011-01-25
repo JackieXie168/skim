@@ -1395,11 +1395,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)fadeOutFullScreenWindow {
     SKMainFullScreenWindow *fullScreenWindow = (SKMainFullScreenWindow *)[[[self window] retain] autorelease];
     
-    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     [self setWindow:mainWindow];
     // trick to make sure the main window shows up in the same space as the fullscreen window
     [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
     [fullScreenWindow removeChildWindow:mainWindow];
+    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     // these can change due to the child window trick
     [mainWindow setLevel:NSNormalWindowLevel];
     [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
