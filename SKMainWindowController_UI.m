@@ -1521,7 +1521,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(performFit:)) {
         return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(password:)) {
-        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isEncrypted];
+        return [self interactionMode] != SKPresentationMode && ([[self pdfDocument] isLocked] || [[self pdfDocument] allowsPrinting] == NO || [[self pdfDocument] allowsCopying] == NO);
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
