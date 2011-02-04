@@ -758,7 +758,7 @@ static NSArray *allMainDocumentPDFViews() {
         return;
     }
     
-    PDFDisplayMode displayMode = [pdfView displayMode];
+    PDFDisplayMode displayMode = [[self pdfView] displayMode];
     CGFloat scaleFactor = [[self pdfView] scaleFactor];
     BOOL autoScales = [[self pdfView] autoScales];
     BOOL isSingleRow;
@@ -773,6 +773,8 @@ static NSArray *allMainDocumentPDFViews() {
     NSRect frame = [[self window] frame];
     NSSize size, oldSize = [[self pdfView] frame].size;
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
+    PDFPage *page = [[self pdfView] currentPage];
+    PDFDisplayBox box = [[self pdfView] displayBox];
     
     // Calculate the new size for the pdfView
     size.width = NSWidth(documentRect);
@@ -781,7 +783,7 @@ static NSArray *allMainDocumentPDFViews() {
     if (isSingleRow) {
         size.height = NSHeight(documentRect);
     } else {
-        size.height = NSHeight([[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]]);
+        size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]);
         if ([[self pdfView] displaysPageBreaks])
             size.height += 8.0 * scaleFactor;
         size.width += [NSScroller scrollerWidth];
@@ -798,6 +800,9 @@ static NSArray *allMainDocumentPDFViews() {
     frame = [[self window] constrainFrameRect:frame toScreen:[[self window] screen] ?: [NSScreen mainScreen]];
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
+    
+    if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous)
+        [[self pdfView] goToRect:[page boundsForBox:box] onPage:page];
 }
 
 - (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
