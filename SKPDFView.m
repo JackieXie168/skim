@@ -2142,7 +2142,7 @@ enum {
     if ([[self currentPage] isEqual:page] == NO)
         [self goToPage:page];
     NSDivideRect([self convertRect:rect fromPage:page], &rect, &ignored, 1.0, NSMaxYEdge);
-    [self goToRect:[self convertRect:rect toPage:page] onPage:page];
+    [self goToRect:rect onPage:page];
 }
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
