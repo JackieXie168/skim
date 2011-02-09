@@ -278,7 +278,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSString *type = [self typeForContentsOfURL:theURL error:&error];
         NSData *data = nil;
         
-        if ([type isEqualToString:SKPDFDocumentType]) {
+        if ([type isEqualToString:SKPDFDocumentType] || [type isEqualToString:SKPostScriptDocumentType] || [type isEqualToString:SKDVIDocumentType] || [type isEqualToString:SKXDVDocumentType]) {
             data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
         } else if ([type isEqualToString:SKPDFBundleDocumentType]) {
             NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
