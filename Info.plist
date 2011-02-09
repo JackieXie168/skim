@@ -572,7 +572,9 @@
 			</dict>
 			<key>NSSendTypes</key>
 			<array>
+				<string>NSURLPboardType</string>
 				<string>NSStringPboardType</string>
+				<string>CorePasteboardFlavorType 0x75726C20</string>
 			</array>
 		</dict>
 		<dict>
