@@ -75,6 +75,7 @@ extern NSString *SKDocumentControllerDocumentKey;
 // this method may return an SKDownload instance
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
+- (id)openNotesDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
 

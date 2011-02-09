@@ -47,9 +47,11 @@
 #import "BDAlias.h"
 #import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
+#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil;
@@ -264,6 +266,43 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if (document == nil && outError)
             *outError = error;
     }
+    return document;
+}
+
+- (id)openNotesDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
+    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
+    id document = nil;
+    
+    if ([theURL isFileURL]) {
+        NSError *error = nil;
+        NSString *type = [self typeForContentsOfURL:theURL error:&error];
+        NSData *data = nil;
+        
+        if ([type isEqualToString:SKPDFDocumentType]) {
+            data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
+        } else if ([type isEqualToString:SKPDFBundleDocumentType]) {
+            NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
+            data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
+        } else if ([type isEqualToString:SKNotesDocumentType]) {
+            data = [NSData dataWithContentsOfURL:theURL options:0 error:&error];
+        }
+        
+        if (data)
+            document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
+        
+        if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
+            [self addDocument:document];
+            [document makeWindowControllers];
+            [document showWindows];
+        } else {
+            document = nil;
+            if (outError)
+                *outError = error;
+        }
+    } else if (outError) {
+        *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
+    }
+    
     return document;
 }
 

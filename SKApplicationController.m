@@ -257,6 +257,14 @@
         *errorString = [error localizedDescription];
 }
 
+- (void)openNotesDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    NSError *error;
+    id document = [[NSDocumentController sharedDocumentController] openNotesDocumentWithURLFromPasteboard:pboard error:&error];
+    
+    if (document == nil && errorString)
+        *errorString = [error localizedDescription];
+}
+
 #pragma mark Actions
 
 - (IBAction)orderFrontLineInspector:(id)sender {
