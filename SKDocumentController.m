@@ -297,12 +297,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
                 }
                 
-                if (data)
-                    document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
+                document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
+                [document setSourceFileURL:theURL];
                 
-                if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
+                if (data == nil || [document readFromData:data ofType:SKNotesDocumentType error:&error]) {
                     [self addDocument:document];
-                    [document setSourceFileURL:theURL];
                     [document makeWindowControllers];
                     [document showWindows];
                 } else {
