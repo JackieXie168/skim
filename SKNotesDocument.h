@@ -51,6 +51,7 @@
     NSDictionary *toolbarItems;
     NSArray *notes;
     PDFDocument *pdfDocument;
+    NSURL *sourceFileURL;
     SKFloatMapTable *rowHeights;
     SKNoteTypeSheetController *noteTypeSheetController;
     NSRect windowRect;
@@ -63,6 +64,7 @@
 @property (nonatomic, retain) IBOutlet NSSearchField *searchField;
 @property (nonatomic, readonly) NSArray *notes;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;
+@property (nonatomic, retain) NSURL *sourceFileURL;
 
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;
