@@ -280,27 +280,36 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         if ([[SKNotesDocument readableTypes] containsObject:type]) {
             document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
-        } else {
-            NSData *data = nil;
-            if ([type isEqualToString:SKPDFBundleDocumentType]) {
-                NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
-                data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
-            } else if ([[SKMainDocument readableTypes] containsObject:type]) {
-                data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
+        } else if ([[SKMainDocument readableTypes] containsObject:type]) {
+            for (document in [self documents]) {
+                if ([document respondsToSelector:@selector(sourceFileURL)] && [[document sourceFileURL] isEqual:theURL])
+                    break;
             }
-            
-            if (data)
-                document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
-            
-            if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
-                [self addDocument:document];
-                [document setSourceFileURL:theURL];
-                [document makeWindowControllers];
+            if (document) {
                 [document showWindows];
             } else {
-                document = nil;
-                if (outError)
-                    *outError = error;
+                NSData *data = nil;
+                
+                if ([type isEqualToString:SKPDFBundleDocumentType]) {
+                    NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
+                    data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
+                } else {
+                    data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
+                }
+                
+                if (data)
+                    document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
+                
+                if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
+                    [self addDocument:document];
+                    [document setSourceFileURL:theURL];
+                    [document makeWindowControllers];
+                    [document showWindows];
+                } else {
+                    document = nil;
+                    if (outError)
+                        *outError = error;
+                }
             }
         }
     } else if (outError) {
