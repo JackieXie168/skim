@@ -86,7 +86,7 @@
 
 @implementation SKNotesDocument
 
-@synthesize outlineView, arrayController, searchField, notes, pdfDocument;
+@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
 
 - (id)init {
     if (self = [super init]) {
@@ -104,6 +104,7 @@
     [outlineView setDataSource:nil];
     SKDESTROY(notes);
     SKDESTROY(pdfDocument);
+    SKDESTROY(sourceFileURL);
 	SKDESTROY(rowHeights);
     SKDESTROY(toolbarItems);
     SKDESTROY(statusBar);
@@ -353,6 +354,18 @@
     }
 }
 
+- (void)setFileURL:(NSURL *)absoluteURL {
+    if (absoluteURL)
+        [self setSourceFileURL:nil];
+    [super setFileURL:absoluteURL];
+}
+
+- (NSString *)displayName {
+    if (sourceFileURL)
+        return [[[NSFileManager defaultManager] displayNameAtPath:[sourceFileURL path]] stringByDeletingPathExtension];
+    return [super displayName];
+}
+
 #pragma mark Printing
 
 - (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
@@ -385,7 +398,7 @@
 #pragma mark Actions
 
 - (IBAction)openPDF:(id)sender {
-    NSString *path = [[self fileURL] pathReplacingPathExtension:@"pdf"];
+    NSString *path = [sourceFileURL path] ?: [[self fileURL] pathReplacingPathExtension:@"pdf"];
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         // resolve symlinks and aliases
@@ -757,7 +770,7 @@
     if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
-        return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] pathReplacingPathExtension:@"pdf"]];
+        return [[NSFileManager defaultManager] fileExistsAtPath:[sourceFileURL path] ?: [[self fileURL] pathReplacingPathExtension:@"pdf"]];
     return YES;
 }
 

@@ -294,6 +294,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             
             if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
                 [self addDocument:document];
+                [document setSourceFileURL:theURL];
                 [document makeWindowControllers];
                 [document showWindows];
             } else {
