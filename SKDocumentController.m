@@ -48,6 +48,7 @@
 #import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
+#import "SKNotesDocument.h"
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
@@ -276,28 +277,30 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([theURL isFileURL]) {
         NSError *error = nil;
         NSString *type = [self typeForContentsOfURL:theURL error:&error];
-        NSData *data = nil;
         
-        if ([type isEqualToString:SKPDFDocumentType] || [type isEqualToString:SKPostScriptDocumentType] || [type isEqualToString:SKDVIDocumentType] || [type isEqualToString:SKXDVDocumentType]) {
-            data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
-        } else if ([type isEqualToString:SKPDFBundleDocumentType]) {
-            NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
-            data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
-        } else if ([type isEqualToString:SKNotesDocumentType]) {
-            data = [NSData dataWithContentsOfURL:theURL options:0 error:&error];
-        }
-        
-        if (data)
-            document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
-        
-        if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
-            [self addDocument:document];
-            [document makeWindowControllers];
-            [document showWindows];
+        if ([[SKNotesDocument readableTypes] containsObject:type]) {
+            document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
         } else {
-            document = nil;
-            if (outError)
-                *outError = error;
+            NSData *data = nil;
+            if ([type isEqualToString:SKPDFBundleDocumentType]) {
+                NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
+                data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
+            } else if ([[SKMainDocument readableTypes] containsObject:type]) {
+                data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
+            }
+            
+            if (data)
+                document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];
+            
+            if ([document readFromData:data ofType:SKNotesDocumentType error:&error]) {
+                [self addDocument:document];
+                [document makeWindowControllers];
+                [document showWindows];
+            } else {
+                document = nil;
+                if (outError)
+                    *outError = error;
+            }
         }
     } else if (outError) {
         *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
