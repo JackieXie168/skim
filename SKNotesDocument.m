@@ -362,7 +362,7 @@
 
 - (NSString *)displayName {
     if (sourceFileURL)
-        return [[[NSFileManager defaultManager] displayNameAtPath:[sourceFileURL path]] stringByDeletingPathExtension];
+        return [[[sourceFileURL path] lastPathComponent] stringByDeletingPathExtension];
     return [super displayName];
 }
 
