@@ -259,17 +259,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return document;
 }
 
-- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
-    NSError *error;
-    id document = [self openDocumentWithImageFromPasteboard:pboard error:&error];
-    if (document == nil) {
-        document = [self openDocumentWithURLFromPasteboard:pboard error:&error];
-        if (document == nil && outError)
-            *outError = error;
-    }
-    return document;
-}
-
 - (id)openNotesDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
     NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
     id document = nil;
@@ -320,8 +309,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (IBAction)newDocumentFromClipboard:(id)sender {
     NSError *error = nil;
-    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
-    
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    id document = [self openDocumentWithImageFromPasteboard:pboard error:&error];
+    if (document == nil)
+        document = [self openDocumentWithURLFromPasteboard:pboard error:&error];
     if (document == nil && error && [error isUserCancelledError] == NO)
         [NSApp presentError:error];
 }
