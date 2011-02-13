@@ -69,11 +69,12 @@ extern NSString *SKDocumentControllerDocumentKey;
 }
 
 - (IBAction)newDocumentFromClipboard:(id)sender;
+
 - (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 // this method may return an SKDownload instance
-- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError;
+
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
-- (id)openNotesDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
 
