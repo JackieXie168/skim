@@ -237,7 +237,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         } else if ([self canUpdateFromFile:fileName]) {
             BOOL shouldAutoUpdate = fucFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
-            if (fucFlags.disableAutoReload == NO && shouldAutoUpdate && documentHasEdits) {
+            if (fucFlags.disableAutoReload == NO && shouldAutoUpdate && documentHasEdits == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
             } else {
