@@ -1752,7 +1752,7 @@ enum {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         else if (annotationType == SKAnchoredNote)
             bounds.size = SKNPDFAnnotationNoteSize;
-	} else if (ANNOTATION_MODE_IS_MARKUP == NO) {
+	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
         
 		// First try the current mouse position
         NSPoint center = [self convertPoint:point fromView:nil];
