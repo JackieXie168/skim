@@ -90,6 +90,8 @@ static char SKBookmarkPropertiesObservationContext;
 
 @synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager;
 
+static SKBookmarkController *sharedBookmarkController = nil;
+
 static NSUInteger maxRecentDocumentsCount = 0;
 
 + (void)initialize {
@@ -101,50 +103,60 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 + (id)sharedBookmarkController {
-    static SKBookmarkController *sharedBookmarkController = nil;
     if (sharedBookmarkController == nil)
         sharedBookmarkController = [[self alloc] init];
     return sharedBookmarkController;
 }
 
++ (id)allocWithZone:(NSZone *)zone {
+    return [sharedBookmarkController retain] ?: [super allocWithZone:zone];
+}
+
 - (id)init {
-    if (self = [super initWithWindowNibName:@"BookmarksWindow"]) {
-        recentDocuments = [[NSMutableArray alloc] init];
-        
-        NSMutableArray *bookmarks = [NSMutableArray array];
-        NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
-        if (data) {
-            NSString *error = nil;
-            NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
-            id plist = [NSPropertyListSerialization propertyListFromData:data
-                                                        mutabilityOption:NSPropertyListMutableContainers
-                                                                  format:&format 
-                                                        errorDescription:&error];
+    if (sharedBookmarkController == nil) {
+        if (self = [super initWithWindowNibName:@"BookmarksWindow"]) {
+            recentDocuments = [[NSMutableArray alloc] init];
             
-            if (error) {
-                NSLog(@"Error deserializing: %@", error);
-                [error release];
-            } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
-                for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
-                    SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
-                    if (bookmark) {
-                        [bookmarks addObject:bookmark];
-                        [bookmark release];
-                    } else
-                        NSLog(@"Failed to read bookmark: %@", dict);
+            NSMutableArray *bookmarks = [NSMutableArray array];
+            NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
+            if (data) {
+                NSString *error = nil;
+                NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
+                id plist = [NSPropertyListSerialization propertyListFromData:data
+                                                            mutabilityOption:NSPropertyListMutableContainers
+                                                                      format:&format 
+                                                            errorDescription:&error];
+                
+                if (error) {
+                    NSLog(@"Error deserializing: %@", error);
+                    [error release];
+                } else if ([plist isKindOfClass:[NSDictionary class]]) {
+                    [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
+                    for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
+                        SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
+                        if (bookmark) {
+                            [bookmarks addObject:bookmark];
+                            [bookmark release];
+                        } else
+                            NSLog(@"Failed to read bookmark: %@", dict);
+                    }
                 }
+                
             }
             
+            bookmarkRoot = [[SKBookmark alloc] initRootWithChildren:bookmarks];
+            [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(handleApplicationWillTerminateNotification:)
+                                                         name:NSApplicationWillTerminateNotification
+                                                       object:NSApp];
         }
-        
-        bookmarkRoot = [[SKBookmark alloc] initRootWithChildren:bookmarks];
-        [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
-        
-		[[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleApplicationWillTerminateNotification:)
-                                                     name:NSApplicationWillTerminateNotification
-                                                   object:NSApp];
+        sharedBookmarkController = [self retain];
+    } else if (self != sharedBookmarkController) {
+        NSLog(@"shouldn't be able to create multiple instances");
+        [self release];
+        self = [sharedBookmarkController retain];
     }
     return self;
 }
