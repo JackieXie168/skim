@@ -104,7 +104,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 + (id)sharedBookmarkController {
     if (sharedBookmarkController == nil)
-        sharedBookmarkController = [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedBookmarkController;
 }
 
