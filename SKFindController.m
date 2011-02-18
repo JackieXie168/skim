@@ -47,11 +47,17 @@
 @synthesize findField, ignoreCaseCheckbox, ownerController, labelField, buttons, findString, ignoreCase;
 @dynamic findOptions, target, selectionSource;
 
+static SKFindController *sharedFindController = nil;
+
 + (id)sharedFindController {
-    static SKFindController *sharedFindController = nil;
     if (sharedFindController == nil)
         sharedFindController = [[self alloc] init];
     return sharedFindController;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedFindController) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {

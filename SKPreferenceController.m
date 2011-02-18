@@ -60,11 +60,17 @@
 
 @synthesize contentView, resetButtons;
 
+static SKPreferenceController *sharedPrefenceController = nil;
+
 + (id)sharedPrefenceController {
-    static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)
         sharedPrefenceController = [[self alloc] init];
     return sharedPrefenceController;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedPrefenceController) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {

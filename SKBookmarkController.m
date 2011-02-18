@@ -154,7 +154,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
         }
         sharedBookmarkController = [self retain];
     } else if (self != sharedBookmarkController) {
-        NSLog(@"shouldn't be able to create multiple instances");
+        NSLog(@"Attempt to allocate second instance of %@", [self class]);
         [self release];
         self = [sharedBookmarkController retain];
     }

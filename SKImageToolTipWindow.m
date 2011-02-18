@@ -52,11 +52,17 @@
 
 @synthesize currentImageContext=context;
 
+static SKImageToolTipWindow *sharedToolTipWindow = nil;
+
 + (id)sharedToolTipWindow {
-    static SKImageToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
         sharedToolTipWindow = [[self alloc] init];
     return sharedToolTipWindow;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedToolTipWindow) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {
