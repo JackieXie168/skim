@@ -60,12 +60,8 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     return sharedToolTipWindow;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedToolTipWindow) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedToolTipWindow) NSLog(@"Attempt to allocate second instance of %@", self);
     if (self = [super initWithContentRect:NSZeroRect]) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
