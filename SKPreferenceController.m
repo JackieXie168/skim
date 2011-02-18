@@ -64,22 +64,28 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 + (id)sharedPrefenceController {
     if (sharedPrefenceController == nil)
-        sharedPrefenceController = [[self alloc] init];
+        [[[self alloc] init] autorelease];
     return sharedPrefenceController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    if (sharedPrefenceController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
+    return [sharedPrefenceController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
-        preferencePanes = [[NSArray alloc] initWithObjects:
-            [[[SKGeneralPreferences alloc] init] autorelease], 
-            [[[SKDisplayPreferences alloc] init] autorelease], 
-            [[[SKNotesPreferences alloc] init] autorelease], 
-            [[[SKSyncPreferences alloc] init] autorelease], nil];
+    if (sharedPrefenceController == nil) {
+        if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
+            preferencePanes = [[NSArray alloc] initWithObjects:
+                [[[SKGeneralPreferences alloc] init] autorelease], 
+                [[[SKDisplayPreferences alloc] init] autorelease], 
+                [[[SKNotesPreferences alloc] init] autorelease], 
+                [[[SKSyncPreferences alloc] init] autorelease], nil];
+        }
+        sharedPrefenceController = [self retain];
+    } else if (self != sharedPrefenceController) {
+        NSLog(@"Attempt to allocate second instance of %@", [self class]);
+        [self release];
+        self = [sharedPrefenceController retain];
     }
     return self;
 }

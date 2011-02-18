@@ -70,12 +70,8 @@ static SKLineInspector *sharedLineInspector = nil;
     return sharedLineInspector != nil;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedLineInspector) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedLineInspector) NSLog(@"Attempt to allocate second instance of %@", self);
     if (self = [super initWithWindowNibName:@"LineInspector"]) {
         style = kPDFBorderStyleSolid;
         lineWidth = 1.0;

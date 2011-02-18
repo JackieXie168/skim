@@ -80,12 +80,8 @@ static SKDownloadController *sharedDownloadController = nil;
     return sharedDownloadController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedDownloadController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedDownloadController) NSLog(@"Attempt to allocate second instance of %@", self);
     if (self = [super initWithWindowNibName:@"DownloadsWindow"]) {
         downloads = [[NSMutableArray alloc] init];
     }

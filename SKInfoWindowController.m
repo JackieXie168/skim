@@ -88,12 +88,8 @@ static SKInfoWindowController *sharedInstance = nil;
     return sharedInstance;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedInstance) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedInstance) NSLog(@"Attempt to allocate second instance of %@", self);
     if (self = [super initWithWindowNibName:@"InfoWindow"]){
         info = nil;
         summaryKeys = [[NSArray alloc] initWithObjects:
