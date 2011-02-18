@@ -51,12 +51,8 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
     return sharedReleaseNotesController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedReleaseNotesController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedReleaseNotesController) NSLog(@"Attempt to allocate second instance of %@", self);
     return (self = [super initWithWindowNibName:@"ReleaseNotes"]);
 }
 

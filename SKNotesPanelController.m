@@ -56,12 +56,8 @@ static SKNotesPanelController *sharedController = nil;
     return sharedController != nil;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedController) NSLog(@"Attempt to allocate second instance of %@", self);
     return (self = [super initWithWindowNibName:@"NotesPanel"]);
 }
 

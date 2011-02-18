@@ -55,12 +55,8 @@ static SKFindController *sharedFindController = nil;
     return sharedFindController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    if (sharedFindController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return [super allocWithZone:zone];
-}
-
 - (id)init {
+    if (sharedFindController) NSLog(@"Attempt to allocate second instance of %@", self);
     if (self = [super initWithWindowNibName:@"FindPanel"]) {
         ignoreCase = YES;
     }
