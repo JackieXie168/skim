@@ -80,11 +80,17 @@
     [transformer release];
 }
 
+static SKInfoWindowController *sharedInstance = nil;
+
 + (id)sharedInstance {
-    static SKInfoWindowController *sharedInstance = nil;
     if (sharedInstance == nil)
         sharedInstance = [[self alloc] init];
     return sharedInstance;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedInstance) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {

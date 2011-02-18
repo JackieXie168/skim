@@ -72,11 +72,17 @@ static char SKDownloadPropertiesObservationContext;
 
 @synthesize arrayController, tableView, clearButton, prefButton;
 
+static SKDownloadController *sharedDownloadController = nil;
+
 + (id)sharedDownloadController {
-    static SKDownloadController *sharedDownloadController = nil;
     if (sharedDownloadController == nil)
         sharedDownloadController = [[self alloc] init];
     return sharedDownloadController;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedDownloadController) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {

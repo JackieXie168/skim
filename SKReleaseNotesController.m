@@ -43,11 +43,17 @@
 
 @synthesize textView;
 
+static SKReleaseNotesController *sharedReleaseNotesController = nil;
+
 + (id)sharedReleaseNotesController {
-    static SKReleaseNotesController *sharedReleaseNotesController = nil;
     if (sharedReleaseNotesController == nil)
         sharedReleaseNotesController = [[self alloc] init];
     return sharedReleaseNotesController;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    if (sharedReleaseNotesController) NSLog(@"Attempt to allocate second instance of %@", self);
+    return [super allocWithZone:zone];
 }
 
 - (id)init {
