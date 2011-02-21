@@ -1170,7 +1170,7 @@
     NSError *error = nil;
     SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
     id document = nil;
-    if ([sdc documentClassForContentsOfURL:url]) {
+    if ([url isFileURL] && [sdc documentClassForContentsOfURL:url]) {
         document = [sdc openDocumentWithContentsOfURL:url display:YES error:&error];
         if (document == nil && error && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
