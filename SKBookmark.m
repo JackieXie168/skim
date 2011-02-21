@@ -616,7 +616,7 @@ static Class SKBookmarkClass = Nil;
         NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
         NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
         NSString *aLabel = [properties objectForKey:@"label"];
-        NSInteger type = [[properties objectForKey:@"scriptingBookmarkType"] integerValue];
+        NSInteger type = [[properties objectForKey:@"bookmarkType"] integerValue];
         if (type == 0) {
             if (aURL == nil)
                 type = SKBookmarkTypeSession;
