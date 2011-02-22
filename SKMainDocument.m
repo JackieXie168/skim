@@ -161,6 +161,9 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    // shouldn't need this here, but better be safe
+    [fileUpdateChecker stopCheckingFileUpdates];
+    SKDESTROY(fileUpdateChecker);
     SKDESTROY(mainWindowController);
     [synchronizer terminate];
     [synchronizer setDelegate:nil];
