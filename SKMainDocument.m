@@ -208,6 +208,9 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     
     [[self undoManager] enableUndoRegistration];
     
+    if ([self fileURL])
+        [fileUpdateChecker checkFileUpdatesIfNeeded];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
 }
@@ -1314,7 +1317,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     [super setFileURL:absoluteURL];
     
     // if we're saving this will be called when saving has finished
-    if (isSaving == NO)
+    if (isSaving == NO && [mainWindowController isWindowLoaded])
         [fileUpdateChecker checkFileUpdatesIfNeeded];
     
     if ([absoluteURL isFileURL])
