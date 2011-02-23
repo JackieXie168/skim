@@ -77,6 +77,7 @@ extern NSString *SKSkimFileDidSaveNotification;
 - (IBAction)saveDiskImage:(id)sender;
 - (IBAction)emailArchive:(id)sender;
 - (IBAction)emailDiskImage:(id)sender;
+- (IBAction)moveToTrash:(id)sender;
 
 @property (nonatomic, readonly) SKMainWindowController *mainWindowController;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;

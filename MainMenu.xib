@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1040</int>
-		<string key="IBDocument.SystemVersion">10H574</string>
+		<string key="IBDocument.SystemVersion">10J567</string>
 		<string key="IBDocument.InterfaceBuilderVersion">823</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.HIToolboxVersion">462.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">823</string>
@@ -304,6 +304,26 @@
 									<reference key="NSMixedImage" ref="290280874"/>
 								</object>
 								<object class="NSMenuItem" id="261623790">
+									<reference key="NSMenu" ref="812152972"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="1022008517"/>
+									<reference key="NSMixedImage" ref="290280874"/>
+								</object>
+								<object class="NSMenuItem" id="221839630">
+									<reference key="NSMenu" ref="812152972"/>
+									<string key="NSTitle">Move to Trash</string>
+									<string type="base64-UTF8" key="NSKeyEquiv">CA</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="1022008517"/>
+									<reference key="NSMixedImage" ref="290280874"/>
+								</object>
+								<object class="NSMenuItem" id="572160035">
 									<reference key="NSMenu" ref="812152972"/>
 									<bool key="NSIsDisabled">YES</bool>
 									<bool key="NSIsSeparator">YES</bool>
@@ -3646,6 +3666,14 @@
 					</object>
 					<int key="connectionID">1088</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">moveToTrash:</string>
+						<reference key="source" ref="660174102"/>
+						<reference key="destination" ref="221839630"/>
+					</object>
+					<int key="connectionID">1092</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -3890,6 +3918,8 @@
 							<reference ref="831386359"/>
 							<reference ref="568392804"/>
 							<reference ref="746700930"/>
+							<reference ref="572160035"/>
+							<reference ref="221839630"/>
 						</object>
 						<reference key="parent" ref="141697992"/>
 					</object>
@@ -5319,6 +5349,16 @@
 						<reference key="object" ref="1012095061"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1089</int>
+						<reference key="object" ref="572160035"/>
+						<reference key="parent" ref="812152972"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1090</int>
+						<reference key="object" ref="221839630"/>
+						<reference key="parent" ref="812152972"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -5345,6 +5385,10 @@
 					<string>106.ImportedFromIB2</string>
 					<string>1085.IBPluginDependency</string>
 					<string>1086.IBPluginDependency</string>
+					<string>1089.IBPluginDependency</string>
+					<string>1089.ImportedFromIB2</string>
+					<string>1090.IBPluginDependency</string>
+					<string>1090.ImportedFromIB2</string>
 					<string>111.IBPluginDependency</string>
 					<string>111.ImportedFromIB2</string>
 					<string>124.IBPluginDependency</string>
@@ -5862,6 +5906,10 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="YES"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="YES"/>
 					<string>{{541, 359}, {238, 133}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
@@ -6155,7 +6203,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{249, 309}, {230, 403}}</string>
+					<string>{{103, 342}, {235, 433}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6310,7 +6358,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1088</int>
+			<int key="maxID">1092</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7216,8 +7264,6 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>editBookmarks:</string>
-							<string>openBookmarkAction:</string>
 							<string>orderFrontLineInspector:</string>
 							<string>orderFrontNotesPanel:</string>
 							<string>showDownloads:</string>
@@ -7228,8 +7274,6 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -7243,8 +7287,6 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>editBookmarks:</string>
-							<string>openBookmarkAction:</string>
 							<string>orderFrontLineInspector:</string>
 							<string>orderFrontNotesPanel:</string>
 							<string>showDownloads:</string>
@@ -7255,14 +7297,6 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">editBookmarks:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">openBookmarkAction:</string>
-								<string key="candidateClassName">id</string>
-							</object>
 							<object class="IBActionInfo">
 								<string key="name">orderFrontLineInspector:</string>
 								<string key="candidateClassName">id</string>
@@ -7349,10 +7383,12 @@
 							<string>doubleClickBookmark:</string>
 							<string>insertBookmarkFolder:</string>
 							<string>insertBookmarkSeparator:</string>
+							<string>openBookmark:</string>
 							<string>toggleStatusBar:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -7368,6 +7404,7 @@
 							<string>doubleClickBookmark:</string>
 							<string>insertBookmarkFolder:</string>
 							<string>insertBookmarkSeparator:</string>
+							<string>openBookmark:</string>
 							<string>toggleStatusBar:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -7386,6 +7423,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">insertBookmarkSeparator:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">openBookmark:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -7716,12 +7757,14 @@
 							<string>convertNotes:</string>
 							<string>emailArchive:</string>
 							<string>emailDiskImage:</string>
+							<string>moveToTrash:</string>
 							<string>readNotes:</string>
 							<string>saveArchive:</string>
 							<string>saveDiskImage:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -7737,6 +7780,7 @@
 							<string>convertNotes:</string>
 							<string>emailArchive:</string>
 							<string>emailDiskImage:</string>
+							<string>moveToTrash:</string>
 							<string>readNotes:</string>
 							<string>saveArchive:</string>
 							<string>saveDiskImage:</string>
@@ -7753,6 +7797,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">emailDiskImage:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">moveToTrash:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

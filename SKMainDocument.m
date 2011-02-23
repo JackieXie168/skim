@@ -1243,6 +1243,18 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     }
 }
 
+- (IBAction)moveToTrash:(id)sender {
+    NSString *path = [[self fileURL] path];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSString *folderPath = [path stringByDeletingLastPathComponent];
+        NSString *fileName = [path lastPathComponent];
+        NSInteger tag = 0;
+        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
+            [self close];
+        else NSBeep();
+    } else NSBeep();
+}
+
 - (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSError *error = nil;
@@ -1290,6 +1302,9 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
         NSString *path = [[self fileURL] path];
         return path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO;
+    } else if ([anItem action] == @selector(moveToTrash:)) {
+        NSString *path = [[self fileURL] path];
+        return path && [[NSFileManager defaultManager] fileExistsAtPath:path];
     }
     return [super validateUserInterfaceItem:anItem];
 }
