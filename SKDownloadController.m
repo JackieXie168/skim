@@ -232,13 +232,16 @@ static SKDownloadController *sharedDownloadController = nil;
     NSInteger row = [tableView selectedRow];
     if (row != -1)
         download = [self objectInDownloadsAtIndex:row];
-    if (download && [download status] == SKDownloadStatusFinished) {
-        NSString *filePath = [download filePath];
-        NSString *folderPath = [filePath stringByDeletingLastPathComponent];
-        NSString *fileName = [filePath lastPathComponent];
-        NSInteger tag = 0;
-        
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+    if ([download canRemove]) {
+        if ([download status] == SKDownloadStatusFinished) {
+            NSString *filePath = [download filePath];
+            NSString *folderPath = [filePath stringByDeletingLastPathComponent];
+            NSString *fileName = [filePath lastPathComponent];
+            NSInteger tag = 0;
+            
+            [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+        }
+        [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
     } else {
         NSBeep();
     }
@@ -324,7 +327,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(moveToTrash:)) {
         NSInteger row = [tableView selectedRow];
-        return (row != -1 && [[self objectInDownloadsAtIndex:row] status] == SKDownloadStatusFinished);
+        return (row != -1 && [[self objectInDownloadsAtIndex:row] canRemove]);
     }
     return YES;
 }
