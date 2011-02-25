@@ -64,11 +64,10 @@
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL;
 
-- (IBAction)clearDownloads:(id)sender;
-- (IBAction)removeDownload:(id)sender;
-- (IBAction)cancelDownload:(id)sender;
-
 - (IBAction)showDownloadPreferences:(id)sender;
+- (IBAction)clearDownloads:(id)sender;
+
+- (IBAction)moveToTrash:(id)sender;
 
 - (NSArray *)downloads;
 - (NSUInteger)countOfDownloads;

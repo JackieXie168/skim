@@ -212,6 +212,11 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark Actions
 
+- (IBAction)showDownloadPreferences:(id)sender {
+    SKDownloadPreferenceController *prefController = [[[SKDownloadPreferenceController alloc] init] autorelease];
+    [prefController beginSheetModalForWindow:[self window]];
+}
+
 - (IBAction)clearDownloads:(id)sender {
     NSInteger i = [self countOfDownloads];
     
@@ -222,7 +227,24 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (IBAction)cancelDownload:(id)sender {
+- (IBAction)moveToTrash:(id)sender {
+    SKDownload *download = nil;
+    NSInteger row = [tableView selectedRow];
+    if (row != -1)
+        download = [self objectInDownloadsAtIndex:row];
+    if (download && [download status] == SKDownloadStatusFinished) {
+        NSString *filePath = [download filePath];
+        NSString *folderPath = [filePath stringByDeletingLastPathComponent];
+        NSString *fileName = [filePath lastPathComponent];
+        NSInteger tag = 0;
+        
+        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+    } else {
+        NSBeep();
+    }
+}
+
+- (void)cancelDownload:(id)sender {
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
@@ -234,7 +256,7 @@ static SKDownloadController *sharedDownloadController = nil;
         [download cancel];
 }
 
-- (IBAction)resumeDownload:(id)sender {
+- (void)resumeDownload:(id)sender {
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
@@ -246,7 +268,7 @@ static SKDownloadController *sharedDownloadController = nil;
         [download resume];
 }
 
-- (IBAction)removeDownload:(id)sender {
+- (void)removeDownload:(id)sender {
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
@@ -257,11 +279,6 @@ static SKDownloadController *sharedDownloadController = nil;
     
     if (download)
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
-}
-
-- (IBAction)showDownloadPreferences:(id)sender {
-    SKDownloadPreferenceController *prefController = [[[SKDownloadPreferenceController alloc] init] autorelease];
-    [prefController beginSheetModalForWindow:[self window]];
 }
 
 - (void)openDownloadedFile:(id)sender {
@@ -300,6 +317,16 @@ static SKDownloadController *sharedDownloadController = nil;
         
         [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
     }
+}
+
+#pragma mark Menu validation
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(moveToTrash:)) {
+        NSInteger row = [tableView selectedRow];
+        return (row != -1 && [[self objectInDownloadsAtIndex:row] status] == SKDownloadStatusFinished);
+    }
+    return YES;
 }
 
 #pragma mark SKDownloadDelegate
