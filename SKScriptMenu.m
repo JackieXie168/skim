@@ -251,24 +251,9 @@ static BOOL isFolderUTI(NSString *theUTI) {
     NSString *theUTI = [[NSWorkspace sharedWorkspace] typeOfFile:[[scriptFilename stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
     
     if (isAppleScriptUTI(theUTI)) {
-        NSDictionary *errorDictionary;
-        NSAppleScript *script = [[[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFilename] error:&errorDictionary] autorelease];
-        if (script == nil) {
-            NSLog(@"AppleScript file '%@' could not be opened: %@", scriptFilename, errorDictionary);
-            NSBeep();
-        } else {
-            NSAppleEventDescriptor *result = [script executeAndReturnError:&errorDictionary];
-            if (result == nil && [[errorDictionary objectForKey:NSAppleScriptErrorNumber] integerValue] != -128) {
-                NSLog(@"AppleScript file '%@' failed to execute: %@", scriptFilename, errorDictionary);
-                NSBeep();
-            }
-        }
+        [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
     } else if (isApplicationUTI(theUTI)) {
-        BOOL result = [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
-        if (result == NO) {
-            NSLog(@"Application '%@' could not be launched", scriptFilename);
-            NSBeep();
-        }
+        [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
     } else if (isAutomatorWorkflowUTI(theUTI)) {
         [NSTask launchedTaskWithLaunchPath:@"/usr/bin/automator" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
     } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
