@@ -45,6 +45,7 @@ echo -ne "${file}\x00${source}" | \
   -e "set theFile to POSIX file theFile" \
   -e "set theSource to POSIX file theSource" \
   -e "set thePath to POSIX path of (theFile as alias)" \
+  -e "set theLine to $line as integer" \
   -e "tell application \"Skim\"" \
   -e "  if $activate then activate" \
   -e "  if $revert then" \
@@ -54,5 +55,5 @@ echo -ne "${file}\x00${source}" | \
   -e "    end try" \
   -e "  end if" \
   -e "  open theFile" \
-  -e "  tell front document to go to TeX line $line from theSource showing reading bar $bar" \
+  -e "  tell front document to go to TeX line theLine from theSource showing reading bar $bar" \
   -e "end tell" -
