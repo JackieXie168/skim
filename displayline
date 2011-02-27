@@ -37,15 +37,15 @@ file="$2"
 
 # pass file arguments as NULL-separated string to osascript
 # pass through cat to get them as raw bytes to preserve non-ASCII characters
-echo -ne "${file}\x00${source}" | \
+echo -ne "${line}\x00${file}\x00${source}" | \
 /usr/bin/osascript \
   -e "set theArgv to do shell script \"/bin/cat\"" \
   -e "set AppleScript's text item delimiters to ASCII character 0" \
-  -e "set {theFile, theSource} to text items of theArgv" \
+  -e "set {theLine, theFile, theSource} to text items of theArgv" \
+  -e "set theLine to theLine as integer" \
   -e "set theFile to POSIX file theFile" \
   -e "set theSource to POSIX file theSource" \
   -e "set thePath to POSIX path of (theFile as alias)" \
-  -e "set theLine to $line as integer" \
   -e "tell application \"Skim\"" \
   -e "  if $activate then activate" \
   -e "  if $revert then" \
