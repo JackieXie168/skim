@@ -889,7 +889,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         if (showPrintPanel == NO)
             [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
         
-        [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleNone];
+        [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleDownToFit];
         
         if (callback) {
             if (showPrintPanel && [printWindow attachedSheet]) {
