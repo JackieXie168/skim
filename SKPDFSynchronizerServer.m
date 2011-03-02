@@ -399,7 +399,7 @@ struct SKServerFlags {
                 [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
                 
-                 rv = [self shouldKeepRunning];
+                rv = [self shouldKeepRunning];
             }
         }
         
@@ -468,6 +468,8 @@ struct SKServerFlags {
             rv = YES;
         }
     }
+    if (rv == NO)
+        NSLog(@"PDFSync was unable to find file and line.");
     return rv;
 }
 
@@ -517,6 +519,8 @@ struct SKServerFlags {
             rv = YES;
         }
     }
+    if (rv == NO)
+        NSLog(@"PDFSync was unable to find location and page.");
     return rv;
 }
 
@@ -562,6 +566,8 @@ struct SKServerFlags {
             }
         }
     }
+    if (rv == NO)
+        NSLog(@"SyncTeX was unable to find file and line.");
     return rv;
 }
 
@@ -577,6 +583,8 @@ struct SKServerFlags {
             rv = YES;
         }
     }
+    if (rv == NO)
+        NSLog(@"SyncTeX was unable to find location and page.");
     return rv;
 }
 
@@ -608,6 +616,8 @@ struct SKServerFlags {
             }
         }
     }
+    if (rv == NO)
+        NSLog(@"Unable to find or load synctex or pdfsync file.");
     return rv;
 }
 
