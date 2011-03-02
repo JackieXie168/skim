@@ -2169,6 +2169,11 @@ enum {
                 [self setCurrentSelection:sel];
             }
         }
+        if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
+            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromView:[self documentView]];
+            visibleRect = [self convertRect:visibleRect toPage:[readingBar page]];
+            rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+        }
         [self goToRect:rect onPage:page];
     }
 }
