@@ -62,6 +62,8 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 
 @implementation SKFileUpdateChecker
 
+@synthesize document;
+
 - (id)initForDocument:(NSDocument *)aDocument {
     if (self = [super init]) {
         document = aDocument;

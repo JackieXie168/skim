@@ -57,6 +57,8 @@
     NSTimer *fileUpdateTimer;
 }
 
+@property (nonatomic, assign) NSDocument *document;
+
 - (id)initForDocument:(NSDocument *)aDocument;
 
 - (BOOL)fileChangedOnDisk;

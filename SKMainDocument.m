@@ -163,6 +163,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // shouldn't need this here, but better be safe
     [fileUpdateChecker stopCheckingFileUpdates];
+    [fileUpdateChecker setDocument:nil];
     SKDESTROY(fileUpdateChecker);
     SKDESTROY(mainWindowController);
     [synchronizer terminate];
@@ -1320,6 +1321,7 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
         [fileUpdateChecker stopCheckingFileUpdates];
+        [fileUpdateChecker setDocument:nil];
         SKDESTROY(fileUpdateChecker);
         [self saveRecentDocumentInfo];
     }
