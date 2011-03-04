@@ -158,7 +158,7 @@ static unsigned char hexDecodeTable[256] =
 			}
 		}
 		
-		// Store the 4 bits from each of the 2 characters as 1 bytes
+		// Store the 8 bits from each of the 2 characters as 1 byte
 		outputBuffer[j++] = (accumulated[0] << 4) | (accumulated[1]);
     }
     
