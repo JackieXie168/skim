@@ -108,8 +108,8 @@
     return NSMakeRange(NSNotFound, 0);
 }
 
-// Mapping from 6 bit pattern to ASCII character.
-static unsigned char hexEncodeTable[16] = "0123456789ABCDEF";
+// Mapping from 4 bit pattern to ASCII character.
+static unsigned char hexEncodeTable[17] = "0123456789ABCDEF";
 
 // Definition for "masked-out" areas of the hexDecodeTable mapping
 #define xx 0xFF
