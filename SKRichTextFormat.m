@@ -66,7 +66,7 @@
 }
 
 - (id)initWithName:(NSString *)aName {
-    NSData *aData = [[NSData alloc] initWithBase64String:aName];
+    NSData *aData = [[NSData alloc] initWithHexString:aName];
     self = [self initWithData:aData];
     [aData release];
     return self;
@@ -83,7 +83,7 @@
 }
 
 - (NSString *)name {
-    return [data base64String];
+    return [data hexString];
 }
 
 - (NSTextStorage *)richText {
