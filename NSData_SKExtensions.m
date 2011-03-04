@@ -108,10 +108,95 @@
     return NSMakeRange(NSNotFound, 0);
 }
 
+// Mapping from 6 bit pattern to ASCII character.
+static unsigned char hexEncodeTable[16] = "0123456789ABCDEF";
+
+// Definition for "masked-out" areas of the hexDecodeTable mapping
+#define xx 0xFF
+
+// Mapping from ASCII character to 4 bit pattern.
+static unsigned char hexDecodeTable[256] =
+{
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, xx, xx, xx, xx, xx, xx, 
+    xx, 10, 11, 12, 13, 14, 15, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, 10, 11, 12, 13, 14, 15, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+};
+
+- (id)initWithHexString:(NSString *)hexString {
+    NSData *data = [hexString dataUsingEncoding:NSASCIIStringEncoding];
+    size_t length = [data length];
+    const unsigned char *inputBuffer = (const unsigned char *)[data bytes];
+    size_t outputBufferSize = length / 2;
+    unsigned char *outputBuffer = (unsigned char *)malloc(outputBufferSize);
+    
+    size_t i = 0, j = 0;
+    while (i < length) {
+		// Accumulate 2 valid characters (ignore everything else)
+		unsigned char accumulated[2];
+		size_t accumulateIndex = 0;
+		while (i < length) {
+			unsigned char decode = hexDecodeTable[inputBuffer[i++]];
+			if (decode != xx) {
+				accumulated[accumulateIndex] = decode;
+				accumulateIndex++;
+				
+				if (accumulateIndex == 2)
+					break;
+			}
+		}
+		
+		// Store the 4 bits from each of the 2 characters as 1 bytes
+		outputBuffer[j++] = (accumulated[0] << 4) | (accumulated[1]);
+    }
+    
+    NSData *result = [self initWithBytes:outputBuffer length:j];
+    
+    free(outputBuffer);
+    
+    return result;
+}
+
+- (NSString *)hexString {
+    size_t length = [self length];
+    const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
+    char *outputBuffer = (char *)malloc(length * 2 + 1);
+    if (outputBuffer == NULL)
+		return nil;
+
+    size_t i = 0;
+    size_t j = 0;
+    
+    for (i = 0; i < length; i++) {
+		outputBuffer[j++] = hexEncodeTable[(inputBuffer[i] & 0xF0) >> 4];
+		outputBuffer[j++] = hexEncodeTable[(inputBuffer[i] & 0x0F)];
+    }
+    outputBuffer[j] = 0;
+    
+    NSString *result = [[[NSString alloc] initWithBytes:outputBuffer length:j encoding:NSASCIIStringEncoding] autorelease];
+    
+    free(outputBuffer);
+    
+    return result;
+}
+
 - (NSString *)md5String {
     CC_MD5_CTX md5context;
     NSUInteger signatureLength = CC_MD5_DIGEST_LENGTH;
     unsigned char signature[signatureLength];
+    unsigned char hexSignature[signatureLength * 2 + 1];
     NSUInteger blockSize = 4096;
     char buffer[blockSize];
     NSUInteger length = [self length];
@@ -126,97 +211,38 @@
     }
     CC_MD5_Final(signature, &md5context);
     
-    NSMutableString *md5String = [NSMutableString stringWithCapacity:signatureLength];
-    NSUInteger i;
+    NSUInteger i, j = 0;
     
-    for (i = 0; i < signatureLength; i++)
-        [md5String appendFormat:@"%02x", signature[i]];
+    for (i = 0; i < signatureLength; i++) {
+		hexSignature[j++] = hexEncodeTable[(signature[i] & 0xF0) >> 4];
+		hexSignature[j++] = hexEncodeTable[(signature[i] & 0x0F)];
+    }
+    hexSignature[j] = 0;
     
-    return md5String;
+    return [[[NSString alloc] initWithBytes:hexSignature length:j encoding:NSASCIIStringEncoding] autorelease];
 }
+
+#pragma mark Templating support
 
 // The following code is taken and modified from Matt Gallagher's code at http://cocoawithlove.com/2009/06/base64-encoding-options-on-mac-and.html
 
 // Mapping from 6 bit pattern to ASCII character.
 static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-// Definition for "masked-out" areas of the     base64DecodeTable mapping
-#define xx 65
-
-// Mapping from ASCII character to 6 bit pattern.
-static unsigned char base64DecodeTable[256] =
-{
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 62, xx, xx, xx, 63, 
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, xx, xx, xx, xx, xx, xx, 
-    xx,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, xx, xx, xx, xx, xx, 
-    xx, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
-};
-
-// Fundamental sizes of the binary and base64 encode/decode units in bytes
-#define BINARY_UNIT_SIZE 3
-#define BASE64_UNIT_SIZE 4
-
-- (id)initWithBase64String:(NSString *)base64String {
-    NSData *data = [base64String dataUsingEncoding:NSASCIIStringEncoding];
-    size_t length = [data length];
-    const unsigned char *inputBuffer = (const unsigned char *)[data bytes];
-    size_t outputBufferSize = (length / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE;
-    unsigned char *outputBuffer = (unsigned char *)malloc(outputBufferSize);
-    
-    size_t i = 0, j = 0;
-    while (i < length) {
-		// Accumulate 4 valid characters (ignore everything else)
-		unsigned char accumulated[BASE64_UNIT_SIZE];
-		size_t accumulateIndex = 0;
-		while (i < length) {
-			unsigned char decode = base64DecodeTable[inputBuffer[i++]];
-			if (decode != xx) {
-				accumulated[accumulateIndex] = decode;
-				accumulateIndex++;
-				
-				if (accumulateIndex == BASE64_UNIT_SIZE)
-					break;
-			}
-		}
-		
-		// Store the 6 bits from each of the 4 characters as 3 bytes
-		outputBuffer[j] = (accumulated[0] << 2) | (accumulated[1] >> 4);
-		outputBuffer[j + 1] = (accumulated[1] << 4) | (accumulated[2] >> 2);
-		outputBuffer[j + 2] = (accumulated[2] << 6) | accumulated[3];
-		j += accumulateIndex - 1;
-    }
-    
-    NSData *result = [self initWithBytes:outputBuffer length:j];
-    
-    free(outputBuffer);
-    
-    return result;
-}
-
-- (NSString *)base64StringWithNewlines:(BOOL)encodeWithNewlines {
+- (NSString *)xmlString {
     size_t length = [self length];
     const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
+    
+    // Fundamental sizes of the binary and base64 encode/decode units in bytes
+    #define BINARY_UNIT_SIZE 3
+    #define BASE64_UNIT_SIZE 4
     
     #define MAX_NUM_PADDING_CHARS 2
     #define OUTPUT_LINE_LENGTH 64
     #define INPUT_LINE_LENGTH ((OUTPUT_LINE_LENGTH / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE)
     
     // Byte accurate calculation of final buffer size
-    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE;
-    if (encodeWithNewlines)
-		outputBufferSize += (outputBufferSize / OUTPUT_LINE_LENGTH);
+    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE + (outputBufferSize / OUTPUT_LINE_LENGTH);
     
     // Include space for a terminating zero
     outputBufferSize += 1;
@@ -228,7 +254,7 @@ static unsigned char base64DecodeTable[256] =
 
     size_t i = 0;
     size_t j = 0;
-    const size_t lineLength = encodeWithNewlines ? INPUT_LINE_LENGTH : length;
+    const size_t lineLength = INPUT_LINE_LENGTH;
     size_t lineEnd = lineLength;
     
     while (true) {
@@ -271,16 +297,6 @@ static unsigned char base64DecodeTable[256] =
     free(outputBuffer);
     
     return result;
-}
-
-- (NSString *)base64String {
-    return [self base64StringWithNewlines:NO];
-}
-
-#pragma mark Templating support
-
-- (NSString *)xmlString {
-    return [self base64StringWithNewlines:YES];
 }
 
 #pragma mark Scripting support
