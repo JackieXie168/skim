@@ -1045,10 +1045,12 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
     
     PDFDocument *pdfDocWithoutNotes = nil;
     
+    // remove the sheet, to make place for either the password or progress sheet
+    [[alert window] orderOut:nil];
+    
     if ([[self pdfDocument] isEncrypted]) {
         pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
         if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
-            [[alert window] orderOut:nil];
             
             SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
             
