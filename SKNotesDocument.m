@@ -120,8 +120,11 @@
 }
 
 - (void)showWindows{
+    NSWindowController *wc = [[self windowControllers] lastObject];
+    BOOL wasVisible = [wc isWindowLoaded] && [[wc window] isVisible];
     [super showWindows];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
+    if (wasVisible == NO)
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {

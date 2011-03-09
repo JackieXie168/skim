@@ -220,6 +220,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 }
 
 - (void)showWindows{
+    BOOL wasVisible = [[self mainWindowController] isWindowLoaded] && [[[self mainWindowController] window] isVisible];
+    
     [super showWindows];
     
     // Get the search string keyword if available (Spotlight passes this)
@@ -244,7 +246,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
+    if (wasVisible == NO)
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
 }
 
 - (void)removeWindowController:(NSWindowController *)windowController {
