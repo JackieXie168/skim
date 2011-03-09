@@ -1708,7 +1708,7 @@ static NSArray *allMainDocumentPDFViews() {
         [self updateThumbnailAtPageIndex:[newPage pageIndex]];
 }
 
-- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification {
+- (void)handleWillRemoveDocumentNotification:(NSNotification *)notification {
     if ([[notification userInfo] objectForKey:SKDocumentControllerDocumentKey] == presentationNotesDocument)
         [self setPresentationNotesDocument:nil];
 }
@@ -1747,8 +1747,8 @@ static NSArray *allMainDocumentPDFViews() {
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
                              name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];
     //  SKDocumentController
-    [nc addObserver:self selector:@selector(handleDidRemoveDocumentNotification:) 
-                             name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
+    [nc addObserver:self selector:@selector(handleWillRemoveDocumentNotification:) 
+                             name:SKDocumentControllerWillRemoveDocumentNotification object:nil];
 }
 
 @end

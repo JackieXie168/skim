@@ -75,7 +75,7 @@ NSString *SKFolderDocumentType = @"Folder";
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
-NSString *SKDocumentControllerDidAddDocumentNotification = @"SKDocumentControllerDidAddDocumentNotification";
+NSString *SKDocumentControllerWillRemoveDocumentNotification = @"SKDocumentControllerWillRemoveDocumentNotification";
 NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
 NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
@@ -102,16 +102,12 @@ NSString *SKDocumentControllerDocumentKey = @"document";
     [super dealloc];
 }
 
-- (void)addDocument:(NSDocument *)document {
-    [super addDocument:document];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidAddDocumentNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, SKDocumentControllerDocumentKey, nil]];
-}
-
 - (void)removeDocument:(NSDocument *)document {
-    [super removeDocument:[[document retain] autorelease]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidRemoveDocumentNotification 
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerWillRemoveDocumentNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, SKDocumentControllerDocumentKey, nil]];
+    [super removeDocument:document];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidRemoveDocumentNotification 
+            object:self userInfo:nil];
 }
 
 
