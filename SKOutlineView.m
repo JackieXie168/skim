@@ -256,7 +256,7 @@
 - (id <SKOutlineViewDelegate>)delegate { return (<SKOutlineViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 - (id <SKOutlineViewDataSource>)dataSource { return (<SKOutlineViewDataSource>)[super dataSource]; }
-- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource { [super setDelegate:newDataSource]; }
+- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource { [super setDataSource:newDataSource]; }
 #endif
 
 @end
