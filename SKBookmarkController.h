@@ -42,7 +42,7 @@
 
 @class SKBookmark, SKStatusBar;
 
-@interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, SKOutlineViewDelegate, NSOutlineViewDataSource> {
+@interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, NSMenuDelegate, SKOutlineViewDelegate, NSOutlineViewDataSource> {
     SKOutlineView *outlineView;
     SKStatusBar *statusBar;
     SKBookmark *bookmarkRoot;
