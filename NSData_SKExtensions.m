@@ -242,10 +242,10 @@ static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgh
     #define INPUT_LINE_LENGTH ((OUTPUT_LINE_LENGTH / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE)
     
     // Byte accurate calculation of final buffer size
-    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE + (outputBufferSize / OUTPUT_LINE_LENGTH);
+    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE;
     
-    // Include space for a terminating zero
-    outputBufferSize += 1;
+    // Include space for newlines and a terminating zero
+    outputBufferSize += (outputBufferSize / OUTPUT_LINE_LENGTH) + 1;
 
     // Allocate the output buffer
     char *outputBuffer = (char *)malloc(outputBufferSize);
