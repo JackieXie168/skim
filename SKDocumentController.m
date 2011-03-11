@@ -81,6 +81,13 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 NSString *SKDocumentControllerDocumentKey = @"document";
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+@interface NSDocumentController (SKDeprecated)
+// we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
+- (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName;
+@end
+#endif
+
 @implementation SKDocumentController
 
 + (void)initialize {
