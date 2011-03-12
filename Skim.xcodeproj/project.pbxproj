@@ -185,7 +185,6 @@
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
 		CE8D12381140303400301B9F /* FindPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8D12371140303400301B9F /* FindPanel.xib */; };
 		CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94D17A125535DE0053A520 /* synctex_parser_utils.m */; };
-		CE9767901160D65F008DCB8F /* MainToolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE97678E1160D65F008DCB8F /* MainToolbar.strings */; };
 		CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */; };
 		CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */; };
 		CE9768A211611C0F008DCB8F /* DownloadPreferenceSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE9768A011611C0F008DCB8F /* DownloadPreferenceSheet.strings */; };
@@ -254,22 +253,17 @@
 		CEF60CF9114C08350074ACC4 /* SKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF60CF8114C08350074ACC4 /* SKViewController.m */; };
 		CEF60D23114C0C5C0074ACC4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D22114C0C5C0074ACC4 /* MainMenu.xib */; };
 		CEF60D6A114C0DA60074ACC4 /* TransitionSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D40114C0DA60074ACC4 /* TransitionSheet.strings */; };
-		CEF60D6B114C0DA60074ACC4 /* SnapshotWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D42114C0DA60074ACC4 /* SnapshotWindow.strings */; };
 		CEF60D6C114C0DA60074ACC4 /* ScaleSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D44114C0DA60074ACC4 /* ScaleSheet.strings */; };
 		CEF60D6D114C0DA60074ACC4 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D46114C0DA60074ACC4 /* ReleaseNotes.strings */; };
-		CEF60D6E114C0DA60074ACC4 /* ProgressSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D48114C0DA60074ACC4 /* ProgressSheet.strings */; };
 		CEF60D6F114C0DA60074ACC4 /* PrintAccessoryView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D4A114C0DA60074ACC4 /* PrintAccessoryView.strings */; };
 		CEF60D70114C0DA60074ACC4 /* PasswordSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D4C114C0DA60074ACC4 /* PasswordSheet.strings */; };
 		CEF60D71114C0DA60074ACC4 /* PageSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D4E114C0DA60074ACC4 /* PageSheet.strings */; };
 		CEF60D72114C0DA60074ACC4 /* NoteWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D50114C0DA60074ACC4 /* NoteWindow.strings */; };
 		CEF60D73114C0DA60074ACC4 /* NoteTypeSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D52114C0DA60074ACC4 /* NoteTypeSheet.strings */; };
 		CEF60D74114C0DA60074ACC4 /* NotesPanel.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D54114C0DA60074ACC4 /* NotesPanel.strings */; };
-		CEF60D75114C0DA60074ACC4 /* NotesDocument.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D56114C0DA60074ACC4 /* NotesDocument.strings */; };
-		CEF60D76114C0DA60074ACC4 /* MainWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D58114C0DA60074ACC4 /* MainWindow.strings */; };
 		CEF60D77114C0DA60074ACC4 /* LineInspector.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D5A114C0DA60074ACC4 /* LineInspector.strings */; };
 		CEF60D78114C0DA60074ACC4 /* FindPanel.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D5C114C0DA60074ACC4 /* FindPanel.strings */; };
 		CEF60D79114C0DA60074ACC4 /* DownloadsWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D5E114C0DA60074ACC4 /* DownloadsWindow.strings */; };
-		CEF60D7A114C0DA60074ACC4 /* ConversionProgressWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D60114C0DA60074ACC4 /* ConversionProgressWindow.strings */; };
 		CEF60D7B114C0DA60074ACC4 /* BookmarksWindow.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D62114C0DA60074ACC4 /* BookmarksWindow.strings */; };
 		CEF60D7C114C0DA60074ACC4 /* BookmarkSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D64114C0DA60074ACC4 /* BookmarkSheet.strings */; };
 		CEF60D7D114C0DA60074ACC4 /* MainMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF60D66114C0DA60074ACC4 /* MainMenu.strings */; };
@@ -284,8 +278,6 @@
 		CEF60F91114C61300074ACC4 /* DisplayPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F90114C61300074ACC4 /* DisplayPreferences.xib */; };
 		CEF60F99114C63710074ACC4 /* NotesPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F98114C63710074ACC4 /* NotesPreferences.xib */; };
 		CEF60F9C114C64DB0074ACC4 /* SyncPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF60F9B114C64DB0074ACC4 /* SyncPreferences.xib */; };
-		CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */; };
-		CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEF64DE11160BDF2001C10C8 /* RightSideView.strings */; };
 		CEF64E361160CBAC001C10C8 /* MainToolbar.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF64E351160CBAC001C10C8 /* MainToolbar.xib */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
@@ -594,19 +586,14 @@
 		CE121BFA11529D15001D92ED /* SKIBArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKIBArray.m; sourceTree = "<group>"; };
 		CE157ED212D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CE157ED312D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
-		CE157ED412D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CE157ED512D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
 		CE157ED612D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/DownloadPreferenceSheet.strings; sourceTree = "<group>"; };
 		CE157ED712D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
 		CE157ED812D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CE157ED912D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
 		CE157EDA12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/InfoWindow.strings; sourceTree = "<group>"; };
-		CE157EDB12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/LeftSideView.strings; sourceTree = "<group>"; };
 		CE157EDC12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CE157EDD12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/MainMenu.strings; sourceTree = "<group>"; };
-		CE157EDE12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE157EDF12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/MainWindow.strings; sourceTree = "<group>"; };
-		CE157EE012D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/NotesDocument.strings; sourceTree = "<group>"; };
 		CE157EE112D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/NotesPanel.strings; sourceTree = "<group>"; };
 		CE157EE212D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
 		CE157EE312D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
@@ -615,11 +602,8 @@
 		CE157EE612D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CE157EE712D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CE157EE812D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
-		CE157EE912D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CE157EEA12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CE157EEB12D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CE157EEC12D4EBC100515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
-		CE157EED12D4EBC100515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CE157EEE12D4EBC100515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
 		CE157EEF12D4EBC100515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
 		CE157F0812D4EBE600515B85 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Japanese; path = Japanese.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -850,14 +834,6 @@
 		CE8D12371140303400301B9F /* FindPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindPanel.xib; sourceTree = "<group>"; };
 		CE94D179125535DE0053A520 /* synctex_parser_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_utils.h; sourceTree = "<group>"; };
 		CE94D17A125535DE0053A520 /* synctex_parser_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser_utils.m; sourceTree = "<group>"; };
-		CE97678F1160D65F008DCB8F /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767911160D66D008DCB8F /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767921160D66F008DCB8F /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767931160D671008DCB8F /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767941160D674008DCB8F /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767951160D677008DCB8F /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767961160D67A008DCB8F /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CE9767971160D67D008DCB8F /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/MainToolbar.strings; sourceTree = "<group>"; };
 		CE9768811161195C008DCB8F /* SKDownloadPreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadPreferenceController.h; sourceTree = "<group>"; };
 		CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownloadPreferenceController.m; sourceTree = "<group>"; };
 		CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DownloadPreferenceSheet.xib; sourceTree = "<group>"; };
@@ -998,177 +974,137 @@
 		CEF60CF8114C08350074ACC4 /* SKViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKViewController.m; sourceTree = "<group>"; };
 		CEF60D22114C0C5C0074ACC4 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		CEF60D41114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60D43114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60D45114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60D47114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60D49114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60D4B114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60D4D114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60D4F114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60D51114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60D53114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60D55114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60D57114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60D59114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60D5B114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60D5D114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60D5F114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60D61114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60D63114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60D65114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60D67114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60D69114C0DA60074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60D7F114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60D80114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60D81114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60D82114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60D83114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60D84114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60D85114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60D86114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60D87114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60D88114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60D89114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/NotesDocument.strings; sourceTree = "<group>"; };
 		CEF60D8A114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
-		CEF60D8B114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60D8C114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60D8E114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60D8F114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60D90114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60D91114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60D92114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60D93114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60D94114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60D95114C0DF40074ACC4 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60D9A114C0E290074ACC4 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60DA5114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60DA6114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60DA7114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60DA8114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60DA9114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60DAA114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60DAB114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60DAC114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60DAD114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60DAE114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60DAF114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/NotesDocument.strings; sourceTree = "<group>"; };
 		CEF60DB0114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
-		CEF60DB1114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60DB2114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60DB3114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60DB4114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60DB5114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60DB6114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60DB7114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60DB8114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60DB9114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60DBA114C0E540074ACC4 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60DBB114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60DBC114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60DBD114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60DBE114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60DBF114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60DC0114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60DC1114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60DC2114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60DC3114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60DC4114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60DC5114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60DC6114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60DC7114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60DC8114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60DC9114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60DCA114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60DCB114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60DCC114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60DCD114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60DCE114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60DCF114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60DD0114C0E720074ACC4 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60DD1114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60DD2114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60DD3114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60DD4114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60DD5114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60DD6114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60DD7114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60DD8114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60DD9114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60DDA114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60DDB114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60DDC114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60DDD114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60DDE114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60DDF114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60DE0114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60DE1114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60DE2114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60DE3114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60DE4114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60DE5114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60DE6114C0E8E0074ACC4 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60DE7114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60DE8114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60DE9114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60DEA114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60DEB114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60DEC114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60DED114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60DEE114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60DEF114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60DF0114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60DF1114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60DF2114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60DF3114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60DF4114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60DF5114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60DF6114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60DF7114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60DF8114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60DF9114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60DFA114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60DFB114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60DFC114C0EA80074ACC4 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60DFD114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60DFE114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60DFF114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60E00114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60E01114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60E02114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60E03114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60E04114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60E05114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60E06114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60E07114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60E08114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60E09114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60E0A114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60E0B114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60E0C114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60E0D114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60E0E114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60E0F114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60E10114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60E11114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		CEF60E12114C0EC10074ACC4 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF60E13114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
-		CEF60E14114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF60E15114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF60E16114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF60E17114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF60E18114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
 		CEF60E19114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF60E1A114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/PageSheet.strings; sourceTree = "<group>"; };
 		CEF60E1B114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/NoteWindow.strings; sourceTree = "<group>"; };
 		CEF60E1C114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
 		CEF60E1D114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/NotesPanel.strings; sourceTree = "<group>"; };
-		CEF60E1E114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/NotesDocument.strings; sourceTree = "<group>"; };
-		CEF60E1F114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		CEF60E20114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF60E21114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoWindow.strings; sourceTree = "<group>"; };
 		CEF60E22114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF60E23114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
-		CEF60E24114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF60E25114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CEF60E26114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF60E27114C0ED70074ACC4 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/MainMenu.strings; sourceTree = "<group>"; };
@@ -1186,22 +1122,6 @@
 		CEF60F90114C61300074ACC4 /* DisplayPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisplayPreferences.xib; sourceTree = "<group>"; };
 		CEF60F98114C63710074ACC4 /* NotesPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotesPreferences.xib; sourceTree = "<group>"; };
 		CEF60F9B114C64DB0074ACC4 /* SyncPreferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SyncPreferences.xib; sourceTree = "<group>"; };
-		CEF64DE01160BDF2001C10C8 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DE21160BDF2001C10C8 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DE51160BE11001C10C8 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DE61160BE15001C10C8 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DE71160BE19001C10C8 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DE81160BE1D001C10C8 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DE91160BE21001C10C8 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DEA1160BE24001C10C8 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DEB1160BE28001C10C8 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/LeftSideView.strings; sourceTree = "<group>"; };
-		CEF64DEC1160BE33001C10C8 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DED1160BE35001C10C8 /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DEE1160BE39001C10C8 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DEF1160BE3E001C10C8 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DF01160BE40001C10C8 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DF11160BE48001C10C8 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/RightSideView.strings; sourceTree = "<group>"; };
-		CEF64DF21160BE52001C10C8 /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CEF64E351160CBAC001C10C8 /* MainToolbar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainToolbar.xib; sourceTree = "<group>"; };
 		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
@@ -1218,19 +1138,14 @@
 		CEF877371190592B006436A2 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = pl; path = pl.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CEF877381190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CEF877391190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
-		CEF8773A1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ConversionProgressWindow.strings; sourceTree = "<group>"; };
 		CEF8773B1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
 		CEF8773C1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/DownloadPreferenceSheet.strings; sourceTree = "<group>"; };
 		CEF8773D1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
 		CEF8773E1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/FindPanel.strings; sourceTree = "<group>"; };
 		CEF8773F1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
 		CEF877401190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoWindow.strings; sourceTree = "<group>"; };
-		CEF877411190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/LeftSideView.strings; sourceTree = "<group>"; };
 		CEF877421190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/LineInspector.strings; sourceTree = "<group>"; };
 		CEF877431190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/MainMenu.strings; sourceTree = "<group>"; };
-		CEF877441190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/MainToolbar.strings; sourceTree = "<group>"; };
-		CEF877451190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/MainWindow.strings; sourceTree = "<group>"; };
-		CEF877461190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/NotesDocument.strings; sourceTree = "<group>"; };
 		CEF877471190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/NotesPanel.strings; sourceTree = "<group>"; };
 		CEF877481190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
 		CEF877491190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
@@ -1239,11 +1154,8 @@
 		CEF8774C1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
 		CEF8774D1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
 		CEF8774E1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
-		CEF8774F1190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ProgressSheet.strings; sourceTree = "<group>"; };
 		CEF877501190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		CEF877511190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/RightSideView.strings; sourceTree = "<group>"; };
 		CEF877521190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
-		CEF877531190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SnapshotWindow.strings; sourceTree = "<group>"; };
 		CEF877541190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
 		CEF877551190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
 		CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFormatCommand.h; sourceTree = "<group>"; };
@@ -1518,19 +1430,14 @@
 			children = (
 				CEF60D64114C0DA60074ACC4 /* BookmarkSheet.strings */,
 				CEF60D62114C0DA60074ACC4 /* BookmarksWindow.strings */,
-				CEF60D60114C0DA60074ACC4 /* ConversionProgressWindow.strings */,
 				CE0E84CC114D516F00E37F38 /* DisplayPreferences.strings */,
 				CEF60D5E114C0DA60074ACC4 /* DownloadsWindow.strings */,
 				CE9768A011611C0F008DCB8F /* DownloadPreferenceSheet.strings */,
 				CEF60D5C114C0DA60074ACC4 /* FindPanel.strings */,
 				CE0E84CA114D516F00E37F38 /* GeneralPreferences.strings */,
 				CEF60D8D114C0DF40074ACC4 /* InfoWindow.strings */,
-				CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */,
 				CEF60D5A114C0DA60074ACC4 /* LineInspector.strings */,
 				CEF60D66114C0DA60074ACC4 /* MainMenu.strings */,
-				CEF60D58114C0DA60074ACC4 /* MainWindow.strings */,
-				CE97678E1160D65F008DCB8F /* MainToolbar.strings */,
-				CEF60D56114C0DA60074ACC4 /* NotesDocument.strings */,
 				CEF60D54114C0DA60074ACC4 /* NotesPanel.strings */,
 				CE0E84C8114D516F00E37F38 /* NotesPreferences.strings */,
 				CEF60D52114C0DA60074ACC4 /* NoteTypeSheet.strings */,
@@ -1539,10 +1446,7 @@
 				CEF60D4C114C0DA60074ACC4 /* PasswordSheet.strings */,
 				CEF60D68114C0DA60074ACC4 /* PreferenceWindow.strings */,
 				CEF60D4A114C0DA60074ACC4 /* PrintAccessoryView.strings */,
-				CEF60D48114C0DA60074ACC4 /* ProgressSheet.strings */,
 				CEF60D46114C0DA60074ACC4 /* ReleaseNotes.strings */,
-				CEF64DE11160BDF2001C10C8 /* RightSideView.strings */,
-				CEF60D42114C0DA60074ACC4 /* SnapshotWindow.strings */,
 				CEF60D44114C0DA60074ACC4 /* ScaleSheet.strings */,
 				CE0E84C6114D516F00E37F38 /* SyncPreferences.strings */,
 				CEF60D40114C0DA60074ACC4 /* TransitionSheet.strings */,
@@ -2294,22 +2198,17 @@
 				CE1CC6B91143F05D00F6B208 /* TransitionSheet.xib in Resources */,
 				CEF60D23114C0C5C0074ACC4 /* MainMenu.xib in Resources */,
 				CEF60D6A114C0DA60074ACC4 /* TransitionSheet.strings in Resources */,
-				CEF60D6B114C0DA60074ACC4 /* SnapshotWindow.strings in Resources */,
 				CEF60D6C114C0DA60074ACC4 /* ScaleSheet.strings in Resources */,
 				CEF60D6D114C0DA60074ACC4 /* ReleaseNotes.strings in Resources */,
-				CEF60D6E114C0DA60074ACC4 /* ProgressSheet.strings in Resources */,
 				CEF60D6F114C0DA60074ACC4 /* PrintAccessoryView.strings in Resources */,
 				CEF60D70114C0DA60074ACC4 /* PasswordSheet.strings in Resources */,
 				CEF60D71114C0DA60074ACC4 /* PageSheet.strings in Resources */,
 				CEF60D72114C0DA60074ACC4 /* NoteWindow.strings in Resources */,
 				CEF60D73114C0DA60074ACC4 /* NoteTypeSheet.strings in Resources */,
 				CEF60D74114C0DA60074ACC4 /* NotesPanel.strings in Resources */,
-				CEF60D75114C0DA60074ACC4 /* NotesDocument.strings in Resources */,
-				CEF60D76114C0DA60074ACC4 /* MainWindow.strings in Resources */,
 				CEF60D77114C0DA60074ACC4 /* LineInspector.strings in Resources */,
 				CEF60D78114C0DA60074ACC4 /* FindPanel.strings in Resources */,
 				CEF60D79114C0DA60074ACC4 /* DownloadsWindow.strings in Resources */,
-				CEF60D7A114C0DA60074ACC4 /* ConversionProgressWindow.strings in Resources */,
 				CEF60D7B114C0DA60074ACC4 /* BookmarksWindow.strings in Resources */,
 				CEF60D7C114C0DA60074ACC4 /* BookmarkSheet.strings in Resources */,
 				CEF60D7D114C0DA60074ACC4 /* MainMenu.strings in Resources */,
@@ -2331,10 +2230,7 @@
 				CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */,
 				CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */,
 				CE8BF070115F892A0029020F /* RightSideView.xib in Resources */,
-				CEF64DE31160BDF2001C10C8 /* LeftSideView.strings in Resources */,
-				CEF64DE41160BDF2001C10C8 /* RightSideView.strings in Resources */,
 				CEF64E361160CBAC001C10C8 /* MainToolbar.xib in Resources */,
-				CE9767901160D65F008DCB8F /* MainToolbar.strings in Resources */,
 				CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */,
 				CE9768A211611C0F008DCB8F /* DownloadPreferenceSheet.strings in Resources */,
 				CEF1D608117EF9E90069E249 /* SkimHelp in Resources */,
@@ -2371,7 +2267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n\necho \"*** removing .DS_Store files ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file -name \".DS_Store\" -delete\n\necho \"*** removing empty .strings files ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"/*.lproj -type file -name \"*.strings\" -empty -delete\n";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n\necho \"*** removing .DS_Store files ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file -name \".DS_Store\" -delete\n";
 		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2822,23 +2718,6 @@
 			name = ZoomValues.strings;
 			sourceTree = "<group>";
 		};
-		CE97678E1160D65F008DCB8F /* MainToolbar.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE97678F1160D65F008DCB8F /* English */,
-				CE9767911160D66D008DCB8F /* Dutch */,
-				CE9767921160D66F008DCB8F /* French */,
-				CE9767931160D671008DCB8F /* German */,
-				CE9767941160D674008DCB8F /* Italian */,
-				CE9767951160D677008DCB8F /* ru */,
-				CE9767961160D67A008DCB8F /* Spanish */,
-				CE9767971160D67D008DCB8F /* zh_TW */,
-				CEF877441190593E006436A2 /* pl */,
-				CE157EDE12D4EBC000515B85 /* Japanese */,
-			);
-			name = MainToolbar.strings;
-			sourceTree = "<group>";
-		};
 		CE9768A011611C0F008DCB8F /* DownloadPreferenceSheet.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2882,23 +2761,6 @@
 			name = TransitionSheet.strings;
 			sourceTree = "<group>";
 		};
-		CEF60D42114C0DA60074ACC4 /* SnapshotWindow.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF60D43114C0DA60074ACC4 /* English */,
-				CEF60D80114C0DF40074ACC4 /* Dutch */,
-				CEF60DA6114C0E540074ACC4 /* French */,
-				CEF60DBC114C0E720074ACC4 /* German */,
-				CEF60DD2114C0E8E0074ACC4 /* Italian */,
-				CEF60DE8114C0EA80074ACC4 /* ru */,
-				CEF60DFE114C0EC10074ACC4 /* Spanish */,
-				CEF60E14114C0ED70074ACC4 /* zh_TW */,
-				CEF877531190593E006436A2 /* pl */,
-				CE157EED12D4EBC100515B85 /* Japanese */,
-			);
-			name = SnapshotWindow.strings;
-			sourceTree = "<group>";
-		};
 		CEF60D44114C0DA60074ACC4 /* ScaleSheet.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2931,23 +2793,6 @@
 				CE157EEA12D4EBC000515B85 /* Japanese */,
 			);
 			name = ReleaseNotes.strings;
-			sourceTree = "<group>";
-		};
-		CEF60D48114C0DA60074ACC4 /* ProgressSheet.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF60D49114C0DA60074ACC4 /* English */,
-				CEF60D83114C0DF40074ACC4 /* Dutch */,
-				CEF60DA9114C0E540074ACC4 /* French */,
-				CEF60DBF114C0E720074ACC4 /* German */,
-				CEF60DD5114C0E8E0074ACC4 /* Italian */,
-				CEF60DEB114C0EA80074ACC4 /* ru */,
-				CEF60E01114C0EC10074ACC4 /* Spanish */,
-				CEF60E17114C0ED70074ACC4 /* zh_TW */,
-				CEF8774F1190593E006436A2 /* pl */,
-				CE157EE912D4EBC000515B85 /* Japanese */,
-			);
-			name = ProgressSheet.strings;
 			sourceTree = "<group>";
 		};
 		CEF60D4A114C0DA60074ACC4 /* PrintAccessoryView.strings */ = {
@@ -3052,40 +2897,6 @@
 			name = NotesPanel.strings;
 			sourceTree = "<group>";
 		};
-		CEF60D56114C0DA60074ACC4 /* NotesDocument.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF60D57114C0DA60074ACC4 /* English */,
-				CEF60D89114C0DF40074ACC4 /* Dutch */,
-				CEF60DAF114C0E540074ACC4 /* French */,
-				CEF60DC6114C0E720074ACC4 /* German */,
-				CEF60DDC114C0E8E0074ACC4 /* Italian */,
-				CEF60DF2114C0EA80074ACC4 /* ru */,
-				CEF60E08114C0EC10074ACC4 /* Spanish */,
-				CEF60E1E114C0ED70074ACC4 /* zh_TW */,
-				CEF877461190593E006436A2 /* pl */,
-				CE157EE012D4EBC000515B85 /* Japanese */,
-			);
-			name = NotesDocument.strings;
-			sourceTree = "<group>";
-		};
-		CEF60D58114C0DA60074ACC4 /* MainWindow.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF60D59114C0DA60074ACC4 /* English */,
-				CEF60D8B114C0DF40074ACC4 /* Dutch */,
-				CEF60DB1114C0E540074ACC4 /* French */,
-				CEF60DC7114C0E720074ACC4 /* German */,
-				CEF60DDD114C0E8E0074ACC4 /* Italian */,
-				CEF60DF3114C0EA80074ACC4 /* ru */,
-				CEF60E09114C0EC10074ACC4 /* Spanish */,
-				CEF60E1F114C0ED70074ACC4 /* zh_TW */,
-				CEF877451190593E006436A2 /* pl */,
-				CE157EDF12D4EBC000515B85 /* Japanese */,
-			);
-			name = MainWindow.strings;
-			sourceTree = "<group>";
-		};
 		CEF60D5A114C0DA60074ACC4 /* LineInspector.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -3135,23 +2946,6 @@
 				CE157ED712D4EBC000515B85 /* Japanese */,
 			);
 			name = DownloadsWindow.strings;
-			sourceTree = "<group>";
-		};
-		CEF60D60114C0DA60074ACC4 /* ConversionProgressWindow.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF60D61114C0DA60074ACC4 /* English */,
-				CEF60D91114C0DF40074ACC4 /* Dutch */,
-				CEF60DB6114C0E540074ACC4 /* French */,
-				CEF60DCC114C0E720074ACC4 /* German */,
-				CEF60DE2114C0E8E0074ACC4 /* Italian */,
-				CEF60DF8114C0EA80074ACC4 /* ru */,
-				CEF60E0E114C0EC10074ACC4 /* Spanish */,
-				CEF60E24114C0ED70074ACC4 /* zh_TW */,
-				CEF8773A1190593E006436A2 /* pl */,
-				CE157ED412D4EBC000515B85 /* Japanese */,
-			);
-			name = ConversionProgressWindow.strings;
 			sourceTree = "<group>";
 		};
 		CEF60D62114C0DA60074ACC4 /* BookmarksWindow.strings */ = {
@@ -3237,40 +3031,6 @@
 				CE157EDA12D4EBC000515B85 /* Japanese */,
 			);
 			name = InfoWindow.strings;
-			sourceTree = "<group>";
-		};
-		CEF64DDF1160BDF2001C10C8 /* LeftSideView.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF64DE01160BDF2001C10C8 /* English */,
-				CEF64DE51160BE11001C10C8 /* Dutch */,
-				CEF64DE61160BE15001C10C8 /* French */,
-				CEF64DE71160BE19001C10C8 /* German */,
-				CEF64DE81160BE1D001C10C8 /* Italian */,
-				CEF64DE91160BE21001C10C8 /* ru */,
-				CEF64DEA1160BE24001C10C8 /* Spanish */,
-				CEF64DEB1160BE28001C10C8 /* zh_TW */,
-				CEF877411190593E006436A2 /* pl */,
-				CE157EDB12D4EBC000515B85 /* Japanese */,
-			);
-			name = LeftSideView.strings;
-			sourceTree = "<group>";
-		};
-		CEF64DE11160BDF2001C10C8 /* RightSideView.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEF64DE21160BDF2001C10C8 /* English */,
-				CEF64DEC1160BE33001C10C8 /* Dutch */,
-				CEF64DED1160BE35001C10C8 /* French */,
-				CEF64DEE1160BE39001C10C8 /* German */,
-				CEF64DEF1160BE3E001C10C8 /* Italian */,
-				CEF64DF01160BE40001C10C8 /* ru */,
-				CEF64DF11160BE48001C10C8 /* Spanish */,
-				CEF64DF21160BE52001C10C8 /* zh_TW */,
-				CEF877511190593E006436A2 /* pl */,
-				CE157EEB12D4EBC000515B85 /* Japanese */,
-			);
-			name = RightSideView.strings;
 			sourceTree = "<group>";
 		};
 		CEFE71941129AAA30018CD74 /* ServicesMenu.strings */ = {
