@@ -214,7 +214,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKApplicationDelegate>)delegate { return (<SKApplicationDelegate>)[super delegate]; }
+- (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 #endif
 
