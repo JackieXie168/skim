@@ -477,7 +477,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 if (subtemplate == nil && [[tag subtemplates] count] > count)
                     subtemplate = [tag subtemplateAtIndex:count];
                 if (subtemplate != nil) {
-                    if (keyValue = [self stringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex])
+                    if ((keyValue = [self stringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex]))
                         [result appendString:keyValue];
                 }
                 
@@ -723,7 +723,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 NSUInteger i, count = [matchStrings count];
                 NSArray *subtemplate = nil;
                 
-                count = [matchStrings count];
                 subtemplate = nil;
                 for (i = 0; i < count; i++) {
                     matchString = [matchStrings objectAtIndex:i];
@@ -737,7 +736,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 if (subtemplate == nil && [[tag subtemplates] count] > count)
                     subtemplate = [tag subtemplateAtIndex:count];
                 if (subtemplate != nil) {
-                    if (tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex])
+                    if ((tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex]))
                         [result appendAttributedString:tmpAttrStr];
                 }
                 
