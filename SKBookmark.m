@@ -145,8 +145,8 @@ static Class SKBookmarkClass = Nil;
                     [array addObject:bookmark];
                     [bookmark release];
                 }
-            } else if (docClass = [dc documentClassForType:fileType]) {
-                if (bookmark = [[self alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]]) {
+            } else if ((docClass = [dc documentClassForType:fileType])) {
+                if ((bookmark = [[self alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]])) {
                     [array addObject:bookmark];
                     [bookmark release];
                 }
@@ -330,7 +330,7 @@ static Class SKBookmarkClass = Nil;
     NSMutableArray *aChildren = [NSMutableArray array];
     SKBookmark *child;
     for (NSDictionary *setup in aSetupDicts) {
-        if (child = [[SKBookmark alloc] initWithSetup:setup label:@""]) {
+        if ((child = [[SKBookmark alloc] initWithSetup:setup label:@""])) {
             [aChildren addObject:child];
             [child release];
         }
@@ -351,7 +351,7 @@ static Class SKBookmarkClass = Nil;
         NSMutableArray *newChildren = [NSMutableArray array];
         SKBookmark *child;
         for (NSDictionary *dict in [dictionary objectForKey:CHILDREN_KEY]) {
-            if (child = [[SKBookmark alloc] initWithProperties:dict]) {
+            if ((child = [[SKBookmark alloc] initWithProperties:dict])) {
                 [newChildren addObject:child];
                 [child release];
             } else
@@ -635,7 +635,7 @@ static Class SKBookmarkClass = Nil;
                 } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
-                } else if (docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL]) {
+                } else if ((docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL])) {
                     NSUInteger aPageNumber = [[properties objectForKey:@"pageNumber"] unsignedIntegerValue];
                     if (aPageNumber > 0)
                         aPageNumber--;

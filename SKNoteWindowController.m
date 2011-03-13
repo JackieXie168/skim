@@ -100,7 +100,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (id)init {
-    return self = [self initWithNote:nil];
+    return [self initWithNote:nil];
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote {
@@ -327,7 +327,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
-        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[note string]];
+        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:name];
         NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
         NSInteger i = 0;
         NSFileManager *fm = [NSFileManager defaultManager];

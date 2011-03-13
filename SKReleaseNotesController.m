@@ -53,7 +53,7 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 - (id)init {
     if (sharedReleaseNotesController) NSLog(@"Attempt to allocate second instance of %@", self);
-    return (self = [super initWithWindowNibName:@"ReleaseNotes"]);
+    return [super initWithWindowNibName:@"ReleaseNotes"];
 }
 
 - (void)dealloc {

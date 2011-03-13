@@ -97,7 +97,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)showDelayed {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect contentRect;
+    NSRect contentRect = NSZeroRect;
     NSImage *image = [context toolTipImage];
     
     [self cancelDelayedAnimations];

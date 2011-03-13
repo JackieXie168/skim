@@ -205,11 +205,13 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
             if (adjSize < 1024) {
                 [string appendFormat:@"%.1f KB", size / 1024.0f];
             } else {
-                adjSize >>= 10; size >>= 10;
+                adjSize >>= 10;
+                size >>= 10;
                 if (adjSize < 1024) {
                     [string appendFormat:@"%.1f MB", size / 1024.0f];
                 } else {
-                    adjSize >>= 10; size >>= 10;
+                    //adjSize >>= 10;
+                    size >>= 10;
                     [string appendFormat:@"%.1f GB", size / 1024.0f];
                 }
             }
@@ -219,11 +221,13 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
         if (adjSize < 1024) {
             [string appendFormat:@"%.1f TB", size / 1024.0f];
         } else {
-            adjSize >>= 10; size >>= 10;
+            adjSize >>= 10;
+            size >>= 10;
             if (adjSize < 1024) {
                 [string appendFormat:@"%.1f PB", size / 1024.0f];
             } else {
-                adjSize >>= 10; size >>= 10;
+                //adjSize >>= 10;
+                size >>= 10;
                 [string appendFormat:@"%.1f EB", size / 1024.0f];
             }
         }

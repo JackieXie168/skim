@@ -311,10 +311,8 @@ static NSSet *infoKeys = nil;
     CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[response MIMEType], kUTTypeData);
     if (UTI) {
         NSString *type = [[NSWorkspace sharedWorkspace] preferredFilenameExtensionForType:(NSString *)UTI];
-        if (type) {
+        if (type)
             [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:type]];
-            CFRelease(type);
-        }
         CFRelease(UTI);
     }
     
