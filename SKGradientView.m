@@ -59,7 +59,8 @@
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-	if (self = [super initWithCoder:decoder]) {
+	self = [super initWithCoder:decoder];
+    if (self) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];

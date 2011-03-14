@@ -133,7 +133,8 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(NSInteger)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
-    if (self = [super initSkimNoteWithBounds:bounds]) {
+    self = [super initSkimNoteWithBounds:bounds];
+    if (self) {
         [self setMarkupType:type];
         
         NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:type];
@@ -157,39 +158,42 @@ static void (*original_dealloc)(id, SEL) = NULL;
     if ([selection hasCharacters] == NO || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
-    } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
-        PDFPage *page = [selection safeFirstPage];
-        NSInteger rotation = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 ? [page rotation] : 0;
-        NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
-        NSRect newBounds = NSZeroRect;
-        if (selection) {
-            NSUInteger i, iMax;
-            NSRect lineRect = NSZeroRect;
-            for (PDFSelection *sel in [selection selectionsByLine]) {
-                lineRect = [sel boundsForPage:page];
-                if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                     [[self lineRects] addPointer:&lineRect];
-                     newBounds = NSUnionRect(lineRect, newBounds);
-                }
-            } 
-            if (NSIsEmptyRect(newBounds)) {
-                [self release];
-                self = nil;
-            } else {
-                [self setBounds:newBounds];
-                if ([self hasLineRects]) {
-                    NSPointerArray *lines = [self lineRects];
-                    iMax = [lines count];
-                    for (i = 0; i < iMax; i++) {
-                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRectPointer)[lines pointerAtIndex:i], [self bounds].origin, rotation);
-                        [quadPoints addObjectsFromArray:quadLine];
-                        [quadLine release];
+    } else {
+        self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil];
+        if (self) {
+            PDFPage *page = [selection safeFirstPage];
+            NSInteger rotation = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 ? [page rotation] : 0;
+            NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
+            NSRect newBounds = NSZeroRect;
+            if (selection) {
+                NSUInteger i, iMax;
+                NSRect lineRect = NSZeroRect;
+                for (PDFSelection *sel in [selection selectionsByLine]) {
+                    lineRect = [sel boundsForPage:page];
+                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                         [[self lineRects] addPointer:&lineRect];
+                         newBounds = NSUnionRect(lineRect, newBounds);
+                    }
+                } 
+                if (NSIsEmptyRect(newBounds)) {
+                    [self release];
+                    self = nil;
+                } else {
+                    [self setBounds:newBounds];
+                    if ([self hasLineRects]) {
+                        NSPointerArray *lines = [self lineRects];
+                        iMax = [lines count];
+                        for (i = 0; i < iMax; i++) {
+                            NSArray *quadLine = createQuadPointsWithBounds(*(NSRectPointer)[lines pointerAtIndex:i], [self bounds].origin, rotation);
+                            [quadPoints addObjectsFromArray:quadLine];
+                            [quadLine release];
+                        }
                     }
                 }
             }
+            [self setQuadrilateralPoints:quadPoints];
+            [quadPoints release];
         }
-        [self setQuadrilateralPoints:quadPoints];
-        [quadPoints release];
     }
     return self;
 }

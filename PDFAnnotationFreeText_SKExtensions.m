@@ -58,7 +58,8 @@ NSString *SKPDFAnnotationScriptingAlignmentKey = @"scriptingAlignment";
 @implementation PDFAnnotationFreeText (SKExtensions)
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
-    if (self = [super initSkimNoteWithBounds:bounds]) {
+    self = [super initSkimNoteWithBounds:bounds];
+    if (self) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKFreeTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteFontSizeKey]];
         if (font)

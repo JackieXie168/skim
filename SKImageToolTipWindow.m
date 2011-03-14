@@ -62,7 +62,8 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
 
 - (id)init {
     if (sharedToolTipWindow) NSLog(@"Attempt to allocate second instance of %@", self);
-    if (self = [super initWithContentRect:NSZeroRect]) {
+    self = [super initWithContentRect:NSZeroRect];
+    if (self) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
         [self setOpaque:YES];

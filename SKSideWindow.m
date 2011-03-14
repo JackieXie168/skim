@@ -82,7 +82,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSDivideRect([screen frame], &contentRect, &ignored, DEFAULT_WINDOW_WIDTH, anEdge);
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+    self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+    if (self) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
 		[self setHasShadow:YES];
@@ -112,7 +113,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         controller = [decoder decodeObjectForKey:@"controller"];
         state = [decoder decodeIntegerForKey:@"state"];
         edge = [decoder decodeIntegerForKey:@"edge"];
@@ -364,14 +366,16 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 @implementation SKSideWindowContentView
 
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge {
-    if (self = [super initWithFrame:frameRect]) {
+    self = [super initWithFrame:frameRect];
+    if (self) {
         edge = anEdge;
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         edge = [decoder decodeIntegerForKey:@"edge"];
     }
     return self;

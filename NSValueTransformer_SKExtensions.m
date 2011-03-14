@@ -65,7 +65,8 @@
 }
 
 - (id)initWithValueTransformer:(NSValueTransformer *)aValueTransformer {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         if (aValueTransformer) {
             valueTransformer = [aValueTransformer retain];
         } else {

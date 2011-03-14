@@ -82,7 +82,8 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
 }
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         
         NSInteger itemIndex = [[NSApp mainMenu] numberOfItems] - 1;
         NSFileManager *fm = [NSFileManager defaultManager];

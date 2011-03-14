@@ -114,7 +114,8 @@
 }
 
 - (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
-    if (self = [self initWithTitle:aString action:aSelector keyEquivalent:@""]) {
+    self = [self initWithTitle:aString action:aSelector keyEquivalent:@""];
+    if (self) {
         if (anImageName)
             [self setImage:[NSImage imageNamed:anImageName]];
         [self setTarget:aTarget];
@@ -124,7 +125,8 @@
 }
 
 - (id)initWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu {
-    if (self = [self initWithTitle:aString action:NULL keyEquivalent:@""]) {
+    self = [self initWithTitle:aString action:NULL keyEquivalent:@""];
+    if (self) {
         [self setSubmenu:aSubmenu];
     }
     return self;

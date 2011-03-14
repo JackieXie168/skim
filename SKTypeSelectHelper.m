@@ -77,7 +77,8 @@
 }
 
 - (id)initWithMatchOption:(SKTypeSelectMatchOption)aMatchOption {
-    if (self = [super init]){
+    self = [super init];
+    if (self){
         dataSource = nil;
         searchCache = nil;
         searchString = nil;

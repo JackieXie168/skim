@@ -52,7 +52,8 @@ static SEL SKAttributeGetter(NSString *attribute) {
 @dynamic representedObject, index;
 
 - (id)initWithParent:(id)aParent {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         parent = aParent;
     }
     return self;
@@ -156,7 +157,8 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (id)initWithObject:(id)anObject parent:(id)aParent {
-    if (self = [super initWithParent:aParent]) {
+    self = [super initWithParent:aParent];
+    if (self) {
         object = [anObject retain];
     }
     return self;
@@ -199,7 +201,8 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent {
-    if (self = [super initWithParent:aParent]) {
+    self = [super initWithParent:aParent];
+    if (self) {
         index = anIndex;
     }
     return self;

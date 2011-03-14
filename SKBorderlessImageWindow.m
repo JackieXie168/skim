@@ -42,7 +42,8 @@
 @implementation SKBorderlessImageWindow
 
 - (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image {
-    if (self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+    self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+    if (self) {
         [self setReleasedWhenClosed:NO];
         [self setLevel:NSFloatingWindowLevel];
         

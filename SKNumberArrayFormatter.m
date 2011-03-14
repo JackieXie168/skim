@@ -50,13 +50,15 @@
 }
 
  - (id)init {
-    if (self = [super init])
+    self = [super init];
+    if (self)
         [self commonInit];
     return self;
  }
 
  - (id)initWithCoder:(NSCoder *)aCoder {
-    if (self = [super initWithCoder:aCoder])
+    self = [super initWithCoder:aCoder];
+    if (self)
         [self commonInit];
     return self;
 }

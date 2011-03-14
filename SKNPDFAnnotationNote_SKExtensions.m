@@ -79,7 +79,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
-    if (self = [super initSkimNoteWithBounds:bounds]) {
+    self = [super initSkimNoteWithBounds:bounds];
+    if (self) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];

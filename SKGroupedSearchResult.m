@@ -50,7 +50,8 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 }
 
 - (id)initWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         page = [aPage retain];
         maxCount = aMaxCount;
         matches = [[NSMutableArray alloc] init];

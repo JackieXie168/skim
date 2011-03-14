@@ -46,7 +46,8 @@
 @dynamic fileName;
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         NSPort *port1 = [NSPort port];
         NSPort *port2 = [NSPort port];
         

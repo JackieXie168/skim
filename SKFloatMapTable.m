@@ -42,7 +42,8 @@
 @implementation SKFloatMapTable
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         table = NSCreateMapTable(NSObjectMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
     }
     return self;

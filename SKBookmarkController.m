@@ -114,7 +114,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 - (id)init {
     if (sharedBookmarkController == nil) {
-        if (self = [super initWithWindowNibName:@"BookmarksWindow"]) {
+        self = [super initWithWindowNibName:@"BookmarksWindow"];
+        if (self) {
             recentDocuments = [[NSMutableArray alloc] init];
             
             NSMutableArray *bookmarks = [NSMutableArray array];
