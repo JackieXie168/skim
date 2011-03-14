@@ -120,14 +120,14 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
             [fm removeFileAtPath:outPath handler:nil];
         success = [fm copyPath:inPath toPath:outPath handler:nil];
 #endif
-        if (success == NO) {
-            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-        } else {
+        if (success) {
             NSURL *inURL = [NSURL fileURLWithPath:inPath];
             NSURL *outURL = [NSURL fileURLWithPath:outPath];
             NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:inURL error:NULL];
             NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
             success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL error:error];
+        } else if (error) {
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
         }
         
     }
@@ -259,7 +259,7 @@ int main (int argc, const char * argv[]) {
                 NSEnumerator *e = [[[[page annotations] copy] autorelease] objectEnumerator];
                 PDFAnnotation *annotation;
                 
-                while (annotation = [e nextObject]) {
+                while ((annotation = [e nextObject])) {
                     if ([convertibleTypes containsObject:[annotation type]]) {
                         NSDictionary *note = [annotation SkimNoteProperties];
                         if ([[annotation type] isEqualToString:SKNTextString]) {
@@ -314,7 +314,7 @@ int main (int argc, const char * argv[]) {
             NSEnumerator *e = [notes2 objectEnumerator];
             NSDictionary *note;
             
-            while (note = [e nextObject]) {
+            while ((note = [e nextObject])) {
                 NSMutableDictionary *mutableNote = [note mutableCopy];
                 NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue] + count;
                 [mutableNote setObject:[NSNumber numberWithUnsignedInt:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
@@ -392,7 +392,7 @@ int main (int argc, const char * argv[]) {
                 NSEnumerator *e = [inNotes objectEnumerator];
                 NSDictionary *note;
                 
-                while (note = [e nextObject]) {
+                while ((note = [e nextObject])) {
                     NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
                     if ([indexes containsIndex:pageIndex]) {
                         NSUInteger newPageIndex = [indexes countOfIndexesInRange:NSMakeRange(0, pageIndex)];
