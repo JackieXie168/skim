@@ -96,7 +96,8 @@ static id sharedNoSplitManager = nil;
 
 - (id)initWithPrefix:(NSString *)prefix;
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         namePrefix = [[prefix stringByAppendingString:NAME_SEPARATOR] retain];
         uniqueKey = [[prefix stringByAppendingString:UNIQUE_KEY_SUFFIX] retain];
         wrapperKey = [[prefix stringByAppendingString:WRAPPER_KEY_SUFFIX] retain];
@@ -187,7 +188,7 @@ static id sharedNoSplitManager = nil;
     NSData *data = nil;
     NSString *attrName = nil;
     
-    while(attrName = [e nextObject]){
+    while((attrName = [e nextObject])){
         data = [self extendedAttributeNamed:attrName atPath:path traverseLink:follow error:&anError];
         if(data != nil){
             [attributes setObject:data forKey:attrName];
@@ -312,11 +313,11 @@ static id sharedNoSplitManager = nil;
     // options passed to xattr functions
     int xopts = 0;
     if(options & kSKNXattrNoFollow)
-        xopts = xopts | XATTR_NOFOLLOW;
+        xopts = XATTR_NOFOLLOW;
     if(options & kSKNXattrCreateOnly)
-        xopts = xopts | XATTR_CREATE;
+        xopts |= XATTR_CREATE;
     if(options & kSKNXattrReplaceOnly)
-        xopts = xopts | XATTR_REPLACE;
+        xopts |= XATTR_REPLACE;
     
     BOOL success;
 
@@ -472,7 +473,7 @@ static id sharedNoSplitManager = nil;
     
     NSEnumerator *e = [allAttributes objectEnumerator];
     NSString *attrName;
-    while (attrName = [e nextObject]) {
+    while ((attrName = [e nextObject])) {
         
         fsPath = [path fileSystemRepresentation];
         status = removexattr(fsPath, [attrName UTF8String], xopts);
