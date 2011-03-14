@@ -45,7 +45,8 @@
 @dynamic size;
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         image = [anImage retain];
         label = [aLabel retain];
         pageIndex = anIndex;

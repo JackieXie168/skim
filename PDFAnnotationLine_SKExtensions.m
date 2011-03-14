@@ -57,7 +57,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 @implementation PDFAnnotationLine (SKExtensions)
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
-    if (self = [super initSkimNoteWithBounds:bounds]) { 	 
+    self = [super initSkimNoteWithBounds:bounds];
+    if (self) { 	 
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]]; 	 
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)

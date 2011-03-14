@@ -49,7 +49,8 @@
 @implementation SKValueTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         keyPath = [aKeyPath copy];
     }
     return self;
@@ -73,7 +74,8 @@
 @implementation SKRichValueTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath attributes:(NSDictionary *)anAttributes {
-    if (self = [super initWithKeyPath:aKeyPath]) {
+    self = [super initWithKeyPath:aKeyPath];
+    if (self) {
         attributes = [anAttributes copy];
     }
     return self;
@@ -95,7 +97,8 @@
 @implementation SKCollectionTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString {
-    if (self = [super initWithKeyPath:aKeyPath]) {
+    self = [super initWithKeyPath:aKeyPath];
+    if (self) {
         itemTemplateString = [anItemTemplateString retain];
         separatorTemplateString = [aSeparatorTemplateString retain];
         itemTemplate = nil;
@@ -133,7 +136,8 @@
 @implementation SKRichCollectionTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateAttributedString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateAttributedString {
-    if (self = [super initWithKeyPath:aKeyPath]) {
+    self = [super initWithKeyPath:aKeyPath];
+    if (self) {
         itemTemplateAttributedString = [anItemTemplateAttributedString retain];
         separatorTemplateAttributedString = [aSeparatorTemplateAttributedString retain];
         itemTemplate = nil;
@@ -171,7 +175,8 @@
 @implementation SKConditionTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates {
-    if (self = [super initWithKeyPath:aKeyPath]) {
+    self = [super initWithKeyPath:aKeyPath];
+    if (self) {
         matchType = aMatchType;
         matchStrings = [aMatchStrings copy];
         subtemplates = [aSubtemplates mutableCopy];
@@ -230,7 +235,8 @@
 @implementation SKTextTemplateTag
 
 - (id)initWithText:(NSString *)aText {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         text = [aText retain];
     }
     return self;
@@ -265,7 +271,8 @@
 @implementation SKRichTextTemplateTag
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         attributedText = [anAttributedText retain];
     }
     return self;

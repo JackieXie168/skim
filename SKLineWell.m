@@ -86,7 +86,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
+    self = [super initWithFrame:frame];
+    if (self) {
         lineWidth = 1.0;
         style = kPDFBorderStyleSolid;
         dashPattern = nil;
@@ -104,7 +105,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         lineWidth = [decoder decodeDoubleForKey:SKLineWellLineWidthKey];
         style = [decoder decodeIntegerForKey:SKLineWellStyleKey];
         dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];

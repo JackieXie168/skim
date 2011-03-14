@@ -68,7 +68,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     if (hasSlider)
         width += SLIDER_WIDTH;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
-    if (self = [super initWithContentRect:contentRect]) {
+    self = [super initWithContentRect:contentRect];
+    if (self) {
         
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setLevel:[[pdfView window] level]];
@@ -145,7 +146,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         previousButton = [[decoder decodeObjectForKey:@"previousButton"] retain];
         nextButton = [[decoder decodeObjectForKey:@"nextButton"] retain];
         zoomButton = [[decoder decodeObjectForKey:@"zoomButton"] retain];
@@ -228,7 +230,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (id)init {
-    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES]) {
+    self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
+    if (self) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
@@ -282,14 +285,16 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 @dynamic attributedStringValue;
 
 - (id)initWithFrame:(NSRect)frameRect {
-    if (self = [super initWithFrame:frameRect]) {
+    self = [super initWithFrame:frameRect];
+    if (self) {
         stringValue = nil;
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         stringValue = [[decoder decodeObjectForKey:@"stringValue"] retain];
     }
     return self;
@@ -388,7 +393,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 @synthesize path, alternatePath, toolTip, alternateToolTip;
 
 - (id)initTextCell:(NSString *)aString {
-    if (self = [super initTextCell:@""]) {
+    self = [super initTextCell:@""];
+    if (self) {
 		[self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
         [self setBordered:NO];
         [self setButtonType:NSMomentaryPushInButton];
@@ -397,7 +403,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         toolTip = [[decoder decodeObjectForKey:@"toolTip"] retain];
         alternateToolTip = [[decoder decodeObjectForKey:@"alternateToolTip"] retain];
         path = [[decoder decodeObjectForKey:@"path"] retain];
@@ -464,7 +471,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 + (Class)cellClass { return [SKNavigationSliderCell class]; }
 
 - (id)initWithFrame:(NSRect)frameRect {
-    if (self = [super initWithFrame:frameRect]) {
+    self = [super initWithFrame:frameRect];
+    if (self) {
         trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
         [self addTrackingArea:trackingArea];
         toolTip = nil;
@@ -473,7 +481,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         toolTip = [[decoder decodeObjectForKey:@"toolTip"] retain];
         trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
         [self addTrackingArea:trackingArea];

@@ -50,7 +50,8 @@
 }
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         transitionStyle = SKNoTransition;
         duration = 1.0;
         shouldRestrict = NO;

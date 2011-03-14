@@ -57,14 +57,16 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
 }
 
 - (id)init {
-    if (self = [super initTextCell:@""]) {
+    self = [super initTextCell:@""];
+    if (self) {
         [self setFormatter:textWithIconFormatter];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
-    if (self = [super initWithCoder:coder]) {
+    self = [super initWithCoder:coder];
+    if (self) {
         if ([self formatter] == nil)
             [self setFormatter:textWithIconFormatter];
     }

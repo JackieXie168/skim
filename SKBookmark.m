@@ -402,7 +402,8 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         alias = [[BDAlias alloc] initWithPath:aPath];
         if (alias) {
             aliasData = [[alias aliasData] retain];
@@ -418,7 +419,8 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithAliasData:(NSData *)aData pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         alias = [[BDAlias alloc] initWithData:aData];
         if (aData && alias) {
             aliasData = [aData retain];
@@ -435,7 +437,8 @@ static Class SKBookmarkClass = Nil;
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
     NSNumber *pageIndexNumber = [aSetupDict objectForKey:PAGEINDEX_KEY];
-    if (self = [self initWithAliasData:[aSetupDict objectForKey:ALIASDATA_KEY] pageIndex:(pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound) label:aLabel]) {
+    self = [self initWithAliasData:[aSetupDict objectForKey:ALIASDATA_KEY] pageIndex:(pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound) label:aLabel];
+    if (self) {
         setup = [aSetupDict copy];
     }
     return self;
@@ -534,7 +537,8 @@ static Class SKBookmarkClass = Nil;
 @implementation SKFolderBookmark
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         label = [aLabel copy];
         children = [[NSMutableArray alloc] initWithArray:aChildren];
         [children makeObjectsPerformSelector:@selector(setParent:) withObject:self];

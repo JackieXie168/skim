@@ -447,7 +447,8 @@ static const NSInteger UNOPENED_DESCRIPTOR = -2;
 
 - (id)initWatchedPathWithPath:(NSString *)fullPath;
 {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         // copy since the hash mustn't change
         path = [fullPath copy];
         // allows us to open files lazily, since these may be created just for a path comparison when removing from the queue

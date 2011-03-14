@@ -110,14 +110,16 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
+    self = [super initWithFrame:frame];
+    if (self) {
         [self commonInit];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
 		NSButtonCell *oldCell = [self cell];
 		if (NO == [oldCell isKindOfClass:[[self class] cellClass]]) {
 			SKFontWellCell *newCell = [[[[self class] cellClass] alloc] init];
@@ -447,14 +449,16 @@ static char SKFontWellFontSizeObservationContext;
 }
  
 - (id)initTextCell:(NSString *)aString {
-	if (self = [super initTextCell:aString]) {
+	self = [super initTextCell:aString];
+    if (self) {
 		[self commonInit];
 	}
 	return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-	if (self = [super initWithCoder:decoder]) {
+	self = [super initWithCoder:decoder];
+    if (self) {
         [self setTextColor:[decoder decodeObjectForKey:TEXTCOLOR_KEY]];
         [self setHasTextColor:[decoder decodeBoolForKey:HASTEXTCOLOR_KEY]];
         [self commonInit];

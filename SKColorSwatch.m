@@ -96,7 +96,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:COLORS_KEY]];
         action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
         target = [decoder decodeObjectForKey:TARGET_KEY];

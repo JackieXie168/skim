@@ -93,7 +93,8 @@
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-	if (self = [super initWithCoder:decoder]) {
+	self = [super initWithCoder:decoder];
+    if (self) {
         leftCell = [[decoder decodeObjectForKey:@"leftCell"] retain];
         rightCell = [[decoder decodeObjectForKey:@"rightCell"] retain];
         iconCell = [[decoder decodeObjectForKey:@"iconCell"] retain];

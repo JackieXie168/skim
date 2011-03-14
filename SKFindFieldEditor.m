@@ -42,7 +42,8 @@
 @implementation SKFindFieldEditor
 
 - (id)initWithFrame:(NSRect)frameRect {
-	if (self = [super initWithFrame:frameRect]) {
+	self = [super initWithFrame:frameRect];
+    if (self) {
 		[self setFieldEditor:YES];
 		[self setUsesFindPanel:YES];
 	}

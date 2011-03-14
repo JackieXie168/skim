@@ -63,7 +63,8 @@
 
 - (id)init {
     NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
-    if (self = [super initWithContentRect:contentRect]) {
+    self = [super initWithContentRect:contentRect];
+    if (self) {
         [self setIgnoresMouseEvents:YES];
         [self setDisplaysWhenScreenProfileChanges:NO];
         [self setLevel:NSStatusWindowLevel];

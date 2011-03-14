@@ -55,7 +55,8 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
+    self = [super initWithCoder:decoder];
+    if (self) {
         type = [[decoder decodeObjectForKey:@"type"] retain];
         active = [decoder decodeBoolForKey:@"active"];
     }

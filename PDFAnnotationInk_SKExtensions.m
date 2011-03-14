@@ -51,7 +51,8 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 @implementation PDFAnnotationInk (SKExtensions)
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
-    if (self = [super initSkimNoteWithBounds:bounds]) { 	 
+    self = [super initSkimNoteWithBounds:bounds];
+    if (self) { 	 
         if (SKPDFAnnotationLeaksBorder)
             [[self border] release];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]]; 	 
@@ -75,7 +76,8 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
     [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
     
-    if (self = [self initSkimNoteWithBounds:bounds]) {
+    self = [self initSkimNoteWithBounds:bounds];
+    if (self) {
         for (path in paths) {
             [path transformUsingAffineTransform:transform];
             [self addBezierPath:path];

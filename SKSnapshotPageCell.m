@@ -44,7 +44,8 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 @implementation SKSnapshotPageCell
 
 - (id)initWithCoder:(NSCoder *)decoder {
-	if (self = [super initWithCoder:decoder]) {
+	self = [super initWithCoder:decoder];
+    if (self) {
 		hasWindow = [decoder decodeBoolForKey:@"hasWindow"];
 	}
 	return self;
