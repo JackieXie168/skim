@@ -322,8 +322,8 @@ static NSSet *infoKeys = nil;
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
     NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
-    if ([downloadDirs count])
-        [URLDownload setDestination:[[downloadDirs lastObject] stringByAppendingPathComponent:filename] allowOverwrite:NO];
+    if ([downloadDirs count] > 0)
+        [URLDownload setDestination:[[downloadDirs objectAtIndex:0] stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
