@@ -84,6 +84,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
     NSInteger offset = rotation / 90;
     NSPoint p[4];
+    memset(&p, 0, 4 * sizeof(NSPoint));
     p[offset] = SKTopLeftPoint(r);
     p[(++offset)%4] = SKTopRightPoint(r);
     p[(++offset)%4] = SKBottomRightPoint(r);
