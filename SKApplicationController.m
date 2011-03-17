@@ -157,9 +157,13 @@
 #pragma mark NSApplication delegate
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey] || [[NSUserDefaults standardUserDefaults] boolForKey:SKIsRelaunchKey]) {
-        NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
+    if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
+        // just remove this in case opening the last open files crashes the app after a relaunch
+        [sud removeObjectForKey:SKIsRelaunchKey];
+        
+        NSArray *files = [sud objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files reverseObjectEnumerator];
         NSDictionary *dict;
         NSError *error;
