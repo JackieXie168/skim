@@ -209,7 +209,7 @@
     [self registerCurrentDocuments:nil];
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+    if ([sud boolForKey:SKEnableAppleRemoteKey]) {
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
