@@ -134,7 +134,7 @@
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    NSRect textRect, iconRect, ignored;
+    NSRect textRect, iconRect = NSZeroRect, ignored;
     CGFloat rightMargin = RIGHT_MARGIN;
     CGFloat iconHeight = NSHeight(bounds) - ICON_HEIGHT_OFFSET;
     
