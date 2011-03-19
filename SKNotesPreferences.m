@@ -137,8 +137,6 @@
 
 - (NSString *)title { return NSLocalizedString(@"Notes", @"Preference pane label"); }
 
-- (NSImage *)icon { return [NSImage imageNamed:@"NotesPreferences"]; }
-
 #pragma mark Actions
 
 - (SKFontWell *)activeFontWell {

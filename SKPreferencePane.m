@@ -44,8 +44,7 @@
 @dynamic icon;
 
 - (NSImage *)icon {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return [NSImage imageNamed:[self nibName]];
 }
 
 - (void)defaultsDidRevert {}
