@@ -102,8 +102,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (NSString *)title { return NSLocalizedString(@"General", @"Preference pane label"); }
 
-- (NSImage *)icon { return [NSImage imageNamed:@"GeneralPreferences"]; }
-
 - (void)setUpdateInterval:(NSInteger)interval {
     if (interval > 0)
         [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
