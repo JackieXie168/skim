@@ -237,8 +237,6 @@ static NSSet *infoKeys = nil;
     URLDownload = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
     [URLDownload setDeletesFileUponFailure:NO];
     [self setStatus:SKDownloadStatusStarting];
-    if ([delegate respondsToSelector:@selector(downloadDidStart:)])
-        [delegate downloadDidStart:self];
 }
 
 - (void)cancel {
@@ -264,8 +262,6 @@ static NSSet *infoKeys = nil;
             URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[self filePath]];
             [URLDownload setDeletesFileUponFailure:NO];
             [self setStatus:SKDownloadStatusDownloading];
-            if ([delegate respondsToSelector:@selector(downloadDidStart:)])
-                [delegate downloadDidStart:self];
             
         } else {
             
@@ -301,8 +297,6 @@ static NSSet *infoKeys = nil;
 
 - (void)downloadDidBegin:(NSURLDownload *)download{
     [self setStatus:SKDownloadStatusDownloading];
-    if ([delegate respondsToSelector:@selector(downloadDidBeginDownloading:)])
-        [delegate downloadDidBeginDownloading:self];
 }
 
 - (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response {
@@ -315,9 +309,6 @@ static NSSet *infoKeys = nil;
             [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:type]];
         CFRelease(UTI);
     }
-    
-    if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
-        [delegate downloadDidUpdate:self];
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
@@ -328,16 +319,12 @@ static NSSet *infoKeys = nil;
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
     [self setFilePath:path];
-    if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
-        [delegate downloadDidUpdate:self];
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
     if (expectedContentLength > 0) {
         receivedContentLength += length;
 		[progressIndicator setDoubleValue:(double)receivedContentLength];
-        if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
-            [delegate downloadDidUpdate:self];
     }
 }
 
