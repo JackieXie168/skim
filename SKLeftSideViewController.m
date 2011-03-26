@@ -103,7 +103,7 @@
 }
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
-    return [aView isEqual:findTableView.enclosingScrollView] || [aView isEqual:groupedFindTableView.enclosingScrollView];
+    return [findTableView isDescendantOf:aView] || [groupedFindTableView isDescendantOf:aView];
 }
 
 @end
