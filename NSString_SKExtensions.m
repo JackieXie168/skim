@@ -72,7 +72,7 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     if(length >= STACK_BUFFER_SIZE) {
         buffer = (UniChar *)CFAllocatorAllocate(allocator, length * sizeof(UniChar), 0);
     } else {
-        bzero(&stackBuffer, length * sizeof(UniChar));
+        bzero(stackBuffer, length * sizeof(UniChar));
         buffer = stackBuffer;
     }
     
