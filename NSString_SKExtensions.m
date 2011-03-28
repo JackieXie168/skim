@@ -73,7 +73,6 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
         buffer = (UniChar *)CFAllocatorAllocate(allocator, length * sizeof(UniChar), 0);
     } else {
         buffer = stackBuffer;
-        memset(&buffer, 0, sizeof(buffer));
     }
     
     NSCAssert1(buffer != NULL, @"failed to allocate memory for string of length %ld", (long)length);
