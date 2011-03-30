@@ -61,12 +61,12 @@ IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSe
     return method ? SKSetMethodImplementation(aClass, aSelector, method_getImplementation(method), method_getTypeEncoding(method), isInstance, options) : NULL;
 }
 
-IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
-    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, NO, SKReplaceOnly);
-}
-
 IMP SKReplaceInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
     return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, YES, SKReplaceOnly);
+}
+
+IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
+    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, NO, SKReplaceOnly);
 }
 
 void SKAddInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
