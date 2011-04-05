@@ -57,7 +57,8 @@ static SKFindController *sharedFindController = nil;
 
 - (id)init {
     if (sharedFindController) NSLog(@"Attempt to allocate second instance of %@", self);
-    if (self = [super initWithWindowNibName:@"FindPanel"]) {
+    self = [super initWithWindowNibName:@"FindPanel"];
+    if (self) {
         ignoreCase = YES;
     }
     return self;

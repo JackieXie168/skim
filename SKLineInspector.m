@@ -72,7 +72,8 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (id)init {
     if (sharedLineInspector) NSLog(@"Attempt to allocate second instance of %@", self);
-    if (self = [super initWithWindowNibName:@"LineInspector"]) {
+    self = [super initWithWindowNibName:@"LineInspector"];
+    if (self) {
         style = kPDFBorderStyleSolid;
         lineWidth = 1.0;
         dashPattern = nil;

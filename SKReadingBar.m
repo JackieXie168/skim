@@ -46,7 +46,8 @@
 @dynamic currentLastLine, currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         numberOfLines = 1;
         lineRects = nil;
         currentLine = -1;

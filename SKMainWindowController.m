@@ -220,7 +220,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (id)init {
-    if (self = [super initWithWindowNibName:@"MainWindow"]) {
+    self = [super initWithWindowNibName:@"MainWindow"];
+    if (self) {
         interactionMode = SKNormalMode;
         searchResults = [[NSMutableArray alloc] init];
         mwcFlags.findPanelFind = 0;

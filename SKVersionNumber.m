@@ -57,7 +57,8 @@
 - (id)initWithVersionString:(NSString *)versionString;
 {
     
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         // Input might be from a NSBundle info dictionary that could be misconfigured, so check at runtime too
         if (versionString == nil || [versionString isKindOfClass:[NSString class]] == NO) {
             [self release];

@@ -46,7 +46,8 @@
 @dynamic texts, type, page, pageIndex, string, text;
 
 - (id)initWithNote:(id)aNote {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         note = aNote;
     }
     return self;

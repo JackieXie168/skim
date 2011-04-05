@@ -523,7 +523,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @dynamic currentImage;
 
 - (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration {
-    if (self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut]) {
+    self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut];
+    if (self) {
         filter = [aFilter retain];
     }
     return self;

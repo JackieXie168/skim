@@ -74,7 +74,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (id)init {
     if (sharedPrefenceController == nil) {
-        if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
+        self = [super initWithWindowNibName:@"PreferenceWindow"];
+        if (self) {
             preferencePanes = [[NSArray alloc] initWithObjects:
                 [[[SKGeneralPreferences alloc] init] autorelease], 
                 [[[SKDisplayPreferences alloc] init] autorelease], 

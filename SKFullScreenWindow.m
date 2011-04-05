@@ -159,7 +159,8 @@
 @implementation SKMainFullScreenWindow
 
 - (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
-    if (self = [super initWithScreen:screen backgroundColor:backgroundColor level:level]) {
+    self = [super initWithScreen:screen backgroundColor:backgroundColor level:level];
+    if (self) {
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
         [self setExcludedFromWindowsMenu:NO];

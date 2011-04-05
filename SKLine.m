@@ -46,7 +46,8 @@
 @dynamic scriptingIndex;
 
 - (id)initWithIndex:(NSInteger)anIndex {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         index = anIndex;
     }
     return self;

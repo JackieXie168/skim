@@ -46,7 +46,8 @@
 @dynamic x, y;
 
 - (id)initWithRecordIndex:(NSInteger)aRecordIndex {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         recordIndex = aRecordIndex;
         pageIndex = NSNotFound;
         point = NSZeroPoint;
@@ -76,7 +77,8 @@
 @implementation SKPDFSyncRecords
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         records = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
     }
     return self;
