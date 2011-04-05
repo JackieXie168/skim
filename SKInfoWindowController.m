@@ -248,7 +248,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
     NSString *units = useMetric ? @"cm" : @"in";
     CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
-    return [NSString stringWithFormat:@"%.1f x %.1f %@  (%.1f x %.1f %@)", size.width * factor, size.height * factor, units, altSize.width * factor, altSize.height * factor, units];
+    if (NSEqualSizes(size, altSize))
+        return [NSString stringWithFormat:@"%.1f x %.1f %@", size.width * factor, size.height * factor, units];
+    else
+        return [NSString stringWithFormat:@"%.1f x %.1f %@  (%.1f x %.1f %@)", size.width * factor, size.height * factor, units, altSize.width * factor, altSize.height * factor, units];
 }
 
 - (NSDictionary *)infoForDocument:(NSDocument *)doc {
