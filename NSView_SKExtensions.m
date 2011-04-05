@@ -50,7 +50,7 @@
 	NSView *view;
 	
 	for (NSView *subview in [self subviews]) {
-		if (view = [subview subviewOfClass:aClass])
+		if ((view = [subview subviewOfClass:aClass]))
 			return view;
 	}
 	return nil;

@@ -542,7 +542,7 @@ struct SKServerFlags {
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
-            if (fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node))) {
+            if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
                 filename = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
                 [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
                 [filename release];
@@ -560,7 +560,7 @@ struct SKServerFlags {
         synctex_node_t node;
         const char *file;
         while (rv == NO && (node = synctex_next_result(scanner))) {
-            if (file = synctex_scanner_get_name(scanner, synctex_node_tag(node))) {
+            if ((file = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
                 *linePtr = MAX(synctex_node_line(node), 1) - 1;
                 *filePtr = [self sourceFileForFileSystemRepresentation:file isTeX:YES];
                 rv = YES;

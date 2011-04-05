@@ -593,7 +593,7 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     
     if (textSpec) {
         containerClassDescription = [textSpec keyClassDescription];
-        if (startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:range.location]) {
+        if ((startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:range.location])) {
             if (range.length == 1) {
                 [ranges addObject:startSpec];
             } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&

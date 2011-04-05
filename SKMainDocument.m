@@ -517,18 +517,18 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [(NSMutableDictionary *)info setObject:options forKey:SKPresentationOptionsKey];
     }
     [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
-    if (data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding])
+    if ((data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding]))
         [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
-    if (data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL])
+    if ((data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL]))
         [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
     if ([[self notes] count] > 0) {
-        if (data = [self notesData])
+        if ((data = [self notesData]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"skim"]];
-        if (data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding])
+        if ((data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
-        if (data = [self notesRTFData])
+        if ((data = [self notesRTFData]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
-        if (data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]])
+        if ((data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
     }
     return [fileWrapper autorelease];
@@ -726,18 +726,18 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
     } else  {
-        if (fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
+        if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error])) {
             if ([docType isEqualToString:SKPDFDocumentType]) {
-                if (data = [fileData retain])
+                if ((data = [fileData retain]))
                     pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData error:&error] retain])
+                if ((data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData error:&error] retain]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKDVIDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path] error:&error] retain])
+                if ((data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path] error:&error] retain]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKXDVDocumentType]) {
-                if (data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path] error:&error] retain])
+                if ((data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path] error:&error] retain]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
@@ -1537,7 +1537,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
                         if (startStringRange.location != NSNotFound) {
                             NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
                             if (endStringRange.location != NSNotFound) {
-                                if (firstIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)]) {
+                                if ((firstIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)])) {
                                     startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(endStringRange, endArrayRange)];
                                     if (startStringRange.location != NSNotFound) {
                                         endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
@@ -1776,7 +1776,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     for (i = 0; i < count; i++) {
         if (i > 0)
             [[textStorage mutableString] appendString:@"\n"];
-        if (attrString = [[doc pageAtIndex:i] attributedString])
+        if ((attrString = [[doc pageAtIndex:i] attributedString]))
             [textStorage appendAttributedString:attrString];
     }
     [textStorage endEditing];
@@ -1940,7 +1940,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         if ([caseSensitive isKindOfClass:[NSNumber class]] == NO || [caseSensitive boolValue] == NO)
             options |= NSCaseInsensitiveSearch;
         
-        if (selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options])
+        if ((selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options]))
             specifier = [selection objectSpecifier];
     }
     
