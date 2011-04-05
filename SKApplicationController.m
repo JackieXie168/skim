@@ -497,31 +497,31 @@
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *color;
-    if (color = [colorDict objectForKey:SKNFreeTextString])
+    if ((color = [colorDict objectForKey:SKNFreeTextString]))
         [sud setColor:color forKey:SKFreeTextNoteColorKey];
-    if (color = [colorDict objectForKey:SKNNoteString])
+    if ((color = [colorDict objectForKey:SKNNoteString]))
         [sud setColor:color forKey:SKAnchoredNoteColorKey];
-    if (color = [colorDict objectForKey:SKNCircleString])
+    if ((color = [colorDict objectForKey:SKNCircleString]))
         [sud setColor:color forKey:SKCircleNoteColorKey];
-    if (color = [colorDict objectForKey:SKNSquareString])
+    if ((color = [colorDict objectForKey:SKNSquareString]))
         [sud setColor:color forKey:SKSquareNoteColorKey];
-    if (color = [colorDict objectForKey:SKNHighlightString])
+    if ((color = [colorDict objectForKey:SKNHighlightString]))
         [sud setColor:color forKey:SKHighlightNoteColorKey];
-    if (color = [colorDict objectForKey:SKNUnderlineString])
+    if ((color = [colorDict objectForKey:SKNUnderlineString]))
         [sud setColor:color forKey:SKUnderlineNoteColorKey];
-    if (color = [colorDict objectForKey:SKNStrikeOutString])
+    if ((color = [colorDict objectForKey:SKNStrikeOutString]))
         [sud setColor:color forKey:SKStrikeOutNoteColorKey];
-    if (color = [colorDict objectForKey:SKNLineString])
+    if ((color = [colorDict objectForKey:SKNLineString]))
         [sud setColor:color forKey:SKLineNoteColorKey];
-    if (color = [colorDict objectForKey:SKNInkString])
+    if ((color = [colorDict objectForKey:SKNInkString]))
         [sud setColor:color forKey:SKInkNoteColorKey];
-    if (color = [colorDict objectForKey:SKCircleInteriorString])
+    if ((color = [colorDict objectForKey:SKCircleInteriorString]))
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:SKSquareInteriorString])
+    if ((color = [colorDict objectForKey:SKSquareInteriorString]))
         [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:SKLineInteriorString])
+    if ((color = [colorDict objectForKey:SKLineInteriorString]))
         [sud setColor:color forKey:SKLineNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:SKFreeTextFontString])
+    if ((color = [colorDict objectForKey:SKFreeTextFontString]))
         [sud setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 
@@ -539,15 +539,15 @@
 - (void)setDefaultLineWidths:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
-    if (number = [dict objectForKey:SKNFreeTextString])
+    if ((number = [dict objectForKey:SKNFreeTextString]))
         [sud setDouble:[number doubleValue] forKey:SKFreeTextNoteLineWidthKey];
-    if (number = [dict objectForKey:SKNCircleString])
+    if ((number = [dict objectForKey:SKNCircleString]))
         [sud setDouble:[number doubleValue] forKey:SKCircleNoteLineWidthKey];
-    if (number = [dict objectForKey:SKNSquareString])
+    if ((number = [dict objectForKey:SKNSquareString]))
         [sud setDouble:[number doubleValue] forKey:SKSquareNoteLineWidthKey];
-    if (number = [dict objectForKey:SKNLineString])
+    if ((number = [dict objectForKey:SKNLineString]))
         [sud setDouble:[number doubleValue] forKey:SKLineNoteLineWidthKey];
-    if (number = [dict objectForKey:SKNInkString])
+    if ((number = [dict objectForKey:SKNInkString]))
         [sud setDouble:[number doubleValue] forKey:SKInkNoteLineWidthKey];
 }
 
@@ -565,15 +565,15 @@
 - (void)setDefaultLineStyles:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
-    if (number = [dict objectForKey:SKNFreeTextString])
+    if ((number = [dict objectForKey:SKNFreeTextString]))
         [sud setInteger:[number integerValue] forKey:SKFreeTextNoteLineStyleKey];
-    if (number = [dict objectForKey:SKNCircleString])
+    if ((number = [dict objectForKey:SKNCircleString]))
         [sud setInteger:[number integerValue] forKey:SKCircleNoteLineStyleKey];
-    if (number = [dict objectForKey:SKNSquareString])
+    if ((number = [dict objectForKey:SKNSquareString]))
         [sud setInteger:[number integerValue] forKey:SKSquareNoteLineStyleKey];
-    if (number = [dict objectForKey:SKNLineString])
+    if ((number = [dict objectForKey:SKNLineString]))
         [sud setInteger:[number integerValue] forKey:SKLineNoteLineStyleKey];
-    if (number = [dict objectForKey:SKNInkString])
+    if ((number = [dict objectForKey:SKNInkString]))
         [sud setInteger:[number integerValue] forKey:SKInkNoteLineStyleKey];
 }
 
@@ -591,15 +591,15 @@
 - (void)setDefaultDashPatterns:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSArray *array;
-    if (array = [dict objectForKey:SKNFreeTextString])
+    if ((array = [dict objectForKey:SKNFreeTextString]))
         [sud setObject:array forKey:SKFreeTextNoteDashPatternKey];
-    if (array = [dict objectForKey:SKNCircleString])
+    if ((array = [dict objectForKey:SKNCircleString]))
         [sud setObject:array forKey:SKCircleNoteDashPatternKey];
-    if (array = [dict objectForKey:SKNSquareString])
+    if ((array = [dict objectForKey:SKNSquareString]))
         [sud setObject:array forKey:SKSquareNoteDashPatternKey];
-    if (array = [dict objectForKey:SKNLineString])
+    if ((array = [dict objectForKey:SKNLineString]))
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
-    if (array = [dict objectForKey:SKNInkString])
+    if ((array = [dict objectForKey:SKNInkString]))
         [sud setObject:array forKey:SKInkNoteDashPatternKey];
 }
 
@@ -614,9 +614,9 @@
 - (void)setDefaultFontNames:(NSDictionary *)fontNameDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSString *fontName;
-    if (fontName = [fontNameDict objectForKey:SKNFreeTextString])
+    if ((fontName = [fontNameDict objectForKey:SKNFreeTextString]))
         [sud setObject:fontName forKey:SKFreeTextNoteFontNameKey];
-    if (fontName = [fontNameDict objectForKey:SKNNoteString])
+    if ((fontName = [fontNameDict objectForKey:SKNNoteString]))
         [sud setObject:fontName forKey:SKAnchoredNoteFontNameKey];
 }
 
@@ -631,9 +631,9 @@
 - (void)setDefaultFontSizes:(NSDictionary *)fontSizeDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *fontSize;
-    if (fontSize = [fontSizeDict objectForKey:SKNFreeTextString])
+    if ((fontSize = [fontSizeDict objectForKey:SKNFreeTextString]))
         [sud setObject:fontSize forKey:SKFreeTextNoteFontSizeKey];
-    if (fontSize = [fontSizeDict objectForKey:SKNNoteString])
+    if ((fontSize = [fontSizeDict objectForKey:SKNNoteString]))
         [sud setObject:fontSize forKey:SKAnchoredNoteFontSizeKey];
 }
 

@@ -710,7 +710,7 @@ enum {
     NSData *tiffData = nil;
     
     if ([self hideNotes] == NO && [activeAnnotation isSkimNote] && [activeAnnotation isMovable]) {
-        if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation SkimNoteProperties]])
+        if ((noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation SkimNoteProperties]]))
             [types addObject:SKSkimNotePboardType];
     }
     
@@ -718,9 +718,9 @@ enum {
         NSRect selRect = NSIntegralRect(selectionRect);
         PDFPage *page = [self currentSelectionPage];
         
-        if (pdfData = [page PDFDataForRect:selRect])
+        if ((pdfData = [page PDFDataForRect:selRect]))
             [types addObject:NSPDFPboardType];
-        if (tiffData = [page TIFFDataForRect:selRect])
+        if ((tiffData = [page TIFFDataForRect:selRect]))
             [types addObject:NSTIFFPboardType];
         
         /*
@@ -1660,15 +1660,15 @@ enum {
             } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
-                if (number = [dict objectForKey:SKLineWellLineWidthKey])
+                if ((number = [dict objectForKey:SKLineWellLineWidthKey]))
                     [highlightAnnotation setLineWidth:[number doubleValue]];
                 [highlightAnnotation setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
-                if (number = [dict objectForKey:SKLineWellStyleKey])
+                if ((number = [dict objectForKey:SKLineWellStyleKey]))
                     [highlightAnnotation setBorderStyle:[number integerValue]];
                 if ([type isEqualToString:SKNLineString]) {
-                    if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
+                    if ((number = [dict objectForKey:SKLineWellStartLineStyleKey]))
                         [(PDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number integerValue]];
-                    if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
+                    if ((number = [dict objectForKey:SKLineWellEndLineStyleKey]))
                         [(PDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number integerValue]];
                 }
                 performedDrag = YES;

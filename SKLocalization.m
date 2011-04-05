@@ -100,9 +100,9 @@ do { \
     NSUInteger i, iMax = [self segmentCount];
     NSString *string;
     for (i = 0; i < iMax; i++) {
-        if (string = localizedStringFromTable([self labelForSegment:i], table))
+        if ((string = localizedStringFromTable([self labelForSegment:i], table)))
             [self setLabel:string forSegment:i];
-        if (string = localizedStringFromTable([self toolTipForSegment:i], table))
+        if ((string = localizedStringFromTable([self toolTipForSegment:i], table)))
             [self setToolTip:string forSegment:i];
         [[self menuForSegment:i] localizeStringsFromTable:table];
     }
@@ -159,7 +159,7 @@ do { \
     NSString *toolTip;
     [cells localizeStringsFromTable:table];
     for (id cell in cells) {
-        if (toolTip = localizedStringFromTable([self toolTipForCell:cell], table))
+        if ((toolTip = localizedStringFromTable([self toolTipForCell:cell], table)))
             [self setToolTip:toolTip forCell:cell];
     }
 }

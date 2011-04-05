@@ -80,11 +80,11 @@
 
 - (void)setProperties:(NSDictionary *)dictionary {
     id value;
-    if (value = [dictionary objectForKey:SKStyleNameKey])
+    if ((value = [dictionary objectForKey:SKStyleNameKey]))
         [self setTransitionStyle:[SKTransitionController styleForName:value]];
-    if (value = [dictionary objectForKey:SKDurationKey])
+    if ((value = [dictionary objectForKey:SKDurationKey]))
         [self setDuration:[value doubleValue]];
-    if (value = [dictionary objectForKey:SKShouldRestrictKey])
+    if ((value = [dictionary objectForKey:SKShouldRestrictKey]))
         [self setShouldRestrict:[value doubleValue]];
 }
 

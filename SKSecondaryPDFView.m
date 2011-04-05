@@ -179,7 +179,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     while (count--)
         [pagePopUpButton removeItemAtIndex:count];
     
-    if (count = [labels count]) {
+    if ((count = [labels count])) {
         for (i = 0; i < count; i++) {
             label = [labels objectAtIndex:i];
             width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);

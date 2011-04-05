@@ -494,7 +494,7 @@ static BOOL usesSequentialPageNumbering = NO;
             if (selSpec == nil) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
-            } else if (selection = [PDFSelection selectionWithSpecifier:selSpec]) {
+            } else if ((selection = [PDFSelection selectionWithSpecifier:selSpec])) {
                 if ([type isEqualToString:SKNHighlightString])
                     markupType = kPDFMarkupTypeHighlight;
                 else if ([type isEqualToString:SKNUnderlineString])

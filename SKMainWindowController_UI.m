@@ -1148,7 +1148,7 @@
     Class docClass = [sdc documentClassForContentsOfURL:fileURL];
     id document = nil;
     if (docClass) {
-        if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+        if ((document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error])) {
             if ([docClass isPDFDocument]) {
                 NSUInteger pageIndex = [action pageIndex];
                 if (pageIndex < [[document pdfDocument] pageCount]) {

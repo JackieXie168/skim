@@ -574,17 +574,17 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
-    if (number = [setup objectForKey:AUTOSCALES_KEY])
+    if ((number = [setup objectForKey:AUTOSCALES_KEY]))
         [pdfView setAutoScales:[number boolValue]];
     if ([pdfView autoScales] == NO && (number = [setup objectForKey:SCALEFACTOR_KEY]))
         [pdfView setScaleFactor:[number doubleValue]];
-    if (number = [setup objectForKey:DISPLAYSPAGEBREAKS_KEY])
+    if ((number = [setup objectForKey:DISPLAYSPAGEBREAKS_KEY]))
         [pdfView setDisplaysPageBreaks:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAYSASBOOK_KEY])
+    if ((number = [setup objectForKey:DISPLAYSASBOOK_KEY]))
         [pdfView setDisplaysAsBook:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAYMODE_KEY])
+    if ((number = [setup objectForKey:DISPLAYMODE_KEY]))
         [pdfView setDisplayMode:[number integerValue]];
-    if (number = [setup objectForKey:DISPLAYBOX_KEY])
+    if ((number = [setup objectForKey:DISPLAYBOX_KEY]))
         [pdfView setDisplayBox:[number integerValue]];
 }
 
@@ -863,7 +863,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     for (NSDictionary *dict in noteDicts) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
-        if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
+        if ((annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict])) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])

@@ -222,7 +222,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     [window setIgnoresMouseEvents:YES];
     [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
     
-    if (self = [self initWithWindow:window]) {
+    if ((self = [self initWithWindow:window])) {
         view = aView; // don't retain as it may retain us
         
         transitionStyle = SKNoTransition;
@@ -370,7 +370,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     if (fromIndex != NSNotFound && toIndex != NSNotFound && idx < [pageTransitions count]) {
         NSDictionary *info = [pageTransitions objectAtIndex:idx];
         id value;
-        if (value = [info objectForKey:SKStyleNameKey])
+        if ((value = [info objectForKey:SKStyleNameKey]))
             currentTransitionStyle = [[self class] styleForName:value];
         if ((value = [info objectForKey:SKDurationKey]) && [value respondsToSelector:@selector(doubleValue)])
             currentDuration = [value doubleValue];
