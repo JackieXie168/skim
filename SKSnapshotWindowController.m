@@ -552,7 +552,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 @implementation SKSnapshotWindow
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
-    if (self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation]) {
+    self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation];
+    if (self) {
         [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
     }
     return self;

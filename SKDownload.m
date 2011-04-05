@@ -92,7 +92,8 @@ static NSSet *infoKeys = nil;
 }
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         URL = [aURL retain];
         URLDownload = nil;
         filePath = nil;

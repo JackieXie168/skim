@@ -65,7 +65,8 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 @synthesize document;
 
 - (id)initForDocument:(NSDocument *)aDocument {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         document = aDocument;
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKFileUpdateCheckerDefaultsObservationContext];
     }

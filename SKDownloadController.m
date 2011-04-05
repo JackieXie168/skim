@@ -82,7 +82,8 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (id)init {
     if (sharedDownloadController) NSLog(@"Attempt to allocate second instance of %@", self);
-    if (self = [super initWithWindowNibName:@"DownloadsWindow"]) {
+    self = [super initWithWindowNibName:@"DownloadsWindow"];
+    if (self) {
         downloads = [[NSMutableArray alloc] init];
     }
     return self;

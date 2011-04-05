@@ -72,7 +72,8 @@ static char *SKTransitionPropertiesObservationContext;
 @dynamic pageTransitions, notesDocument, isScrolling;
 
 - (id)initForController:(SKMainWindowController *)aController {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         controller = aController;
         separate = NO;
         transition = [[SKTransitionInfo alloc] init];

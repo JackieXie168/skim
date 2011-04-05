@@ -90,7 +90,8 @@ static SKInfoWindowController *sharedInstance = nil;
 
 - (id)init {
     if (sharedInstance) NSLog(@"Attempt to allocate second instance of %@", self);
-    if (self = [super initWithWindowNibName:@"InfoWindow"]){
+    self = [super initWithWindowNibName:@"InfoWindow"];
+    if (self){
         info = nil;
         summaryKeys = [[NSArray alloc] initWithObjects:
                             SKInfoFileNameKey,

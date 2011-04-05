@@ -104,7 +104,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote {
-    if (self = [super initWithWindowNibName:@"NoteWindow"]) {
+    self = [super initWithWindowNibName:@"NoteWindow"];
+    if (self) {
         note = [aNote retain];
         
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];

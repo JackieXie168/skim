@@ -89,7 +89,8 @@
 @synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         notes = [[NSArray alloc] init];
         pdfDocument = nil;
         rowHeights = [[SKFloatMapTable alloc] init];

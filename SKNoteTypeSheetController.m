@@ -57,7 +57,8 @@
 @dynamic noteTypes;
 
 - (id)init {
-    if (self = [super initWithWindowNibName:@"NoteTypeSheet"]) {
+    self = [super initWithWindowNibName:@"NoteTypeSheet"];
+    if (self) {
         noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
         NSArray *noteTypes = [NSArray arrayWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
         NSMenuItem *menuItem;

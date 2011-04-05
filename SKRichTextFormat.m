@@ -54,7 +54,8 @@
 }
 
 - (id)initWithData:(NSData *)aData {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         if (aData) {
             data = [aData retain];
         } else {

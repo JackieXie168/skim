@@ -153,7 +153,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 + (BOOL)isPDFDocument { return YES; }
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         fileUpdateChecker = [[SKFileUpdateChecker alloc] initForDocument:self];
     }
     return self;
@@ -2014,7 +2015,8 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 @synthesize pdfDocument, noteDicts, presentationOptions, openMetaTags, openMetaRating;
 
 - (id)init {
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         pdfDocument = nil;
         noteDicts = nil;
         presentationOptions = nil;
