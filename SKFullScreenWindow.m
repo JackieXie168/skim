@@ -48,7 +48,8 @@
 
 - (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
     NSRect screenFrame = [(screen ?: [NSScreen mainScreen]) frame];
-    if (self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+    self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+    if (self) {
         [self setBackgroundColor:backgroundColor];
         [self setLevel:level];
         [self setReleasedWhenClosed:NO];
