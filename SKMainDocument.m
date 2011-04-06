@@ -208,8 +208,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     [self setPrintInfo:[[[self printInfo] copy] autorelease]];
     
     [self setDataFromTmpData];
-    [tmpData release];
-    tmpData = nil;
+    SKDESTROY(tmpData);
     
     [[self undoManager] enableUndoRegistration];
     
@@ -255,8 +254,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     if ([windowController isEqual:mainWindowController]) {
         // we need to do this on Tiger, because windowWillClose notifications are posted after this
         [self saveRecentDocumentInfo];
-        [mainWindowController release];
-        mainWindowController = nil;
+        SKDESTROY(mainWindowController);
     }
     [super removeWindowController:windowController];
 }
@@ -857,8 +855,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [fileUpdateChecker checkFileUpdatesIfNeeded];
     }
     
-    [tmpData release];
-    tmpData = nil;
+    SKDESTROY(tmpData);
     
     if (disableAlert == NO)
         [[self progressController] dismissSheet:nil];
