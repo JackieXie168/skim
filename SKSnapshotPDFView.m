@@ -61,6 +61,13 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 
 #define SKScaleMenuFontSize ((CGFloat)11.0)
 
+- (void)drawPage:(PDFPage *)pdfPage {
+    // smooth graphics when anti-aliasing
+    [[NSGraphicsContext currentContext] setImageInterpolation:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey] ? NSImageInterpolationHigh : NSImageInterpolationDefault];
+    [super drawPage:pdfPage];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+}
+
 #pragma mark Popup button
 
 - (void)commonInitialization {
