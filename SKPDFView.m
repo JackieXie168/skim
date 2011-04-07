@@ -331,8 +331,11 @@ enum {
 - (void)drawPage:(PDFPage *)pdfPage {
     [NSGraphicsContext saveGraphicsState];
     
+    NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolation];
     // smooth graphics when anti-aliasing
-    [[NSGraphicsContext currentContext] setImageInterpolation:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey] ? NSImageInterpolationHigh : NSImageInterpolationDefault];
+    if (interpolation == NSImageInterpolationDefault && [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey])
+        interpolation = NSImageInterpolationHigh;
+    [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
     
     // Let PDFView do most of the hard work.
     [super drawPage: pdfPage];
