@@ -72,6 +72,7 @@
 		CE121AC81180644A00951425 /* SKScriptMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = CE121AC71180644A00951425 /* SKScriptMenu.m */; };
 		CE121B2D1180770900951425 /* ScriptMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE121B2C1180770900951425 /* ScriptMenu.tiff */; };
 		CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */ = {isa = PBXBuildFile; fileRef = CE121BFA11529D15001D92ED /* SKIBArray.m */; };
+		CE12A73E134F215F003AED67 /* SKSelectCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE12A73D134F215F003AED67 /* SKSelectCommand.m */; };
 		CE171E3512C3AC1600291179 /* SKFileUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */; };
 		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE19446310627483007E8770 /* BookmarksWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445C10627483007E8770 /* BookmarksWindow.xib */; };
@@ -584,6 +585,8 @@
 		CE121B2C1180770900951425 /* ScriptMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ScriptMenu.tiff; sourceTree = "<group>"; };
 		CE121BF911529D15001D92ED /* SKIBArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKIBArray.h; sourceTree = "<group>"; };
 		CE121BFA11529D15001D92ED /* SKIBArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKIBArray.m; sourceTree = "<group>"; };
+		CE12A73C134F215F003AED67 /* SKSelectCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSelectCommand.h; sourceTree = "<group>"; };
+		CE12A73D134F215F003AED67 /* SKSelectCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSelectCommand.m; sourceTree = "<group>"; };
 		CE157ED212D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CE157ED312D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CE157ED512D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
@@ -1746,6 +1749,8 @@
 				CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */,
 				CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */,
 				CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */,
+				CE12A73C134F215F003AED67 /* SKSelectCommand.h */,
+				CE12A73D134F215F003AED67 /* SKSelectCommand.m */,
 				CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */,
 				CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */,
 			);
@@ -2532,6 +2537,7 @@
 				CE4E1E9A12BCFF5A005227ED /* HIDRemote.m in Sources */,
 				CE171E3512C3AC1600291179 /* SKFileUpdateChecker.m in Sources */,
 				CEECD61C12E9E30B00B9E35E /* NSError_SKExtensions.m in Sources */,
+				CE12A73E134F215F003AED67 /* SKSelectCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
