@@ -544,7 +544,7 @@
                 description="The document(s) or window(s) to revert."/>
         </command>
 
-        <command name="select" code="SKIMSele"
+        <command name="select" code="SKIMselL"
             description="Select text in a document.">
             <cocoa class="SKSelectCommand"/>
             <direct-parameter
