@@ -51,9 +51,10 @@
     id doc = [[[selection pages] lastObject] containingDocument];
     
     if ([doc respondsToSelector:@selector(pdfView)]) {
-        [doc showWindows];
-        [[doc pdfView] setCurrentSelection:selection];
-        [[doc pdfView] goToSelection:selection];
+        SKPDFView *pdfView = [doc pdfView];
+        [[pdfView window] makeKeyAndOrderFront:nil];
+        [pdfView setCurrentSelection:selection];
+        [pdfView goToSelection:selection];
     }
     
     return nil;
