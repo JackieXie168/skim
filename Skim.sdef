@@ -308,6 +308,9 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="select" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="join" hidden="yes">
 				<cocoa method=""/>
 			</responds-to>
@@ -350,6 +353,9 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="select" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="join" hidden="yes">
 				<cocoa method=""/>
 			</responds-to>
@@ -392,6 +398,9 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="select" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="join" hidden="yes">
 				<cocoa method=""/>
 			</responds-to>
@@ -434,6 +443,9 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="select" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="join" hidden="yes">
 				<cocoa method=""/>
 			</responds-to>
@@ -476,6 +488,9 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="select" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="join" hidden="yes">
 				<cocoa method=""/>
 			</responds-to>
@@ -527,6 +542,16 @@
             description="Revert a document. Don't use this when you have turned on the auto-relead functionality.">
             <direct-parameter type="specifier"
                 description="The document(s) or window(s) to revert."/>
+        </command>
+
+        <command name="select" code="SKIMSele"
+            description="Select text in a document.">
+            <cocoa class="SKSelectCommand"/>
+            <direct-parameter
+                description="The character range(s) to select.">
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </direct-parameter>
         </command>
 
         <command name="go" code="SKIMGoTo"
