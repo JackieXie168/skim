@@ -97,7 +97,6 @@ typedef NSInteger SKDownloadStatus;
 
 
 @protocol SKDownloadDelegate <NSObject>
-@optional
 
 - (void)downloadDidEnd:(SKDownload *)download;
 

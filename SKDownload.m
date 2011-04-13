@@ -245,8 +245,7 @@ static NSSet *infoKeys = nil;
         
         [URLDownload cancel];
         [self setStatus:SKDownloadStatusCanceled];
-        if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
-            [delegate downloadDidEnd:self];
+        [delegate downloadDidEnd:self];
     }
 }
 
@@ -333,8 +332,7 @@ static NSSet *infoKeys = nil;
     if (expectedContentLength > 0)
 		[progressIndicator setDoubleValue:(double)expectedContentLength];
     [self setStatus:SKDownloadStatusFinished];
-    if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
-        [delegate downloadDidEnd:self];
+    [delegate downloadDidEnd:self];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
@@ -342,8 +340,7 @@ static NSSet *infoKeys = nil;
     if (filePath)
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
     [self setFilePath:nil];
-    if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
-        [delegate downloadDidEnd:self];
+    [delegate downloadDidEnd:self];
 }
 
 @end
