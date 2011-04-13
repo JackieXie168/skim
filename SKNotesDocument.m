@@ -124,6 +124,31 @@
     NSWindowController *wc = [[self windowControllers] lastObject];
     BOOL wasVisible = [wc isWindowLoaded] && [[wc window] isVisible];
     [super showWindows];
+    
+    // Get the search string keyword if available (Spotlight passes this)
+    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+    NSString *searchString;
+    
+    if ([event eventID] == kAEOpenDocuments && 
+        (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) && 
+        [@"" isEqualToString:searchString] == NO &&
+        [searchField window]) {
+        if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
+            //strip quotes
+            searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
+        } else {
+            // strip extra search criteria
+            NSRange range = [searchString rangeOfString:@":"];
+            if (range.location != NSNotFound) {
+                range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
+                if (range.location != NSNotFound && range.location > 0)
+                    searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
+            }
+        }
+        [searchField setStringValue:searchString];
+        [self performSelector:@selector(searchNotes:) withObject:searchField afterDelay:0.0];
+    }
+    
     if (wasVisible == NO)
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
 }
