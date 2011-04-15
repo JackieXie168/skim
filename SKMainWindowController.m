@@ -623,7 +623,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
             message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(rect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(rect) * factor, NSMinX(rect) * factor, NSMinY(rect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) pt", (long)NSWidth(rect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(rect), (long)NSMinX(rect), (long)NSMinY(rect)];
+            message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) %@", (long)NSWidth(rect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(rect), (long)NSMinX(rect), (long)NSMinY(rect), NSLocalizedString(@"pt", @"size unit")];
         }
     } else if (magnification > 0.0001) {
         message = [NSString stringWithFormat:@"%.2f %C", magnification, MULTIPLICATION_SIGN_CHARACTER];
