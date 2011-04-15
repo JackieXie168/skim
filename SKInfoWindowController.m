@@ -198,38 +198,38 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     
     if (size >> 40 == 0) {
         if (size == 0) {
-            [string appendString:@"zero bytes"];
+            [string appendFormat:@"0 %@", NSLocalizedString(@"bytes", @"size unit")];
         } else if (size < 1024) {
-            [string appendFormat:@"%qu bytes", size];
+            [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
         } else {
             UInt32 adjSize = size >> 10;
             if (adjSize < 1024) {
-                [string appendFormat:@"%.1f KB", size / 1024.0f];
+                [string appendFormat:@"%.1f KB", size / 1024.0f, NSLocalizedString(@"KB", @"size unit")];
             } else {
                 adjSize >>= 10;
                 size >>= 10;
                 if (adjSize < 1024) {
-                    [string appendFormat:@"%.1f MB", size / 1024.0f];
+                    [string appendFormat:@"%.1f MB", size / 1024.0f, NSLocalizedString(@"MB", @"size unit")];
                 } else {
                     //adjSize >>= 10;
                     size >>= 10;
-                    [string appendFormat:@"%.1f GB", size / 1024.0f];
+                    [string appendFormat:@"%.1f GB", size / 1024.0f, NSLocalizedString(@"GB", @"size unit")];
                 }
             }
         }
     } else {
         UInt32 adjSize = size >> 40; size >>= 30;
         if (adjSize < 1024) {
-            [string appendFormat:@"%.1f TB", size / 1024.0f];
+            [string appendFormat:@"%.1f TB", size / 1024.0f, NSLocalizedString(@"TB", @"size unit")];
         } else {
             adjSize >>= 10;
             size >>= 10;
             if (adjSize < 1024) {
-                [string appendFormat:@"%.1f PB", size / 1024.0f];
+                [string appendFormat:@"%.1f PB", size / 1024.0f, NSLocalizedString(@"PB", @"size unit")];
             } else {
                 //adjSize >>= 10;
                 size >>= 10;
-                [string appendFormat:@"%.1f EB", size / 1024.0f];
+                [string appendFormat:@"%.1f EB", size / 1024.0f, NSLocalizedString(@"EB", @"size unit")];
             }
         }
     }
@@ -238,7 +238,7 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     
     [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    [string appendFormat:@" (%@ bytes)", [formatter stringFromNumber:[NSNumber numberWithUnsignedLongLong:logicalSize]]];
+    [string appendFormat:@" (%@ %@)", [formatter stringFromNumber:[NSNumber numberWithUnsignedLongLong:logicalSize]], NSLocalizedString(@"bytes", @"size unit")];
     
     return string;
 }
@@ -246,7 +246,7 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
 static inline 
 NSString *SKSizeString(NSSize size, NSSize altSize) {
     BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
-    NSString *units = useMetric ? @"cm" : @"in";
+    NSString *units = useMetric ? NSLocalizedString(@"cm", @"size unit") : NSLocalizedString(@"in", @"size unit");
     CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
     if (NSEqualSizes(size, altSize))
         return [NSString stringWithFormat:@"%.1f x %.1f %@", size.width * factor, size.height * factor, units];

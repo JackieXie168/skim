@@ -619,7 +619,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (NSEqualRects(rect, NSZeroRect) == NO) {
         if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
-            NSString *units = useMetric ? @"cm" : @"in";
+            NSString *units = useMetric ? NSLocalizedString(@"cm", @"size unit") : NSLocalizedString(@"in", @"size unit");
             CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
             message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(rect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(rect) * factor, NSMinX(rect) * factor, NSMinY(rect) * factor, units];
         } else {
