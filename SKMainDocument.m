@@ -1270,10 +1270,11 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 }
 
 - (void)revertDocumentToSaved:(id)sender { 	 
-     if ([self fileURL]) { 	 
-         if ([self isDocumentEdited]) { 	 
+     if ([self fileURL]) {
+         if ([self isDocumentEdited]) {
              [super revertDocumentToSaved:sender]; 	 
-         } else if ([fileUpdateChecker fileChangedOnDisk]) { 	 
+         } else if ([fileUpdateChecker fileChangedOnDisk] || 
+                    NSOrderedAscending == [[self fileModificationDate] compare:[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate]]) {
              NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[[self fileURL] path] lastPathComponent]] 	 
                                               defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
                                             alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
@@ -1283,9 +1284,9 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                                modalDelegate:self 	 
                               didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 	 
                                  contextInfo:NULL]; 	 
-         } 	 
-     } 	 
- }
+        }
+    }
+}
 
 - (void)performFindPanelAction:(id)sender {
     [[SKFindController sharedFindController] performFindPanelAction:sender];
@@ -1298,7 +1299,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         NSString *fileName = [[self fileURL] path];
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
-        return [self isDocumentEdited] || [fileUpdateChecker fileChangedOnDisk];
+        return [self isDocumentEdited] || [fileUpdateChecker fileChangedOnDisk] ||
+               NSOrderedAscending == [[self fileModificationDate] compare:[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate]];
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
