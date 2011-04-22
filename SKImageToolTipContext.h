@@ -45,6 +45,9 @@
 @end
 
 
+@interface NSAttributedString (SKImageToolTipContext) <SKImageToolTipContext>
+@end
+
 @interface PDFDestination (SKImageToolTipContext) <SKImageToolTipContext>
 @end
 

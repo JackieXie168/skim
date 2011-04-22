@@ -60,14 +60,17 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     return [[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease];
 }
 
-static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) {
+
+@implementation NSAttributedString (SKImageToolTipContext)
+
+- (NSImage *)toolTipImage {
     static NSColor *backgroundColor = nil;
     if (backgroundColor == nil)
         backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey];
-    NSRect textRect = [attrString boundingRectWithSize:NSMakeSize(width + 2 * TEXT_MARGIN_X, height + 2 * TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+    NSRect textRect = [self boundingRectWithSize:NSMakeSize(width + 2 * TEXT_MARGIN_X, height + 2 * TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
     
     textRect.size.height = fmin(NSHeight(textRect), height);
     textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
@@ -78,11 +81,13 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
     [image lockFocus];
     [backgroundColor setFill];
     NSRectFill(imageRect);
-    [attrString drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
+    [self drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
     [image unlockFocus];
     
     return image;
 }
+
+@end
 
 
 @interface PDFDestination (SKImageToolTipContextExtension)
@@ -194,23 +199,26 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
     NSAttributedString *attrString = [self text];
     NSString *string = [attrString string];
     NSUInteger i, l = [string length];
-    NSRange r = NSMakeRange(0, l);
     
     if (l == 0 || [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].location == NSNotFound) {
         string = [self string];
-        attrString = [string length] ? toolTipAttributedString(string) : nil;
+        l = [string length];
+        attrString = l > 0 ? toolTipAttributedString(string) : nil;
     }
     
-    if ([string length]) {
+    if (l > 0) {
+        NSRange r = NSMakeRange(0, l);
         while (NSNotFound != (i = NSMaxRange([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r])))
             r = NSMakeRange(i, l - i);
         while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
             r.length = i - r.location;
-        if (r.length < l)
+        if (r.length == 0)
+            attrString == nil;
+        else if (NSMaxRange(r) < l)
             attrString = [attrString attributedSubstringFromRange:r];
     }
     
-    return [attrString length] ? toolTipImageForAttributedString(attrString) : nil;
+    return [attrString length] ? [attrString toolTipImage] : nil;
 }
 
 @end
@@ -223,7 +231,7 @@ static NSImage *toolTipImageForAttributedString(NSAttributedString *attrString) 
     if (image == nil && [self URL]) {
         NSAttributedString *attrString = toolTipAttributedString([[self URL] absoluteString]);
         if ([attrString length])
-            image = toolTipImageForAttributedString(attrString);
+            image = [attrString toolTipImage];
     }
     return image;
 }
