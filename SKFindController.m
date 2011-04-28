@@ -209,8 +209,10 @@ static id responderForSelector(SEL selector) {
 }
 
 - (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
-    if (fieldEditor == nil)
+    if (fieldEditor == nil) {
         fieldEditor = [[SKFindFieldEditor alloc] init];
+        [fieldEditor setFieldEditor:YES];
+    }
     return fieldEditor;
 }
 
