@@ -45,25 +45,13 @@
 	self = [super initWithFrame:frameRect];
     if (self) {
 		[self setFieldEditor:YES];
-		[self setUsesFindPanel:YES];
+		[self setUsesFindPanel:NO];
 	}
 	return self;
 }
 
-- (IBAction)performFindPanelAction:(id)sender {
-    id delegate = [[self window] delegate];
-	if ([delegate respondsToSelector:@selector(performFindPanelAction:)]) 
-		[delegate performFindPanelAction:sender];
-	else
-		[super performFindPanelAction:sender];
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-    id delegate = [[self window] delegate];
-	if ([anItem action] == @selector(performFindPanelAction:) && [delegate respondsToSelector:@selector(performFindPanelAction:)] && [delegate respondsToSelector:@selector(validateUserInterfaceItem:)]) 
-		return [delegate validateUserInterfaceItem:anItem];
-	else
-		return [super validateUserInterfaceItem:anItem];
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return aSelector != @selector(performFindPanelAction:) && [super respondsToSelector:aSelector];
 }
 
 @end
