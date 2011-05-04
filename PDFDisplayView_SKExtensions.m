@@ -116,14 +116,31 @@ static id replacement_accessibilityAttributeValue(id self, SEL _cmd, NSString *a
     }
 }
 
-static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range) {
+static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range, CGFloat scale) {
     NSAttributedString *attributedString = nil;
     if ([pdfDisplayView respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         // make sure the accessibility table is generated
         [pdfDisplayView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
         PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
-        if ([selection respondsToSelector:@selector(attributedString)])
+        if ([selection respondsToSelector:@selector(attributedString)]) {
             attributedString = [selection attributedString];
+            if (fabs(scale - 1.0) > 0.0) {
+                NSMutableAttributedString *mutableAttrString = [[attributedString mutableCopy] autorelease];
+                NSUInteger i = 0, l = [mutableAttrString length];
+                NSRange range;
+                while (i < l) {
+                    NSFont *font = [mutableAttrString attribute:NSFontAttributeName atIndex:i longestEffectiveRange:&range inRange:NSMakeRange(i, l - i)];
+                    if (font) {
+                        font = [[NSFontManager sharedFontManager] convertFont:font toSize:round(scale * [font pointSize])];
+                        [mutableAttrString addAttribute:NSFontAttributeName value:font range:range];
+                        i = NSMaxRange(range);
+                    } else {
+                        i++;
+                    }
+                }
+                attributedString = mutableAttrString;
+            }
+        }
     }
     return attributedString;
 }
@@ -148,7 +165,7 @@ static id replacement_accessibilityRangeForPositionAttributeForParameter(id self
 static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView) {
-        NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue]);
+        NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]);
         return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
     }
     return nil;
@@ -157,7 +174,7 @@ static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL
 static id replacement_accessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView) {
-        return [attributedStringForAccessibilityRange(self, [parameter rangeValue]) accessibilityAttributedString];
+        return [attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]) accessibilityAttributedString];
     }
     return nil;
 }
@@ -174,7 +191,7 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
         NSRange r = NSMakeRange(start, end - start);
         BOOL foundRange = NO;
         while (foundRange == NO) {
-            [attributedStringForAccessibilityRange(self, r) attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
+            [attributedStringForAccessibilityRange(self, r, [pdfView scaleFactor]) attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
             foundRange = YES;
             if (range.location == r.location && r.location > 0) {
                 start = MAX(0, (NSInteger)r.location - 25);
