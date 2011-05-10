@@ -58,11 +58,9 @@
 }
 
 @property (nonatomic, assign) NSDocument *document;
+@property (nonatomic, readonly) BOOL fileChangedOnDisk, isUpdatingFile;
 
 - (id)initForDocument:(NSDocument *)aDocument;
-
-- (BOOL)fileChangedOnDisk;
-- (BOOL)isUpdatingFile;
 
 - (void)didUpdateFromURL:(NSURL *)fileURL;
 
