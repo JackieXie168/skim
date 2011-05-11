@@ -84,8 +84,6 @@ extern NSString *SKSkimFileDidSaveNotification;
 
 @property (nonatomic, readonly) SKPDFView *pdfView;
 
-@property (nonatomic, readonly) NSArray *fileIDStrings;
-
 - (void)savePasswordInKeychain:(NSString *)password;
 
 - (void)applySetup:(NSDictionary *)setup;

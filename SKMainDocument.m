@@ -83,6 +83,7 @@
 #import "NSURL_SKExtensions.h"
 #import "SKFileUpdateChecker.h"
 #import "NSError_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -148,7 +149,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 @implementation SKMainDocument
 
 @synthesize mainWindowController;
-@dynamic pdfDocument, pdfView, fileIDStrings, synchronizer, snapshots, tags, rating, currentPage, activeNote, richText, selectionSpecifier, selectionQDRect,selectionPage, pdfViewSettings;
+@dynamic pdfDocument, pdfView, synchronizer, snapshots, tags, rating, currentPage, activeNote, richText, selectionSpecifier, selectionQDRect,selectionPage, pdfViewSettings;
 
 + (BOOL)isPDFDocument { return YES; }
 
@@ -526,7 +527,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
         if ((data = [self notesRTFData]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
-        if ((data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[self fileIDStrings]]))
+        if ((data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[[self pdfDocument] fileIDStrings]]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
     }
     return [fileWrapper autorelease];
@@ -581,7 +582,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         NSString *filename = [filePath lastPathComponent];
         if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType])
             filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-        NSData *data = [self notesFDFDataForFile:filename fileIDStrings:[self fileIDStrings]];
+        NSData *data = [self notesFDFDataForFile:filename fileIDStrings:[[self pdfDocument] fileIDStrings]];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
@@ -1513,52 +1514,6 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return r;
 }
 
-- (NSArray *)fileIDStrings {
-    if (pdfData == nil)
-        return nil;
-    
-    NSData *firstIDData = nil;
-    NSData *secondIDData = nil;
-    NSRange EOFRange = [pdfData rangeOfData:[NSData dataWithBytes:"%%EOF" length:5] options:NSDataSearchBackwards range:SKMakeRangeFromEnd([pdfData length], 1024UL)];
-    
-    if (EOFRange.location != NSNotFound) {
-        NSRange trailerRange = [pdfData rangeOfData:[NSData dataWithBytes:"trailer" length:7] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(EOFRange.location, 2048UL)];
-        if (trailerRange.location != NSNotFound) {
-            NSRange IDRange = [pdfData rangeOfData:[NSData dataWithBytes:"/ID" length:3] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
-            if (IDRange.location != NSNotFound) {
-                NSRange startArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"[" length:1] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
-                if (startArrayRange.location != NSNotFound) {
-                    NSRange endArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"]" length:1] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
-                    if (endArrayRange.location != NSNotFound) {
-                        NSData *startStringPattern = [NSData dataWithBytes:"<" length:1];
-                        NSData *endStringPattern = [NSData dataWithBytes:">" length:1];
-                        NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(startArrayRange, endArrayRange)];
-                        if (startStringRange.location != NSNotFound) {
-                            NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
-                            if (endStringRange.location != NSNotFound) {
-                                if ((firstIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)])) {
-                                    startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(endStringRange, endArrayRange)];
-                                    if (startStringRange.location != NSNotFound) {
-                                        endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
-                                        if (endStringRange.location != NSNotFound) {
-                                            secondIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (secondIDData)
-        return [NSArray arrayWithObjects:
-                    [[[NSString alloc] initWithData:firstIDData encoding:NSISOLatin1StringEncoding] autorelease],
-                    [[[NSString alloc] initWithData:secondIDData encoding:NSISOLatin1StringEncoding] autorelease], nil];
-    return nil;
-}
-
 - (NSPrintInfo *)printInfo {
     NSPrintInfo *printInfo = [super printInfo];
     if ([[self pdfDocument] pageCount]) {
@@ -1664,7 +1619,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
-    NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
+    NSString *fileID = [[[self pdfDocument] fileIDStrings] lastObject] ?: [pdfData md5String];
     if (fileID) {
         // first see if the password exists in the keychain
         SecKeychainItemRef itemRef = NULL;
@@ -1707,7 +1662,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([document isLocked] == NO) {
         didUnlock = YES;
     } else if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
-        NSString *fileID = [[self fileIDStrings] lastObject] ?: [pdfData md5String];
+        NSString *fileID = [[document fileIDStrings] lastObject] ?: [pdfData md5String];
         if (fileID) {
             NSString *password = nil;
             SecKeychainItemRef itemRef = NULL;

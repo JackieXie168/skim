@@ -148,4 +148,36 @@
     return pageLabels;
 }
 
+- (NSArray *)fileIDStrings {
+    CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
+    CGPDFArrayRef idArray = CGPDFDocumentGetID(doc);
+    
+    if (idArray == NULL)
+        return nil;
+    
+    NSMutableArray *fileIDStrings = [NSMutableArray array];
+    size_t i, iMax = CGPDFArrayGetCount(idArray);
+    
+    for (i = 0; i < iMax; i++) {
+        CGPDFStringRef idString;
+        if (CGPDFArrayGetString(idArray, i, &idString)) {
+            size_t j = 0, k = 0, length = CGPDFStringGetLength(idString);
+            const unsigned char *inputBuffer = CGPDFStringGetBytePtr(idString);
+            unsigned char outputBuffer[length * 2]; // length should be 16 so no need to malloc
+            static unsigned char hexEncodeTable[17] = "0123456789abcdef";
+            
+            for (j = 0; j < length; j++) {
+                outputBuffer[k++] = hexEncodeTable[(inputBuffer[j] & 0xF0) >> 4];
+                outputBuffer[k++] = hexEncodeTable[(inputBuffer[j] & 0x0F)];
+            }
+            
+            NSString *fileID = [[NSString alloc] initWithBytes:outputBuffer length:k encoding:NSASCIIStringEncoding];
+            [fileIDStrings addObject:fileID];
+            [fileID release];
+        }
+    }
+    
+    return fileIDStrings;
+}
+
 @end
