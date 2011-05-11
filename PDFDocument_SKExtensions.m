@@ -149,6 +149,9 @@
 }
 
 - (NSArray *)fileIDStrings {
+    if ([self respondsToSelector:@selector(documentRef)] == NO)
+        return nil;
+    
     CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
     CGPDFArrayRef idArray = CGPDFDocumentGetID(doc);
     
