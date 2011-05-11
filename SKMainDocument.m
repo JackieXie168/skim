@@ -1655,7 +1655,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, passwordLength, passwordData);
         if (err != noErr)
             NSLog(@"Error %d occurred modifying password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
-    } else {
+    } else if (password) {
         // password not on keychain, so add it
         err = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass, &attributes, passwordLength, passwordData, NULL, NULL, NULL);
         if (err != noErr)
