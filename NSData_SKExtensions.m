@@ -172,7 +172,7 @@ static unsigned char hexDecodeTable[256] =
 - (NSString *)hexString {
     size_t length = [self length];
     const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
-    char *outputBuffer = (char *)malloc(length * 2 + 1);
+    char *outputBuffer = (char *)malloc(length * 2);
     if (outputBuffer == NULL)
 		return nil;
 
@@ -183,7 +183,6 @@ static unsigned char hexDecodeTable[256] =
 		outputBuffer[j++] = hexEncodeTable[(inputBuffer[i] & 0xF0) >> 4];
 		outputBuffer[j++] = hexEncodeTable[(inputBuffer[i] & 0x0F)];
     }
-    outputBuffer[j] = 0;
     
     NSString *result = [[[NSString alloc] initWithBytes:outputBuffer length:j encoding:NSASCIIStringEncoding] autorelease];
     
