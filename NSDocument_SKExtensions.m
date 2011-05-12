@@ -212,14 +212,14 @@ static BOOL isRichTextType(NSString *templateFile) {
 }
 
 - (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings {
-    NSInteger i, count = [[self notes] count];
+    NSInteger i = 0;
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
     NSMutableString *annots = [NSMutableString string];
-    for (i = 0; i < count; i++) {
-        [string appendFormat:@"%ld 0 obj<<%@>>\nendobj\n", (long)(i + 1), [[[self notes] objectAtIndex:i] fdfString]];
-        [annots appendFormat:@"%ld 0 R ", (long)(i + 1)];
+    for (PDFAnnotation *note in [self notes]) {
+        [string appendFormat:@"%ld 0 obj<<%@>>\nendobj\n", (long)(++i), [note fdfString]];
+        [annots appendFormat:@"%ld 0 R ", (long)i];
     }
-    [string appendFormat:@"%ld 0 obj<<", (long)(i + 1)];
+    [string appendFormat:@"%ld 0 obj<<", (long)(++i)];
     [string appendFDFName:SKFDFFDFKey];
     [string appendString:@"<<"];
     [string appendFDFName:SKFDFAnnotationsKey];
@@ -237,7 +237,7 @@ static BOOL isRichTextType(NSString *templateFile) {
     [string appendString:@">>\nendobj\n"];
     [string appendString:@"trailer\n<<"];
     [string appendFDFName:SKFDFRootKey];
-    [string appendFormat:@" %ld 0 R", (long)(i + 1)];
+    [string appendFormat:@" %ld 0 R", (long)i];
     [string appendString:@">>\n"];
     [string appendString:@"%%EOF\n"];
     return [string dataUsingEncoding:NSISOLatin1StringEncoding];
