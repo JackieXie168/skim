@@ -1790,7 +1790,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [pdfView setHighlightedSelections:nil];
 }
 
-- (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
+- (void)updateFindResultHighlights:(BOOL)scroll {
+    NSArray *findResults = nil;
+    
+    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
+        findResults = [leftSideController.findArrayController selectedObjects];
+    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
+        findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
+    
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
     
@@ -1838,16 +1845,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)goToSelectedFindResults:(id)sender {
     [self updateFindResultHighlights:YES];
-}
-
-- (void)updateFindResultHighlights:(BOOL)scroll {
-    NSArray *findResults = nil;
-    
-    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
-        findResults = [leftSideController.findArrayController selectedObjects];
-    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
-        findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
-    [self goToFindResults:findResults scrollToVisible:scroll];
 }
 
 - (IBAction)searchNotes:(id)sender {
