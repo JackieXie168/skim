@@ -49,12 +49,13 @@
     id dP = [self directParameter];
     PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
     id doc = [[[selection pages] lastObject] containingDocument];
+    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
     
     if ([doc respondsToSelector:@selector(pdfView)]) {
         SKPDFView *pdfView = [doc pdfView];
         [[pdfView window] makeKeyAndOrderFront:nil];
-        [pdfView setCurrentSelection:selection];
         [pdfView goToSelection:selection];
+        [pdfView setCurrentSelection:selection animate:animate];
     }
     
     return nil;
