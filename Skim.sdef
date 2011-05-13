@@ -552,6 +552,10 @@
                 <type type="specifier" list="yes"/>
                 <type type="specifier"/>
             </direct-parameter>
+			<parameter name="animating" code="Anim" type="boolean" optional="yes" 
+				description="Animate when selecting?"> 
+				<cocoa key="Animate"/> 
+			</parameter>
         </command>
 
         <command name="go" code="SKIMGoTo"
