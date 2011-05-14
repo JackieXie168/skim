@@ -1836,10 +1836,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [firstSel hasCharacters])
+    if (scroll && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [firstSel hasCharacters])
         [pdfView setCurrentSelection:firstSel animate:YES];
     
-    if (currentSel)
+    if (scroll && currentSel)
         [pdfView setCurrentSelection:currentSel];
 }
 
