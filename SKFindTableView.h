@@ -39,6 +39,22 @@
 #import <Cocoa/Cocoa.h>
 #import "SKTableView.h"
 
+@protocol SKFindTableViewDelegate;
 
 @interface SKFindTableView : SKTableView
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKFindTableViewDelegate>)delegate;
+- (void)setDelegate:(id <SKFindTableViewDelegate>)newDelegate;
+#endif
+
+@end
+
+
+@protocol SKFindTableViewDelegate <SKTableViewDelegate>
+@optional
+
+- (void)tableViewMoveLeft:(NSTableView *)aTableView;
+- (void)tableViewMoveRight:(NSTableView *)aTableView;
+
 @end

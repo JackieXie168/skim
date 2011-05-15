@@ -37,6 +37,7 @@
  */
 
 #import "SKFindTableView.h"
+#import "NSEvent_SKExtensions.h"
 
 #define PAGE_COLUMNID @"page"
 
@@ -45,5 +46,25 @@
 - (void)awakeFromNib {
     [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
 }
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar eventChar = [theEvent firstCharacter];
+	NSUInteger modifierFlags = [theEvent standardModifierFlags];
+    
+	if (eventChar == NSLeftArrowFunctionKey && modifierFlags == 0) {
+        if ([[self delegate] respondsToSelector:@selector(tableViewMoveLeft:)])
+            [[self delegate] tableViewMoveLeft:self];
+    } else if (eventChar == NSRightArrowFunctionKey && modifierFlags == 0) {
+        if ([[self delegate] respondsToSelector:@selector(tableViewMoveRight:)])
+            [[self delegate] tableViewMoveRight:self];
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKFindTableViewDelegate>)delegate { return (<SKFindTableViewDelegate>)[super delegate]; }
+- (void)setDelegate:(id <SKFindTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+#endif
 
 @end

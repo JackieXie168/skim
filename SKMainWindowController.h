@@ -95,6 +95,7 @@ enum {
     CGFloat                             roundedThumbnailSize;
     
     NSMutableArray                      *searchResults;
+    NSInteger                           searchResultIndex;
     NSMutableSet                        *temporaryAnnotations;
     NSTimer                             *temporaryAnnotationTimer;
     NSTimer                             *highlightTimer;

@@ -41,7 +41,6 @@
 #import "SKLeftSideViewController.h"
 #import "SKRightSideViewController.h"
 #import "SKMainToolbarController.h"
-#import "SKFindTableView.h"
 #import "SKPDFView.h"
 #import "SKStatusBar.h"
 #import "SKSnapshotWindowController.h"
@@ -99,7 +98,7 @@
 
 - (void)updateNoteFilterPredicate;
 
-- (void)updateFindResultHighlights:(BOOL)scroll;
+- (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction;
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
@@ -361,7 +360,7 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:leftSideController.findTableView] || [[aNotification object] isEqual:leftSideController.groupedFindTableView]) {
-        [self updateFindResultHighlights:YES];
+        [self updateFindResultHighlights:YES direction:0];
         
         if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
@@ -491,6 +490,19 @@
         return lastViewedPages;
     }
     return nil;
+}
+
+
+- (void)tableViewMoveLeft:(NSTableView *)tv {
+    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
+        [self updateFindResultHighlights:YES direction:-1];
+    }
+}
+
+- (void)tableViewMoveRight:(NSTableView *)tv {
+    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
+        [self updateFindResultHighlights:YES direction:1];
+    }
 }
 
 - (BOOL)tableView:(NSTableView *)tv hasImageContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
