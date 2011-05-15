@@ -40,7 +40,6 @@
 #import "SKStringConstants.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSData_SKExtensions.h"
-#import "SKPDFAnnotationTemporary.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 
@@ -78,9 +77,7 @@
             [transform rotateByDegrees:[self rotation]];
             [transform concat];
         }
-        [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
         [self drawWithBox:box]; 
-        [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         [NSGraphicsContext restoreGraphicsState];
     }

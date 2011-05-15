@@ -96,9 +96,6 @@ enum {
     
     NSMutableArray                      *searchResults;
     NSInteger                           searchResultIndex;
-    NSMutableSet                        *temporaryAnnotations;
-    NSTimer                             *temporaryAnnotationTimer;
-    NSTimer                             *highlightTimer;
     
     NSMutableArray                      *groupedSearchResults;
     
@@ -285,9 +282,6 @@ enum {
 - (void)displayGroupedFindViewAnimating:(BOOL)animate;
 - (void)displayNoteViewAnimating:(BOOL)animate;
 - (void)displaySnapshotViewAnimating:(BOOL)animate;
-
-- (void)removeTemporaryAnnotations;
-- (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page;
 
 - (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options;
 

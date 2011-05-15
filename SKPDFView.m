@@ -45,7 +45,6 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
-#import "SKPDFAnnotationTemporary.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSCursor_SKExtensions.h"
@@ -222,6 +221,11 @@ enum {
     activeAnnotation = nil;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
+    
+    syncPoint = NSZeroPoint;
+    syncPageIndex = NSNotFound;
+    syncTimer = nil;
+    
     magnification = 0.0;
     
     gestureRotation = 0.0;
@@ -276,6 +280,8 @@ enum {
     [self doAutohide:NO];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
+    [syncTimer invalidate];
+    SKDESTROY(syncTimer);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
     [typeSelectHelper setDataSource:nil];
@@ -409,6 +415,14 @@ enum {
         }
     }
     
+    if (syncPageIndex == [pdfPage pageIndex]) {
+        [NSGraphicsContext saveGraphicsState];
+        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.8] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(8.0, 8.0))] fill];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    
     if (toolMode != SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         [[NSColor blackColor] setStroke];
@@ -457,6 +471,10 @@ enum {
     readingBar = nil;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
+    syncPoint = NSZeroPoint;
+    syncPageIndex = NSNotFound;
+    [syncTimer invalidate];
+    SKDESTROY(syncTimer);
     [self removePDFToolTipRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
@@ -2154,6 +2172,15 @@ enum {
     [self goToRect:[annotation bounds] onPage:[annotation page]];
 }
 
+- (void)removeSyncPoint:(NSTimer *)timer {
+    if (syncPageIndex != NSNotFound)
+        [self setNeedsDisplayInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(8.0, 8.0)) ofPage:[[self document] pageAtIndex:syncPageIndex]];
+    syncPoint = NSZeroPoint;
+    syncPageIndex = NSNotFound;
+    [syncTimer invalidate];
+    SKDESTROY(syncTimer);
+}
+
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
@@ -2180,6 +2207,12 @@ enum {
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:page];
+        
+        syncPoint = point;
+        syncPageIndex = pageIndex;
+        [syncTimer invalidate];
+        [syncTimer release];
+        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
     }
 }
 
@@ -3210,10 +3243,7 @@ enum {
                 mouseDownInAnnotation = YES;
             }
         } else if (NSPointInRect(pagePoint, bounds)) {
-            if ([annotation isTemporaryAnnotation]) {
-                // register this, so we can do our own selection later
-                mouseDownInAnnotation = YES;
-            } else if ([annotation isLink]) {
+            if ([annotation isLink]) {
                 if (mouseDownInAnnotation && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP))
                     newActiveAnnotation = annotation;
                 break;

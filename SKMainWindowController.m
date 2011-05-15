@@ -58,7 +58,6 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKNoteText.h"
-#import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
@@ -154,7 +153,6 @@ static char SKMainWindowDefaultsObservationContext;
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
 #define SKUsesDrawersKey @"SKUsesDrawers"
-#define SKDisableAnimatedSearchHighlightKey @"SKDisableAnimatedSearchHighlight"
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
 
@@ -243,7 +241,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
         mwcFlags.rightSidePaneState = SKNoteSidePaneState;
         mwcFlags.findPaneState = SKSingularFindPaneState;
-        temporaryAnnotations = [[NSMutableSet alloc] init];
         pageLabel = nil;
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
@@ -271,7 +268,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [leftSideDrawer setDelegate:nil];
     [rightSideDrawer setDelegate:nil];
     [noteTypeSheetController setDelegate:nil];
-    SKDESTROY(temporaryAnnotations);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);
@@ -764,10 +760,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             openState = [self expansionStateForOutline:[[pdfView document] outlineRoot]];
             
             [[pdfView document] cancelFindString];
-            [temporaryAnnotationTimer invalidate];
-            [temporaryAnnotationTimer release];
-            temporaryAnnotationTimer = nil;
-            [temporaryAnnotations removeAllObjects];
             
             // make sure these will not be activated, or they can lead to a crash
             [pdfView removePDFToolTipRects];
@@ -939,7 +931,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         if ([leftSideController.searchField stringValue] && [[leftSideController.searchField stringValue] isEqualToString:@""] == NO) {
             [leftSideController.searchField setStringValue:@""];
-            [self removeTemporaryAnnotations];
         }
         
         if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
@@ -1641,67 +1632,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 #pragma mark Searching
 
-- (void)temporaryAnnotationTimerFired:(NSTimer *)timer {
-    [self removeTemporaryAnnotations];
-}
-
-- (void)addAnnotationsForSelection:(PDFSelection *)sel {
-    NSArray *pages = [sel pages];
-    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey] ?: [NSColor redColor];
-    
-    for (PDFPage *page in pages) {
-        NSRect bounds = [sel boundsForPage:page];
-        if (NSIsEmptyRect(bounds) == NO) {
-            bounds = NSInsetRect(bounds, -4.0, -4.0);
-            SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
-            
-            // use a heavier line width at low magnification levels; would be nice if PDFAnnotation did this for us
-            PDFBorder *border = [[PDFBorder alloc] init];
-            [border setLineWidth:1.5 / ([pdfView scaleFactor])];
-            [border setStyle:kPDFBorderStyleSolid];
-            [circle setBorder:border];
-            [border release];
-            [circle setColor:color];
-            [page addAnnotation:circle];
-            [pdfView setNeedsDisplayForAnnotation:circle];
-            [circle release];
-            [temporaryAnnotations addObject:circle];
-        }
-    }
-}
-
-- (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page {
-    NSRect bounds = NSMakeRect(point.x - 2.0, point.y - 2.0, 4.0, 4.0);
-    SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
-    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey];
-    
-    [self removeTemporaryAnnotations];
-    [circle setColor:color];
-    [circle setInteriorColor:color];
-    [page addAnnotation:circle];
-    [pdfView setNeedsDisplayForAnnotation:circle];
-    [circle release];
-    [temporaryAnnotations addObject:circle];
-    temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
-}
-
-static void removeTemporaryAnnotations(const void *annotation, void *context)
-{
-    SKMainWindowController *wc = (SKMainWindowController *)context;
-    PDFAnnotation *annote = (PDFAnnotation *)annotation;
-    [[wc pdfView] setNeedsDisplayForAnnotation:annote];
-    [[annote page] removeAnnotation:annote];
-    // no need to update thumbnail, since temp annotations are only displayed when the search table is displayed
-}
-
-- (void)removeTemporaryAnnotations {
-    [temporaryAnnotationTimer invalidate];
-    SKDESTROY(temporaryAnnotationTimer);
-    // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
-    CFSetApplyFunction((CFSetRef)temporaryAnnotations, removeTemporaryAnnotations, self);
-    [temporaryAnnotations removeAllObjects];
-}
-
 - (void)displaySearchResultsForString:(NSString *)string {
     if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:nil];
@@ -1717,8 +1647,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
     if ([[sender stringValue] isEqualToString:@""]) {
         
-        // get rid of temporary annotations
-        [self removeTemporaryAnnotations];
         if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
             [self displayThumbnailViewAnimating:YES];
         else 
@@ -1768,13 +1696,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		[pdfView scrollSelectionToVisible:self];
         [leftSideController.findTableView deselectAll:self];
         [leftSideController.groupedFindTableView deselectAll:self];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
-            [self removeTemporaryAnnotations];
-            [self addAnnotationsForSelection:selection];
-            temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
-        }
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO)
-            [pdfView setCurrentSelection:selection animate:YES];
+        [pdfView setCurrentSelection:selection animate:YES];
 	} else {
 		NSBeep();
 	}
@@ -1782,13 +1704,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSString *)findString {
     return [[[self pdfView] currentSelection] string];
-}
-
-- (void)removeHighlightedSelections:(NSTimer *)timer {
-    [highlightTimer invalidate];
-    [highlightTimer release];
-    highlightTimer = nil;
-    [pdfView setHighlightedSelections:nil];
 }
 
 - (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction {
@@ -1799,59 +1714,45 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
         findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     
-    if ([searchResults count] == 0 || direction == 0) {
-        searchResultIndex = 0;
-    } else if (direction == 1) {
-        if (++searchResultIndex >= (NSInteger)[findResults count])
+    if ([findResults count] == 0) {
+        
+        [pdfView setHighlightedSelections:nil];
+        
+    } else {
+        
+        if (direction == 0) {
             searchResultIndex = 0;
-    } else if (direction == -1) {
-        if (--searchResultIndex < 0)
-            searchResultIndex = [findResults count] - 1;
-    }
-    
-    PDFSelection *currentSel = [findResults count] > 0 ? [findResults objectAtIndex:searchResultIndex] : nil;
-    
-    // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.
-    NSEnumerator *selE = [findResults objectEnumerator];
-    PDFSelection *sel;
-    PDFSelection *fullSel = [[[selE nextObject] copy] autorelease];
-    
-    while (sel = [selE nextObject]) {
-        if ([sel hasCharacters])
-            [fullSel addSelection:sel];
-    }
-    
-    if (scroll && [currentSel hasCharacters]) {
-        PDFPage *page = [currentSel safeFirstPage];
-        NSRect rect = NSIntersectionRect(NSInsetRect([fullSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
-        [pdfView goToPage:page];
-        [pdfView goToRect:rect onPage:page];
-    }
-    
-    [self removeTemporaryAnnotations];
-    
-    // add an annotation so it's easier to see the search result
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
-        for (sel in findResults) {
-            if ([sel hasCharacters])
-                [self addAnnotationsForSelection:sel];
+        } else if (direction == 1) {
+            if (++searchResultIndex >= (NSInteger)[findResults count])
+                searchResultIndex = 0;
+        } else if (direction == -1) {
+            if (--searchResultIndex < 0)
+                searchResultIndex = [findResults count] - 1;
         }
+    
+        PDFSelection *currentSel = [findResults objectAtIndex:searchResultIndex];
+        
+        if (scroll && [currentSel hasCharacters]) {
+            PDFPage *page = [currentSel safeFirstPage];
+            NSRect rect = NSZeroRect;
+            
+            for (PDFSelection *sel in findResults) {
+                if ([[sel pages] containsObject:page])
+                    rect = NSUnionRect(rect, [sel boundsForPage:page]);
+            }
+            rect = NSIntersectionRect(NSInsetRect(rect, -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
+            [pdfView goToPage:page];
+            [pdfView goToRect:rect onPage:page];
+        }
+        
+        NSArray *highlights = [[NSArray alloc] initWithArray:findResults copyItems:YES];
+        [highlights setValue:[NSColor yellowColor] forKey:@"color"];
+        [pdfView setHighlightedSelections:highlights];
+        [highlights release];
+        
+        if ([currentSel hasCharacters])
+            [pdfView setCurrentSelection:currentSel animate:YES];
     }
-    
-    if (highlightTimer)
-        [self removeHighlightedSelections:highlightTimer];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [findResults count] > 1) {
-        PDFSelection *tmpSel = [[fullSel copy] autorelease];
-        [tmpSel setColor:[NSColor yellowColor]];
-        [pdfView setHighlightedSelections:[NSArray arrayWithObject:tmpSel]];
-        highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
-    }
-    
-    if (scroll && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [currentSel hasCharacters])
-        [pdfView setCurrentSelection:currentSel animate:YES];
-    
-    if (scroll && fullSel)
-        [pdfView setCurrentSelection:fullSel];
 }
 
 - (void)goToSelectedFindResults:(id)sender {
@@ -2155,7 +2056,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)registerAsObserver {
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
-                                  SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                   SKTableFontSizeKey, nil]
@@ -2166,7 +2066,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
             [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
-                                      SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                       SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                       SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                       SKTableFontSizeKey, nil]];
@@ -2242,18 +2141,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [secondaryPdfView setNeedsDisplay:YES];
             [self allThumbnailsNeedUpdate];
             [self allSnapshotsNeedUpdate];
-        } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
-                [[leftSideController.searchField stringValue] length] && 
-                (([leftSideController.findTableView window] && [leftSideController.findTableView numberOfSelectedRows]) || ([leftSideController.groupedFindTableView window] && [leftSideController.groupedFindTableView numberOfSelectedRows]))) {
-                // clear the selection
-                [self updateFindResultHighlights:NO direction:0];
-            }
-        } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
-            if ([[leftSideController.searchField stringValue] length] &&  ([leftSideController.findTableView numberOfSelectedRows] || [leftSideController.groupedFindTableView numberOfSelectedRows])) {
-                // clear the selection
-                [self updateFindResultHighlights:NO direction:0];
-            }
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
             [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];

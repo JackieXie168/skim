@@ -236,7 +236,6 @@
 		CEE54DAE0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DAD0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m */; };
 		CEE54DB40DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */; };
 		CEE54DC80DA2EAE00037169F /* PDFBorder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */; };
-		CEE54DF10DA2EF0E0037169F /* SKPDFAnnotationTemporary.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */; };
 		CEE54F6C0DA3FB060037169F /* SKMainToolbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */; };
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */; };
@@ -945,8 +944,6 @@
 		CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationMarkup_SKExtensions.m; sourceTree = "<group>"; };
 		CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFBorder_SKExtensions.h; sourceTree = "<group>"; };
 		CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFBorder_SKExtensions.m; sourceTree = "<group>"; };
-		CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFAnnotationTemporary.h; sourceTree = "<group>"; };
-		CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFAnnotationTemporary.m; sourceTree = "<group>"; };
 		CEE54F6A0DA3FB060037169F /* SKMainToolbarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainToolbarController.h; sourceTree = "<group>"; };
 		CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainToolbarController.m; sourceTree = "<group>"; };
 		CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSSegmentedControl_SKExtensions.h; sourceTree = "<group>"; };
@@ -1674,8 +1671,6 @@
 				CE099662112577A000EDB88F /* SKNotesPage.m */,
 				CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */,
 				CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */,
-				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
-				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
 				CE5BB0CD10515CCC00161B87 /* SKPDFDocument.h */,
 				CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */,
 				CE5BB0D110515D3100161B87 /* SKPDFPage.h */,
@@ -2460,7 +2455,6 @@
 				CEE54DAE0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m in Sources */,
 				CEE54DB40DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m in Sources */,
 				CEE54DC80DA2EAE00037169F /* PDFBorder_SKExtensions.m in Sources */,
-				CEE54DF10DA2EF0E0037169F /* SKPDFAnnotationTemporary.m in Sources */,
 				CEE54F6C0DA3FB060037169F /* SKMainToolbarController.m in Sources */,
 				CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */,
 				CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */,
