@@ -213,7 +213,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
         while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
             r.length = i - r.location;
         if (r.length == 0)
-            attrString == nil;
+            attrString = nil;
         else if (NSMaxRange(r) < l)
             attrString = [attrString attributedSubstringFromRange:r];
     }
