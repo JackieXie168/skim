@@ -52,8 +52,6 @@ extern NSString *SKReopenLastOpenFilesKey;
 extern NSString *SKRememberLastPageViewedKey;
 extern NSString *SKRememberSnapshotsKey;
 extern NSString *SKAutoSaveSkimNotesKey;
-extern NSString *SKSearchHighlightColorKey;
-extern NSString *SKShouldHighlightSearchResultsKey;
 extern NSString *SKSnapshotsOnTopKey;
 extern NSString *SKSnapshotThumbnailSizeKey;
 extern NSString *SKThumbnailSizeKey;

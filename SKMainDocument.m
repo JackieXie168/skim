@@ -538,7 +538,6 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     NSError *error = nil;
     if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
         // this must be checked before PDF, as we check for comformance to the UTI
-        [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
     } else if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType]) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
@@ -1459,8 +1458,6 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
         if (options & SKPDFSynchronizerFlippedMask)
             point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
-            [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
         [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex showReadingBar:(options & SKPDFSynchronizerShowReadingBarMask) != 0];
     }
 }

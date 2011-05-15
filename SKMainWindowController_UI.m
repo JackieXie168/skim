@@ -232,10 +232,6 @@
             [snapshotTimer invalidate];
             SKDESTROY(snapshotTimer);
         }
-        if (temporaryAnnotationTimer) {
-            [temporaryAnnotationTimer invalidate];
-            SKDESTROY(temporaryAnnotationTimer);
-        }
         if ([[pdfView document] isFinding])
             [[pdfView document] cancelFindString];
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)

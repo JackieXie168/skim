@@ -38,7 +38,6 @@
 
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
-#import "SKPDFAnnotationTemporary.h"
 #import "SKMainDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
@@ -155,9 +154,7 @@ static BOOL usesSequentialPageNumbering = NO;
         pageImage = [[NSImage alloc] initWithSize:pageSize];
         [pageImage lockFocus];
     }
-    [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
     [self drawWithBox:box]; 
-    [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
     if (isScaled) {
         [pageImage unlockFocus];
         [pageImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
