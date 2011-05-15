@@ -1644,7 +1644,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     // cancel any previous find to remove those results, or else they stay around
     if ([[pdfView document] isFinding])
         [[pdfView document] cancelFindString];
-
+    [pdfView setHighlightedSelections:nil];
+    
     if ([[sender stringValue] isEqualToString:@""]) {
         
         if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
