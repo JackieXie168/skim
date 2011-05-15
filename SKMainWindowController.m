@@ -177,7 +177,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (SKProgressController *)progressController;
 
 - (void)goToSelectedFindResults:(id)sender;
-- (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction;
+- (void)updateFindResultHighlightsForDirection:(NSInteger)direction;
 
 - (void)selectSelectedNote:(id)sender;
 - (void)goToSelectedOutlineItem:(id)sender;
@@ -970,7 +970,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([leftSideController.findTableView window])
                 [self displayGroupedFindViewAnimating:NO];
         }
-        [self updateFindResultHighlights:YES direction:0];
+        [self updateFindResultHighlightsForDirection:0];
     }
 }
 
@@ -1707,7 +1707,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return [[[self pdfView] currentSelection] string];
 }
 
-- (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction {
+- (void)updateFindResultHighlightsForDirection:(NSInteger)direction {
     NSArray *findResults = nil;
     
     if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
@@ -1733,7 +1733,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
         PDFSelection *currentSel = [findResults objectAtIndex:searchResultIndex];
         
-        if (scroll && [currentSel hasCharacters]) {
+        if ([currentSel hasCharacters]) {
             PDFPage *page = [currentSel safeFirstPage];
             NSRect rect = NSZeroRect;
             
@@ -1757,7 +1757,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)goToSelectedFindResults:(id)sender {
-    [self updateFindResultHighlights:YES direction:0];
+    [self updateFindResultHighlightsForDirection:0];
 }
 
 - (IBAction)searchNotes:(id)sender {
