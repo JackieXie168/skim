@@ -1803,10 +1803,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         searchResultIndex = 0;
     } else if (direction == 1) {
         if (++searchResultIndex >= (NSInteger)[findResults count])
-            searchResultIndex = [findResults count] - 1;
+            searchResultIndex = 0;
     } else if (direction == -1) {
         if (--searchResultIndex < 0)
-            searchResultIndex = 0;
+            searchResultIndex = [findResults count] - 1;
     }
     
     PDFSelection *currentSel = [findResults count] > 0 ? [findResults objectAtIndex:searchResultIndex] : nil;
