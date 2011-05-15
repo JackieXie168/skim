@@ -179,7 +179,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (SKProgressController *)progressController;
 
 - (void)goToSelectedFindResults:(id)sender;
-- (void)updateFindResultHighlights:(BOOL)scroll;
+- (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction;
 
 - (void)selectSelectedNote:(id)sender;
 - (void)goToSelectedOutlineItem:(id)sender;
@@ -224,6 +224,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (self) {
         interactionMode = SKNormalMode;
         searchResults = [[NSMutableArray alloc] init];
+        searchResultIndex = 0;
         mwcFlags.findPanelFind = 0;
         mwcFlags.caseInsensitiveSearch = 1;
         mwcFlags.wholeWordSearch = 0;
@@ -978,7 +979,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([leftSideController.findTableView window])
                 [self displayGroupedFindViewAnimating:NO];
         }
-        [self updateFindResultHighlights:YES];
+        [self updateFindResultHighlights:YES direction:0];
     }
 }
 
@@ -1790,7 +1791,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [pdfView setHighlightedSelections:nil];
 }
 
-- (void)updateFindResultHighlights:(BOOL)scroll {
+- (void)updateFindResultHighlights:(BOOL)scroll direction:(NSInteger)direction {
     NSArray *findResults = nil;
     
     if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
@@ -1798,21 +1799,31 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
         findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     
-    NSEnumerator *selE = [findResults objectEnumerator];
-    PDFSelection *sel;
+    if ([searchResults count] == 0 || direction == 0) {
+        searchResultIndex = 0;
+    } else if (direction == 1) {
+        if (++searchResultIndex >= (NSInteger)[findResults count])
+            searchResultIndex = [findResults count] - 1;
+    } else if (direction == -1) {
+        if (--searchResultIndex < 0)
+            searchResultIndex = 0;
+    }
+    
+    PDFSelection *currentSel = [findResults count] > 0 ? [findResults objectAtIndex:searchResultIndex] : nil;
     
     // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.
-    PDFSelection *firstSel = [selE nextObject];
-    PDFSelection *currentSel = [[firstSel copy] autorelease];
+    NSEnumerator *selE = [findResults objectEnumerator];
+    PDFSelection *sel;
+    PDFSelection *fullSel = [[[selE nextObject] copy] autorelease];
     
     while (sel = [selE nextObject]) {
         if ([sel hasCharacters])
-            [currentSel addSelection:sel];
+            [fullSel addSelection:sel];
     }
     
-    if (scroll && [firstSel hasCharacters]) {
-        PDFPage *page = [currentSel safeFirstPage];
-        NSRect rect = NSIntersectionRect(NSInsetRect([currentSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
+    if (scroll && [currentSel hasCharacters]) {
+        PDFPage *page = [fullSel safeFirstPage];
+        NSRect rect = NSIntersectionRect(NSInsetRect([fullSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
         [pdfView goToPage:page];
         [pdfView goToRect:rect onPage:page];
     }
@@ -1830,21 +1841,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (highlightTimer)
         [self removeHighlightedSelections:highlightTimer];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [findResults count] > 1) {
-        PDFSelection *tmpSel = [[currentSel copy] autorelease];
+        PDFSelection *tmpSel = [[fullSel copy] autorelease];
         [tmpSel setColor:[NSColor yellowColor]];
         [pdfView setHighlightedSelections:[NSArray arrayWithObject:tmpSel]];
         highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
-    if (scroll && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [firstSel hasCharacters])
-        [pdfView setCurrentSelection:firstSel animate:YES];
+    if (scroll && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [currentSel hasCharacters])
+        [pdfView setCurrentSelection:currentSel animate:YES];
     
-    if (scroll && currentSel)
-        [pdfView setCurrentSelection:currentSel];
+    if (scroll && fullSel)
+        [pdfView setCurrentSelection:fullSel];
 }
 
 - (void)goToSelectedFindResults:(id)sender {
-    [self updateFindResultHighlights:YES];
+    [self updateFindResultHighlights:YES direction:0];
 }
 
 - (IBAction)searchNotes:(id)sender {
@@ -2236,12 +2247,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [[leftSideController.searchField stringValue] length] && 
                 (([leftSideController.findTableView window] && [leftSideController.findTableView numberOfSelectedRows]) || ([leftSideController.groupedFindTableView window] && [leftSideController.groupedFindTableView numberOfSelectedRows]))) {
                 // clear the selection
-                [self updateFindResultHighlights:NO];
+                [self updateFindResultHighlights:NO direction:0];
             }
         } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
             if ([[leftSideController.searchField stringValue] length] &&  ([leftSideController.findTableView numberOfSelectedRows] || [leftSideController.groupedFindTableView numberOfSelectedRows])) {
                 // clear the selection
-                [self updateFindResultHighlights:NO];
+                [self updateFindResultHighlights:NO direction:0];
             }
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
