@@ -1822,7 +1822,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     
     if (scroll && [currentSel hasCharacters]) {
-        PDFPage *page = [fullSel safeFirstPage];
+        PDFPage *page = [currentSel safeFirstPage];
         NSRect rect = NSIntersectionRect(NSInsetRect([fullSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
         [pdfView goToPage:page];
         [pdfView goToRect:rect onPage:page];
