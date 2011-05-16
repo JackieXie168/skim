@@ -224,6 +224,7 @@ enum {
     
     syncPoint = NSZeroPoint;
     syncPageIndex = NSNotFound;
+    syncPhase = 0.0;
     syncTimer = nil;
     
     magnification = 0.0;
@@ -415,14 +416,6 @@ enum {
         }
     }
     
-    if (syncPageIndex == [pdfPage pageIndex]) {
-        [NSGraphicsContext saveGraphicsState];
-        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.8] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(8.0, 8.0))] fill];
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    
     if (toolMode != SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         [[NSColor blackColor] setStroke];
@@ -440,6 +433,23 @@ enum {
             [NSBezierPath fillRect:selectionRect];
         }
         SKDrawGrabHandles(selectionRect, radius, 0);
+    }
+    
+    if (syncPageIndex == [pdfPage pageIndex]) {
+        [NSGraphicsContext saveGraphicsState];
+        CGFloat s = 6.0;
+        if (syncPhase < 1.0) {
+            s += 8.0 * sin(syncPhase * M_PI);
+            NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+            [shade setShadowBlurRadius:2.0];
+            [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
+            [shade set];
+        } else {
+            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+        }
+        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(s, s))] fill];
+        [NSGraphicsContext restoreGraphicsState];
     }
     
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
@@ -473,6 +483,7 @@ enum {
     selectionPageIndex = NSNotFound;
     syncPoint = NSZeroPoint;
     syncPageIndex = NSNotFound;
+    syncPhase = 0.0;
     [syncTimer invalidate];
     SKDESTROY(syncTimer);
     [self removePDFToolTipRects];
@@ -2181,6 +2192,17 @@ enum {
     SKDESTROY(syncTimer);
 }
 
+- (void)animateSyncPoint:(NSTimer *)timer {
+    if (syncPageIndex != NSNotFound)
+        [self setNeedsDisplayInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(20.0, 20.0)) ofPage:[[self document] pageAtIndex:syncPageIndex]];
+    syncPhase += 0.1;
+    if (syncPhase >= 1.0) {
+        [syncTimer invalidate];
+        [syncTimer release];
+        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
+    }
+}
+
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
@@ -2210,9 +2232,10 @@ enum {
         
         syncPoint = point;
         syncPageIndex = pageIndex;
+        syncPhase = 0.0;
         [syncTimer invalidate];
         [syncTimer release];
-        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
+        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(animateSyncPoint:) userInfo:NULL repeats:YES] retain];
     }
 }
 

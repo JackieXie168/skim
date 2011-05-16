@@ -111,6 +111,7 @@ typedef NSInteger SKNoteType;
     NSPoint syncPoint;
     NSUInteger syncPageIndex;
     NSTimer *syncTimer;
+    CGFloat syncPhase;
     CGFloat magnification;
     SKRectEdges dragMask;
     NSBezierPath *bezierPath;
