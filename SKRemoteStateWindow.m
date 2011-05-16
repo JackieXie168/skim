@@ -62,7 +62,7 @@
 }
 
 - (id)init {
-    NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
+    NSRect contentRect = SKRectFromCenterAndSquareSize(NSZeroPoint, WINDOW_SIZE);
     self = [super initWithContentRect:contentRect];
     if (self) {
         [self setIgnoresMouseEvents:YES];

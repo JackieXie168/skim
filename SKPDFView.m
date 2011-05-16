@@ -463,7 +463,7 @@ enum {
         }
         
         [[NSColor redColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, SKMakeSquareSize(s))] fill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(syncPoint, s)] fill];
         
         [NSGraphicsContext restoreGraphicsState];
     }
@@ -2199,7 +2199,7 @@ enum {
 
 - (void)removeSyncPoint:(NSTimer *)timer {
     if (syncPageIndex != NSNotFound)
-        [self setNeedsDisplayInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(8.0, 8.0)) ofPage:[[self document] pageAtIndex:syncPageIndex]];
+        [self setNeedsDisplayInRect:SKRectFromCenterAndSquareSize(syncPoint, 8.0) ofPage:[[self document] pageAtIndex:syncPageIndex]];
     syncPoint = NSZeroPoint;
     syncPageIndex = NSNotFound;
     [syncTimer invalidate];
@@ -2208,7 +2208,7 @@ enum {
 
 - (void)animateSyncPoint:(NSTimer *)timer {
     if (syncPageIndex != NSNotFound)
-        [self setNeedsDisplayInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(20.0, 20.0)) ofPage:[[self document] pageAtIndex:syncPageIndex]];
+        [self setNeedsDisplayInRect:SKRectFromCenterAndSquareSize(syncPoint, 20.0) ofPage:[[self document] pageAtIndex:syncPageIndex]];
     syncPhase += 0.1;
     if (syncPhase >= 1.0) {
         [syncTimer invalidate];
@@ -2221,7 +2221,7 @@ enum {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
-        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSize(point, SKMakeSquareSize(10.0));
+        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
@@ -3142,9 +3142,9 @@ enum {
     // Hit-test for resize box.
     dragMask = 0;
     if (isLine) {
-        if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
+        if (NSPointInRect(pagePoint, SKRectFromCenterAndSquareSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), 8.0)))
             dragMask = SKMaxXEdgeMask;
-        else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
+        else if (NSPointInRect(pagePoint, SKRectFromCenterAndSquareSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), 8.0)))
             dragMask = SKMinXEdgeMask;
     }  else if ([activeAnnotation isResizable]) {
         if (NSWidth(originalBounds) < 2.0) {

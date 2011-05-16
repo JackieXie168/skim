@@ -548,7 +548,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setFill];
     }
     
-    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(SKCenterPoint(frame), SKMakeSquareSize(15.0))] fill];
+    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(SKCenterPoint(frame), 15.0)] fill];
 }
 
 - (BOOL)_usesCustomTrackImage { return YES; }
