@@ -119,6 +119,15 @@ static inline NSRect SKRectFromCenterAndSize(NSPoint center, NSSize size) {
     return rect;
 }
 
+static inline NSRect SKRectFromCenterAndSquareSize(NSPoint center, CGFloat size) {
+    NSRect rect;
+    rect.origin.x = center.x - 0.5 * size;
+    rect.origin.y = center.y - 0.5 * size;
+    rect.size.width = size;
+    rect.size.height = size;
+    return rect;
+}
+
 #pragma mark -
 
 extern NSPoint SKConstrainPointInRect(NSPoint point, NSRect boundary);
