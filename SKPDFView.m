@@ -2213,7 +2213,7 @@ enum {
     if (syncPhase >= 1.0) {
         [syncTimer invalidate];
         [syncTimer release];
-        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
+        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
     }
 }
 
