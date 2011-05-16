@@ -435,8 +435,22 @@ enum {
         SKDrawGrabHandles(selectionRect, radius, 0);
     }
     
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)drawPagePost:(PDFPage *)pdfPage {
+    [super drawPagePost:pdfPage];
+    
     if (syncPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
+        
+        NSRect rect = [self convertRect:[self convertRect:[pdfPage boundsForBox:kPDFDisplayBoxMediaBox] fromPage:pdfPage] toView:[self documentView]];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
+        [transform concat];
+        [pdfPage transformContextForBox:[self displayBox]];
+        
         CGFloat s = 6.0;
         if (syncPhase < 1.0) {
             s += 8.0 * sin(syncPhase * M_PI);
@@ -447,13 +461,13 @@ enum {
         } else {
             CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
         }
-        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, NSMakeSize(s, s))] fill];
+        
+        [[NSColor redColor] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSize(syncPoint, SKMakeSquareSize(s))] fill];
+        
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
