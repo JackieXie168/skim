@@ -156,7 +156,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
 }
 
 - (void)drawPage:(PDFPage *)pdfPage {
-    NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolation];
+    NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
     // smooth graphics when anti-aliasing
     if (interpolation == NSImageInterpolationDefault && [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey])
         interpolation = NSImageInterpolationHigh;
