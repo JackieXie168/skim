@@ -39,10 +39,6 @@
 		<dict/>
 		<key>SKAutoSaveSkimNotes</key>
 		<false/>
-		<key>SKSearchHighlightColor</key>
-		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQAAAYY=</data>
-		<key>SKShouldHighlightSearchResults</key>
-		<true/>
 		<key>SKSnapshotsOnTop</key>
 		<false/>
 		<key>SKSnapshotThumbnailSize</key>
@@ -233,8 +229,6 @@
 			<string>SKGreekingThreshold</string>
 			<string>SKBackgroundColor</string>
 			<string>SKFullScreenBackgroundColor</string>
-			<string>SKShouldHighlightSearchResults</string>
-			<string>SKSearchHighlightColor</string>
 			<string>SKReadingBarColor</string>
 			<string>SKReadingBarInvert</string>
 		</array>
