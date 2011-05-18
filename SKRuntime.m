@@ -56,7 +56,7 @@ IMP SKSetInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, co
     return imp;
 }
 
-IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, NSInteger options) {
+IMP SKSetInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, NSInteger options) {
     Method method = class_getInstanceMethod(aClass, impSelector);
     return method ? SKSetInstanceMethodImplementation(aClass, aSelector, method_getImplementation(method), method_getTypeEncoding(method), options) : NULL;
 }
@@ -70,9 +70,9 @@ void SKAddInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, c
 }
 
 IMP SKReplaceInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, SKReplaceOnly);
+    return SKSetInstanceMethodImplementationFromSelector(aClass, aSelector, impSelector, SKReplaceOnly);
 }
 
 void SKAddInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, SKAddOnly);
+    SKSetInstanceMethodImplementationFromSelector(aClass, aSelector, impSelector, SKAddOnly);
 }
