@@ -119,17 +119,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     SKPreferencePane *pane;
     NSView *view;
-    NSSize aSize, size = NSZeroSize;
+    NSSize aSize;
+    CGFloat width = 0.0;
     for (pane in preferencePanes) {
         [pane setRepresentedObject:[resettableKeys objectForKey:[pane nibName]]];
-        aSize = [[pane view] frame].size;
-        size.width = fmax(size.width, aSize.width);
-        size.height = fmax(size.height, aSize.height);
+        width = fmax(width, NSWidth([[pane view] frame]));
     }
     for (pane in preferencePanes) {
         view = [pane view];
         aSize = [view frame].size;
-        aSize.width = size.width;
+        aSize.width = width;
         [view setFrameSize:aSize];
         [view setAutoresizingMask:NSViewMinYMargin];
     }
@@ -140,7 +139,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [window setTitle:[currentPane title]];
         
     NSRect frame = [[self window] frame];
-    frame.size.width = size.width;
+    frame.size.width = width;
     frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
     [window setFrame:frame display:NO];
     
