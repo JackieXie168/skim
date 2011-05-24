@@ -41,16 +41,8 @@
 
 @implementation SKPreferenceWindow
 
-- (void)toggleToolbarShown:(id)sender {}
-- (void)runToolbarCustomizationPalette:(id)sender {}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(toggleToolbarShown:) || [menuItem action] == @selector(runToolbarCustomizationPalette:))
-        return NO;
-    else if ([[SKPreferenceWindow superclass] instancesRespondToSelector:_cmd])
-        return [super validateMenuItem:menuItem];
-    else
-        return YES;
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return aSelector != @selector(toggleToolbarShown:) && aSelector != @selector(runToolbarCustomizationPalette:) && [super respondsToSelector:aSelector];
 }
 
 @end
