@@ -111,6 +111,8 @@ static char SKPDFViewTransitionsObservationContext;
 static NSUInteger moveReadingBarModifiers = NSAlternateKeyMask;
 static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
+static BOOL useToolModeCursors = NO;
+
 static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
 
 static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active);
@@ -198,6 +200,9 @@ enum {
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Double-click to edit.", @"Default text for new text note"), SKDefaultFreeTextNoteContentsKey, NSLocalizedString(@"New note", @"Default text for new anchored note"), SKDefaultAnchoredNoteContentsKey, nil]];
     
+    
+    useToolModeCursors = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey];
+
     SKSwizzlePDFDisplayViewMethods();
 }
 
@@ -4131,7 +4136,7 @@ enum {
 }
 
 - (NSCursor *)cursorForNoteToolMode {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey]) {
+    if (useToolModeCursors) {
         switch (annotationMode) {
             case SKFreeTextNote:  return [NSCursor textNoteCursor];
             case SKAnchoredNote:  return [NSCursor anchoredNoteCursor];
