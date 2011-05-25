@@ -215,7 +215,7 @@
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
         return NO;
-    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask)
+    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask & ~NSNumericPadKeyMask)
         return NO;
     
     static NSCharacterSet *nonAlphanumericCharacterSet = nil;
