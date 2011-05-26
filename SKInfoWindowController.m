@@ -137,7 +137,7 @@ static SKInfoWindowController *sharedInstance = nil;
 }
 
 - (void)windowDidLoad {
-    [self updateForDocument:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
+    [self updateForDocument:[[[NSApp mainWindow] windowController] document]];
     
     NSArray *tables = [NSArray arrayWithObjects:summaryTableView, attributesTableView, nil];
     NSTableView *tv;
