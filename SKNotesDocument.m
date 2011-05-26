@@ -387,6 +387,7 @@
     if (absoluteURL)
         [self setSourceFileURL:nil];
     [super setFileURL:absoluteURL];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentFileURLDidChangeNotification object:self];
 }
 
 - (NSString *)displayName {

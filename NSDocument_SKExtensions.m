@@ -55,6 +55,8 @@
 
 #define TEMPLATES_FOLDER_NAME @"Templates"
 
+NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeNotification";
+
 @implementation NSDocument (SKExtensions)
 
 + (BOOL)isPDFDocument { return NO; }

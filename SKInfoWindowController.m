@@ -39,6 +39,7 @@
 #import "SKInfoWindowController.h"
 #import "SKMainDocument.h"
 #import "NSDocument_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 #import <Quartz/Quartz.h>
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
@@ -66,6 +67,8 @@
 - (void)handleViewFrameDidChangeNotification:(NSNotification *)notification;
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification;
 - (void)handleWindowDidResignMainNotification:(NSNotification *)notification;
+- (void)handlePDFDocumentInfoDidChangeNotification:(NSNotification *)notification;
+- (void)handleDocumentFileURLDidChangeNotification:(NSNotification *)notification;
 @end
 
 @implementation SKInfoWindowController
@@ -127,10 +130,14 @@ static SKInfoWindowController *sharedInstance = nil;
     [super dealloc];
 }
 
-- (void)windowDidLoad {
-    [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
+- (void)updateForDocument:(NSDocument *)doc {
+    [self setInfo:[self infoForDocument:doc]];
     [summaryTableView reloadData];
     [attributesTableView reloadData];
+}
+
+- (void)windowDidLoad {
+    [self updateForDocument:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
     
     NSArray *tables = [NSArray arrayWithObjects:summaryTableView, attributesTableView, nil];
     NSTableView *tv;
@@ -153,6 +160,12 @@ static SKInfoWindowController *sharedInstance = nil;
                                                  name: NSWindowDidBecomeMainNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidResignMainNotification:) 
                                                  name: NSWindowDidResignMainNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePDFDocumentInfoDidChangeNotification:) 
+                                                 name: PDFDocumentDidUnlockNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePDFDocumentInfoDidChangeNotification:) 
+                                                 name: SKPDFPageBoundsDidChangeNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentFileURLDidChangeNotification:) 
+                                                 name: SKDocumentFileURLDidChangeNotification object: nil];
 }
 
 static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
@@ -292,16 +305,23 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification {
-    NSDocument *doc = [[[notification object] windowController] document];
-    [self setInfo:[self infoForDocument:doc]];
-    [summaryTableView reloadData];
-    [attributesTableView reloadData];
+    [self updateForDocument:[[[notification object] windowController] document]];
 }
 
 - (void)handleWindowDidResignMainNotification:(NSNotification *)notification {
-    [self setInfo:nil];
-    [summaryTableView reloadData];
-    [attributesTableView reloadData];
+    [self updateForDocument:nil];
+}
+
+- (void)handlePDFDocumentInfoDidChangeNotification:(NSNotification *)notification {
+    NSDocument *doc = [[[NSApp mainWindow] windowController] document];
+    if ([[doc pdfDocument] isEqual:[notification object]])
+        [self updateForDocument:doc];
+}
+
+- (void)handleDocumentFileURLDidChangeNotification:(NSNotification *)notification {
+    NSDocument *doc = [[[NSApp mainWindow] windowController] document];
+    if ([doc isEqual:[notification object]])
+        [self updateForDocument:doc];
 }
 
 - (NSString *)labelForKey:(NSString *)key {
