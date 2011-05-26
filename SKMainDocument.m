@@ -1349,6 +1349,8 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         [synchronizer setFileName:[absoluteURL path]];
     else
         [synchronizer setFileName:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentFileURLDidChangeNotification object:self];
 }
 
 - (SKPDFSynchronizer *)synchronizer {
