@@ -143,10 +143,7 @@
 #pragma mark API
 
 - (void)rebuildTypeSelectSearchCache {    
-    if (searchCache)
-        [searchCache release];
-    
-    searchCache = [[dataSource typeSelectHelperSelectionItems:self] retain];
+    SKDESTROY(searchCache);
 }
 
 - (BOOL)processKeyDownEvent:(NSEvent *)keyEvent {
@@ -264,7 +261,7 @@
 
 - (NSArray *)searchCache {
     if (searchCache == nil)
-        [self rebuildTypeSelectSearchCache];
+        searchCache = [[dataSource typeSelectHelperSelectionItems:self] retain];
     return searchCache;
 }
 
