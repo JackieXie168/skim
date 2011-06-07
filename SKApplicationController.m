@@ -100,6 +100,7 @@
 
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
+- (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 @end
 
 
@@ -181,6 +182,7 @@
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
     [PDFAnnotation checkPDFKit];
+    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
@@ -390,6 +392,34 @@
 }
 
 #pragma mark Scripting support
+
+- (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
+    NSString *theURLString = [[event descriptorForKeyword:keyDirectObject] stringValue];
+    
+    if (theURLString) {
+        if ([theURLString hasPrefix:@"<"] && [theURLString hasSuffix:@">"])
+            theURLString = [theURLString substringWithRange:NSMakeRange(0, [theURLString length] - 2)];
+        if ([theURLString hasPrefix:@"URL:"])
+            theURLString = [theURLString substringFromIndex:4];
+        
+        NSURL *theURL = [NSURL URLWithString:theURLString];
+        
+        if (theURL) {
+            id document = nil;
+            NSError *error = nil;
+            
+            if ([theURL isFileURL]) {
+                document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:&error];
+                if (document == nil && error && [error isUserCancelledError] == NO)
+                    [NSApp presentError:error];
+            } else {
+                document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
+                if (document && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
+                    [[SKDownloadController sharedDownloadController] showWindow:nil];
+            }
+        }
+    }
+}
 
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
     static NSSet *applicationScriptingKeys = nil;
