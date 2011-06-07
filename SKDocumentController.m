@@ -393,7 +393,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     if ([document isPDFDocument] && [fragment length] > 5 && [fragment compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
         NSInteger page = [[fragment substringFromIndex:5] integerValue];
-        if (page > 1)
+        if (page > 0)
             [[document mainWindowController] setPageNumber:page];
     }
     
