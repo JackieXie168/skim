@@ -331,6 +331,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
+    NSString *fragment = [absoluteURL fragment];
+    if ([fragment length] > 0)
+        absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
+    
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     if ([type isEqualToString:SKNotesDocumentType]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
@@ -384,7 +388,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
         return doc;
     }
-    return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+    
+    id document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+    
+    if ([document isPDFDocument] && [fragment length] > 5 && [fragment compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+        NSInteger page = [[fragment substringFromIndex:5] integerValue];
+        if (page > 1)
+            [[document mainWindowController] setPageNumber:page];
+    }
+    
+    return document;
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {

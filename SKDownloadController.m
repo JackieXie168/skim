@@ -338,6 +338,10 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)downloadDidEnd:(SKDownload *)download {
     if ([download status] == SKDownloadStatusFinished) {
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
+        NSString *fragment = [[download URL] fragment];
+        if ([fragment length] > 0)
+            URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingString:fragment]];
+        
         NSError *error = nil;
         id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
         if (document == nil && [error isUserCancelledError] == NO)
