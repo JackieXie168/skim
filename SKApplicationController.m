@@ -402,7 +402,7 @@
         if ([theURLString hasPrefix:@"URL:"])
             theURLString = [theURLString substringFromIndex:4];
         
-        NSURL *theURL = [NSURL URLWithString:theURLString];
+        NSURL *theURL = [NSURL URLWithString:theURLString] ?: [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)theURLString, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease];
         
         if (theURL) {
             id document = nil;
