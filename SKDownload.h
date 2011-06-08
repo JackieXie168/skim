@@ -90,6 +90,7 @@ typedef NSInteger SKDownloadStatus;
 - (void)cancel;
 - (void)resume;
 - (void)cleanup;
+- (void)moveToTrash;
 
 - (void)removeProgressIndicatorFromSuperview;
 
