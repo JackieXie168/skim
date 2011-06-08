@@ -332,7 +332,7 @@ static SKDownloadController *sharedDownloadController = nil;
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
         NSString *fragment = [[download URL] fragment];
         if ([fragment length] > 0)
-            URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingString:fragment]];
+            URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingFormat:@"#%@", fragment]];
         
         NSError *error = nil;
         id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
