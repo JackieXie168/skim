@@ -235,14 +235,8 @@ static SKDownloadController *sharedDownloadController = nil;
     if (row != -1)
         download = [self objectInDownloadsAtIndex:row];
     if ([download canRemove]) {
-        if ([download status] == SKDownloadStatusFinished) {
-            NSString *filePath = [download filePath];
-            NSString *folderPath = [filePath stringByDeletingLastPathComponent];
-            NSString *fileName = [filePath lastPathComponent];
-            NSInteger tag = 0;
-            
-            [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
-        }
+        if ([download status] == SKDownloadStatusFinished)
+            [download moveToTrash];
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
     } else {
         NSBeep();
@@ -280,14 +274,8 @@ static SKDownloadController *sharedDownloadController = nil;
         NSInteger row = [tableView clickedRow];
         if (row != -1) {
             download = [self objectInDownloadsAtIndex:row];
-            if ([NSEvent standardModifierFlags] & NSAlternateKeyMask) {
-                NSString *filePath = [download filePath];
-                NSString *folderPath = [filePath stringByDeletingLastPathComponent];
-                NSString *fileName = [filePath lastPathComponent];
-                NSInteger tag = 0;
-                
-                [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
-            }
+            if ([NSEvent standardModifierFlags] & NSAlternateKeyMask)
+                [download moveToTrash];
         }
     }
     
@@ -321,16 +309,10 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)trashDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
-    if (download && [download status] != SKDownloadStatusFinished) {
+    if (download && [download status] != SKDownloadStatusFinished)
         NSBeep();
-    } else {
-        NSString *filePath = [download filePath];
-        NSString *folderPath = [filePath stringByDeletingLastPathComponent];
-        NSString *fileName = [filePath lastPathComponent];
-        NSInteger tag = 0;
-        
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
-    }
+    else
+        [download moveToTrash];
 }
 
 #pragma mark Menu validation

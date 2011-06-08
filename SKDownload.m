@@ -281,6 +281,16 @@ static NSSet *infoKeys = nil;
         [[NSFileManager defaultManager] removeItemAtPath:[filePath stringByDeletingLastPathComponent] error:NULL];
 }
 
+- (void)moveToTrash {
+    if ([self canRemove] && filePath) {
+        NSString *folderPath = [filePath stringByDeletingLastPathComponent];
+        NSString *fileName = [filePath lastPathComponent];
+        NSInteger tag = 0;
+        
+        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+    }
+}
+
 - (BOOL)canCancel {
     return [self status] == SKDownloadStatusStarting || [self status] == SKDownloadStatusDownloading;
 }
