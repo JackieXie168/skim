@@ -49,6 +49,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "SKDownloadPreferenceController.h"
 #import "NSError_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -277,8 +278,17 @@ static SKDownloadController *sharedDownloadController = nil;
     
     if (download == nil) {
         NSInteger row = [tableView clickedRow];
-        if (row != -1)
+        if (row != -1) {
             download = [self objectInDownloadsAtIndex:row];
+            if ([NSEvent standardModifierFlags] & NSAlternateKeyMask) {
+                NSString *filePath = [download filePath];
+                NSString *folderPath = [filePath stringByDeletingLastPathComponent];
+                NSString *fileName = [filePath lastPathComponent];
+                NSInteger tag = 0;
+                
+                [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+            }
+        }
     }
     
     if (download)
