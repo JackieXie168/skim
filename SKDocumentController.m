@@ -391,10 +391,19 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     id document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
     
-    if ([document isPDFDocument] && [fragment length] > 5 && [fragment compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-        NSInteger page = [[fragment substringFromIndex:5] integerValue];
-        if (page > 0)
-            [[document mainWindowController] setPageNumber:page];
+    if ([document isPDFDocument] && [fragment length] > 0) {
+        for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+            if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+                NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
+                if (page > 0)
+                    [[document mainWindowController] setPageNumber:page];
+                break;
+            } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+                NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+                if ([searchString length] > 0)
+                    [[document mainWindowController] displaySearchResultsForString:searchString];
+            }
+        }
     }
     
     return document;
