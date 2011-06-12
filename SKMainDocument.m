@@ -1552,14 +1552,14 @@ enum {
     const char *account = [fileID UTF8String];
     NSInteger status = 0;
     
-    OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : 0, password ? &passwordData : NULL, itemRef);
+    OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : NULL, password ? &passwordData : NULL, itemRef);
     
     if (err == errSecItemNotFound) {
         // try to find an item in the old format
         service = [[@"Skim - " stringByAppendingString:fileID] UTF8String];
         account = [NSUserName() UTF8String];
         
-        err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : 0, password ? &passwordData : NULL, itemRef);
+        err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : NULL, password ? &passwordData : NULL, itemRef);
         
         status = (err == noErr ? SKPDFPasswordStatusFoundOldFormat : err == errSecItemNotFound ? SKPDFPasswordStatusNotFound : SKPDFPasswordStatusError);
     } else {
