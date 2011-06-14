@@ -87,6 +87,7 @@
 #define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
 #define SKIsRelaunchKey                     @"SKIsRelaunch"
+#define SKLastVersionLaunchedKey            @"SKLastVersionLaunched"
 #define SKSpotlightVersionInfoKey           @"SKSpotlightVersionInfo"
 #define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
 #define SKSpotlightLastSysVersionKey        @"lastSysVersion"
