@@ -45,7 +45,7 @@
 @synthesize transitionStyle, duration, shouldRestrict, thumbnail, label;
 @dynamic properties, title;
 
-+ (NSSet *)keyPathsForValuesAffectingValueForTitle {
++ (NSSet *)keyPathsForValuesAffectingTitle {
     return [NSSet setWithObjects:@"label", nil];
 }
 
