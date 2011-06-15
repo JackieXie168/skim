@@ -82,7 +82,7 @@ static NSSet *infoKeys = nil;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *set = [super keyPathsForValuesAffectingValueForKey:key];
-    if ([keysAffectedByDownloadStatus containsObject:key])
+    if ([keysAffectedByFilePath containsObject:key])
         return [set count] > 0 ? [set setByAddingObjectsFromSet:filePathSet] : filePathSet;
     if ([keysAffectedByDownloadStatus containsObject:key])
         return [set count] > 0 ? [set setByAddingObjectsFromSet:downloadStatusSet] : downloadStatusSet;
