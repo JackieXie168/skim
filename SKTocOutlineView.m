@@ -66,7 +66,7 @@
                 break;
             case NSTableViewSelectionHighlightStyleRegular:
                 if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                    color = [NSColor selectedControlColor];
+                    color = [NSColor alternateSelectedControlColor];
                 else
                     color = [NSColor secondarySelectedControlColor];
                 break;
