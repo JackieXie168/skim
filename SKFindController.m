@@ -48,7 +48,7 @@
 
 @implementation SKFindController
 
-@synthesize findField, doneButton, previousNextButton, ownerController, findString, mainController;
+@synthesize findField, doneButton, ownerController, findString, mainController;
 @dynamic findOptions, fieldEditor;
 
 - (void)dealloc {
@@ -58,7 +58,6 @@
     SKDESTROY(findField);
     SKDESTROY(ownerController);
     SKDESTROY(doneButton);
-    SKDESTROY(previousNextButton);
     [super dealloc];
 }
 
@@ -72,12 +71,16 @@
     CGFloat dx = NSWidth([doneButton frame]);
     [doneButton sizeToFit];
     dx -= NSWidth([doneButton frame]);
-    SKShiftAndResizeViews([NSArray arrayWithObjects:previousNextButton, findField, doneButton, nil], dx, 0.0);
+    SKShiftAndResizeViews([NSArray arrayWithObjects:doneButton, nil], dx, 0.0);
+    SKShiftAndResizeViews([NSArray arrayWithObjects:findField, nil], 0.0, dx);
     
     SKGradientView *gradientView = (SKGradientView *)[self view];
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
-    [gradientView setMinSize:[gradientView contentRect].size];
+    NSSize size = [gradientView contentRect].size;
+    [gradientView setMinSize:size];
+    size.width = 500.0;
+    [gradientView setMaxSize:size];
     [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
     [gradientView setAlternateGradient:nil];
     

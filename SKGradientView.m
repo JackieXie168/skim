@@ -43,13 +43,14 @@
 
 @implementation SKGradientView
 
-@synthesize contentView, gradient, alternateGradient, minSize, edges, clipEdges, autoEdges;
+@synthesize contentView, gradient, alternateGradient, minSize, maxSize, edges, clipEdges, autoEdges;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         minSize = NSZeroSize;
+        maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         autoEdges = NO;
@@ -215,10 +216,20 @@
 			rect.origin.x -= minSize.width - NSWidth(rect);
 		rect.size.width = minSize.width;
 	}
+	else if (rect.size.width > maxSize.width) {
+		if (clipEdges & SKMinXEdgeMask)
+			rect.origin.x -= maxSize.width - NSWidth(rect);
+		rect.size.width = maxSize.width;
+	}
     if (rect.size.height < minSize.height) {
 		if (clipEdges & SKMinYEdgeMask)
 			rect.origin.y -= minSize.height - NSHeight(rect);
 		rect.size.height = minSize.height;
+    }
+    else if (rect.size.height > maxSize.height) {
+		if (clipEdges & SKMinYEdgeMask)
+			rect.origin.y -= maxSize.height - NSHeight(rect);
+		rect.size.height = maxSize.height;
     }
 	return rect;
 }
