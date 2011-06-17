@@ -101,6 +101,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "SKPDFPage.h"
 #import "NSScreen_SKExtensions.h"
+#import "SKFindController.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -283,6 +284,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 	SKDESTROY(rightSideWindow);
     SKDESTROY(mainWindow);
     SKDESTROY(statusBar);
+    SKDESTROY(findController);
     SKDESTROY(savedNormalSetup);
     SKDESTROY(progressController);
     SKDESTROY(colorAccessoryView);
@@ -1441,6 +1443,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     mwcFlags.isSwitchingFullScreen = 1;
     
+    if ([[findController view] window])
+        [findController toggleAboveView:nil animate:NO];
+    
     // remember normal setup to return to, we must do this before changing the interactionMode
     if (wasInteractionMode == SKNormalMode)
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
@@ -1504,6 +1509,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     mwcFlags.isSwitchingFullScreen = 1;
     
+    if ([[findController view] window])
+        [findController toggleAboveView:nil animate:NO];
+    
     interactionMode = SKPresentationMode;
     
     if (wasInteractionMode == SKFullScreenMode) {
@@ -1553,6 +1561,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     PDFPage *page = [[self pdfView] currentPage];
     
     mwcFlags.isSwitchingFullScreen = 1;
+    
+    if ([[findController view] window])
+        [findController toggleAboveView:nil animate:NO];
     
     if (wasInteractionMode == SKFullScreenMode) {
         view = pdfSplitView;
@@ -1682,7 +1693,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return selection;
 }
 
-- (void)findString:(NSString *)string options:(NSInteger)options{
+- (void)findString:(NSString *)string options:(NSInteger)options {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     while ([sel hasCharacters] == NO && pageIndex-- > 0) {
@@ -1703,8 +1714,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 	}
 }
 
-- (NSString *)findString {
-    return [[[self pdfView] currentSelection] string];
+- (void)showFindBar {
+    if (findController == nil) {
+        findController = [[SKFindController alloc] init];
+        [findController setMainController:self];
+    }
+    if ([[findController view] window] == nil)
+        [findController toggleAboveView:(interactionMode == SKFullScreenMode ? pdfSplitView : splitView) animate:YES];
+    [[findController findField] selectText:nil];
 }
 
 - (void)updateFindResultHighlightsForDirection:(NSInteger)direction {

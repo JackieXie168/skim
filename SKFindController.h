@@ -37,47 +37,38 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
+#import "SKViewController.h"
 
+@class SKMainWindowController;
 
-@interface SKFindController : SKWindowController <NSWindowDelegate> {
-    NSTextField *findField;
-    NSButton *ignoreCaseCheckbox;
+@interface SKFindController : SKViewController {
+    NSSearchField *findField;
+    NSButton *doneButton;
+    NSSegmentedControl *previousNextButton;
     NSObjectController *ownerController;
-    NSTextField *labelField;
-    NSArray *buttons;
     NSString *findString;
     NSInteger lastChangeCount;
-    BOOL ignoreCase;
     NSTextView *fieldEditor;
+    SKMainWindowController *mainController;
+    BOOL animating;
 }
 
-@property (nonatomic, retain) IBOutlet NSTextField *findField;
-@property (nonatomic, retain) IBOutlet NSButton *ignoreCaseCheckbox;
+@property (nonatomic, retain) IBOutlet NSSearchField *findField;
+@property (nonatomic, retain) IBOutlet NSButton *doneButton;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *previousNextButton;
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
-@property (nonatomic, retain) IBOutlet NSTextField *labelField;
-@property (nonatomic, retain) IBOutlet NSArray *buttons;
 @property (nonatomic, retain) NSString *findString;
-@property (nonatomic) BOOL ignoreCase;
 @property (nonatomic, readonly) NSInteger findOptions;
-@property (nonatomic, readonly) id target, selectionSource;
+@property (nonatomic, assign) SKMainWindowController *mainController;
+@property (nonatomic, readonly) NSTextView *fieldEditor;
 
-+ (id)sharedFindController;
+- (void)toggleAboveView:(NSView *)view animate:(BOOL)animate;
 
-- (IBAction)performFindPanelAction:(id)sender;
-- (IBAction)findNext:(id)sender;
-- (IBAction)findNextAndOrderOutFindPanel:(id)sender;
-- (IBAction)findPrevious:(id)sender;
-- (IBAction)pickFindString:(id)sender;
+- (void)findWithOptions:(NSStringCompareOptions)backForwardOption;
+- (void)updateFindPboard;
+
+- (IBAction)find:(id)sender;
+- (IBAction)remove:(id)sender;
+- (IBAction)toggleCaseInsensitiveFind:(id)sender;
 
 @end
-
-
-@interface NSObject (SKFindPanelTarget)
-- (void)findString:(NSString *)string options:(NSInteger)options;
-@end
-
-@interface NSObject (SKFindPanelSelectionSource)
-- (NSString *)findString;
-@end
-

@@ -240,6 +240,7 @@
         [leftSideController setMainController:nil];
         [rightSideController setMainController:nil];
         [toolbarController setMainController:nil];
+        [findController setMainController:nil];
     }
 }
 
@@ -278,6 +279,12 @@
             [pdfView setNeedsDisplay:YES];
         }
     }
+}
+
+- (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
+    if ([anObject isEqual:[findController findField]])
+        return [findController fieldEditor];
+    return nil;
 }
 
 #pragma mark NSTableView datasource protocol
@@ -1188,7 +1195,7 @@
 }
 
 - (void)PDFViewPerformFind:(PDFView *)sender {
-    [[[SKFindController sharedFindController] window] makeKeyAndOrderFront:sender];
+    [self showFindBar];
 }
 
 - (void)PDFViewPerformGoToPage:(PDFView *)sender {
@@ -1553,6 +1560,20 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
         [menuItem setState:mwcFlags.caseInsensitiveNoteSearch ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(performFindPanelAction:)) {
+        if (interactionMode == SKPresentationMode)
+            return NO;
+        switch ([menuItem tag]) {
+            case NSFindPanelActionShowFindPanel:
+                return YES;
+            case NSFindPanelActionNext:
+            case NSFindPanelActionPrevious:
+                return YES;
+            case NSFindPanelActionSetFindString:
+                return [[[self pdfView] currentSelection] hasCharacters];
+            default:
+                return NO;
+        }
     }
     return YES;
 }

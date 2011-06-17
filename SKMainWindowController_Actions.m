@@ -65,6 +65,7 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
+#import "SKFindController.h"
 
 
 @interface SKMainWindowController (SKPrivateUI)
@@ -1023,5 +1024,53 @@ static NSArray *allMainDocumentPDFViews() {
     else
         [self enterPresentation:sender];
 }
+
+- (IBAction)performFindPanelAction:(id)sender {
+    if (interactionMode == SKPresentationMode) {
+        NSBeep();
+        return;
+    }
+	
+    NSStringCompareOptions findOptions = 0;
+    NSString *findString = nil;
+    
+    switch ([sender tag]) {
+		case NSFindPanelActionShowFindPanel:
+            [self showFindBar];
+            break;
+		case NSFindPanelActionPrevious:
+            findOptions |= NSBackwardsSearch;
+		case NSFindPanelActionNext:
+            if ([[findController view] window]) {
+                [findController findWithOptions:findOptions];
+            } else {
+                findString = [[NSPasteboard pasteboardWithName:NSFindPboard] stringForType:NSStringPboardType];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
+                    findOptions |= NSCaseInsensitiveSearch;
+                if ([findString length] > 0)
+                    [self findString:findString options:findOptions];
+                else
+                    NSBeep();
+            }
+            break;
+		case NSFindPanelActionSetFindString:
+            findString = [[[self pdfView] currentSelection] string];
+            if ([findString length] == 0) {
+                NSBeep();
+            } else if ([[findController view] window]) {
+                [findController setFindString:findString];
+                [findController updateFindPboard];
+            } else {
+                NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+                [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+                [findPboard setString:findString forType:NSStringPboardType];
+            }
+            break;
+        default:
+            NSBeep();
+            break;
+	}
+}
+
 
 @end

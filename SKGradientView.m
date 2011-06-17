@@ -43,7 +43,7 @@
 
 @implementation SKGradientView
 
-@synthesize contentView, minSize, edges, autoEdges;
+@synthesize contentView, gradient, alternateGradient, minSize, edges, autoEdges;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -54,6 +54,8 @@
         autoEdges = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
+        gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+        alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
     }
     return self;
 }
@@ -63,6 +65,8 @@
     if (self) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
+        gradient = [[decoder decodeObjectForKey:@"gradient"] retain];
+        alternateGradient = [[decoder decodeObjectForKey:@"alternateGradient"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
@@ -75,6 +79,8 @@
     [super encodeWithCoder:coder];
     // this encodes only a reference, the actual contentView should already be encoded because it's a subview
     [coder encodeConditionalObject:contentView forKey:@"contentView"];
+    [coder encodeConditionalObject:gradient forKey:@"gradient"];
+    [coder encodeConditionalObject:alternateGradient forKey:@"alternateGradient"];
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeInteger:edges forKey:@"edges"];
@@ -84,6 +90,8 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(contentView);
+    SKDESTROY(gradient);
+    SKDESTROY(alternateGradient);
 	[super dealloc];
 }
 
@@ -125,11 +133,10 @@
 	}
     
     if ([[self window] styleMask] != NSBorderlessWindowMask) {
-        BOOL keyOrMain = [[self window] isMainWindow] || [[self window] isKeyWindow];
-        NSColor *lowerColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.75 : 0.8 alpha:1.0];
-        NSColor *upperColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.9 : 0.95 alpha:1.0];
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:lowerColor endingColor:upperColor] autorelease];
-        [gradient drawInRect:rect angle:90.0];
+        NSGradient *aGradient = gradient;
+        if (alternateGradient && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
+            aGradient = alternateGradient;
+        [aGradient drawInRect:rect angle:90.0];
     }
     
     [NSGraphicsContext restoreGraphicsState];

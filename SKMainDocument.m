@@ -41,6 +41,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "SKPDFDocument.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
@@ -1289,13 +1290,11 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 }
 
 - (void)performFindPanelAction:(id)sender {
-    [[SKFindController sharedFindController] performFindPanelAction:sender];
+    [[self mainWindowController] performFindPanelAction:sender];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-	if ([anItem action] == @selector(performFindPanelAction:)) {
-        return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
-	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
+	if ([anItem action] == @selector(revertDocumentToSaved:)) {
         NSString *fileName = [[self fileURL] path];
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
@@ -1313,6 +1312,14 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
         return path && [[NSFileManager defaultManager] fileExistsAtPath:path];
     }
     return [super validateUserInterfaceItem:anItem];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+	if ([menuItem action] == @selector(performFindPanelAction:))
+        return [[self mainWindowController] validateMenuItem:menuItem];
+    else if ([[SKMainDocument superclass] instancesRespondToSelector:_cmd])
+        return [super validateMenuItem:menuItem];
+    return YES;
 }
 
 - (void)remoteButtonPressed:(NSEvent *)theEvent {
@@ -1480,14 +1487,6 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
 
 - (void)applySetup:(NSDictionary *)setup {
     [[self mainWindowController] applySetup:setup];
-}
-
-- (void)findString:(NSString *)string options:(NSInteger)options{
-    [[self mainWindowController] findString:string options:options];
-}
-
-- (NSString *)findString {
-    return [[[self pdfView] currentSelection] string];
 }
 
 - (SKPDFView *)pdfView {

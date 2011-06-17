@@ -67,7 +67,7 @@ enum {
 };
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
-@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKSplitView, SKSideWindow;
+@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKFindController, SKSplitView, SKSideWindow;
 @class SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
@@ -90,6 +90,8 @@ enum {
     NSView                              *rightSideContentView;
     
     SKStatusBar                         *statusBar;
+    
+    SKFindController                    *findController;
     
     NSMutableArray                      *thumbnails;
     CGFloat                             roundedThumbnailSize;
@@ -284,6 +286,8 @@ enum {
 - (void)displaySnapshotViewAnimating:(BOOL)animate;
 
 - (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options;
+- (void)findString:(NSString *)string options:(NSInteger)options;
+- (void)showFindBar;
 
 - (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex;
 - (void)updateOutlineSelection;

@@ -119,5 +119,6 @@
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
 - (IBAction)toggleWholeWordSearch:(id)sender;
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender;
+- (IBAction)performFindPanelAction:(id)sender;
 
 @end
