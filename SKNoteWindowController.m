@@ -161,6 +161,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     
     if ([self isNoteType]) {
         [gradientView setEdges:SKMinYEdgeMask];
+        [gradientView setAlternateGradient:nil];
         
         NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
         CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
