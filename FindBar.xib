@@ -45,7 +45,7 @@
 					<object class="NSButton" id="479786172">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">265</int>
-						<string key="NSFrame">{{199, 3}, {42, 19}}</string>
+						<string key="NSFrame">{{109, 3}, {42, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="1028549383">
@@ -69,7 +69,7 @@
 					<object class="NSSegmentedControl" id="667040164">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{99, 3}, {43, 20}}</string>
+						<string key="NSFrame">{{8, 3}, {43, 20}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="89567464">
@@ -111,7 +111,7 @@
 					<object class="NSSearchField" id="930853778">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{149, 4}, {42, 19}}</string>
+						<string key="NSFrame">{{58, 4}, {43, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSearchFieldCell" key="NSCell" id="505043563">
@@ -191,7 +191,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{250, 25}</string>
+				<string key="NSFrameSize">{160, 25}</string>
 				<string key="NSClassName">SKGradientView</string>
 			</object>
 			<object class="NSObjectController" id="766371852">
@@ -269,14 +269,6 @@
 						<reference key="destination" ref="479786172"/>
 					</object>
 					<int key="connectionID">24</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">previousNextButton</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="667040164"/>
-					</object>
-					<int key="connectionID">25</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -404,7 +396,7 @@
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>{{284, 790}, {250, 25}}</string>
+					<string>{{284, 790}, {160, 25}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{628, 654}</string>
 					<string>{{217, 442}, {480, 272}}</string>
@@ -645,14 +637,12 @@
 							<string>doneButton</string>
 							<string>findField</string>
 							<string>ownerController</string>
-							<string>previousNextButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSButton</string>
 							<string>NSSearchField</string>
 							<string>NSObjectController</string>
-							<string>NSSegmentedControl</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -662,7 +652,6 @@
 							<string>doneButton</string>
 							<string>findField</string>
 							<string>ownerController</string>
-							<string>previousNextButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -677,10 +666,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">ownerController</string>
 								<string key="candidateClassName">NSObjectController</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">previousNextButton</string>
-								<string key="candidateClassName">NSSegmentedControl</string>
 							</object>
 						</object>
 					</object>

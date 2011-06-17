@@ -44,7 +44,6 @@
 @interface SKFindController : SKViewController {
     NSSearchField *findField;
     NSButton *doneButton;
-    NSSegmentedControl *previousNextButton;
     NSObjectController *ownerController;
     NSString *findString;
     NSInteger lastChangeCount;
@@ -55,7 +54,6 @@
 
 @property (nonatomic, retain) IBOutlet NSSearchField *findField;
 @property (nonatomic, retain) IBOutlet NSButton *doneButton;
-@property (nonatomic, retain) IBOutlet NSSegmentedControl *previousNextButton;
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
 @property (nonatomic, retain) NSString *findString;
 @property (nonatomic, readonly) NSInteger findOptions;

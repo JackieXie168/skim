@@ -44,18 +44,17 @@
     NSGradient *gradient;
     NSGradient *alternateGradient;
     NSSize minSize;
+    NSSize maxSize;
 	SKRectEdges edges;
 	SKRectEdges clipEdges;
     BOOL autoEdges;
 }
 
 @property (nonatomic, retain) id contentView;
-@property (nonatomic, retain) NSGradient *gradient;
-@property (nonatomic, retain) NSGradient *alternateGradient;
+@property (nonatomic, retain) NSGradient *gradient, *alternateGradient;
 @property (nonatomic, readonly) NSRect contentRect;
-@property (nonatomic) NSSize minSize;
-@property (nonatomic) SKRectEdges edges;
-@property (nonatomic) SKRectEdges clipEdges;
+@property (nonatomic) NSSize minSize, maxSize;
+@property (nonatomic) SKRectEdges edges, clipEdges;
 @property (nonatomic) BOOL autoEdges;
 
 @end
