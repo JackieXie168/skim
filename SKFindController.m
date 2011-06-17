@@ -143,8 +143,13 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
         [self windowDidBecomeKey:nil];
-    } else if ([[self view] window]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
+    } else {
+		if ([contentView isFlipped])
+            barRect.origin.y -= barHeight;
+		else
+			barRect.origin.y = NSMaxY([contentView bounds]) - barHeight;
+        if ([[self view] window])
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
     }
     viewFrame.size.height += barHeight;
     if ([contentView isFlipped]) {
