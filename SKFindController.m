@@ -76,6 +76,7 @@
     
     SKGradientView *gradientView = (SKGradientView *)[self view];
     [gradientView setEdges:SKMinYEdgeMask];
+    [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
     [gradientView setMinSize:[gradientView contentRect].size];
     [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
     [gradientView setAlternateGradient:nil];

@@ -43,7 +43,7 @@
 
 @implementation SKGradientView
 
-@synthesize contentView, gradient, alternateGradient, minSize, edges, autoEdges;
+@synthesize contentView, gradient, alternateGradient, minSize, edges, clipEdges, autoEdges;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -51,6 +51,7 @@
     if (self) {
         minSize = NSZeroSize;
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
+		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         autoEdges = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
@@ -70,6 +71,7 @@
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
+		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
 		autoEdges = [decoder decodeBoolForKey:@"autoEdges"];
 	}
 	return self;
@@ -84,6 +86,7 @@
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeInteger:edges forKey:@"edges"];
+    [coder encodeInteger:clipEdges forKey:@"clipEdges"];
     [coder encodeBool:autoEdges forKey:@"autoEdges"];
 }
 
@@ -207,10 +210,16 @@
 		if (edges & (1 << edge))
 			NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
 	}
-	if (rect.size.width < minSize.width)
+	if (rect.size.width < minSize.width) {
+		if (clipEdges & SKMinXEdgeMask)
+			rect.origin.x -= minSize.width - NSWidth(rect);
 		rect.size.width = minSize.width;
-	if (rect.size.height < minSize.height)
+	}
+    if (rect.size.height < minSize.height) {
+		if (clipEdges & SKMinYEdgeMask)
+			rect.origin.y -= minSize.height - NSHeight(rect);
 		rect.size.height = minSize.height;
+    }
 	return rect;
 }
 

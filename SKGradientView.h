@@ -45,6 +45,7 @@
     NSGradient *alternateGradient;
     NSSize minSize;
 	SKRectEdges edges;
+	SKRectEdges clipEdges;
     BOOL autoEdges;
 }
 
@@ -54,6 +55,7 @@
 @property (nonatomic, readonly) NSRect contentRect;
 @property (nonatomic) NSSize minSize;
 @property (nonatomic) SKRectEdges edges;
+@property (nonatomic) SKRectEdges clipEdges;
 @property (nonatomic) BOOL autoEdges;
 
 @end
