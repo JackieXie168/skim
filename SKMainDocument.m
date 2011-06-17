@@ -1121,6 +1121,14 @@ static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
                        @"make new attachment with properties {file:POSIX file \"%@\"}\n"
                        @"end tell\n"
                        @"end tell\n";
+    } else if ([@"com.microsoft.outlook" isCaseInsensitiveEqual:mailAppID]) {
+        scriptFormat = @"tell application \"Microsoft Outlook\"\n"
+                       @"activate\n"
+                       @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
+                       @"tell m\n"
+                       @"make new attachment with properties {file:POSIX file \"%@\"}\n"
+                       @"end tell\n"
+                       @"end tell\n";
     } else if ([@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Mailsmith\"\n"
                        @"activate\n"
