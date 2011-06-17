@@ -205,7 +205,10 @@
         [self setFrame:statusRect];
 		[contentView addSubview:self positioned:NSWindowBelow relativeTo:nil];
         statusHeight = -statusHeight;
-	}
+	} else if ([contentView isFlipped]) {
+        statusRect.origin.y = NSMaxY([contentView bounds]) - statusHeight;
+    }
+
     viewFrame.size.height += statusHeight;
     if ([contentView isFlipped]) {
         statusRect.origin.y += statusHeight;
