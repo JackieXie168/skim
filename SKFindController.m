@@ -78,6 +78,7 @@
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
     NSSize size = [gradientView contentRect].size;
+    size.width -= dx;
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
