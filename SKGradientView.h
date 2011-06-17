@@ -41,12 +41,16 @@
 
 @interface SKGradientView : NSView {
 	id contentView;
+    NSGradient *gradient;
+    NSGradient *alternateGradient;
     NSSize minSize;
 	SKRectEdges edges;
     BOOL autoEdges;
 }
 
 @property (nonatomic, retain) id contentView;
+@property (nonatomic, retain) NSGradient *gradient;
+@property (nonatomic, retain) NSGradient *alternateGradient;
 @property (nonatomic, readonly) NSRect contentRect;
 @property (nonatomic) NSSize minSize;
 @property (nonatomic) SKRectEdges edges;

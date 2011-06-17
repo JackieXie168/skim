@@ -204,6 +204,8 @@
 		<false/>
 		<key>SKShowNotesStatusBar</key>
 		<true/>
+		<key>SKCaseInsensitiveSearch</key>
+		<true/>
 	</dict>
 	<key>ResettableKeys</key>
 	<dict>

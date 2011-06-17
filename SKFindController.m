@@ -38,50 +38,51 @@
 
 #import "SKFindController.h"
 #import "SKFindFieldEditor.h"
+#import "SKStringConstants.h"
+#import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSSegmentedControl_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
+#import "SKMainWindowController.h"
 
-#define SKFindPanelFrameAutosaveName @"SKFindPanel"
 
 @implementation SKFindController
 
-@synthesize findField, ignoreCaseCheckbox, ownerController, labelField, buttons, findString, ignoreCase;
-@dynamic findOptions, target, selectionSource;
-
-static SKFindController *sharedFindController = nil;
-
-+ (id)sharedFindController {
-    if (sharedFindController == nil)
-        sharedFindController = [[self alloc] init];
-    return sharedFindController;
-}
-
-- (id)init {
-    if (sharedFindController) NSLog(@"Attempt to allocate second instance of %@", self);
-    self = [super initWithWindowNibName:@"FindPanel"];
-    if (self) {
-        ignoreCase = YES;
-    }
-    return self;
-}
+@synthesize findField, doneButton, previousNextButton, ownerController, findString, mainController;
+@dynamic findOptions, fieldEditor;
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(findString);
     SKDESTROY(fieldEditor);
     SKDESTROY(findField);
-    SKDESTROY(ignoreCaseCheckbox);
     SKDESTROY(ownerController);
-    SKDESTROY(labelField);
-    SKDESTROY(buttons);
+    SKDESTROY(doneButton);
+    SKDESTROY(previousNextButton);
     [super dealloc];
 }
 
-- (void)windowDidLoad {
-    SKAutoSizeButtons(buttons, YES);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:findField, ignoreCaseCheckbox, nil], YES);
+- (NSString *)nibName {
+    return @"FindBar";
+}
+
+- (void)loadView {
+    [super loadView];
     
-    [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
+    CGFloat dx = NSWidth([doneButton frame]);
+    [doneButton sizeToFit];
+    dx -= NSWidth([doneButton frame]);
+    SKShiftAndResizeViews([NSArray arrayWithObjects:previousNextButton, findField, doneButton, nil], dx, 0.0);
     
-    [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
+    SKGradientView *gradientView = (SKGradientView *)[self view];
+    [gradientView setEdges:SKMinYEdgeMask];
+    [gradientView setMinSize:[gradientView contentRect].size];
+    [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
+    [gradientView setAlternateGradient:nil];
+    
+    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
+    [[findField cell] setSearchMenuTemplate:menu];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
@@ -99,121 +100,123 @@ static SKFindController *sharedFindController = nil;
     lastChangeCount = [findPboard changeCount];
 }
 
-- (IBAction)performFindPanelAction:(id)sender {
-	switch ([sender tag]) {
-		case NSFindPanelActionShowFindPanel:
-            [[self window] makeKeyAndOrderFront:self];
-            break;
-		case NSFindPanelActionNext:
-            [self findNext:sender];
-            break;
-		case NSFindPanelActionPrevious:
-            [self findPrevious:sender];
-            break;
-		case NSFindPanelActionReplaceAll:
-		case NSFindPanelActionReplace:
-		case NSFindPanelActionReplaceAndFind:
-		case NSFindPanelActionReplaceAllInSelection:
-            NSBeep();
-            break;
-		case NSFindPanelActionSetFindString:
-            [self pickFindString:self];
-            break;
-		case NSFindPanelActionSelectAll:
-		case NSFindPanelActionSelectAllInSelection:
-            NSBeep();
-            break;
-	}
+- (void)endAnimation:(NSNumber *)visible {
+    NSWindow *window = [[self view] window];
+    if ([visible boolValue] == NO)
+		[[self view] removeFromSuperview];
+    [window recalculateKeyViewLoop];
+    animating = NO;
 }
 
-- (IBAction)findNext:(id)sender {
-    [ownerController commitEditing];
-    if ([findString length]) {
-        [[self target] findString:findString options:[self findOptions] & ~NSBackwardsSearch];
-        [self updateFindPboard];
-    }
-}
-
-- (IBAction)findNextAndOrderOutFindPanel:(id)sender {
-	[self findNext:sender];
-	[[self window] orderOut:self];
-}
-
-- (IBAction)findPrevious:(id)sender {
-    [ownerController commitEditing];
-    if ([findString length]) {
-        [[self target] findString:findString options:[self findOptions] | NSBackwardsSearch];
-        [self updateFindPboard];
-    }
-}
-
-- (IBAction)pickFindString:(id)sender {
-    NSString *string = [[self selectionSource] findString];
-    if (string) {
-        [self setFindString:string];
-        [self updateFindPboard];
-    }
-}
-
-- (NSInteger)findOptions {
-	NSInteger options = 0;
-	
-    if (ignoreCase)
-        options |= NSCaseInsensitiveSearch;
+- (void)toggleAboveView:(NSView *)view animate:(BOOL)animate {
+    if (animating)
+        return;
     
-	return options;
-}
-
-static id responderForSelector(SEL selector) {
-    id responder = [[NSApp mainWindow] windowController];
-    if (responder == nil)
-        return nil;
-    if ([responder respondsToSelector:selector])
-        return responder;
-    responder = [responder document];
-    if ([responder respondsToSelector:selector])
-        return responder;
-    return nil;
-}
-
-- (id)target {
-    return responderForSelector(@selector(findString:options:));
-}
-
-- (id)selectionSource {
-    return responderForSelector(@selector(findString));
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-	if ([anItem action] == @selector(performFindPanelAction:)) {
-        switch ([anItem tag]) {
-            case NSFindPanelActionShowFindPanel:
-                return YES;
-            case NSFindPanelActionNext:
-            case NSFindPanelActionPrevious:
-                return [[findField stringValue] length] > 0;
-            case NSFindPanelActionReplaceAll:
-            case NSFindPanelActionReplace:
-            case NSFindPanelActionReplaceAndFind:
-            case NSFindPanelActionReplaceAllInSelection:
-                return NO;
-            case NSFindPanelActionSetFindString:
-                return [self selectionSource] != nil;
-            case NSFindPanelActionSelectAll:
-            case NSFindPanelActionSelectAllInSelection:
-                return NO;
-        }
-	}
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
+    
+    if (view == nil) {
+        NSArray *subviews = [[[self view] superview] subviews];
+        if ([subviews count] == 2)
+            view = [subviews objectAtIndex:([subviews objectAtIndex:0] == [self view] ? 1 : 0)];
+        else
+            return;
+    }
+    
+	NSRect viewFrame = [view frame];
+	NSView *contentView = [view superview];
+	NSRect barRect = [view frame];
+	CGFloat barHeight = NSHeight([[self view] frame]);
+    BOOL visible = (nil == [[self view] superview]);
+    NSTimeInterval duration;
+    
+	barRect.size.height = barHeight;
 	
-	return YES;
+	if (visible) {
+		if ([contentView isFlipped])
+            barRect.origin.y -= barHeight;
+		else
+			barRect.origin.y = NSMaxY([contentView bounds]);
+        [[self view] setFrame:barRect];
+		[contentView addSubview:[self view] positioned:NSWindowBelow relativeTo:nil];
+        barHeight = -barHeight;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
+        [self windowDidBecomeKey:nil];
+    } else if ([[self view] window]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
+    }
+    viewFrame.size.height += barHeight;
+    if ([contentView isFlipped]) {
+        viewFrame.origin.y -= barHeight;
+        barRect.origin.y -= barHeight;
+    } else {
+        barRect.origin.y += barHeight;
+    }
+    if (animate) {
+        animating = YES;
+        [NSAnimationContext beginGrouping];
+        duration = 0.5 * [[NSAnimationContext currentContext] duration];
+        [[NSAnimationContext currentContext] setDuration:duration];
+        [[view animator] setFrame:viewFrame];
+        [[[self view] animator] setFrame:barRect];
+        [NSAnimationContext endGrouping];
+        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:duration];
+    } else {
+        [view setFrame:viewFrame];
+        if (visible)
+            [[self view] setFrame:barRect];
+        else
+            [[self view] removeFromSuperview];
+        [[contentView window] recalculateKeyViewLoop];
+    }
 }
 
-- (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
+- (void)setMainController:(SKMainWindowController *)newMainController {
+    if (mainController && newMainController == nil)
+        [ownerController setContent:nil];
+    mainController = newMainController;
+}
+
+- (NSTextView *)fieldEditor {
     if (fieldEditor == nil) {
         fieldEditor = [[SKFindFieldEditor alloc] init];
         [fieldEditor setFieldEditor:YES];
     }
     return fieldEditor;
+}
+
+- (void)findWithOptions:(NSStringCompareOptions)backForwardOption {
+    [ownerController commitEditing];
+    if ([findString length]) {
+        NSInteger findOptions = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
+        [mainController findString:findString options:findOptions | backForwardOption];
+        [self updateFindPboard];
+    }
+}
+
+- (IBAction)find:(id)sender {
+    NSStringCompareOptions options = 0;
+    if ([sender respondsToSelector:@selector(selectedTag)] && [sender selectedTag] == 0)
+        options |= NSBackwardsSearch;
+    [self findWithOptions:options];
+}
+
+- (IBAction)remove:(id)sender {
+    [self toggleAboveView:nil animate:YES];
+}
+
+- (IBAction)toggleCaseInsensitiveFind:(id)sender {
+    BOOL caseInsensitive = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO == caseInsensitive forKey:SKCaseInsensitiveFindKey];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(toggleCaseInsensitiveFind:)) {
+        [menuItem setState:[[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSOnState : NSOffState];
+        return YES;
+    }
+    return YES;
 }
 
 @end
