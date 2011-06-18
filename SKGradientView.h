@@ -47,7 +47,7 @@
     NSSize maxSize;
 	SKRectEdges edges;
 	SKRectEdges clipEdges;
-    BOOL autoEdges;
+    BOOL autoTransparent;
 }
 
 @property (nonatomic, retain) id contentView;
@@ -55,6 +55,6 @@
 @property (nonatomic, readonly) NSRect contentRect;
 @property (nonatomic) NSSize minSize, maxSize;
 @property (nonatomic) SKRectEdges edges, clipEdges;
-@property (nonatomic) BOOL autoEdges;
+@property (nonatomic) BOOL autoTransparent;
 
 @end

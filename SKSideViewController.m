@@ -65,7 +65,7 @@
 - (void)loadView {
     [super loadView];
     
-    [gradientView setAutoEdges:YES];
+    [gradientView setAutoTransparent:YES];
     [gradientView setMinSize:NSMakeSize(111.0, NSHeight([gradientView frame]))];
 }
 
