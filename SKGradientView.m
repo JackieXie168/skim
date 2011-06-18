@@ -71,8 +71,8 @@
         alternateGradient = [[decoder decodeObjectForKey:@"alternateGradient"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
-		minSize.width = [decoder decodeDoubleForKey:@"maxSize.width"];
-		minSize.height = [decoder decodeDoubleForKey:@"maxSize.height"];
+		maxSize.width = [decoder decodeDoubleForKey:@"maxSize.width"];
+		maxSize.height = [decoder decodeDoubleForKey:@"maxSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
 		autoTransparent = [decoder decodeBoolForKey:@"autoTransparent"];
@@ -88,8 +88,8 @@
     [coder encodeObject:alternateGradient forKey:@"alternateGradient"];
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
-    [coder encodeDouble:minSize.width forKey:@"maxSize.width"];
-    [coder encodeDouble:minSize.height forKey:@"maxSize.height"];
+    [coder encodeDouble:maxSize.width forKey:@"maxSize.width"];
+    [coder encodeDouble:maxSize.height forKey:@"maxSize.height"];
     [coder encodeInteger:edges forKey:@"edges"];
     [coder encodeInteger:clipEdges forKey:@"clipEdges"];
     [coder encodeBool:autoTransparent forKey:@"autoTransparent"];
