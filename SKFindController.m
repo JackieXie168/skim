@@ -48,7 +48,7 @@
 @implementation SKFindController
 
 @synthesize delegate, findField, doneButton, ownerController, findString;
-@dynamic findOptions, fieldEditor;
+@dynamic fieldEditor;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

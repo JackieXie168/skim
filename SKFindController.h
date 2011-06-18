@@ -57,7 +57,6 @@
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
 @property (nonatomic, assign) id <SKFindControllerDelegate> delegate;
 @property (nonatomic, retain) NSString *findString;
-@property (nonatomic, readonly) NSInteger findOptions;
 @property (nonatomic, readonly) NSTextView *fieldEditor;
 
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate;
