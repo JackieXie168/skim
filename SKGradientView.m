@@ -43,7 +43,7 @@
 
 @implementation SKGradientView
 
-@synthesize contentView, gradient, alternateGradient, minSize, maxSize, edges, clipEdges, autoEdges;
+@synthesize contentView, gradient, alternateGradient, minSize, maxSize, edges, clipEdges, autoTransparent;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -53,7 +53,7 @@
         maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
-        autoEdges = NO;
+        autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
         gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
@@ -73,7 +73,7 @@
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
-		autoEdges = [decoder decodeBoolForKey:@"autoEdges"];
+		autoTransparent = [decoder decodeBoolForKey:@"autoTransparent"];
 	}
 	return self;
 }
@@ -88,7 +88,7 @@
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeInteger:edges forKey:@"edges"];
     [coder encodeInteger:clipEdges forKey:@"clipEdges"];
-    [coder encodeBool:autoEdges forKey:@"autoEdges"];
+    [coder encodeBool:autoTransparent forKey:@"autoTransparent"];
 }
 
 - (void)dealloc {
@@ -122,7 +122,10 @@
 
 - (void)drawRect:(NSRect)aRect
 {        
-	NSRect rect = [self bounds];
+	if (autoTransparent && [[self window] styleMask] == NSBorderlessWindowMask)
+        return;
+    
+    NSRect rect = [self bounds];
 	NSRect edgeRect;
 	NSInteger edge = 4;
 	
@@ -136,12 +139,10 @@
 		NSRectFill(edgeRect);
 	}
     
-    if ([[self window] styleMask] != NSBorderlessWindowMask) {
-        NSGradient *aGradient = gradient;
-        if (alternateGradient && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
-            aGradient = alternateGradient;
-        [aGradient drawInRect:rect angle:90.0];
-    }
+    NSGradient *aGradient = gradient;
+    if (alternateGradient && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
+        aGradient = alternateGradient;
+    [aGradient drawInRect:rect angle:90.0];
     
     [NSGraphicsContext restoreGraphicsState];
 }
@@ -171,7 +172,7 @@
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
     }
-    if (autoEdges)
+    if (autoTransparent)
         [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
 }
 
@@ -197,9 +198,9 @@
 	}
 }
 
-- (void)setAutoEdges:(BOOL)flag {
-    autoEdges = flag;
-    if (autoEdges)
+- (void)setAutoTransparent:(BOOL)flag {
+    autoTransparent = flag;
+    if (autoTransparent)
         [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
 }
 
