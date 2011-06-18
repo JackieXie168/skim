@@ -240,7 +240,7 @@
         [leftSideController setMainController:nil];
         [rightSideController setMainController:nil];
         [toolbarController setMainController:nil];
-        [findController setMainController:nil];
+        [findController setDelegate:nil]; // this breaks the retain loop from binding
     }
 }
 

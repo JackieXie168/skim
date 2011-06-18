@@ -101,7 +101,6 @@
 #import "PDFDocument_SKExtensions.h"
 #import "SKPDFPage.h"
 #import "NSScreen_SKExtensions.h"
-#import "SKFindController.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -1717,7 +1716,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)showFindBar {
     if (findController == nil) {
         findController = [[SKFindController alloc] init];
-        [findController setMainController:self];
+        [findController setDelegate:self];
     }
     if ([[findController view] window] == nil)
         [findController toggleAboveView:(interactionMode == SKFullScreenMode ? pdfSplitView : splitView) animate:YES];
