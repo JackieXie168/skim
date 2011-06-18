@@ -43,12 +43,11 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import "SKMainWindowController.h"
 
 
 @implementation SKFindController
 
-@synthesize findField, doneButton, ownerController, findString, mainController;
+@synthesize delegate, findField, doneButton, ownerController, findString;
 @dynamic findOptions, fieldEditor;
 
 - (void)dealloc {
@@ -182,10 +181,10 @@
     }
 }
 
-- (void)setMainController:(SKMainWindowController *)newMainController {
-    if (mainController && newMainController == nil)
+- (void)setDelegate:(id <SKFindControllerDelegate>)newDelegate {
+    if (delegate && newDelegate == nil)
         [ownerController setContent:nil];
-    mainController = newMainController;
+    delegate = newDelegate;
 }
 
 - (NSTextView *)fieldEditor {
@@ -200,7 +199,7 @@
     [ownerController commitEditing];
     if ([findString length]) {
         NSInteger findOptions = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
-        [mainController findString:findString options:findOptions | backForwardOption];
+        [delegate findString:findString options:findOptions | backForwardOption];
         [self updateFindPboard];
     }
 }

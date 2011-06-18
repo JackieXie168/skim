@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKSnapshotWindowController.h"
 #import "SKThumbnail.h"
+#import "SKFindController.h"
 #import "NSDocument_SKExtensions.h"
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
@@ -70,7 +71,7 @@ enum {
 @class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKFindController, SKSplitView, SKSideWindow;
 @class SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
-@interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
+@interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate, SKFindControllerDelegate> {
     SKSplitView                         *splitView;
     
     NSView                              *centerContentView;
@@ -286,7 +287,6 @@ enum {
 - (void)displaySnapshotViewAnimating:(BOOL)animate;
 
 - (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options;
-- (void)findString:(NSString *)string options:(NSInteger)options;
 - (void)showFindBar;
 
 - (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex;

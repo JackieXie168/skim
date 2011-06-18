@@ -39,25 +39,25 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKMainWindowController;
+@protocol SKFindControllerDelegate;
 
 @interface SKFindController : SKViewController {
+    id <SKFindControllerDelegate> delegate;
     NSSearchField *findField;
     NSButton *doneButton;
     NSObjectController *ownerController;
     NSString *findString;
     NSInteger lastChangeCount;
     NSTextView *fieldEditor;
-    SKMainWindowController *mainController;
     BOOL animating;
 }
 
 @property (nonatomic, retain) IBOutlet NSSearchField *findField;
 @property (nonatomic, retain) IBOutlet NSButton *doneButton;
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
+@property (nonatomic, assign) id <SKFindControllerDelegate> delegate;
 @property (nonatomic, retain) NSString *findString;
 @property (nonatomic, readonly) NSInteger findOptions;
-@property (nonatomic, assign) SKMainWindowController *mainController;
 @property (nonatomic, readonly) NSTextView *fieldEditor;
 
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate;
@@ -69,4 +69,9 @@
 - (IBAction)remove:(id)sender;
 - (IBAction)toggleCaseInsensitiveFind:(id)sender;
 
+@end
+
+
+@protocol SKFindControllerDelegate <NSObject>
+- (void)findString:(NSString *)string options:(NSInteger)options;
 @end
