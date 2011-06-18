@@ -84,8 +84,8 @@
     [super encodeWithCoder:coder];
     // this encodes only a reference, the actual contentView should already be encoded because it's a subview
     [coder encodeConditionalObject:contentView forKey:@"contentView"];
-    [coder encodeConditionalObject:gradient forKey:@"gradient"];
-    [coder encodeConditionalObject:alternateGradient forKey:@"alternateGradient"];
+    [coder encodeObject:gradient forKey:@"gradient"];
+    [coder encodeObject:alternateGradient forKey:@"alternateGradient"];
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeDouble:minSize.width forKey:@"maxSize.width"];
