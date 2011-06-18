@@ -153,7 +153,7 @@
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     NSWindow *window = [self window];
-    if ([window styleMask] != NSBorderlessWindowMask) {
+    if (window && [window styleMask] != NSBorderlessWindowMask) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
         [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
@@ -164,16 +164,18 @@
 
 - (void)viewDidMoveToWindow {
     NSWindow *window = [self window];
-    BOOL hasBorder = [window styleMask] != NSBorderlessWindowMask;
-    if (hasBorder) {
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
+    if (window) {
+        BOOL hasBorder = [window styleMask] != NSBorderlessWindowMask;
+        if (hasBorder) {
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
+        }
+        if (autoTransparent)
+            [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
     }
-    if (autoTransparent)
-        [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
 }
 
 // required in order for redisplay to work properly with the controls
