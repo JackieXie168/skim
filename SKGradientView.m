@@ -183,7 +183,7 @@
 }
 
 // required in order for redisplay to work properly with the controls
-- (BOOL)isOpaque{  return [[self window] styleMask] != NSBorderlessWindowMask; }
+- (BOOL)isOpaque{ return autoTransparent && [[self window] styleMask] != NSBorderlessWindowMask; }
 
 - (void)setContentView:(NSView *)aView {
 	if (aView != contentView) {
@@ -205,9 +205,12 @@
 }
 
 - (void)setAutoTransparent:(BOOL)flag {
-    autoTransparent = flag;
-    if (autoTransparent)
-        [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
+    if (flag != autoTransparent) {
+        autoTransparent = flag;
+        if (autoTransparent)
+            [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (NSRect)contentRect {
