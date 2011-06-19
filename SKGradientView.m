@@ -157,7 +157,7 @@
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     NSWindow *window = [self window];
-    if (window && [window styleMask] != NSBorderlessWindowMask) {
+    if (window) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
         [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
