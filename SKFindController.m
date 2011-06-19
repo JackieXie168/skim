@@ -212,6 +212,9 @@
 }
 
 - (IBAction)remove:(id)sender {
+    [ownerController commitEditing];
+    if ([findString length])
+        [self updateFindPboard];
     [self toggleAboveView:nil animate:YES];
 }
 
