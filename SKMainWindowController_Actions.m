@@ -1044,7 +1044,9 @@ static NSArray *allMainDocumentPDFViews() {
             if ([[findController view] window]) {
                 [findController findWithOptions:findOptions];
             } else {
-                findString = [[NSPasteboard pasteboardWithName:NSFindPboard] stringForType:NSStringPboardType];
+                NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+                if ([findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]])
+                    findString = [findPboard stringForType:NSStringPboardType];
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
                     findOptions |= NSCaseInsensitiveSearch;
                 if ([findString length] > 0)
@@ -1071,6 +1073,5 @@ static NSArray *allMainDocumentPDFViews() {
             break;
 	}
 }
-
 
 @end
