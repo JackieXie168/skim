@@ -47,7 +47,7 @@
 
 @implementation SKFindController
 
-@synthesize delegate, findField, doneButton, ownerController, findString;
+@synthesize delegate, findField, messageField, doneButton, navigationButton, ownerController, findString;
 @dynamic fieldEditor;
 
 - (void)dealloc {
@@ -55,8 +55,10 @@
     SKDESTROY(findString);
     SKDESTROY(fieldEditor);
     SKDESTROY(findField);
+    SKDESTROY(messageField);
     SKDESTROY(ownerController);
     SKDESTROY(doneButton);
+    SKDESTROY(navigationButton);
     [super dealloc];
 }
 
@@ -67,22 +69,31 @@
 - (void)loadView {
     [super loadView];
     
-    CGFloat dx = NSWidth([doneButton frame]);
-    [doneButton sizeToFit];
-    dx -= NSWidth([doneButton frame]);
-    SKShiftAndResizeViews([NSArray arrayWithObjects:doneButton, nil], dx, 0.0);
-    SKShiftAndResizeViews([NSArray arrayWithObjects:findField, nil], 0.0, dx);
-    
     SKGradientView *gradientView = (SKGradientView *)[self view];
+    NSSize size = [gradientView frame].size;
+    CGFloat dx1 = NSWidth([doneButton frame]);
+    CGFloat dx2 = NSWidth([messageField frame]);
+    [doneButton sizeToFit];
+    [messageField sizeToFit];
+    dx1 -= NSWidth([doneButton frame]);
+    dx2 -= NSWidth([messageField frame]);
+    size.width -= dx1 + dx2;
+    [gradientView setFrameSize:size];
+    SKShiftAndResizeViews([NSArray arrayWithObjects:doneButton, nil], dx1, 0.0);
+    SKShiftAndResizeViews([NSArray arrayWithObjects:navigationButton, findField, nil], -dx2, 0.0);
+    SKShiftAndResizeViews([NSArray arrayWithObjects:findField, nil], 0.0, dx1 + dx2);
+    
+    gradientView = (SKGradientView *)[self view];
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
-    NSSize size = [gradientView contentRect].size;
-    size.width -= dx;
+    size = [gradientView contentRect].size;
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
     [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
     [gradientView setAlternateGradient:nil];
+    
+    [messageField setHidden:YES];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
@@ -162,6 +173,7 @@
     } else {
         barRect.origin.y += barHeight;
     }
+    [messageField setHidden:YES];
     if (animate) {
         animating = YES;
         [NSAnimationContext beginGrouping];
@@ -197,11 +209,13 @@
 
 - (void)findWithOptions:(NSStringCompareOptions)backForwardOption {
     [ownerController commitEditing];
+    BOOL found = NO;
     if ([findString length]) {
         NSInteger findOptions = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
-        [delegate findString:findString options:findOptions | backForwardOption];
+        found = [delegate findString:findString options:findOptions | backForwardOption];
         [self updateFindPboard];
     }
+    [messageField setHidden:found];
 }
 
 - (IBAction)find:(id)sender {

@@ -1692,7 +1692,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return selection;
 }
 
-- (void)findString:(NSString *)string options:(NSInteger)options {
+- (BOOL)findString:(NSString *)string options:(NSInteger)options {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     while ([sel hasCharacters] == NO && pageIndex-- > 0) {
@@ -1708,8 +1708,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [leftSideController.findTableView deselectAll:self];
         [leftSideController.groupedFindTableView deselectAll:self];
         [pdfView setCurrentSelection:selection animate:YES];
+        return YES;
 	} else {
 		NSBeep();
+        return NO;
 	}
 }
 

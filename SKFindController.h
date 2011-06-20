@@ -44,7 +44,9 @@
 @interface SKFindController : SKViewController {
     id <SKFindControllerDelegate> delegate;
     NSSearchField *findField;
+    NSTextField *messageField;
     NSButton *doneButton;
+    NSSegmentedControl *navigationButton;
     NSObjectController *ownerController;
     NSString *findString;
     NSInteger lastChangeCount;
@@ -53,7 +55,9 @@
 }
 
 @property (nonatomic, retain) IBOutlet NSSearchField *findField;
+@property (nonatomic, retain) IBOutlet NSTextField *messageField;
 @property (nonatomic, retain) IBOutlet NSButton *doneButton;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *navigationButton;
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
 @property (nonatomic, assign) id <SKFindControllerDelegate> delegate;
 @property (nonatomic, retain) NSString *findString;
@@ -72,5 +76,5 @@
 
 
 @protocol SKFindControllerDelegate <NSObject>
-- (void)findString:(NSString *)string options:(NSInteger)options;
+- (BOOL)findString:(NSString *)string options:(NSInteger)options;
 @end
