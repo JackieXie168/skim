@@ -188,6 +188,14 @@
     
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+    NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+    if (lastFindChangeCount < [findPboard changeCount] && [findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]]) {
+        [searchField setStringValue:[findPboard stringForType:NSStringPboardType]];
+        lastFindChangeCount = [findPboard changeCount];
+    }
+}
+
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
@@ -454,6 +462,7 @@
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
         [findPboard setString:[sender stringValue] forType:NSStringPboardType];
+        lastFindChangeCount = [findPboard changeCount];
     }
 }
 
@@ -519,6 +528,15 @@
         [self searchNotes:searchField];
 }
 
+- (void)performFindPanelAction:(id)sender {
+    if ([sender tag] == NSFindPanelActionShowFindPanel) {
+        [[[[[self windowControllers] objectAtIndex:0] window] toolbar] setVisible:YES];
+        [searchField selectText:nil];
+    } else {
+        NSBeep();
+	}
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(toggleStatusBar:)) {
@@ -530,6 +548,13 @@
     } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
         [menuItem setState:caseInsensitiveSearch ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(performFindPanelAction:)) {
+        switch ([menuItem tag]) {
+            case NSFindPanelActionShowFindPanel:
+                return YES;
+            default:
+                return NO;
+        }
     }
     return YES;
 }
