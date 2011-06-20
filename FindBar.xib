@@ -44,19 +44,19 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="NSTextField" id="79606490">
 						<reference key="NSNextResponder" ref="1005"/>
-						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{7, 5}, {68, 17}}</string>
+						<int key="NSvFlags">-2147483380</int>
+						<string key="NSFrame">{{7, 6}, {58, 14}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="604613997">
 							<int key="NSCellFlags">68288064</int>
-							<int key="NSCellFlags2">272630784</int>
+							<int key="NSCellFlags2">272761856</int>
 							<string key="NSContents">Not found</string>
-							<object class="NSFont" key="NSSupport">
+							<object class="NSFont" key="NSSupport" id="26">
 								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">13</double>
-								<int key="NSfFlags">1044</int>
+								<double key="NSSize">11</double>
+								<int key="NSfFlags">3100</int>
 							</object>
 							<reference key="NSControlView" ref="79606490"/>
 							<object class="NSColor" key="NSBackgroundColor">
@@ -82,7 +82,7 @@
 					<object class="NSButton" id="479786172">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">265</int>
-						<string key="NSFrame">{{179, 3}, {42, 19}}</string>
+						<string key="NSFrame">{{169, 3}, {42, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
@@ -107,7 +107,7 @@
 					<object class="NSSegmentedControl" id="667040164">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{79, 3}, {43, 20}}</string>
+						<string key="NSFrame">{{69, 3}, {43, 20}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
@@ -150,7 +150,7 @@
 					<object class="NSSearchField" id="930853778">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{129, 4}, {42, 19}}</string>
+						<string key="NSFrame">{{119, 4}, {42, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
@@ -158,11 +158,7 @@
 							<int key="NSCellFlags">343014976</int>
 							<int key="NSCellFlags2">268567552</int>
 							<string key="NSContents"/>
-							<object class="NSFont" key="NSSupport">
-								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">11</double>
-								<int key="NSfFlags">3100</int>
-							</object>
+							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="930853778"/>
 							<bool key="NSDrawsBackground">YES</bool>
 							<int key="NSTextBezelStyle">1</int>
@@ -231,7 +227,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{230, 25}</string>
+				<string key="NSFrameSize">{220, 25}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<string key="NSClassName">SKGradientView</string>
@@ -471,7 +467,7 @@
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>{{284, 790}, {230, 25}}</string>
+					<string>{{284, 790}, {220, 25}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{628, 654}</string>
 					<string>{{217, 442}, {480, 272}}</string>
