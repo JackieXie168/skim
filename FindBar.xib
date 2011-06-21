@@ -224,6 +224,7 @@
 							</object>
 							<int key="NSMaximumRecents">255</int>
 							<bool key="NSSendsWholeSearchString">YES</bool>
+							<bytes key="NSSearchFieldFlags">CAAAAA</bytes>
 						</object>
 					</object>
 				</object>
