@@ -130,10 +130,10 @@
     
     if (view == nil) {
         NSArray *subviews = [[[self view] superview] subviews];
-        if ([subviews count] == 2)
-            view = [subviews objectAtIndex:([subviews objectAtIndex:0] == [self view] ? 1 : 0)];
-        else
-            return;
+        for (view in subviews) {
+            if (view != [self view] && NSMaxY([view frame]) >= NSMinY([[self view] frame]))
+                break;
+        }
     }
     
 	NSRect viewFrame = [view frame];
