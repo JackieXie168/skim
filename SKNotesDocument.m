@@ -530,8 +530,13 @@
 
 - (void)performFindPanelAction:(id)sender {
     if ([sender tag] == NSFindPanelActionShowFindPanel) {
-        [[[[[self windowControllers] objectAtIndex:0] window] toolbar] setVisible:YES];
-        [searchField selectText:nil];
+        NSToolbar *toolbar = [[[[self windowControllers] objectAtIndex:0] window] toolbar];
+        if ([[[toolbar items] valueForKey:@"itemIdentifier"] containsObject:SKNotesDocumentSearchToolbarItemIdentifier]) {
+            [toolbar setVisible:YES];
+            [searchField selectText:nil];
+        } else {
+            NSBeep();
+        }
     } else {
         NSBeep();
 	}
