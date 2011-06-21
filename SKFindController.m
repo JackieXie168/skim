@@ -218,7 +218,7 @@
 
 - (IBAction)find:(id)sender {
     NSStringCompareOptions options = 0;
-    if ([sender respondsToSelector:@selector(selectedTag)] && [sender selectedTag] == 0)
+    if ([sender isKindOfClass:[NSSegmentedControl class]] && [sender selectedTag] == 0)
         options |= NSBackwardsSearch;
     [self findWithOptions:options];
 }
