@@ -134,9 +134,9 @@
         for (view in subviews) {
             if (view != findBar) {
                 if ([[findBar superview] isFlipped]) {
-                    if (NSMaxY([view frame]) >= NSMinY([findBar frame])) break;
-                } else {
                     if (NSMinY([view frame]) <= NSMaxY([findBar frame])) break;
+                } else {
+                    if (NSMaxY([view frame]) >= NSMinY([findBar frame])) break;
                 }
             }
         }
