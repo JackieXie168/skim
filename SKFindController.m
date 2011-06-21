@@ -132,13 +132,10 @@
     if (view == nil) {
         NSArray *subviews = [[findBar superview] subviews];
         for (view in subviews) {
-            if (view != findBar) {
-                if ([[findBar superview] isFlipped]) {
-                    if (NSMinY([view frame]) <= NSMaxY([findBar frame])) break;
-                } else {
-                    if (NSMaxY([view frame]) >= NSMinY([findBar frame])) break;
-                }
-            }
+            if (view != findBar &&
+                (fabs(NSMinY([view frame]) - NSMaxY([findBar frame])) <= 0.0 ||
+                 fabs(NSMaxY([view frame]) - NSMinY([findBar frame])) <= 0.0))
+                break;
         }
     }
     
