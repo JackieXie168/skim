@@ -83,7 +83,6 @@
     SKShiftAndResizeViews([NSArray arrayWithObjects:navigationButton, findField, nil], -dx2, 0.0);
     SKShiftAndResizeViews([NSArray arrayWithObjects:findField, nil], 0.0, dx1 + dx2);
     
-    gradientView = (SKGradientView *)[self view];
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
     size = [gradientView contentRect].size;
@@ -128,10 +127,12 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
         animate = NO;
     
+    NSView *findBar = [self view];
+    
     if (view == nil) {
-        NSArray *subviews = [[[self view] superview] subviews];
+        NSArray *subviews = [[findBar superview] subviews];
         for (view in subviews) {
-            if (view != [self view] && NSMaxY([view frame]) >= NSMinY([[self view] frame]))
+            if (view != findBar && NSMaxY([view frame]) >= NSMinY([findBar frame]))
                 break;
         }
     }
@@ -139,8 +140,8 @@
 	NSRect viewFrame = [view frame];
 	NSView *contentView = [view superview];
 	NSRect barRect = [view frame];
-	CGFloat barHeight = NSHeight([[self view] frame]);
-    BOOL visible = (nil == [[self view] superview]);
+	CGFloat barHeight = NSHeight([findBar frame]);
+    BOOL visible = (nil == [findBar superview]);
     NSTimeInterval duration;
     
 	barRect.size.height = barHeight;
@@ -151,18 +152,17 @@
 		else
 			barRect.origin.y = NSMaxY([contentView bounds]);
         [[self view] setFrame:barRect];
-		[contentView addSubview:[self view] positioned:NSWindowBelow relativeTo:nil];
+		[contentView addSubview:findBar positioned:NSWindowBelow relativeTo:nil];
         barHeight = -barHeight;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[findBar window]];
         [self windowDidBecomeKey:nil];
     } else {
 		if ([contentView isFlipped])
             barRect.origin.y -= barHeight;
 		else
 			barRect.origin.y = NSMaxY([contentView bounds]) - barHeight;
-        if ([[self view] window])
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[[self view] window]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[findBar window]];
     }
     viewFrame.size.height += barHeight;
     if ([contentView isFlipped]) {
@@ -178,15 +178,15 @@
         duration = 0.5 * [[NSAnimationContext currentContext] duration];
         [[NSAnimationContext currentContext] setDuration:duration];
         [[view animator] setFrame:viewFrame];
-        [[[self view] animator] setFrame:barRect];
+        [[findBar animator] setFrame:barRect];
         [NSAnimationContext endGrouping];
         [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:duration];
     } else {
         [view setFrame:viewFrame];
         if (visible)
-            [[self view] setFrame:barRect];
+            [findBar setFrame:barRect];
         else
-            [[self view] removeFromSuperview];
+            [findBar removeFromSuperview];
         [[contentView window] recalculateKeyViewLoop];
     }
 }
