@@ -177,7 +177,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (SKProgressController *)progressController;
 
 - (void)goToSelectedFindResults:(id)sender;
-- (void)updateFindResultHighlightsForDirection:(NSInteger)direction;
+- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
 
 - (void)selectSelectedNote:(id)sender;
 - (void)goToSelectedOutlineItem:(id)sender;
@@ -971,7 +971,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([leftSideController.findTableView window])
                 [self displayGroupedFindViewAnimating:NO];
         }
-        [self updateFindResultHighlightsForDirection:0];
+        [self updateFindResultHighlightsForDirection:NSDirectSelection];
     }
 }
 
@@ -1736,7 +1736,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [[findController findField] selectText:nil];
 }
 
-- (void)updateFindResultHighlightsForDirection:(NSInteger)direction {
+- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction {
     NSArray *findResults = nil;
     
     if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
@@ -1750,12 +1750,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
     } else {
         
-        if (direction == 0) {
+        if (direction == NSDirectSelection) {
             searchResultIndex = 0;
-        } else if (direction == 1) {
+        } else if (direction == NSSelectingNext) {
             if (++searchResultIndex >= (NSInteger)[findResults count])
                 searchResultIndex = 0;
-        } else if (direction == -1) {
+        } else if (direction == NSSelectingPrevious) {
             if (--searchResultIndex < 0)
                 searchResultIndex = [findResults count] - 1;
         }
@@ -1786,7 +1786,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)goToSelectedFindResults:(id)sender {
-    [self updateFindResultHighlightsForDirection:0];
+    [self updateFindResultHighlightsForDirection:NSDirectSelection];
 }
 
 - (IBAction)searchNotes:(id)sender {

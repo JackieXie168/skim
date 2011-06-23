@@ -98,7 +98,7 @@
 
 - (void)updateNoteFilterPredicate;
 
-- (void)updateFindResultHighlightsForDirection:(NSInteger)direction;
+- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
@@ -363,7 +363,7 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:leftSideController.findTableView] || [[aNotification object] isEqual:leftSideController.groupedFindTableView]) {
-        [self updateFindResultHighlightsForDirection:0];
+        [self updateFindResultHighlightsForDirection:NSDirectSelection];
         
         if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
@@ -498,13 +498,13 @@
 
 - (void)tableViewMoveLeft:(NSTableView *)tv {
     if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
-        [self updateFindResultHighlightsForDirection:-1];
+        [self updateFindResultHighlightsForDirection:NSSelectingPrevious];
     }
 }
 
 - (void)tableViewMoveRight:(NSTableView *)tv {
     if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
-        [self updateFindResultHighlightsForDirection:1];
+        [self updateFindResultHighlightsForDirection:NSSelectingNext];
     }
 }
 
