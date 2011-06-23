@@ -1695,9 +1695,20 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (BOOL)findString:(NSString *)string options:(NSInteger)options {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-    while ([sel hasCharacters] == NO && pageIndex-- > 0) {
-        PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
-        sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
+    if (options & NSBackwardsSearch) {
+        while ([sel hasCharacters] == NO && ++pageIndex < [[pdfView document] pageCount]) {
+            PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+            NSUInteger length = [[page string] length];
+            if (length > 0)
+                sel = [page selectionForRange:NSMakeRange(0, length)];
+        }
+    } else {
+        while ([sel hasCharacters] == NO && pageIndex-- > 0) {
+            PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+            NSUInteger length = [[page string] length];
+            if (length > 0)
+                sel = [page selectionForRange:NSMakeRange(0, length)];
+        }
     }
     PDFSelection *selection = [self findString:string fromSelection:sel withOptions:options];
     if ([selection hasCharacters] == NO && [sel hasCharacters])
