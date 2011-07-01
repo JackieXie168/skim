@@ -450,9 +450,10 @@ enum {
     if (syncPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
         
-        NSRect rect = [self convertRect:[self convertRect:[pdfPage boundsForBox:kPDFDisplayBoxMediaBox] fromPage:pdfPage] toView:[self documentView]];
+        NSRect rect = [self convertRect:[self convertRect:[pdfPage boundsForBox:[self displayBox]] fromPage:pdfPage] toView:[self documentView]];
         NSAffineTransform *transform = [NSAffineTransform transform];
         [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
+        [transform scaleBy:[self scaleFactor]];
         [transform concat];
         [pdfPage transformContextForBox:[self displayBox]];
         
