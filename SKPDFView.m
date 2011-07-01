@@ -598,6 +598,16 @@ enum {
     }
 }
 
+- (void)setDisplayBox:(PDFDisplayBox)box {
+    if (box != [self displayBox]) {
+        PDFPage *page = [self currentPage];
+        [super setDisplayBox:box];
+        if (page && [page isEqual:[self currentPage]] == NO)
+            [self goToPage:page];
+        [self relayoutEditField];
+    }
+}
+
 - (void)setDisplaysAsBook:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
         [super setDisplaysAsBook:asBook];
