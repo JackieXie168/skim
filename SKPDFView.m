@@ -144,6 +144,9 @@ enum {
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
 
+- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page;
+- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page;
+
 - (void)enableNavigation;
 - (void)disableNavigation;
 
@@ -323,9 +326,8 @@ enum {
             PDFPage *page = [[self document] pageAtIndex:i];
             for (PDFAnnotation *annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNNoteString] || [annotation isLink]) {
-                    NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
+                    NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] toDocumentViewFromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
-                        rect = [self convertRect:rect toView:docView];
                         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, SKAnnotationKey, nil];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                         [docView addTrackingArea:area];
@@ -450,7 +452,7 @@ enum {
     if (syncPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
         
-        NSRect rect = [self convertRect:[self convertRect:[pdfPage boundsForBox:[self displayBox]] fromPage:pdfPage] toView:[self documentView]];
+        NSRect rect = [self convertRect:[pdfPage boundsForBox:[self displayBox]] toDocumentViewFromPage:pdfPage];
         NSAffineTransform *transform = [NSAffineTransform transform];
         [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
         [transform scaleBy:[self scaleFactor]];
@@ -492,6 +494,15 @@ enum {
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
     [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:[annotation page]];
     [self annotationsChangedOnPage:[annotation page]];
+}
+
+
+- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page {
+    return [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
+}
+
+- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page {
+    return [self convertRect:[self convertRect:rect fromView:[self documentView]] toPage:page];
 }
 
 #pragma mark Accessors
@@ -2032,7 +2043,7 @@ enum {
         CGFloat alpha = [color alphaComponent];
         if (alpha < 1.0)
             color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
-        editBounds = [self convertRect:[self convertRect:editBounds fromPage:[activeAnnotation page]] toView:[self documentView]];
+        editBounds = [self convertRect:editBounds toDocumentViewFromPage:[activeAnnotation page]];
         editField = [[NSTextField alloc] initWithFrame:editBounds];
         [editField setBackgroundColor:color];
         [editField setTextColor:fontColor];
@@ -2254,8 +2265,7 @@ enum {
             }
         }
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
-            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromView:[self documentView]];
-            visibleRect = [self convertRect:visibleRect toPage:[readingBar page]];
+            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:[readingBar page]];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:page];
@@ -2393,7 +2403,7 @@ enum {
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
     if ([self isEditing]) {
-        NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
+        NSRect editBounds = [self convertRect:[activeAnnotation bounds] toDocumentViewFromPage:[activeAnnotation page]];
         [editField setFrame:editBounds];
         if ([activeAnnotation respondsToSelector:@selector(font)]) {
             NSFont *font = [(PDFAnnotationFreeText *)activeAnnotation font];
@@ -2933,8 +2943,7 @@ enum {
     if (moved) {
         NSRect rect = NSInsetRect([readingBar currentBounds], 0.0, -20.0) ;
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
-            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromView:[self documentView]];
-            visibleRect = [self convertRect:visibleRect toPage:[readingBar page]];
+            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:[readingBar page]];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:[readingBar page]];
@@ -4302,7 +4311,7 @@ enum {
             }
         }
         if (isVisible) {
-            NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
+            NSRect editBounds = [self convertRect:[activeAnnotation bounds] toDocumentViewFromPage:[activeAnnotation page]];
             [editField setFrame:editBounds];
             if ([editField superview] == nil) {
                 [[self documentView] addSubview:editField];
