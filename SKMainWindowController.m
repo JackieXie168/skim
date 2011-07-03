@@ -101,6 +101,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "SKPDFPage.h"
 #import "NSScreen_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 

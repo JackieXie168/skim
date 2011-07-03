@@ -53,6 +53,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSEvent_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 

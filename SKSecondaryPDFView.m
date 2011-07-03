@@ -49,6 +49,7 @@
 #import "SKPDFSynchronizer.h"
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 
 @interface NSResponder (SKGesturesPrivate)
@@ -135,24 +136,6 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     if (document && [document isLocked])
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentDidUnlockNotification:) 
                                                      name:PDFDocumentDidUnlockNotification object:document];
-}
-
-- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
-    NSRect aRect = [self convertRect:rect fromPage:page];
-    CGFloat scale = [self scaleFactor];
-	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
-	CGFloat minX = floor(NSMinX(aRect) - scale);
-	CGFloat minY = floor(NSMinY(aRect) - scale);
-	
-    aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
-    if (NSIsEmptyRect(aRect) == NO)
-        [self setNeedsDisplayInRect:aRect];
-}
-
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:page];
-    [self annotationsChangedOnPage:page];
 }
 
 - (void)drawPage:(PDFPage *)pdfPage {

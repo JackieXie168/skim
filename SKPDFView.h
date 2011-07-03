@@ -158,9 +158,6 @@ typedef NSInteger SKNoteType;
 - (void)toggleAutoActualSize:(id)sender;
 - (void)exitFullScreen:(id)sender;
 
-- (CGFloat)physicalScaleFactor;
-- (void)setPhysicalScaleFactor:(CGFloat)scale;
-
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
@@ -179,9 +176,6 @@ typedef NSInteger SKNoteType;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar;
 
 - (void)takeSnapshot:(id)sender;
-
-- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 
 - (void)resetPDFToolTipRects;
 - (void)removePDFToolTipRects;

@@ -37,6 +37,7 @@
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE01E6A21154FE0B00004111 /* SKPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CE01E6A11154FE0B00004111 /* SKPreferencePane.m */; };
+		CE030C6113C07A57007A47E9 /* PDFView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE030C6013C07A57007A47E9 /* PDFView_SKExtensions.m */; };
 		CE0458310FB6FAB0003CAF5D /* Scroller_Divider.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */; };
 		CE0458320FB6FAB0003CAF5D /* Scroller_Background.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */; };
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
@@ -508,6 +509,8 @@
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE01E6A01154FE0B00004111 /* SKPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPreferencePane.h; sourceTree = "<group>"; };
 		CE01E6A11154FE0B00004111 /* SKPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPreferencePane.m; sourceTree = "<group>"; };
+		CE030C5F13C07A57007A47E9 /* PDFView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFView_SKExtensions.h; sourceTree = "<group>"; };
+		CE030C6013C07A57007A47E9 /* PDFView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFView_SKExtensions.m; sourceTree = "<group>"; };
 		CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider.tiff; sourceTree = "<group>"; };
 		CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background.tiff; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
@@ -1950,6 +1953,8 @@
 				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
 				CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */,
 				CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */,
+				CE030C5F13C07A57007A47E9 /* PDFView_SKExtensions.h */,
+				CE030C6013C07A57007A47E9 /* PDFView_SKExtensions.m */,
 			);
 			name = "PDFKit Categories";
 			sourceTree = "<group>";
@@ -2532,6 +2537,7 @@
 				CE171E3512C3AC1600291179 /* SKFileUpdateChecker.m in Sources */,
 				CEECD61C12E9E30B00B9E35E /* NSError_SKExtensions.m in Sources */,
 				CE12A73E134F215F003AED67 /* SKSelectCommand.m in Sources */,
+				CE030C6113C07A57007A47E9 /* PDFView_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

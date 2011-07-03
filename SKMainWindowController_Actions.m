@@ -66,6 +66,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "SKFindController.h"
+#import "PDFView_SKExtensions.h"
 
 
 @interface SKMainWindowController (SKPrivateUI)

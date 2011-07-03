@@ -51,6 +51,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
