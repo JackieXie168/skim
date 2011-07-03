@@ -101,6 +101,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)goBackOrForward:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (void)chooseScale:(id)sender;
+- (void)zoomActualPhysical:(id)sender;
 - (IBAction)zoomInActualOut:(id)sender;
 - (IBAction)zoomToFit:(id)sender;
 - (IBAction)zoomToSelection:(id)sender;

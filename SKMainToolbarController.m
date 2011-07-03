@@ -301,7 +301,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToActualSize:) target:mainController] autorelease];
+            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(zoomActualPhysical:) target:self] autorelease];
             
             [item setLabels:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
@@ -345,7 +345,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom In", @"Menu item title") action:@selector(doZoomIn:) target:mainController];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom Out", @"Menu item title") action:@selector(doZoomOut:) target:mainController];
-            [menu addItemWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToActualSize:) target:mainController];
+            [menu addItemWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(zoomActualPhysical:) target:self];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom", @"Toolbar item label") submenu:menu] autorelease];
             
             [item setLabels:NSLocalizedString(@"Zoom", @"Toolbar item label")];
@@ -810,6 +810,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     SEL action = [menuItem action];
     if (action == @selector(chooseScale:)) {
         return [mainController.pdfView.document isLocked] == NO;
+    } else if (action == @selector(zoomActualPhysical:)) {
+        return [mainController.pdfView.document isLocked] == NO;
     } else if (action == @selector(createNewTextNote:)) {
         [menuItem setState:[textNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
@@ -895,6 +897,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         modalDelegate: self
        didEndSelector: @selector(scaleSheetDidEnd:returnCode:contextInfo:)
           contextInfo: nil];
+}
+
+- (IBAction)zoomActualPhysical:(id)sender {
+    ([NSEvent standardModifierFlags] & NSAlternateKeyMask) ? [mainController.pdfView setPhysicalScaleFactor:1.0] : [mainController.pdfView setScaleFactor:1.0];
 }
 
 - (IBAction)zoomInActualOut:(id)sender {
