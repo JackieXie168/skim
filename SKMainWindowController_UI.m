@@ -72,6 +72,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "NSError_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"

@@ -1,10 +1,10 @@
 //
-//  SKSecondaryPDFView.h
+//  PDFView_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/19/07.
+//  Created by Christiaan Hofman on 7/3/11.
 /*
- This software is Copyright (c) 2007-2011
+ This software is Copyright (c) 2011
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,23 +37,17 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 
 
-@interface SKSecondaryPDFView : PDFView {
-    NSPopUpButton *scalePopUpButton;
-    NSPopUpButton *pagePopUpButton;
-    PDFView *synchronizedPDFView;
-    BOOL synchronizeZoom;
-    BOOL switching;
-    CGFloat pinchZoomFactor;
-}
+@interface PDFView (SKExtensions)
 
-@property (nonatomic, retain) PDFView *synchronizedPDFView;
-@property (nonatomic) BOOL synchronizeZoom;
-@property (nonatomic, retain) NSScrollView *scrollView;
+@property (nonatomic) CGFloat physicalScaleFactor;
 
-- (void)scalePopUpAction:(id)sender;
-- (void)pagePopUpAction:(id)sender;
+- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
+
+- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page;
+- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page;
 
 @end

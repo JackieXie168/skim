@@ -67,6 +67,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKLineInspector.h"
+#import "PDFView_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -143,9 +144,6 @@ enum {
 
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
-
-- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page;
-- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page;
 
 - (void)enableNavigation;
 - (void)disableNavigation;
@@ -476,33 +474,6 @@ enum {
         [NSGraphicsContext restoreGraphicsState];
     }
     
-}
-
-- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
-    NSRect aRect = [self convertRect:rect fromPage:page];
-    CGFloat scale = [self scaleFactor];
-	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
-	CGFloat minX = floor(NSMinX(aRect) - scale);
-	CGFloat minY = floor(NSMinY(aRect) - scale);
-	
-    aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
-    if (NSIsEmptyRect(aRect) == NO)
-        [self setNeedsDisplayInRect:aRect];
-}
-
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
-    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:[annotation page]];
-    [self annotationsChangedOnPage:[annotation page]];
-}
-
-
-- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page {
-    return [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
-}
-
-- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page {
-    return [self convertRect:[self convertRect:rect fromView:[self documentView]] toPage:page];
 }
 
 #pragma mark Accessors

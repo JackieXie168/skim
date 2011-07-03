@@ -49,7 +49,6 @@
 }
 
 @property (nonatomic) BOOL autoFits;
-@property (nonatomic) CGFloat physicalScaleFactor;
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;

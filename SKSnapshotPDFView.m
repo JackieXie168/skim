@@ -46,12 +46,13 @@
 #import "SKPDFSynchronizer.h"
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 
 @implementation SKSnapshotPDFView
 
 @synthesize autoFits, scalePopUpButton;
-@dynamic scrollView, physicalScaleFactor;
+@dynamic scrollView;
 
 static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
 static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
@@ -271,29 +272,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)setAutoScales:(BOOL)newAuto {}
-
-- (CGFloat)physicalScaleFactor {
-    CGFloat scale = [self scaleFactor];
-    NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-	CGSize physicalSize = CGDisplayScreenSize(displayID);
-    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scale *= (physicalSize.width * resolution.width) / (CGDisplayPixelsWide(displayID) * 25.4f);
-    return scale;
-}
-
-- (void)setPhysicalScaleFactor:(CGFloat)scale {
-    NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-	CGSize physicalSize = CGDisplayScreenSize(displayID);
-    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scale *= CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
-    [self setScaleFactor:scale];
-}
 
 - (IBAction)zoomIn:(id)sender{
     if([self autoFits]){
