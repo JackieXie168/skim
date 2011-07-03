@@ -51,7 +51,6 @@
 
 @property (nonatomic, retain) PDFView *synchronizedPDFView;
 @property (nonatomic) BOOL synchronizeZoom;
-@property (nonatomic, retain) NSScrollView *scrollView;
 
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
