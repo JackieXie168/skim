@@ -323,15 +323,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (IBAction)doZoomToPhysicalSize:(id)sender {
-    CGFloat scaleFactor = 1.0;
-    NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-	CGSize physicalSize = CGDisplayScreenSize(displayID);
-    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scaleFactor = CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
-    [pdfView setScaleFactor:scaleFactor];
+    [pdfView setPhysicalScaleFactor:1.0];
 }
 
 - (IBAction)doZoomToActualSize:(id)sender {
@@ -351,7 +343,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     } else if (action == @selector(doZoomToActualSize:)) {
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
-        return YES;
+        return fabs([pdfView physicalScaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoFits] ? NSOnState : NSOffState];
         return YES;
