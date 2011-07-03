@@ -158,6 +158,8 @@ typedef NSInteger SKNoteType;
 - (void)toggleAutoActualSize:(id)sender;
 - (void)exitFullScreen:(id)sender;
 
+- (void)setPhysicalScaleFactor:(CGFloat)scale;
+
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
