@@ -52,7 +52,6 @@
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;
-@property (nonatomic, readonly) NSScrollView *scrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)resetAutoFitRectIfNeeded;

@@ -42,6 +42,7 @@
 @interface PDFView (SKExtensions)
 
 @property (nonatomic) CGFloat physicalScaleFactor;
+@property (nonatomic, readonly) NSScrollView *scrollView;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;

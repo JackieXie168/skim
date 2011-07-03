@@ -42,7 +42,7 @@
 
 @implementation PDFView (SKExtensions)
 
-@dynamic physicalScaleFactor;
+@dynamic physicalScaleFactor, scrollView;
 
 - (CGFloat)physicalScaleFactor {
     CGFloat scale = [self scaleFactor];
@@ -65,6 +65,10 @@
     if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
         scale *= CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
     [self setScaleFactor:scale];
+}
+
+- (NSScrollView *)scrollView {
+    return [[self documentView] enclosingScrollView];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
