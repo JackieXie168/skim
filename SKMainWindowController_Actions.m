@@ -366,15 +366,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)doZoomToPhysicalSize:(id)sender {
-    CGFloat scaleFactor = 1.0;
-    NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-	CGSize physicalSize = CGDisplayScreenSize(displayID);
-    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scaleFactor = CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
-    [pdfView setScaleFactor:scaleFactor];
+    [pdfView setPhysicalScaleFactor:1.0];
 }
 
 - (IBAction)doZoomToActualSize:(id)sender {

@@ -902,7 +902,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if (tag == -1)
         [mainController.pdfView zoomOut:sender];
     else if (tag == 0)
-        [mainController.pdfView setScaleFactor:1.0];
+        ([NSEvent standardModifierFlags] & NSAlternateKeyMask) ? [mainController.pdfView setPhysicalScaleFactor:1.0] : [mainController.pdfView setScaleFactor:1.0];
     else if (tag == 1)
         [mainController.pdfView zoomIn:sender];
 }
@@ -1061,9 +1061,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:1];
     [zoomInActualOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
-    [zoomInActualOutButton setEnabled:[mainController.pdfView.document isLocked] == NO && fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [zoomInActualOutButton setEnabled:[mainController.pdfView.document isLocked] == NO forSegment:1];
     [zoomInActualOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:2];
-    [zoomActualButton setEnabled:[mainController.pdfView.document isLocked] == NO && fabs([mainController.pdfView scaleFactor] - 1.0 ) > 0.01];
+    [zoomActualButton setEnabled:[mainController.pdfView.document isLocked] == NO];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {

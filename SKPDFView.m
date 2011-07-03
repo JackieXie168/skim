@@ -1016,6 +1016,17 @@ enum {
     isZooming = NO;
 }
 
+- (void)setPhysicalScaleFactor:(CGFloat)scale {
+    NSScreen *screen = [[self window] screen];
+	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
+	CGSize physicalSize = CGDisplayScreenSize(displayID);
+    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
+	
+    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
+        scale *= CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
+    [self setScaleFactor:scale];
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
