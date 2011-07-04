@@ -81,15 +81,13 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     SKAutoSizeLabelFields([NSArray arrayWithObjects:searchHighlightCheckButton, nil], [NSArray arrayWithObjects:searchHighlightColorWell, nil], NO);
     [[colorControls lastObject] sizeToFit];
     
-    CGFloat x = NSMaxX([[thumbnailSizeControls lastObject] frame]);
-    x = fmax(x, NSMaxX([tableFontComboBox frame]));
-    x = fmax(x, NSMaxX([greekingTextField frame]));
-    x = fmax(x, NSMaxX([antiAliasCheckButton frame]));
-    x = fmax(x, NSMaxX([fullScreenBackgroundColorWell frame]));
-    x = fmax(x, NSMaxX([fullScreenBackgroundColorWell frame]));
-    x = fmax(x, NSMaxX([[colorControls lastObject] frame]));
+    CGFloat w = 0.0;
+    for (NSView *view in [[self view] subviews]) {
+        if (([view autoresizingMask] & NSViewWidthSizable) == 0)
+            w = fmax(w, NSMaxX([view frame]));
+    }
     NSSize size = [[self view] frame].size;
-    size.width = x + 20.0;
+    size.width = w + 20.0;
     [[self view] setFrameSize:size];
 }
 
