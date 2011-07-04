@@ -505,7 +505,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)setScrollerSize:(NSControlSize)controlSize;
 {
-    NSScrollView *scrollView = [[self documentView] enclosingScrollView];
+    NSScrollView *scrollView = [self scrollView];
     [scrollView setHasHorizontalScroller:YES];
     [scrollView setHasVerticalScroller:YES];
     [[scrollView horizontalScroller] setControlSize:controlSize];

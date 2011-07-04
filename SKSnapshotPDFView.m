@@ -182,20 +182,20 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([self autoFits]) {
-        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        NSView *clipView = [[self scrollView] contentView];
         NSRect rect = [self convertRect:[clipView visibleRect] fromView:clipView];
         BOOL scaleWidth = NSWidth(rect) / NSHeight(rect) < NSWidth(autoFitRect) / NSHeight(autoFitRect);
         CGFloat factor = scaleWidth ? NSWidth(rect) / NSWidth(autoFitRect) : NSHeight(rect) / NSHeight(autoFitRect);
         NSRect viewRect = scaleWidth ? NSInsetRect(autoFitRect, 0.0, 0.5 * (NSHeight(autoFitRect) - NSHeight(rect) / factor)) : NSInsetRect(autoFitRect, 0.5 * (NSWidth(autoFitRect) - NSWidth(rect) / factor), 0.0);
         [super setScaleFactor:factor];
-        viewRect = [self convertRect:[self convertRect:viewRect fromPage:autoFitPage] toView:[self documentView]];
+        viewRect = [self convertRect:viewRect toDocumentViewFromPage:autoFitPage];
         [[self documentView] scrollRectToVisible:viewRect];
     }
 }
 
 - (void)resetAutoFitRectIfNeeded {
     if ([self autoFits]) {
-        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        NSView *clipView = [[self scrollView] contentView];
         autoFitPage = [self currentPage];
         autoFitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:autoFitPage];
     }
@@ -377,7 +377,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)setScrollerSize:(NSControlSize)controlSize;
 {
-    NSScrollView *scrollView = [[self documentView] enclosingScrollView];
+    NSScrollView *scrollView = [self scrollView];
     [scrollView setHasHorizontalScroller:YES];
     [scrollView setHasVerticalScroller:YES];
     [[scrollView horizontalScroller] setControlSize:controlSize];
@@ -491,7 +491,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 	} // end of mouse-tracking loop
     
     if ([self autoFits]) {
-        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        NSView *clipView = [[self scrollView] contentView];
         autoFitPage = [self currentPage];
         autoFitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:autoFitPage];
     }
