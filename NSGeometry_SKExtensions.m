@@ -114,6 +114,7 @@ BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoi
 
 #define MIN_BUTTON_WIDTH 82.0
 #define MAX_BUTTON_WIDTH 100.0
+#define EXTRA_BUTTON_WIDTH 12.0
 
 void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
     for (NSView *view in views) {
@@ -132,12 +133,12 @@ void SKAutoSizeButtons(NSArray *buttons, BOOL rightAlign) {
     CGFloat width = 0.0;
     for (button in buttons) {
         [button sizeToFit];
-        width = fmax(width, NSWidth([button frame]));
+        width = fmax(width, NSWidth([button frame]) + EXTRA_BUTTON_WIDTH);
     }
     width = fmin(MAX_BUTTON_WIDTH, fmax(MIN_BUTTON_WIDTH, width));
     for (button in buttons) {
         NSRect frame = [button frame];
-        frame.size.width = fmax(width, NSWidth(frame));
+        frame.size.width = fmax(width, NSWidth(frame) + EXTRA_BUTTON_WIDTH);
         if (rightAlign) {
             x -= NSWidth(frame);
             frame.origin.x = x;
