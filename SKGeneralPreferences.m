@@ -86,9 +86,10 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     
     SKAutoSizeButtons(revertPDFSettingsButtons, NO);
     SKAutoSizeLabelFields([NSArray arrayWithObjects:openFilesLabelField, nil], [NSArray arrayWithObjects:openFilesMatrix, nil], NO);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:updateIntervalLabelField, nil], [NSArray arrayWithObjects:updateIntervalPopUpButton, nil], NO);
+    CGFloat dw = SKAutoSizeLabelFields([NSArray arrayWithObjects:updateIntervalLabelField, nil], [NSArray arrayWithObjects:updateIntervalPopUpButton, nil], NO);
     [openFilesMatrix sizeToFit];
     [savePasswordsMatrix sizeToFit];
+    SKShiftAndResizeViews([NSArray arrayWithObjects:[self view], nil], 0.0, dw);
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];
