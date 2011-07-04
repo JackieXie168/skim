@@ -1061,10 +1061,10 @@ enum {
     
     if (interactionMode == SKPresentationMode) {
         // Presentation mode
-        if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
+        if ([[self scrollView] hasHorizontalScroller] == NO && 
             (eventChar == NSRightArrowFunctionKey) &&  (modifiers == 0)) {
             [self goToNextPage:self];
-        } else if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
+        } else if ([[self scrollView] hasHorizontalScroller] == NO && 
                    (eventChar == NSLeftArrowFunctionKey) &&  (modifiers == 0)) {
             [self goToPreviousPage:self];
         } else if ((eventChar == 'p') && (modifiers == 0)) {
@@ -2482,7 +2482,7 @@ enum {
 }
 
 - (NSRect)visibleContentRect {
-    NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[self scrollView] contentView];
     return [clipView convertRect:[clipView visibleRect] toView:self];
 }
 
@@ -3988,7 +3988,7 @@ enum {
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
 	NSEvent *lastMouseEvent = theEvent;
-    NSScrollView *scrollView = [[self documentView] enclosingScrollView];
+    NSScrollView *scrollView = [self scrollView];
     NSView *documentView = [scrollView documentView];
     NSView *clipView = [scrollView contentView];
 	NSRect originalBounds = [documentView bounds];
