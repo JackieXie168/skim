@@ -261,4 +261,26 @@ static SKPreferenceController *sharedPrefenceController = nil;
     return [self toolbarDefaultItemIdentifiers:toolbar];
 }
 
+- (IBAction)doGoToNextPage:(id)sender {
+    NSToolbar *toolbar = [[self window] toolbar];
+    NSString *itemID = [toolbar selectedItemIdentifier];
+    NSArray *itemIDs = [[toolbar visibleItems] valueForKey:@"itemIdentifier"];
+    NSUInteger itemIndex = [itemIDs indexOfObject:itemID];
+    if (itemIndex != NSNotFound && ++itemIndex < [itemIDs count]) {
+        [toolbar setSelectedItemIdentifier:[itemIDs objectAtIndex:itemIndex]];
+        [self selectPane:[[toolbar visibleItems] objectAtIndex:itemIndex]];
+    }
+}
+
+- (IBAction)doGoToPreviousPage:(id)sender {
+    NSToolbar *toolbar = [[self window] toolbar];
+    NSString *itemID = [toolbar selectedItemIdentifier];
+    NSArray *itemIDs = [[toolbar visibleItems] valueForKey:@"itemIdentifier"];
+    NSUInteger itemIndex = [itemIDs indexOfObject:itemID];
+    if (itemIndex != NSNotFound && itemIndex-- > 0) {
+        [toolbar setSelectedItemIdentifier:[itemIDs objectAtIndex:itemIndex]];
+        [self selectPane:[[toolbar visibleItems] objectAtIndex:itemIndex]];
+    }
+}
+
 @end
