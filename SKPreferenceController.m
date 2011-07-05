@@ -211,8 +211,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     return nil;
 }
 
-- (void)selectPane:(id)sender {
-    SKPreferencePane *pane = [self preferencePaneForItemIdentifier:[sender itemIdentifier]];
+- (void)selectPane:(SKPreferencePane *)pane {
     if ([pane isEqual:currentPane] == NO) {
         
         [[self window] setTitle:[pane title]];
@@ -239,13 +238,17 @@ static SKPreferenceController *sharedPrefenceController = nil;
     }
 }
 
+- (void)selectPaneAction:(id)sender {
+    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]]];
+}
+
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
     SKPreferencePane *pane = [self preferencePaneForItemIdentifier:itemIdent];
     NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdent] autorelease];
     [item setLabel:[pane title]];
     [item setImage:[pane icon]];
     [item setTarget:self];
-    [item setAction:@selector(selectPane:)];
+    [item setAction:@selector(selectPaneAction:)];
     return item;
 }
 
@@ -262,25 +265,29 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
-    NSToolbar *toolbar = [[self window] toolbar];
-    NSString *itemID = [toolbar selectedItemIdentifier];
-    NSArray *itemIDs = [[toolbar visibleItems] valueForKey:@"itemIdentifier"];
-    NSUInteger itemIndex = [itemIDs indexOfObject:itemID];
-    if (itemIndex != NSNotFound && ++itemIndex < [itemIDs count]) {
-        [toolbar setSelectedItemIdentifier:[itemIDs objectAtIndex:itemIndex]];
-        [self selectPane:[[toolbar visibleItems] objectAtIndex:itemIndex]];
+    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
+    if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count]) {
+        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [self selectPane:pane];
     }
 }
 
 - (IBAction)doGoToPreviousPage:(id)sender {
-    NSToolbar *toolbar = [[self window] toolbar];
-    NSString *itemID = [toolbar selectedItemIdentifier];
-    NSArray *itemIDs = [[toolbar visibleItems] valueForKey:@"itemIdentifier"];
-    NSUInteger itemIndex = [itemIDs indexOfObject:itemID];
+    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
     if (itemIndex != NSNotFound && itemIndex-- > 0) {
-        [toolbar setSelectedItemIdentifier:[itemIDs objectAtIndex:itemIndex]];
-        [self selectPane:[[toolbar visibleItems] objectAtIndex:itemIndex]];
+        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [self selectPane:pane];
     }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(doGoToNextPage:))
+        return [currentPane isEqual:[preferencePanes lastObject]] == NO;
+    else if ([menuItem action] == @selector(doGoToPreviousPage:))
+        return [currentPane isEqual:[preferencePanes objectAtIndex:0]] == NO;
+    return YES;
 }
 
 @end
