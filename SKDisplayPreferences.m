@@ -83,8 +83,14 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     
     CGFloat w = 0.0;
     for (NSView *view in [[self view] subviews]) {
-        if (([view autoresizingMask] & NSViewWidthSizable) == 0)
-            w = fmax(w, NSMaxX([view frame]));
+        if (([view autoresizingMask] & NSViewWidthSizable) == 0) {
+            CGFloat x = NSMaxX([view frame]);
+            if ([view isKindOfClass:[NSSlider class]] || [view isKindOfClass:[NSButton class]])
+                x -= 2.0;
+            else if ([view isKindOfClass:[NSComboBox class]])
+                x -= 3.0;
+            w = fmax(w, x);
+        }
     }
     NSSize size = [[self view] frame].size;
     size.width = w + 20.0;
