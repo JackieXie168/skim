@@ -100,9 +100,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (void)windowDidLoad {
-    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
-    NSDictionary *resettableKeys = [[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY];
-    
     NSWindow *window = [self window];
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
     
@@ -117,19 +114,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     SKAutoSizeButtons(resetButtons, NO);
     
-    SKPreferencePane *pane;
-    NSView *view;
-    CGFloat width = 0.0;
-    for (pane in preferencePanes) {
-        [pane setRepresentedObject:[resettableKeys objectForKey:[pane nibName]]];
-        width = fmax(width, NSWidth([[pane view] frame]));
-    }
-    
     currentPane = [preferencePanes objectAtIndex:0];
-    view = [currentPane view];
     [toolbar setSelectedItemIdentifier:[currentPane nibName]];
     [window setTitle:[currentPane title]];
         
+    NSView *view = [currentPane view];
     NSRect frame = [[self window] frame];
     frame.size.width = NSWidth([view frame]);
     frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
@@ -149,7 +138,47 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
 }
 
+#pragma mark Preference panes
+
+- (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
+    for (SKPreferencePane *pane in preferencePanes)
+        if ([[pane nibName] isEqualToString:itemIdent])
+            return pane;
+    return nil;
+}
+
+- (void)selectPane:(SKPreferencePane *)pane {
+    if ([pane isEqual:currentPane] == NO) {
+        
+        [[self window] setTitle:[pane title]];
+        
+        // make sure edits are committed
+        [currentPane commitEditing];
+        [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
+        
+        NSView *view = [pane view];
+        NSRect frame = [view frame];
+        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
+        CGFloat dw = NSWidth([contentView frame]) - NSWidth(frame);
+        
+        [view setFrameOrigin:NSMakePoint(0.0, dh)];
+        [contentView replaceSubview:[currentPane view] with:view];
+        
+        currentPane = pane;
+        
+        frame = [[self window] frame];
+        frame.origin.y += dh;
+        frame.size.height -= dh;
+        frame.size.width -= dw;
+        [[self window] setFrame:frame display:YES animate:YES];
+    }
+}
+
 #pragma mark Actions
+
+- (void)selectPaneAction:(id)sender {
+    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]]];
+}
 
 - (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
@@ -172,7 +201,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[currentPane representedObject]];
+        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
+        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
         [currentPane defaultsDidRevert];
     }
 }
@@ -229,44 +260,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 #pragma mark Toolbar
-
-- (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
-    for (SKPreferencePane *pane in preferencePanes)
-        if ([[pane nibName] isEqualToString:itemIdent])
-            return pane;
-    return nil;
-}
-
-- (void)selectPane:(SKPreferencePane *)pane {
-    if ([pane isEqual:currentPane] == NO) {
-        
-        [[self window] setTitle:[pane title]];
-        
-        // make sure edits are committed
-        [currentPane commitEditing];
-        [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
-        
-        NSView *view = [pane view];
-        NSRect frame = [view frame];
-        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
-        CGFloat dw = NSWidth([contentView frame]) - NSWidth(frame);
-        
-        [view setFrameOrigin:NSMakePoint(0.0, dh)];
-        [contentView replaceSubview:[currentPane view] with:view];
-        
-        currentPane = pane;
-        
-        frame = [[self window] frame];
-        frame.origin.y += dh;
-        frame.size.height -= dh;
-        frame.size.width -= dw;
-        [[self window] setFrame:frame display:YES animate:YES];
-    }
-}
-
-- (void)selectPaneAction:(id)sender {
-    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]]];
-}
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
     SKPreferencePane *pane = [self preferencePaneForItemIdentifier:itemIdent];
