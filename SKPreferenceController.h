@@ -59,4 +59,7 @@
 - (IBAction)changeFont:(id)sender;
 - (IBAction)changeAttributes:(id)sender;
 
+- (IBAction)doGoToNextPage:(id)sender;
+- (IBAction)doGoToPreviousPage:(id)sender;
+
 @end
