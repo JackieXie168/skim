@@ -202,6 +202,32 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [currentPane changeAttributes:sender];
 }
 
+- (IBAction)doGoToNextPage:(id)sender {
+    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
+    if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count]) {
+        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [self selectPane:pane];
+    }
+}
+
+- (IBAction)doGoToPreviousPage:(id)sender {
+    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
+    if (itemIndex != NSNotFound && itemIndex-- > 0) {
+        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [self selectPane:pane];
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(doGoToNextPage:))
+        return [currentPane isEqual:[preferencePanes lastObject]] == NO;
+    else if ([menuItem action] == @selector(doGoToPreviousPage:))
+        return [currentPane isEqual:[preferencePanes objectAtIndex:0]] == NO;
+    return YES;
+}
+
 #pragma mark Toolbar
 
 - (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
@@ -262,32 +288,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar {
     return [self toolbarDefaultItemIdentifiers:toolbar];
-}
-
-- (IBAction)doGoToNextPage:(id)sender {
-    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
-    if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count]) {
-        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
-        [self selectPane:pane];
-    }
-}
-
-- (IBAction)doGoToPreviousPage:(id)sender {
-    NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
-    if (itemIndex != NSNotFound && itemIndex-- > 0) {
-        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
-        [self selectPane:pane];
-    }
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(doGoToNextPage:))
-        return [currentPane isEqual:[preferencePanes lastObject]] == NO;
-    else if ([menuItem action] == @selector(doGoToPreviousPage:))
-        return [currentPane isEqual:[preferencePanes objectAtIndex:0]] == NO;
-    return YES;
 }
 
 @end
