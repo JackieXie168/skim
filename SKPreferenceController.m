@@ -54,6 +54,8 @@
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
+#define SKLastSelectedPreferencePaneKey @"SKLastSelectedPreferencePane"
+
 #define NIBNAME_KEY @"nibName"
 
 @implementation SKPreferenceController
@@ -99,47 +101,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [super dealloc];
 }
 
-- (void)windowDidLoad {
-    NSWindow *window = [self window];
-    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
-    
-    [toolbar setAllowsUserCustomization:NO];
-    [toolbar setAutosavesConfiguration:NO];
-    [toolbar setVisible:YES];
-    [toolbar setDelegate:self];
-    [window setToolbar:toolbar];
-    [window setShowsToolbarButton:NO];
-    
-    [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
-    
-    SKAutoSizeButtons(resetButtons, NO);
-    
-    currentPane = [preferencePanes objectAtIndex:0];
-    [toolbar setSelectedItemIdentifier:[currentPane nibName]];
-    [window setTitle:[currentPane title]];
-        
-    NSView *view = [currentPane view];
-    NSRect frame = [[self window] frame];
-    frame.size.width = NSWidth([view frame]);
-    frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
-    [window setFrame:frame display:NO];
-    
-    [view setFrameOrigin:NSZeroPoint];
-    [contentView addSubview:view];
-}
-
-- (void)windowDidResignMain:(NSNotification *)notification {
-    [[[self window] contentView] deactivateWellSubcontrols];
-}
-
-- (void)windowWillClose:(NSNotification *)notification {
-    // make sure edits are committed
-    [currentPane commitEditing];
-    [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
-}
-
-#pragma mark Preference panes
-
 - (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
     for (SKPreferencePane *pane in preferencePanes)
         if ([[pane nibName] isEqualToString:itemIdent])
@@ -171,7 +132,48 @@ static SKPreferenceController *sharedPrefenceController = nil;
         frame.size.height -= dh;
         frame.size.width -= dw;
         [[self window] setFrame:frame display:YES animate:YES];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[currentPane nibName] forKey:SKLastSelectedPreferencePaneKey];
     }
+}
+
+- (void)windowDidLoad {
+    NSWindow *window = [self window];
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
+    
+    [toolbar setAllowsUserCustomization:NO];
+    [toolbar setAutosavesConfiguration:NO];
+    [toolbar setVisible:YES];
+    [toolbar setDelegate:self];
+    [window setToolbar:toolbar];
+    [window setShowsToolbarButton:NO];
+    
+    [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
+    
+    SKAutoSizeButtons(resetButtons, NO);
+    
+    currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
+    [toolbar setSelectedItemIdentifier:[currentPane nibName]];
+    [window setTitle:[currentPane title]];
+        
+    NSView *view = [currentPane view];
+    NSRect frame = [[self window] frame];
+    frame.size.width = NSWidth([view frame]);
+    frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
+    [window setFrame:frame display:NO];
+    
+    [view setFrameOrigin:NSZeroPoint];
+    [contentView addSubview:view];
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification {
+    [[[self window] contentView] deactivateWellSubcontrols];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    // make sure edits are committed
+    [currentPane commitEditing];
+    [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
 }
 
 #pragma mark Actions
