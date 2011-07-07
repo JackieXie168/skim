@@ -44,6 +44,7 @@
 #import "SKSyncPreferences.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKFontWell.h"
+#import "SKStringConstants.h"
 #import "NSView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
@@ -108,29 +109,44 @@ static SKPreferenceController *sharedPrefenceController = nil;
     return nil;
 }
 
+- (void)endAnimation {
+    [contentView setWantsLayer:NO];
+}
+
 - (void)selectPane:(SKPreferencePane *)pane {
     if ([pane isEqual:currentPane] == NO) {
-        
-        [[self window] setTitle:[pane title]];
-        
         // make sure edits are committed
         [currentPane commitEditing];
         [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
+        NSView *oldView = [currentPane view];
         
         NSView *view = [pane view];
         NSRect frame = [view frame];
         CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
         
-        [contentView replaceSubview:[currentPane view] with:view];
-        
-        currentPane = pane;
-        
         frame = [[self window] frame];
         frame.origin.y += dh;
         frame.size.height -= dh;
-        [[self window] setFrame:frame display:YES animate:YES];
         
+        currentPane = pane;
+        
+        [[self window] setTitle:[currentPane title]];
         [[NSUserDefaults standardUserDefaults] setObject:[currentPane nibName] forKey:SKLastSelectedPreferencePaneKey];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+            [contentView replaceSubview:oldView with:view];
+            [[self window] setFrame:frame display:YES];
+        } else {
+            NSTimeInterval duration = [[self window] animationResizeTime:frame];
+            [contentView setWantsLayer:YES];
+            [contentView displayIfNeeded];
+            [NSAnimationContext beginGrouping];
+            [[NSAnimationContext currentContext] setDuration:duration];
+            [[contentView animator] replaceSubview:oldView with:view];
+            [[[self window] animator] setFrame:frame display:YES];
+            [NSAnimationContext endGrouping];
+            [self performSelector:@selector(endAnimation) withObject:nil afterDelay:duration];
+        }
     }
 }
 
