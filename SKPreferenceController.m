@@ -123,10 +123,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         NSView *contentView = [[self window] contentView];
         NSView *view = [pane view];
-        NSRect frame = [view frame];
-        CGFloat dh = NSHeight([contentView frame]) - NSMaxY(frame);
-        
-        frame = [[self window] frame];
+        CGFloat dh = NSHeight([contentView frame]) - NSMaxY([view frame]);
+        NSRect frame = [[self window] frame];
         frame.origin.y += dh;
         frame.size.height -= dh;
         
@@ -166,6 +164,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [window setToolbar:toolbar];
     [window setShowsToolbarButton:NO];
     
+    // we want to restore the top of the window, while without the force it restores the bottom position without the size
+    [[self window] setFrameUsingName:SKPreferenceWindowFrameAutosaveName force:YES];
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
     SKAutoSizeButtons(resetButtons, NO);
@@ -192,9 +192,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [window setTitle:[currentPane title]];
     
     view = [currentPane view];
+    CGFloat dh = NSHeight([[[self window] contentView] frame]) - NSMaxY([view frame]);
     frame = [[self window] frame];
     frame.size.width = width;
-    frame.size.height -= NSHeight([[[self window] contentView] frame]) - NSMaxY([view frame]);
+    frame.size.height -= dh;
+    frame.origin.y += dh;
     [window setFrame:frame display:NO];
     
     [[[self window] contentView] addSubview:view];
