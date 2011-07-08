@@ -136,6 +136,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
             [[self window] setFrame:frame display:YES];
+        } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5) {
+            [contentView replaceSubview:oldView with:view];
+            [[self window] setFrame:frame display:YES animate:YES];
         } else {
             NSTimeInterval duration = [[self window] animationResizeTime:frame];
             [contentView setWantsLayer:YES];
