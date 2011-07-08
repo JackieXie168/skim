@@ -59,9 +59,11 @@
 
 #define NIBNAME_KEY @"nibName"
 
+#define BOTTOM_MARGIN 27.0
+
 @implementation SKPreferenceController
 
-@synthesize contentView, resetButtons;
+@synthesize resetButtons;
 
 static SKPreferenceController *sharedPrefenceController = nil;
 
@@ -97,7 +99,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)dealloc {
     currentPane = nil;
     SKDESTROY(preferencePanes);
-    SKDESTROY(contentView);
     SKDESTROY(resetButtons);
     [super dealloc];
 }
@@ -110,7 +111,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (void)endAnimation {
-    [contentView setWantsLayer:NO];
+    [[[self window] contentView] setWantsLayer:NO];
 }
 
 - (void)selectPane:(SKPreferencePane *)pane {
@@ -120,9 +121,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
         NSView *oldView = [currentPane view];
         
+        NSView *contentView = [[self window] contentView];
         NSView *view = [pane view];
         NSRect frame = [view frame];
-        CGFloat dh = NSHeight([contentView frame]) - NSHeight(frame);
+        CGFloat dh = NSHeight([contentView frame]) - NSMaxY(frame);
         
         frame = [[self window] frame];
         frame.origin.y += dh;
@@ -181,6 +183,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             frame.size.width = width;
         else
             frame.origin.x = floor(0.5 * (width - NSWidth(frame)));
+        frame.origin.y = BOTTOM_MARGIN;
         [view setFrame:frame];
     }
     
@@ -191,11 +194,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
     view = [currentPane view];
     frame = [[self window] frame];
     frame.size.width = width;
-    frame.size.height -= NSHeight([contentView frame]) - NSHeight([view frame]);
+    frame.size.height -= NSHeight([[[self window] contentView] frame]) - NSMaxY([view frame]);
     [window setFrame:frame display:NO];
     
-    [view setFrameOrigin:NSMakePoint(floor(0.5 * (width - NSWidth([view frame]))), 0.0)];
-    [contentView addSubview:view];
+    [[[self window] contentView] addSubview:view];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
