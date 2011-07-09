@@ -43,6 +43,7 @@
 @interface SKPreferencePane : SKViewController
 
 @property (nonatomic, readonly) NSImage *icon;
+@property (nonatomic, readonly) NSArray *resettableKeys;
 
 - (void)defaultsDidRevert;
 

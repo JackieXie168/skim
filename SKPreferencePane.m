@@ -38,13 +38,21 @@
 
 #import "SKPreferencePane.h"
 
+#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
+#define RESETTABLEKEYS_KEY @"ResettableKeys"
+
 
 @implementation SKPreferencePane
 
-@dynamic icon;
+@dynamic icon, resettableKeys;
 
 - (NSImage *)icon {
     return [NSImage imageNamed:[self nibName]];
+}
+
+- (NSArray *)resettableKeys {
+    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
+    return [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[self nibName]];
 }
 
 - (void)defaultsDidRevert {}

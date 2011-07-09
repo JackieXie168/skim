@@ -48,9 +48,6 @@
 #import "NSView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
-#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
-#define RESETTABLEKEYS_KEY @"ResettableKeys"
-
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
@@ -239,9 +236,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
-        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[currentPane resettableKeys]];
         [currentPane defaultsDidRevert];
     }
 }
