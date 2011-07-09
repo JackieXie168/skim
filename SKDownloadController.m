@@ -118,10 +118,9 @@ static SKDownloadController *sharedDownloadController = nil;
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL {
     SKDownload *download = nil;
     if (aURL) {
-        download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
+        download = [[[SKDownload alloc] initWithURL:aURL] autorelease];
         NSInteger row = [self countOfDownloads];
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
-        [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
     }
@@ -196,8 +195,10 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
+    [download setDelegate:self];
     [downloads insertObject:download atIndex:anIndex];
     [self startObservingDownloads:[NSArray arrayWithObject:download]];
+    [download start];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }

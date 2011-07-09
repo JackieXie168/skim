@@ -84,7 +84,10 @@ typedef NSInteger SKDownloadStatus;
 
 @property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
 
-- (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
+@property (nonatomic, readonly) NSString *scriptingURL;
+@property (nonatomic, readonly) NSURL *fileURL;
+
+- (id)initWithURL:(NSURL *)aURL;
 
 - (void)start;
 - (void)cancel;
