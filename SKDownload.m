@@ -39,6 +39,7 @@
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSFileManager_SKExtensions.h"
+#import "SKDownloadController.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
@@ -63,7 +64,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
-@dynamic fileName, info, canCancel, canRemove, canResume;
+@dynamic fileName, fileURL, info, canCancel, canRemove, canResume;
 
 static NSSet *keysAffectedByFilePath = nil;
 static NSSet *keysAffectedByDownloadStatus = nil;
@@ -91,7 +92,7 @@ static NSSet *infoKeys = nil;
     return set;
 }
 
-- (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate {
+- (id)initWithURL:(NSURL *)aURL {
     self = [super init];
     if (self) {
         URL = [aURL retain];
@@ -102,7 +103,7 @@ static NSSet *infoKeys = nil;
         receivedContentLength = 0;
         progressIndicator = nil;
         status = SKDownloadStatusUndefined;
-        delegate = aDelegate;
+        delegate = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
@@ -111,7 +112,7 @@ static NSSet *infoKeys = nil;
 }
 
 - (id)init {
-    return [self initWithURL:nil delegate:nil];
+    return [self initWithURL:nil];
 }
 
 - (void)dealloc {
@@ -219,6 +220,24 @@ static NSSet *infoKeys = nil;
     for (NSString *key in infoKeys)
         [info setValue:[self valueForKey:key] forKey:key];
     return info;
+}
+
+- (id)objectSpecifier {
+    NSUInteger idx = [[[SKDownloadController sharedDownloadController] downloads] indexOfObjectIdenticalTo:self];
+    if (idx != NSNotFound) {
+        NSScriptClassDescription *containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[NSApp class]];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"downloads" index:idx] autorelease];
+    } else {
+        return nil;
+    }
+}
+
+- (NSURL *)fileURL {
+    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
+}
+
+- (NSString *)scriptingURL {
+    return [[self URL] absoluteString];
 }
 
 - (void)removeProgressIndicatorFromSuperview {

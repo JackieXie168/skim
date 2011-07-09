@@ -56,6 +56,7 @@
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
 #import "SKDownloadController.h"
+#import "SKDownload.h"
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "NSDocument_SKExtensions.h"
@@ -425,17 +426,31 @@
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
-        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"bookmarks", 
+        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"bookmarks", @"downloads", 
             @"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", @"pageBackgroundColor", 
             @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultFontNames", @"defaultFontSizes", @"defaultTextNoteFontColor", @"defaultAlignment", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
-    if ([key isEqualToString:@"bookmarks"])
+    if ([key isEqualToString:@"bookmarks"]) {
         return [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
-    else
+    } else if ([key isEqualToString:@"downloads"]) {
+        NSString *urlString = [properties objectForKey:@"scriptingURL"] ?: contentsValue;
+        if (urlString == nil) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+            [[NSScriptCommand currentCommand] setScriptErrorString:@"New downloads requires a URL."];
+            return nil;
+        } else if ([urlString isKindOfClass:[NSString class]] == NO) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
+            [[NSScriptCommand currentCommand] setScriptErrorString:@"URL must be text."];
+            return nil;
+        } else {
+            return [[SKDownload alloc] initWithURL:[NSURL URLWithString:urlString]];
+        }
+    } else {
         return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+    }
 }
 
 - (NSArray *)bookmarks {
@@ -448,6 +463,19 @@
 
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {
     [[[SKBookmarkController sharedBookmarkController] bookmarkRoot] removeObjectFromBookmarksAtIndex:anIndex];
+}
+
+- (NSArray *)downloads {
+    return [[SKDownloadController sharedDownloadController] downloads];
+}
+
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
+    [[SKDownloadController sharedDownloadController] insertObject:download inDownloadsAtIndex:anIndex];
+}
+
+- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex {
+    if ([[[[SKDownloadController sharedDownloadController] downloads] objectAtIndex:anIndex] canRemove])
+        [[SKDownloadController sharedDownloadController] removeObjectFromDownloadsAtIndex:anIndex];
 }
 
 - (NSDictionary *)defaultPdfViewSettings {

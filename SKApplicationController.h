@@ -40,7 +40,7 @@
 #import "SKApplication.h"
 #import "HIDRemote.h"
 
-@class SKBookmark;
+@class SKBookmark, SKDownload;
 
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
     BOOL remoteScrolling;
@@ -65,5 +65,9 @@
 - (NSArray *)bookmarks;
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
+
+- (NSArray *)downloads;
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
 
 @end

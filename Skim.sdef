@@ -809,6 +809,10 @@
                 description="The top level bookmarks.">
                 <cocoa key="bookmarks" insert-at-beginning="no"/>
             </element>
+            <element type="download"
+                description="The downloads.">
+                <cocoa key="downloads" insert-at-beginning="no"/>
+            </element>
             <element type="TeX line" access="r" hidden="yes"
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
@@ -1197,6 +1201,23 @@
                 description="The folder or session bookmark containing this bookmark.">
                 <cocoa key="scriptingParent"/>
             </property>
+        </class>
+
+        <class name="download" plural="downloads" code="Dwnl"
+            description="A download.">
+            <cocoa class="SKDownload"/>
+            <contents name="URL" code="url " type="text" access="r"
+                description="The source URL for the download.">
+                <cocoa key="scriptingURL"/>
+            </contents>
+            <property name="file" code="file" type="file" access="r"
+                description="The target file for the download.">
+                <cocoa key="fileURL"/>
+            </property>
+            <contents name="status" code="Stat" type="download status" access="r"
+                description="The current status of the download.">
+                <cocoa key="status"/>
+            </contents>
         </class>
 
         <class name="point list" plural="point lists" code="PtLi"
@@ -1729,6 +1750,33 @@
             <enumerator name="separator bookmark" code="BmSp"
                 description="Bookmark separator.">
                 <cocoa integer-value="3"/>
+            </enumerator>
+        </enumeration>
+
+        <enumeration name="download status" code="DlSt">
+            <enumerator name="undefined download" code="DUnd"
+                description="Undefined download status.">
+                <cocoa integer-value="0"/>
+            </enumerator>
+            <enumerator name="starting download" code="DSta"
+                description="Starting download status.">
+                <cocoa integer-value="1"/>
+            </enumerator>
+            <enumerator name="downloading download" code="DSta"
+                description="Downloading download status.">
+                <cocoa integer-value="2"/>
+            </enumerator>
+            <enumerator name="finished download" code="DSta"
+                description="Finished download status.">
+                <cocoa integer-value="3"/>
+            </enumerator>
+            <enumerator name="failed download" code="DSta"
+                description="Failed download status.">
+                <cocoa integer-value="4"/>
+            </enumerator>
+            <enumerator name="canceled download" code="DSta"
+                description="Canceled download status.">
+                <cocoa integer-value="5"/>
             </enumerator>
         </enumeration>
 
