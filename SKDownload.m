@@ -357,14 +357,14 @@ static NSSet *infoKeys = nil;
     }
 }
 
-- (void)downloadDidFinish:(NSURLDownload *)theDownload {
+- (void)downloadDidFinish:(NSURLDownload *)theDownload {log_method();
     if (expectedContentLength > 0)
 		[progressIndicator setDoubleValue:(double)expectedContentLength];
     [self setStatus:SKDownloadStatusFinished];
     [delegate downloadDidEnd:self];
 }
 
-- (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
+- (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {log_method();
     [self setStatus:SKDownloadStatusFailed];
     if (filePath)
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
