@@ -1754,27 +1754,27 @@
         </enumeration>
 
         <enumeration name="download status" code="DlSt">
-            <enumerator name="undefined download" code="DUnd"
+            <enumerator name="undefined download" code="DSUn"
                 description="Undefined download status.">
                 <cocoa integer-value="0"/>
             </enumerator>
-            <enumerator name="starting download" code="DSta"
+            <enumerator name="starting download" code="DSSt"
                 description="Starting download status.">
                 <cocoa integer-value="1"/>
             </enumerator>
-            <enumerator name="downloading download" code="DSta"
+            <enumerator name="downloading download" code="DSDo"
                 description="Downloading download status.">
                 <cocoa integer-value="2"/>
             </enumerator>
-            <enumerator name="finished download" code="DSta"
+            <enumerator name="finished download" code="DSFi"
                 description="Finished download status.">
                 <cocoa integer-value="3"/>
             </enumerator>
-            <enumerator name="failed download" code="DSta"
+            <enumerator name="failed download" code="DSFa"
                 description="Failed download status.">
                 <cocoa integer-value="4"/>
             </enumerator>
-            <enumerator name="canceled download" code="DSta"
+            <enumerator name="canceled download" code="DSCa"
                 description="Canceled download status.">
                 <cocoa integer-value="5"/>
             </enumerator>
