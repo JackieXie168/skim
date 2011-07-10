@@ -75,6 +75,7 @@ typedef NSInteger SKDownloadStatus;
 
 @property (nonatomic, readonly, retain) NSString *filePath;
 @property (nonatomic, readonly) NSString *fileName;
+@property (nonatomic, readonly) NSURL *fileURL;
 @property (nonatomic, readonly, retain) NSImage *fileIcon;
 @property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
 
@@ -85,7 +86,6 @@ typedef NSInteger SKDownloadStatus;
 @property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
 
 @property (nonatomic, readonly) NSString *scriptingURL;
-@property (nonatomic, readonly) NSURL *scriptingFileURL;
 @property (nonatomic) SKDownloadStatus scriptingStatus;
 
 - (id)initWithURL:(NSURL *)aURL;

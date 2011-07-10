@@ -1212,7 +1212,7 @@
             </contents>
             <property name="file" code="file" type="file" access="r"
                 description="The target file for the download.">
-                <cocoa key="scriptingFileURL"/>
+                <cocoa key="fileURL"/>
             </property>
             <property name="status" code="Stat" type="download status"
                 description="The current status of the download. Set this to cancel or resume a download.">
