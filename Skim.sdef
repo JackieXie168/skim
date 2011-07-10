@@ -1214,10 +1214,10 @@
                 description="The target file for the download.">
                 <cocoa key="fileURL"/>
             </property>
-            <contents name="status" code="Stat" type="download status" access="r"
+            <property name="status" code="Stat" type="download status" access="r"
                 description="The current status of the download.">
                 <cocoa key="status"/>
-            </contents>
+            </property>
         </class>
 
         <class name="point list" plural="point lists" code="PtLi"
