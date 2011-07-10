@@ -64,7 +64,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
-@dynamic fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingFileURL, scriptingStatus;
+@dynamic fileName, fileURL, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
 
 static NSSet *keysAffectedByFilePath = nil;
 static NSSet *keysAffectedByDownloadStatus = nil;
@@ -185,6 +185,10 @@ static NSSet *infoKeys = nil;
     return fileName;
 }
 
+- (NSURL *)fileURL {
+    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
+}
+
 - (NSImage *)fileIcon {
     if (fileIcon == nil && URL)
         return [[NSWorkspace sharedWorkspace] iconForFileType:[[[self URL] path] pathExtension]];
@@ -238,10 +242,6 @@ static NSSet *infoKeys = nil;
 
 - (NSString *)scriptingURL {
     return [[self URL] absoluteString];
-}
-
-- (NSURL *)scriptingFileURL {
-    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
 }
 
 - (SKDownloadStatus)scriptingStatus {

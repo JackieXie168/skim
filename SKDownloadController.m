@@ -290,9 +290,8 @@ static SKDownloadController *sharedDownloadController = nil;
     if (download && [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
-        NSURL *fileURL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error;
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error] && [error isUserCancelledError] == NO)
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[download fileURL] display:YES error:&error] && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
     }
 }
@@ -330,7 +329,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)downloadDidEnd:(SKDownload *)download {
     if ([download status] == SKDownloadStatusFinished) {
-        NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
+        NSURL *URL = [download fileURL];
         NSString *fragment = [[download URL] fragment];
         if ([fragment length] > 0)
             URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingFormat:@"#%@", fragment]];
@@ -344,7 +343,7 @@ static SKDownloadController *sharedDownloadController = nil;
             [[download retain] autorelease];
             [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
             // for the document to note that the file has been deleted
-            [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
+            [document setFileURL:[download fileURL]];
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
                 [[self window] close];
         }
