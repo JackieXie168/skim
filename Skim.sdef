@@ -1215,7 +1215,7 @@
                 <cocoa key="scriptingFileURL"/>
             </property>
             <property name="status" code="Stat" type="download status"
-                description="The current status of the download.">
+                description="The current status of the download. Set this to cancel or resume a download.">
                 <cocoa key="scriptingStatus"/>
             </property>
         </class>
