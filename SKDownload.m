@@ -64,7 +64,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
-@dynamic fileName, fileURL, info, canCancel, canRemove, canResume;
+@dynamic fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingFileURL, scriptingStatus;
 
 static NSSet *keysAffectedByFilePath = nil;
 static NSSet *keysAffectedByDownloadStatus = nil;
@@ -138,6 +138,10 @@ static NSSet *infoKeys = nil;
         [progressIndicator setIndeterminate:YES];
         [progressIndicator setMaxValue:1.0];
     }
+}
+
+- (void)removeProgressIndicatorFromSuperview {
+    [progressIndicator removeFromSuperview];
 }
 
 #pragma mark Accessors
@@ -232,16 +236,25 @@ static NSSet *infoKeys = nil;
     }
 }
 
-- (NSURL *)fileURL {
-    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
-}
-
 - (NSString *)scriptingURL {
     return [[self URL] absoluteString];
 }
 
-- (void)removeProgressIndicatorFromSuperview {
-    [progressIndicator removeFromSuperview];
+- (NSURL *)scriptingFileURL {
+    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
+}
+
+- (SKDownloadStatus)scriptingStatus {
+    return [self status];
+}
+
+- (void)setScriptingStatus:(SKDownloadStatus)newStatus {
+    if (newStatus != status) {
+        if (newStatus == SKDownloadStatusCanceled && [self canCancel])
+            [self cancel];
+        else if ((newStatus == SKDownloadStatusStarting || newStatus == SKDownloadStatusDownloading) && [self canResume])
+            [self resume];
+    }
 }
 
 #pragma mark Actions
