@@ -470,7 +470,7 @@
 }
 
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
-    [[SKDownloadController sharedDownloadController] insertObject:download inDownloadsAtIndex:anIndex];
+    [[[SKDownloadController sharedDownloadController] mutableArrayValueForKey:@"downloads"] addObject:download];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
         [[SKDownloadController sharedDownloadController] showWindow:nil];
 }
