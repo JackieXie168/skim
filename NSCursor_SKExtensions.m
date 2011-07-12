@@ -105,6 +105,24 @@
     return cameraCursor;
 }
 
++ (NSCursor *)openHandBarCursor {
+    static NSCursor *openHandBarCursor = nil;
+    if (nil == openHandBarCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameOpenHandBarCursor] copy] autorelease];
+        openHandBarCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self openHandCursor] hotSpot]];
+    }
+    return openHandBarCursor;
+}
+
++ (NSCursor *)closedHandBarCursor {
+    static NSCursor *closedHandBarCursor = nil;
+    if (nil == closedHandBarCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameClosedHandBarCursor] copy] autorelease];
+        closedHandBarCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self closedHandCursor] hotSpot]];
+    }
+    return closedHandBarCursor;
+}
+
 + (NSCursor *)textNoteCursor {
     static NSCursor *textNoteCursor = nil;
     if (nil == textNoteCursor) {

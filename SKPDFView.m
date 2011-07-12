@@ -3757,7 +3757,7 @@ enum {
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
     
-    [[NSCursor closedHandCursor] push];
+    [[NSCursor closedHandBarCursor] push];
     
     [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     
@@ -4232,14 +4232,14 @@ enum {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                PDFPage *page = [self pageForPoint:p nearest:NO];
+                PDFPage *page = [self pageForPoint:p nearest:YES];
                 p = [self convertPoint:p toPage:page];
                 if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
                     area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
-                if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
-                    cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
+                if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
+                    cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
                 else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode)
