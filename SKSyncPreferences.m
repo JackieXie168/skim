@@ -123,4 +123,18 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
     }
 }
 
+#pragma mark Hooks
+
+- (void)defaultsDidRevert {
+    NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
+    NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
+    if ([editorPreset length] == 0) {
+        [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
+        [self setCustomTeXEditor:YES];
+    } else {
+        [texEditorPopUpButton selectItemWithTitle:editorPreset];
+        [self setCustomTeXEditor:NO];
+    }
+}
+
 @end
