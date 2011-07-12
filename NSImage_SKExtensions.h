@@ -120,6 +120,8 @@ extern NSString *SKImageNameResizeLeftUpCursor;
 extern NSString *SKImageNameZoomInCursor;
 extern NSString *SKImageNameZoomOutCursor;
 extern NSString *SKImageNameCameraCursor;
+extern NSString *SKImageNameOpenHandBarCursor;
+extern NSString *SKImageNameClosedHandBarCursor;
 extern NSString *SKImageNameTextNoteCursor;
 extern NSString *SKImageNameAnchoredNoteCursor;
 extern NSString *SKImageNameCircleNoteCursor;

@@ -132,6 +132,8 @@ NSString *SKImageNameUnderlineNoteCursor = @"UnderlineNoteCursor";
 NSString *SKImageNameStrikeOutNoteCursor = @"StrikeOutNoteCursor";
 NSString *SKImageNameLineNoteCursor = @"LineNoteCursor";
 NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
+NSString *SKImageNameOpenHandBarCursor = @"OpenHandBarCursor";
+NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
 
 - (NSImage *)copyWithMenuBadge {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
@@ -1604,6 +1606,8 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     static NSImage *zoomInCursorImage = nil;
     static NSImage *zoomOutCursorImage = nil;
     static NSImage *cameraCursorImage = nil;
+    static NSImage *openHandBarCursorImage = nil;
+    static NSImage *closedHandBarCursorImage = nil;
     static NSImage *textNoteCursorImage = nil;
     static NSImage *anchoredNoteCursorImage = nil;
     static NSImage *circleNoteCursorImage = nil;
@@ -1971,6 +1975,26 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [NSGraphicsContext restoreGraphicsState];
     [cameraCursorImage unlockFocus];
     [cameraCursorImage setName:SKImageNameCameraCursor];
+    
+    openHandBarCursorImage = [[NSImage alloc] initWithSize:size];
+    [openHandBarCursorImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor blackColor] setFill];
+    [NSBezierPath fillRect:NSMakeRect(0.0, 9.0, 16.0, 3.0)];
+    [[[NSCursor openHandCursor] image] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [openHandBarCursorImage unlockFocus];
+    [openHandBarCursorImage setName:SKImageNameOpenHandBarCursor];
+    
+    closedHandBarCursorImage = [[NSImage alloc] initWithSize:size];
+    [closedHandBarCursorImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor blackColor] setFill];
+    [NSBezierPath fillRect:NSMakeRect(0.0, 6.0, 16.0, 3.0)];
+    [[[NSCursor closedHandCursor] image] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [closedHandBarCursorImage unlockFocus];
+    [closedHandBarCursorImage setName:SKImageNameClosedHandBarCursor];
     
     textNoteCursorImage = [[NSImage imageNamed:SKImageNameTextNote] copyArrowCursorImage];
     [textNoteCursorImage setName:SKImageNameTextNoteCursor];
