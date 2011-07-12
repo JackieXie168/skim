@@ -397,6 +397,8 @@
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
     NSString *theURLString = [[event descriptorForKeyword:keyDirectObject] stringValue];
+    NSAppleEventDescriptor *errr = [event descriptorForKeyword:'errr'];
+    BOOL errorReporting = errr ? [errr booleanValue] : YES;
     
     if (theURLString) {
         if ([theURLString hasPrefix:@"<"] && [theURLString hasSuffix:@">"])
@@ -412,7 +414,7 @@
             
             if ([theURL isFileURL]) {
                 document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:&error];
-                if (document == nil && error && [error isUserCancelledError] == NO)
+                if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             } else {
                 document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
