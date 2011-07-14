@@ -225,7 +225,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     while (i-- > 0) {
         SKDownload *download = [self objectInDownloadsAtIndex:i];
-        if ([download status] != SKDownloadStatusDownloading)
+        if ([download canRemove])
             [self removeObjectFromDownloadsAtIndex:i];
     }
 }
@@ -252,7 +252,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
     }
-    if (download && [download status] == SKDownloadStatusDownloading)
+    if (download && [download canCancel])
         [download cancel];
 }
 
@@ -264,7 +264,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
     }
-    if (download && [download status] == SKDownloadStatusCanceled)
+    if (download && [download canResume])
         [download resume];
 }
 
