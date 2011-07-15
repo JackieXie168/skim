@@ -63,7 +63,7 @@
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKFindTableViewDelegate>)delegate { return (<SKFindTableViewDelegate>)[super delegate]; }
+- (id <SKFindTableViewDelegate>)delegate { return (id <SKFindTableViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKFindTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 #endif
 

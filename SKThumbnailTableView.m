@@ -172,7 +172,7 @@
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKThumbnailTableViewDelegate>)delegate { return (<SKThumbnailTableViewDelegate>)[super delegate]; }
+- (id <SKThumbnailTableViewDelegate>)delegate { return (id <SKThumbnailTableViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 #endif
 
