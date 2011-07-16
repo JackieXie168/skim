@@ -100,6 +100,7 @@ typedef NSInteger SKInteractionMode;
 - (NSDictionary *)pdfViewSettings;
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;
+- (NSInteger)toolMode;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;

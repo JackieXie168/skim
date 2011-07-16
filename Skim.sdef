@@ -935,6 +935,10 @@
                 description="The attributes of the PDF document.">
                 <cocoa key="documentAttributes"/>
             </property>
+            <property name="tool" type="tool type" code="Tool"
+                description="The tool mode for the document.">
+                <cocoa key="toolMode"/>
+            </property>
             <property name="containing PDF" type="boolean" code="iPDF" access="r"
                 description="Is this a PDF document?">
                 <cocoa key="isPDFDocument"/>
@@ -1731,6 +1735,61 @@
             <enumerator name="two up continuous" code="2UpC"
                 description="Display pages side-by-side vertically continuously.">
                 <cocoa integer-value="3"/>
+            </enumerator>
+        </enumeration>
+
+        <enumeration name="tool type" code="TolT">
+            <enumerator name="text tool" code="TTxt"
+                description="Text tool mode.">
+                <cocoa integer-value="0"/>
+            </enumerator>
+            <enumerator name="scroll tool" code="TScr"
+                description="Scroll tool mode.">
+                <cocoa integer-value="1"/>
+            </enumerator>
+            <enumerator name="magnify tool" code="TMag"
+                description="Magnify tool mode.">
+                <cocoa integer-value="2"/>
+            </enumerator>
+            <enumerator name="select tool" code="TSel"
+                description="Select tool mode.">
+                <cocoa integer-value="3"/>
+            </enumerator>
+            <enumerator name="text note tool" code="TNTx"
+                description="Text note tool mode.">
+                <cocoa integer-value="4"/>
+            </enumerator>
+            <enumerator name="anchored note tool" code="TNAn"
+                description="Anchored note tool mode.">
+                <cocoa integer-value="5"/>
+            </enumerator>
+            <enumerator name="circle note tool" code="TNCi"
+                description="Circle note tool mode.">
+                <cocoa integer-value="76"/>
+            </enumerator>
+            <enumerator name="box note tool" code="TNSq"
+                description="Box note tool mode.">
+                <cocoa integer-value="7"/>
+            </enumerator>
+            <enumerator name="highlight note tool" code="TNHi"
+                description="Highlight note tool mode.">
+                <cocoa integer-value="8"/>
+            </enumerator>
+            <enumerator name="underline note tool" code="TNUn"
+                description="Underline highlight note tool mode.">
+                <cocoa integer-value="9"/>
+            </enumerator>
+            <enumerator name="strike out note tool" code="TNSt"
+                description="Strike out highlight note tool mode.">
+                <cocoa integer-value="10"/>
+            </enumerator>
+            <enumerator name="line note tool" code="TNLi"
+                description="Line note tool mode.">
+                <cocoa integer-value="11"/>
+            </enumerator>
+            <enumerator name="freehand note tool" code="TNIn"
+                description="Freehand note tool mode.">
+                <cocoa integer-value="12"/>
             </enumerator>
         </enumeration>
 
