@@ -279,6 +279,8 @@ static BOOL isRichTextType(NSString *templateFile) {
 
 - (NSDictionary *)pdfViewSettings { return nil; }
 
+- (NSInteger)toolMode { return 0; }
+
 - (NSDictionary *)documentAttributes {
     return [[SKInfoWindowController sharedInstance] infoForDocument:self];
 }

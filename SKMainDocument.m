@@ -1784,6 +1784,21 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     [[self mainWindowController] applyPDFSettings:pdfViewSettings];
 }
 
+- (NSInteger)toolMode {
+    NSInteger toolMode = [[self pdfView] toolMode];
+    if (toolMode == SKNoteToolMode)
+        toolMode += [[self pdfView] annotationMode];
+    return toolMode;
+}
+
+- (void)setToolMode:(NSInteger)newToolMode {
+    if (newToolMode >= SKNoteToolMode) {
+        [[self pdfView] setAnnotationMode:newToolMode - SKNoteToolMode];
+        newToolMode = SKNoteToolMode;
+    }
+    [[self pdfView] setToolMode:newToolMode];
+}
+
 - (BOOL)isPDFDocument {
     return YES;
 }
