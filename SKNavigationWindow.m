@@ -137,7 +137,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         rect.size.width = BUTTON_WIDTH;
         closeButton = [[SKNavigationButton alloc] initWithFrame:rect];
         [closeButton setTarget:pdfView];
-        [closeButton setAction:@selector(exitFullScreen:)];
+        [closeButton setAction:@selector(exitFullscreen:)];
         [closeButton setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
         [closeButton setPath:closeButtonPath(rect.size)];
         [[self contentView] addSubview:closeButton];

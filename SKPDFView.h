@@ -156,7 +156,7 @@ typedef NSInteger SKNoteType;
 
 - (void)zoomLog:(id)sender;
 - (void)toggleAutoActualSize:(id)sender;
-- (void)exitFullScreen:(id)sender;
+- (void)exitFullscreen:(id)sender;
 
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;

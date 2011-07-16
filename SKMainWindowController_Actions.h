@@ -110,7 +110,7 @@
 - (IBAction)toggleSplitPDF:(id)sender;
 - (IBAction)toggleReadingBar:(id)sender;
 - (IBAction)searchPDF:(id)sender;
-- (IBAction)toggleFullScreen:(id)sender;
+- (IBAction)toggleFullscreen:(id)sender;
 - (IBAction)togglePresentation:(id)sender;
 - (IBAction)performFit:(id)sender;
 - (IBAction)password:(id)sender;

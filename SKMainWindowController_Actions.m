@@ -1004,16 +1004,16 @@ static NSArray *allMainDocumentPDFViews() {
         [[self window] makeFirstResponder:pdfView];
 }
 
-- (IBAction)toggleFullScreen:(id)sender {
+- (IBAction)toggleFullscreen:(id)sender {
     if ([self interactionMode] == SKFullScreenMode)
-        [self exitFullScreen:sender];
+        [self exitFullscreen:sender];
     else
-        [self enterFullScreen:sender];
+        [self enterFullscreen:sender];
 }
 
 - (IBAction)togglePresentation:(id)sender {
     if ([self interactionMode] == SKPresentationMode)
-        [self exitFullScreen:sender];
+        [self exitFullscreen:sender];
     else
         [self enterPresentation:sender];
 }
