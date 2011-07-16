@@ -107,7 +107,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)zoomToSelection:(id)sender;
 - (IBAction)rotateAllLeftRight:(id)sender;
 - (IBAction)cropAll:(id)sender;
-- (IBAction)enterFullScreen:(id)sender;
+- (IBAction)enterFullscreen:(id)sender;
 - (IBAction)enterPresentation:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
 - (IBAction)toggleRightSidePane:(id)sender;

@@ -398,7 +398,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(enterFullScreen:) target:mainController] autorelease];
+            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(enterFullscreen:) target:mainController] autorelease];
             
             [item setLabels:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
@@ -934,8 +934,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [mainController cropAll:sender];
 }
 
-- (IBAction)enterFullScreen:(id)sender {
-    [mainController enterFullScreen:sender];
+- (IBAction)enterFullscreen:(id)sender {
+    [mainController enterFullscreen:sender];
 }
 
 - (IBAction)enterPresentation:(id)sender {

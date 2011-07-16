@@ -944,8 +944,8 @@ enum {
         [self setAutoScales:YES];
 }
 
-- (void)exitFullScreen:(id)sender {
-    [[[self window] windowController] exitFullScreen:sender];
+- (void)exitFullscreen:(id)sender {
+    [[[self window] windowController] exitFullscreen:sender];
 }
 
 - (void)showColorsForThisAnnotation:(id)sender {

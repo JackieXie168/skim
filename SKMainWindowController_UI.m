@@ -1518,7 +1518,7 @@ static NSArray *allMainDocumentPDFViews() {
         return [self interactionMode] == SKNormalMode;
     } else if (action == @selector(searchPDF:)) {
         return [self interactionMode] != SKPresentationMode;
-    } else if (action == @selector(toggleFullScreen:)) {
+    } else if (action == @selector(toggleFullscreen:)) {
         if ([self interactionMode] == SKFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
@@ -1530,7 +1530,7 @@ static NSArray *allMainDocumentPDFViews() {
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
         return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(enterFullScreen:) || action == @selector(enterPresentation:)) {
+    } else if (action == @selector(enterFullscreen:) || action == @selector(enterPresentation:)) {
         return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self interactionMode] != SKPresentationMode;
@@ -1627,7 +1627,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
     if ([self interactionMode] != SKNormalMode)
-        [self exitFullScreen:self];
+        [self exitFullscreen:self];
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {

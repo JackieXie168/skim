@@ -1432,7 +1432,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     blankingWindows = nil;
 }
 
-- (IBAction)enterFullScreen:(id)sender {
+- (IBAction)enterFullscreen:(id)sender {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if (wasInteractionMode == SKFullScreenMode)
         return;
@@ -1550,7 +1550,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [pdfView setInteractionMode:SKPresentationMode];
 }
 
-- (IBAction)exitFullScreen:(id)sender {
+- (IBAction)exitFullscreen:(id)sender {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if (wasInteractionMode == SKNormalMode)
         return;

@@ -189,7 +189,7 @@
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (modifierFlags == 0 && ch == SKEscapeCharacter) {
-        [(SKMainWindowController *)[self windowController] exitFullScreen:self];
+        [(SKMainWindowController *)[self windowController] exitFullscreen:self];
         return;
     }
     [super keyDown:theEvent];
