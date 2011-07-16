@@ -198,7 +198,7 @@
         NSInteger column = [columnNumber integerValue];
         id item = [self itemAtRow:[rowNumber integerValue]];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForTableColumn:tableColumn item:item];
+        id <SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForTableColumn:tableColumn item:item];
         if (context)
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
     }
