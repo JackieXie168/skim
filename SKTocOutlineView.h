@@ -58,6 +58,6 @@
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView hasImageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id<SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 
 @end

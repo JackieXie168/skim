@@ -270,7 +270,7 @@
         NSInteger column = [columnNumber integerValue];
         NSInteger row = [rowNumber integerValue];
         NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id<SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForTableColumn:tableColumn row:row];
+        id <SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForTableColumn:tableColumn row:row];
         if (context)
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
     }

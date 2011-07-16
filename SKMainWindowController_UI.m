@@ -515,7 +515,7 @@
     return NO;
 }
 
-- (id<SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:leftSideController.findTableView])
         return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
     else if ([tv isEqual:leftSideController.groupedFindTableView])
@@ -848,7 +848,7 @@
     return NO;
 }
 
-- (id<SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:leftSideController.tocOutlineView])
         return [item destination];
     return nil;
