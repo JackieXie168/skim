@@ -1765,7 +1765,7 @@
             </enumerator>
             <enumerator name="circle note tool" code="TNCi"
                 description="Circle note tool mode.">
-                <cocoa integer-value="76"/>
+                <cocoa integer-value="6"/>
             </enumerator>
             <enumerator name="box note tool" code="TNSq"
                 description="Box note tool mode.">
