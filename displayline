@@ -30,7 +30,7 @@ done
 line=$1
 file="$2"
 shopt -s extglob
-[ $# -gt 2 ] && source="$3" || source="${file/%.@(pdf|dvi|xdv)}.tex"
+[ $# -gt 2 ] && source="$3" || source="${file%.@(pdf|dvi|xdv)}.tex"
 
 # expand relative paths
 [ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
