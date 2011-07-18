@@ -324,8 +324,9 @@ enum {
             PDFPage *page = [[self document] pageAtIndex:i];
             for (PDFAnnotation *annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNNoteString] || [annotation isLink]) {
-                    NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] toDocumentViewFromPage:page], visibleRect);
+                    NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
+                        rect = [self convertRect:rect toView:docView];
                         NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:annotation, SKAnnotationKey, nil];
                         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
                         [docView addTrackingArea:area];
