@@ -77,7 +77,7 @@
     [printScalingModeMatrix sizeToFit];
     
     NSRect frame = [[self view] frame];
-    frame.size.width = fmax(NSWidth([autoRotateButton frame]), NSWidth([printScalingModeMatrix frame])) + 36.0;
+    frame.size.width = fmax(NSMaxX([autoRotateButton frame]) + 18.0, NSMaxX([printScalingModeMatrix frame]) + 20.0);
     [[self view] setFrame:frame];
 }
 
