@@ -112,37 +112,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
-    if (self) {
-        controller = [decoder decodeObjectForKey:@"controller"];
-        state = [decoder decodeIntegerForKey:@"state"];
-        edge = [decoder decodeIntegerForKey:@"edge"];
-        mainContentView = [decoder decodeObjectForKey:@"mainContentView"];
-        enabled = [decoder decodeBoolForKey:@"enabled"];
-        resizing = [decoder decodeBoolForKey:@"resizing"];
-        acceptsMouseOver = [decoder decodeBoolForKey:@"acceptsMouseOver"];
-        timer = nil;
-        
-        if (hideWhenClosed != SKClosedSidePanelHide) {
-            trackingArea = [[NSTrackingArea alloc] initWithRect:[[self contentView] bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
-            [[self contentView] addTrackingArea:trackingArea];
-        }
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeConditionalObject:controller forKey:@"controller"];
-    [coder encodeInteger:state forKey:@"state"];
-    [coder encodeInteger:edge forKey:@"edge"];
-    [coder encodeConditionalObject:mainContentView forKey:@"mainContentView"];
-    [coder encodeBool:enabled forKey:@"enabled"];
-    [coder encodeBool:resizing forKey:@"resizing"];
-    [coder encodeBool:acceptsMouseOver forKey:@"acceptsMouseOver"];
-}
-
 - (void)dealloc {
     [timer invalidate];
     SKDESTROY(timer);
