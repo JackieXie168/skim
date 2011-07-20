@@ -145,27 +145,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
-    if (self) {
-        previousButton = [[decoder decodeObjectForKey:@"previousButton"] retain];
-        nextButton = [[decoder decodeObjectForKey:@"nextButton"] retain];
-        zoomButton = [[decoder decodeObjectForKey:@"zoomButton"] retain];
-        zoomSlider = [[decoder decodeObjectForKey:@"zoomSlider"] retain];
-        closeButton = [[decoder decodeObjectForKey:@"closeButton"] retain];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeConditionalObject:previousButton forKey:@"previousButton"];
-    [coder encodeConditionalObject:nextButton forKey:@"nextButton"];
-    [coder encodeConditionalObject:zoomButton forKey:@"zoomButton"];
-    [coder encodeConditionalObject:zoomSlider forKey:@"zoomSlider"];
-    [coder encodeConditionalObject:closeButton forKey:@"closeButton"];
-}
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(previousButton);
