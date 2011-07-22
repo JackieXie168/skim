@@ -73,7 +73,6 @@
 #import "SKLocalization.h"
 #import "SKScriptMenu.h"
 #import "NSScreen_SKExtensions.h"
-#import "PDFAnnotation_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
@@ -183,7 +182,6 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
-    [PDFAnnotation checkPDFKit];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }
 

@@ -51,7 +51,8 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        if (SKPDFAnnotationLeaksBorder)
+        // Some PDFAnnotationCircle over-retains the initial PDFBorder ivar on 10.6.x
+        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
             [[self border] release];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)

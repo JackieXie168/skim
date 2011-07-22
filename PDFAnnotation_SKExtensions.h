@@ -45,8 +45,6 @@ extern NSString *SKPDFAnnotationScriptingColorKey;
 extern NSString *SKPDFAnnotationScriptingModificationDateKey;
 extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
-extern BOOL SKPDFAnnotationLeaksBorder;
-
 
 @interface PDFAnnotation (SKExtensions)
 
