@@ -40,14 +40,6 @@
 #import <Quartz/Quartz.h>
 
 
-#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
-@interface PDFSelection (SKLionDeclarations)
-- (NSInteger)numberOfTextRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page;
-@end
-#endif
-
-
 @interface PDFSelection (SKExtensions)
 
 // the search table columns bind to these methods for display
@@ -59,6 +51,7 @@
 
 - (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page;
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page;
+- (NSArray *)safeRangesOnPage:(PDFPage *)page;
 - (PDFPage *)safeFirstPage;
 - (PDFPage *)safeLastPage;
 
