@@ -43,6 +43,7 @@
 #import "SKStringConstants.h"
 #import "SKMainDocument.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "SKRuntime.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
@@ -52,15 +53,28 @@
 
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
-// defined on 10.6
-- (NSIndexSet *)indexOfCharactersOnPage:(PDFPage *)page;
-// defined and used on 10.4 & 10.5
+// defined on 10.4 through 10.6, was renamed on 10.7
 - (NSInteger)numberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
 @end
 
 
 @implementation PDFSelection (SKExtensions)
+
+- (NSInteger)dummy_numberOfTextRangesOnPage:(PDFPage *)page {
+    return 0;
+}
+
+- (NSRange)dummy_rangeAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
+    return NSMakeRange(NSNotFound, 0);
+}
+
++ (void)load {
+    // this should do nothing on Lion
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(numberOfTextRangesOnPage:), @selector(numberOfRangesOnPage:));
+    // These should do nothing, but just to make sure we provide some method implementation because we use private methods on 10.5 and 10.6
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(numberOfTextRangesOnPage:), @selector(dummy_numberOfTextRangesOnPage:));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeAtIndex:onPage:), @selector(dummy_rangeAtIndex:onPage:));
+}
 
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
@@ -126,79 +140,20 @@
 }
 
 - (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes)
-            return [indexes firstIndex];
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger n = [self numberOfRangesOnPage:page];
-        if (n)
-            return [self rangeAtIndex:0 onPage:page].location;
-    }
-    return NSNotFound;
+    NSInteger n = [self numberOfTextRangesOnPage:page];
+    return n > 0 ? [self rangeAtIndex:0 onPage:page].location : NSNotFound;
 }
 
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes)
-            return [indexes lastIndex];
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger n = [self numberOfRangesOnPage:page];
-        if (n)
-            return NSMaxRange([self rangeAtIndex:n - 1 onPage:page]);
-    }
-    return NSNotFound;
-}
-
-- (NSArray *)safeRangesOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        NSUInteger idx = [indexes firstIndex];
-        NSUInteger prevIdx = NSNotFound;
-        NSRange range = NSMakeRange(NSNotFound, 0);
-        NSMutableArray *ranges = [NSMutableArray array];
-        while (idx != NSNotFound) {
-            if (prevIdx == NSNotFound || idx != prevIdx + 1) {
-                if (range.length)
-                    [ranges addObject:[NSValue valueWithRange:range]];
-                range = NSMakeRange(idx, 1);
-            } else {
-                range.length++;
-            }
-            prevIdx = idx;
-            idx = [indexes indexGreaterThanIndex:idx];
-        }
-        if (range.length)
-            [ranges addObject:[NSValue valueWithRange:range]];
-        return ranges;
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, iMax = [self numberOfRangesOnPage:page];
-        NSMutableArray *ranges = [NSMutableArray array];
-        for (i = 0; i < iMax; i++)
-            [ranges addObject:[NSValue valueWithRange:[self rangeAtIndex:i onPage:page]]];
-        return ranges;
-    }
-    return nil;
+    NSInteger n = [self numberOfTextRangesOnPage:page];
+    return n > 0 ? NSMaxRange([self rangeAtIndex:n - 1 onPage:page]) : NSNotFound;
 }
 
 - (PDFPage *)safeFirstPage {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
-                return page;
-        }
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            NSInteger i, count = [self numberOfRangesOnPage:page];
-            for (i = 0; i < count; i++) {
-                if ([self rangeAtIndex:i onPage:page].length > 0)
-                    return page;
-            }
-        }
-    } else {
-        for (PDFPage *page in [self pages]) {
-            if (NSIsEmptyRect([self boundsForPage:page]) == NO)
+    for (PDFPage *page in [self pages]) {
+        NSInteger i, count = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < count; i++) {
+            if ([self rangeAtIndex:i onPage:page].length > 0)
                 return page;
         }
     }
@@ -206,22 +161,10 @@
 }
 
 - (PDFPage *)safeLastPage {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
-                return page;
-        }
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            NSInteger i, count = [self numberOfRangesOnPage:page];
-            for (i = 0; i < count; i++) {
-                if ([self rangeAtIndex:i onPage:page].length > 0)
-                    return page;
-            }
-        }
-    } else {
-        for (PDFPage *page in [self pages]) {
-            if (NSIsEmptyRect([self boundsForPage:page]) == NO)
+    for (PDFPage *page in [self pages]) {
+        NSInteger i, count = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < count; i++) {
+            if ([self rangeAtIndex:i onPage:page].length > 0)
                 return page;
         }
     }
@@ -229,24 +172,14 @@
 }
 
 - (BOOL)hasCharacters {
-    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+    for (PDFPage *page in [self pages]) {
+        NSInteger i, count = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < count; i++) {
+            if ([self rangeAtIndex:i onPage:page].length > 0)
                 return YES;
         }
-        return NO;
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        for (PDFPage *page in [self pages]) {
-            NSInteger i, count = [self numberOfRangesOnPage:page];
-            for (i = 0; i < count; i++) {
-                if ([self rangeAtIndex:i onPage:page].length > 0)
-                    return YES;
-            }
-        }
-        return NO;
-    } else {
-        return [[self string] length] > 0;
     }
+    return NO;
 }
 
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
@@ -613,8 +546,9 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
         NSRange lastRange = NSMakeRange(0, 0);
-        for (NSValue *value in [self safeRangesOnPage:page]) {
-            NSRange range = [value rangeValue];
+        NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < iMax; i++) {
+            NSRange range = [self rangeAtIndex:i onPage:page];
             if (range.length == 0) {
             } else if (lastRange.length == 0) {
                 lastRange = range;
