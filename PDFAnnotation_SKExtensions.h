@@ -48,8 +48,6 @@ extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
 @interface PDFAnnotation (SKExtensions)
 
-+ (void)checkPDFKit;
-
 - (NSString *)fdfString;
 
 - (PDFDestination *)destination;
