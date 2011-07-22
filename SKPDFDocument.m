@@ -38,58 +38,12 @@
 
 #import "SKPDFDocument.h"
 #import "SKPDFPage.h"
-#import "SKPrintAccessoryController.h"
-
-NSString *SKSuppressPrintPanel = @"SKSuppressPrintPanel";
-
-@interface PDFDocument (SKPrivateDeclarations)
-- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
-@end
-
-
-@interface PDFDocument (SKLionDeclarations)
-- (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate;
-@end
 
 
 @implementation SKPDFDocument
 
 - (Class)pageClass {
     return [SKPDFPage class];
-}
-
-- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
-    NSPrintOperation *printOperation = nil;
-    if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
-        printOperation = [super getPrintOperationForPrintInfo:printInfo autoRotate:autoRotate];
-        if ([[[[printOperation printInfo] dictionary] objectForKey:SKSuppressPrintPanel] boolValue])
-            [printOperation setShowsPrintPanel:NO];
-        // NSPrintProtected is a private key that disables the items in the PDF popup of the Print panel, and is set for encrypted documents
-        if ([self isEncrypted])
-            [[[printOperation printInfo] dictionary] setValue:[NSNumber numberWithBool:NO] forKey:@"NSPrintProtected"];
-        
-        NSPrintPanel *printPanel = [printOperation printPanel];
-        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
-        [printPanel addAccessoryController:[[[SKPrintAccessoryController alloc] init] autorelease]];
-    }
-    return printOperation;
-}
-
-- (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate {
-    NSPrintOperation *printOperation = nil;
-    if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
-        printOperation = [super printOperationForPrintInfo:printInfo scalingMode:scalingMode autoRotate:autoRotate];
-        if ([[[[printOperation printInfo] dictionary] objectForKey:SKSuppressPrintPanel] boolValue])
-            [printOperation setShowsPrintPanel:NO];
-        // NSPrintProtected is a private key that disables the items in the PDF popup of the Print panel, and is set for encrypted documents
-        if ([self isEncrypted])
-            [[[printOperation printInfo] dictionary] setValue:[NSNumber numberWithBool:NO] forKey:@"NSPrintProtected"];
-        
-        NSPrintPanel *printPanel = [printOperation printPanel];
-        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
-        [printPanel addAccessoryController:[[[SKPrintAccessoryController alloc] init] autorelease]];
-    }
-    return printOperation;
 }
 
 - (BOOL)unlockWithPassword:(NSString *)password {

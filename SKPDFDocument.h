@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern NSString *SKSuppressPrintPanel;
 
 @interface SKPDFDocument : PDFDocument
 @end
@@ -47,4 +46,3 @@ extern NSString *SKSuppressPrintPanel;
 @interface NSObject (SKPDFDocumentDelegate)
 - (void)document:(PDFDocument *)document didUnlockWithPassword:(NSString *)password;
 @end
-
