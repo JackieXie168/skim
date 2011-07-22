@@ -85,6 +85,7 @@
 #import "SKFileUpdateChecker.h"
 #import "NSError_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
+#import "SKPrintAccessoryController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -132,6 +133,15 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 @property (nonatomic, copy) NSArray *openMetaTags;
 @property (nonatomic) double openMetaRating;
 
+@end
+
+
+@interface PDFDocument (SKPrivateDeclarations)
+- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
+@end
+
+@interface PDFDocument (SKLionDeclarations)
+- (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate;
 @end
 
 
@@ -866,45 +876,26 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 #pragma mark Printing
 
-static inline void invokePrintCallback(NSInvocation *callback, BOOL didPrint) {
-    [callback setArgument:&didPrint atIndex:3];
-    [callback performSelector:@selector(invoke) withObject:nil afterDelay:0.0];
-}
-
-- (void)handleWindowDidEndPrintSheetNotification:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
-    invokePrintCallback(printCallback, YES);
-    SKDESTROY(printCallback);
-}
-
-- (void)printDocumentWithSettings:(NSDictionary *)printSettings showPrintPanel:(BOOL)showPrintPanel delegate:(id)delegate didPrintSelector:(SEL)didPrintSelector contextInfo:(void *)contextInfo {
-    NSWindow *printWindow = [[self pdfView] window];
-    NSInvocation *callback = nil;
-    if (delegate && didPrintSelector) {
-        callback = [NSInvocation invocationWithTarget:delegate selector:didPrintSelector argument:&self];
-        [callback setArgument:&contextInfo atIndex:4];
-    }
-    if ([[self pdfDocument] allowsPrinting] && (showPrintPanel == NO || [printWindow attachedSheet] == nil)) {
-        NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
-        NSMutableDictionary *infoDict = [printInfo dictionary];
-        
-        [infoDict addEntriesFromDictionary:printSettings];
-        if (showPrintPanel == NO)
-            [infoDict setObject:[NSNumber numberWithBool:YES] forKey:SKSuppressPrintPanel];
-        
-        [[self pdfView] printWithInfo:printInfo autoRotate:YES pageScaling:kPDFPrintPageScaleNone];
-        
-        if (callback) {
-            if (showPrintPanel && [printWindow attachedSheet]) {
-                printCallback = [callback retain];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndPrintSheetNotification:) name:NSWindowDidEndSheetNotification object:printWindow];
-            } else {
-                invokePrintCallback(callback, YES);
-            }
-        }
-    } else if (callback) {
-        invokePrintCallback(callback, NO);
-    }
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
+    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
+    
+    NSPrintOperation *printOperation = nil;
+    PDFDocument *pdfDoc = [self pdfDocument];
+    if ([pdfDoc respondsToSelector:@selector(printOperationForPrintInfo:scalingMode:autoRotate:)])
+        printOperation = [[self pdfDocument] printOperationForPrintInfo:printInfo scalingMode:kPDFPrintPageScaleNone autoRotate:YES];
+    else if ([pdfDoc respondsToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
+        printOperation = [[self pdfDocument] getPrintOperationForPrintInfo:printInfo autoRotate:YES];
+    
+    // NSPrintProtected is a private key that disables the items in the PDF popup of the Print panel, and is set for encrypted documents
+    if ([pdfDoc isEncrypted])
+        [[[printOperation printInfo] dictionary] setValue:[NSNumber numberWithBool:NO] forKey:@"NSPrintProtected"];
+    
+    NSPrintPanel *printPanel = [printOperation printPanel];
+    [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+    [printPanel addAccessoryController:[[[SKPrintAccessoryController alloc] init] autorelease]];
+    
+    return printOperation;
 }
 
 #pragma mark Actions
