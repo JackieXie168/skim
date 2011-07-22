@@ -51,7 +51,7 @@
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        // Some PDFAnnotationSquare over-retains the initial PDFBorder ivar on 10.6.x
+        // PDFAnnotationSquare over-retains the initial PDFBorder ivar on 10.6.x
         if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
             [[self border] release];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteInteriorColorKey];

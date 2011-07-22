@@ -53,7 +53,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
     self = [super initSkimNoteWithBounds:bounds];
     if (self) { 	 
-        // Some PDFAnnotationInk over-retains the initial PDFBorder ivar on 10.6.x
+        // PDFAnnotationInk over-retains the initial PDFBorder ivar on 10.6.x
         if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
             [[self border] release];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]]; 	 
