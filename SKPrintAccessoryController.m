@@ -37,6 +37,7 @@
  */
 
 #import "SKPrintAccessoryController.h"
+#import "SKDocumentController.h"
 
 
 @implementation SKPrintAccessoryController
@@ -68,6 +69,10 @@
 
 - (NSBundle *)nibBundle {
     return [NSBundle mainBundle];
+}
+
+- (NSString *)title {
+    return [[NSDocumentController sharedDocumentController] displayNameForType:SKPDFDocumentType];
 }
 
 - (void)loadView {
