@@ -39,6 +39,11 @@
 #import "SKPrintAccessoryController.h"
 #import "SKDocumentController.h"
 
+#define AUTOROTATE_KEY @"autoRotate"
+#define AUTOROTATE_KEYPATH @"representedObject.dictionary.PDFPrintAutoRotate"
+#define PRINTSCALINGMODE_KEY @"printScalingMode"
+#define PRINTSCALINGMODE_KEYPATH @"representedObject.dictionary.PDFPrintScalingMode"
+#define REPRESENTEDOBJECT_KEY @"representedObject"
 
 @implementation SKPrintAccessoryController
 
@@ -46,15 +51,15 @@
 @dynamic autoRotate, printScalingMode;
 
 + (NSSet *)keyPathsForValuesAffectingLocalizedSummaryItems {
-    return [NSSet setWithObjects:@"autoRotate", @"printScalingMode", nil];
+    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingAutoRotate {
-    return [NSSet setWithObjects:@"representedObject", nil];
+    return [NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingPrintScalingMode {
-    return [NSSet setWithObjects:@"representedObject", nil];
+    return [NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil];
 }
 
 - (void)dealloc {
@@ -87,23 +92,23 @@
 }
 
 - (BOOL)autoRotate {
-    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintAutoRotate"] boolValue];
+    return [[self valueForKeyPath:AUTOROTATE_KEYPATH] boolValue];
 }
 
 - (void)setAutoRotate:(BOOL)autoRotate {
-    [self setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"representedObject.dictionary.PDFPrintAutoRotate"];
+    [self setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:AUTOROTATE_KEYPATH];
 }
 
 - (PDFPrintScalingMode)printScalingMode {
-    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"] integerValue];
+    return [[self valueForKeyPath:PRINTSCALINGMODE_KEYPATH] integerValue];
 }
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {
-    [self setValue:[NSNumber numberWithInteger:printScalingMode] forKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"];
+    [self setValue:[NSNumber numberWithInteger:printScalingMode] forKeyPath:PRINTSCALINGMODE_KEYPATH];
 }
 
 - (NSSet *)keyPathsForValuesAffectingPreview {
-    return [NSSet setWithObjects:@"autoRotate", @"printScalingMode", nil];
+    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
 }
 
 - (NSArray *)localizedSummaryItems {
