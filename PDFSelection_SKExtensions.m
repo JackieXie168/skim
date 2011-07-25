@@ -231,7 +231,7 @@
 
 - (PDFPage *)safeLastPage {
     if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        for (PDFPage *page in [self pages]) {
+        for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
             NSInteger i, count = [self numberOfTextRangesOnPage:page];
             for (i = 0; i < count; i++) {
                 if ([self rangeAtIndex:i onPage:page].length > 0)
@@ -239,12 +239,12 @@
             }
         }
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        for (PDFPage *page in [self pages]) {
+        for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
             if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
                 return page;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        for (PDFPage *page in [self pages]) {
+        for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
             NSInteger i, count = [self numberOfRangesOnPage:page];
             for (i = 0; i < count; i++) {
                 if ([self rangeAtIndex:i onPage:page].length > 0)
@@ -252,7 +252,7 @@
             }
         }
     } else {
-        for (PDFPage *page in [self pages]) {
+        for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
             if (NSIsEmptyRect([self boundsForPage:page]) == NO)
                 return page;
         }
