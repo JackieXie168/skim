@@ -127,16 +127,6 @@ enum {
 
 #pragma mark -
 
-@interface PDFView (SKLeopardPrivate)
-- (void)addTooltipsForVisiblePages;
-- (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleViewChangedNotification:(NSNotification *)notification;
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
-@end
-
-#pragma mark -
-
 @interface SKPDFView (Private)
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
@@ -175,6 +165,11 @@ enum {
 - (void)doUpdateCursor;
 
 - (void)relayoutEditField;
+
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleViewChangedNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
 
