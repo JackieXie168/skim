@@ -170,24 +170,26 @@
         return ranges;
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        NSUInteger idx = [indexes firstIndex];
-        NSUInteger prevIdx = NSNotFound;
-        NSRange range = NSMakeRange(NSNotFound, 0);
-        NSMutableArray *ranges = [NSMutableArray array];
-        while (idx != NSNotFound) {
-            if (prevIdx == NSNotFound || idx != prevIdx + 1) {
-                if (range.length)
-                    [ranges addObject:[NSValue valueWithRange:range]];
-                range = NSMakeRange(idx, 1);
-            } else {
-                range.length++;
+        if (indexes) {
+            NSUInteger idx = [indexes firstIndex];
+            NSUInteger prevIdx = NSNotFound;
+            NSRange range = NSMakeRange(NSNotFound, 0);
+            NSMutableArray *ranges = [NSMutableArray array];
+            while (idx != NSNotFound) {
+                if (prevIdx == NSNotFound || idx != prevIdx + 1) {
+                    if (range.length)
+                        [ranges addObject:[NSValue valueWithRange:range]];
+                    range = NSMakeRange(idx, 1);
+                } else {
+                    range.length++;
+                }
+                prevIdx = idx;
+                idx = [indexes indexGreaterThanIndex:idx];
             }
-            prevIdx = idx;
-            idx = [indexes indexGreaterThanIndex:idx];
+            if (range.length)
+                [ranges addObject:[NSValue valueWithRange:range]];
+            return ranges;
         }
-        if (range.length)
-            [ranges addObject:[NSValue valueWithRange:range]];
-        return ranges;
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
         NSInteger i, iMax = [self numberOfRangesOnPage:page];
         NSMutableArray *ranges = [NSMutableArray array];
@@ -209,7 +211,8 @@
         }
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         for (PDFPage *page in [self pages]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+            NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
+            if (indexes && [indexes firstIndex] != NSNotFound)
                 return page;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
@@ -240,7 +243,8 @@
         }
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+            NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
+            if (indexes && [indexes firstIndex] != NSNotFound)
                 return page;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
@@ -272,7 +276,8 @@
         return NO;
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         for (PDFPage *page in [self pages]) {
-            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+            NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
+            if (indexes && [indexes firstIndex] != NSNotFound)
                 return YES;
         }
         return NO;
