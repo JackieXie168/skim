@@ -49,12 +49,6 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 NSString *SKPDFAnnotationScriptingAlignmentKey = @"scriptingAlignment";
 
 
-@interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
-- (NSInteger)rotation;
-- (void)setRotation:(NSInteger)rotation;
-@end
-
-
 @implementation PDFAnnotationFreeText (SKExtensions)
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
