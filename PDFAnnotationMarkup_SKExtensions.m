@@ -40,7 +40,6 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
-#import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "PDFSelection_SKExtensions.h"
