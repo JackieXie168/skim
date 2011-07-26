@@ -60,8 +60,6 @@
     [copy setLineWidth:[self lineWidth]];
     [copy setDashPattern:[[[self dashPattern] copyWithZone:aZone] autorelease]];
     [copy setStyle:[self style]];
-    [copy setHorizontalCornerRadius:[self horizontalCornerRadius]];
-    [copy setVerticalCornerRadius:[self verticalCornerRadius]];
     return copy;
 }
 
