@@ -114,6 +114,13 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 
+#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+@interface NSUndoManager (SKLionExtensions)
+- (void)setActionIsDiscardable:(BOOL)discardable;
+@end
+#endif
+
+
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
 @end
@@ -293,7 +300,10 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 - (void)undoableActionDoesntDirtyDocument {
 	// This action, while undoable, shouldn't mark the document dirty
-	[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
+    if ([[self undoManager] respondsToSelector:@selector(setActionIsDiscardable:)])
+        [[self undoManager] setActionIsDiscardable:YES];
+	else
+        [self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
 - (SKInteractionMode)systemInteractionMode {
