@@ -655,15 +655,6 @@ enum {
     return transitionController;
 }
 
-- (void)setCurrentSelection:(PDFSelection *)selection animate:(BOOL)animate {
-    if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
-        [super setCurrentSelection:selection animate:animate];
-    } else if (animate) {
-        [super setCurrentSelection:selection animate:animate];
-        [super setCurrentSelection:nil animate:NO];
-    }
-}
-
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -1184,13 +1175,16 @@ enum {
         } else if (area == kPDFNoArea) {
             [self doDragWithEvent:theEvent];
         } else if (toolMode == SKMoveToolMode) {
+            [self setCurrentSelection:nil];                
             if (area & kPDFLinkArea)
                 [super mouseDown:theEvent];
             else
                 [self doDragWithEvent:theEvent];	
         } else if (toolMode == SKSelectToolMode) {
+            [self setCurrentSelection:nil];                
             [self doSelectWithEvent:theEvent];
         } else if (toolMode == SKMagnifyToolMode) {
+            [self setCurrentSelection:nil];                
             [self doMagnifyWithEvent:theEvent];
         } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
             if ([activeAnnotation isLink]) {
