@@ -51,7 +51,6 @@
 
 - (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page;
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page;
-- (NSArray *)safeRangesOnPage:(PDFPage *)page;
 - (PDFPage *)safeFirstPage;
 - (PDFPage *)safeLastPage;
 

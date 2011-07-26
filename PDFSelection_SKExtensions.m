@@ -161,12 +161,15 @@
     return NSNotFound;
 }
 
-- (NSArray *)safeRangesOnPage:(PDFPage *)page {
+- (NSPointerArray *)safeRangesOnPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
         NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
-        NSMutableArray *ranges = [NSMutableArray array];
-        for (i = 0; i < iMax; i++)
-            [ranges addObject:[NSValue valueWithRange:[self rangeAtIndex:i onPage:page]]];
+        NSPointerArray *ranges = [NSPointerArray rangePointerArray];
+        NSRange range;
+        for (i = 0; i < iMax; i++) {
+            range = [self rangeAtIndex:i onPage:page];
+            [ranges addPointer:&range];
+        }
         return ranges;
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
@@ -174,11 +177,11 @@
             NSUInteger idx = [indexes firstIndex];
             NSUInteger prevIdx = NSNotFound;
             NSRange range = NSMakeRange(NSNotFound, 0);
-            NSMutableArray *ranges = [NSMutableArray array];
+            NSPointerArray *ranges = [NSPointerArray rangePointerArray];
             while (idx != NSNotFound) {
                 if (prevIdx == NSNotFound || idx != prevIdx + 1) {
                     if (range.length)
-                        [ranges addObject:[NSValue valueWithRange:range]];
+                        [ranges addPointer:&range];
                     range = NSMakeRange(idx, 1);
                 } else {
                     range.length++;
@@ -187,14 +190,17 @@
                 idx = [indexes indexGreaterThanIndex:idx];
             }
             if (range.length)
-                [ranges addObject:[NSValue valueWithRange:range]];
+                [ranges addPointer:&range];
             return ranges;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
         NSInteger i, iMax = [self numberOfRangesOnPage:page];
-        NSMutableArray *ranges = [NSMutableArray array];
-        for (i = 0; i < iMax; i++)
-            [ranges addObject:[NSValue valueWithRange:[self rangeAtIndex:i onPage:page]]];
+        NSPointerArray *ranges = [NSPointerArray rangePointerArray];
+        NSRange range;
+        for (i = 0; i < iMax; i++) {
+            range = [self rangeAtIndex:i onPage:page];
+            [ranges addPointer:&range];
+        }
         return ranges;
     }
     return nil;
@@ -659,8 +665,10 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
         NSRange lastRange = NSMakeRange(0, 0);
-        for (NSValue *value in [self safeRangesOnPage:page]) {
-            NSRange range = [value rangeValue];
+        NSPointerArray *rangePointers = [self safeRangesOnPage:page];
+        NSUInteger i, iMax = [rangePointers count];
+        for (i = 0; i < iMax; i++) {
+            NSRange range = *(NSRange *)[rangePointers pointerAtIndex:i];
             if (range.length == 0) {
             } else if (lastRange.length == 0) {
                 lastRange = range;
