@@ -1521,7 +1521,7 @@ enum {
     NSUndoManager *undoManager = [self undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
-    [[[[self window] windowController] document] undoableActionDoesntDirtyDocument];
+    [[[[self window] windowController] document] undoableActionIsDiscardable];
     
     PDFPage *page = [[self document] pageAtIndex:idx];
     [page setRotation:[page rotation] + rotation];

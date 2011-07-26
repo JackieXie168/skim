@@ -69,7 +69,7 @@ extern NSString *SKSkimFileDidSaveNotification;
     NSInvocation *printCallback;
 }
 
-- (void)undoableActionDoesntDirtyDocument;
+- (void)undoableActionIsDiscardable;
 
 - (IBAction)readNotes:(id)sender;
 - (IBAction)convertNotes:(id)sender;
