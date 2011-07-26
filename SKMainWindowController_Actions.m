@@ -452,7 +452,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
+    [[self document] undoableActionIsDiscardable];
     
     PDFPage *page = [[pdfView document] pageAtIndex:idx];
     [page setRotation:[page rotation] + rotation];
@@ -465,7 +465,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllBy:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
+    [[self document] undoableActionIsDiscardable];
     
     PDFPage *page = [pdfView currentPage];
     NSInteger i, count = [[pdfView document] pageCount];
@@ -501,7 +501,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:anIndex toRect:oldRect];
     [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
+    [[self document] undoableActionIsDiscardable];
     
     PDFPage *page = [[pdfView document] pageAtIndex:anIndex];
     rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
@@ -540,7 +540,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPagesToRects:oldRects];
     [undoManager setActionName:NSLocalizedString(@"Crop", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
+    [[self document] undoableActionIsDiscardable];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, nil]];

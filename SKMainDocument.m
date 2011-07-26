@@ -291,19 +291,19 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
-- (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
+- (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
 	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
     // this should be automatic, but Leopard does not seem to do this
     if ([[self valueForKey:@"changeCount"] integerValue] == 0)
         [self updateChangeCount:NSChangeCleared];
 }
 
-- (void)undoableActionDoesntDirtyDocument {
+- (void)undoableActionIsDiscardable {
 	// This action, while undoable, shouldn't mark the document dirty
     if ([[self undoManager] respondsToSelector:@selector(setActionIsDiscardable:)])
         [[self undoManager] setActionIsDiscardable:YES];
 	else
-        [self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
+        [self performSelector:@selector(undoableActionIsDiscardableDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
 - (SKInteractionMode)systemInteractionMode {
