@@ -561,65 +561,43 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     }
 }
 
+static inline NSRange addSpecifierWithCharacterRangeAndPageOrAppendRange(NSMutableArray *ranges, NSRange nextRange, NSRange range, PDFPage *page) {
+    if (nextRange.length == 0) {
+    } else if (range.length == 0) {
+        range = nextRange;
+    } else if (NSMaxRange(range) == nextRange.location) {
+        range.length += nextRange.length;
+    } else {
+        addSpecifierWithCharacterRangeAndPage(ranges, range, page);
+        range = nextRange;
+    }
+    return range;
+}
+
 - (id)objectSpecifier {
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
+        NSRange range = NSMakeRange(0, 0);
         if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
-            NSRange range, lastRange = NSMakeRange(0, 0);
-            for (i = 0; i < iMax; i++) {
-                range = [self rangeAtIndex:i onPage:page];
-                if (range.length == 0) {
-                } else if (lastRange.length == 0) {
-                    lastRange = range;
-                } else if (NSMaxRange(lastRange) == range.location) {
-                    lastRange.length += range.length;
-                } else {
-                    addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
-                    lastRange = range;
-                }
-            }
-            if (lastRange.length)
-                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+            for (i = 0; i < iMax; i++)
+                range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, [self rangeAtIndex:i onPage:page], range, page);
         } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
             NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
             if (indexes) {
                 NSUInteger idx = [indexes firstIndex];
-                NSUInteger prevIdx = NSNotFound;
-                NSRange range = NSMakeRange(NSNotFound, 0);
                 while (idx != NSNotFound) {
-                    if (prevIdx == NSNotFound || idx != prevIdx + 1) {
-                        if (range.length)
-                            addSpecifierWithCharacterRangeAndPage(ranges, range, page);
-                        range = NSMakeRange(idx, 1);
-                    } else {
-                        range.length++;
-                    }
-                    prevIdx = idx;
+                    range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, NSMakeRange(idx, 1), range, page);
                     idx = [indexes indexGreaterThanIndex:idx];
                 }
-                if (range.length)
-                    addSpecifierWithCharacterRangeAndPage(ranges, range, page);
             }
         } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             NSInteger i, iMax = [self numberOfRangesOnPage:page];
-            NSRange range, lastRange = NSMakeRange(0, 0);
-            for (i = 0; i < iMax; i++) {
-                range = [self rangeAtIndex:i onPage:page];
-                if (range.length == 0) {
-                } else if (lastRange.length == 0) {
-                    lastRange = range;
-                } else if (NSMaxRange(lastRange) == range.location) {
-                    lastRange.length += range.length;
-                } else {
-                    addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
-                    lastRange = range;
-                }
-            }
-            if (lastRange.length)
-                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+            for (i = 0; i < iMax; i++)
+                range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, [self rangeAtIndex:i onPage:page], range, page);
         }
-        
+        if (range.length)
+            addSpecifierWithCharacterRangeAndPage(ranges, range, page);
     }
     return ranges;
 }
