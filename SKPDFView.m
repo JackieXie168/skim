@@ -655,6 +655,15 @@ enum {
     return transitionController;
 }
 
+- (void)setCurrentSelection:(PDFSelection *)selection animate:(BOOL)animate {
+    if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+        [super setCurrentSelection:selection animate:animate];
+    } else if (animate) {
+        [super setCurrentSelection:selection animate:animate];
+        [super setCurrentSelection:nil animate:NO];
+    }
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
