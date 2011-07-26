@@ -161,51 +161,6 @@
     return NSNotFound;
 }
 
-- (NSPointerArray *)safeRangesOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
-        NSPointerArray *ranges = [NSPointerArray rangePointerArray];
-        NSRange range;
-        for (i = 0; i < iMax; i++) {
-            range = [self rangeAtIndex:i onPage:page];
-            [ranges addPointer:&range];
-        }
-        return ranges;
-    } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes) {
-            NSUInteger idx = [indexes firstIndex];
-            NSUInteger prevIdx = NSNotFound;
-            NSRange range = NSMakeRange(NSNotFound, 0);
-            NSPointerArray *ranges = [NSPointerArray rangePointerArray];
-            while (idx != NSNotFound) {
-                if (prevIdx == NSNotFound || idx != prevIdx + 1) {
-                    if (range.length)
-                        [ranges addPointer:&range];
-                    range = NSMakeRange(idx, 1);
-                } else {
-                    range.length++;
-                }
-                prevIdx = idx;
-                idx = [indexes indexGreaterThanIndex:idx];
-            }
-            if (range.length)
-                [ranges addPointer:&range];
-            return ranges;
-        }
-    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, iMax = [self numberOfRangesOnPage:page];
-        NSPointerArray *ranges = [NSPointerArray rangePointerArray];
-        NSRange range;
-        for (i = 0; i < iMax; i++) {
-            range = [self rangeAtIndex:i onPage:page];
-            [ranges addPointer:&range];
-        }
-        return ranges;
-    }
-    return nil;
-}
-
 - (PDFPage *)safeFirstPage {
     if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
         for (PDFPage *page in [self pages]) {
@@ -664,23 +619,62 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
 - (id)objectSpecifier {
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
-        NSRange lastRange = NSMakeRange(0, 0);
-        NSPointerArray *rangePointers = [self safeRangesOnPage:page];
-        NSUInteger i, iMax = [rangePointers count];
-        for (i = 0; i < iMax; i++) {
-            NSRange range = *(NSRange *)[rangePointers pointerAtIndex:i];
-            if (range.length == 0) {
-            } else if (lastRange.length == 0) {
-                lastRange = range;
-            } else if (NSMaxRange(lastRange) == range.location) {
-                lastRange.length += range.length;
-            } else {
-                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
-                lastRange = range;
+        if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+            NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
+            NSRange range, lastRange = NSMakeRange(0, 0);
+            for (i = 0; i < iMax; i++) {
+                range = [self rangeAtIndex:i onPage:page];
+                if (range.length == 0) {
+                } else if (lastRange.length == 0) {
+                    lastRange = range;
+                } else if (NSMaxRange(lastRange) == range.location) {
+                    lastRange.length += range.length;
+                } else {
+                    addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+                    lastRange = range;
+                }
             }
+            if (lastRange.length)
+                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+        } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+            NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
+            if (indexes) {
+                NSUInteger idx = [indexes firstIndex];
+                NSUInteger prevIdx = NSNotFound;
+                NSRange range = NSMakeRange(NSNotFound, 0);
+                while (idx != NSNotFound) {
+                    if (prevIdx == NSNotFound || idx != prevIdx + 1) {
+                        if (range.length)
+                            addSpecifierWithCharacterRangeAndPage(ranges, range, page);
+                        range = NSMakeRange(idx, 1);
+                    } else {
+                        range.length++;
+                    }
+                    prevIdx = idx;
+                    idx = [indexes indexGreaterThanIndex:idx];
+                }
+                if (range.length)
+                    addSpecifierWithCharacterRangeAndPage(ranges, range, page);
+            }
+        } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+            NSInteger i, iMax = [self numberOfRangesOnPage:page];
+            NSRange range, lastRange = NSMakeRange(0, 0);
+            for (i = 0; i < iMax; i++) {
+                range = [self rangeAtIndex:i onPage:page];
+                if (range.length == 0) {
+                } else if (lastRange.length == 0) {
+                    lastRange = range;
+                } else if (NSMaxRange(lastRange) == range.location) {
+                    lastRange.length += range.length;
+                } else {
+                    addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+                    lastRange = range;
+                }
+            }
+            if (lastRange.length)
+                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
         }
-        if (lastRange.length)
-            addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
+        
     }
     return ranges;
 }
