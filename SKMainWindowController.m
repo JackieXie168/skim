@@ -1783,6 +1783,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         if ([currentSel hasCharacters])
             [pdfView setCurrentSelection:currentSel animate:YES];
+        if ([pdfView toolMode] == SKMoveToolMode || [pdfView toolMode] == SKMagnifyToolMode || [pdfView toolMode] == SKSelectToolMode)
+            [pdfView setCurrentSelection:nil];
     }
 }
 
