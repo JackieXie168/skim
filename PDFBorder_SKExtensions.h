@@ -40,5 +40,5 @@
 #import <Quartz/Quartz.h>
 
 
-@interface PDFBorder (SKExtensions) <NSCopying>
+@interface PDFBorder (SKExtensions)
 @end

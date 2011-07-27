@@ -46,7 +46,6 @@
 #import "PDFAnnotationInk_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
-#import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "PDFPage_SKExtensions.h"
@@ -140,9 +139,14 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
     if ([self isEditable]) {
-        PDFBorder *border = [[self border] copyWithZone:[self zone]];
-        if (border == nil && style)
+        PDFBorder *oldBorder = [self border];
+        PDFBorder *border = nil;
+        if (oldBorder || style)
             border = [[PDFBorder allocWithZone:[self zone]] init];
+        if (oldBorder) {
+            [border setLineWidth:[oldBorder lineWidth]];
+            [border setDashPattern:[oldBorder dashPattern]];
+        }
         [border setStyle:style];
         [self setBorder:border];
         [border release];
@@ -157,9 +161,12 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
     if ([self isEditable]) {
         PDFBorder *border = nil;
         if (width > 0.0) {
-            border = [[self border] copyWithZone:[self zone]];
-            if (border == nil)
-                border = [[PDFBorder allocWithZone:[self zone]] init];
+            PDFBorder *oldBorder = [self border];
+            border = [[PDFBorder allocWithZone:[self zone]] init];
+            if (oldBorder) {
+                [border setDashPattern:[oldBorder dashPattern]];
+                [border setStyle:[oldBorder style]];
+            }
             [border setLineWidth:width];
         } 
         [self setBorder:border];
@@ -173,9 +180,14 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
 - (void)setDashPattern:(NSArray *)pattern {
     if ([self isEditable]) {
-        PDFBorder *border = [[self border] copyWithZone:[self zone]];
-        if (border == nil && [pattern count])
+        PDFBorder *oldBorder = [self border];
+        PDFBorder *border = nil;
+        if (oldBorder || [pattern count])
             border = [[PDFBorder allocWithZone:[self zone]] init];
+        if (oldBorder) {
+            [border setLineWidth:[oldBorder lineWidth]];
+            [border setStyle:[oldBorder style]];
+        }
         [border setDashPattern:pattern];
         [self setBorder:border];
         [border release];
@@ -245,16 +257,6 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
     } else {
         return nil;
     }
-}
-
-// to support the 'duplicate' command
-- (id)copyWithZone:(NSZone *)zone {
-    PDFAnnotation *copy = nil;
-    if ([self isMovable]) { // we don't want to duplicate markup
-        copy = [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self SkimNoteProperties]];
-        [copy registerUserName];
-    }
-    return copy;
 }
 
 // overridden by subclasses to add or remove custom scripting keys relevant for the class, subclasses should call super first
