@@ -1825,22 +1825,20 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([key isEqualToString:@"notes"]) {
         NSMutableArray *copiedValue = [[NSMutableArray alloc] init];
         for (PDFAnnotation *annotation in value) {
-            if ([annotation isMovable]) { // we don't want to duplicate markup
+            if ([annotation isMovable]) {
                 PDFAnnotation *copiedAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[annotation SkimNoteProperties]];
                 [copiedAnnotation registerUserName];
                 if ([copiedAnnotation respondsToSelector:@selector(setPage:)])
                     [copiedAnnotation performSelector:@selector(setPage:) withObject:[annotation page]];
-                if ([properties count]) {
-                    NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
-                    NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:[copiedAnnotation class]];
-                    for (NSString *aKey in properties) {
-                        if ([classDesc hasWritablePropertyForKey:aKey])
-                            [validProps setValue:[copiedAnnotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
-                    }
-                    if ([validProps count])
-                        [copiedAnnotation setScriptingProperties:validProps];
-                }
+                if ([properties count])
+                    [copiedAnnotation setScriptingProperties:[copiedAnnotation coerceValue:properties forKey:@"scriptingProperties"]];
                 [copiedValue addObject:copiedAnnotation];
+            } else {
+                // we don't want to duplicate markup
+                NSScriptCommand *cmd = [NSScriptCommand currentCommand];
+                [cmd setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+                [cmd setScriptErrorString:NSLocalizedString(@"Cannot duplicate markup note.",@"Error description")];
+                SKDESTROY(copiedValue);
             }
         }
         return copiedValue;
