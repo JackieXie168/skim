@@ -55,14 +55,6 @@
 
 @implementation PDFBorder (SKExtensions)
 
-- (id)copyWithZone:(NSZone *)aZone {
-    PDFBorder *copy = [[PDFBorder allocWithZone:aZone] init];
-    [copy setLineWidth:[self lineWidth]];
-    [copy setDashPattern:[[[self dashPattern] copyWithZone:aZone] autorelease]];
-    [copy setStyle:[self style]];
-    return copy;
-}
-
 #if __LP64__
 
 static id (*original_dashPattern)(id, SEL) = NULL;

@@ -1821,6 +1821,33 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     return [super newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
+- (id)copyScriptingValue:(id)value forKey:(NSString *)key withProperties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"notes"]) {
+        NSMutableArray *copiedValue = [[NSMutableArray alloc] init];
+        for (PDFAnnotation *annotation in value) {
+            if ([annotation isMovable]) { // we don't want to duplicate markup
+                PDFAnnotation *copiedAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[annotation SkimNoteProperties]];
+                [copiedAnnotation registerUserName];
+                if ([copiedAnnotation respondsToSelector:@selector(setPage:)])
+                    [copiedAnnotation performSelector:@selector(setPage:) withObject:[annotation page]];
+                if ([properties count]) {
+                    NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
+                    NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:[copiedAnnotation class]];
+                    for (NSString *aKey in properties) {
+                        if ([classDesc hasWritablePropertyForKey:aKey])
+                            [validProps setValue:[copiedAnnotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
+                    }
+                    if ([validProps count])
+                        [copiedAnnotation setScriptingProperties:validProps];
+                }
+                [copiedValue addObject:copiedAnnotation];
+            }
+        }
+        return copiedValue;
+    }
+    return [super copyScriptingValue:value forKey:key withProperties:properties];
+}
+
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id fileType = [args objectForKey:@"FileType"];
