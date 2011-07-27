@@ -57,6 +57,8 @@
         [self setAlphaValue:[self defaultAlphaValue]];
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:NO];
+        if ([self respondsToSelector:@selector(setAnimationBehavior:)])
+            [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
     }
     return self;
 }

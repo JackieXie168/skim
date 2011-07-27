@@ -89,6 +89,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
+        if ([self respondsToSelector:@selector(setAnimationBehavior:)])
+            [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
         controller = aController;
         edge = anEdge;
