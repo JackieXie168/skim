@@ -46,6 +46,8 @@
     if (self) {
         [self setReleasedWhenClosed:NO];
         [self setLevel:NSFloatingWindowLevel];
+        if ([self respondsToSelector:@selector(setAnimationBehavior:)])
+            [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
         NSImageView *imageView = [[NSImageView alloc] init];
         [imageView setImage:image];
