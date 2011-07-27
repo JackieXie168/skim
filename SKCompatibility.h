@@ -67,3 +67,32 @@
 #ifndef NSAppKitVersionNumber10_6
     #define NSAppKitVersionNumber10_6 1038
 #endif
+
+#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+
+enum {
+    NSWindowAnimationBehaviorDefault = 0,
+    NSWindowAnimationBehaviorNone = 2,
+    NSWindowAnimationBehaviorDocumentWindow = 3,
+    NSWindowAnimationBehaviorUtilityWindow = 4,
+    NSWindowAnimationBehaviorAlertPanel = 5
+};
+typedef NSInteger NSWindowAnimationBehavior;
+
+enum {
+    NSWindowDocumentVersionsButton = 6,
+    NSWindowFullScreenButton,
+};
+
+enum {
+    NSWindowCollectionBehaviorFullScreenPrimary = 1 << 7,
+    NSWindowCollectionBehaviorFullScreenAuxiliary = 1 << 8
+};
+
+@interface NSWindow (SKLionDeclarations)
+- (NSWindowAnimationBehavior)animationBehavior;
+- (void)setAnimationBehavior:(NSWindowAnimationBehavior)newAnimationBehavior;
+- (void)toggleFullScreen:(id)sender;
+@end
+
+#endif
