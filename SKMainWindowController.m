@@ -1981,7 +1981,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits {
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
-    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     [swc setDelegate:self];
     
@@ -1992,7 +1991,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                autoFits:autoFits];
     
     [swc setForceOnTop:[self interactionMode] != SKNormalMode];
-    [[swc window] setHidesOnDeactivate:snapshotsOnTop];
     
     [[self document] addWindowController:swc];
     [swc release];
@@ -2001,8 +1999,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)showSnapshotsWithSetups:(NSArray *)setups {
-    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-    
     for (NSDictionary *setup in setups) {
         SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
         
@@ -2011,7 +2007,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [swc setPdfDocument:[pdfView document] setup:setup];
         
         [swc setForceOnTop:[self interactionMode] != SKNormalMode];
-        [[swc window] setHidesOnDeactivate:snapshotsOnTop];
         
         [[self document] addWindowController:swc];
         [swc release];
