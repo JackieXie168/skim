@@ -235,7 +235,6 @@
 		CEE54D9C0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D9B0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m */; };
 		CEE54DAE0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DAD0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m */; };
 		CEE54DB40DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */; };
-		CEE54DC80DA2EAE00037169F /* PDFBorder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */; };
 		CEE54F6C0DA3FB060037169F /* SKMainToolbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */; };
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */; };
@@ -943,8 +942,6 @@
 		CEE54DAD0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationFreeText_SKExtensions.m; sourceTree = "<group>"; };
 		CEE54DB20DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationMarkup_SKExtensions.h; sourceTree = "<group>"; };
 		CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationMarkup_SKExtensions.m; sourceTree = "<group>"; };
-		CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFBorder_SKExtensions.h; sourceTree = "<group>"; };
-		CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFBorder_SKExtensions.m; sourceTree = "<group>"; };
 		CEE54F6A0DA3FB060037169F /* SKMainToolbarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainToolbarController.h; sourceTree = "<group>"; };
 		CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainToolbarController.m; sourceTree = "<group>"; };
 		CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSSegmentedControl_SKExtensions.h; sourceTree = "<group>"; };
@@ -1941,8 +1938,6 @@
 				CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */,
 				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
-				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
-				CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */,
 				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
 				CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */,
 				CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */,
@@ -2459,7 +2454,6 @@
 				CEE54D9C0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m in Sources */,
 				CEE54DAE0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m in Sources */,
 				CEE54DB40DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m in Sources */,
-				CEE54DC80DA2EAE00037169F /* PDFBorder_SKExtensions.m in Sources */,
 				CEE54F6C0DA3FB060037169F /* SKMainToolbarController.m in Sources */,
 				CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */,
 				CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */,
