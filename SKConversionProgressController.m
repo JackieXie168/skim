@@ -67,8 +67,8 @@ enum {
 @interface SKConversionProgressController (Private)
 + (NSString *)dviToolPath;
 + (NSString *)xdvToolPath;
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
+- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
+- (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -111,23 +111,23 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @synthesize cancelButton, progressBar, textField;
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
-    return [[[[self alloc] init] autorelease] PDFDataWithPostScriptData:psData error:outError];
++ (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
+    return [[[[self alloc] init] autorelease] newPDFDataWithPostScriptData:psData error:outError];
 }
 
-+ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError {
++ (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError {
     NSString *dviToolPath = [self dviToolPath];
     if (dviToolPath)
-        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:dviFile toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
+        return [[[[self alloc] init] autorelease] newPDFDataWithDVIFile:dviFile toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
     else
         NSBeep();
     return nil;
 }
 
-+ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError {
++ (NSData *)newPDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError {
     NSString *xdvToolPath = [self xdvToolPath];
     if (xdvToolPath)
-        return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:xdvFile toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
+        return [[[[self alloc] init] autorelease] newPDFDataWithDVIFile:xdvFile toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
     else
         NSBeep();
     return nil;
@@ -240,7 +240,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }    
 
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
+- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
     NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     fileType = SKPostScriptDocumentType;
@@ -274,7 +274,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         }
     }
     
-    return [(id)pdfData autorelease];
+    return (NSData *)pdfData;
 }
 
 #pragma mark DVI and XDV
@@ -385,7 +385,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }
 
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
+- (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
     NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     NSMutableData *pdfData = nil;
@@ -415,7 +415,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         }
     }
     
-    return [pdfData autorelease];
+    return pdfData;
 }
 
 @end

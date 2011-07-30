@@ -53,9 +53,9 @@
 @property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-+ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError;
-+ (NSData *)PDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError;
++ (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
++ (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError;
++ (NSData *)newPDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;

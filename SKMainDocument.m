@@ -681,7 +681,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     
     if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [self setPSOrDVIData:data];
-        data = [SKConversionProgressController PDFDataWithPostScriptData:data error:&error];
+        data = [[SKConversionProgressController newPDFDataWithPostScriptData:data error:&error] autorelease];
     }
     
     if (data)
@@ -750,13 +750,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if ((data = [fileData retain]))
                     pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-                if ((data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData error:&error] retain]))
+                if ((data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKDVIDocumentType]) {
-                if ((data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path] error:&error] retain]))
+                if ((data = [SKConversionProgressController newPDFDataWithDVIFile:[absoluteURL path] error:&error]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if ([docType isEqualToString:SKXDVDocumentType]) {
-                if ((data = [[SKConversionProgressController PDFDataWithXDVFile:[absoluteURL path] error:&error] retain]))
+                if ((data = [SKConversionProgressController newPDFDataWithXDVFile:[absoluteURL path] error:&error]))
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
