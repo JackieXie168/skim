@@ -695,6 +695,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [self updateChangeCount:NSChangeDone];
         return YES;
     } else {
+        SKDESTROY(tmpData);
         if (outError != NULL)
             *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
         return NO;
@@ -733,10 +734,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                        otherButton:nil
                                          informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
-                        [data release];
-                        data = nil;
-                        [pdfDoc release];
-                        pdfDoc = nil;
+                        SKDESTROY(data);
+                        SKDESTROY(pdfDoc);
                         error = [NSError userCancelledErrorWithUnderlyingError:error];
                     }
                 } else if ([array count]) {
@@ -747,16 +746,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else  {
         if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error])) {
             if ([docType isEqualToString:SKPDFDocumentType]) {
-                if ((data = [fileData retain]))
-                    pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
-            } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-                if ((data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error]))
-                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
-            } else if ([docType isEqualToString:SKDVIDocumentType]) {
-                if ((data = [SKConversionProgressController newPDFDataWithDVIFile:[absoluteURL path] error:&error]))
-                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
-            } else if ([docType isEqualToString:SKXDVDocumentType]) {
-                if ((data = [SKConversionProgressController newPDFDataWithXDVFile:[absoluteURL path] error:&error]))
+                data = [fileData retain];
+                pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
+            } else {
+                if ([docType isEqualToString:SKPostScriptDocumentType])
+                    data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error];
+                else if ([docType isEqualToString:SKDVIDocumentType])
+                    data = [SKConversionProgressController newPDFDataWithDVIFile:[absoluteURL path] error:&error];
+                else if ([docType isEqualToString:SKXDVDocumentType])
+                    data = [SKConversionProgressController newPDFDataWithXDVFile:[absoluteURL path] error:&error];
+                if (data)
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
@@ -773,12 +772,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                        otherButton:nil
                                          informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
-                        [fileData release];
-                        fileData = nil;
-                        [data release];
-                        data = nil;
-                        [pdfDoc release];
-                        pdfDoc = nil;
+                        SKDESTROY(fileData);
+                        SKDESTROY(data);
+                        SKDESTROY(pdfDoc);
                         error = [NSError userCancelledErrorWithUnderlyingError:error];
                     }
                 }
@@ -849,8 +845,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     [fileData release];
     
-    if (didRead == NO && outError != NULL)
-        *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+    if (didRead == NO) {
+        SKDESTROY(tmpData);
+        if (outError)
+            *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+    }
     
     return didRead;
 }
