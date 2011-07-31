@@ -47,7 +47,6 @@
     SKNoteOutlineView *outlineView;
     NSArrayController *arrayController;
     NSSearchField *searchField;
-    NSInteger lastFindChangeCount;
     SKStatusBar *statusBar;
     NSDictionary *toolbarItems;
     NSArray *notes;

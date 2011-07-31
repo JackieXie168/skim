@@ -188,14 +188,6 @@
     
 }
 
-- (void)windowDidBecomeKey:(NSNotification *)notification {
-    NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-    if (lastFindChangeCount < [findPboard changeCount] && [findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]]) {
-        [searchField setStringValue:[findPboard stringForType:NSStringPboardType]];
-        lastFindChangeCount = [findPboard changeCount];
-    }
-}
-
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
@@ -458,12 +450,6 @@
 
 - (IBAction)searchNotes:(id)sender {
     [self updateNoteFilterPredicate];
-    if ([[sender stringValue] length]) {
-        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
-        lastFindChangeCount = [findPboard changeCount];
-    }
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
