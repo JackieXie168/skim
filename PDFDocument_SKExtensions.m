@@ -143,6 +143,7 @@
     }
     if ([pageLabels count] != pageCount) {
         NSUInteger i;
+        [pageLabels removeAllObjects];
         for (i = 0; i < pageCount; i++)
             [pageLabels addObject:useSequential ? [NSString stringWithFormat:@"%lu", (unsigned long)(i + 1)] : [[self pageAtIndex:i] displayLabel]];
     }
