@@ -673,24 +673,23 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError {
+    NSData *inData = data;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
-    if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        [self setOriginalData:data];
+    if ([docType isEqualToString:SKPostScriptDocumentType])
         data = [[SKConversionProgressController newPDFDataWithPostScriptData:data error:&error] autorelease];
-    }
     
     if (data)
         pdfDoc = [[SKPDFDocument alloc] initWithData:data];
     
-    [tmpData setPdfDocument:pdfDoc];
-
     if (pdfDoc) {
         [self setPDFData:data];
+        [tmpData setPdfDocument:pdfDoc];
+        [self setOriginalData:inData];
         [pdfDoc release];
         [self updateChangeCount:NSChangeDone];
         return YES;
@@ -808,8 +807,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             didRead = YES;
             [self setPDFData:data];
             [tmpData setPdfDocument:pdfDoc];
-            if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKXDVDocumentType])
-                [self setOriginalData:fileData];
+            [self setOriginalData:fileData];
             [pdfDoc release];
             [fileUpdateChecker didUpdateFromURL:absoluteURL];
             
