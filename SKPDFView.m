@@ -1550,11 +1550,15 @@ enum {
 - (void)rotateWithEvent:(NSEvent *)theEvent {
     if (interactionMode == SKPresentationMode)
         return;
-    if ([theEvent respondsToSelector:@selector(rotation)])
-        gestureRotation -= [theEvent rotation];
-    if (fabs(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
-        [self rotatePageAtIndex:gesturePageIndex by:90.0 * round(gestureRotation / 90.0)];
-        gestureRotation -= 90.0 * round(gestureRotation / 90.0);
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6) {
+        if ([theEvent respondsToSelector:@selector(rotation)])
+            gestureRotation -= [theEvent rotation];
+        if (fabs(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
+            [self rotatePageAtIndex:gesturePageIndex by:90.0 * round(gestureRotation / 90.0)];
+            gestureRotation -= 90.0 * round(gestureRotation / 90.0);
+        }
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+        [super rotateWithEvent:theEvent];
     }
 }
 
