@@ -1065,8 +1065,21 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
 }
 
+- (BOOL)hasConvertibleAnnotations {
+    PDFDocument *pdfDoc = [self pdfDocument];
+    NSInteger i, count = [pdfDoc pageCount];
+    for (i = 0; i < count; i++) {
+        for (PDFAnnotation *annotation in [[pdfDoc pageAtIndex:i] annotations]) {
+            if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
+                return YES;
+        }
+    }
+    return NO;
+}
+
 - (IBAction)convertNotes:(id)sender {
-    if ([[self fileType] isEqualToString:SKPDFDocumentType] == NO && [[self fileType] isEqualToString:SKPDFBundleDocumentType] == NO) {
+    if (([[self fileType] isEqualToString:SKPDFDocumentType] == NO && [[self fileType] isEqualToString:SKPDFBundleDocumentType] == NO) ||
+        [self hasConvertibleAnnotations] == NO) {
         NSBeep();
         return;
     }
@@ -1951,10 +1964,10 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
-    if ([[self fileType] isEqualToString:SKPDFDocumentType] || [[self fileType] isEqualToString:SKPDFBundleDocumentType])
-        [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
-    else
+    if ([[self fileType] isEqualToString:SKPDFDocumentType] == NO && [[self fileType] isEqualToString:SKPDFBundleDocumentType] == NO)
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+    else if ([self hasConvertibleAnnotations])
+        [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
 }
 
 - (void)handleReadNotesScriptCommand:(NSScriptCommand *)command {
