@@ -52,7 +52,7 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     // variables to be saved:
     NSData *pdfData;
-    NSData *psOrDviData;
+    NSData *originalData;
     
     // temporary variables:
     SKTemporaryData *tmpData;

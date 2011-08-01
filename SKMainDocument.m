@@ -191,7 +191,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     SKDESTROY(synchronizer);
     SKDESTROY(fileUpdateChecker);
     SKDESTROY(pdfData);
-    SKDESTROY(psOrDviData);
+    SKDESTROY(originalData);
     SKDESTROY(readNotesAccessoryView);
     SKDESTROY(progressController);
     SKDESTROY(tmpData);
@@ -564,13 +564,13 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKBarePostScriptDocumentType]) {
         if ([[self fileType] isEqualToString:SKPostScriptDocumentType])
-            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+            didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKBareDVIDocumentType]) {
         if ([[self fileType] isEqualToString:SKDVIDocumentType])
-            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+            didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKXDVDocumentType] || [typeName isEqualToString:SKBareXDVDocumentType]) {
         if ([[self fileType] isEqualToString:SKXDVDocumentType])
-            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+            didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
         NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension]];
         if (fileWrapper)
@@ -665,10 +665,10 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     [self setPDFData:data];
 }
 
-- (void)setPSOrDVIData:(NSData *)data {
-    if (psOrDviData != data) {
-        [psOrDviData release];
-        psOrDviData = [data retain];
+- (void)setOriginalData:(NSData *)data {
+    if (originalData != data) {
+        [originalData release];
+        originalData = [data retain];
     }
 }
 
@@ -680,7 +680,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     tmpData = [[SKTemporaryData alloc] init];
     
     if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        [self setPSOrDVIData:data];
+        [self setOriginalData:data];
         data = [[SKConversionProgressController newPDFDataWithPostScriptData:data error:&error] autorelease];
     }
     
@@ -809,7 +809,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [self setPDFData:data];
             [tmpData setPdfDocument:pdfDoc];
             if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKXDVDocumentType])
-                [self setPSOrDVIData:fileData];
+                [self setOriginalData:fileData];
             [pdfDoc release];
             [fileUpdateChecker didUpdateFromURL:absoluteURL];
             
@@ -1606,7 +1606,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
-    NSString *fileID = [[[self pdfDocument] fileIDStrings:pdfData] lastObject] ?: [pdfData md5String];
+    NSString *fileID = [[[self pdfDocument] fileIDStrings:originalData] lastObject] ?: [pdfData md5String];
     if (fileID) {
         // first see if the password exists in the keychain
         SecKeychainItemRef itemRef = NULL;
@@ -1649,7 +1649,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([document isLocked] == NO) {
         didUnlock = YES;
     } else if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
-        NSString *fileID = [[document fileIDStrings:pdfData] lastObject] ?: [pdfData md5String];
+        NSString *fileID = [[document fileIDStrings:originalData] lastObject] ?: [pdfData md5String];
         if (fileID) {
             NSString *password = nil;
             SecKeychainItemRef itemRef = NULL;
