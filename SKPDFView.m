@@ -1536,8 +1536,9 @@ enum {
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
     if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
         [super beginGestureWithEvent:theEvent];
+    PDFPage *page = [self pageForPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] nearest:YES];
     gestureRotation = 0.0;
-    gesturePageIndex = [[self currentPage] pageIndex];
+    gesturePageIndex = [(page ?: [self currentPage]) pageIndex];
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
