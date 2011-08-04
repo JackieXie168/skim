@@ -1994,8 +1994,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [[self document] addWindowController:swc];
     [swc release];
-    
-    [swc showWindow:self];
 }
 
 - (void)showSnapshotsWithSetups:(NSArray *)setups {

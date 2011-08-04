@@ -218,6 +218,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
         [self performSelector:@selector(notifiyDidFinishSetup) withObject:nil afterDelay:0.1];
+    
+    if ([self hasWindow])
+        [self showWindow:nil];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
@@ -268,10 +271,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
              scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
                 autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]];
     
+    [self setHasWindow:[[setup objectForKey:HASWINDOW_KEY] boolValue]];
     if ([setup objectForKey:WINDOWFRAME_KEY])
         [[self window] setFrame:NSRectFromString([setup objectForKey:WINDOWFRAME_KEY]) display:NO];
-    if ([[setup objectForKey:HASWINDOW_KEY] boolValue])
-        [self performSelector:@selector(showWindow:) withObject:self afterDelay:0.0];
 }
 
 - (BOOL)isPageVisible:(PDFPage *)page {
