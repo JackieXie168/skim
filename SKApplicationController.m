@@ -164,6 +164,7 @@
     if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
         // just remove this in case opening the last open files crashes the app after a relaunch
         [sud removeObjectForKey:SKIsRelaunchKey];
+        [sud synchronize];
         
         NSArray *files = [sud objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files reverseObjectEnumerator];
