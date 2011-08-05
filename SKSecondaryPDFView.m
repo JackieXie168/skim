@@ -542,7 +542,30 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)mouseDown:(NSEvent *)theEvent{
     [[self window] makeFirstResponder:self];
-	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
+	
+    NSUInteger modifiers = [theEvent standardModifierFlags];
+	
+	if (modifiers == NSCommandKeyMask) {
+        
+        [[NSCursor arrowCursor] push];
+        
+        // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+        NSEvent *lastEvent = theEvent;
+        while (YES) {
+            lastEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+            if ([lastEvent type] == NSLeftMouseUp)
+                break;
+        }
+        
+        [NSCursor pop];
+        [self performSelector:@selector(mouseMoved:) withObject:lastEvent afterDelay:0];
+        
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
+        NSPoint location = [self convertPoint:mouseLoc toPage:page];
+        [synchronizedPDFView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:location] autorelease]];
+        
+    } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         // eat up mouseDragged/mouseUp events, so we won't get their event handlers
         while (YES) {
             if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
@@ -569,7 +592,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)mouseUp:(NSEvent *)theEvent{
     [NSCursor pop];
-    [self mouseMoved:theEvent];
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
