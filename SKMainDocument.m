@@ -86,6 +86,7 @@
 #import "NSError_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
 #import "SKPrintAccessoryController.h"
+#import "SKTemporaryData.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -123,23 +124,6 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
-@end
-
-
-@interface SKTemporaryData : NSObject {
-    PDFDocument *pdfDocument;
-    NSArray *noteDicts;
-    NSDictionary *presentationOptions;
-    NSArray *openMetaTags;
-    double openMetaRating;
-}
-
-@property (nonatomic, retain) PDFDocument *pdfDocument;
-@property (nonatomic, copy) NSArray *noteDicts;
-@property (nonatomic, copy) NSDictionary *presentationOptions;
-@property (nonatomic, copy) NSArray *openMetaTags;
-@property (nonatomic) double openMetaRating;
-
 @end
 
 
@@ -1997,33 +1981,6 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         [command setScriptErrorString:@"Window does not have a document."];
     } else
         [document handleRevertScriptCommand:command];
-}
-
-@end
-
-
-@implementation SKTemporaryData
-
-@synthesize pdfDocument, noteDicts, presentationOptions, openMetaTags, openMetaRating;
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        pdfDocument = nil;
-        noteDicts = nil;
-        presentationOptions = nil;
-        openMetaTags = nil;
-        openMetaRating = 0.0;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    SKDESTROY(pdfDocument);
-    SKDESTROY(noteDicts);
-    SKDESTROY(presentationOptions);
-    SKDESTROY(openMetaTags);
-    [super dealloc];
 }
 
 @end
