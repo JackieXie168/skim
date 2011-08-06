@@ -1601,7 +1601,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
-    NSString *fileID = [[[self pdfDocument] fileIDStrings:originalData] lastObject] ?: [pdfData md5String];
+    NSString *fileID = [[[self pdfDocument] fileIDStrings:originalData] lastObject] ?: [originalData md5String];
     if (fileID) {
         // first see if the password exists in the keychain
         SecKeychainItemRef itemRef = NULL;
@@ -1644,7 +1644,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([document isLocked] == NO) {
         didUnlock = YES;
     } else if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
-        NSString *fileID = [[document fileIDStrings:originalData] lastObject] ?: [pdfData md5String];
+        NSString *fileID = [[document fileIDStrings:originalData] lastObject] ?: [originalData md5String];
         if (fileID) {
             NSString *password = nil;
             SecKeychainItemRef itemRef = NULL;
