@@ -517,14 +517,12 @@
 - (void)performFindPanelAction:(id)sender {
     if ([sender tag] == NSFindPanelActionShowFindPanel) {
         NSToolbar *toolbar = [[[[self windowControllers] objectAtIndex:0] window] toolbar];
-        if ([[[toolbar items] valueForKey:@"itemIdentifier"] containsObject:SKNotesDocumentSearchToolbarItemIdentifier]) {
-            if ([toolbar displayMode] == NSToolbarDisplayModeLabelOnly)
-                [toolbar setDisplayMode:NSToolbarDisplayModeDefault];
-            [toolbar setVisible:YES];
-            [searchField selectText:nil];
-        } else {
-            NSBeep();
-        }
+        if ([[[toolbar items] valueForKey:@"itemIdentifier"] containsObject:SKNotesDocumentSearchToolbarItemIdentifier] == NO)
+            [toolbar insertItemWithItemIdentifier:SKNotesDocumentSearchToolbarItemIdentifier atIndex:0];
+        if ([toolbar displayMode] == NSToolbarDisplayModeLabelOnly)
+            [toolbar setDisplayMode:NSToolbarDisplayModeDefault];
+        [toolbar setVisible:YES];
+        [searchField selectText:nil];
     } else {
         NSBeep();
 	}
