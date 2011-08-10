@@ -150,6 +150,7 @@
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] setObject:[[(SKApplication *)NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
@@ -163,8 +164,10 @@
     
     if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
         // just remove this in case opening the last open files crashes the app after a relaunch
-        [sud removeObjectForKey:SKIsRelaunchKey];
-        [sud synchronize];
+        if ([sud objectForKey:SKIsRelaunchKey]) {
+            [sud removeObjectForKey:SKIsRelaunchKey];
+            [sud synchronize];
+        }
         
         NSArray *files = [sud objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files reverseObjectEnumerator];
