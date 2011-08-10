@@ -263,12 +263,16 @@ void SKSwizzlePDFDisplayViewMethods() {
 }
 
 - (BOOL)isFauxUIElementFocused:(SKAccessibilityFauxUIElement *)element {
-    return [SKGetPDFView(self) activeAnnotation] == [element representedObject];
+    SKPDFView *pdfView = SKGetPDFView(self);
+    if ([pdfView respondsToSelector:@selector(activeAnnotation)])
+        return [pdfView activeAnnotation] == [element representedObject];
+    else
+        return NO;
 }
 
 - (void)fauxUIlement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused {
     SKPDFView *pdfView = SKGetPDFView(self);
-    if (pdfView) {
+    if ([pdfView respondsToSelector:@selector(setActiveAnnotation:)]) {
         PDFAnnotation *annotation = [element representedObject];
         if ([annotation isKindOfClass:[PDFAnnotation class]]) {
             if (focused)
@@ -281,7 +285,7 @@ void SKSwizzlePDFDisplayViewMethods() {
 
 - (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
     SKPDFView *pdfView = SKGetPDFView(self);
-    if (pdfView) {
+    if ([pdfView respondsToSelector:@selector(activeAnnotation)] && [pdfView respondsToSelector:@selector(setActiveAnnotation:)] && [pdfView respondsToSelector:@selector(editActiveAnnotation:)]) {
         PDFAnnotation *annotation = [element representedObject];
         if ([annotation isKindOfClass:[PDFAnnotation class]]) {
             if ([pdfView activeAnnotation] != annotation)
