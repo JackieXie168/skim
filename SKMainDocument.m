@@ -1816,7 +1816,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
                 // we don't want to duplicate markup
                 NSScriptCommand *cmd = [NSScriptCommand currentCommand];
                 [cmd setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
-                [cmd setScriptErrorString:NSLocalizedString(@"Cannot duplicate markup note.",@"Error description")];
+                [cmd setScriptErrorString:@"Cannot duplicate markup note."];
                 SKDESTROY(copiedValue);
             }
         }
