@@ -53,8 +53,6 @@
 
 #define SKDisableExportAttributesKey @"SKDisableExportAttributes"
 
-#define TEMPLATES_FOLDER_NAME @"Templates"
-
 NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeNotification";
 
 @implementation NSDocument (SKExtensions)
@@ -145,6 +143,20 @@ static BOOL isRichTextType(NSString *templateFile) {
     return [types containsObject:[[templateFile pathExtension] lowercaseString]];
 }
 
+- (NSString *)pathForTemplateFile:(NSString *)filename {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *fullPath = nil;
+    
+    for (NSString *appSupportPath in [[fm applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
+        fullPath = [[appSupportPath stringByAppendingPathComponent:@"Templates"] stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO)
+            fullPath = nil;
+        else break;
+    }
+    
+    return fullPath;
+}
+
 - (NSData *)notesData {
     NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
     return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
@@ -153,7 +165,7 @@ static BOOL isRichTextType(NSString *templateFile) {
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *string = nil;
     if (isRichTextType(templateFile) == NO) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
+        NSString *templatePath = [self pathForTemplateFile:templateFile];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -165,7 +177,7 @@ static BOOL isRichTextType(NSString *templateFile) {
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     NSData *data = nil;
     if (isRichTextType(templateFile)) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
+        NSString *templatePath = [self pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -186,7 +198,7 @@ static BOOL isRichTextType(NSString *templateFile) {
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:TEMPLATES_FOLDER_NAME];
+        NSString *templatePath = [self pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];

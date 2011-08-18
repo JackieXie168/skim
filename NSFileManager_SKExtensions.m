@@ -65,26 +65,6 @@
     return applicationSupportDirectories;
 }
 
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
-    return [self pathForApplicationSupportFile:file ofType:extension inDirectory:nil];
-}
-
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *filename = [file stringByAppendingPathExtension:extension];
-    NSString *fullPath = nil;
-    
-    for (NSString *appSupportPath in [[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
-        fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
-        fullPath = [fullPath stringByAppendingPathComponent:filename];
-        if ([fm fileExistsAtPath:fullPath] == NO)
-            fullPath = nil;
-        else break;
-    }
-    
-    return fullPath;
-}
-
 @end
 
 static NSString *SKUniqueDirectory(NSString *basePath) {

@@ -44,8 +44,6 @@
 - (BOOL)isTrashedFileAtURL:(NSURL *)aURL;
 
 - (NSArray *)applicationSupportDirectories;
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath;
 
 @end
 
