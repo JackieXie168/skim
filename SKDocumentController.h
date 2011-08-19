@@ -81,4 +81,7 @@ extern NSString *SKDocumentControllerDocumentKey;
 - (NSArray *)customExportTemplateFiles;
 - (NSArray *)customExportTemplateFilesResetting;
 
+- (BOOL)isRichTextTemplateFile:(NSString *)templateFile;
+- (NSString *)pathForTemplateFile:(NSString *)filename;
+
 @end

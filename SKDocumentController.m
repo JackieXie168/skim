@@ -54,6 +54,8 @@
 
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
 
+#define TEMPLATES_DIRECTORY @"Templates"
+
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = @"PDF Bundle";
@@ -424,7 +426,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSMutableArray *templateFiles = [NSMutableArray array];
         
         for (NSString *appSupportPath in [[NSFileManager defaultManager] applicationSupportDirectories]) {
-            NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:@"Templates"];
+            NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY];
             BOOL isDir;
             if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
                 for (NSString *file in [fm subpathsAtPath:templatesPath]) {
@@ -442,6 +444,27 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (NSArray *)customExportTemplateFilesResetting {
     SKDESTROY(customExportTemplateFiles);
     return [self customExportTemplateFiles];
+}
+
+- (NSString *)pathForTemplateFile:(NSString *)filename {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *fullPath = nil;
+    
+    for (NSString *appSupportPath in [[fm applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
+        fullPath = [[appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY] stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO)
+            fullPath = nil;
+        else break;
+    }
+    
+    return fullPath;
+}
+
+- (BOOL)isRichTextTemplateFile:(NSString *)templateFile {
+    static NSSet *types = nil;
+    if (types == nil)
+        types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
+    return [types containsObject:[[templateFile pathExtension] lowercaseString]];
 }
 
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
