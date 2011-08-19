@@ -64,9 +64,7 @@ extern NSString *SKDocumentDidShowNotification;
 
 extern NSString *SKDocumentControllerDocumentKey;
 
-@interface SKDocumentController : NSDocumentController {
-    NSArray *customExportTemplateFiles;
-}
+@interface SKDocumentController : NSDocumentController
 
 - (IBAction)newDocumentFromClipboard:(id)sender;
 
@@ -77,11 +75,5 @@ extern NSString *SKDocumentControllerDocumentKey;
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
-
-- (NSArray *)customExportTemplateFiles;
-- (NSArray *)customExportTemplateFilesResetting;
-
-- (BOOL)isRichTextTemplateFile:(NSString *)templateFile;
-- (NSString *)pathForTemplateFile:(NSString *)filename;
 
 @end
