@@ -84,6 +84,9 @@ typedef NSInteger SKInteractionMode;
 
 - (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings;
 
++ (BOOL)isRichTextTemplate:(NSString *)templateFile;
++ (NSString *)pathForTemplateFile:(NSString *)filename;
+
 #pragma mark Scripting
 
 - (NSArray *)pages;
