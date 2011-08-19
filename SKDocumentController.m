@@ -49,12 +49,11 @@
 #import "NSError_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNotesDocument.h"
+#import "SKTemplateManager.h"
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
-
-#define TEMPLATES_DIRECTORY @"Templates"
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil;
@@ -105,11 +104,6 @@ NSString *SKDocumentControllerDocumentKey = @"document";
         [self setAutosavingDelay:[[NSUserDefaults standardUserDefaults] doubleForKey:SKAutosaveIntervalKey]];
     }
     return self;
-}
-
-- (void)dealloc {
-    SKDESTROY(customExportTemplateFiles);
-    [super dealloc];
 }
 
 - (void)removeDocument:(NSDocument *)document {
@@ -420,63 +414,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         return YES;
 }
 
-- (NSArray *)customExportTemplateFiles {
-    if (customExportTemplateFiles == nil) {
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSMutableArray *templateFiles = [NSMutableArray array];
-        
-        for (NSString *appSupportPath in [[NSFileManager defaultManager] applicationSupportDirectories]) {
-            NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY];
-            BOOL isDir;
-            if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
-                for (NSString *file in [fm subpathsAtPath:templatesPath]) {
-                    if ([file hasPrefix:@"."] == NO && [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO)
-                        [templateFiles addObject:file];
-                }
-            }
-        }
-        [templateFiles sortUsingSelector:@selector(caseInsensitiveCompare:)];
-        customExportTemplateFiles = [templateFiles copy];
-    }
-    return customExportTemplateFiles;
-}
-
-- (NSArray *)customExportTemplateFilesResetting {
-    SKDESTROY(customExportTemplateFiles);
-    return [self customExportTemplateFiles];
-}
-
-- (NSString *)pathForTemplateFile:(NSString *)filename {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *fullPath = nil;
-    
-    for (NSString *appSupportPath in [[fm applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
-        fullPath = [[appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY] stringByAppendingPathComponent:filename];
-        if ([fm fileExistsAtPath:fullPath] == NO)
-            fullPath = nil;
-        else break;
-    }
-    
-    return fullPath;
-}
-
-- (BOOL)isRichTextTemplateFile:(NSString *)templateFile {
-    static NSSet *types = nil;
-    if (types == nil)
-        types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
-    return [types containsObject:[[templateFile pathExtension] lowercaseString]];
-}
-
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
     NSArray *fileExtensions = [super fileExtensionsFromType:documentTypeName];
-    if ([fileExtensions count] == 0 && [[self customExportTemplateFiles] containsObject:documentTypeName])
+    if ([fileExtensions count] == 0 && [[[SKTemplateManager sharedManager] templateFiles] containsObject:documentTypeName])
         fileExtensions = [NSArray arrayWithObjects:[documentTypeName pathExtension], nil];
 	return fileExtensions;
 }
 
 - (NSString *)displayNameForType:(NSString *)documentTypeName{
     NSString *displayName = nil;
-    if ([[self customExportTemplateFiles] containsObject:documentTypeName])
+    if ([[[SKTemplateManager sharedManager] templateFiles] containsObject:documentTypeName])
         displayName = [documentTypeName stringByDeletingPathExtension];
     else
         displayName = [super displayNameForType:documentTypeName];

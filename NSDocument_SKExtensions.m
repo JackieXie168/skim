@@ -50,6 +50,7 @@
 #import "SKBookmarkController.h"
 #import "NSWindowController_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKTemplateManager.h"
 
 #define SKDisableExportAttributesKey @"SKDisableExportAttributes"
 
@@ -143,8 +144,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *string = nil;
-    if ([[NSDocumentController sharedDocumentController] isRichTextTemplateFile:templateFile] == NO) {
-        NSString *templatePath = [[NSDocumentController sharedDocumentController] pathForTemplateFile:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateFile:templateFile] == NO) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -155,8 +156,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     NSData *data = nil;
-    if ([[NSDocumentController sharedDocumentController] isRichTextTemplateFile:templateFile]) {
-        NSString *templatePath = [[NSDocumentController sharedDocumentController] pathForTemplateFile:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateFile:templateFile]) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -177,7 +178,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSString *templatePath = [[NSDocumentController sharedDocumentController] pathForTemplateFile:templateFile];
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];

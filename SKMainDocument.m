@@ -87,6 +87,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "SKPrintAccessoryController.h"
 #import "SKTemporaryData.h"
+#import "SKTemplateManager.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -314,7 +315,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [writableTypes removeObject:SKBareXDVDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
+        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] templateFilesResetting]];
     }
     return writableTypes;
 }
@@ -322,7 +323,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
     fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+    if (fileExtension == nil && [[[SKTemplateManager sharedManager] templateFiles] containsObject:typeName])
         fileExtension = [typeName pathExtension];
     return fileExtension;
 }
@@ -1840,7 +1841,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         else if ([fileType isEqualToString:@"XDV"])
             normalizedType = SKXDVDocumentType;
         else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
+            NSArray *templateTypes = [[SKTemplateManager sharedManager] templateFiles];
             NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
             NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
             if (idx != NSNotFound)

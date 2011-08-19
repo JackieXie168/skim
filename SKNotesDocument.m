@@ -65,6 +65,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
+#import "SKTemplateManager.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -192,7 +193,7 @@
     NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
         NSMutableArray *tmpArray = [[writableTypes mutableCopy] autorelease];
-        [tmpArray addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
+        [tmpArray addObjectsFromArray:[[SKTemplateManager sharedManager] templateFilesResetting]];
         writableTypes = tmpArray;
     }
     return writableTypes;
@@ -201,7 +202,7 @@
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
     fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+    if (fileExtension == nil && [[[SKTemplateManager sharedManager] templateFiles] containsObject:typeName])
         fileExtension = [typeName pathExtension];
     return fileExtension;
 }
@@ -829,7 +830,7 @@
     if (fileType) {
         NSString *normalizedType = nil;
         if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
+            NSArray *templateTypes = [[SKTemplateManager sharedManager] templateFiles];
             NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
             NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
             if (idx != NSNotFound)
