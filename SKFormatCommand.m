@@ -39,7 +39,7 @@
 #import "SKFormatCommand.h"
 #import "SKTemplateParser.h"
 #import "SKRichTextFormat.h"
-#import "NSDocument_SKExtensions.h"
+#import "SKDocumentController.h"
 
 
 @implementation SKFormatCommand
@@ -62,7 +62,7 @@
         attrString = template;
     else if ([template isKindOfClass:[NSURL class]] == NO)
 		[self setScriptErrorNumber:NSArgumentsWrongScriptError]; 
-    else if ([NSDocument isRichTextTemplate:[template path]])
+    else if ([[NSDocumentController sharedDocumentController] isRichTextTemplateFile:[template path]])
         attrString = [[[NSAttributedString alloc] initWithURL:template documentAttributes:&docAttrs] autorelease];
     else
         string = [NSString stringWithContentsOfURL:template encoding:NSUTF8StringEncoding error:NULL];
