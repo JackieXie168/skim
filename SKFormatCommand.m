@@ -39,6 +39,7 @@
 #import "SKFormatCommand.h"
 #import "SKTemplateParser.h"
 #import "SKRichTextFormat.h"
+#import "NSDocument_SKExtensions.h"
 
 
 @implementation SKFormatCommand
@@ -61,7 +62,7 @@
         attrString = template;
     else if ([template isKindOfClass:[NSURL class]] == NO)
 		[self setScriptErrorNumber:NSArgumentsWrongScriptError]; 
-    else if ([[NSSet setWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil] containsObject:[[[template path] pathExtension] lowercaseString]])
+    else if ([NSDocument isRichTextTemplate:[template path]])
         attrString = [[[NSAttributedString alloc] initWithURL:template documentAttributes:&docAttrs] autorelease];
     else
         string = [NSString stringWithContentsOfURL:template encoding:NSUTF8StringEncoding error:NULL];

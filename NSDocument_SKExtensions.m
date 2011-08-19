@@ -136,14 +136,14 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSArray *)notes { return nil; }
 
-static BOOL isRichTextType(NSString *templateFile) {
++ (BOOL)isRichTextTemplate:(NSString *)templateFile {
     static NSSet *types = nil;
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
     return [types containsObject:[[templateFile pathExtension] lowercaseString]];
 }
 
-- (NSString *)pathForTemplateFile:(NSString *)filename {
++ (NSString *)pathForTemplateFile:(NSString *)filename {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *fullPath = nil;
     
@@ -164,8 +164,8 @@ static BOOL isRichTextType(NSString *templateFile) {
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *string = nil;
-    if (isRichTextType(templateFile) == NO) {
-        NSString *templatePath = [self pathForTemplateFile:templateFile];
+    if ([[self class] isRichTextTemplate:templateFile] == NO) {
+        NSString *templatePath = [[self class] pathForTemplateFile:templateFile];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -176,8 +176,8 @@ static BOOL isRichTextType(NSString *templateFile) {
 
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     NSData *data = nil;
-    if (isRichTextType(templateFile)) {
-        NSString *templatePath = [self pathForTemplateFile:templateFile];
+    if ([[self class] isRichTextTemplate:templateFile]) {
+        NSString *templatePath = [[self class] pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -198,7 +198,7 @@ static BOOL isRichTextType(NSString *templateFile) {
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSString *templatePath = [self pathForTemplateFile:templateFile];
+        NSString *templatePath = [[self class] pathForTemplateFile:templateFile];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
