@@ -53,6 +53,8 @@
 		CE090547113EDA72004B85C6 /* ScaleSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090543113EDA72004B85C6 /* ScaleSheet.xib */; };
 		CE0905AE113F0B82004B85C6 /* NoteTypeSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */; };
 		CE090613113F1655004B85C6 /* PrintAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090612113F1655004B85C6 /* PrintAccessoryView.xib */; };
+		CE0928C413FFC0E4008A6A69 /* Scroller_Background_Lion.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */; };
+		CE0928C513FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */; };
 		CE099663112577A000EDB88F /* SKNotesPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE099662112577A000EDB88F /* SKNotesPage.m */; };
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
@@ -532,6 +534,8 @@
 		CE090543113EDA72004B85C6 /* ScaleSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScaleSheet.xib; sourceTree = "<group>"; };
 		CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteTypeSheet.xib; sourceTree = "<group>"; };
 		CE090612113F1655004B85C6 /* PrintAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PrintAccessoryView.xib; sourceTree = "<group>"; };
+		CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background_Lion.tiff; sourceTree = "<group>"; };
+		CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider_Lion.tiff; sourceTree = "<group>"; };
 		CE099661112577A000EDB88F /* SKNotesPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesPage.h; sourceTree = "<group>"; };
 		CE099662112577A000EDB88F /* SKNotesPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesPage.m; sourceTree = "<group>"; };
 		CE09FC3B0E3886C100BDF413 /* SKRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRuntime.m; sourceTree = "<group>"; };
@@ -1793,6 +1797,8 @@
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
 				CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */,
 				CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */,
+				CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */,
+				CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */,
 				CE6DC9930D699F21003A072F /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */,
@@ -2239,6 +2245,8 @@
 				CE121B2D1180770900951425 /* ScriptMenu.tiff in Resources */,
 				CEFBB07F13AA07B400162F75 /* FindBar.xib in Resources */,
 				CEFBB33913AA737B00162F75 /* FindBar.strings in Resources */,
+				CE0928C413FFC0E4008A6A69 /* Scroller_Background_Lion.tiff in Resources */,
+				CE0928C513FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
