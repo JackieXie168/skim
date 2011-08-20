@@ -39,6 +39,22 @@
 #import "NSScrollView_SKExtensions.h"
 #import "SKRuntime.h"
 
+#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+
+enum {
+   NSScrollerStyleLegacy,
+   NSScrollerStyleOverlay
+};
+typedef NSInteger NSScrollerStyle;
+
+@interface NSScroller (SKLionDeclarations)
++ (NSScrollerStyle)preferredScrollerStyle;
+- (NSScrollerStyle)scrollerStyle;
+- (void)setScrollerStyle:(NSScrollerStyle)newScrollerStyle;
+@end
+
+#endif
+
 
 @interface SKPlacardView : NSView
 - (void)tile;
@@ -117,8 +133,12 @@ static NSMapTable *scrollViewPlacardViews = nil;
     if ([newPlacards count] != 0) {
         original_setHasHorizontalScroller(self, @selector(setHasHorizontalScroller:), YES);
         original_setAutohidesScrollers(self, @selector(setAutohidesScrollers:), NO);
+        if ([NSScroller instancesRespondToSelector:@selector(setScrollerStyle:)])
+            [[self horizontalScroller] setScrollerStyle:NSScrollerStyleOverlay];
     } else if (placardView) {
         [scrollViewPlacardViews removeObjectForKey:self];
+        if ([NSScroller instancesRespondToSelector:@selector(setScrollerStyle:)] && [NSScroller respondsToSelector:@selector(preferredScrollerStyle)])
+            [[self horizontalScroller] setScrollerStyle:[NSScroller preferredScrollerStyle]];
     }
     [placardView release];
     
