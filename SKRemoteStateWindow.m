@@ -79,19 +79,19 @@
     return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
 }
 
-- (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point {
+- (void)showWithType:(SKRemoteState)remoteState {
     if ([self autoHideTimeInterval] > 0.0) {
         [self stopAnimation];
         
-        [self setFrame:SKRectFromCenterAndSize(point, SKMakeSquareSize(60.0)) display:NO animate:NO];
+        [self setFrame:SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0)) display:NO animate:NO];
         [(SKRemoteStateView *)[self contentView] setRemoteState:remoteState];
         
         [self orderFrontRegardless];
     }
 }
 
-+ (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point {
-    [[self sharedRemoteStateWindow] showWithType:remoteState atPoint:point];
++ (void)showWithType:(SKRemoteState)remoteState {
+    [[self sharedRemoteStateWindow] showWithType:remoteState];
 }
 
 @end
