@@ -61,6 +61,10 @@
     return sharedRemoteStateWindow;
 }
 
++ (NSTimeInterval)timeInterval {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
+}
+
 - (id)init {
     NSRect contentRect = SKRectFromCenterAndSquareSize(NSZeroPoint, WINDOW_SIZE);
     self = [super initWithContentRect:contentRect];
@@ -76,7 +80,7 @@
 - (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
 
 - (NSTimeInterval)autoHideTimeInterval {
-    return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
+    return [[self class] timeInterval];
 }
 
 - (void)showWithType:(SKRemoteState)remoteState {
@@ -91,7 +95,8 @@
 }
 
 + (void)showWithType:(SKRemoteState)remoteState {
-    [[self sharedRemoteStateWindow] showWithType:remoteState];
+    if ([[self class] timeInterval] > 0.0)
+        [[self sharedRemoteStateWindow] showWithType:remoteState];
 }
 
 @end
