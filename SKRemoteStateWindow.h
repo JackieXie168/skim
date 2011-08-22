@@ -46,5 +46,5 @@ enum {
 typedef NSUInteger SKRemoteState;
 
 @interface SKRemoteStateWindow : SKAnimatedBorderlessWindow
-+ (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point;
++ (void)showWithType:(SKRemoteState)remoteState;
 @end

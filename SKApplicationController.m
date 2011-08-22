@@ -337,12 +337,7 @@
     if (isPressed) {
         if (buttonCode == kHIDRemoteButtonCodeMenu) {
             remoteScrolling = !remoteScrolling;
-            if ([[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey] > 0.0) {
-                NSRect rect = [[NSScreen mainScreen] frame];
-                NSPoint point = NSMakePoint(NSMidX(rect), NSMidY(rect));
-                NSInteger type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
-                [SKRemoteStateWindow showWithType:type atPoint:point];
-            }
+            [SKRemoteStateWindow showWithType:remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize];
         } else {
             NSEvent *theEvent = [NSEvent otherEventWithType:NSApplicationDefined
                                                    location:NSZeroPoint
