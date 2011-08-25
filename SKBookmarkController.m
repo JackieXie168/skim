@@ -432,6 +432,17 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [item setAlternate:YES];
                     [item setImageAndSize:[bm alternateIcon]];
                     break;
+                case SKBookmarkTypeSession:
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
+                    [item setRepresentedObject:bm];
+                    [item setImageAndSize:[bm icon]];
+                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
+                    [item setRepresentedObject:bm];
+                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+                    [item setAlternate:YES];
+                    [item setImageAndSize:[bm alternateIcon]];
+                    [[item submenu] setDelegate:self];
+                    break;
                 case SKBookmarkTypeSeparator:
                     [menu addItem:[NSMenuItem separatorItem]];
                     break;
