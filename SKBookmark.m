@@ -503,7 +503,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSString *)label {
-    return label ?: @"";
+    return [label length] > 0 ? label : [[NSFileManager defaultManager] displayNameAtPath:[self path]] ?: @"";
 }
 
 - (void)setLabel:(NSString *)newLabel {
@@ -760,6 +760,10 @@ static Class SKBookmarkClass = Nil;
 
 - (NSImage *)icon {
     return [NSImage imageNamed:NSImageNameMultipleDocuments];
+}
+
+- (NSImage *)alternateIcon {
+    return [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
