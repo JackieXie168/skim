@@ -125,4 +125,7 @@ NSString *SKDisablePinchZoomKey = @"SKDisablePinchZoom";
 NSString *SKDisableModificationDateKey = @"SKDisableModificationDate";
 NSString *SKDisableAnimationsKey = @"SKDisableAnimations";
 NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
+NSString *SKCaseInsensitiveSearchKey = @"SKCaseInsensitiveSearch";
+NSString *SKWholeWordSearchKey = @"SKWholeWordSearch";
+NSString *SKCaseInsensitiveNoteSearchKey = @"SKCaseInsensitiveNoteSearch";
 NSString *SKCaseInsensitiveFindKey = @"SKCaseInsensitiveFind";

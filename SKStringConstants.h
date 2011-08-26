@@ -124,4 +124,7 @@ extern NSString *SKDisablePinchZoomKey;
 extern NSString *SKDisableModificationDateKey;
 extern NSString *SKDisableAnimationsKey;
 extern NSString *SKDisableUpdateContentsFromEnclosedTextKey;
+extern NSString *SKCaseInsensitiveSearchKey;
+extern NSString *SKWholeWordSearchKey;
+extern NSString *SKCaseInsensitiveNoteSearchKey;
 extern NSString *SKCaseInsensitiveFindKey;

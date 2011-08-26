@@ -206,6 +206,12 @@
 		<true/>
 		<key>SKCaseInsensitiveSearch</key>
 		<true/>
+		<key>SKWholeWordSearch</key>
+		<false/>
+		<key>SKCaseInsensitiveNoteSearch</key>
+		<true/>
+		<key>SKCaseInsensitiveFind</key>
+		<true/>
 	</dict>
 	<key>ResettableKeys</key>
 	<dict>
