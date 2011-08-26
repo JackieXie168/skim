@@ -105,6 +105,10 @@
 
 @implementation NSMenuItem (SKExtensions)
 
++ (NSMenuItem *)menuItemWithSubmenuAndTitle:(NSString *)aString {
+    return [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:aString submenu:[NSMenu menu]] autorelease];
+}
+
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget {
     return [self initWithTitle:aString imageNamed:nil action:aSelector target:aTarget tag:0];
 }

@@ -66,6 +66,8 @@
 
 @interface NSMenuItem (SKExtensions)
 
++ (NSMenuItem *)menuItemWithSubmenuAndTitle:(NSString *)aString;
+
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget;
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 - (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
