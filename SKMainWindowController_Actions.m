@@ -844,18 +844,21 @@ static NSArray *allMainDocumentPDFViews() {
     mwcFlags.caseInsensitiveSearch = (0 == mwcFlags.caseInsensitiveSearch);
     if ([[leftSideController.searchField stringValue] length])
         [self search:leftSideController.searchField];
+    [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.caseInsensitiveSearch forKey:SKCaseInsensitiveSearchKey];
 }
 
 - (IBAction)toggleWholeWordSearch:(id)sender {
     mwcFlags.wholeWordSearch = (0 == mwcFlags.wholeWordSearch);
     if ([[leftSideController.searchField stringValue] length])
         [self search:leftSideController.searchField];
+    [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.wholeWordSearch forKey:SKWholeWordSearchKey];
 }
 
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender {
     mwcFlags.caseInsensitiveNoteSearch = (0 == mwcFlags.caseInsensitiveNoteSearch);
     if ([[rightSideController.searchField stringValue] length])
         [self searchNotes:rightSideController.searchField];
+    [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.caseInsensitiveNoteSearch forKey:SKCaseInsensitiveNoteSearchKey];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {

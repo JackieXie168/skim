@@ -96,7 +96,7 @@
         pdfDocument = nil;
         rowHeights = [[SKFloatMapTable alloc] init];
         windowRect = NSZeroRect;
-        caseInsensitiveSearch = YES;
+        caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
     }
     return self;
 }
@@ -513,6 +513,7 @@
     caseInsensitiveSearch = NO == caseInsensitiveSearch;
     if ([[searchField stringValue] length])
         [self searchNotes:searchField];
+    [[NSUserDefaults standardUserDefaults] setBool:caseInsensitiveSearch forKey:SKCaseInsensitiveNoteSearchKey];
 }
 
 - (void)performFindPanelAction:(id)sender {

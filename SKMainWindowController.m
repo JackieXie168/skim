@@ -225,9 +225,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         searchResults = [[NSMutableArray alloc] init];
         searchResultIndex = 0;
         mwcFlags.findPanelFind = 0;
-        mwcFlags.caseInsensitiveSearch = 1;
-        mwcFlags.wholeWordSearch = 0;
-        mwcFlags.caseInsensitiveNoteSearch = 1;
+        mwcFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveSearchKey];
+        mwcFlags.wholeWordSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKWholeWordSearchKey];
+        mwcFlags.caseInsensitiveNoteSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
