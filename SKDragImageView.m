@@ -79,13 +79,12 @@
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [self menu];
     if (menu == nil) {
-        menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        menu = [NSMenu menu];
         [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:self];
         [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) target:self];
         [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:self];
         [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(show:) target:self];
         [self setMenu:menu];
-        [menu release];
     }
     menu = [[menu copy] autorelease];
 	NSInteger i = [menu numberOfItems];

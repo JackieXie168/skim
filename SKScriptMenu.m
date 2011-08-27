@@ -98,12 +98,11 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
         
         if (itemIndex > 0 && [folders count]) {
             
-            scriptMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:SCRIPTS_MENU_TITLE];
-            NSMenuItem *menuItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:SCRIPTS_MENU_TITLE action:NULL keyEquivalent:@""];
+            NSMenuItem *menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:SCRIPTS_MENU_TITLE];
             [menuItem setImage:[NSImage imageNamed:@"ScriptMenu"]];
-            [menuItem setSubmenu:scriptMenu];
             [[NSApp mainMenu] insertItem:menuItem atIndex:itemIndex];
-            [menuItem release];
+            
+            scriptMenu = [[menuItem submenu] retain];
             
             sortDescriptors = [[NSArray alloc] initWithObjects:[[[NSSortDescriptor alloc] initWithKey:FILENAME_KEY ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease], nil];
             

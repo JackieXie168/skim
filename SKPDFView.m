@@ -68,6 +68,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKLineInspector.h"
 #import "PDFView_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -1286,7 +1287,8 @@ enum {
     
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
-    submenu = [[NSMenu allocWithZone:[menu zone]] init];
+    item = [menu insertItemWithSubmenuAndTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") atIndex:0];
+    submenu = [item submenu];
     
     item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKTextToolMode];
@@ -1342,10 +1344,6 @@ enum {
     [item setTag:SKInkNote];
     [item setTarget:self];
     
-    item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
-    [item setSubmenu:submenu];
-    [submenu release];
-    
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
@@ -1355,7 +1353,8 @@ enum {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
-        submenu = [[NSMenu allocWithZone:[menu zone]] init];
+        item = [menu insertItemWithSubmenuAndTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") atIndex:0];
+        submenu = [item submenu];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKFreeTextNote];
@@ -1390,10 +1389,6 @@ enum {
         item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKLineNote];
         [item setTarget:self];
-        
-        item = [menu insertItemWithTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
-        [item setSubmenu:submenu];
-        [submenu release];
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
