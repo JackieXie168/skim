@@ -284,7 +284,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPageNumberItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Menu item title") action:@selector(doGoToPage:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Page", @"Menu item title") action:@selector(doGoToPage:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Go To Page", @"Tool tip message")];
@@ -293,7 +293,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarScaleItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Scale", @"Menu item title") action:@selector(chooseScale:) target:self] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Scale", @"Menu item title") action:@selector(chooseScale:) target:self];
             
             [item setLabels:NSLocalizedString(@"Scale", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Scale", @"Tool tip message")];
@@ -302,7 +302,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(zoomActualPhysical:) target:self] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(zoomActualPhysical:) target:self];
             
             [item setLabels:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
@@ -311,7 +311,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom To Fit", @"Menu item title") action:@selector(doZoomToFit:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Zoom To Fit", @"Menu item title") action:@selector(doZoomToFit:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
@@ -320,7 +320,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom To Selection", @"Menu item title") action:@selector(doZoomToSelection:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Zoom To Selection", @"Menu item title") action:@selector(doZoomToSelection:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Zoom To Selection", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Selection", @"Tool tip message")];
@@ -359,7 +359,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarRotateRightItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Rotate Right", @"Menu item title") action:@selector(rotateAllRight:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Rotate Right", @"Menu item title") action:@selector(rotateAllRight:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
@@ -368,7 +368,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarRotateLeftItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Rotate Left", @"Menu item title") action:@selector(rotateAllLeft:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Rotate Left", @"Menu item title") action:@selector(rotateAllLeft:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Left", @"Tool tip message")];
@@ -389,7 +389,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Crop", @"Menu item title") action:@selector(cropAll:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Crop", @"Menu item title") action:@selector(cropAll:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Crop", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Crop", @"Tool tip message")];
@@ -398,7 +398,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(enterFullscreen:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(enterFullscreen:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
@@ -407,7 +407,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Presentation", @"Menu item title") action:@selector(enterPresentation:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Presentation", @"Menu item title") action:@selector(enterPresentation:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Presentation", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
@@ -469,7 +469,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Line", @"Toolbar item label") action:@selector(createNewNote:) target:mainController tag:SKLineNote] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Add Line", @"Toolbar item label") action:@selector(createNewNote:) target:mainController tag:SKLineNote];
             
             [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
@@ -620,7 +620,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarColorsItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Colors", @"Menu item title") action:@selector(orderFrontColorPanel:) keyEquivalent:@""] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Colors", @"Menu item title") action:@selector(orderFrontColorPanel:) target:nil];
             
             [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
@@ -629,7 +629,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFontsItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Fonts", @"Menu item title") action:@selector(orderFrontFontPanel:) keyEquivalent:@""] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Fonts", @"Menu item title") action:@selector(orderFrontFontPanel:) target:nil];
             
             [item setLabels:NSLocalizedString(@"Fonts", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
@@ -639,7 +639,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarLinesItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Lines", @"Menu item title") action:@selector(orderFrontLineInspector:) keyEquivalent:@""] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Lines", @"Menu item title") action:@selector(orderFrontLineInspector:) target:nil];
             
             [item setLabels:NSLocalizedString(@"Lines", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Lines", @"Tool tip message")];
@@ -648,7 +648,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Info", @"Menu item title") action:@selector(getInfo:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Info", @"Menu item title") action:@selector(getInfo:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Info", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
@@ -657,7 +657,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarContentsPaneItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Contents Pane", @"Menu item title") action:@selector(toggleLeftSidePane:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Contents Pane", @"Menu item title") action:@selector(toggleLeftSidePane:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
@@ -666,7 +666,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNotesPaneItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Notes Pane", @"Menu item title") action:@selector(toggleRightSidePane:) target:mainController] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Notes Pane", @"Menu item title") action:@selector(toggleRightSidePane:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
@@ -675,7 +675,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPrintItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Print", @"Menu item title") action:@selector(printDocument:) keyEquivalent:@""] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Print", @"Menu item title") action:@selector(printDocument:) target:nil];
             
             [item setLabels:NSLocalizedString(@"Print", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Print Document", @"Tool tip message")];
@@ -684,7 +684,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarCustomizeItemIdentifier]) {
             
-            menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Customize", @"Menu item title") action:@selector(runToolbarCustomizationPalette:) keyEquivalent:@""] autorelease];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Customize", @"Menu item title") action:@selector(runToolbarCustomizationPalette:) target:nil];
             
             [item setLabels:NSLocalizedString(@"Customize", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Customize Toolbar", @"Tool tip message")];
