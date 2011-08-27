@@ -150,10 +150,8 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
         if (title == nil) {
             [menu addItem:[NSMenuItem separatorItem]];
         } else if (folderContent) {
-            NSMenu *submenu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:title];
-            [menu addItemWithTitle:title submenu:submenu];
-            [self updateSubmenu:submenu withScripts:folderContent];
-            [submenu release];
+            NSMenuItem *item = [menu addItemWithSubmenuAndTitle:title];
+            [self updateSubmenu:[item submenu] withScripts:folderContent];
         } else {
             NSMenuItem *item = [menu addItemWithTitle:title action:@selector(executeScript:) target:self];
             [item setRepresentedObject:scriptFilename];

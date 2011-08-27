@@ -422,7 +422,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         for (bm in bookmarks) {
             switch ([bm bookmarkType]) {
                 case SKBookmarkTypeFolder:
-                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
+                    item = [menu addItemWithSubmenuAndTitle:[bm label]];
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
                     [[item submenu] setDelegate:self];
@@ -436,7 +436,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
                     [item setRepresentedObject:bm];
                     [item setImageAndSize:[bm icon]];
-                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
+                    item = [menu addItemWithSubmenuAndTitle:[bm label]];
                     [item setRepresentedObject:bm];
                     [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
                     [item setAlternate:YES];

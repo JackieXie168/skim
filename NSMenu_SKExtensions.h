@@ -52,8 +52,8 @@
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex;
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 
-- (NSMenuItem *)insertItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu atIndex:(NSInteger)anIndex;
-- (NSMenuItem *)addItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
+- (NSMenuItem *)insertItemWithSubmenuAndTitle:(NSString *)aString atIndex:(NSInteger)anIndex;
+- (NSMenuItem *)addItemWithSubmenuAndTitle:(NSString *)aString;
 
 @end
 
@@ -66,12 +66,14 @@
 
 @interface NSMenuItem (SKExtensions)
 
++ (NSMenuItem *)menuItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget;
++ (NSMenuItem *)menuItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 + (NSMenuItem *)menuItemWithSubmenuAndTitle:(NSString *)aString;
 
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget;
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 - (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
-- (id)initWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
+- (id)initWithSubmenuAndTitle:(NSString *)aString;
 
 - (void)setImageAndSize:(NSImage *)image;
 
