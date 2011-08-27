@@ -128,3 +128,4 @@ extern NSString *SKCaseInsensitiveSearchKey;
 extern NSString *SKWholeWordSearchKey;
 extern NSString *SKCaseInsensitiveNoteSearchKey;
 extern NSString *SKCaseInsensitiveFindKey;
+extern NSString *SKDownloadsDirectoryKey;

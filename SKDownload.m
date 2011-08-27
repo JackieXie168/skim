@@ -40,6 +40,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSFileManager_SKExtensions.h"
 #import "SKDownloadController.h"
+#import "SKStringConstants.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
@@ -354,9 +355,14 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
-    if ([downloadDirs count] > 0)
-        [URLDownload setDestination:[[downloadDirs objectAtIndex:0] stringByAppendingPathComponent:filename] allowOverwrite:NO];
+    NSString *downloadDir = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+    if (downloadDir == nil) {
+        NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
+        if ([downloadDirs count] > 0)
+            downloadDir = [downloadDirs objectAtIndex:0];
+    }
+    if (downloadDir)
+        [URLDownload setDestination:[downloadDir stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
