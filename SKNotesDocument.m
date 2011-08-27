@@ -769,7 +769,7 @@
     [item setView:searchField];
     NSSize size = [searchField frame].size;
     [item setMinSize:size];
-    size.width = 1000.0;
+    size.width = 240.0;
     [item setMaxSize:size];
     [dict setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
     [item release];
