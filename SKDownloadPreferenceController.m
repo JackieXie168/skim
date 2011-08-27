@@ -38,20 +38,32 @@
 
 #import "SKDownloadPreferenceController.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKDownloadPreferenceController
 
-@synthesize checkButtons, doneButton;
+@synthesize checkButtons, doneButton, downloadsFolderPopUp, downloadsFolderLabelField;
 
 - (void)dealloc {
     SKDESTROY(checkButtons);
     SKDESTROY(doneButton);
+    SKDESTROY(downloadsFolderPopUp);
+    SKDESTROY(downloadsFolderLabelField);
     [super dealloc];
 }
 
 - (NSString *)windowNibName {
     return @"DownloadPreferenceSheet";
+}
+
+- (void)updateDownloadsFolderPopUp {
+    NSString *downloadsFolder = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+    NSMenuItem *menuItem = [downloadsFolderPopUp itemAtIndex:0];
+    [menuItem setImageAndSize:[[NSWorkspace sharedWorkspace] iconForFile:downloadsFolder]];
+    [menuItem setTitle:[[NSFileManager defaultManager] displayNameAtPath:downloadsFolder]];
+    [downloadsFolderPopUp selectItemAtIndex:0];
 }
 
 - (void)windowDidLoad {
@@ -65,6 +77,36 @@
     }
     frame.size.width += 18.0;
     [[self window] setFrame:frame display:NO];
+    
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:downloadsFolderLabelField, nil], [NSArray arrayWithObjects:downloadsFolderPopUp, nil], YES);
+    [self updateDownloadsFolderPopUp];
+}
+
+- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSFileHandlingPanelOKButton) {
+        [[NSUserDefaults standardUserDefaults] setObject:[[openPanel URL] path] forKey:SKDownloadsDirectoryKey];
+        [self updateDownloadsFolderPopUp];
+    }
+}
+
+- (IBAction)chooseDownloadsFolder:(id)sender {
+    if ([sender selectedItem] == [sender lastItem]) {
+        [sender selectItemAtIndex:0];
+        
+        NSString *downloadsFolder = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+        
+        NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:YES];
+        [openPanel setCanChooseFiles:NO];
+        [openPanel setPrompt:NSLocalizedString(@"Select", @"Button title")];
+        [openPanel beginSheetForDirectory:[downloadsFolder stringByDeletingLastPathComponent]
+                                     file:[downloadsFolder lastPathComponent]
+                                    types:nil
+                           modalForWindow:[self window]
+                            modalDelegate:self
+                           didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
+                              contextInfo:NULL];		
+    }
 }
 
 @end

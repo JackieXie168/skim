@@ -129,3 +129,4 @@ NSString *SKCaseInsensitiveSearchKey = @"SKCaseInsensitiveSearch";
 NSString *SKWholeWordSearchKey = @"SKWholeWordSearch";
 NSString *SKCaseInsensitiveNoteSearchKey = @"SKCaseInsensitiveNoteSearch";
 NSString *SKCaseInsensitiveFindKey = @"SKCaseInsensitiveFind";
+NSString *SKDownloadsDirectoryKey = @"SKDownloadsDirectory";
