@@ -355,7 +355,7 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    NSString *downloadDir = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+    NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
     if (downloadDir == nil) {
         NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
         if ([downloadDirs count] > 0)

@@ -59,7 +59,7 @@
 }
 
 - (void)updateDownloadsFolderPopUp {
-    NSString *downloadsFolder = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+    NSString *downloadsFolder = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
     NSMenuItem *menuItem = [downloadsFolderPopUp itemAtIndex:0];
     [menuItem setImageAndSize:[[NSWorkspace sharedWorkspace] iconForFile:downloadsFolder]];
     [menuItem setTitle:[[NSFileManager defaultManager] displayNameAtPath:downloadsFolder]];
@@ -84,7 +84,7 @@
 
 - (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSFileHandlingPanelOKButton) {
-        [[NSUserDefaults standardUserDefaults] setObject:[[openPanel URL] path] forKey:SKDownloadsDirectoryKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[[[openPanel URL] path] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey];
         [self updateDownloadsFolderPopUp];
     }
 }
@@ -93,7 +93,7 @@
     if ([sender selectedItem] == [sender lastItem]) {
         [sender selectItemAtIndex:0];
         
-        NSString *downloadsFolder = [[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey];
+        NSString *downloadsFolder = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
         
         NSOpenPanel *openPanel = [NSOpenPanel openPanel];
         [openPanel setCanChooseDirectories:YES];
