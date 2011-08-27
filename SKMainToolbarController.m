@@ -252,9 +252,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPreviousNextFirstLastItemIdentifier]) {
             
-            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Previous", @"Toolbar item label")];
+            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
             menu = [menuItem submenu];
-            [menu addItemWithTitle:NSLocalizedString(@"Previous/Next", @"Menu item title") action:@selector(doGoToPreviousPage:) target:mainController];
+            [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) target:mainController];
             [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoToNextPage:) target:mainController];
             [menu addItemWithTitle:NSLocalizedString(@"First", @"Menu item title") action:@selector(doGoToFirstPage:) target:mainController];
             [menu addItemWithTitle:NSLocalizedString(@"Last", @"Menu item title") action:@selector(doGoToLastPage:) target:mainController];

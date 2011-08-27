@@ -1287,7 +1287,7 @@ enum {
     
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
-    item = [menu insertItemWithSubmenuAndTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") atIndex:0];
+    item = [menu insertItemWithSubmenuAndTitle:NSLocalizedString(@"Tools", @"Menu item title") atIndex:0];
     submenu = [item submenu];
     
     item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
