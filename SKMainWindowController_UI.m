@@ -1458,9 +1458,9 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(doZoomOut:)) {
         return [self interactionMode] != SKPresentationMode && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return [[self pdfDocument] isLocked] == NO && fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return [[self pdfDocument] isLocked] == NO && ([pdfView autoScales] || fabs([pdfView scaleFactor] - 1.0 ) > 0.01);
     } else if (action == @selector(doZoomToPhysicalSize:)) {
-        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && fabs([pdfView physicalScaleFactor] - 1.0 ) > 0.01;
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && ([pdfView autoScales] || fabs([pdfView physicalScaleFactor] - 1.0 ) > 0.01);
     } else if (action == @selector(doZoomToSelection:)) {
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
