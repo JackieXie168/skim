@@ -356,7 +356,8 @@ static NSSet *infoKeys = nil;
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
     NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
-    if (downloadDir)
+    BOOL isDir;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:downloadDir isDirectory:&isDir] && isDir)
         [URLDownload setDestination:[downloadDir stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
