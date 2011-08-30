@@ -74,9 +74,9 @@ typedef NSInteger SKInteractionMode;
 
 - (NSData *)notesData;
 
-- (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile;
-- (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile;
-- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile;
+- (NSString *)notesStringForTemplateType:(NSString *)typeName;
+- (NSData *)notesDataForTemplateType:(NSString *)typeName;
+- (NSFileWrapper *)notesFileWrapperForTemplateType:(NSString *)typeName;
 
 - (NSString *)notesString;
 - (NSData *)notesRTFData;

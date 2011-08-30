@@ -247,7 +247,7 @@
     else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"] == NO)
         fileWrapper = [super fileWrapperOfType:typeName error:outError];
     else
-        fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
+        fileWrapper = [self notesFileWrapperForTemplateType:typeName];
     
     if (fileWrapper == nil && outError != NULL)
         *outError = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes", @"Error description")];
@@ -272,7 +272,7 @@
             filename = nil;
         data = [self notesFDFDataForFile:filename fileIDStrings:nil];
     } else {
-        data = [self notesDataUsingTemplateFile:typeName];
+        data = [self notesDataForTemplateType:typeName];
     }
     
     if (data == nil && outError != NULL)

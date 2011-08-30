@@ -142,10 +142,10 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
 }
 
-- (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
+- (NSString *)notesStringForTemplateType:(NSString *)typeName {
     NSString *string = nil;
-    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:templateFile] == NO) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:typeName] == NO) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:typeName];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -154,10 +154,10 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     return string;
 }
 
-- (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
+- (NSData *)notesDataForTemplateType:(NSString *)typeName {
     NSData *data = nil;
-    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:templateFile]) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:typeName]) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:typeName];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -170,15 +170,15 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
     } else {
-        data = [[self notesStringUsingTemplateFile:templateFile] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        data = [[self notesStringForTemplateType:typeName] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     }
     return data;
 }
 
-- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
+- (NSFileWrapper *)notesFileWrapperForTemplateType:(NSString *)typeName {
     NSFileWrapper *fileWrapper = nil;
-    if ([[templateFile pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
+    if ([[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:typeName];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
@@ -194,15 +194,15 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 }
 
 - (NSString *)notesString {
-    return [self notesStringUsingTemplateFile:@"notesTemplate.txt"];
+    return [self notesStringForTemplateType:@"notesTemplate.txt"];
 }
 
 - (NSData *)notesRTFData {
-    return [self notesDataUsingTemplateFile:@"notesTemplate.rtf"];
+    return [self notesDataForTemplateType:@"notesTemplate.rtf"];
 }
 
 - (NSFileWrapper *)notesRTFDFileWrapper {
-    return [self notesFileWrapperUsingTemplateFile:@"notesTemplate.rtfd"];
+    return [self notesFileWrapperForTemplateType:@"notesTemplate.rtfd"];
 }
 
 - (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings {
