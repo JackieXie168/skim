@@ -51,7 +51,6 @@
 - (NSString *)pathForTemplateType:(NSString *)typeName;
 - (NSString *)fileNameExtensionForTemplateType:(NSString *)typeName;
 - (NSString *)displayNameForTemplateType:(NSString *)typeName;
-- (NSString *)normalizedTemplateType:(NSString *)typeName;
 
 - (BOOL)isRichTextTemplateType:(NSString *)typeName;
 

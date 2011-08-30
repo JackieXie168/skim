@@ -103,13 +103,6 @@
     return [[self customTemplateTypes] containsObject:typeName] ? [typeName stringByDeletingPathExtension] : nil;
 }
 
-- (NSString *)normalizedTemplateType:(NSString *)typeName {
-    NSArray *templateTypes = [self customTemplateTypes];
-    NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
-    NSUInteger idx = [templateTypesWithoutExtension indexOfObject:typeName];
-    return idx != NSNotFound ? [templateTypes objectAtIndex:idx] : nil;
-}
-
 - (BOOL)isRichTextTemplateType:(NSString *)isRichTextTemplateFile {
     static NSSet *types = nil;
     if (types == nil)
