@@ -62,7 +62,7 @@
         attrString = template;
     else if ([template isKindOfClass:[NSURL class]] == NO)
 		[self setScriptErrorNumber:NSArgumentsWrongScriptError]; 
-    else if ([[SKTemplateManager sharedManager] isRichTextTemplateFile:[template path]])
+    else if ([[SKTemplateManager sharedManager] isRichTextTemplateType:[template path]])
         attrString = [[[NSAttributedString alloc] initWithURL:template documentAttributes:&docAttrs] autorelease];
     else
         string = [NSString stringWithContentsOfURL:template encoding:NSUTF8StringEncoding error:NULL];

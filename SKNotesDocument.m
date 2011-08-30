@@ -193,15 +193,15 @@
     NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
         NSMutableArray *tmpArray = [[writableTypes mutableCopy] autorelease];
-        [[SKTemplateManager sharedManager] resetCustomTemplateFiles];
-        [tmpArray addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFiles]];
+        [[SKTemplateManager sharedManager] resetCustomTemplateTypes];
+        [tmpArray addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateTypes]];
         writableTypes = tmpArray;
     }
     return writableTypes;
 }
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
-    return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForType:typeName];
+    return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForTemplateType:typeName];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
@@ -828,7 +828,7 @@
     if (fileType) {
         NSString *normalizedType = nil;
         if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[SKTemplateManager sharedManager] customTemplateFiles];
+            NSArray *templateTypes = [[SKTemplateManager sharedManager] customTemplateTypes];
             NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
             NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
             if (idx != NSNotFound)

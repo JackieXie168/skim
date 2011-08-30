@@ -52,12 +52,12 @@
 }
 
 - (void)dealloc {
-    SKDESTROY(customTemplateFiles);
+    SKDESTROY(customTemplateTypes);
     [super dealloc];
 }
 
-- (NSArray *)customTemplateFiles {
-    if (customTemplateFiles == nil) {
+- (NSArray *)customTemplateTypes {
+    if (customTemplateTypes == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templates = [NSMutableArray array];
         
@@ -72,21 +72,21 @@
             }
         }
         [templates sortUsingSelector:@selector(caseInsensitiveCompare:)];
-        customTemplateFiles = [templates copy];
+        customTemplateTypes = [templates copy];
     }
-    return customTemplateFiles;
+    return customTemplateTypes;
 }
 
-- (void)resetCustomTemplateFiles {
-    SKDESTROY(customTemplateFiles);
+- (void)resetCustomTemplateTypes {
+    SKDESTROY(customTemplateTypes);
 }
 
-- (NSString *)pathForTemplateFile:(NSString *)filename {
+- (NSString *)pathForTemplateType:(NSString *)typeName {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *fullPath = nil;
     
     for (NSString *appSupportPath in [[fm applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
-        fullPath = [[appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY] stringByAppendingPathComponent:filename];
+        fullPath = [[appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY] stringByAppendingPathComponent:typeName];
         if ([fm fileExistsAtPath:fullPath] == NO)
             fullPath = nil;
         else break;
@@ -95,19 +95,26 @@
     return fullPath;
 }
 
-- (NSString *)fileNameExtensionForType:(NSString *)typeName {
-    return [[self customTemplateFiles] containsObject:typeName] ? [typeName pathExtension] : nil;
+- (NSString *)fileNameExtensionForTemplateType:(NSString *)typeName {
+    return [[self customTemplateTypes] containsObject:typeName] ? [typeName pathExtension] : nil;
 }
 
-- (NSString *)displayNameForType:(NSString *)typeName {
-    return [[self customTemplateFiles] containsObject:typeName] ? [typeName stringByDeletingPathExtension] : nil;
+- (NSString *)displayNameForTemplateType:(NSString *)typeName {
+    return [[self customTemplateTypes] containsObject:typeName] ? [typeName stringByDeletingPathExtension] : nil;
 }
 
-- (BOOL)isRichTextTemplateFile:(NSString *)templateFile {
+- (NSString *)normalizedTemplateType:(NSString *)typeName {
+    NSArray *templateTypes = [self customTemplateTypes];
+    NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
+    NSUInteger idx = [templateTypesWithoutExtension indexOfObject:typeName];
+    return idx != NSNotFound ? [templateTypes objectAtIndex:idx] : nil;
+}
+
+- (BOOL)isRichTextTemplateType:(NSString *)isRichTextTemplateFile {
     static NSSet *types = nil;
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
-    return [types containsObject:[[templateFile pathExtension] lowercaseString]];
+    return [types containsObject:[[isRichTextTemplateFile pathExtension] lowercaseString]];
 }
 
 @end
