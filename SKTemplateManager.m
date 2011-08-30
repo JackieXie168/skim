@@ -95,6 +95,14 @@
     return fullPath;
 }
 
+- (NSString *)fileNameExtensionForType:(NSString *)typeName {
+    return [[self customTemplateFiles] containsObject:typeName] ? [typeName pathExtension] : nil;
+}
+
+- (NSString *)displayNameForType:(NSString *)typeName {
+    return [[self customTemplateFiles] containsObject:typeName] ? [typeName stringByDeletingPathExtension] : nil;
+}
+
 - (BOOL)isRichTextTemplateFile:(NSString *)templateFile {
     static NSSet *types = nil;
     if (types == nil)
