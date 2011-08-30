@@ -1837,8 +1837,14 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
             normalizedType = SKDVIDocumentType;
         else if ([fileType isEqualToString:@"XDV"])
             normalizedType = SKXDVDocumentType;
-        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO)
-            normalizedType = [[SKTemplateManager sharedManager] normalizedTemplateType:fileType];
+        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
+            for (NSString *typeName in [[SKTemplateManager sharedManager] customTemplateTypes]) {
+                if ([[[SKTemplateManager sharedManager] displayNameForTemplateType:fileType] isEqualToString:fileType]) {
+                    normalizedType = typeName;
+                    break;
+                }
+            }
+        }
         if (normalizedType) {
             fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
