@@ -315,7 +315,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [writableTypes removeObject:SKBareXDVDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFilesResetting]];
+        [[SKTemplateManager sharedManager] resetCustomTemplateFiles];
+        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFiles]];
     }
     return writableTypes;
 }

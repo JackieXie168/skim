@@ -46,7 +46,7 @@
 + (id)sharedManager;
 
 - (NSArray *)customTemplateFiles;
-- (NSArray *)customTemplateFilesResetting;
+- (void)resetCustomTemplateFiles;
 
 - (NSString *)pathForTemplateFile:(NSString *)filename;
 
