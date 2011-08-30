@@ -52,12 +52,12 @@
 }
 
 - (void)dealloc {
-    SKDESTROY(templateFiles);
+    SKDESTROY(customTemplateFiles);
     [super dealloc];
 }
 
-- (NSArray *)templateFiles {
-    if (templateFiles == nil) {
+- (NSArray *)customTemplateFiles {
+    if (customTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templates = [NSMutableArray array];
         
@@ -72,14 +72,14 @@
             }
         }
         [templates sortUsingSelector:@selector(caseInsensitiveCompare:)];
-        templateFiles = [templates copy];
+        customTemplateFiles = [templates copy];
     }
-    return templateFiles;
+    return customTemplateFiles;
 }
 
-- (NSArray *)templateFilesResetting {
-    SKDESTROY(templateFiles);
-    return [self templateFiles];
+- (NSArray *)customTemplateFilesResetting {
+    SKDESTROY(customTemplateFiles);
+    return [self customTemplateFiles];
 }
 
 - (NSString *)pathForTemplateFile:(NSString *)filename {

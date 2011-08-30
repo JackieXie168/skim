@@ -40,13 +40,13 @@
 
 
 @interface SKTemplateManager : NSObject {
-    NSArray *templateFiles;
+    NSArray *customTemplateFiles;
 }
 
 + (id)sharedManager;
 
-- (NSArray *)templateFiles;
-- (NSArray *)templateFilesResetting;
+- (NSArray *)customTemplateFiles;
+- (NSArray *)customTemplateFilesResetting;
 
 - (NSString *)pathForTemplateFile:(NSString *)filename;
 
