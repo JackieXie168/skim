@@ -201,11 +201,7 @@
 }
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
-    NSString *fileExtension = nil;
-    fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil && [[[SKTemplateManager sharedManager] customTemplateFiles] containsObject:typeName])
-        fileExtension = [typeName pathExtension];
-    return fileExtension;
+    return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForType:typeName];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {

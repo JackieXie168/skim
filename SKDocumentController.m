@@ -416,18 +416,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
     NSArray *fileExtensions = [super fileExtensionsFromType:documentTypeName];
-    if ([fileExtensions count] == 0 && [[[SKTemplateManager sharedManager] customTemplateFiles] containsObject:documentTypeName])
-        fileExtensions = [NSArray arrayWithObjects:[documentTypeName pathExtension], nil];
-	return fileExtensions;
+    if ([fileExtensions count] == 0) {
+        NSString *fileExtension = [[SKTemplateManager sharedManager] fileNameExtensionForType:documentTypeName];
+        if (fileExtension)
+            fileExtensions = [NSArray arrayWithObject:fileExtension];
+	}
+    return fileExtensions;
 }
 
 - (NSString *)displayNameForType:(NSString *)documentTypeName{
-    NSString *displayName = nil;
-    if ([[[SKTemplateManager sharedManager] customTemplateFiles] containsObject:documentTypeName])
-        displayName = [documentTypeName stringByDeletingPathExtension];
-    else
-        displayName = [super displayNameForType:documentTypeName];
-    return displayName;
+    return [[SKTemplateManager sharedManager] displayNameForType:documentTypeName] ?: [super displayNameForType:documentTypeName];
 }
 
 @end

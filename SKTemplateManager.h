@@ -49,6 +49,8 @@
 - (void)resetCustomTemplateFiles;
 
 - (NSString *)pathForTemplateFile:(NSString *)filename;
+- (NSString *)fileNameExtensionForType:(NSString *)typeName;
+- (NSString *)displayNameForType:(NSString *)typeName;
 
 - (BOOL)isRichTextTemplateFile:(NSString *)templateFile;
 
