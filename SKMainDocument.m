@@ -315,7 +315,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [writableTypes removeObject:SKBareXDVDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] templateFilesResetting]];
+        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFilesResetting]];
     }
     return writableTypes;
 }
@@ -323,7 +323,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
     fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil && [[[SKTemplateManager sharedManager] templateFiles] containsObject:typeName])
+    if (fileExtension == nil && [[[SKTemplateManager sharedManager] customTemplateFiles] containsObject:typeName])
         fileExtension = [typeName pathExtension];
     return fileExtension;
 }
@@ -1841,7 +1841,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         else if ([fileType isEqualToString:@"XDV"])
             normalizedType = SKXDVDocumentType;
         else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[SKTemplateManager sharedManager] templateFiles];
+            NSArray *templateTypes = [[SKTemplateManager sharedManager] customTemplateFiles];
             NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
             NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
             if (idx != NSNotFound)
