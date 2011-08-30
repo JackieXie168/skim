@@ -144,8 +144,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *string = nil;
-    if ([[SKTemplateManager sharedManager] isRichTextTemplateFile:templateFile] == NO) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:templateFile] == NO) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -156,8 +156,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     NSData *data = nil;
-    if ([[SKTemplateManager sharedManager] isRichTextTemplateFile:templateFile]) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
+    if ([[SKTemplateManager sharedManager] isRichTextTemplateType:templateFile]) {
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -178,7 +178,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateFile:templateFile];
+        NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:templateFile];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];

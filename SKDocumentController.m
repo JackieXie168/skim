@@ -417,7 +417,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
     NSArray *fileExtensions = [super fileExtensionsFromType:documentTypeName];
     if ([fileExtensions count] == 0) {
-        NSString *fileExtension = [[SKTemplateManager sharedManager] fileNameExtensionForType:documentTypeName];
+        NSString *fileExtension = [[SKTemplateManager sharedManager] fileNameExtensionForTemplateType:documentTypeName];
         if (fileExtension)
             fileExtensions = [NSArray arrayWithObject:fileExtension];
 	}
@@ -425,7 +425,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (NSString *)displayNameForType:(NSString *)documentTypeName{
-    return [[SKTemplateManager sharedManager] displayNameForType:documentTypeName] ?: [super displayNameForType:documentTypeName];
+    return [[SKTemplateManager sharedManager] displayNameForTemplateType:documentTypeName] ?: [super displayNameForType:documentTypeName];
 }
 
 @end

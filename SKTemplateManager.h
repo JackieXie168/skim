@@ -40,18 +40,19 @@
 
 
 @interface SKTemplateManager : NSObject {
-    NSArray *customTemplateFiles;
+    NSArray *customTemplateTypes;
 }
 
 + (id)sharedManager;
 
-- (NSArray *)customTemplateFiles;
-- (void)resetCustomTemplateFiles;
+- (NSArray *)customTemplateTypes;
+- (void)resetCustomTemplateTypes;
 
-- (NSString *)pathForTemplateFile:(NSString *)filename;
-- (NSString *)fileNameExtensionForType:(NSString *)typeName;
-- (NSString *)displayNameForType:(NSString *)typeName;
+- (NSString *)pathForTemplateType:(NSString *)typeName;
+- (NSString *)fileNameExtensionForTemplateType:(NSString *)typeName;
+- (NSString *)displayNameForTemplateType:(NSString *)typeName;
+- (NSString *)normalizedTemplateType:(NSString *)typeName;
 
-- (BOOL)isRichTextTemplateFile:(NSString *)templateFile;
+- (BOOL)isRichTextTemplateType:(NSString *)typeName;
 
 @end

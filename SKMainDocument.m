@@ -315,14 +315,14 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [writableTypes removeObject:SKBareXDVDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        [[SKTemplateManager sharedManager] resetCustomTemplateFiles];
-        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFiles]];
+        [[SKTemplateManager sharedManager] resetCustomTemplateTypes];
+        [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateTypes]];
     }
     return writableTypes;
 }
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
-    return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForType:typeName];
+    return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForTemplateType:typeName];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
@@ -1837,13 +1837,8 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
             normalizedType = SKDVIDocumentType;
         else if ([fileType isEqualToString:@"XDV"])
             normalizedType = SKXDVDocumentType;
-        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[SKTemplateManager sharedManager] customTemplateFiles];
-            NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
-            NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
-            if (idx != NSNotFound)
-                normalizedType = [templateTypes objectAtIndex:idx];
-        }
+        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO)
+            normalizedType = [[SKTemplateManager sharedManager] normalizedTemplateType:fileType];
         if (normalizedType) {
             fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
