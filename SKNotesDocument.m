@@ -193,7 +193,8 @@
     NSArray *writableTypes = [super writableTypesForSaveOperation:saveOperation];
     if (saveOperation == NSSaveToOperation) {
         NSMutableArray *tmpArray = [[writableTypes mutableCopy] autorelease];
-        [tmpArray addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFilesResetting]];
+        [[SKTemplateManager sharedManager] resetCustomTemplateFiles];
+        [tmpArray addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateFiles]];
         writableTypes = tmpArray;
     }
     return writableTypes;

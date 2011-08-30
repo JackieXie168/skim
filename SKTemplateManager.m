@@ -77,9 +77,8 @@
     return customTemplateFiles;
 }
 
-- (NSArray *)customTemplateFilesResetting {
+- (void)resetCustomTemplateFiles {
     SKDESTROY(customTemplateFiles);
-    return [self customTemplateFiles];
 }
 
 - (NSString *)pathForTemplateFile:(NSString *)filename {
