@@ -590,13 +590,13 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         else 
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as FDF", @"Error description")];
     } else if ([[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"]) {
-        NSFileWrapper *fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
+        NSFileWrapper *fileWrapper = [self notesFileWrapperForTemplateType:typeName];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes using template", @"Error description")];
     } else {
-        NSData *data = [self notesDataUsingTemplateFile:typeName];
+        NSData *data = [self notesDataForTemplateType:typeName];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
