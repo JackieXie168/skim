@@ -826,20 +826,17 @@
     id fileType = [args objectForKey:@"FileType"];
     // we allow template file names without extension
     if (fileType) {
-        NSString *normalizedType = nil;
         if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            NSArray *templateTypes = [[SKTemplateManager sharedManager] customTemplateTypes];
-            NSArray *templateTypesWithoutExtension = [templateTypes valueForKey:@"stringByDeletingPathExtension"];
-            NSUInteger idx = [templateTypesWithoutExtension indexOfObject:fileType];
-            if (idx != NSNotFound)
-                normalizedType = [templateTypes objectAtIndex:idx];
-        }
-        if (normalizedType) {
-            fileType = normalizedType;
-            NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-            [arguments setObject:fileType forKey:@"FileType"];
-            [command setArguments:arguments];
-            [arguments release];
+            SKTemplateManager *tm = [SKTemplateManager sharedManager];
+            for (NSString *typeName in [tm customTemplateTypes]) {
+                if ([[tm displayNameForTemplateType:fileType] isEqualToString:fileType]) {
+                    NSMutableDictionary *arguments = [[command arguments] mutableCopy];
+                    [arguments setObject:typeName forKey:@"FileType"];
+                    [command setArguments:arguments];
+                    [arguments release];
+                    break;
+                }
+            }
         }
     }
     return [super handleSaveScriptCommand:command];
