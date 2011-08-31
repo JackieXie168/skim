@@ -38,6 +38,7 @@
 
 #import "SKTemplateManager.h"
 #import "NSFileManager_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define TEMPLATES_DIRECTORY @"Templates"
 
@@ -116,6 +117,10 @@
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
     return [types containsObject:[[isRichTextTemplateFile pathExtension] lowercaseString]];
+}
+
+- (BOOL)isPackageTemplateType:(NSString *)typeName {
+    return [[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"];
 }
 
 @end
