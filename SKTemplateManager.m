@@ -103,6 +103,14 @@
     return [[self customTemplateTypes] containsObject:typeName] ? [typeName stringByDeletingPathExtension] : nil;
 }
 
+- (NSString *)templateTypeForDisplayName:(NSString *)name {
+    for (NSString *typeName in [self customTemplateTypes]) {
+        if ([[self displayNameForTemplateType:typeName] isEqualToString:name])
+            return typeName;
+    }
+    return nil;
+}
+
 - (BOOL)isRichTextTemplateType:(NSString *)isRichTextTemplateFile {
     static NSSet *types = nil;
     if (types == nil)
