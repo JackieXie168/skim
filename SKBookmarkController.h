@@ -60,10 +60,6 @@
 @property (nonatomic, readonly) NSArray *recentDocuments;
 @property (nonatomic, readonly) NSUndoManager *undoManager;
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
-- (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
-- (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder;
-
 - (IBAction)openBookmark:(id)sender;
 
 - (IBAction)doubleClickBookmark:(id)sender;

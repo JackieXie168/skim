@@ -222,27 +222,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return minimalCover;
 }
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder {
-    if (folder == nil) folder = bookmarkRoot;
-    SKBookmark *bookmark = [SKBookmark bookmarkWithPath:path pageIndex:pageIndex label:label];
-    if (bookmark)
-        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
-}
-
-- (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder {
-    if (folder == nil) folder = bookmarkRoot;
-    SKBookmark *bookmark = [SKBookmark bookmarkWithSetup:setupDict label:label];
-    if (bookmark)
-        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
-}
-
-- (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder {
-    if (folder == nil) folder = bookmarkRoot;
-    SKBookmark *bookmark = [SKBookmark bookmarkSessionWithSetups:setupDicts label:label];
-    if (bookmark)
-        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
-}
-
 - (NSArray *)draggedBookmarks {
     return draggedBookmarks;
 }
