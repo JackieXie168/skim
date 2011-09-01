@@ -48,6 +48,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKTextFieldSheetController.h"
 #import "SKBookmarkController.h"
+#import "SKBookmark.h"
 #import "NSWindowController_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKTemplateManager.h"
@@ -90,33 +91,35 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *label = [controller stringValue];
-        SKBookmark *folder = [controller selectedFolder];
+        SKBookmark *folder = [controller selectedFolder] ?: [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
+        SKBookmark *bookmark = nil;
         switch ((NSInteger)contextInfo) {
             case SKAddBookmarkTypeBookmark:
             {
                 NSString *path = [[self fileURL] path];
                 PDFPage *page = [self currentPage];
                 NSUInteger pageIndex = page ? [page pageIndex] : NSNotFound;
-                [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:folder];
+                bookmark = [SKBookmark bookmarkWithPath:path pageIndex:pageIndex label:label];
                 break;
             }
             case SKAddBookmarkTypeSetup:
             {
                 NSDictionary *setup = [self currentDocumentSetup];
-                [bmController addBookmarkForSetup:setup label:label toFolder:folder];
+                bookmark = [SKBookmark bookmarkWithSetup:setup label:label];
                 break;
             }
             case SKAddBookmarkTypeSession:
             {
                 NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
-                [bmController addBookmarkForSetups:setups label:label toFolder:folder];
+                bookmark = [SKBookmark bookmarkSessionWithSetups:setups label:label];
                 break;
             }
             default:
                 break;
         }
+        if (bookmark)
+            [[folder mutableArrayValueForKey:@"children"] addObject:bookmark];
     }
 }
 
