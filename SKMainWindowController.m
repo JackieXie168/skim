@@ -529,7 +529,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         NSString *rectString = [setup objectForKey:SKMainWindowFrameKey];
         if (rectString)
-            [mainWindow setFrame:NSRectFromString([setup objectForKey:SKMainWindowFrameKey]) display:YES];
+            [mainWindow setFrame:NSRectFromString([setup objectForKey:SKMainWindowFrameKey]) display:[mainWindow isVisible]];
         
         NSNumber *leftWidth = [setup objectForKey:LEFTSIDEPANEWIDTH_KEY];
         NSNumber *rightWidth = [setup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
