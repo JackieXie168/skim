@@ -119,7 +119,7 @@
     return [types containsObject:[[isRichTextTemplateFile pathExtension] lowercaseString]];
 }
 
-- (BOOL)isPackageTemplateType:(NSString *)typeName {
+- (BOOL)isRichTextBundleTemplateType:(NSString *)typeName {
     return [[typeName pathExtension] isCaseInsensitiveEqual:@"rtfd"];
 }
 

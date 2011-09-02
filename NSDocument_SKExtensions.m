@@ -180,7 +180,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSFileWrapper *)notesFileWrapperForTemplateType:(NSString *)typeName {
     NSFileWrapper *fileWrapper = nil;
-    if ([[SKTemplateManager sharedManager] isPackageTemplateType:typeName]) {
+    if ([[SKTemplateManager sharedManager] isRichTextBundleTemplateType:typeName]) {
         NSString *templatePath = [[SKTemplateManager sharedManager] pathForTemplateType:typeName];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
