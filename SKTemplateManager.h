@@ -55,6 +55,6 @@
 - (NSString *)templateTypeForDisplayName:(NSString *)name;
 
 - (BOOL)isRichTextTemplateType:(NSString *)typeName;
-- (BOOL)isPackageTemplateType:(NSString *)typeName;
+- (BOOL)isRichTextBundleTemplateType:(NSString *)typeName;
 
 @end

@@ -244,7 +244,7 @@
     
     if ([typeName isEqualToString:SKNotesRTFDocumentType])
         fileWrapper = [self notesRTFDFileWrapper];
-    else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[SKTemplateManager sharedManager] isPackageTemplateType:typeName] == NO)
+    else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[SKTemplateManager sharedManager] isRichTextBundleTemplateType:typeName] == NO)
         fileWrapper = [super fileWrapperOfType:typeName error:outError];
     else
         fileWrapper = [self notesFileWrapperForTemplateType:typeName];
