@@ -740,10 +740,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
-    NSEnumerator *itemEnum = [minimumCoverForBookmarks(items) reverseObjectEnumerator];
-    SKBookmark *item;
     [self endEditing];
-    while (item = [itemEnum  nextObject]) {
+    for (SKBookmark *item in [minimumCoverForBookmarks(items) reverseObjectEnumerator]) {
         SKBookmark *parent = [item parent];
         NSUInteger itemIndex = [[parent children] indexOfObject:item];
         if (itemIndex != NSNotFound)
