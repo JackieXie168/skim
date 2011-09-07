@@ -349,7 +349,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSMutableArray *urls = [NSMutableArray array];
         BOOL failed = NO;
         
-        while (path = [dirEnum nextObject]) {
+        while ((path = [dirEnum nextObject])) {
             NSString *fullPath = [basePath stringByAppendingPathComponent:path];
             NSURL *url = [NSURL fileURLWithPath:fullPath];
             if ([self documentClassForContentsOfURL:url])

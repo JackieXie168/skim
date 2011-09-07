@@ -185,7 +185,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
     NSView *view;
     CGFloat f = [[self window] isMainWindow] || [[self window] isKeyWindow] ? 1.0 : 0.33333;
     [viewEnum nextObject];
-    while (view = [viewEnum nextObject]) {
+    while ((view = [viewEnum nextObject])) {
         divRect.origin.x = NSMinX([view frame]);
         [divImage drawInRect:divRect fromRect:divSrcRect operation:NSCompositeSourceOver fraction:f];
     }
