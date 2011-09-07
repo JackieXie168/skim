@@ -190,7 +190,7 @@
     unichar ch = [theEvent firstCharacter];
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
-    if (modifierFlags == 0 && ch == SKEscapeCharacter) {
+    if ((modifierFlags & ~NSAlphaShiftKeyMask) == 0 && ch == SKEscapeCharacter) {
         [(SKMainWindowController *)[self windowController] exitFullscreen:self];
         return;
     }
