@@ -173,13 +173,8 @@
             [sud synchronize];
         }
         
-        NSArray *files = [sud objectForKey:SKLastOpenFileNamesKey];
-        NSEnumerator *fileEnum = [files reverseObjectEnumerator];
-        NSDictionary *dict;
-        NSError *error;
-        
-        while (dict = [fileEnum nextObject]) {
-            error = nil;
+        for (NSDictionary *dict in [[sud objectForKey:SKLastOpenFileNamesKey] reverseObjectEnumerator]) {
+            NSError *error;
             if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
                 [NSApp presentError:error];
         }
