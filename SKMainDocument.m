@@ -180,7 +180,6 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     SKDESTROY(readNotesAccessoryView);
     SKDESTROY(progressController);
     SKDESTROY(tmpData);
-    SKDESTROY(printCallback);
     [super dealloc];
 }
 

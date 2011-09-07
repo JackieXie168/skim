@@ -65,8 +65,6 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     BOOL isSaving;
     BOOL exportUsingPanel;
-    
-    NSInvocation *printCallback;
 }
 
 - (void)undoableActionIsDiscardable;
