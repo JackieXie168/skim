@@ -54,6 +54,10 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     return [NSError errorWithDomain:SKDocumentErrorDomain code:SKReadPasteboardError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:description, NSLocalizedDescriptionKey, nil]];
 }
 
++ (id)printDocumentErrorWithLocalizedDescription:(NSString *)description {
+    return [NSError errorWithDomain:SKDocumentErrorDomain code:SKPrintDocumentError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:description, NSLocalizedDescriptionKey, nil]];
+}
+
 + (id)userCancelledErrorWithUnderlyingError:(NSError *)error {
     return [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
 }

@@ -43,7 +43,8 @@ extern NSString *SKDocumentErrorDomain;
 enum {
     SKWriteFileError = 1,
     SKReadFileError = 2,
-    SKReadPasteboardError = 3
+    SKReadPasteboardError = 3,
+    SKPrintDocumentError = 4
 };
 
 @interface NSError (SKExtensions)
@@ -52,6 +53,7 @@ enum {
 + (id)readFileErrorWithLocalizedDescription:(NSString *)description;
 + (id)readPasteboardErrorWithLocalizedDescription:(NSString *)description;
 + (id)userCancelledErrorWithUnderlyingError:(NSError *)error;
++ (id)printDocumentErrorWithLocalizedDescription:(NSString *)description;
 
 - (BOOL)isUserCancelledError;
 

@@ -884,6 +884,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
     [printPanel addAccessoryController:[[[SKPrintAccessoryController alloc] init] autorelease]];
     
+    if (printOperation == nil && outError)
+        *outError = [NSError printDocumentErrorWithLocalizedDescription:nil];
+    
     return printOperation;
 }
 

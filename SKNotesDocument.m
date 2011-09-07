@@ -420,6 +420,9 @@
     [printInfo release];
     [[printOperation printPanel] setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
     
+    if (printOperation == nil && outError)
+        *outError = [NSError printDocumentErrorWithLocalizedDescription:nil];
+    
     return printOperation;
 }
 
