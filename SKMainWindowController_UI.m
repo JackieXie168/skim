@@ -304,12 +304,19 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSData *pdfData = [page dataRepresentation];
+            NSString *filename = [self draggedFileNameForPage:page];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
-            [pboard setData:pdfData forType:NSPDFPboardType];
+            if ([[pdfView document] allowsPrinting]) {
+                NSData *pdfData = [page dataRepresentation];
+                filename = [filename stringByAppendingPathExtension:@"pdf"];
+                [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
+                [pboard setData:pdfData forType:NSPDFPboardType];
+            } else {
+                filename = [filename stringByAppendingPathExtension:@"tiff"];
+                [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
+            }
             [pboard setData:tiffData forType:NSTIFFPboardType];
-            [pboard setPropertyList:[NSArray arrayWithObject:[self draggedFileNameForPage:page]] forType:NSFilesPromisePboardType];
+            [pboard setPropertyList:[NSArray arrayWithObject:filename] forType:NSFilesPromisePboardType];
             return YES;
         }
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
@@ -332,13 +339,24 @@
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
-            NSString *path = [basePath stringByAppendingPathExtension:@"pdf"];
+            NSString *pathExt = nil;
+            NSData *data = nil;
+            
+            if ([[pdfView document] allowsPrinting]) {
+                pathExt = @"pdf";
+                data = [page dataRepresentation];
+            } else {
+                pathExt = @"tiff";
+                data = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+            }
+            
+            NSString *path = [basePath stringByAppendingPathExtension:pathExt];
             NSFileManager *fm = [NSFileManager defaultManager];
             NSInteger i = 0;
             
             while ([fm fileExistsAtPath:path])
-                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:@"pdf"];
-            if ([[page dataRepresentation] writeToFile:path atomically:YES])
+                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:pathExt];
+            if ([data writeToFile:path atomically:YES])
                 return [NSArray arrayWithObjects:[path lastPathComponent], nil];
         }
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
@@ -443,11 +461,15 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSData *pdfData = [page dataRepresentation];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-            [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
-            [pboard setData:pdfData forType:NSPDFPboardType];
+            if ([[pdfView document] allowsPrinting]) {
+                NSData *pdfData = [page dataRepresentation];
+                [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
+                [pboard setData:pdfData forType:NSPDFPboardType];
+            } else {
+                [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, nil] owner:nil];
+            }
             [pboard setData:tiffData forType:NSTIFFPboardType];
         }
     } else if ([tv isEqual:leftSideController.findTableView]) {
