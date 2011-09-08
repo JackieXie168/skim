@@ -210,7 +210,7 @@ int main (int argc, const char * argv[]) {
         if (action == SKNActionMerge) {
             inPath2 = SKNNormalizedPath([args objectAtIndex:3]);
             inURL2 = [NSURL fileURLWithPath:inPath2];
-            pdfDoc2 = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
+            pdfDoc2 = [[[PDFDocument alloc] initWithURL:inURL2] autorelease];
         }
         
         NSFileManager *fm = [NSFileManager defaultManager];
@@ -220,7 +220,7 @@ int main (int argc, const char * argv[]) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
-        } else if (pdfDoc == nil || [pdfDoc allowsPrinting] == NO || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 isLocked]))) {
+        } else if (pdfDoc == nil || [pdfDoc allowsPrinting] == NO || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 allowsPrinting] == NO))) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
             
