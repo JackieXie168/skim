@@ -759,7 +759,7 @@ enum {
         NSRect selRect = NSIntegralRect(selectionRect);
         PDFPage *page = [self currentSelectionPage];
         
-        if ((pdfData = [page PDFDataForRect:selRect]))
+        if ([[self document] allowsPrinting] && (pdfData = [page PDFDataForRect:selRect]))
             [types addObject:NSPDFPboardType];
         if ((tiffData = [page TIFFDataForRect:selRect]))
             [types addObject:NSTIFFPboardType];
@@ -1747,27 +1747,33 @@ enum {
 #pragma mark Services
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && ([types containsObject:NSPDFPboardType] || [types containsObject:NSTIFFPboardType])) {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && 
+        (([[self document] allowsPrinting] && [types containsObject:NSPDFPboardType]) || [types containsObject:NSTIFFPboardType])) {
         NSMutableArray *writeTypes = [NSMutableArray array];
         NSData *pdfData = nil;
         NSData *tiffData = nil;
         NSRect selRect = NSIntegralRect(selectionRect);
         
         if ([types containsObject:NSPDFPboardType]  &&
+            [[self document] allowsPrinting] &&
             (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
             [writeTypes addObject:NSPDFPboardType];
         
         if ([types containsObject:NSTIFFPboardType] &&
             (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
             [writeTypes addObject:NSTIFFPboardType];
-    
-        [pboard declareTypes:writeTypes owner:nil];
-        if (pdfData)
-            [pboard setData:pdfData forType:NSPDFPboardType];
-        if (tiffData)
-            [pboard setData:tiffData forType:NSTIFFPboardType];
         
-        return YES;
+        if ([writeTypes count] > 0) {
+            [pboard declareTypes:writeTypes owner:nil];
+            if (pdfData)
+                [pboard setData:pdfData forType:NSPDFPboardType];
+            if (tiffData)
+                [pboard setData:tiffData forType:NSTIFFPboardType];
+            
+            return YES;
+        } else {
+            return NO;
+        }
         
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super writeSelectionToPasteboard:pboard types:types];
@@ -1776,7 +1782,8 @@ enum {
 }
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && ([sendType isEqualToString:NSPDFPboardType] || [sendType isEqualToString:NSTIFFPboardType])) {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && 
+        (([[self document] allowsPrinting] && [sendType isEqualToString:NSPDFPboardType]) || [sendType isEqualToString:NSTIFFPboardType])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
