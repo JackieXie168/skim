@@ -220,7 +220,7 @@ int main (int argc, const char * argv[]) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
-        } else if (pdfDoc == nil || [pdfDoc isLocked] || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 isLocked]))) {
+        } else if (pdfDoc == nil || [pdfDoc allowsPrinting] == NO || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 isLocked]))) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
             
