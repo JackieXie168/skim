@@ -1016,7 +1016,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else {
         [[controller window] orderOut:nil];
         
-        if (pdfDocWithoutNotes && [pdfDocWithoutNotes isLocked] && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
+        if (pdfDocWithoutNotes && [pdfDocWithoutNotes allowsPrinting] == NO && 
+            ([pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO || [pdfDocWithoutNotes allowsPrinting] == NO)) {
             SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
             [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] modalDelegate:self didEndSelector:_cmd contextInfo:pdfDocWithoutNotes];
         } else {
@@ -1034,9 +1035,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     // remove the sheet, to make place for either the password or progress sheet
     [[alert window] orderOut:nil];
     
-    if ([[self pdfDocument] isEncrypted]) {
+    if ([[self pdfDocument] allowsPrinting] == NO) {
         pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
-        if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
+        if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO || [pdfDocWithoutNotes allowsPrinting] == NO) {
             
             SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
             
