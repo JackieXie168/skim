@@ -263,7 +263,7 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 + (NSSet *)customScriptingKeys {
     static NSSet *customScriptingKeys = nil;
     if (customScriptingKeys == nil)
-        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, SKPDFAnnotationScriptingModificationDateKey, SKPDFAnnotationScriptingUserNameKey, nil];
+        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, nil];
     return customScriptingKeys;
 }
 
