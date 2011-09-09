@@ -1791,7 +1791,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         PDFAnnotation *annotation = nil;
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[properties objectForKey:SKPDFAnnotationSelectionSpecifierKey]];
         PDFPage *page = [selection safeFirstPage];
-        if (page == nil) {
+        if (page == nil || [page document] != [self pdfDocument]) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
         } else {
             annotation = [page newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
@@ -1807,7 +1807,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([key isEqualToString:@"notes"]) {
         NSMutableArray *copiedValue = [[NSMutableArray alloc] init];
         for (PDFAnnotation *annotation in value) {
-            if ([annotation isMovable]) {
+            if ([annotation isMovable] && [[annotation page] document] == [self pdfDocument]) {
                 PDFAnnotation *copiedAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[annotation SkimNoteProperties]];
                 [copiedAnnotation registerUserName];
                 if ([copiedAnnotation respondsToSelector:@selector(setPage:)])
