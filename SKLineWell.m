@@ -78,6 +78,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)commonInit {
+    bgCell = [[NSTextFieldCell alloc] initTextCell:@""];
+    [bgCell setBezeled:YES];
+    
     lwFlags.canActivate = 1;
     lwFlags.highlighted = 0;
     lwFlags.existsActiveLineWell = 0;
@@ -142,6 +145,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self unbind:SKLineWellEndLineStyleKey];
     if (lwFlags.active)
         [self deactivate];
+    SKDESTROY(bgCell);
     SKDESTROY(dashPattern);
     [super dealloc];
 }
@@ -254,30 +258,21 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)drawRect:(NSRect)rect {
-    [NSGraphicsContext saveGraphicsState];
-    
     NSRect bounds = [self bounds];
-    NSColor *bgColor = [self isActive] ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
-    NSColor *edgeColor = [NSColor colorWithCalibratedWhite:0 alpha:[self isHighlighted] ? 0.33 : .11];
     
-    [bgColor setFill];
-    NSRectFill(bounds);
+    [bgCell drawWithFrame:bounds inView:self];
     
-    [edgeColor setStroke];
-    [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 0.5, 0.5)] stroke];
-    
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
-    [path appendBezierPathWithRect:NSInsetRect(bounds, -2.0, -2.0)];
-    [path setWindingRule:NSEvenOddWindingRule];
-    NSShadow *shadow1 = [[NSShadow new] autorelease];
-    [shadow1 setShadowBlurRadius:2.0];
-    [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.7]];
-    [shadow1 set];
-    [[NSColor blackColor] setFill];
-    [path fill];
-    
+    [NSGraphicsContext saveGraphicsState];
+    if ([self isActive]) {
+        [[NSColor selectedControlColor] setFill];
+        NSRectFillUsingOperation(bounds, NSCompositePlusDarker);
+    }
+    if ([self isHighlighted]) {
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        NSFrameRectWithWidthUsingOperation(bounds, 1.0, NSCompositePlusDarker);
+    }
     [NSGraphicsContext restoreGraphicsState];
+    
     [NSGraphicsContext saveGraphicsState];
     
     [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];

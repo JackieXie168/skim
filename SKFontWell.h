@@ -63,6 +63,7 @@
 
 
 @interface SKFontWellCell : NSButtonCell {
+    NSTextFieldCell *bgCell;
     NSColor *textColor;
     BOOL hasTextColor;
 }

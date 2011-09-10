@@ -441,6 +441,8 @@ static char SKFontWellFontSizeObservationContext;
 @synthesize textColor, hasTextColor;
 
 - (void)commonInit {
+    bgCell = [[NSTextFieldCell alloc] initTextCell:@""];
+    [bgCell setBezeled:YES];
     if (textColor == nil)
         [self setTextColor:[NSColor blackColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
@@ -473,33 +475,23 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)dealloc {
+    SKDESTROY(bgCell);
     SKDESTROY(textColor);
     [super dealloc];
 }
 
 - (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
+    [bgCell drawWithFrame:frame inView:controlView];
+    
     [NSGraphicsContext saveGraphicsState];
-    
-    NSColor *bgColor = [self state] == NSOnState ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
-    NSColor *edgeColor = [NSColor colorWithCalibratedWhite:0 alpha:[self isHighlighted] ? 0.33 : .11];
-    
-    [bgColor setFill];
-    NSRectFill(frame);
-    
-    [edgeColor setStroke];
-    [[NSBezierPath bezierPathWithRect:NSInsetRect(frame, 0.5, 0.5)] stroke];
-    
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:frame];
-    [path appendBezierPathWithRect:NSInsetRect(frame, -2.0, -2.0)];
-    [path setWindingRule:NSEvenOddWindingRule];
-    NSShadow *shadow1 = [[NSShadow new] autorelease];
-    [shadow1 setShadowBlurRadius:2.0];
-    [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.7]];
-    [shadow1 set];
-    [[NSColor blackColor] setFill];
-    [path fill];
-    
+    if ([self state] == NSOnState) {
+        [[NSColor selectedControlColor] setFill];
+        NSRectFillUsingOperation(frame, NSCompositePlusDarker);
+    }
+    if ([self isHighlighted]) {
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        NSFrameRectWithWidthUsingOperation(frame, 1.0, NSCompositePlusDarker);
+    }
     [NSGraphicsContext restoreGraphicsState];
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView) {
