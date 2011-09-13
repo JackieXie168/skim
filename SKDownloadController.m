@@ -115,12 +115,14 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }
 
-- (SKDownload *)addDownloadForURL:(NSURL *)aURL {
+- (SKDownload *)addDownloadForURL:(NSURL *)aURL wantsWindow:(BOOL)flag {
     SKDownload *download = nil;
     if (aURL) {
         download = [[[SKDownload alloc] initWithURL:aURL] autorelease];
         NSInteger row = [self countOfDownloads];
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
+        if (flag && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
+            [self showWindow:nil];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
     }
@@ -375,7 +377,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
             return YES;
     } else if (theURL) {
-        [self addDownloadForURL:theURL];
+        [self addDownloadForURL:theURL wantsWindow:NO];
         return YES;
     }
     return NO;
@@ -448,7 +450,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if ([theURL isFileURL])
         [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL];
     else if (theURL)
-        [self addDownloadForURL:theURL];
+        [self addDownloadForURL:theURL wantsWindow:NO];
 }
 
 - (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
