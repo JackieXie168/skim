@@ -284,9 +284,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             }
         }
     } else if (showNotes == NO && theURL) {
-        document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
-            [[SKDownloadController sharedDownloadController] showWindow:self];
+        document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL wantsWindow:YES];
     } else if (outError) {
         *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
     }
