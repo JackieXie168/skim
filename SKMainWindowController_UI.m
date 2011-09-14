@@ -106,8 +106,7 @@
 @end
 
 @interface SKMainWindowController (UIPrivate)
-- (void)changeColorFill:(id)sender;
-- (void)changeColorText:(id)sender;
+- (void)changeColorProperty:(id)sender;
 @end
 
 #pragma mark -
@@ -115,6 +114,17 @@
 @implementation SKMainWindowController (UI)
 
 #pragma mark UI updating
+
+- (NSButton *)newColorAccessoryButtonWithTitle:(NSString *)title {
+    NSButton *button = [[NSButton alloc] init];
+    [button setButtonType:NSSwitchButton];
+    [button setTitle:title];
+    [[button cell] setControlSize:NSSmallControlSize];
+    [button setTarget:self];
+    [button setAction:@selector(changeColorProperty:)];
+    [button sizeToFit];
+    return button;
+}
 
 - (void)updateColorPanel {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
@@ -124,26 +134,12 @@
     if ([[self window] isMainWindow]) {
         if ([annotation isSkimNote]) {
             if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
-                if (colorAccessoryView == nil) {
-                    colorAccessoryView = [[NSButton alloc] init];
-                    [colorAccessoryView setButtonType:NSSwitchButton];
-                    [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Check button title")];
-                    [[colorAccessoryView cell] setControlSize:NSSmallControlSize];
-                    [colorAccessoryView setTarget:self];
-                    [colorAccessoryView setAction:@selector(changeColorFill:)];
-                    [colorAccessoryView sizeToFit];
-                }
+                if (colorAccessoryView == nil)
+                    colorAccessoryView = [self newColorAccessoryButtonWithTitle:NSLocalizedString(@"Fill color", @"Check button title")];
                 accessoryView = colorAccessoryView;
             } else if ([annotation respondsToSelector:@selector(setFontColor:)]) {
-                if (textColorAccessoryView == nil) {
-                    textColorAccessoryView = [[NSButton alloc] init];
-                    [textColorAccessoryView setButtonType:NSSwitchButton];
-                    [textColorAccessoryView setTitle:NSLocalizedString(@"Text color", @"Check button title")];
-                    [[textColorAccessoryView cell] setControlSize:NSSmallControlSize];
-                    [textColorAccessoryView setTarget:self];
-                    [textColorAccessoryView setAction:@selector(changeColorText:)];
-                    [textColorAccessoryView sizeToFit];
-                }
+                if (textColorAccessoryView == nil)
+                    textColorAccessoryView = [self newColorAccessoryButtonWithTitle:NSLocalizedString(@"Text color", @"Check button title")];
                 accessoryView = textColorAccessoryView;
             }
             if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
@@ -167,11 +163,7 @@
     }
 }
 
-- (void)changeColorFill:(id)sender{
-   [self updateColorPanel];
-}
-
-- (void)changeColorText:(id)sender{
+- (void)changeColorProperty:(id)sender{
    [self updateColorPanel];
 }
 
