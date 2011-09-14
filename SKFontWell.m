@@ -506,6 +506,12 @@ static char SKFontWellFontSizeObservationContext;
     if ([self hasTextColor]) {
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
+        if ([[[self textColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] brightnessComponent] > 0.8) {
+            NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+            [shade setShadowColor:[NSColor blackColor]];
+            [shade setShadowBlurRadius:1.0];
+            [attrString addAttribute:NSShadowAttributeName value:shade range:NSMakeRange(0, [attrString length])];
+        }
         return attrString;
     } else {
         return [super attributedTitle];
