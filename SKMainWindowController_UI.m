@@ -116,25 +116,6 @@
 
 #pragma mark UI updating
 
-- (void)updateFontPanel {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    
-    if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote]) {
-            if ([annotation respondsToSelector:@selector(font)]) {
-                mwcFlags.updatingFont = 1;
-                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-                mwcFlags.updatingFont = 0;
-            }
-            if ([annotation respondsToSelector:@selector(fontColor)]) {
-                mwcFlags.updatingFontAttributes = 1;
-                [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
-                mwcFlags.updatingFontAttributes = 0;
-            }
-        }
-    }
-}
-
 - (void)updateColorPanel {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSColor *color = nil;
@@ -204,6 +185,28 @@
     }
 }
 
+- (void)updateUtilityPanel {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    
+    if ([[self window] isMainWindow]) {
+        if ([annotation isSkimNote]) {
+            if ([annotation respondsToSelector:@selector(font)]) {
+                mwcFlags.updatingFont = 1;
+                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
+                mwcFlags.updatingFont = 0;
+            }
+            if ([annotation respondsToSelector:@selector(fontColor)]) {
+                mwcFlags.updatingFontAttributes = 1;
+                [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
+                mwcFlags.updatingFontAttributes = 0;
+            }
+        }
+    }
+    
+    [self updateColorPanel];
+    [self updateLineInspector];
+}
+
 #pragma mark NSWindow delegate protocol
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -214,11 +217,8 @@
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification {
-    if ([[self window] isEqual:[notification object]]) {
-        [self updateFontPanel];
-        [self updateColorPanel];
-        [self updateLineInspector];
-    }
+    if ([[self window] isEqual:[notification object]])
+        [self updateUtilityPanel];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -1667,11 +1667,8 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
-    if ([[self window] isMainWindow]) {
-        [self updateFontPanel];
-        [self updateColorPanel];
-        [self updateLineInspector];
-    }
+    if ([[self window] isMainWindow])
+        [self updateUtilityPanel];
     if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation] == NO) {
             [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
