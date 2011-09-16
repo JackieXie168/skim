@@ -253,16 +253,20 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [self setNeedsDisplay:YES];
 }
 
-- (void)performClick:(id)sender {
-    if ([self isEnabled] && focusedIndex != -1) {
-        clickedIndex = focusedIndex;
+- (void)performClickAtIndex:(NSInteger)i {
+    if ([self isEnabled] && i != -1) {
+        clickedIndex = i;
         [self sendAction:[self action] to:[self target]];
         clickedIndex = -1;
-        highlightedIndex = focusedIndex;
+        highlightedIndex = i;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
         [self performSelector:@selector(unhighlight) withObject:nil afterDelay:0.2];
     }
+}
+
+- (void)performClick:(id)sender {
+    [self performClickAtIndex:focusedIndex];
 }
 
 - (void)moveRight:(NSEvent *)theEvent {
@@ -517,16 +521,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    NSInteger i = [element index];
-    if ([self isEnabled] && i != -1) {
-        clickedIndex = i;
-        [self sendAction:[self action] to:[self target]];
-        clickedIndex = -1;
-        highlightedIndex = focusedIndex;
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-        [self setNeedsDisplay:YES];
-        [self performSelector:@selector(unhighlight) withObject:nil afterDelay:0.2];
-    }
+    [self performClickAtIndex:[element index]];
 }
 
 @end
