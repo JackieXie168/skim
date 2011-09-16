@@ -253,7 +253,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [self setNeedsDisplay:YES];
 }
 
-- (void)performClick:(NSEvent *)theEvent {
+- (void)performClick:(id)sender {
     if ([self isEnabled] && focusedIndex != -1) {
         clickedIndex = focusedIndex;
         [self sendAction:[self action] to:[self target]];
