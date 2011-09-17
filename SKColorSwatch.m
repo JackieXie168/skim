@@ -271,14 +271,14 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)moveRight:(NSEvent *)theEvent {
     if (++focusedIndex >= (NSInteger)[colors count])
-        focusedIndex = [colors count] - 1;
+        focusedIndex = 0;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
 - (void)moveLeft:(NSEvent *)theEvent {
     if (--focusedIndex < 0)
-        focusedIndex = 0;
+        focusedIndex = [colors count] - 1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
