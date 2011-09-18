@@ -146,7 +146,7 @@ static char SKFontWellFontSizeObservationContext;
 - (void)dealloc {
     [self unbind:FONTNAME_KEY];
     [self unbind:FONTSIZE_KEY];
-    [bindingInfo release];
+    SKDESTROY(bindingInfo);
     if ([self isActive])
         [self deactivate];
     [super dealloc];
