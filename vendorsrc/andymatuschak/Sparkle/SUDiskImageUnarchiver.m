@@ -9,7 +9,6 @@
 #import "SUDiskImageUnarchiver.h"
 #import "SUUnarchiver_Private.h"
 #import "NTSynchronousTask.h"
-#import <CoreServices/CoreServices.h>
 
 @implementation SUDiskImageUnarchiver
 
@@ -28,10 +27,12 @@
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL mountedSuccessfully = NO;
 	
+    // get a local copy of NSFileManager because this is running from a secondary thread
+    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    
 	// get a unique mount point path
 	NSString *mountPointName = nil;
 	NSString *mountPoint = nil;
-	FSRef tmpRef;
 	do
 	{
 		CFUUIDRef uuid = CFUUIDCreate(NULL);
@@ -44,7 +45,7 @@
 #endif
 		mountPoint = [@"/Volumes" stringByAppendingPathComponent:mountPointName];
 	}
-	while (noErr == FSPathMakeRefWithOptions((UInt8 *)[mountPoint fileSystemRepresentation], kFSPathMakeRefDoNotFollowLeafSymlink, &tmpRef, NULL));
+	while ([fm fileExistsAtPath:mountPoint]);
 	
 	NSArray* arguments = [NSArray arrayWithObjects:@"attach", archivePath, @"-mountpoint", mountPoint, @"-noverify", @"-nobrowse", @"-noautoopen", nil];
 	// set up a pipe and push "yes" (y works too), this will accept any license agreement crap
@@ -56,15 +57,20 @@
 	mountedSuccessfully = YES;
 	
 	// Now that we've mounted it, we need to copy out its contents.
-	FSRef srcRef, dstRef;
-	OSErr err;
-	err = FSPathMakeRef((UInt8 *)[mountPoint fileSystemRepresentation], &srcRef, NULL);
-	if (err != noErr) goto reportError;
-	err = FSPathMakeRef((UInt8 *)[[archivePath stringByDeletingLastPathComponent] fileSystemRepresentation], &dstRef, NULL);
-	if (err != noErr) goto reportError;
-	
-	err = FSCopyObjectSync(&srcRef, &dstRef, (CFStringRef)mountPointName, NULL, kFSFileOperationSkipSourcePermissionErrors);
-	if (err != noErr) goto reportError;
+    NSString *targetPath = [[archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:mountPointName];
+    if (![fm createDirectoryAtPath:targetPath withIntermediateDirectories:YES attributes:nil error:NULL]) goto reportError;
+    
+    // We can't just copyPath: from the volume root because that always fails. Seems to be a bug.
+    
+    id subpathEnumerator = [[fm contentsOfDirectoryAtPath:mountPoint error:NULL] objectEnumerator], currentSubpath;
+    while ((currentSubpath = [subpathEnumerator nextObject])) 	 
+    { 	 
+        NSString *currentFullPath = [mountPoint stringByAppendingPathComponent:currentSubpath]; 	 
+        // Don't bother trying (and failing) to copy out files we can't read. That's not going to be the app anyway. 	 
+        if (![fm isReadableFileAtPath:currentFullPath]) continue; 	 
+        if (![fm copyItemAtPath:currentFullPath toPath:[targetPath stringByAppendingPathComponent:currentSubpath] error:NULL]) 	 
+            goto reportError; 	 
+    }
 	
 	[self performSelectorOnMainThread:@selector(_notifyDelegateOfSuccess) withObject:nil waitUntilDone:NO];
 	goto finally;
