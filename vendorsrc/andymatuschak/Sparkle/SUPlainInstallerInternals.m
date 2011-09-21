@@ -9,7 +9,6 @@
 #import "Sparkle.h"
 #import "SUPlainInstallerInternals.h"
 
-#import <CoreServices/CoreServices.h>
 #import <Security/Security.h>
 #import <sys/stat.h>
 #import <sys/wait.h>
@@ -194,11 +193,10 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 
 + (BOOL)copyPathWithAuthentication:(NSString *)src overPath:(NSString *)dst temporaryName:(NSString *)tmp error:(NSError **)error
 {
-	FSRef srcRef, dstRef, targetRef, movedRef;
-	OSErr err;
-	
-	err = FSPathMakeRefWithOptions((UInt8 *)[dst fileSystemRepresentation], kFSPathMakeRefDoNotFollowLeafSymlink, &dstRef, NULL);
-	if (err != noErr)
+    // get a local copy of NSFileManager because this is running from a secondary thread
+    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    
+	if (![fm fileExistsAtPath:dst])
 	{
 		NSString *errorMessage = [NSString stringWithFormat:@"Couldn't copy %@ over %@ because there is no file at %@.", src, dst, dst];
 		if (error != NULL)
@@ -206,41 +204,28 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 		return NO;
 	}
 	
-	NSString *tmpPath = [[dst stringByDeletingLastPathComponent] stringByAppendingPathComponent:tmp];
+    NSString *tmpPath = [[dst stringByDeletingLastPathComponent] stringByAppendingPathComponent:tmp];
 	
-	if (0 != access([dst fileSystemRepresentation], W_OK) || 0 != access([[dst stringByDeletingLastPathComponent] fileSystemRepresentation], W_OK))
+    if (![fm isWritableFileAtPath:dst] || ![fm isWritableFileAtPath:[dst stringByDeletingLastPathComponent]])
 		return [self _copyPathWithForcedAuthentication:src toPath:dst temporaryPath:tmpPath error:error];
 	
-	err = FSPathMakeRef((UInt8 *)[[dst stringByDeletingLastPathComponent] fileSystemRepresentation], &targetRef, NULL);
-	if (err == noErr)
-		err = FSMoveObjectSync(&dstRef, &targetRef, (CFStringRef)tmp, &movedRef, 0);
-	if (err != noErr)
+	if (![fm moveItemAtPath:dst toPath:tmpPath error:NULL])
 	{
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't move %@ to %@.", dst, tmpPath] forKey:NSLocalizedDescriptionKey]];
 		return NO;			
 	}
-	err = FSPathMakeRef((UInt8 *)[src fileSystemRepresentation], &srcRef, NULL);
-	if (err == noErr)
-		err = FSCopyObjectSync(&srcRef, &targetRef, NULL, NULL, 0);
-	if (err != noErr)
+	if (![fm copyItemAtPath:src toPath:dst error:NULL])
 	{
 		// We better move the old version back to its old location
-		FSMoveObjectSync(&movedRef, &targetRef, (CFStringRef)[dst lastPathComponent], &movedRef, 0);
+		[fm moveItemAtPath:tmpPath toPath:dst error:NULL];
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't copy %@ to %@.", src, dst] forKey:NSLocalizedDescriptionKey]];
 		return NO;			
 	}
 	
 	// Trash the old copy of the app.
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-	if (FSMoveObjectToTrashSync == NULL)
-		[self performSelectorOnMainThread:@selector(_movePathToTrash:) withObject:tmpPath waitUntilDone:YES];
-	else if (noErr != FSMoveObjectToTrashSync(&movedRef, NULL, 0))
-		NSLog(@"Sparkle error: couldn't move %@ to the trash. This is often a sign of a permissions error.", tmpPath);
-#else
-	[self performSelectorOnMainThread:@selector(_movePathToTrash:) withObject:tmpPath waitUntilDone:YES];
-#endif
+    [self performSelectorOnMainThread:@selector(_movePathToTrash:) withObject:tmpPath waitUntilDone:YES];
 	
 	// If the currently-running application is trusted, the new
 	// version should be trusted as well.  Remove it from the
