@@ -194,7 +194,11 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 + (BOOL)copyPathWithAuthentication:(NSString *)src overPath:(NSString *)dst temporaryName:(NSString *)tmp error:(NSError **)error
 {
     // get a local copy of NSFileManager because this is running from a secondary thread
-    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    NSFileManager *fm;
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        fm = [[[NSFileManager alloc] init] autorelease];
+    else
+        fm = [NSFileManager defaultManager];
     
 	if (![fm fileExistsAtPath:dst])
 	{
@@ -209,16 +213,28 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
     if (![fm isWritableFileAtPath:dst] || ![fm isWritableFileAtPath:[dst stringByDeletingLastPathComponent]])
 		return [self _copyPathWithForcedAuthentication:src toPath:dst temporaryPath:tmpPath error:error];
 	
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
 	if (![fm moveItemAtPath:dst toPath:tmpPath error:NULL])
+#else
+	if (![fm movePath:dst toPath:tmpPath handler:nil])
+#endif
 	{
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't move %@ to %@.", dst, tmpPath] forKey:NSLocalizedDescriptionKey]];
 		return NO;			
 	}
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
 	if (![fm copyItemAtPath:src toPath:dst error:NULL])
+#else
+	if (![fm copyPath:src toPath:dst handler:nil])
+#endif
 	{
 		// We better move the old version back to its old location
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
 		[fm moveItemAtPath:tmpPath toPath:dst error:NULL];
+#else
+		[fm movePath:tmpPath toPath:dst handler:nil];
+#endif
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't copy %@ to %@.", src, dst] forKey:NSLocalizedDescriptionKey]];
 		return NO;			

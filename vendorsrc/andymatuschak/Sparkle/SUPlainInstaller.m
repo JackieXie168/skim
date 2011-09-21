@@ -55,7 +55,7 @@ NSString *SUInstallerErrorKey = @"SUInstallerError";
     NSString *targetPath = [host bundlePath];
     NSString *tempName = [self temporaryNameForPath:targetPath];
 	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:path, SUInstallerPathKey, targetPath, SUInstallerTargetPathKey, tempName, SUInstallerTempNameKey, host, SUInstallerHostKey, delegate, SUInstallerDelegateKey, nil];
-	if (synchronously)
+	if (synchronously || floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
 		[self _performInstallationWithInfo:info];
 	else
 		[NSThread detachNewThreadSelector:@selector(_performInstallationWithInfo:) toTarget:self withObject:info];

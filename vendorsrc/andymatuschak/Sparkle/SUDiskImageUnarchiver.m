@@ -17,18 +17,17 @@
 	return [[path pathExtension] isEqualToString:@"dmg"];
 }
 
-- (void)start
-{
-	[NSThread detachNewThreadSelector:@selector(_extractDMG) toTarget:self withObject:nil];
-}
-
 - (void)_extractDMG
 {		
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL mountedSuccessfully = NO;
 	
     // get a local copy of NSFileManager because this is running from a secondary thread
-    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    NSFileManager *fm;
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        fm = [[[NSFileManager alloc] init] autorelease];
+    else
+        fm = [NSFileManager defaultManager];
     
 	// get a unique mount point path
 	NSString *mountPointName = nil;
@@ -58,17 +57,31 @@
 	
 	// Now that we've mounted it, we need to copy out its contents.
     NSString *targetPath = [[archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:mountPointName];
-    if (![fm createDirectoryAtPath:targetPath withIntermediateDirectories:YES attributes:nil error:NULL]) goto reportError;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
+    if (![fm createDirectoryAtPath:targetPath withIntermediateDirectories:YES attributes:nil error:NULL])
+#else
+    if (![fm createDirectoryAtPath:targetPath attributes:nil])
+#endif
+        goto reportError; 	 
     
     // We can't just copyPath: from the volume root because that always fails. Seems to be a bug.
     
-    id subpathEnumerator = [[fm contentsOfDirectoryAtPath:mountPoint error:NULL] objectEnumerator], currentSubpath;
+    id subpathEnumerator, currentSubpath;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
+    subpathEnumerator = [[fm contentsOfDirectoryAtPath:mountPoint error:NULL] objectEnumerator];
+#else
+    subpathEnumerator = [[fm directoryContentsAtPath:mountPoint] objectEnumerator];
+#endif
     while ((currentSubpath = [subpathEnumerator nextObject])) 	 
     { 	 
         NSString *currentFullPath = [mountPoint stringByAppendingPathComponent:currentSubpath]; 	 
         // Don't bother trying (and failing) to copy out files we can't read. That's not going to be the app anyway. 	 
         if (![fm isReadableFileAtPath:currentFullPath]) continue; 	 
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
         if (![fm copyItemAtPath:currentFullPath toPath:[targetPath stringByAppendingPathComponent:currentSubpath] error:NULL]) 	 
+#else
+        if (![fm copyPath:currentFullPath toPath:[targetPath stringByAppendingPathComponent:currentSubpath] handler:nil]) 	 
+#endif
             goto reportError; 	 
     }
 	
@@ -82,6 +95,14 @@ finally:
 	if (mountedSuccessfully)
 		[NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"detach", mountPoint, @"-force", nil]];
 	[pool drain];
+}
+
+- (void)start
+{
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        [NSThread detachNewThreadSelector:@selector(_extractDMG) toTarget:self withObject:nil];
+    else
+        [self _extractDMG];
 }
 
 + (void)load
