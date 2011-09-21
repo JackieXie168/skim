@@ -17,46 +17,17 @@
 	return [[path pathExtension] isEqualToString:@"dmg"];
 }
 
-- (void)_extractDMG
+- (void)_extractDMGContentFromPath:(NSString *)mountPoint
 {		
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	BOOL mountedSuccessfully = NO;
-	
     // get a local copy of NSFileManager because this is running from a secondary thread
     NSFileManager *fm;
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
         fm = [[[NSFileManager alloc] init] autorelease];
     else
         fm = [NSFileManager defaultManager];
-    
-	// get a unique mount point path
-	NSString *mountPointName = nil;
-	NSString *mountPoint = nil;
-	do
-	{
-		CFUUIDRef uuid = CFUUIDCreate(NULL);
-		mountPointName = (NSString *)CFUUIDCreateString(NULL, uuid);
-		CFRelease(uuid);
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-		[NSMakeCollectable((CFStringRef)mountPointName) autorelease];
-#else
-		[mountPointName autorelease];
-#endif
-		mountPoint = [@"/Volumes" stringByAppendingPathComponent:mountPointName];
-	}
-	while ([fm fileExistsAtPath:mountPoint]);
-	
-	NSArray* arguments = [NSArray arrayWithObjects:@"attach", archivePath, @"-mountpoint", mountPoint, @"-noverify", @"-nobrowse", @"-noautoopen", nil];
-	// set up a pipe and push "yes" (y works too), this will accept any license agreement crap
-	// not every .dmg needs this, but this will make sure it works with everyone
-	NSData* yesData = [[[NSData alloc] initWithBytes:"yes\n" length:4] autorelease];
-	
-	NSData *result = [NTSynchronousTask task:@"/usr/bin/hdiutil" directory:@"/" withArgs:arguments input:yesData];
-	if (!result) goto reportError;
-	mountedSuccessfully = YES;
 	
 	// Now that we've mounted it, we need to copy out its contents.
-    NSString *targetPath = [[archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:mountPointName];
+    NSString *targetPath = [[archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[mountPoint lastPathComponent]];
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
     if (![fm createDirectoryAtPath:targetPath withIntermediateDirectories:YES attributes:nil error:NULL])
 #else
@@ -92,17 +63,56 @@ reportError:
 	[self performSelectorOnMainThread:@selector(_notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
 
 finally:
-	if (mountedSuccessfully)
-		[NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"detach", mountPoint, @"-force", nil]];
-	[pool drain];
+    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"detach", mountPoint, @"-force", nil]];
+}
+
+- (void)_extractDMG
+{		
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+    // get a local copy of NSFileManager because this is running from a secondary thread
+    NSFileManager *fm;
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        fm = [[[NSFileManager alloc] init] autorelease];
+    else
+        fm = [NSFileManager defaultManager];
+    
+	// get a unique mount point path
+	NSString *mountPointName = nil;
+	NSString *mountPoint = nil;
+	do
+	{
+		CFUUIDRef uuid = CFUUIDCreate(NULL);
+		mountPointName = (NSString *)CFUUIDCreateString(NULL, uuid);
+		CFRelease(uuid);
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
+		[NSMakeCollectable((CFStringRef)mountPointName) autorelease];
+#else
+		[mountPointName autorelease];
+#endif
+		mountPoint = [@"/Volumes" stringByAppendingPathComponent:mountPointName];
+	}
+	while ([fm fileExistsAtPath:mountPoint]);
+	
+	NSArray* arguments = [NSArray arrayWithObjects:@"attach", archivePath, @"-mountpoint", mountPoint, @"-noverify", @"-nobrowse", @"-noautoopen", nil];
+	// set up a pipe and push "yes" (y works too), this will accept any license agreement crap
+	// not every .dmg needs this, but this will make sure it works with everyone
+	NSData* yesData = [[[NSData alloc] initWithBytes:"yes\n" length:4] autorelease];
+	
+	NSData *result = [NTSynchronousTask task:@"/usr/bin/hdiutil" directory:@"/" withArgs:arguments input:yesData];
+	if (!result)
+        [self performSelectorOnMainThread:@selector(_notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
+    else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        [self _extractDMGContentFromPath:mountPoint];
+    else
+        [self performSelectorOnMainThread:@selector(_extractDMGContentFromPath:) withObject:mountPoint waitUntilDone:NO];
+    
+    [pool drain];
 }
 
 - (void)start
 {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-        [NSThread detachNewThreadSelector:@selector(_extractDMG) toTarget:self withObject:nil];
-    else
-        [self _extractDMG];
+    [NSThread detachNewThreadSelector:@selector(_extractDMG) toTarget:self withObject:nil];
 }
 
 + (void)load
