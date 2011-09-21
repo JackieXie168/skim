@@ -34,7 +34,7 @@
 // that the quarantine is implemented in part by setting an extended attribute,
 // "com.apple.quarantine", on affected files.  Removing this attribute is
 // sufficient to remove files from the quarantine.
-+ (void)releaseFromQuarantine:(NSString*)root;
++ (void)releaseFromQuarantine:(NSString*)root usingFileManager:(NSFileManager *)fileManager;
 @end
 
 // Authorization code based on generous contribution from Allan Odgaard. Thanks, Allan!
@@ -252,7 +252,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	// new home in case it's moved across filesystems: if that
 	// happens, the move is actually a copy, and it may result
 	// in the application being quarantined.
-	[self performSelectorOnMainThread:@selector(releaseFromQuarantine:) withObject:dst waitUntilDone:YES];
+	[self releaseFromQuarantine:dst usingFileManager:fm];
 	
 	return YES;
 }
@@ -298,7 +298,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	return removexattr_func(path, name, options);
 }
 
-+ (void)releaseFromQuarantine:(NSString*)root
++ (void)releaseFromQuarantine:(NSString*)root usingFileManager:(NSFileManager *)fileManager
 {
 	const char* quarantineAttribute = "com.apple.quarantine";
 	const int removeXAttrOptions = XATTR_NOFOLLOW;
@@ -311,16 +311,16 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	// root-level symbolic link.
 	NSDictionary* rootAttributes =
 #if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
-	[[NSFileManager defaultManager] fileAttributesAtPath:root traverseLink:NO];
+	[fileManager fileAttributesAtPath:root traverseLink:NO];
 #else
-	[[NSFileManager defaultManager] attributesOfItemAtPath:root error:NULL];
+	[fileManager attributesOfItemAtPath:root error:NULL];
 #endif
 	NSString* rootType = [rootAttributes objectForKey:NSFileType];
 	
 	if (rootType == NSFileTypeDirectory) {
 		// The NSDirectoryEnumerator will avoid recursing into any contained
 		// symbolic links, so no further type checks are needed.
-		NSDirectoryEnumerator* directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:root];
+		NSDirectoryEnumerator* directoryEnumerator = [fileManager enumeratorAtPath:root];
 		NSString* file = nil;
 		while ((file = [directoryEnumerator nextObject])) {
 			[self removeXAttr:quarantineAttribute
