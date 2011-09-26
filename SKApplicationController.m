@@ -413,7 +413,7 @@
                 if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             } else {
-                document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL wantsWindow:YES];
+                document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
             }
         }
     }

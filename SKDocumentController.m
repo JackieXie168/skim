@@ -284,7 +284,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             }
         }
     } else if (showNotes == NO && theURL) {
-        document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL wantsWindow:YES];
+        document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
     } else if (outError) {
         *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
     }
