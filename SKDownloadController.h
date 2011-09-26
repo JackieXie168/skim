@@ -62,7 +62,7 @@
 + (NSImage *)deleteImage;
 + (NSImage *)resumeImage;
 
-- (SKDownload *)addDownloadForURL:(NSURL *)aURL wantsWindow:(BOOL)flag;
+- (SKDownload *)addDownloadForURL:(NSURL *)aURL;
 
 - (IBAction)showDownloadPreferences:(id)sender;
 - (IBAction)clearDownloads:(id)sender;
