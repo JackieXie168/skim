@@ -139,7 +139,7 @@ typedef NSInteger SKNoteType;
 @property (nonatomic, readonly) SKReadingBar *readingBar;
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
-@property (nonatomic, readonly) NSUndoManager *undoManager;
+@property (nonatomic, readonly) NSUndoManager *documentUndoManager;
 
 - (void)toggleReadingBar;
 
