@@ -1189,7 +1189,7 @@
                 description="The name for the bookmark.">
                 <cocoa key="label"/>
             </property>
-            <property name="type" code="rtyp" type="bookmark type" access="r"
+            <property name="type" code="NTyp" type="bookmark type" access="r"
                 description="The bookmark type.">
                 <cocoa key="bookmarkType"/>
             </property>
