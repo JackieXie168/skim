@@ -42,7 +42,6 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
-#import "SKRichTextFormat.h"
 
 
 @implementation SKTextCommand
@@ -64,13 +63,13 @@
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         if (page == nil || [page isEqual:[dPO page]])
             attributedString = [dPO textContents];
-    } else if ([dP isKindOfClass:[NSAttributedString class]]) {
-        attributedString = dP;
+    } else if ([dP isKindOfClass:[NSData class]]) {
+        attributedString = [[[NSAttributedString alloc] initWithData:dP options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
     } else {
         attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return [SKRichTextFormat richTextSpecifierWithData:[attributedString RTFRepresentation]];
+    return [attributedString richTextSpecifier];
 }
 
 @end

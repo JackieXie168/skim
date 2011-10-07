@@ -38,8 +38,8 @@
 
 #import "SKFormatCommand.h"
 #import "SKTemplateParser.h"
-#import "SKRichTextFormat.h"
 #import "SKTemplateManager.h"
+#import "NSAttributedString_SKExtensions.h"
 
 
 @implementation SKFormatCommand
@@ -74,16 +74,15 @@
     } else if (attrString) {
         NSAttributedString *attrText = [SKTemplateParser attributedStringByParsingTemplateAttributedString:attrString usingObject:receiver];
         if (attrText) {
-            NSMutableDictionary *mutableDocAttrs = [NSMutableDictionary dictionaryWithDictionary:docAttrs];
-            [mutableDocAttrs setObject:NSRTFTextDocumentType forKey:NSDocumentTypeDocumentAttribute];
-            NSData *data = [attrText RTFFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs];
-            text = [SKRichTextFormat richTextSpecifierWithData:data];
+            text = [attrText richTextSpecifier];
             if (file) {
+                NSMutableDictionary *mutableDocAttrs = [NSMutableDictionary dictionaryWithDictionary:docAttrs];
                 NSString *ext = [[[file path] pathExtension] lowercaseString];
                 if ([ext isEqualToString:@"rtfd"]) {
                     [mutableDocAttrs setObject:NSRTFDTextDocumentType forKey:NSDocumentTypeDocumentAttribute];
                     [[text RTFDFileWrapperFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs] writeToFile:[file path] atomically:YES updateFilenames:NO];
                 } else {
+                    NSData *data = nil;
                     NSString *docType = nil;
                     if ([ext isEqualToString:@"rtf"])
                         docType = NSRTFTextDocumentType;
@@ -95,7 +94,7 @@
                         docType = NSOpenDocumentTextDocumentType;
                     else if ([ext isEqualToString:@"webarchive"])
                         docType = NSWebArchiveTextDocumentType;
-                    if (docType && [docType isEqualToString:NSRTFTextDocumentType] == NO) {
+                    if (docType) {
                         [mutableDocAttrs setObject:docType forKey:NSDocumentTypeDocumentAttribute];
                         data = [attrText dataFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs error:NULL];
                     }

@@ -69,6 +69,8 @@
 - (id)scriptingPdfDescriptor;
 + (id)scriptingTiffPictureWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingTiffPictureDescriptor;
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingRtfDescriptor;
 
 @end
 

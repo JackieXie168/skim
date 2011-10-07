@@ -277,7 +277,7 @@
         </value-type>
 
         <value-type name="RTF" code="RTF ">
-            <cocoa class="NSAttributedString"/>
+            <cocoa class="NSData"/>
         </value-type>
 
         <class name="rich text" plural="rich text" code="ricT"
@@ -519,14 +519,14 @@
 
         <class name="rich text format" plural="rich text formats" code="RTFt" hidden="yes"
             description="Rich text format, encoding rich text.">
-            <cocoa class="SKRichTextFormat"/>
+            <cocoa class="NSAttributedString"/>
             <property name="name" code="pnam" type="text" access="r"
                 description="The name for the rich text format.">
-                <cocoa key="name"/>
+                <cocoa key="scriptingName"/>
             </property>
             <contents name="rich text" code="ricT" type="rich text" access="r"
                 description="The rich text representation of the rich text format.">
-                <cocoa key="richText"/>
+                <cocoa key="scriptingRichText"/>
             </contents>
         </class>
 
