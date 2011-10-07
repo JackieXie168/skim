@@ -38,6 +38,7 @@
 
 #import "NSAttributedString_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 
 
 @implementation NSAttributedString (SKExtensions)
@@ -62,18 +63,22 @@
 
 #pragma mark Scripting support
 
-+ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor {
-    NSString *string = [descriptor stringValue];
-    if (string) {
-        return [[[self alloc] initWithString:string] autorelease];
-    } else {
-        NSError *error;
-        return [[[self alloc] initWithData:[descriptor data] options:[NSDictionary dictionary] documentAttributes:NULL error:&error] autorelease];
-    }
+- (NSString *)scriptingName {
+    return [[self RTFRepresentation] hexString];
 }
 
-- (id)scriptingRtfDescriptor {
-    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:[self RTFRepresentation]];
+- (NSTextStorage *)scriptingRichText {
+    return [[[NSTextStorage alloc] initWithAttributedString:self] autorelease];
+}
+
+- (NSScriptObjectSpecifier *)objectSpecifier {
+    NSScriptClassDescription *containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[NSApp class]];
+    return [[[NSNameSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"richTextFormat" name:[self scriptingName]] autorelease];
+}
+
+- (NSScriptObjectSpecifier *)richTextSpecifier {
+    NSScriptObjectSpecifier *rtfSpecifier = [self objectSpecifier];
+    return [[[NSPropertySpecifier alloc] initWithContainerClassDescription:[rtfSpecifier keyClassDescription] containerSpecifier:rtfSpecifier key:@"scriptingRichText"] autorelease];
 }
 
 @end
@@ -84,12 +89,26 @@
 #pragma mark Scripting support
 
 - (id)scriptingRTF {
-    return self;
+    return [self RTFRepresentation];
 }
 
-- (void)setScriptingRTF:(id)attrString {
-    if (attrString)
-        [self setAttributedString:attrString];
+- (void)setScriptingRTF:(id)data {
+    if (data) {
+        NSAttributedString *attrString = [[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:NULL];
+        if (attrString)
+            [self setAttributedString:attrString];
+        [attrString release];
+    }
+}
+
+@end
+
+
+@implementation NSApplication (SKRichTextFormat)
+
+- (NSAttributedString *)valueInRichTextFormatWithName:(NSString *)name {
+    NSData *data = [[[NSData alloc] initWithHexString:name] autorelease];
+    return data ? [[[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease] : nil;
 }
 
 @end

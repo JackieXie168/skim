@@ -46,8 +46,11 @@
 - (NSString *)xmlString;
 - (NSData *)RTFRepresentation;
 
-+ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor;
-- (id)scriptingRtfDescriptor;
+- (NSString *)scriptingName;
+- (NSTextStorage *)scriptingRichText;
+
+- (NSScriptObjectSpecifier *)objectSpecifier;
+- (NSScriptObjectSpecifier *)richTextSpecifier;
 
 @end
 
@@ -55,6 +58,11 @@
 @interface NSTextStorage (SKExtensions)
 
 - (id)scriptingRTF;
-- (void)setScriptingRTF:(id)attrString;
+- (void)setScriptingRTF:(id)data;
 
+@end
+
+
+@interface NSApplication (SKRichTextFormat)
+- (NSAttributedString *)valueInRichTextFormatWithName:(NSString *)name;
 @end

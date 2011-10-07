@@ -344,6 +344,14 @@ static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgh
     return [NSAppleEventDescriptor descriptorWithDescriptorType:'TIFF' data:self];
 }
 
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    return [descriptor data];
+}
+
+- (id)scriptingRtfDescriptor {
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:self];
+}
+
 + (void)load {
     // this should do nothing on Snow Leopard
     SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
