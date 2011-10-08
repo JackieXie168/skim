@@ -94,9 +94,10 @@
 
 - (void)setScriptingRTF:(id)data {
     if (data) {
-        NSAttributedString *attrString = [[[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
+        NSAttributedString *attrString = [[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:NULL];
         if (attrString)
             [self setAttributedString:attrString];
+        [attrString release];
     }
 }
 
