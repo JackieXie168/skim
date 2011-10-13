@@ -574,7 +574,17 @@ struct SKServerFlags {
 
 - (BOOL)synctexFindPage:(NSUInteger *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(NSInteger)line inFile:(NSString *)file {
     BOOL rv = NO;
-    NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
+    NSString *filename = [filenames objectForKey:file] ?: [filenames objectForKey:[[file stringByResolvingSymlinksInPath] stringByStandardizingPath]];
+    if (filename == nil) {
+        for (NSString *fn in filenames) {
+            if ([[fn lastPathComponent] caseInsensitiveCompare:[file lastPathComponent]] == NSOrderedSame) {
+                filename = [filenames objectForKey:file];
+                break;
+            }
+        }
+        if (filename == nil)
+            filename = [file lastPathComponent];
+    }
     if (synctex_display_query(scanner, [filename fileSystemRepresentation], (int)line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
