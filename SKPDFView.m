@@ -3331,7 +3331,7 @@ enum {
                 mouseDownInAnnotation = YES;
             }
         } else if (([newActiveAnnotation isMarkup] || 
-                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || isShift))) && 
+                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || ([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
@@ -3385,7 +3385,7 @@ enum {
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
     [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
-    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
+    if (([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
         pathColor = [[activeAnnotation color] retain];
         [bezierPath setLineWidth:[activeAnnotation lineWidth]];
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && [activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
@@ -3435,9 +3435,11 @@ enum {
         if (activeAnnotation) {
             [self removeActiveAnnotation:nil];
             [self setActiveAnnotation:annotation];
-        } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
+        } else if ([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) {
             [self setActiveAnnotation:annotation];
         }
+    } else if ([theEvent modifierFlags] & NSAlphaShiftKeyMask) {
+        [self setActiveAnnotation:nil];
     }
     
     SKDESTROY(bezierPath);
