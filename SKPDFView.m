@@ -69,6 +69,7 @@
 #import "SKLineInspector.h"
 #import "PDFView_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -116,9 +117,6 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 static BOOL useToolModeCursors = NO;
 
 static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
-
-static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active);
-static void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask);
 
 enum {
     SKNavigationNone,
@@ -358,32 +356,8 @@ enum {
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    if ([[activeAnnotation page] isEqual:pdfPage]) {
-        BOOL isLink = [activeAnnotation isLink];
-        CGFloat lineWidth = isLink ? 2.0 : 1.0;
-        NSRect bounds = [activeAnnotation bounds];
-        NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
-        [NSBezierPath setDefaultLineWidth:lineWidth];
-        if (isLink) {
-            CGFloat radius = floor(0.3 * NSHeight(rect));
-            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
-            [path fill];
-            [path stroke];
-        } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
-            NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-            SKDrawGrabHandle(point, 4.0, dragMask == SKMinXEdgeMask);
-            point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
-            SKDrawGrabHandle(point, 4.0, dragMask == SKMaxXEdgeMask);
-        } else if (editField == nil) {
-            [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
-            [NSBezierPath strokeRect:rect];
-            if ([activeAnnotation isResizable])
-                SKDrawGrabHandles(bounds, 4.0, dragMask);
-        }
-        [NSBezierPath setDefaultLineWidth:1.0];
-    }
+    if ([[activeAnnotation page] isEqual:pdfPage] && editField == nil)
+        [activeAnnotation drawSelectionHighlight:dragMask];
     
     if ([[highlightAnnotation page] isEqual:pdfPage]) {
         NSRect bounds = [highlightAnnotation bounds];
@@ -4343,28 +4317,4 @@ static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArra
         }
     }
     return MIN(i, iMax - 1);
-}
-
-#pragma mark Grab handles
-
-static void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active)
-{
-    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
-    [path setLineWidth:0.25 * radius];
-    [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:active ? 1.0 : 0.8] setFill];
-    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:active ? 1.0 : 0.8] setStroke];
-    [path fill];
-    [path stroke];
-}
-
-static void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask)
-{
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, mask == SKMinXEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, mask == SKMaxXEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, mask == SKMaxYEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, mask == SKMinYEdgeMask);
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, mask == (SKMinXEdgeMask | SKMaxYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, mask == (SKMinXEdgeMask | SKMinYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, mask == (SKMaxXEdgeMask | SKMaxYEdgeMask));
-    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, mask == (SKMaxXEdgeMask | SKMinYEdgeMask));
 }

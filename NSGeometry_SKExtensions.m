@@ -112,6 +112,30 @@ BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoi
 
 #pragma mark -
 
+void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active)
+{
+    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
+    [path setLineWidth:0.25 * radius];
+    [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:active ? 1.0 : 0.8] setFill];
+    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:active ? 1.0 : 0.8] setStroke];
+    [path fill];
+    [path stroke];
+}
+
+void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask)
+{
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, mask == SKMinXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, mask == SKMaxXEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, mask == SKMaxYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, mask == SKMinYEdgeMask);
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, mask == (SKMinXEdgeMask | SKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, mask == (SKMinXEdgeMask | SKMinYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, mask == (SKMaxXEdgeMask | SKMaxYEdgeMask));
+    SKDrawGrabHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, mask == (SKMaxXEdgeMask | SKMinYEdgeMask));
+}
+
+#pragma mark -
+
 #define MIN_BUTTON_WIDTH 82.0
 #define MAX_BUTTON_WIDTH 100.0
 #define EXTRA_BUTTON_WIDTH 12.0

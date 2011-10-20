@@ -38,6 +38,7 @@
 
 #import "PDFAnnotationLink_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation PDFAnnotationLink (SKExtensions)
@@ -52,6 +53,20 @@ static id (*original_toolTip)(id, SEL) = NULL;
 
 + (void)load {
     original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
+}
+
+- (void)drawSelectionHighlight:(NSUInteger)mask {
+    NSRect rect = NSInsetRect(NSIntegralRect([self bounds]), 1.0, 1.0);
+    CGFloat radius = floor(0.3 * NSHeight(rect));
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
+    [NSGraphicsContext saveGraphicsState];
+    [NSBezierPath setDefaultLineWidth:2.0];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
+    [path fill];
+    [path stroke];
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (BOOL)isLink { return YES; }
