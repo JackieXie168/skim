@@ -45,8 +45,12 @@ extern NSString *SKPDFAnnotationScriptingColorKey;
 extern NSString *SKPDFAnnotationScriptingModificationDateKey;
 extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
+@class SKPDFView;
 
 @interface PDFAnnotation (SKExtensions)
+
++ (PDFAnnotation *)currentActiveAnnotation;
++ (void)setCurrentActiveAnnotation:(PDFAnnotation *)annotation;
 
 - (NSString *)fdfString;
 

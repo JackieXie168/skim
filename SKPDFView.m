@@ -345,13 +345,23 @@ enum {
         interpolation = NSImageInterpolationHigh;
     [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
     
+    [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
+    
     // Let PDFView do most of the hard work.
     [super drawPage: pdfPage];
+    
+    [PDFAnnotation setCurrentActiveAnnotation:nil];
 	
     [pdfPage transformContextForBox:[self displayBox]];
     
     if (bezierPath && pathPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
+        if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
+            NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+            [shade setShadowBlurRadius:2.0];
+            [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
+            [shade set];
+        }
         [pathColor setStroke];
         [bezierPath stroke];
         [NSGraphicsContext restoreGraphicsState];

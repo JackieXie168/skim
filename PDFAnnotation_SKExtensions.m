@@ -70,6 +70,19 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
 @implementation PDFAnnotation (SKExtensions)
 
+static PDFAnnotation *currentActiveAnnotation = nil;
+
++ (PDFAnnotation *)currentActiveAnnotation {
+    return currentActiveAnnotation;
+}
+
++ (void)setCurrentActiveAnnotation:(PDFAnnotation *)annotation {
+    if (currentActiveAnnotation != annotation) {
+        [currentActiveAnnotation release];
+        currentActiveAnnotation = [annotation retain];
+    }
+}
+
 - (NSString *)fdfString {
     NSMutableString *fdfString = [NSMutableString string];
     NSRect bounds = [self bounds];
