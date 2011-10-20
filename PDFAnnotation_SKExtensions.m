@@ -231,6 +231,16 @@ NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
     return bounds;
 }
 
+- (void)drawSelectionHighlight:(NSUInteger)mask {
+    [NSGraphicsContext saveGraphicsState];
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
+    [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self bounds]), 0.5, 0.5)];
+    if ([self isResizable])
+        SKDrawGrabHandles([self bounds], 4.0, mask);
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (void)registerUserName {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseUserNameKey]) {
         NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKUserNameKey];

@@ -79,6 +79,8 @@ extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
 - (NSRect)displayRectForBounds:(NSRect)bounds;
 
+- (void)drawSelectionHighlight:(NSUInteger)mask;
+
 - (void)registerUserName;
 
 - (NSSet *)keysForValuesToObserveForUndo;

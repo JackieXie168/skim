@@ -296,6 +296,22 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
+- (void)drawSelectionHighlight:(NSUInteger)mask {
+    // archived annotations (or annotations we didn't create) won't have these
+    if ([self hasLineRects] == NO)
+        [self regenerateLineRects];
+    
+    NSPointerArray *lines = [self lineRects];
+    NSUInteger i, iMax = [lines count];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
+    for (i = 0; i < iMax; i++)
+        [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(*(NSRectPointer)[lines pointerAtIndex:i]), 0.5, 0.5)];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (BOOL)isMarkup { return YES; }
 
 - (BOOL)hasBorder { return NO; }

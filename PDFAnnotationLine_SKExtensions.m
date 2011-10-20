@@ -113,6 +113,14 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return NSInsetRect(bounds, -16.0, -16.0);
 }
 
+- (void)drawSelectionHighlight:(NSUInteger)mask {
+    NSPoint origin = [self bounds].origin;
+    NSPoint point = SKAddPoints(origin, [self startPoint]);
+    SKDrawGrabHandle(point, 4.0, mask == SKMinXEdgeMask);
+    point = SKAddPoints(origin, [self endPoint]);
+    SKDrawGrabHandle(point, 4.0, mask == SKMaxXEdgeMask);
+}
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *lineKeys = nil;
     if (lineKeys == nil) {
