@@ -44,6 +44,7 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 
 

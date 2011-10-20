@@ -46,7 +46,7 @@
 #import "SKFontWell.h"
 #import "SKStringConstants.h"
 #import "NSView_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 

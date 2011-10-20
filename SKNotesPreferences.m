@@ -41,7 +41,7 @@
 #import "SKStringConstants.h"
 #import "SKLineWell.h"
 #import "SKFontWell.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 

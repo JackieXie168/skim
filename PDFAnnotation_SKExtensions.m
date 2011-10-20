@@ -52,6 +52,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"

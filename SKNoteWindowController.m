@@ -52,6 +52,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "SKNoteTextView.h"
 
 #define EM_DASH_CHARACTER 0x2014

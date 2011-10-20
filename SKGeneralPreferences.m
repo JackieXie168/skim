@@ -41,7 +41,7 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
 #define AUTOMATICALLYCHECKSFORUPDATES_KEY @"automaticallyChecksForUpdates"
