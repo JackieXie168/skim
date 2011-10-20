@@ -39,7 +39,7 @@
 #import "SKSyncPreferences.h"
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
                                      {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 

@@ -41,6 +41,7 @@
 #import "SKStringConstants.h"
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 

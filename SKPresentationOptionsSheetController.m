@@ -49,7 +49,7 @@
 #import "SKImageToolTipWindow.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER 0x2192
 

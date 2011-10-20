@@ -41,7 +41,7 @@
 #import "SKBookmark.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 
 @implementation SKTextFieldSheetController

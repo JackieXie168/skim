@@ -77,6 +77,7 @@
 		CE121BFB11529D15001D92ED /* SKIBArray.m in Sources */ = {isa = PBXBuildFile; fileRef = CE121BFA11529D15001D92ED /* SKIBArray.m */; };
 		CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1248C413FEDCF200FFAE20 /* SKTemplateManager.m */; };
 		CE12A73E134F215F003AED67 /* SKSelectCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE12A73D134F215F003AED67 /* SKSelectCommand.m */; };
+		CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE139A161450207500E9C069 /* NSGraphics_SKExtensions.m */; };
 		CE171E3512C3AC1600291179 /* SKFileUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */; };
 		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE19446310627483007E8770 /* BookmarksWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445C10627483007E8770 /* BookmarksWindow.xib */; };
@@ -595,6 +596,8 @@
 		CE1248C413FEDCF200FFAE20 /* SKTemplateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateManager.m; sourceTree = "<group>"; };
 		CE12A73C134F215F003AED67 /* SKSelectCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSelectCommand.h; sourceTree = "<group>"; };
 		CE12A73D134F215F003AED67 /* SKSelectCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSelectCommand.m; sourceTree = "<group>"; };
+		CE139A151450207500E9C069 /* NSGraphics_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSGraphics_SKExtensions.h; sourceTree = "<group>"; };
+		CE139A161450207500E9C069 /* NSGraphics_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSGraphics_SKExtensions.m; sourceTree = "<group>"; };
 		CE157ED212D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
 		CE157ED312D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
 		CE157ED512D4EBC000515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
@@ -1904,6 +1907,8 @@
 				CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */,
 				CE24875A112C9651006B4FA5 /* NSFont_SKExtensions.h */,
 				CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */,
+				CE139A151450207500E9C069 /* NSGraphics_SKExtensions.h */,
+				CE139A161450207500E9C069 /* NSGraphics_SKExtensions.m */,
 				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
 				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
 				CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */,
@@ -2546,6 +2551,7 @@
 				CE030C6113C07A57007A47E9 /* PDFView_SKExtensions.m in Sources */,
 				CEB402C313EDAD6100851D1B /* SKTemporaryData.m in Sources */,
 				CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */,
+				CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

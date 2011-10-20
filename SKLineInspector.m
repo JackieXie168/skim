@@ -41,7 +41,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
 

@@ -37,7 +37,7 @@
  */
 
 #import "SKDownloadPreferenceController.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
 

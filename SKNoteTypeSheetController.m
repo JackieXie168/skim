@@ -38,7 +38,7 @@
 
 #import "SKNoteTypeSheetController.h"
 #import "NSWindowController_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import <SKimNotes/SkimNotes.h>
