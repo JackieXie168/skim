@@ -45,10 +45,31 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
+#import "SKRuntime.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 @implementation PDFAnnotationInk (SKExtensions)
+
+static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
+
+- (void)replacement_drawWithBox:(PDFDisplayBox)box {
+    if ([PDFAnnotation currentActiveAnnotation] == self) {
+        [NSGraphicsContext saveGraphicsState];
+        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+        [shade setShadowBlurRadius:2.0];
+        [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
+        [shade set];
+        original_drawWithBox(self, _cmd, box);
+        [NSGraphicsContext restoreGraphicsState];
+    } else {
+        original_drawWithBox(self, _cmd, box);
+    }
+}
+
++ (void)load {
+    original_drawWithBox = (void (*)(id, SEL, PDFDisplayBox))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:), @selector(replacement_drawWithBox:));
+}
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
     self = [super initSkimNoteWithBounds:bounds];
