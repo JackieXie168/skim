@@ -3295,8 +3295,8 @@ enum {
     }
     
     if (hideNotes == NO && page != nil) {
-        BOOL isShift = 0 != ([theEvent modifierFlags] & NSShiftKeyMask);
-        if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
+        NSUInteger modifiers = [theEvent modifierFlags];
+        if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
             [newAnnotation registerUserName];
@@ -3316,12 +3316,12 @@ enum {
                 mouseDownInAnnotation = YES;
             }
         } else if (([newActiveAnnotation isMarkup] || 
-                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || ([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
+                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
-        } else if (isShift && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
+        } else if ((modifiers & NSShiftKeyMask) && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
             if ([activeAnnotation isMarkup]) {
                 NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
                 PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
