@@ -44,27 +44,20 @@
 
 @dynamic physicalScaleFactor, scrollView;
 
-- (CGFloat)physicalScaleFactor {
-    CGFloat scale = [self scaleFactor];
-    NSScreen *screen = [[self window] screen];
+static inline CGFloat physicalScaleFactorForView(NSView *view) {
+    NSScreen *screen = [[view window] screen];
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
     NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scale *= (physicalSize.width * resolution.width) / (CGDisplayPixelsWide(displayID) * 25.4f);
-    return scale;
+	return CGSizeEqualToSize(physicalSize, CGSizeZero) ? 1.0 : (physicalSize.width * resolution.width) / (CGDisplayPixelsWide(displayID) * 25.4f);
+}
+
+- (CGFloat)physicalScaleFactor {
+    return [self scaleFactor] * physicalScaleFactorForView(self);
 }
 
 - (void)setPhysicalScaleFactor:(CGFloat)scale {
-    NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-	CGSize physicalSize = CGDisplayScreenSize(displayID);
-    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
-	
-    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
-        scale *= CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
-    [self setScaleFactor:scale];
+    [self setScaleFactor:scale / physicalScaleFactorForView(self)];
 }
 
 - (NSScrollView *)scrollView {
