@@ -3299,34 +3299,32 @@ enum {
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
         } else if ((modifiers & NSShiftKeyMask) && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
+            PDFAnnotation *newAnnotation = nil;
             if ([activeAnnotation isMarkup]) {
                 NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
                 PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
                 [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
                 
-                [self removeAnnotation:newActiveAnnotation];
-                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
-                [newActiveAnnotation setString:[sel cleanedString]];
-                [newActiveAnnotation setColor:[activeAnnotation color]];
-                [newActiveAnnotation registerUserName];
-                [self removeActiveAnnotation:nil];
-                [self addAnnotation:newActiveAnnotation toPage:page];
-                [[self documentUndoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                newAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
+                [newAnnotation setString:[sel cleanedString]];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
                 NSMutableArray *paths = [[(PDFAnnotationInk *)activeAnnotation pagePaths] mutableCopy];
                 [paths addObjectsFromArray:[(PDFAnnotationInk *)newActiveAnnotation pagePaths]];
                 
-                [self removeAnnotation:newActiveAnnotation];
-                newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
-                [newActiveAnnotation setString:[activeAnnotation string]];
-                [newActiveAnnotation setColor:[activeAnnotation color]];
-                [newActiveAnnotation setBorder:[activeAnnotation border]];
-                [newActiveAnnotation registerUserName];
-                [self removeActiveAnnotation:nil];
-                [self addAnnotation:newActiveAnnotation toPage:page];
-                [[self documentUndoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                newAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
+                [newAnnotation setString:[activeAnnotation string]];
+                [newAnnotation setBorder:[activeAnnotation border]];
                 
                 [paths release];
+            }
+            if (newAnnotation) {
+                [newAnnotation setColor:[activeAnnotation color]];
+                [newAnnotation registerUserName];
+                [self removeAnnotation:newActiveAnnotation];
+                [self removeActiveAnnotation:nil];
+                [self addAnnotation:newAnnotation toPage:page];
+                [[self documentUndoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                newActiveAnnotation = newAnnotation;
             }
         }
     }
