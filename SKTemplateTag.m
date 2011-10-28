@@ -178,7 +178,7 @@
 
 @implementation SKConditionTemplateTag
 
-@synthesize matchType, matchStrings, subtemplates;
+@synthesize matchType, matchStrings;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates {
     self = [super initWithKeyPath:aKeyPath];
@@ -198,7 +198,11 @@
 
 - (SKTemplateTagType)type { return SKConditionTemplateTagType; }
 
-- (NSArray *)subtemplateAtIndex:(NSUInteger)anIndex {
+- (NSUInteger)countOfSubtemplates {
+    return [subtemplates count];
+}
+
+- (NSArray *)objectInSubtemplatesAtIndex:(NSUInteger)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
         subtemplate = [SKTemplateParser arrayByParsingTemplateString:subtemplate isSubtemplate:YES];
@@ -213,7 +217,7 @@
 
 @implementation SKRichConditionTemplateTag
 
-- (NSArray *)subtemplateAtIndex:(NSUInteger)anIndex {
+- (NSArray *)objectInSubtemplatesAtIndex:(NSUInteger)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
         subtemplate = [SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate isSubtemplate:YES];
