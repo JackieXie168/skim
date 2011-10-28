@@ -127,9 +127,9 @@ typedef NSInteger SKTemplateTagMatchType;
 
 @property (nonatomic, readonly) SKTemplateTagMatchType matchType;
 @property (nonatomic, readonly) NSArray *matchStrings;
-@property (nonatomic, readonly) NSArray *subtemplates;
 
-- (NSArray *)subtemplateAtIndex:(NSUInteger)index;
+- (NSUInteger)countOfSubtemplates;
+- (NSArray *)objectInSubtemplatesAtIndex:(NSUInteger)anIndex;
 
 @end
 
