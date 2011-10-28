@@ -41,12 +41,18 @@
 
 
 @implementation SKTemplateTag
+
+@dynamic type;
+
 - (SKTemplateTagType)type { return -1; }
+
 @end
 
 #pragma mark -
 
 @implementation SKValueTemplateTag
+
+@synthesize keyPath;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath {
     self = [super init];
@@ -63,15 +69,13 @@
 
 - (SKTemplateTagType)type { return SKValueTemplateTagType; }
 
-- (NSString *)keyPath {
-    return keyPath;
-}
-
 @end
 
 #pragma mark -
 
 @implementation SKRichValueTemplateTag
+
+@synthesize attributes;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath attributes:(NSDictionary *)anAttributes {
     self = [super initWithKeyPath:aKeyPath];
@@ -86,15 +90,13 @@
     [super dealloc];
 }
 
-- (NSDictionary *)attributes {
-    return attributes;
-}
-
 @end
 
 #pragma mark -
 
 @implementation SKCollectionTemplateTag
+
+@dynamic itemTemplate, separatorTemplate;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString {
     self = [super initWithKeyPath:aKeyPath];
@@ -135,6 +137,8 @@
 
 @implementation SKRichCollectionTemplateTag
 
+@dynamic itemTemplate, separatorTemplate;
+
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateAttributedString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateAttributedString {
     self = [super initWithKeyPath:aKeyPath];
     if (self) {
@@ -174,6 +178,8 @@
 
 @implementation SKConditionTemplateTag
 
+@synthesize matchType, matchStrings, subtemplates;
+
 - (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates {
     self = [super initWithKeyPath:aKeyPath];
     if (self) {
@@ -191,18 +197,6 @@
 }
 
 - (SKTemplateTagType)type { return SKConditionTemplateTagType; }
-
-- (SKTemplateTagMatchType)matchType {
-    return matchType;
-}
-
-- (NSArray *)subtemplates {
-    return subtemplates;
-}
-
-- (NSArray *)matchStrings {
-    return matchStrings;
-}
 
 - (NSArray *)subtemplateAtIndex:(NSUInteger)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
@@ -234,6 +228,8 @@
 
 @implementation SKTextTemplateTag
 
+@synthesize text;
+
 - (id)initWithText:(NSString *)aText {
     self = [super init];
     if (self) {
@@ -249,17 +245,6 @@
 
 - (SKTemplateTagType)type { return SKTextTemplateTagType; }
 
-- (NSString *)text {
-    return text;
-}
-
-- (void)setText:(NSString *)newText {
-    if (text != newText) {
-        [text release];
-        text = [newText retain];
-    }
-}
-
 - (void)appendText:(NSString *)newText {
     [self setText:[text stringByAppendingString:newText]];
 }
@@ -269,6 +254,8 @@
 #pragma mark -
 
 @implementation SKRichTextTemplateTag
+
+@synthesize attributedText;
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText {
     self = [super init];
@@ -284,17 +271,6 @@
 }
 
 - (SKTemplateTagType)type { return SKTextTemplateTagType; }
-
-- (NSAttributedString *)attributedText {
-    return attributedText;
-}
-
-- (void)setAttributedText:(NSAttributedString *)newAttributedText {
-    if (attributedText != newAttributedText) {
-        [attributedText release];
-        attributedText = [newAttributedText retain];
-    }
-}
 
 - (void)appendAttributedText:(NSAttributedString *)newAttributedText {
     NSMutableAttributedString *newAttrText = [attributedText mutableCopy];
