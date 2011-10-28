@@ -55,9 +55,10 @@ enum {
 };
 typedef NSInteger SKTemplateTagMatchType;
 
-@interface SKTemplateTag : NSObject {
-}
-- (SKTemplateTagType)type;
+@interface SKTemplateTag : NSObject
+
+@property (nonatomic, readonly) SKTemplateTagType type;
+
 @end
 
 #pragma mark -
@@ -68,7 +69,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath;
 
-- (NSString *)keyPath;
+@property (nonatomic, readonly) NSString *keyPath;
 
 @end
 
@@ -80,7 +81,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath attributes:(NSDictionary *)anAttributes;
 
-- (NSDictionary *)attributes;
+@property (nonatomic, readonly) NSDictionary *attributes;
 
 @end
 
@@ -95,8 +96,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString;
 
-- (NSArray *)itemTemplate;
-- (NSArray *)separatorTemplate;
+@property (nonatomic, readonly) NSArray *itemTemplate, *separatorTemplate;
 
 @end
 
@@ -111,8 +111,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateAttributedString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateAttributedString;
 
-- (NSArray *)itemTemplate;
-- (NSArray *)separatorTemplate;
+@property (nonatomic, readonly) NSArray *itemTemplate, *separatorTemplate;
 
 @end
 
@@ -126,9 +125,10 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates;
 
-- (SKTemplateTagMatchType)matchType;
-- (NSArray *)matchStrings;
-- (NSArray *)subtemplates;
+@property (nonatomic, readonly) SKTemplateTagMatchType matchType;
+@property (nonatomic, readonly) NSArray *matchStrings;
+@property (nonatomic, readonly) NSArray *subtemplates;
+
 - (NSArray *)subtemplateAtIndex:(NSUInteger)index;
 
 @end
@@ -146,8 +146,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithText:(NSString *)aText;
 
-- (NSString *)text;
-- (void)setText:(NSString *)newText;
+@property (nonatomic, retain) NSString *text;
 
 - (void)appendText:(NSString *)newText;
 
@@ -161,8 +160,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText;
 
-- (NSAttributedString *)attributedText;
-- (void)setAttributedText:(NSAttributedString *)newAttributedText;
+@property (nonatomic, retain) NSAttributedString *attributedText;
 
 - (void)appendAttributedText:(NSAttributedString *)newAttributedText;
 
