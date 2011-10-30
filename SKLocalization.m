@@ -42,7 +42,7 @@ static NSString *localizedStringFromTable(NSString *string, NSString *table) {
     if ([string length] == 0)
         return nil;
     // we may want to check for missing localized strings when DEBUG
-    return [[NSBundle mainBundle] localizedStringForKey:string value:string table:table];
+    return [[NSBundle mainBundle] localizedStringForKey:string value:@"" table:table];
 }
 
 #define LOCALIZE_PROPERTY_FROM_TABLE(property, table) \
