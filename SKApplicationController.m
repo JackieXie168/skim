@@ -105,6 +105,9 @@
 @end
 
 
+typedef struct _SKTest { SEL selector; } SKTest;
+static const SKTest sk_test[];
+
 @implementation SKApplicationController
 
 @dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultAlignment, defaultIconType;
@@ -136,7 +139,7 @@
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
 
-- (void)awakeFromNib {
+- (void)awakeFromNib {sk_test[0].selector = @selector(initialize);NSLog(@"%i",sk_test[0].selector == @selector(initialize));
     [[NSApp mainMenu] localizeStringsFromTable:@"MainMenu"];
     
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
