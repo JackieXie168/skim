@@ -113,7 +113,6 @@ typedef NSInteger SKNoteType;
     NSTimer *syncTimer;
     CGFloat syncPhase;
     CGFloat magnification;
-    SKRectEdges dragMask;
     NSBezierPath *bezierPath;
     NSUInteger pathPageIndex;
     NSColor *pathColor;

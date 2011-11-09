@@ -39,8 +39,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-extern void SKDrawGrabHandle(NSPoint point, CGFloat radius, BOOL active);
-extern void SKDrawGrabHandles(NSRect rect, CGFloat radius, NSInteger mask);
+extern void SKDrawResizeHandle(NSPoint point, CGFloat radius);
+extern void SKDrawResizeHandles(NSRect rect, CGFloat radius);
 
 #pragma mark -
 

@@ -155,7 +155,7 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
             for (i = 0; i < iMax; i++) {
                 prevPoint = nextPoint;
                 nextPoint = [path associatedPointForElementAtIndex:i];
-                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta, delta))
+                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta))
                     return YES;
             }
         }

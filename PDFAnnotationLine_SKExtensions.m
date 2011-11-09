@@ -105,7 +105,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 - (BOOL)hitTest:(NSPoint)point {
     CGFloat delta = fmax(4.0, 0.5 * [self lineWidth]);
-    return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], 4.0, delta);
+    return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], delta);
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
@@ -114,12 +114,26 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return NSInsetRect(bounds, -16.0, -16.0);
 }
 
-- (void)drawSelectionHighlight:(NSUInteger)mask {
+- (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor {
+    if ([self isResizable] == NO)
+        return 0;
+    NSSize size = SKMakeSquareSize(8.0 / scaleFactor);
+    point = SKSubstractPoints(point, [self bounds].origin);
+    if (NSPointInRect(point, SKRectFromCenterAndSize([self startPoint], size)))
+        return SKMinXEdgeMask;
+    else if (NSPointInRect(point, SKRectFromCenterAndSize([self endPoint], size)))
+        return SKMaxXEdgeMask;
+    else
+        return 0;
+}
+
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor {
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
-    SKDrawGrabHandle(point, 4.0, mask == SKMinXEdgeMask);
+    CGFloat delta = 4.0 / scaleFactor;
+    SKDrawResizeHandle(point, delta);
     point = SKAddPoints(origin, [self endPoint]);
-    SKDrawGrabHandle(point, 4.0, mask == SKMaxXEdgeMask);
+    SKDrawResizeHandle(point, delta);
 }
 
 - (NSSet *)keysForValuesToObserveForUndo {

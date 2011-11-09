@@ -51,7 +51,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
-#import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
@@ -233,25 +232,23 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (BOOL)isConvertibleAnnotation { return NO; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    NSRect bounds = [self bounds];
-    if ([self isResizable])
-        bounds = NSInsetRect(bounds, -4.0, -4.0);
-    return [self shouldDisplay] ? NSPointInRect(point, bounds) : NO;
+    return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
-    if ([self isResizable])
-        bounds = NSInsetRect(bounds, -4.0, -4.0);
     return bounds;
 }
 
-- (void)drawSelectionHighlight:(NSUInteger)mask {
+- (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor {
+    return [self isResizable] ? SKResizeHandleForPointFromRect(point, [self bounds], 4.0 / scaleFactor) : 0;
+}
+
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor {
     [NSGraphicsContext saveGraphicsState];
-    [NSBezierPath setDefaultLineWidth:1.0];
-    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
-    [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self bounds]), 0.5, 0.5)];
+    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setFill];
+    NSFrameRectWithWidth(NSIntegralRect([self bounds]), 1.0 / scaleFactor);
     if ([self isResizable])
-        SKDrawGrabHandles([self bounds], 4.0, mask);
+        SKDrawResizeHandles([self bounds], 4.0 / scaleFactor);
     [NSGraphicsContext restoreGraphicsState];
 }
 
