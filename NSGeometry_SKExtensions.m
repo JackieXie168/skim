@@ -100,12 +100,43 @@ NSRect SKCenterRectHorizontally(NSRect rect, CGFloat width) {
     return rect;
 }
 
-BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoint, CGFloat pointDelta, CGFloat lineDelta) {
-    if (point.x < fmin(aPoint.x, bPoint.x) - pointDelta || point.y < fmin(aPoint.y, bPoint.y) - pointDelta || point.x > fmax(aPoint.x, bPoint.x) + pointDelta || point.y > fmax(aPoint.y, bPoint.y) + pointDelta)
+BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoint, CGFloat delta) {
+    if (point.x < fmin(aPoint.x, bPoint.x) - delta || point.y < fmin(aPoint.y, bPoint.y) - delta || point.x > fmax(aPoint.x, bPoint.x) + delta || point.y > fmax(aPoint.y, bPoint.y) + delta)
         return NO;
     
     NSPoint relPoint = SKSubstractPoints(bPoint, aPoint);
     CGFloat extProduct = ( point.x - aPoint.x ) * relPoint.y - ( point.y - aPoint.y ) * relPoint.x;
     
-    return extProduct * extProduct < lineDelta * lineDelta * ( relPoint.x * relPoint.x + relPoint.y * relPoint.y );
+    return extProduct * extProduct < delta * delta * ( relPoint.x * relPoint.x + relPoint.y * relPoint.y );
+}
+
+static inline BOOL SKPointNearCoordinates(NSPoint point, CGFloat x, CGFloat y, CGFloat delta) {
+    NSRect rect;
+    rect.origin.x = x - delta;
+    rect.origin.y = y - delta;
+    rect.size.width = rect.size.height = 2.0 * delta;
+    return NSPointInRect(point, rect);
+}
+
+SKRectEdges SKResizeHandleForPointFromRect(NSPoint point, NSRect rect, CGFloat delta) {
+    if (NSPointInRect(point, NSInsetRect(rect, -delta, -delta)) == NO)
+        return 0;
+    if (SKPointNearCoordinates(point, NSMaxX(rect), NSMinY(rect), delta))
+        return SKMaxXEdgeMask | SKMinYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMaxX(rect), NSMaxY(rect), delta))
+        return SKMaxXEdgeMask | SKMaxYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMinX(rect), NSMinY(rect), delta))
+        return SKMinXEdgeMask | SKMinYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMinX(rect), NSMaxY(rect), delta))
+        return SKMinXEdgeMask | SKMaxYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMaxX(rect), NSMidY(rect), delta))
+        return SKMaxXEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMidX(rect), NSMinY(rect), delta))
+        return SKMinYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMidX(rect), NSMaxY(rect), delta))
+        return SKMaxYEdgeMask;
+    else if (SKPointNearCoordinates(point, NSMinX(rect), NSMidY(rect), delta))
+        return SKMinXEdgeMask;
+    else
+        return 0;
 }

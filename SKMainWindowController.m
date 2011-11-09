@@ -2255,6 +2255,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 [pdfView setNeedsDisplayForAnnotation:note];
                 [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
                 if (NSIsEmptyRect(oldRect) == NO) {
+                    if ([note isResizable]) {
+                        CGFloat margin = 4.0 / [pdfView scaleFactor];
+                        oldRect = NSInsetRect(oldRect, -margin, -margin);
+                    }
                     [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
                     [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
                 }

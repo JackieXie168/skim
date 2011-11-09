@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "NSGeometry_SKExtensions.h"
 
 
 extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
@@ -83,7 +84,9 @@ extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
 - (NSRect)displayRectForBounds:(NSRect)bounds;
 
-- (void)drawSelectionHighlight:(NSUInteger)mask;
+- (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor;
+
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor;
 
 - (void)registerUserName;
 

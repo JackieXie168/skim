@@ -118,6 +118,7 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 static BOOL useToolModeCursors = NO;
 
 static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
+static inline NSCursor *SKCursorForDragMax(SKRectEdges mask, NSInteger rotation);
 
 enum {
     SKNavigationNone,
@@ -161,6 +162,7 @@ enum {
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 - (void)doNothingWithEvent:(NSEvent *)theEvent;
+- (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
 - (void)doUpdateCursor;
 
@@ -368,13 +370,11 @@ enum {
     }
     
     if ([[activeAnnotation page] isEqual:pdfPage] && editField == nil)
-        [activeAnnotation drawSelectionHighlight:dragMask];
+        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
     
     if ([[highlightAnnotation page] isEqual:pdfPage]) {
-        NSRect bounds = [highlightAnnotation bounds];
-        NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
-        [[NSColor blackColor] setStroke];
-        [NSBezierPath strokeRect:rect];
+        [[NSColor blackColor] setFill];
+        NSFrameRectWithWidth([highlightAnnotation bounds], 1.0);
     }
     
     if (readingBar) {
@@ -419,7 +419,7 @@ enum {
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
             [NSBezierPath fillRect:selectionRect];
         }
-        SKDrawGrabHandles(selectionRect, radius, 0);
+        SKDrawResizeHandles(selectionRect, radius);
     }
     
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
@@ -2954,161 +2954,156 @@ enum {
     }
 }
 
-- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint {
+- (void)doResizeLineAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint resizeHandle:(SKRectEdges)resizeHandle {
+    PDFPage *page = [activeAnnotation page];
+    NSRect pageBounds = [page  boundsForBox:[self displayBox]];
+    NSPoint currentPagePoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+    NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
+    NSPoint endPoint = originalEndPoint;
+    NSPoint startPoint = originalStartPoint;
+    NSPoint *draggedPoint = (resizeHandle & SKMinXEdgeMask) ? &startPoint : &endPoint;
+    
+    *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
+    draggedPoint->x = floor(draggedPoint->x);
+    draggedPoint->y = floor(draggedPoint->y);
+    
+    if ([theEvent modifierFlags] & NSShiftKeyMask) {
+        NSPoint *fixedPoint = (resizeHandle & SKMinXEdgeMask) ? &endPoint : &startPoint;
+        NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
+        CGFloat dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
+        
+        if (dx < 0.4 * dy) {
+            diffPoint.x = 0.0;
+        } else if (dy < 0.4 * dx) {
+            diffPoint.y = 0.0;
+        } else {
+            dx = fmin(dx, dy);
+            diffPoint.x = diffPoint.x < 0.0 ? -dx : dx;
+            diffPoint.y = diffPoint.y < 0.0 ? -dx : dx;
+        }
+        *draggedPoint = SKAddPoints(*fixedPoint, diffPoint);
+    }
+    
+    NSRect newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
+    
+    if (NSWidth(newBounds) < 8.0) {
+        newBounds.size.width = 8.0;
+        newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+    }
+    if (NSHeight(newBounds) < 8.0) {
+        newBounds.size.height = 8.0;
+        newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+    }
+    
+    [(PDFAnnotationLine *)activeAnnotation setStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
+    [(PDFAnnotationLine *)activeAnnotation setEndPoint:SKSubstractPoints(endPoint, newBounds.origin)];
+    [activeAnnotation setBounds:newBounds];
+}
+
+- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds resizeHandle:(SKRectEdges)resizeHandle {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds = originalBounds;
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
     NSPoint currentPagePoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
     NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
     
-    if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
-        
-        PDFAnnotationLine *annotation = (PDFAnnotationLine *)activeAnnotation;
-        NSPoint endPoint = originalEndPoint;
-        NSPoint startPoint = originalStartPoint;
-        NSPoint *draggedPoint = (dragMask & SKMinXEdgeMask) ? &startPoint : &endPoint;
-        
-        *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
-        draggedPoint->x = floor(draggedPoint->x);
-        draggedPoint->y = floor(draggedPoint->y);
-        
-        newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
-        
-        if (NSWidth(newBounds) < 8.0) {
-            newBounds.size.width = 8.0;
-            newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
-        }
-        if (NSHeight(newBounds) < 8.0) {
-            newBounds.size.height = 8.0;
-            newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
-        }
-        
-        if ([theEvent modifierFlags] & NSShiftKeyMask) {
-            NSPoint *fixedPoint = (dragMask & SKMinXEdgeMask) ? &endPoint : &startPoint;
-            NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
-            CGFloat dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
-            
-            if (dx < 0.4 * dy) {
-                diffPoint.x = 0.0;
-            } else if (dy < 0.4 * dx) {
-                diffPoint.y = 0.0;
-            } else {
-                dx = fmin(dx, dy);
-                diffPoint.x = diffPoint.x < 0.0 ? -dx : dx;
-                diffPoint.y = diffPoint.y < 0.0 ? -dx : dx;
-            }
-            *draggedPoint = SKAddPoints(*fixedPoint, diffPoint);
-        }
-        
-        startPoint = SKSubstractPoints(startPoint, newBounds.origin);
-        endPoint = SKSubstractPoints(endPoint, newBounds.origin);
-        
-        [annotation setStartPoint:startPoint];
-        [annotation setEndPoint:endPoint];
-        
+    if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
+        resizeHandle = relPoint.x < 0.0 ? ((resizeHandle & ~SKMaxXEdgeMask) | SKMinXEdgeMask) : ((resizeHandle & ~SKMinXEdgeMask) | SKMaxXEdgeMask);
+        resizeHandle = relPoint.y <= 0.0 ? ((resizeHandle & ~SKMaxYEdgeMask) | SKMinYEdgeMask) : ((resizeHandle & ~SKMinYEdgeMask) | SKMaxYEdgeMask);
     } else {
-        if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
-            dragMask = relPoint.x < 0.0 ? ((dragMask & ~SKMaxXEdgeMask) | SKMinXEdgeMask) : ((dragMask & ~SKMinXEdgeMask) | SKMaxXEdgeMask);
-            dragMask = relPoint.y <= 0.0 ? ((dragMask & ~SKMaxYEdgeMask) | SKMinYEdgeMask) : ((dragMask & ~SKMinYEdgeMask) | SKMaxYEdgeMask);
-        } else {
-            if ((dragMask & SKMinXEdgeMask) && (dragMask & SKMaxXEdgeMask))
-                dragMask &= relPoint.x < 0.0 ? ~SKMaxXEdgeMask : ~SKMinXEdgeMask;
-            if ((dragMask & SKMinYEdgeMask) && (dragMask & SKMaxYEdgeMask))
-                dragMask &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
-        }
-        
-        if ([theEvent modifierFlags] & NSShiftKeyMask) {
-            CGFloat width = NSWidth(newBounds);
-            CGFloat height = NSHeight(newBounds);
-            
-            if (dragMask & SKMaxXEdgeMask)
-                width = fmax(8.0, width + relPoint.x);
-            else if (dragMask & SKMinXEdgeMask)
-                width = fmax(8.0, width - relPoint.x);
-            if (dragMask & SKMaxYEdgeMask)
-                height = fmax(8.0, height + relPoint.y);
-            else if (dragMask & SKMinYEdgeMask)
-                height = fmax(8.0, height - relPoint.y);
-            
-            if (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
-                if (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask))
-                    width = height = fmax(width, height);
-                else
-                    height = width;
-            } else {
-                width = height;
-            }
-            
-            if (dragMask & SKMinXEdgeMask) {
-                if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
-                    width = height = fmax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
-            } else {
-                if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
-                    width = height = fmax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
-            }
-            if (dragMask & SKMinYEdgeMask) {
-                if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
-                    width = height = fmax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
-            } else {
-                if (NSMinY(newBounds) + height > NSMaxY(pageBounds))
-                    width = height = fmax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
-            }
-            
-            if (dragMask & SKMinXEdgeMask)
-                newBounds.origin.x = NSMaxX(newBounds) - width;
-            if (dragMask & SKMinYEdgeMask)
-                newBounds.origin.y = NSMaxY(newBounds) - height;
-            newBounds.size.width = width;
-            newBounds.size.height = height;
-           
-        } else {
-            if (dragMask & SKMaxXEdgeMask) {
-                newBounds.size.width += relPoint.x;
-                if (NSMaxX(newBounds) > NSMaxX(pageBounds))
-                    newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
-                }
-            } else if (dragMask & SKMinXEdgeMask) {
-                newBounds.origin.x += relPoint.x;
-                newBounds.size.width -= relPoint.x;
-                if (NSMinX(newBounds) < NSMinX(pageBounds)) {
-                    newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
-                    newBounds.origin.x = NSMinX(pageBounds);
-                }
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x = NSMaxX(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
-                }
-            }
-            if (dragMask & SKMaxYEdgeMask) {
-                newBounds.size.height += relPoint.y;
-                if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
-                    newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
-                }
-            } else if (dragMask & SKMinYEdgeMask) {
-                newBounds.origin.y += relPoint.y;
-                newBounds.size.height -= relPoint.y;
-                if (NSMinY(newBounds) < NSMinY(pageBounds)) {
-                    newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
-                    newBounds.origin.y = NSMinY(pageBounds);
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y = NSMaxY(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
-                }
-            }
-        }
-        // Keep integer.
-        newBounds = NSIntegralRect(newBounds);
-        
+        if ((resizeHandle & SKMinXEdgeMask) && (resizeHandle & SKMaxXEdgeMask))
+            resizeHandle &= relPoint.x < 0.0 ? ~SKMaxXEdgeMask : ~SKMinXEdgeMask;
+        if ((resizeHandle & SKMinYEdgeMask) && (resizeHandle & SKMaxYEdgeMask))
+            resizeHandle &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
     }
     
-    // Change annotation's location.
-    [activeAnnotation setBounds:newBounds];
+    if ([theEvent modifierFlags] & NSShiftKeyMask) {
+        CGFloat width = NSWidth(newBounds);
+        CGFloat height = NSHeight(newBounds);
+        
+        if (resizeHandle & SKMaxXEdgeMask)
+            width = fmax(8.0, width + relPoint.x);
+        else if (resizeHandle & SKMinXEdgeMask)
+            width = fmax(8.0, width - relPoint.x);
+        if (resizeHandle & SKMaxYEdgeMask)
+            height = fmax(8.0, height + relPoint.y);
+        else if (resizeHandle & SKMinYEdgeMask)
+            height = fmax(8.0, height - relPoint.y);
+        
+        if (resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
+            if (resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask))
+                width = height = fmax(width, height);
+            else
+                height = width;
+        } else {
+            width = height;
+        }
+        
+        if (resizeHandle & SKMinXEdgeMask) {
+            if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
+                width = height = fmax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
+        } else {
+            if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
+                width = height = fmax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
+        }
+        if (resizeHandle & SKMinYEdgeMask) {
+            if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
+                width = height = fmax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
+        } else {
+            if (NSMinY(newBounds) + height > NSMaxY(pageBounds))
+                width = height = fmax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
+        }
+        
+        if (resizeHandle & SKMinXEdgeMask)
+            newBounds.origin.x = NSMaxX(newBounds) - width;
+        if (resizeHandle & SKMinYEdgeMask)
+            newBounds.origin.y = NSMaxY(newBounds) - height;
+        newBounds.size.width = width;
+        newBounds.size.height = height;
+       
+    } else {
+        if (resizeHandle & SKMaxXEdgeMask) {
+            newBounds.size.width += relPoint.x;
+            if (NSMaxX(newBounds) > NSMaxX(pageBounds))
+                newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.size.width = 8.0;
+            }
+        } else if (resizeHandle & SKMinXEdgeMask) {
+            newBounds.origin.x += relPoint.x;
+            newBounds.size.width -= relPoint.x;
+            if (NSMinX(newBounds) < NSMinX(pageBounds)) {
+                newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
+                newBounds.origin.x = NSMinX(pageBounds);
+            }
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.origin.x = NSMaxX(newBounds) - 8.0;
+                newBounds.size.width = 8.0;
+            }
+        }
+        if (resizeHandle & SKMaxYEdgeMask) {
+            newBounds.size.height += relPoint.y;
+            if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+            }
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.size.height = 8.0;
+            }
+        } else if (resizeHandle & SKMinYEdgeMask) {
+            newBounds.origin.y += relPoint.y;
+            newBounds.size.height -= relPoint.y;
+            if (NSMinY(newBounds) < NSMinY(pageBounds)) {
+                newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
+                newBounds.origin.y = NSMinY(pageBounds);
+            }
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.origin.y = NSMaxY(newBounds) - 8.0;
+                newBounds.size.height = 8.0;
+            }
+        }
+    }
+    
+    [activeAnnotation setBounds:NSIntegralRect(newBounds)];
 }
 
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
@@ -3120,44 +3115,10 @@ enum {
     NSPoint mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];
-    NSInteger rotation = [page rotation];
     
     // Hit-test for resize box.
-    dragMask = 0;
-    if (isLine) {
-        if (NSPointInRect(pagePoint, SKRectFromCenterAndSquareSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), 8.0)))
-            dragMask = SKMaxXEdgeMask;
-        else if (NSPointInRect(pagePoint, SKRectFromCenterAndSquareSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), 8.0)))
-            dragMask = SKMinXEdgeMask;
-    }  else if ([activeAnnotation isResizable]) {
-        if (NSWidth(originalBounds) < 2.0) {
-            dragMask |= SKMinXEdgeMask | SKMaxXEdgeMask;
-        } else if (rotation == 0 || rotation == 90) {
-            if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
-                dragMask |= SKMaxXEdgeMask;
-            else if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
-                dragMask |= SKMinXEdgeMask;
-        } else {
-            if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
-                dragMask |= SKMinXEdgeMask;
-            else if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
-                dragMask |= SKMaxXEdgeMask;
-        }
-        if (NSHeight(originalBounds) < 2.0) {
-            dragMask |= SKMinYEdgeMask | SKMaxYEdgeMask;
-        } else if (rotation == 90 || rotation == 180) {
-            if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
-                dragMask |= SKMaxYEdgeMask;
-            else if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
-                dragMask |= SKMinYEdgeMask;
-        } else {
-            if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
-                dragMask |= SKMinYEdgeMask;
-            else if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
-                dragMask |= SKMaxYEdgeMask;
-        }
-    }
-    if (dragMask)
+    SKRectEdges resizeHandle = [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]];
+    if (resizeHandle)
         [self setNeedsDisplayForAnnotation:activeAnnotation];
     
     // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
@@ -3172,6 +3133,11 @@ enum {
         originalEndPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation endPoint], originalBounds.origin));
     }
     
+    if (resizeHandle == 0)
+        [[NSCursor closedHandCursor] push];
+    else
+        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
+    
     [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -3181,10 +3147,12 @@ enum {
             lastMouseEvent = theEvent;
             draggedAnnotation = YES;
         }
-        if (dragMask == 0)
+        if (resizeHandle == 0)
             [self doMoveAnnotationWithEvent:lastMouseEvent offset:offset];
+        else if (isLine)
+            [self doResizeLineAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint resizeHandle:resizeHandle];
         else
-            [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint];
+            [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:resizeHandle];
     }
     [NSEvent stopPeriodicEvents];
     if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
@@ -3198,7 +3166,10 @@ enum {
     }
     
     [self setNeedsDisplayForAnnotation:activeAnnotation];
-    dragMask = 0;
+    
+    [NSCursor pop];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
 - (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent {
@@ -3244,29 +3215,35 @@ enum {
     // Get mouse in "page space".
     pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
     
-    // Hit test for annotation.
-    annotations = [page annotations];
-    i = [annotations count];
-    
-    while (i-- > 0) {
-        PDFAnnotation *annotation = [annotations objectAtIndex:i];
-        NSRect bounds = [annotation bounds];
+    if ([activeAnnotation page] == page && editField == nil && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
+        mouseDownInAnnotation = YES;
+        newActiveAnnotation = activeAnnotation;
+    } else {
         
-        // Hit test annotation.
-        if ([annotation isSkimNote]) {
-            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
-                mouseDownInAnnotation = YES;
-                newActiveAnnotation = annotation;
-                break;
-            } else if (NSPointInRect(pagePoint, bounds)) {
-                // register this, so we can do our own selection later
-                mouseDownInAnnotation = YES;
-            }
-        } else if (NSPointInRect(pagePoint, bounds)) {
-            if ([annotation isLink]) {
-                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP))
+        // Hit test for annotation.
+        annotations = [page annotations];
+        i = [annotations count];
+        
+        while (i-- > 0) {
+            PDFAnnotation *annotation = [annotations objectAtIndex:i];
+            NSRect bounds = [annotation bounds];
+            
+            // Hit test annotation.
+            if ([annotation isSkimNote]) {
+                if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
+                    mouseDownInAnnotation = YES;
                     newActiveAnnotation = annotation;
-                break;
+                    break;
+                } else if (NSPointInRect(pagePoint, bounds)) {
+                    // register this, so we can do our own selection later
+                    mouseDownInAnnotation = YES;
+                }
+            } else if (NSPointInRect(pagePoint, bounds)) {
+                if ([annotation isLink]) {
+                    if (mouseDownInAnnotation && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP))
+                        newActiveAnnotation = annotation;
+                    break;
+                }
             }
         }
     }
@@ -3455,39 +3432,25 @@ enum {
     selectionPageIndex = [page pageIndex];
     
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
-    BOOL didSelect = NO;
+    BOOL didSelect = (NO == NSIsEmptyRect(selectionRect));
     
-    dragMask = 0;
+    SKRectEdges resizeHandle = didSelect ? SKResizeHandleForPointFromRect(initialPoint, selectionRect, margin) : 0;
     
-    if (NSIsEmptyRect(selectionRect) || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
-        if (NSIsEmptyRect(selectionRect)) {
-            didSelect = NO;
-        } else {
-            [self setNeedsDisplay:YES];
-            didSelect = YES;
-        }
+    if (resizeHandle == 0 && (didSelect == NO || NSPointInRect(initialPoint, selectionRect) == NO)) {
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
-        dragMask = SKMaxXEdgeMask | SKMinYEdgeMask;
-    } else {
-        if (initialPoint.x > NSMaxX(selectionRect) - margin)
-            dragMask |= SKMaxXEdgeMask;
-        else if (initialPoint.x < NSMinX(selectionRect) + margin)
-            dragMask |= SKMinXEdgeMask;
-        if (initialPoint.y < NSMinY(selectionRect) + margin)
-            dragMask |= SKMinYEdgeMask;
-        else if (initialPoint.y > NSMaxY(selectionRect) - margin)
-            dragMask |= SKMaxYEdgeMask;
-        didSelect = YES;
+        resizeHandle = SKMaxXEdgeMask | SKMinYEdgeMask;
+        if (didSelect)
+            [self setNeedsDisplay:YES];
     }
     
 	NSRect initialRect = selectionRect;
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
-    if (dragMask == 0) {
+    if (resizeHandle == 0) {
         [[NSCursor closedHandCursor] push];
     } else {
-        [[NSCursor crosshairCursor] push];
+        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
     
@@ -3505,30 +3468,30 @@ enum {
         newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
         delta = SKSubstractPoints(newPoint, initialPoint);
         
-        if (dragMask == 0) {
+        if (resizeHandle == 0) {
             newRect.origin = SKAddPoints(newRect.origin, delta);
         } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
             CGFloat width = NSWidth(newRect);
             CGFloat height = NSHeight(newRect);
             CGFloat square;
             
-            if (dragMask & SKMaxXEdgeMask)
+            if (resizeHandle & SKMaxXEdgeMask)
                 width += delta.x;
-            else if (dragMask & SKMinXEdgeMask)
+            else if (resizeHandle & SKMinXEdgeMask)
                 width -= delta.x;
-            if (dragMask & SKMaxYEdgeMask)
+            if (resizeHandle & SKMaxYEdgeMask)
                 height += delta.y;
-            else if (dragMask & SKMinYEdgeMask)
+            else if (resizeHandle & SKMinYEdgeMask)
                 height -= delta.y;
             
-            if (0 == (dragMask & (SKMinXEdgeMask | SKMaxXEdgeMask)))
+            if (0 == (resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)))
                 square = fabs(height);
-            else if (0 == (dragMask & (SKMinYEdgeMask | SKMaxYEdgeMask)))
+            else if (0 == (resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask)))
                 square = fabs(width);
             else
                 square = fmax(fabs(width), fabs(height));
             
-            if (dragMask & SKMinXEdgeMask) {
+            if (resizeHandle & SKMinXEdgeMask) {
                 if (width >= 0.0 && NSMaxX(newRect) - square < NSMinX(pageBounds))
                     square = NSMaxX(newRect) - NSMinX(pageBounds);
                 else if (width < 0.0 && NSMaxX(newRect) + square > NSMaxX(pageBounds))
@@ -3539,7 +3502,7 @@ enum {
                 else if (width < 0.0 && NSMinX(newRect) - square < NSMinX(pageBounds))
                     square = NSMinX(newRect) - NSMinX(pageBounds);
             }
-            if (dragMask & SKMinYEdgeMask) {
+            if (resizeHandle & SKMinYEdgeMask) {
                 if (height >= 0.0 && NSMaxY(newRect) - square < NSMinY(pageBounds))
                     square = NSMaxY(newRect) - NSMinY(pageBounds);
                 else if (height < 0.0 && NSMaxY(newRect) + square > NSMaxY(pageBounds))
@@ -3551,23 +3514,23 @@ enum {
                     square = NSMinY(newRect) - NSMinY(pageBounds);
             }
             
-            if (dragMask & SKMinXEdgeMask)
+            if (resizeHandle & SKMinXEdgeMask)
                 newRect.origin.x = width < 0.0 ? NSMaxX(newRect) : NSMaxX(newRect) - square;
-            else if (width < 0.0 && (dragMask & SKMaxXEdgeMask))
+            else if (width < 0.0 && (resizeHandle & SKMaxXEdgeMask))
                 newRect.origin.x = NSMinX(newRect) - square;
-            if (dragMask & SKMinYEdgeMask)
+            if (resizeHandle & SKMinYEdgeMask)
                 newRect.origin.y = height < 0.0 ? NSMaxY(newRect) : NSMaxY(newRect) - square;
-            else if (height < 0.0 && (dragMask & SKMaxYEdgeMask))
+            else if (height < 0.0 && (resizeHandle & SKMaxYEdgeMask))
                 newRect.origin.y = NSMinY(newRect) - square;
             newRect.size.width = newRect.size.height = square;
         } else {
-            if (dragMask & SKMaxXEdgeMask) {
+            if (resizeHandle & SKMaxXEdgeMask) {
                 newRect.size.width += delta.x;
                 if (NSWidth(newRect) < 0.0) {
                     newRect.size.width *= -1.0;
                     newRect.origin.x -= NSWidth(newRect);
                 }
-            } else if (dragMask & SKMinXEdgeMask) {
+            } else if (resizeHandle & SKMinXEdgeMask) {
                 newRect.origin.x += delta.x;
                 newRect.size.width -= delta.x;
                 if (NSWidth(newRect) < 0.0) {
@@ -3576,13 +3539,13 @@ enum {
                 }
             }
             
-            if (dragMask & SKMaxYEdgeMask) {
+            if (resizeHandle & SKMaxYEdgeMask) {
                 newRect.size.height += delta.y;
                 if (NSHeight(newRect) < 0.0) {
                     newRect.size.height *= -1.0;
                     newRect.origin.y -= NSHeight(newRect);
                 }
-            } else if (dragMask & SKMinYEdgeMask) {
+            } else if (resizeHandle & SKMinYEdgeMask) {
                 newRect.origin.y += delta.y;
                 newRect.size.height -= delta.y;
                 if (NSHeight(newRect) < 0.0) {
@@ -3613,10 +3576,9 @@ enum {
         selectionPageIndex = NSNotFound;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
-    } else if (dragMask) {
+    } else if (resizeHandle) {
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
-    dragMask = 0;
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
@@ -4131,49 +4093,24 @@ enum {
     return [NSCursor arrowCursor];
 }
 
-- (NSCursor *)cursorForSelectToolModeAtPoint:(NSPoint)point {
-    NSCursor *cursor = nil;
-    CGFloat margin = 4.0 / [self scaleFactor];
-    PDFPage *page = [self pageForPoint:point nearest:NO];
-    NSPoint p = [self convertPoint:point toPage:page];
-    if (NSIsEmptyRect(selectionRect) || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
-        cursor = [NSCursor crosshairCursor];
-    } else { 
-        NSInteger angle = 360;
-        if (p.x > NSMaxX(selectionRect) - margin) {
-            if (p.y < NSMinY(selectionRect) + margin)
-                angle = 45;
-            else if (p.y > NSMaxY(selectionRect) - margin)
-                angle = 315;
-            else
-                angle = 0;
-        } else if (p.x < NSMinX(selectionRect) + margin) {
-            if (p.y < NSMinY(selectionRect) + margin)
-                angle = 135;
-            else if (p.y > NSMaxY(selectionRect) - margin)
-                angle = 225;
-            else
-                angle = 180;
-        } else if (p.y < NSMinY(selectionRect) + margin) {
-            angle = 90;
-        } else if (p.y > NSMaxY(selectionRect) - margin) {
-            angle = 270;
-        } else {
-            cursor = [NSCursor openHandCursor];
-        }
-        if (angle != 360) {
-            angle = (360 + angle + [page rotation]) % 360;
-            switch (angle) {
-                case 0: case 180: cursor = [NSCursor resizeLeftRightCursor]; break;
-                case 45: cursor = [NSCursor resizeRightDownCursor]; break;
-                case 90: case 270: cursor = [NSCursor resizeUpDownCursor]; break;
-                case 135: cursor = [NSCursor resizeLeftDownCursor]; break;
-                case 225: cursor = [NSCursor resizeLeftUpCursor]; break;
-                case 315: cursor = [NSCursor resizeRightUpCursor]; break;
-            }
-        }
+- (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation {
+    BOOL rotated = (rotation % 180 != 0);
+    switch (mask) {
+        case SKMaxXEdgeMask:
+        case SKMinXEdgeMask:
+            return rotated ? [NSCursor resizeUpDownCursor] : [NSCursor resizeLeftRightCursor];
+        case SKMaxXEdgeMask | SKMaxYEdgeMask:
+        case SKMinXEdgeMask | SKMinYEdgeMask:
+            return rotated ? [NSCursor resizeDiagonal135Cursor] : [NSCursor resizeDiagonal45Cursor];
+        case SKMaxYEdgeMask:
+        case SKMinYEdgeMask:
+            return rotated ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
+        case SKMaxXEdgeMask | SKMinYEdgeMask:
+        case SKMinXEdgeMask | SKMaxYEdgeMask:
+            return rotated ? [NSCursor resizeDiagonal45Cursor] : [NSCursor resizeDiagonal135Cursor];
+        default:
+            return nil;
     }
-    return cursor;
 }
 
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
@@ -4192,18 +4129,24 @@ enum {
         cursor = [NSCursor arrowCursor];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+        PDFPage *page = [self pageForPoint:p nearest:YES];
+        p = [self convertPoint:p toPage:page];
+        SKRectEdges resizeHandle;
+        
         switch (toolMode) {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                PDFPage *page = [self pageForPoint:p nearest:YES];
-                p = [self convertPoint:p toPage:page];
-                if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
+                if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
                     area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
                 if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
+                else if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                    cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
+                else if ([activeAnnotation isMovable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
+                    cursor = [NSCursor openHandCursor];
                 else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode)
@@ -4217,10 +4160,14 @@ enum {
                     cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
-                if (area == kPDFNoArea)
+                if (area == kPDFNoArea) {
                     cursor = [NSCursor openHandCursor];
-                else 
-                    cursor = [self cursorForSelectToolModeAtPoint:p];
+                } else {
+                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, 4.0 / [self scaleFactor]);
+                    cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
+                    if (cursor == nil)
+                        cursor = NSPointInRect(p, selectionRect) ? [NSCursor openHandCursor] : [NSCursor crosshairCursor];
+                }
                 break;
             case SKMagnifyToolMode:
                 if (area == kPDFNoArea)
@@ -4283,6 +4230,16 @@ enum {
                 [[self window] makeFirstResponder:self];
         }
     }
+}
+
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
+    NSRect rect = [annotation displayRectForBounds:[annotation bounds]];
+    if (annotation == activeAnnotation && [annotation isResizable]) {
+        CGFloat margin = 4.0 / [self scaleFactor];
+        rect = NSInsetRect(rect, -margin, -margin);
+    }
+    [self setNeedsDisplayInRect:rect ofPage:page];
+    [self annotationsChangedOnPage:page];
 }
 
 @end
