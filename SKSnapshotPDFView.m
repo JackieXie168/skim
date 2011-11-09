@@ -431,7 +431,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         if ([document respondsToSelector:@selector(synchronizer)]) {
             
-            NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            NSPoint mouseLoc = [theEvent locationInView:self];
             PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
             NSPoint location = [self convertPoint:mouseLoc toPage:page];
             NSUInteger pageIndex = [page pageIndex];
@@ -448,7 +448,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)mouseUp:(NSEvent *)theEvent{
     [NSCursor pop];
     NSView *view = [self documentView];
-	NSPoint mouseLoc = [view convertPoint:[theEvent locationInWindow] fromView:nil];
+	NSPoint mouseLoc = [theEvent locationInView:view];
     if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]))
         [[NSCursor openHandCursor] set];
     else

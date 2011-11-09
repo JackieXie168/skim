@@ -407,7 +407,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if (NSMouseInRect([self convertPoint:[theEvent locationInWindow] fromView:nil], [self resizeHandleRect], [self isFlipped]))
+    if (NSMouseInRect([theEvent locationInView:self], [self resizeHandleRect], [self isFlipped]))
         [(SKSideWindow *)[self window] resizeWithEvent:theEvent];
     else
         [super mouseDown:theEvent];

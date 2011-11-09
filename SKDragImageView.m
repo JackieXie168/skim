@@ -38,6 +38,7 @@
 
 #import "SKDragImageView.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 @implementation SKDragImageView
 
@@ -111,7 +112,7 @@
     NSPoint mouseLoc;
     while(keepOn){
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-        mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        mouseLoc = [theEvent locationInView:self];
         isInside = [self mouse:mouseLoc inRect:[self bounds]];
         switch ([theEvent type]) {
             case NSLeftMouseDragged:

@@ -39,6 +39,7 @@
 #import "SKThumbnailTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 #define SKScrollerWillScrollNotification @"SKScrollerWillScrollNotification"
 #define SKScrollerDidScrollNotification @"SKScrollerDidScrollNotification"
@@ -156,7 +157,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if (([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
-        NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+        NSInteger row = [self rowAtPoint:[theEvent locationInView:self]];
         if (row != -1 && [[self delegate] tableView:self commandSelectRow:row])
             return;
     }

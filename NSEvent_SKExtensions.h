@@ -43,10 +43,15 @@ enum {
 };
 
 @interface NSEvent (SKExtensions)
+
 + (NSUInteger)standardModifierFlags;
 - (NSUInteger)deviceIndependentModifierFlags;
 - (NSUInteger)standardModifierFlags;
+
 - (unichar)firstCharacter;
+
+- (NSPoint)locationInView:(NSView *)view;
+
 @end
 
 @interface NSEvent (SKLeopardGestures)

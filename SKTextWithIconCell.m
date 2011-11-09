@@ -39,6 +39,7 @@
 #import "SKTextWithIconCell.h"
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 NSString *SKTextWithIconCellStringKey = @"string";
 NSString *SKTextWithIconCellImageKey = @"image";
@@ -153,7 +154,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
 
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
     NSRect textRect = [self textRectForBounds:cellFrame];
-    NSPoint mouseLoc = [controlView convertPoint:[event locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [event locationInView:controlView];
     NSUInteger hit = NSCellHitNone;
     if (NSMouseInRect(mouseLoc, textRect, [controlView isFlipped]))
         hit = [super hitTestForEvent:event inRect:textRect ofView:controlView];
