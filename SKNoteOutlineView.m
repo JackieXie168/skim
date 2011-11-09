@@ -57,7 +57,7 @@
 
 - (void)resizeRow:(NSInteger)row withEvent:(NSEvent *)theEvent {
     id item = [self itemAtRow:row];
-    NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint startPoint = [theEvent locationInView:self];
     CGFloat startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
 	
     [[NSCursor resizeUpDownCursor] push];
@@ -65,7 +65,7 @@
 	while ([theEvent type] != NSLeftMouseUp) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
 		if ([theEvent type] == NSLeftMouseDragged) {
-            NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            NSPoint currentPoint = [theEvent locationInView:self];
             CGFloat currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
             
             [[self delegate] outlineView:self setHeight:currentHeight ofRowByItem:item];
@@ -77,7 +77,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint mouseLoc = [theEvent locationInView:self];
         NSInteger row = [self rowAtPoint:mouseLoc];
         
         if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {

@@ -39,6 +39,7 @@
 #import "SKStatusBar.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSEvent_SKExtensions.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -237,13 +238,13 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [theEvent locationInView:self];
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
     if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped]) && [rightCell action]) {
         while ([theEvent type] != NSLeftMouseUp)
             theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
-        mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        mouseLoc = [theEvent locationInView:self];
         if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped])) {
             [rightCell setNextState];
             [NSApp sendAction:[rightCell action] to:[rightCell target] from:self];
@@ -251,7 +252,7 @@
     } else if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped]) && [leftCell action]) {
         while ([theEvent type] != NSLeftMouseUp)
             theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
-        mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        mouseLoc = [theEvent locationInView:self];
         if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped])) {
             [leftCell setNextState];
             [NSApp sendAction:[leftCell action] to:[leftCell target] from:self];

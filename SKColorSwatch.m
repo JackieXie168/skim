@@ -182,7 +182,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [theEvent locationInView:self];
     NSInteger i = [self colorIndexAtPoint:mouseLoc];
     
     if ([self isEnabled]) {
@@ -220,7 +220,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
                     [image unlockFocus];
                     
-                    mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                    mouseLoc = [theEvent locationInView:self];
                     mouseLoc.x -= 6.0;
                     mouseLoc.y -= 6.0;
                     [self dragImage:image at:mouseLoc offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];

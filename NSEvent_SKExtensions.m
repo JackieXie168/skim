@@ -81,4 +81,8 @@
     return [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 }
 
+- (NSPoint)locationInView:(NSView *)view {
+    return [view convertPoint:[self locationInWindow] fromView:nil];
+}
+
 @end

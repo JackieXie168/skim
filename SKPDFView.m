@@ -1125,7 +1125,7 @@ enum {
         [self doPdfsyncWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint p = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         BOOL hitAnnotation = NO;
@@ -1354,7 +1354,7 @@ enum {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
-        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint point = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:point nearest:YES];
         PDFAnnotation *annotation = nil;
         
@@ -1493,7 +1493,7 @@ enum {
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
     if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
         [super beginGestureWithEvent:theEvent];
-    PDFPage *page = [self pageForPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] nearest:YES];
+    PDFPage *page = [self pageForPoint:[theEvent locationInView:self] nearest:YES];
     gestureRotation = 0.0;
     gesturePageIndex = [(page ?: [self currentPage]) pageIndex];
 }
@@ -2934,7 +2934,7 @@ enum {
     // Move annotation.
     [[self documentView] autoscroll:theEvent];
     
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [theEvent locationInView:self];
     PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
     
     if (newActivePage) { // newActivePage should never be nil, but just to be sure
@@ -2957,7 +2957,7 @@ enum {
 - (void)doResizeLineAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint resizeHandle:(SKRectEdges)resizeHandle {
     PDFPage *page = [activeAnnotation page];
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
-    NSPoint currentPagePoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+    NSPoint currentPagePoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
     NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
     NSPoint endPoint = originalEndPoint;
     NSPoint startPoint = originalStartPoint;
@@ -3004,7 +3004,7 @@ enum {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds = originalBounds;
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
-    NSPoint currentPagePoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+    NSPoint currentPagePoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
     NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
     
     if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
@@ -3112,7 +3112,7 @@ enum {
     // Old (current) annotation location and click point relative to it
     NSRect originalBounds = [activeAnnotation bounds];
     BOOL isLine = [[activeAnnotation type] isEqualToString:SKNLineString];
-    NSPoint mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];
     
@@ -3182,7 +3182,7 @@ enum {
     while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         
-        p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        p = [theEvent locationInView:self];
         page = [self pageForPoint:p nearest:NO];
         
         if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
@@ -3205,7 +3205,7 @@ enum {
     PDFPage *page;
     
     // Mouse in display view coordinates.
-    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseDownOnPage = [theEvent locationInView:self];
     BOOL mouseDownInAnnotation = NO;
     BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
     
@@ -3314,7 +3314,7 @@ enum {
 }
 
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     BOOL didDraw = NO;
     
@@ -3345,7 +3345,7 @@ enum {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
             break;
-        [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+        [bezierPath lineToPoint:[self convertPoint:[theEvent locationInView:self] toPage:page]];
         [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         didDraw = YES;
     }
@@ -3413,7 +3413,7 @@ enum {
 }
 
 - (void)doSelectWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [theEvent locationInView:self];
     
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
     if (page == nil) {
@@ -3465,7 +3465,7 @@ enum {
         NSRect	newRect = initialRect;
         NSPoint delta;
         
-        newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+        newPoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
         delta = SKSubstractPoints(newPoint, initialPoint);
         
         if (resizeHandle == 0) {
@@ -3597,7 +3597,7 @@ enum {
         [self setCurrentSelection:nil];
     } else if ([theEvent clickCount] > 1) {
         extendSelection = YES;
-        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint p = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         if ([theEvent clickCount] == 2)
@@ -3611,7 +3611,7 @@ enum {
         extendSelection = YES;
         if ([[self currentSelection] hasCharacters])
             wasSelection = [[self currentSelection] retain];
-        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint p = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
@@ -3635,7 +3635,7 @@ enum {
         PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
         p1 = [self convertPoint:p1 toPage:page1];
 
-        NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint p2 = [theEvent locationInView:self];
         PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
         p2 = [self convertPoint:p2 toPage:page2];
         
@@ -3676,7 +3676,7 @@ enum {
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     
     NSEvent *lastMouseEvent = theEvent;
-    NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint lastMouseLoc = [theEvent locationInView:self];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
     NSInteger lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineRects, YES) - [readingBar currentLine];
     NSDate *lastPageChangeDate = [NSDate distantPast];
@@ -3770,7 +3770,7 @@ enum {
             break;
         
         // dragging
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint mouseLoc = [theEvent locationInView:self];
         if ([[self pageForPoint:mouseLoc nearest:YES] isEqual:page] == NO)
             continue;
         
@@ -4056,7 +4056,7 @@ enum {
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
         
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint mouseLoc = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
         NSPoint location = [self convertPoint:mouseLoc toPage:page];
         NSUInteger pageIndex = [page pageIndex];
@@ -4114,7 +4114,7 @@ enum {
 }
 
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
-    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint p = [theEvent locationInView:self];
     NSCursor *cursor = nil;
     
     if ([[self document] isLocked]) {
