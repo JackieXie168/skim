@@ -86,9 +86,13 @@ static char SKBookmarkPropertiesObservationContext;
 - (void)stopObservingBookmarks:(NSArray *)oldBookmarks;
 @end
 
+@interface SKBookmarkController ()
+@property (nonatomic, retain) NSArray *draggedBookmarks;
+@end
+
 @implementation SKBookmarkController
 
-@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager;
+@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager, draggedBookmarks;
 
 static SKBookmarkController *sharedBookmarkController = nil;
 
@@ -205,32 +209,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
         }
     }
     [statusBar setLeftStringValue:message ?: @""];
-}
-
-#pragma mark Bookmarks
-
-static NSArray *minimumCoverForBookmarks(NSArray *items) {
-    SKBookmark *lastBm = nil;
-    NSMutableArray *minimalCover = [NSMutableArray array];
-    
-    for (SKBookmark *bm in items) {
-        if ([bm isDescendantOf:lastBm] == NO) {
-            [minimalCover addObject:bm];
-            lastBm = bm;
-        }
-    }
-    return minimalCover;
-}
-
-- (NSArray *)draggedBookmarks {
-    return draggedBookmarks;
-}
-
-- (void)setDraggedBookmarks:(NSArray *)items {
-    if (draggedBookmarks != items) {
-        [draggedBookmarks release];
-        draggedBookmarks = [items retain];
-    }
 }
 
 #pragma mark Recent Documents
@@ -569,6 +547,19 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 #pragma mark NSOutlineView datasource methods
+
+static NSArray *minimumCoverForBookmarks(NSArray *items) {
+    SKBookmark *lastBm = nil;
+    NSMutableArray *minimalCover = [NSMutableArray array];
+    
+    for (SKBookmark *bm in items) {
+        if ([bm isDescendantOf:lastBm] == NO) {
+            [minimalCover addObject:bm];
+            lastBm = bm;
+        }
+    }
+    return minimalCover;
+}
 
 - (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil) item = bookmarkRoot;
