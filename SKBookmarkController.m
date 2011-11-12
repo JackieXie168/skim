@@ -156,6 +156,10 @@ static NSUInteger maxRecentDocumentsCount = 0;
                                                      selector:@selector(handleApplicationWillTerminateNotification:)
                                                          name:NSApplicationWillTerminateNotification
                                                        object:NSApp];
+            
+            NSArray *lastOpenFiles = [[NSUserDefaults standardUserDefaults] arrayForKey:SKLastOpenFileNamesKey];
+            if ([lastOpenFiles count] > 0)
+                previousSession = [[SKBookmark alloc] initSessionWithSetups:lastOpenFiles label:NSLocalizedString(@"Restore Previous Session", @"Menu item title")];
         }
         sharedBookmarkController = [self retain];
     } else if (self != sharedBookmarkController) {
@@ -170,6 +174,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [self stopObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(bookmarkRoot);
+    SKDESTROY(previousSession);
     SKDESTROY(recentDocuments);
     SKDESTROY(draggedBookmarks);
     SKDESTROY(toolbarItems);
@@ -358,11 +363,28 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #pragma mark NSMenu delegate methods
 
+- (void)addItemForBookmark:(SKBookmark *)bookmark toMenu:(NSMenu *)menu isFolder:(BOOL)isFolder isAlternate:(BOOL)isAlternate {
+    NSMenuItem *item = nil;
+    if (isFolder) {
+        item = [menu addItemWithSubmenuAndTitle:[bookmark label]];
+        [[item submenu] setDelegate:self];
+    } else {
+        item = [menu addItemWithTitle:[bookmark label] action:@selector(openBookmark:) target:self];
+    }
+    [item setRepresentedObject:bookmark];
+    if (isAlternate) {
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        [item setAlternate:YES];
+        [item setImageAndSize:[bookmark alternateIcon]];
+    } else {
+        [item setImageAndSize:[bookmark icon]];
+    }
+}
+
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     NSMenu *supermenu = [menu supermenu];
     NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
     SKBookmark *bm = nil;
-    NSMenuItem *item;
     
     if (supermenu == [NSApp mainMenu])
         bm = [self bookmarkRoot];
@@ -374,39 +396,28 @@ static NSUInteger maxRecentDocumentsCount = 0;
         NSInteger i = [menu numberOfItems];
         while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
             [menu removeItemAtIndex:i];
+        if (supermenu == [NSApp mainMenu] && previousSession) {
+            [menu addItem:[NSMenuItem separatorItem]];
+            [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
+            [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
+        }
         if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
         for (bm in bookmarks) {
             switch ([bm bookmarkType]) {
                 case SKBookmarkTypeFolder:
-                    item = [menu addItemWithSubmenuAndTitle:[bm label]];
-                    [item setRepresentedObject:bm];
-                    [item setImageAndSize:[bm icon]];
-                    [[item submenu] setDelegate:self];
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
-                    [item setRepresentedObject:bm];
-                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
-                    [item setAlternate:YES];
-                    [item setImageAndSize:[bm alternateIcon]];
+                    [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:NO];
+                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:YES];
                     break;
                 case SKBookmarkTypeSession:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
-                    [item setRepresentedObject:bm];
-                    [item setImageAndSize:[bm icon]];
-                    item = [menu addItemWithSubmenuAndTitle:[bm label]];
-                    [item setRepresentedObject:bm];
-                    [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
-                    [item setAlternate:YES];
-                    [item setImageAndSize:[bm alternateIcon]];
-                    [[item submenu] setDelegate:self];
+                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
+                    [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:YES];
                     break;
                 case SKBookmarkTypeSeparator:
                     [menu addItem:[NSMenuItem separatorItem]];
                     break;
                 default:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
-                    [item setRepresentedObject:bm];
-                    [item setImageAndSize:[bm icon]];
+                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
                     break;
             }
         }
