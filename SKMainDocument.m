@@ -91,8 +91,8 @@
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
-#define OPEN_META_TAGS_KEY @"com.apple.metadata:kOMUserTags"
-#define OPEN_META_RATING_KEY @"com.apple.metadata:kOMStarRating"
+#define OPEN_META_TAGS_KEY @"com.apple.metadata:kMDItemOMUserTags"
+#define OPEN_META_RATING_KEY @"com.apple.metadata:kMDItemStarRating"
 
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
