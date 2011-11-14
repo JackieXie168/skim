@@ -2234,8 +2234,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([oldNoteProperties objectForKey:keyPath] == nil)
                 [oldNoteProperties setObject:oldValue forKey:keyPath];
             
-            // Update the UI, we should always do that unless the value did not really change or we're just changing the mod date
-            if ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO) {
+            // Update the UI, we should always do that unless the value did not really change or we're just changing the mod date or user name
+            if ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO && [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] == NO) {
                 PDFPage *page = [note page];
                 NSRect oldRect = NSZeroRect;
                 if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
