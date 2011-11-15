@@ -164,7 +164,7 @@ enum {
         unsigned int updatingOutlineSelection:1;
         unsigned int updatingThumbnailSelection:1;
         unsigned int isAnimating:1;
-        unsigned int findPanelFind:1;
+        unsigned int isSynchronousFind:1;
         unsigned int caseInsensitiveSearch:1;
         unsigned int wholeWordSearch:1;
         unsigned int updatingNoteSelection:1;
