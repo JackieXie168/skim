@@ -1873,13 +1873,15 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
-    NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
-    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
-    if ([pageIndex unsignedIntegerValue] % 50 == 0) {
-        [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
-        [self didChangeValueForKey:SEARCHRESULTS_KEY];
-        [self willChangeValueForKey:SEARCHRESULTS_KEY];
-        [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+    if (mwcFlags.isSynchronousFind == 0) {
+        NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
+        [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
+        if ([pageIndex unsignedIntegerValue] % 50 == 0) {
+            [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+            [self didChangeValueForKey:SEARCHRESULTS_KEY];
+            [self willChangeValueForKey:SEARCHRESULTS_KEY];
+            [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+        }
     }
 }
 
