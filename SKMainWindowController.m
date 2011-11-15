@@ -224,7 +224,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         interactionMode = SKNormalMode;
         searchResults = [[NSMutableArray alloc] init];
         searchResultIndex = 0;
-        mwcFlags.findPanelFind = 0;
+        mwcFlags.isSynchronousFind = 0;
         mwcFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveSearchKey];
         mwcFlags.wholeWordSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKWholeWordSearchKey];
         mwcFlags.caseInsensitiveNoteSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
@@ -1687,9 +1687,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options {
-	mwcFlags.findPanelFind = 1;
+	mwcFlags.isSynchronousFind = 1;
     selection = [[pdfView document] findString:string fromSelection:selection withOptions:options];
-	mwcFlags.findPanelFind = 0;
+	mwcFlags.isSynchronousFind = 0;
     return selection;
 }
 
@@ -1806,7 +1806,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 #pragma mark PDFDocument delegate
 
 - (void)didMatchString:(PDFSelection *)instance {
-    if (mwcFlags.findPanelFind == 0) {
+    if (mwcFlags.isSynchronousFind == 0) {
         if (mwcFlags.wholeWordSearch) {
             PDFSelection *copy = [[instance copy] autorelease];
             NSString *string = [instance string];
@@ -1841,7 +1841,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
-    if (mwcFlags.findPanelFind == 0) {
+    if (mwcFlags.isSynchronousFind == 0) {
         NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
         [self setSearchResults:nil];
         [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
@@ -1859,7 +1859,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
-    if (mwcFlags.findPanelFind == 0) {
+    if (mwcFlags.isSynchronousFind == 0) {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];
