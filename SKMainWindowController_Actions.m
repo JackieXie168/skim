@@ -182,6 +182,12 @@
             [pdfView scrollAnnotationToVisible:annotation];
             [pdfView setActiveAnnotation:annotation];
         }
+        NSInteger column = [sender clickedColumn];
+        if (column != -1) {
+            NSString *colID = [[[sender tableColumns] objectAtIndex:column] identifier];
+            if ([colID isEqualToString:@"color"])
+                [[NSColorPanel sharedColorPanel] orderFront:nil];
+        }
     } else NSBeep();
 }
 
