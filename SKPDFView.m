@@ -118,7 +118,6 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 static BOOL useToolModeCursors = NO;
 
 static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
-static inline NSCursor *SKCursorForDragMax(SKRectEdges mask, NSInteger rotation);
 
 enum {
     SKNavigationNone,
