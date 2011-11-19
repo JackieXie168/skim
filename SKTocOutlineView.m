@@ -40,6 +40,7 @@
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKTocOutlineView
@@ -210,6 +211,18 @@
     NSNumber *rowNumber = [userInfo objectForKey:@"row"];
     if (columnNumber && rowNumber)
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar eventChar = [theEvent firstCharacter];
+	NSUInteger modifiers = [theEvent standardModifierFlags];
+    
+    if (eventChar == NSLeftArrowFunctionKey && modifiers == (NSCommandKeyMask | NSAlternateKeyMask))
+        [self collapseItem:nil collapseChildren:YES];
+    else if (eventChar == NSRightArrowFunctionKey && modifiers == (NSCommandKeyMask | NSAlternateKeyMask))
+        [self expandItem:nil expandChildren:YES];
+    else
+        [super keyDown:theEvent];
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
