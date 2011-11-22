@@ -305,7 +305,23 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return [noteController commitEditing];
 }
 
+- (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo {
+    NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
+    if (invocation) {
+        [invocation setArgument:&didCommit atIndex:3];
+        [invocation invoke];
+    }
+}
+
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
+    if (delegate && didCommitSelector) {
+        NSInvocation *invocation = [[NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]] retain];
+        [invocation setTarget:delegate];
+        [invocation setSelector:didCommitSelector];
+        [invocation setArgument:&self atIndex:2];
+        [invocation setArgument:&contextInfo atIndex:4];
+        return [noteController commitEditingWithDelegate:self didCommitSelector:@selector(editor:didCommit:contextInfo:) contextInfo:invocation];
+    }
     return [noteController commitEditingWithDelegate:delegate didCommitSelector:didCommitSelector contextInfo:contextInfo];
 }
 
