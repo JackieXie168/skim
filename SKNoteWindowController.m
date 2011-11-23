@@ -316,7 +316,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
     if (delegate && didCommitSelector) {
-        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didCommitSelector argument:&self];
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didCommitSelector];
+        [invocation setArgument:&self atIndex:2];
         [invocation setArgument:&contextInfo atIndex:4];
         return [noteController commitEditingWithDelegate:self didCommitSelector:@selector(editor:didCommit:contextInfo:) contextInfo:[invocation retain]];
     }

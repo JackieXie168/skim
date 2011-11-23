@@ -82,7 +82,8 @@
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
     NSInvocation *invocation = nil;
     if (delegate != nil && didEndSelector != NULL) {
-        invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector argument:&self];
+        invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector];
+		[invocation setArgument:&self atIndex:2];
 		[invocation setArgument:&contextInfo atIndex:4];
 	}
     
