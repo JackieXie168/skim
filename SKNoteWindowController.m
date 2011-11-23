@@ -54,6 +54,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "SKNoteTextView.h"
+#import "NSInvocation_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -315,12 +316,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
     if (delegate && didCommitSelector) {
-        NSInvocation *invocation = [[NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]] retain];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didCommitSelector argument:&self];
         [invocation setArgument:&contextInfo atIndex:4];
-        return [noteController commitEditingWithDelegate:self didCommitSelector:@selector(editor:didCommit:contextInfo:) contextInfo:invocation];
+        return [noteController commitEditingWithDelegate:self didCommitSelector:@selector(editor:didCommit:contextInfo:) contextInfo:[invocation retain]];
     }
     return [noteController commitEditingWithDelegate:delegate didCommitSelector:didCommitSelector contextInfo:contextInfo];
 }
