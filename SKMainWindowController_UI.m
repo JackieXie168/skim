@@ -73,6 +73,7 @@
 #import "SKDocumentController.h"
 #import "NSError_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSInvocation_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1149,10 +1150,7 @@
     BOOL didCommit = [self commitEditing];
     if (delegate && didCommitSelector) {
         // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didCommitSelector argument:&self];
         [invocation setArgument:&didCommit atIndex:3];
         [invocation setArgument:&contextInfo atIndex:4];
         [invocation invoke];
