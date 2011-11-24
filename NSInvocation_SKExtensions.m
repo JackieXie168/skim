@@ -49,10 +49,4 @@
     return invocation;
 }
 
-+ (id)invocationWithTarget:(id)target selector:(SEL)selector argument:(void *)argument {
-    NSInvocation *invocation = [self invocationWithTarget:target selector:selector];
-    [invocation setArgument:argument atIndex:2];
-    return invocation;
-}
-
 @end

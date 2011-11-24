@@ -69,7 +69,7 @@ enum {
 + (NSString *)xdvToolPath;
 - (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
 - (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
-- (void)conversionCompleted:(BOOL)didComplete;
+- (void)conversionCompleted;
 - (void)conversionStarted;
 - (void)converterWasStopped;
 - (void)setButtonTitle:(NSString *)title action:(SEL)action;
@@ -87,11 +87,8 @@ static void PSConverterBeginDocumentCallback(void *info)
 static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
-    if ([delegate respondsToSelector:@selector(conversionCompleted:)]) {
-        BOOL val = (success == true);
-        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:@selector(conversionCompleted:) argument:&val];
-        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
-    }
+    if ([delegate respondsToSelector:@selector(conversionCompleted)])
+        [delegate performSelectorOnMainThread:@selector(conversionCompleted) withObject:nil waitUntilDone:NO];
 }
 
 CGPSConverterCallbacks SKPSConverterCallbacks = { 
@@ -192,7 +189,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
  
 - (void)stopModalOnMainThread:(BOOL)success {
     NSInteger val = (success ? SKConversionSucceeded : SKConversionFailed);
-    NSInvocation *invocation = [NSInvocation invocationWithTarget:NSApp selector:@selector(stopModalWithCode:) argument:&val];
+    NSInvocation *invocation = [NSInvocation invocationWithTarget:NSApp selector:@selector(stopModalWithCode:)];
+    [invocation setArgument:&val atIndex:2];
     [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 }
 
@@ -202,15 +200,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [self setButtonTitle:NSLocalizedString(@"Close", @"Button title") action:@selector(close:)];
 }
 
-- (void)conversionCompleted:(BOOL)didComplete;
-{
+- (void)conversionCompleted {
     [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"PS conversion progress message")];
     [progressBar stopAnimation:nil];
     [self setButtonTitle:NSLocalizedString(@"Close", @"Button title") action:@selector(close:)];
 }
 
-- (void)conversionStarted;
-{
+- (void)conversionStarted {
     [progressBar startAnimation:nil];
     [textField setStringValue:[[[self window] title] stringByAppendingEllipsis]];
 }
@@ -335,14 +331,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
     BOOL success = NO;
     
-    NSInvocation *invocation;
     NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
     
     if ([self shouldKeepRunning] && [fm fileExistsAtPath:dviFile]) {
         NSTask *task = [NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
         if (task) {
-            invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
-            [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(conversionStarted) withObject:nil waitUntilDone:NO];
         
             while ([task isRunning] && [self shouldKeepRunning])
                 [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -374,8 +368,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         if (success)
             [pdfData setData:outData];
         
-        invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionCompleted:) argument:&success];
-        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(conversionCompleted) withObject:nil waitUntilDone:NO];
         
         [self stopModalOnMainThread:success];
     }
