@@ -1598,6 +1598,7 @@ enum {
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if ([self isEditing] && [self commitEditing] == NO)
         [self discardEditing];
+    [super viewWillMoveToWindow:newWindow];
 }
 
 #pragma mark NSDraggingDestination protocol

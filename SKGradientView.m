@@ -164,6 +164,7 @@
         [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:window];
         [nc removeObserver:self name:NSWindowDidResignKeyNotification object:window];
     }
+    [super viewWillMoveToWindow:newWindow];
 }
 
 - (void)viewDidMoveToWindow {
@@ -180,6 +181,7 @@
         if (autoTransparent)
             [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
     }
+    [super viewDidMoveToWindow];
 }
 
 // required in order for redisplay to work properly with the controls
