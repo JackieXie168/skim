@@ -40,7 +40,6 @@
 #import "SKLineWell.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSSegmentedControl_SKExtensions.h"
-#import "SKNumberArrayFormatter.h"
 #import "NSGraphics_SKExtensions.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
@@ -109,11 +108,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [lineWell bind:SKLineWellDashPatternKey toObject:self withKeyPath:DASHPATTERN_KEY options:nil];
     [lineWell bind:SKLineWellStartLineStyleKey toObject:self withKeyPath:STARTLINESTYLE_KEY options:nil];
     [lineWell bind:SKLineWellEndLineStyleKey toObject:self withKeyPath:ENDLINESTYLE_KEY options:nil];
-    
-    SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
-    [dashPatternField setFormatter:formatter];
-    [dashPatternField bind:@"value" toObject:self withKeyPath:DASHPATTERN_KEY options:nil];
-    [formatter release];
     
     [styleButton setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
     [styleButton setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
