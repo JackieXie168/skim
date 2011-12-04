@@ -152,7 +152,7 @@ NSString *SKTextWithIconCellImageKey = @"image";
 
 - (NSImage *)icon {
     id obj = [self objectValue];
-    return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconCellImageKey];
+    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconCellImageKey];
 }
 
 @end
