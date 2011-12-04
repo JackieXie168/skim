@@ -50,30 +50,6 @@ NSString *SKTextWithIconCellImageKey = @"image";
 
 @implementation SKTextWithIconCell
 
-static SKTextWithIconFormatter *textWithIconFormatter = nil;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    textWithIconFormatter = [[SKTextWithIconFormatter alloc] init];
-}
-
-- (id)init {
-    self = [super initTextCell:@""];
-    if (self) {
-        [self setFormatter:textWithIconFormatter];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
-    if (self) {
-        if ([self formatter] == nil)
-            [self setFormatter:textWithIconFormatter];
-    }
-    return self;
-}
-
 - (NSSize)cellSize {
     NSSize cellSize = [super cellSize];
     cellSize.width += cellSize.height - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
