@@ -41,8 +41,8 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 
-NSString *SKTextWithIconCellStringKey = @"string";
-NSString *SKTextWithIconCellImageKey = @"image";
+NSString *SKTextWithIconStringKey = @"string";
+NSString *SKTextWithIconImageKey = @"image";
 
 #define BORDER_BETWEEN_EDGE_AND_IMAGE (1.0)
 #define BORDER_BETWEEN_IMAGE_AND_TEXT (0.0)
@@ -157,17 +157,17 @@ NSString *SKTextWithIconCellImageKey = @"image";
 @implementation SKTextWithIconFormatter
 
 - (NSImage *)imageForObjectValue:(id)obj {
-    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconCellImageKey];
+    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconImageKey];
 }
 
 - (NSString *)stringForObjectValue:(id)obj {
-    return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconCellStringKey];
+    return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconStringKey];
 }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
     // even though 'string' is reported as immutable, it's actually changed after this method returns and before it's returned by the control!
     string = [[string copy] autorelease];
-    *obj = [NSDictionary dictionaryWithObjectsAndKeys:string, SKTextWithIconCellStringKey, nil];
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:string, SKTextWithIconStringKey, nil];
     return YES;
 }
 
