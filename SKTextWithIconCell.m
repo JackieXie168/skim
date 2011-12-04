@@ -44,8 +44,8 @@
 NSString *SKTextWithIconCellStringKey = @"string";
 NSString *SKTextWithIconCellImageKey = @"image";
 
-#define BORDER_BETWEEN_EDGE_AND_IMAGE (2.0)
-#define BORDER_BETWEEN_IMAGE_AND_TEXT (2.0)
+#define BORDER_BETWEEN_EDGE_AND_IMAGE (1.0)
+#define BORDER_BETWEEN_IMAGE_AND_TEXT (0.0)
 #define IMAGE_OFFSET (1.0)
 
 @implementation SKTextWithIconCell
