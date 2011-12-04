@@ -50,7 +50,6 @@ NSString *SKTextWithIconCellImageKey = @"image";
 
 @implementation SKTextWithIconCell
 
-
 - (id)initTextCell:(NSString *)aString {
     self = [super initTextCell:aString];
     if (self) {
@@ -75,6 +74,12 @@ NSString *SKTextWithIconCellImageKey = @"image";
 - (void)encodeWithCoder:(NSCoder *)encoder {
     [super encodeWithCoder:encoder];
     [encoder encodeObject:imageCell forKey:@"imageCell"];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    SKTextWithIconCell *copy = [super copyWithZone:zone];
+    copy->imageCell = [imageCell copyWithZone:zone];
+    return copy;
 }
 
 - (void)dealloc {
