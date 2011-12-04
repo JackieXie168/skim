@@ -38,8 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKTextWithIconCellStringKey;
-extern NSString *SKTextWithIconCellImageKey;
+extern NSString *SKTextWithIconStringKey;
+extern NSString *SKTextWithIconImageKey;
 
 @interface SKTextWithIconCell : NSTextFieldCell {
     NSImageCell *imageCell;

@@ -588,7 +588,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:LABEL_COLUMNID]) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconStringKey, [item icon], SKTextWithIconImageKey, nil];
     } else if ([tcID isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
             NSInteger count = [item countOfChildren];
@@ -605,7 +605,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:LABEL_COLUMNID]) {
-        NSString *newlabel = [object valueForKey:SKTextWithIconCellStringKey] ?: @"";
+        NSString *newlabel = [object valueForKey:SKTextWithIconStringKey] ?: @"";
         if ([newlabel isEqualToString:[item label]] == NO)
             [item setLabel:newlabel];
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
