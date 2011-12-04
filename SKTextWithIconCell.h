@@ -41,18 +41,19 @@
 extern NSString *SKTextWithIconCellStringKey;
 extern NSString *SKTextWithIconCellImageKey;
 
-@interface SKTextWithIconCell : NSTextFieldCell
+@interface SKTextWithIconCell : NSTextFieldCell {
+    NSImageCell *imageCell;
+}
 
 - (NSImage *)icon;
 
 - (NSRect)textRectForBounds:(NSRect)aRect;
 - (NSRect)iconRectForBounds:(NSRect)aRect;
 
-- (void)drawIconWithFrame:(NSRect)iconRect inView:(NSView *)controlView;
-
 @end
 
 #pragma mark -
 
 @interface SKTextWithIconFormatter : NSFormatter
+- (NSImage *)imageForObjectValue:(id)obj;
 @end

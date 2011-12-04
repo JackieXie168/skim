@@ -50,6 +50,38 @@ NSString *SKTextWithIconCellImageKey = @"image";
 
 @implementation SKTextWithIconCell
 
+
+- (id)initTextCell:(NSString *)aString {
+    self = [super initTextCell:aString];
+    if (self) {
+        imageCell = [[NSImageCell alloc] init];
+        [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
+    if (self) {
+        imageCell = [[decoder decodeObjectForKey:@"imageCell"] retain];
+        if (imageCell == nil) {
+            imageCell = [[NSImageCell alloc] init];
+            [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
+        }
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:imageCell forKey:@"imageCell"];
+}
+
+- (void)dealloc {
+    SKDESTROY(imageCell);
+    [super dealloc];
+}
+
 - (NSSize)cellSize {
     NSSize cellSize = [super cellSize];
     cellSize.width += cellSize.height - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
@@ -74,42 +106,6 @@ NSString *SKTextWithIconCellImageKey = @"image";
     return imageRect;
 }
 
-- (void)drawIconWithFrame:(NSRect)iconRect inView:(NSView *)controlView
-{
-    NSImage *img = [self icon];
-    
-    if (nil != img) {
-        
-        NSSize imgSize = [img size];
-        
-        NSRect drawFrame = iconRect;
-        CGFloat ratio = MIN(NSWidth(drawFrame) / imgSize.width, NSHeight(drawFrame) / imgSize.height);
-        drawFrame.size.width = ratio * imgSize.width;
-        drawFrame.size.height = ratio * imgSize.height;
-        
-        drawFrame = SKCenterRect(iconRect, drawFrame.size, [controlView isFlipped]);
-        
-        NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-        [ctxt saveGraphicsState];
-        
-        // this is the critical part that NSImageCell doesn't do
-        [ctxt setImageInterpolation:NSImageInterpolationHigh];
-        
-        if ([controlView isFlipped]) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            [transform translateXBy:0.0 yBy:NSMaxY(drawFrame)];
-            [transform scaleXBy:1.0 yBy:-1.0];
-            [transform translateXBy:0.0 yBy:-NSMinY(drawFrame)];
-            [transform concat];
-            [img drawInRect:drawFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        }
-        [img drawInRect:drawFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        
-        [ctxt setImageInterpolation:NSImageInterpolationDefault];
-        [ctxt restoreGraphicsState];
-    }
-}
-
 - (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
     // let super draw the text, but vertically center the text for tall cells, because NSTextFieldCell aligns at the top
     NSRect textRect = [self textRectForBounds:aRect];
@@ -121,7 +117,7 @@ NSString *SKTextWithIconCellImageKey = @"image";
     NSRect imageRect = [self iconRectForBounds:aRect];
     imageRect = SKCenterRectVertically(imageRect, NSWidth(imageRect), [controlView isFlipped]);
     imageRect.origin.y += [controlView isFlipped] ? -IMAGE_OFFSET : IMAGE_OFFSET;
-    [self drawIconWithFrame:imageRect inView:controlView];
+    [imageCell drawInteriorWithFrame:imageRect inView:controlView];
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(NSInteger)selStart length:(NSInteger)selLength {
@@ -140,19 +136,13 @@ NSString *SKTextWithIconCellImageKey = @"image";
 }
 
 - (void)setObjectValue:(id <NSCopying>)obj {
-    // the objectValue should be an object that's KVC compliant for the "string" and "image" keys
-    
-    // this can happen initially from the init, as there's no initializer passing an objectValue
-    if ([(id)obj isKindOfClass:[NSString class]])
-        obj = [NSDictionary dictionaryWithObjectsAndKeys:obj, SKTextWithIconCellStringKey, nil];
-    
-    // we should not set a derived value such as the string here, otherwise NSTableView will call tableView:setObjectValue:forTableColumn:row: whenever a cell is selected
     [super setObjectValue:obj];
+    if ([[self formatter] respondsToSelector:@selector(imageForObjectValue:)])
+        [imageCell setImage:[[self formatter] imageForObjectValue:obj]];
 }
 
 - (NSImage *)icon {
-    id obj = [self objectValue];
-    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconCellImageKey];
+    return [imageCell image];
 }
 
 @end
@@ -160,6 +150,10 @@ NSString *SKTextWithIconCellImageKey = @"image";
 #pragma mark -
 
 @implementation SKTextWithIconFormatter
+
+- (NSImage *)imageForObjectValue:(id)obj {
+    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconCellImageKey];
+}
 
 - (NSString *)stringForObjectValue:(id)obj {
     return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconCellStringKey];
