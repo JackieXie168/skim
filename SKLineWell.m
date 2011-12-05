@@ -78,9 +78,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)commonInit {
-    bgCell = [[NSTextFieldCell alloc] initTextCell:@""];
-    [bgCell setBezeled:YES];
-    
     lwFlags.canActivate = 1;
     lwFlags.highlighted = 0;
     lwFlags.existsActiveLineWell = 0;
@@ -145,7 +142,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self unbind:SKLineWellEndLineStyleKey];
     if (lwFlags.active)
         [self deactivate];
-    SKDESTROY(bgCell);
     SKDESTROY(dashPattern);
     [super dealloc];
 }
@@ -260,7 +256,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
     
-    [bgCell drawWithFrame:bounds inView:self];
+    SKDrawTextFieldBezel(bounds, self);
     
     [NSGraphicsContext saveGraphicsState];
     if ([self isActive]) {

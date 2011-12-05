@@ -37,6 +37,7 @@
  */
 
 #import "SKFontWell.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define SKNSFontPanelDescriptorsPboardType @"NSFontPanelDescriptorsPboardType"
 #define SKNSFontPanelFamiliesPboardType @"NSFontPanelFamiliesPboardType"
@@ -441,8 +442,6 @@ static char SKFontWellFontSizeObservationContext;
 @synthesize textColor, hasTextColor;
 
 - (void)commonInit {
-    bgCell = [[NSTextFieldCell alloc] initTextCell:@""];
-    [bgCell setBezeled:YES];
     if (textColor == nil)
         [self setTextColor:[NSColor blackColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
@@ -476,20 +475,18 @@ static char SKFontWellFontSizeObservationContext;
 
 - (id)copyWithZone:(NSZone *)zone {
     SKFontWellCell *copy = [super copyWithZone:zone];
-    copy->bgCell = [bgCell copyWithZone:zone];
     copy->textColor = [textColor copyWithZone:zone];
     copy->hasTextColor = hasTextColor;
     return copy;
 }
 
 - (void)dealloc {
-    SKDESTROY(bgCell);
     SKDESTROY(textColor);
     [super dealloc];
 }
 
 - (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
-    [bgCell drawWithFrame:frame inView:controlView];
+    SKDrawTextFieldBezel(frame, controlView);
     
     [NSGraphicsContext saveGraphicsState];
     if ([self state] == NSOnState) {

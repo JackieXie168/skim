@@ -64,6 +64,18 @@ void SKDrawResizeHandles(NSRect rect, CGFloat radius)
 
 #pragma mark -
 
+void SKDrawTextFieldBezel(NSRect rect, NSView *controlView) {
+    static NSTextFieldCell *cell = nil;
+    if (cell == nil) {
+        cell = [[NSTextFieldCell alloc] initTextCell:@""];
+        [cell setBezeled:YES];
+    }
+    [cell drawWithFrame:rect inView:controlView];
+    [cell setControlView:nil];
+}
+
+#pragma mark -
+
 #define MIN_BUTTON_WIDTH 82.0
 #define MAX_BUTTON_WIDTH 100.0
 #define EXTRA_BUTTON_WIDTH 12.0
