@@ -42,7 +42,7 @@
 @implementation SKLevelIndicatorCell
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    BOOL drawDiscreteContinuous = ([self levelIndicatorStyle] == NSDiscreteCapacityLevelIndicatorStyle) && ((NSWidth(cellFrame) + 1.0) / [self maxValue] < 3.0);
+    BOOL drawDiscreteContinuous = ([self levelIndicatorStyle] == NSDiscreteCapacityLevelIndicatorStyle) && (NSWidth(cellFrame) + 1.0 < 3.0 * [self maxValue]);
     if (drawDiscreteContinuous)
         [self setLevelIndicatorStyle:NSContinuousCapacityLevelIndicatorStyle];
     [NSGraphicsContext saveGraphicsState];
