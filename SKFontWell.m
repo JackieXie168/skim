@@ -474,6 +474,14 @@ static char SKFontWellFontSizeObservationContext;
     [coder encodeObject:textColor forKey:HASTEXTCOLOR_KEY];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    SKFontWellCell *copy = [super copyWithZone:zone];
+    copy->bgCell = [bgCell copyWithZone:zone];
+    copy->textColor = [textColor copyWithZone:zone];
+    copy->hasTextColor = hasTextColor;
+    return copy;
+}
+
 - (void)dealloc {
     SKDESTROY(bgCell);
     SKDESTROY(textColor);
