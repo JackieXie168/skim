@@ -61,7 +61,6 @@ typedef NSInteger SKLineWellDisplayStyle;
     NSArray *dashPattern;
     PDFLineStyle startLineStyle;
     PDFLineStyle endLineStyle;
-    NSTextFieldCell *bgCell;
     
     struct _lwFlags {
         unsigned int displayStyle:2;
