@@ -112,10 +112,8 @@ NSString *SKTextWithIconImageKey = @"image";
 }
 
 - (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
-    // let super draw the text, but vertically center the text for tall cells, because NSTextFieldCell aligns at the top
+    // let super draw the text
     NSRect textRect = [self textRectForBounds:aRect];
-    if (NSHeight(textRect) > [self cellSize].height + 2.0)
-        textRect = SKCenterRectVertically(textRect, [self cellSize].height + 2.0, [controlView isFlipped]);
     [super drawInteriorWithFrame:textRect inView:controlView];
     
     // Draw the image
