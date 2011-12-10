@@ -102,6 +102,7 @@
 #import "SKPDFPage.h"
 #import "NSScreen_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSScanner_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -1666,10 +1667,21 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     } else {
         NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
         if (mwcFlags.wholeWordSearch) {
+            NSScanner *scanner = [NSScanner scannerWithString:[sender stringValue]];
             NSMutableArray *words = [NSMutableArray array];
-            for (NSString *word in [[sender stringValue] componentsSeparatedByString:@" "]) {
-                if ([word isEqualToString:@""] == NO)
+            NSString *word;
+            [scanner setCharactersToBeSkipped:nil];
+            while ([scanner isAtEnd] == NO) {
+                if ('"' == [[scanner string] characterAtIndex:[scanner scanLocation]]) {
+                    [scanner setScanLocation:[scanner scanLocation] + 1];
+                    if ([scanner scanUpToString:@"\"" intoString:&word])
+                        [words addObject:word];
+                    if ([scanner isAtEnd] == NO)
+                        [scanner setScanLocation:[scanner scanLocation] + 1];
+                } else if ([scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&word]) {
                     [words addObject:word];
+                }
+                [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
             }
             [[pdfView document] beginFindStrings:words withOptions:options];
         } else {
