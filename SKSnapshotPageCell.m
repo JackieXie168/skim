@@ -75,8 +75,8 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:hasWindow], SKSnapshotPageCellHasWindowKey, [self stringValue], SKSnapshotPageCellLabelKey, nil];
 }
 
-- (NSSize)cellSize {
-    NSSize size = [super cellSize];
+- (NSSize)cellSizeForBounds:(NSRect)aRect {
+    NSSize size = [super cellSizeForBounds:aRect];
     size.width = fmax(size.width, 16.0);
     return size;
 }
