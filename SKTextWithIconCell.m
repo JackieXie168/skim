@@ -87,8 +87,8 @@ NSString *SKTextWithIconImageKey = @"image";
     [super dealloc];
 }
 
-- (NSSize)cellSize {
-    NSSize cellSize = [super cellSize];
+- (NSSize)cellSizeForBounds:(NSRect)aRect {
+    NSSize cellSize = [super cellSizeForBounds:aRect];
     cellSize.width += cellSize.height - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
     return cellSize;
 }
