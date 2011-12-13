@@ -43,58 +43,105 @@
 #define MARGIN_X 8.0
 #define MARGIN_Y 2.0
 
+@interface SKProgressCellFormatter : NSFormatter
+@end
+
+#pragma mark
+
+static inline id objectValueForKey(id object, NSString *key) {
+    return [object respondsToSelector:@selector(objectForKey:)] ? [object objectForKey:key] : nil;
+}
+
 @implementation SKProgressCell
 
-@dynamic progressIndicator, fileName, status, statusDescription;
+static SKProgressCellFormatter *progressCellFormatter = nil;
 
-- (id)objectValueForKey:(NSString *)key {
-    id value = nil;
-    NSDictionary *info = [self objectValue];
-    if ([info respondsToSelector:@selector(objectForKey:)])
-        value = [info objectForKey:key];
-    return value;
++ (void)initialize {
+    SKINITIALIZE;
+    progressCellFormatter = [[SKProgressCellFormatter alloc] init];
+    
 }
 
-- (NSProgressIndicator *)progressIndicator {
-    return [self objectValueForKey:SKDownloadProgressIndicatorKey];
+- (void)commonInit {
+    statusCell = [[NSTextFieldCell alloc] initTextCell:@""];
+    [statusCell setFont:[[NSFontManager sharedFontManager] convertFont:[self font] toSize:10.0]];
+    [statusCell setWraps:NO];
+    [statusCell setLineBreakMode:NSLineBreakByClipping];
+    if ([self formatter] == nil)
+        [self setFormatter:progressCellFormatter];
 }
 
-- (NSString *)fileName {
-    return [self objectValueForKey:SKDownloadFileNameKey];
-}
-
-- (NSInteger)status {
-    return [[self objectValueForKey:SKDownloadStatusKey] integerValue];
-}
-
-- (NSString *)statusDescription {
-    switch ([self status]) {
-        case SKDownloadStatusStarting:
-            return [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
-        case SKDownloadStatusDownloading:
-            return [NSLocalizedString(@"Downloading", @"Download status message") stringByAppendingEllipsis];
-        case SKDownloadStatusFinished:
-            return NSLocalizedString(@"Finished", @"Download status message");
-        case SKDownloadStatusFailed:
-            return NSLocalizedString(@"Failed", @"Download status message");
-        case SKDownloadStatusCanceled:
-            return NSLocalizedString(@"Canceled", @"Download status message");
-        default:
-            return nil;
+- (id)initTextCell:(NSString *)aString {
+    self = [super initTextCell:aString];
+    if (self) {
+        [self commonInit];
     }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self commonInit];
+	}
+	return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    SKProgressCell *copy = [super copyWithZone:zone];
+    copy->statusCell = [statusCell copyWithZone:zone];
+    return copy;
+}
+
+- (void)dealloc {
+    SKDESTROY(statusCell);
+	[super dealloc];
+}
+
+- (void)setFont:(NSFont *)font {
+    [super setFont:font];
+    [statusCell setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:10.0]];
+}
+
+- (void)setBackgroundStyle:(NSBackgroundStyle)style {
+    [super setBackgroundStyle:style];
+    [statusCell setBackgroundStyle:style];
+}
+
+- (void)setObjectValue:(id <NSCopying>)obj {
+    [super setObjectValue:obj];
+    
+    NSString *statusDescription = nil;
+    switch ([objectValueForKey(obj, SKDownloadStatusKey) integerValue]) {
+        case SKDownloadStatusStarting:
+            statusDescription = [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
+            break;
+        case SKDownloadStatusDownloading:
+            statusDescription = [NSLocalizedString(@"Downloading", @"Download status message") stringByAppendingEllipsis];
+            break;
+        case SKDownloadStatusFinished:
+            statusDescription = NSLocalizedString(@"Finished", @"Download status message");
+            break;
+        case SKDownloadStatusFailed:
+            statusDescription = NSLocalizedString(@"Failed", @"Download status message");
+            break;
+        case SKDownloadStatusCanceled:
+            statusDescription = NSLocalizedString(@"Canceled", @"Download status message");
+            break;
+        default:
+            break;
+    }
+    [statusCell setObjectValue:statusDescription];
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    id value = [[[self objectValue] retain] autorelease];
-    NSProgressIndicator *progressIndicator = [self progressIndicator];
+    NSProgressIndicator *progressIndicator = objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey);
     NSRect rect, ignored, insetRect;
     
     NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &ignored, &insetRect, MARGIN_Y, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
     
-    [self setObjectValue:[self fileName]];
     NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge);
     [super drawWithFrame:rect inView:controlView];
-    [self setObjectValue:value];
     
     if (progressIndicator) {
         NSDivideRect(insetRect, &rect, &ignored, NSHeight([progressIndicator frame]), [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
@@ -103,13 +150,8 @@
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        NSFont *font = [[[self font] retain] autorelease];
-        [self setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:10.0]];
-        [self setObjectValue:[self statusDescription]];
-        NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
-        [super drawWithFrame:rect inView:controlView];
-        [self setObjectValue:value];
-        [self setFont:font];
+        NSDivideRect(insetRect, &rect, &ignored, [statusCell cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        [statusCell drawWithFrame:rect inView:controlView];
     }
 }
 
@@ -125,8 +167,23 @@
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityDescriptionAttribute])
-        return [self statusDescription];
+        return [statusCell stringValue];
     return [super accessibilityAttributeValue:attribute];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKProgressCellFormatter
+
+- (NSString *)stringForObjectValue:(id)obj {
+    return objectValueForKey(obj, SKDownloadFileNameKey);
+}
+
+- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], SKDownloadFileNameKey, nil];
+    return YES;
 }
 
 @end

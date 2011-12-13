@@ -39,11 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKProgressCell : NSTextFieldCell
-
-@property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
-@property (nonatomic, readonly) NSString *fileName;
-@property (nonatomic, readonly) NSInteger status;
-@property (nonatomic, readonly) NSString *statusDescription;
-
+@interface SKProgressCell : NSTextFieldCell {
+    NSTextFieldCell *statusCell;
+}
 @end
