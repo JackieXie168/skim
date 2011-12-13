@@ -43,7 +43,7 @@
 @implementation SKCenteredTextFieldCell
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    CGFloat height = [self cellSize].height;
+    CGFloat height = [self cellSizeForBounds:cellFrame].height;
     if (height < NSHeight(cellFrame)) {
         cellFrame.origin.y += floor(0.5 * (NSHeight(cellFrame) - height));
         cellFrame.origin.y += [controlView isFlipped] ? TEXT_OFFSET : -TEXT_OFFSET;
