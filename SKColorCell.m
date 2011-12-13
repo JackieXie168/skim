@@ -43,7 +43,7 @@
 @implementation SKColorCell
 
 - (NSSize)cellSizeForBounds:(NSRect)aRect {
-    return NSMakeSize(fmin(16.0, NSWidth(aRect)), fmin(16.0, NSHeight(aRect));
+    return NSMakeSize(fmin(16.0, NSWidth(aRect)), fmin(16.0, NSHeight(aRect)));
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
