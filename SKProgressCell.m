@@ -137,20 +137,22 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSProgressIndicator *progressIndicator = objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey);
     NSRect rect, ignored, insetRect;
+    NSRectEdge bottomEdge = [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge;
+    NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
     
-    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &ignored, &insetRect, MARGIN_Y, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &ignored, &insetRect, MARGIN_Y, bottomEdge);
     
-    NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge);
+    NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, topEdge);
     [super drawWithFrame:rect inView:controlView];
     
     if (progressIndicator) {
-        NSDivideRect(insetRect, &rect, &ignored, NSHeight([progressIndicator frame]), [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        NSDivideRect(insetRect, &rect, &ignored, NSHeight([progressIndicator frame]), bottomEdge);
         [progressIndicator setFrame:rect];
         
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        NSDivideRect(insetRect, &rect, &ignored, [statusCell cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        NSDivideRect(insetRect, &rect, &ignored, [statusCell cellSize].height, bottomEdge);
         [statusCell drawWithFrame:rect inView:controlView];
     }
 }
