@@ -388,11 +388,8 @@ enum {
             if (NSEqualRects(rect, NSZeroRect) || [[readingBar page] isEqual:pdfPage] == NO) {
                 [NSBezierPath fillRect:bounds];
             } else {
-                NSRect outRect, ignored;
-                NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge);
-                [NSBezierPath fillRect:outRect];
-                NSDivideRect(bounds, &outRect, &ignored, NSMinY(rect) - NSMinY(bounds), NSMinYEdge);
-                [NSBezierPath fillRect:outRect];
+                [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)];
+                [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)];
             }
         } else if ([[readingBar page] isEqual:pdfPage]) {
             [NSGraphicsContext saveGraphicsState];
@@ -2171,10 +2168,10 @@ enum {
 }
 
 - (void)scrollPageToVisible:(PDFPage *)page {
-    NSRect ignored, rect = [page boundsForBox:[self displayBox]];
+    NSRect rect = [page boundsForBox:[self displayBox]];
     if ([[self currentPage] isEqual:page] == NO)
         [self goToPage:page];
-    NSDivideRect([self convertRect:rect fromPage:page], &rect, &ignored, 1.0, NSMaxYEdge);
+    rect = SKSliceRect([self convertRect:rect fromPage:page], 1.0, NSMaxYEdge);
     [self goToRect:[self convertRect:rect toPage:page] onPage:page];
 }
 

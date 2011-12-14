@@ -95,21 +95,11 @@ NSString *SKTextWithIconImageKey = @"image";
 }
 
 - (NSRect)textRectForBounds:(NSRect)aRect {
-    NSRect ignored, textRect = aRect;
-    
-    NSDivideRect(aRect, &ignored, &textRect, NSHeight(aRect) - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
-    
-    return textRect;
+    return SKShrinkRect(aRect, NSHeight(aRect) - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
 }
 
 - (NSRect)iconRectForBounds:(NSRect)aRect {
-    CGFloat imageWidth = NSHeight(aRect) - 1;
-    NSRect ignored, imageRect = aRect;
-    
-    NSDivideRect(aRect, &ignored, &imageRect, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge);
-    NSDivideRect(imageRect, &imageRect, &ignored, imageWidth, NSMinXEdge);
-    
-    return imageRect;
+    return SKSliceRect(SKShrinkRect(aRect, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge), NSHeight(aRect) - 1, NSMinXEdge);
 }
 
 - (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {

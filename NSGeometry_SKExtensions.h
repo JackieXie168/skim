@@ -128,6 +128,18 @@ static inline NSRect SKRectFromCenterAndSquareSize(NSPoint center, CGFloat size)
     return rect;
 }
 
+static inline NSRect SKSliceRect(NSRect rect, CGFloat amount, NSRectEdge edge) {
+    NSRect ignored;
+    NSDivideRect(rect, &rect, &ignored, amount, edge);
+    return rect;
+}
+
+static inline NSRect SKShrinkRect(NSRect rect, CGFloat amount, NSRectEdge edge) {
+    NSRect ignored;
+    NSDivideRect(rect, &ignored, &rect, amount, edge);
+    return rect;
+}
+
 #pragma mark -
 
 extern NSPoint SKConstrainPointInRect(NSPoint point, NSRect boundary);

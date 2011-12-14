@@ -40,6 +40,7 @@
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKColorCell.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -81,8 +82,7 @@
         NSInteger row = [self rowAtPoint:mouseLoc];
         
         if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
-            NSRect ignored, rect;
-            NSDivideRect([self rectOfRow:row], &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            NSRect rect = SKSliceRect([self rectOfRow:row], 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
             if (NSMouseInRect(mouseLoc, rect, [self isFlipped]) && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
                 [self resizeRow:row withEvent:theEvent];
                 return;
@@ -166,9 +166,7 @@
             id item = [self itemAtRow:row];
             if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
                 continue;
-            NSRect ignored, rect = [self rectOfRow:row];
-            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
-            [self addCursorRect:rect cursor:[NSCursor resizeUpDownCursor]];
+            [self addCursorRect:SKSliceRect([self rectOfRow:row], 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge) cursor:[NSCursor resizeUpDownCursor]];
         }
     } else {
         [super resetCursorRects];

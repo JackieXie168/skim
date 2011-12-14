@@ -165,11 +165,8 @@ static BOOL usesSequentialPageNumbering = NO;
         [self transformContextForBox:box];
         [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
-            NSRect outRect, ignored;
-            NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge);
-            [NSBezierPath fillRect:outRect];
-            NSDivideRect(bounds, &outRect, &ignored, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge);
-            [NSBezierPath fillRect:outRect];
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge)];
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge)];
         } else {
             CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
             [NSBezierPath fillRect:readingBarRect];
