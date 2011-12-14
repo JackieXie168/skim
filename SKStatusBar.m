@@ -125,8 +125,7 @@
         leftMargin += NSHeight([self bounds]) - ICON_HEIGHT_OFFSET + SEPARATION;
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
-    NSDivideRect(rect, &ignored, &rect, leftMargin, NSMinXEdge);
-    NSDivideRect(rect, &ignored, &rect, rightMargin, NSMaxXEdge);
+    rect = SKShrinkRect(SKShrinkRect(rect, leftMargin, NSMinXEdge), rightMargin, NSMaxXEdge);
     if (rightFrame != NULL)
         NSDivideRect(rect, rightFrame, &ignored, rightWidth, NSMaxXEdge);
     if (leftFrame != NULL)
@@ -135,17 +134,16 @@
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    NSRect textRect, iconRect = NSZeroRect, ignored;
+    NSRect textRect, iconRect = NSZeroRect;
     CGFloat rightMargin = RIGHT_MARGIN;
     CGFloat iconHeight = NSHeight(bounds) - ICON_HEIGHT_OFFSET;
     
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
-    NSDivideRect(bounds, &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
-    NSDivideRect(textRect, &ignored, &textRect, rightMargin, NSMaxXEdge);
+    textRect = SKShrinkRect(SKShrinkRect(bounds, LEFT_MARGIN, NSMinXEdge), rightMargin, NSMaxXEdge);
     if (iconCell) {
         NSDivideRect(textRect, &iconRect, &textRect, iconHeight, NSMinXEdge);
-        NSDivideRect(textRect, &ignored, &textRect, SEPARATION, NSMaxXEdge);
+        textRect = SKShrinkRect(textRect, SEPARATION, NSMaxXEdge);
     }
 	
 	if (textRect.size.width < 0.0)
@@ -405,11 +403,10 @@
         [progressIndicator setUsesThreadedAnimation:YES];
 		[progressIndicator sizeToFit];
 		
-		NSRect rect, ignored;
+		NSRect rect;
 		NSSize size = [progressIndicator frame].size;
         if (size.width < 0.01) size.width = PROGRESSBAR_WIDTH;
-        NSDivideRect([self bounds], &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
-        NSDivideRect(rect, &rect, &ignored, size.width, NSMaxXEdge);
+        rect = SKSliceRect(SKShrinkRect([self bounds], RIGHT_MARGIN, NSMaxXEdge), size.width, NSMaxXEdge);
         rect.origin.y = floor(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
         rect.size.height = size.height;
 		[progressIndicator setFrame:rect];

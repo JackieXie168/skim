@@ -41,6 +41,7 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -78,9 +79,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
-    NSRect contentRect, ignored;
-    NSDivideRect([screen frame], &contentRect, &ignored, DEFAULT_WINDOW_WIDTH, anEdge);
-    contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
+    NSRect contentRect = NSInsetRect(SKSliceRect([screen frame], DEFAULT_WINDOW_WIDTH, anEdge), 0.0, WINDOW_INSET);
     
     self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
@@ -101,7 +100,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         NSView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
         [self setContentView:contentView];
         
-        NSDivideRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), &ignored, &contentRect, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+        contentRect = SKShrinkRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
         mainContentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
         [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [contentView addSubview:mainContentView];
@@ -126,8 +125,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (BOOL)canBecomeKeyWindow { return YES; }
 
 - (void)attachToWindow:(NSWindow *)window {
-    NSRect frame, ignored;
-    NSDivideRect([[window screen] frame], &frame, &ignored, WINDOW_OFFSET, edge);
+    NSRect frame;
+    frame = SKSliceRect([[window screen] frame], WINDOW_OFFSET, edge);
     [self setFrame:NSInsetRect(frame, 0.0, WINDOW_INSET) display:NO];
     state = NSDrawerClosedState;
     if (hideWhenClosed != SKClosedSidePanelCollapse)
@@ -358,18 +357,16 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (NSRect)resizeHandleRect {
-    NSRect rect, ignored;
-    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
-    return rect;
+    return SKSliceRect([self bounds], CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
 }
 
 - (void)drawRect:(NSRect)aRect {
-    NSRect ignored, topRect, bottomRect, rect = [self bounds];
+    NSRect topRect, bottomRect, rect = [self bounds];
     NSPoint startPoint, endPoint;
     NSShadow *shade = [[[NSShadow alloc] init] autorelease];
     
-    NSDivideRect(rect, &topRect, &ignored, 2.0 * CORNER_RADIUS, NSMaxYEdge);
-    NSDivideRect(rect, &bottomRect, &ignored, 2.0 * CORNER_RADIUS, NSMinYEdge);
+    topRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMaxYEdge);
+    bottomRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMinYEdge);
     
     [NSGraphicsContext saveGraphicsState];
     

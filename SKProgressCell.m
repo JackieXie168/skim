@@ -39,6 +39,7 @@
 #import "SKProgressCell.h"
 #import "SKDownload.h"
 #import "NSString_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define MARGIN_X 8.0
 #define MARGIN_Y 2.0
@@ -136,24 +137,19 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSProgressIndicator *progressIndicator = objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey);
-    NSRect rect, ignored, insetRect;
     NSRectEdge bottomEdge = [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
+    NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
     
-    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &ignored, &insetRect, MARGIN_Y, bottomEdge);
-    
-    NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, topEdge);
-    [super drawWithFrame:rect inView:controlView];
+    [super drawWithFrame:SKSliceRect(insetRect, [self cellSize].height, topEdge) inView:controlView];
     
     if (progressIndicator) {
-        NSDivideRect(insetRect, &rect, &ignored, NSHeight([progressIndicator frame]), bottomEdge);
-        [progressIndicator setFrame:rect];
+        [progressIndicator setFrame:SKSliceRect(insetRect, NSHeight([progressIndicator frame]), bottomEdge)];
         
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        NSDivideRect(insetRect, &rect, &ignored, [statusCell cellSize].height, bottomEdge);
-        [statusCell drawWithFrame:rect inView:controlView];
+        [statusCell drawWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
     }
 }
 

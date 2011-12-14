@@ -37,6 +37,7 @@
  */
 
 #import "NSBezierPath_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation NSBezierPath (SKExtensions)
@@ -50,8 +51,7 @@
     if( radius <= 0 )
         return [self bezierPathWithRect:rect];
     
-    NSRect ignored, innerRect;
-    NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMinXEdge); // Make rect with corners being centers of the corner circles.
+    NSRect innerRect = SKShrinkRect(NSInsetRect(rect, 0.0, radius), radius, NSMinXEdge); // Make rect with corners being centers of the corner circles.
     NSBezierPath *path = [self bezierPath];
     
     // Now draw our rectangle:
@@ -78,8 +78,7 @@
     if( radius <= 0 )
         return [self bezierPathWithRect:rect];
     
-    NSRect ignored, innerRect;
-    NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMaxXEdge); // Make rect with corners being centers of the corner circles.
+    NSRect innerRect = SKShrinkRect(NSInsetRect(rect, 0.0, radius), radius, NSMaxXEdge); // Make rect with corners being centers of the corner circles.
     NSBezierPath *path = [self bezierPath];
     
     // Now draw our rectangle:

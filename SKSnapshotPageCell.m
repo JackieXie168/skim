@@ -37,6 +37,7 @@
  */
 
 #import "SKSnapshotPageCell.h"
+#import "NSGeometry_SKExtensions.h"
 
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
@@ -82,7 +83,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 }
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSRect textRect, imageRect, ignored;
+    NSRect textRect, imageRect;
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
     [super drawInteriorWithFrame:textRect inView:controlView];
     if (hasWindow) {
@@ -112,7 +113,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
         }
         [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
-        NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
+        imageRect = SKSliceRect(imageRect, 10.0, NSMinYEdge);
         imageRect.origin.x += 4.0;
         imageRect.size.width = 10.0;
         
