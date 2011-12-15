@@ -135,13 +135,24 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     [statusCell setObjectValue:statusDescription];
 }
 
+- (NSSize)cellSizeForBounds:(NSRect)aRect {
+    NSSize cellSize = [super cellSizeForBounds:aRect];
+    if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey)) {
+        NSSize statusSize = [statusCell cellSize];
+        cellSize.width = fmax(cellSize.width, statusSize.width);
+        cellSize.height += statusSize.height + MARGIN_Y;
+    }
+    cellSize.width += MARGIN_X;
+    return cellSize;
+}
+
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSProgressIndicator *progressIndicator = objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey);
     NSRectEdge bottomEdge = [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
     NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
     
-    [super drawWithFrame:SKSliceRect(insetRect, [super cellSize].height, topEdge) inView:controlView];
+    [super drawWithFrame:SKSliceRect(insetRect, [super cellSizeForBounds:cellFrame].height, topEdge) inView:controlView];
     
     if (progressIndicator) {
         [progressIndicator setFrame:SKSliceRect(insetRect, NSHeight([progressIndicator frame]), bottomEdge)];
@@ -162,17 +173,6 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     
     if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey))
         [statusCell drawWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
-}
-
-- (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
-    NSRect rect = [super expansionFrameWithFrame:cellFrame inView:view];
-    if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey)) {
-        NSSize statusSize = [statusCell cellSize];
-        rect.size.width = fmax(NSWidth(rect), statusSize.width);
-        rect.size.height += statusSize.height + MARGIN_Y;
-    }
-    rect.size.width += MARGIN_X;
-    return rect;
 }
 
 #pragma mark Accessibility
