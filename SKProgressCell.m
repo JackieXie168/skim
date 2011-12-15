@@ -141,7 +141,7 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
     NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
     
-    [super drawWithFrame:SKSliceRect(insetRect, [self cellSize].height, topEdge) inView:controlView];
+    [super drawWithFrame:SKSliceRect(insetRect, [super cellSize].height, topEdge) inView:controlView];
     
     if (progressIndicator) {
         [progressIndicator setFrame:SKSliceRect(insetRect, NSHeight([progressIndicator frame]), bottomEdge)];
@@ -153,8 +153,26 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     }
 }
 
+- (void)drawWithExpansionFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSRectEdge bottomEdge = [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge;
+    NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
+    NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
+    
+    [super drawWithFrame:SKSliceRect(insetRect, [super cellSizeForBounds:cellFrame].height, topEdge) inView:controlView];
+    
+    if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey))
+        [statusCell drawWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
+}
+
 - (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
-    return NSZeroRect;
+    NSRect rect = [super expansionFrameWithFrame:cellFrame inView:view];
+    if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey)) {
+        NSSize statusSize = [statusCell cellSize];
+        rect.size.width = fmax(NSWidth(rect), statusSize.width);
+        rect.size.height += statusSize.height + MARGIN_Y;
+    }
+    rect.size.width += MARGIN_X;
+    return rect;
 }
 
 #pragma mark Accessibility
