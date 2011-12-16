@@ -1,8 +1,8 @@
 //
-//  SKSnapshotPageCell.h
+//  SKDictionaryFormatter.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/10/08.
+//  Created by Christiaan Hofman on 12/16/11.
 /*
  This software is Copyright (c) 2008-2011
  Christiaan Hofman. All rights reserved.
@@ -36,11 +36,25 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-
-extern NSString *SKSnapshotPageCellLabelKey;
-extern NSString *SKSnapshotPageCellHasWindowKey;
+#import "SKDictionaryFormatter.h"
 
 
-@interface SKSnapshotPageCell : NSTextFieldCell
+@implementation SKDictionaryFormatter
+
+@synthesize key;
+
+- (void)dealloc {
+    SKDESTROY(key);
+    [super dealloc];
+}
+
+- (NSString *)stringForObjectValue:(id)obj {
+    return [obj respondsToSelector:@selector(objectForKey:)] ? [obj objectForKey:key ?: @""] : nil;
+}
+
+- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], key ?: @"", nil];
+    return YES;
+}
+
 @end

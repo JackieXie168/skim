@@ -1,8 +1,8 @@
 //
-//  SKSnapshotPageCell.h
+//  SKDictionaryFormatter.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/10/08.
+//  Created by Christiaan Hofman on 12/16/11.
 /*
  This software is Copyright (c) 2008-2011
  Christiaan Hofman. All rights reserved.
@@ -38,9 +38,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKSnapshotPageCellLabelKey;
-extern NSString *SKSnapshotPageCellHasWindowKey;
 
-
-@interface SKSnapshotPageCell : NSTextFieldCell
+@interface SKDictionaryFormatter : NSFormatter {
+    NSString *key;
+}
+@property (nonatomic, retain) NSString *key;
 @end

@@ -37,6 +37,7 @@
  */
 
 #import "SKSnapshotPageCell.h"
+#import "SKDictionaryFormatter.h"
 #import "NSGeometry_SKExtensions.h"
 
 NSString *SKSnapshotPageCellLabelKey = @"label";
@@ -44,36 +45,29 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
 @implementation SKSnapshotPageCell
 
+static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    snapshotPageCellFormatter = [[SKDictionaryFormatter alloc] init];
+    [snapshotPageCellFormatter setKey:SKSnapshotPageCellLabelKey];
+}
+
+- (id)initTextCell:(NSString *)aString {
+    self = [super initTextCell:aString];
+    if (self) {
+        [self setFormatter:snapshotPageCellFormatter];
+    }
+    return self;
+}
+
 - (id)initWithCoder:(NSCoder *)decoder {
 	self = [super initWithCoder:decoder];
     if (self) {
-		hasWindow = [decoder decodeBoolForKey:@"hasWindow"];
+        if ([self formatter] == nil)
+            [self setFormatter:snapshotPageCellFormatter];
 	}
 	return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeBool:hasWindow forKey:@"hasWindow"];
-}
-
-- (id)copyWithZone:(NSZone *)aZone {
-    SKSnapshotPageCell *copy = [super copyWithZone:aZone];
-    copy->hasWindow = hasWindow;
-    return copy;
-}
-
-- (void)setObjectValue:(id)anObject {
-    if ([anObject isKindOfClass:[NSString class]]) {
-        [super setObjectValue:anObject];
-    } else {
-        [super setObjectValue:[anObject valueForKey:SKSnapshotPageCellLabelKey]];
-        hasWindow = [[anObject valueForKey:SKSnapshotPageCellHasWindowKey] boolValue];
-    }
-}
-
-- (id)objectValue {
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:hasWindow], SKSnapshotPageCellHasWindowKey, [self stringValue], SKSnapshotPageCellLabelKey, nil];
 }
 
 - (NSSize)cellSizeForBounds:(NSRect)aRect {
@@ -85,7 +79,11 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSRect textRect, imageRect;
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
+    
     [super drawInteriorWithFrame:textRect inView:controlView];
+    
+    id obj = [self objectValue];
+    BOOL hasWindow = [obj respondsToSelector:@selector(objectForKey:)] ? [[obj objectForKey:SKSnapshotPageCellHasWindowKey] boolValue] : NO;
     if (hasWindow) {
         CGFloat radius = 2.0;
         NSBezierPath *path = [NSBezierPath bezierPath];
