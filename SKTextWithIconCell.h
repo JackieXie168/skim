@@ -51,9 +51,3 @@ extern NSString *SKTextWithIconImageKey;
 - (NSRect)iconRectForBounds:(NSRect)aRect;
 
 @end
-
-#pragma mark -
-
-@interface SKTextWithIconFormatter : NSFormatter
-- (NSImage *)imageForObjectValue:(id)obj;
-@end
