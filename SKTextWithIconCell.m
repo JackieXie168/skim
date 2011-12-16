@@ -37,6 +37,7 @@
  */
 
 #import "SKTextWithIconCell.h"
+#import "SKDictionaryFormatter.h"
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
@@ -50,11 +51,27 @@ NSString *SKTextWithIconImageKey = @"image";
 
 @implementation SKTextWithIconCell
 
+static SKDictionaryFormatter *textWithIconCellFormatter = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    textWithIconCellFormatter = [[SKDictionaryFormatter alloc] init];
+    [textWithIconCellFormatter setKey:SKTextWithIconStringKey];
+}
+
+- (void)commonInit {
+    if (imageCell == nil) {
+        imageCell = [[NSImageCell alloc] init];
+        [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
+    }
+    if ([self formatter] == nil)
+        [self setFormatter:textWithIconCellFormatter];
+}
+
 - (id)initTextCell:(NSString *)aString {
     self = [super initTextCell:aString];
     if (self) {
-        imageCell = [[NSImageCell alloc] init];
-        [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
+        [self commonInit];
     }
     return self;
 }
@@ -63,10 +80,7 @@ NSString *SKTextWithIconImageKey = @"image";
     self = [super initWithCoder:decoder];
     if (self) {
         imageCell = [[decoder decodeObjectForKey:@"imageCell"] retain];
-        if (imageCell == nil) {
-            imageCell = [[NSImageCell alloc] init];
-            [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
-        }
+        [self commonInit];
     }
     return self;
 }
@@ -135,33 +149,12 @@ NSString *SKTextWithIconImageKey = @"image";
 
 - (void)setObjectValue:(id <NSCopying>)obj {
     [super setObjectValue:obj];
-    if ([[self formatter] respondsToSelector:@selector(imageForObjectValue:)])
-        [imageCell setImage:[[self formatter] imageForObjectValue:obj]];
+    if ([(id)obj respondsToSelector:@selector(objectForKey:)])
+        [imageCell setImage:[(id)obj objectForKey:SKTextWithIconImageKey]];
 }
 
 - (NSImage *)icon {
     return [imageCell image];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKTextWithIconFormatter
-
-- (NSImage *)imageForObjectValue:(id)obj {
-    return [obj isKindOfClass:[NSString class]] ? nil : [obj valueForKey:SKTextWithIconImageKey];
-}
-
-- (NSString *)stringForObjectValue:(id)obj {
-    return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconStringKey];
-}
-
-- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
-    // even though 'string' is reported as immutable, it's actually changed after this method returns and before it's returned by the control!
-    string = [[string copy] autorelease];
-    *obj = [NSDictionary dictionaryWithObjectsAndKeys:string, SKTextWithIconStringKey, nil];
-    return YES;
 }
 
 @end
