@@ -140,9 +140,10 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey)) {
         NSSize statusSize = [statusCell cellSize];
         cellSize.width = fmax(cellSize.width, statusSize.width);
-        cellSize.height += statusSize.height + MARGIN_Y;
+        cellSize.height += statusSize.height;
     }
-    cellSize.width += MARGIN_X;
+    cellSize.width += 2.0 * MARGIN_X;
+    cellSize.height += MARGIN_Y;
     return cellSize;
 }
 
@@ -173,7 +174,7 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
 
 - (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
     NSRect rect = [super expansionFrameWithFrame:cellFrame inView:view];
-    return SKShrinkRect(SKShrinkRect(rect, MARGIN_X, NSMinXEdge), MARGIN_Y, [view isFlipped] ? NSMaxYEdge : NSMinYEdge);
+    return SKShrinkRect(NSInsetRect(rect, MARGIN_X, 0.0), MARGIN_Y, [view isFlipped] ? NSMaxYEdge : NSMinYEdge);
 }
 
 #pragma mark Accessibility
