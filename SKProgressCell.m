@@ -38,16 +38,12 @@
 
 #import "SKProgressCell.h"
 #import "SKDownload.h"
+#import "SKDictionaryFormatter.h"
 #import "NSString_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define MARGIN_X 8.0
 #define MARGIN_Y 2.0
-
-@interface SKProgressCellFormatter : NSFormatter
-@end
-
-#pragma mark
 
 static inline id objectValueForKey(id object, NSString *key) {
     return [object respondsToSelector:@selector(objectForKey:)] ? [object objectForKey:key] : nil;
@@ -55,11 +51,12 @@ static inline id objectValueForKey(id object, NSString *key) {
 
 @implementation SKProgressCell
 
-static SKProgressCellFormatter *progressCellFormatter = nil;
+static SKDictionaryFormatter *progressCellFormatter = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    progressCellFormatter = [[SKProgressCellFormatter alloc] init];
+    progressCellFormatter = [[SKDictionaryFormatter alloc] init];
+    [progressCellFormatter setKey:SKDownloadFileNameKey];
     
 }
 
@@ -177,21 +174,6 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     if ([attribute isEqualToString:NSAccessibilityDescriptionAttribute])
         return [statusCell stringValue];
     return [super accessibilityAttributeValue:attribute];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKProgressCellFormatter
-
-- (NSString *)stringForObjectValue:(id)obj {
-    return objectValueForKey(obj, SKDownloadFileNameKey);
-}
-
-- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
-    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], SKDownloadFileNameKey, nil];
-    return YES;
 }
 
 @end

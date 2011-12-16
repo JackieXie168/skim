@@ -60,6 +60,7 @@
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
 		CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */; };
 		CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0AEDC2107A137C000C075E /* SKColorCell.m */; };
+		CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */; };
 		CE0E83EE114D15E000E37F38 /* SyncPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */; };
 		CE0E83EF114D15E000E37F38 /* DisplayPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EB114D15E000E37F38 /* DisplayPreferences.tiff */; };
 		CE0E83F0114D15E000E37F38 /* GeneralPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EC114D15E000E37F38 /* GeneralPreferences.tiff */; };
@@ -544,6 +545,8 @@
 		CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XDVDocument.icns; sourceTree = "<group>"; };
 		CE0AEDC1107A137C000C075E /* SKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorCell.h; sourceTree = "<group>"; };
 		CE0AEDC2107A137C000C075E /* SKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorCell.m; sourceTree = "<group>"; };
+		CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDictionaryFormatter.h; sourceTree = "<group>"; };
+		CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDictionaryFormatter.m; sourceTree = "<group>"; };
 		CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncPreferences.tiff; sourceTree = "<group>"; };
 		CE0E83EB114D15E000E37F38 /* DisplayPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DisplayPreferences.tiff; sourceTree = "<group>"; };
 		CE0E83EC114D15E000E37F38 /* GeneralPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GeneralPreferences.tiff; sourceTree = "<group>"; };
@@ -1855,6 +1858,8 @@
 		CEC0ABED118307F900384CFD /* View Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */,
+				CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */,
 				CE455392111DA4290060CAC9 /* SKImageToolTipContext.h */,
 				CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */,
 				CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */,
@@ -2552,6 +2557,7 @@
 				CEB402C313EDAD6100851D1B /* SKTemporaryData.m in Sources */,
 				CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */,
 				CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */,
+				CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
