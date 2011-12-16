@@ -152,7 +152,7 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
     NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
     
-    [super drawWithFrame:SKSliceRect(insetRect, [super cellSizeForBounds:cellFrame].height, topEdge) inView:controlView];
+    [self drawInteriorWithFrame:SKSliceRect(insetRect, [super cellSizeForBounds:cellFrame].height, topEdge) inView:controlView];
     
     if (progressIndicator) {
         [progressIndicator setFrame:SKSliceRect(insetRect, NSHeight([progressIndicator frame]), bottomEdge)];
@@ -160,19 +160,20 @@ static SKProgressCellFormatter *progressCellFormatter = nil;
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        [statusCell drawWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
+        [statusCell drawInteriorWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
     }
 }
 
-- (void)drawWithExpansionFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSRectEdge bottomEdge = [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge;
-    NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
-    NSRect insetRect = SKShrinkRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), MARGIN_Y, bottomEdge);
-    
-    [super drawWithFrame:SKSliceRect(insetRect, [super cellSizeForBounds:cellFrame].height, topEdge) inView:controlView];
+- (void)drawWithExpansionFrame:(NSRect)cellFrame inView:(NSView *)view {
+    [self drawInteriorWithFrame:SKSliceRect(cellFrame, [super cellSizeForBounds:cellFrame].height, [view isFlipped] ? NSMinYEdge : NSMaxYEdge) inView:view];
     
     if (nil == objectValueForKey([self objectValue], SKDownloadProgressIndicatorKey))
-        [statusCell drawWithFrame:SKSliceRect(insetRect, [statusCell cellSize].height, bottomEdge) inView:controlView];
+        [statusCell drawInteriorWithFrame:SKSliceRect(cellFrame, [statusCell cellSize].height, [view isFlipped] ? NSMaxYEdge : NSMinYEdge) inView:view];
+}
+
+- (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
+    NSRect rect = [super expansionFrameWithFrame:cellFrame inView:view];
+    return SKShrinkRect(SKShrinkRect(rect, MARGIN_X, NSMinXEdge), MARGIN_Y, [view isFlipped] ? NSMaxYEdge : NSMinYEdge);
 }
 
 #pragma mark Accessibility
