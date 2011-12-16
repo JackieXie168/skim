@@ -59,10 +59,8 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
 }
 
 - (void)commonInit {
-    if (imageCell == nil) {
-        imageCell = [[NSImageCell alloc] init];
-        [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
-    }
+    imageCell = [[NSImageCell alloc] init];
+    [imageCell setImageScaling:NSImageScaleProportionallyUpOrDown];
     if ([self formatter] == nil)
         [self setFormatter:textWithIconCellFormatter];
 }
@@ -78,15 +76,9 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (self) {
-        imageCell = [[decoder decodeObjectForKey:@"imageCell"] retain];
         [self commonInit];
     }
     return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)encoder {
-    [super encodeWithCoder:encoder];
-    [encoder encodeObject:imageCell forKey:@"imageCell"];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
