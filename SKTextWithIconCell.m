@@ -55,8 +55,7 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    textWithIconCellFormatter = [[SKDictionaryFormatter alloc] init];
-    [textWithIconCellFormatter setKey:SKTextWithIconStringKey];
+    textWithIconCellFormatter = [[SKDictionaryFormatter alloc] initWithKey:SKTextWithIconStringKey];
 }
 
 - (void)commonInit {

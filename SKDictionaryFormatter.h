@@ -42,5 +42,7 @@
 @interface SKDictionaryFormatter : NSFormatter {
     NSString *key;
 }
-@property (nonatomic, retain) NSString *key;
+
+- (id)initWithKey:(NSString *)aKey;
+
 @end

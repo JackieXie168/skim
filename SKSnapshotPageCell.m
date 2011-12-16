@@ -49,8 +49,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    snapshotPageCellFormatter = [[SKDictionaryFormatter alloc] init];
-    [snapshotPageCellFormatter setKey:SKSnapshotPageCellLabelKey];
+    snapshotPageCellFormatter = [[SKDictionaryFormatter alloc] initWithKey:SKSnapshotPageCellLabelKey];
 }
 
 - (id)initTextCell:(NSString *)aString {

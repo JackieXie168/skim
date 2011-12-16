@@ -41,7 +41,21 @@
 
 @implementation SKDictionaryFormatter
 
-@synthesize key;
+- (id)init {
+    return [self initWithKey:nil];
+}
+
+- (id)initWithKey:(NSString *)aKey {
+    if (aKey == nil) {
+        [self release];
+        return nil;
+    }
+    self = [super init];
+    if (self) {
+        key = [aKey retain];
+    }
+    return self;
+}
 
 - (void)dealloc {
     SKDESTROY(key);
@@ -49,11 +63,11 @@
 }
 
 - (NSString *)stringForObjectValue:(id)obj {
-    return [obj respondsToSelector:@selector(objectForKey:)] ? [obj objectForKey:key ?: @""] : nil;
+    return [obj respondsToSelector:@selector(objectForKey:)] ? [obj objectForKey:key] : nil;
 }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
-    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], key ?: @"", nil];
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], key, nil];
     return YES;
 }
 
