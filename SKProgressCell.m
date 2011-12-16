@@ -55,8 +55,7 @@ static SKDictionaryFormatter *progressCellFormatter = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    progressCellFormatter = [[SKDictionaryFormatter alloc] init];
-    [progressCellFormatter setKey:SKDownloadFileNameKey];
+    progressCellFormatter = [[SKDictionaryFormatter alloc] initWithKey:SKDownloadFileNameKey];
     
 }
 
