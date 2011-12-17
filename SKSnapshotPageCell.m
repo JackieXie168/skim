@@ -77,14 +77,16 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSRect textRect, imageRect;
-    NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
+    NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
+    NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, topEdge);
     
     [super drawInteriorWithFrame:textRect inView:controlView];
     
     id obj = [self objectValue];
     BOOL hasWindow = [obj respondsToSelector:@selector(objectForKey:)] ? [[obj objectForKey:SKSnapshotPageCellHasWindowKey] boolValue] : NO;
     if (hasWindow) {
-        CGFloat radius = 2.0;
+        CGFloat radius = 2.0, topY, bottomY, topAngle;
+        BOOL clockwise;
         NSBezierPath *path = [NSBezierPath bezierPath];
         NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
         NSColor *fillColor;
@@ -110,18 +112,28 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
         }
         [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
-        imageRect = SKSliceRect(imageRect, 10.0, NSMinYEdge);
+        imageRect = SKSliceRect(imageRect, 10.0, topEdge);
         imageRect.origin.x += 4.0;
         imageRect.size.width = 10.0;
+        if ([controlView isFlipped]) {
+            topY = NSMinY(imageRect) + radius;
+            bottomY = NSMaxY(imageRect);
+            topAngle = 270.0;
+            clockwise = NO;
+        } else {
+            topY = NSMaxY(imageRect) - radius;
+            bottomY = NSMinY(imageRect);
+            topAngle = 90.0;
+            clockwise = YES;
+        }
         
-        [path moveToPoint:NSMakePoint(NSMinX(imageRect), NSMaxY(imageRect))];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(imageRect) + radius, NSMinY(imageRect) + radius) radius:radius startAngle:180.0 endAngle:270.0];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(imageRect) - radius, NSMinY(imageRect) + radius) radius:radius startAngle:270.0 endAngle:360.0];
-        [path lineToPoint:NSMakePoint(NSMaxX(imageRect), NSMaxY(imageRect))];
+        [path moveToPoint:NSMakePoint(NSMinX(imageRect), bottomY)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(imageRect) + radius, topY) radius:radius startAngle:180.0 endAngle:topAngle clockwise:clockwise];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(imageRect) - radius, topY) radius:radius startAngle:topAngle endAngle:0.0 clockwise:clockwise];
+        [path lineToPoint:NSMakePoint(NSMaxX(imageRect), bottomY)];
         [path closePath];
         
-        imageRect = NSInsetRect(imageRect, 1.0, 2.0);
-        imageRect.size.height += 1.0;
+        imageRect = NSInsetRect(SKShrinkRect(imageRect, 1.0, topEdge), 1.0, 1.0);
         
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
         [path setWindingRule:NSEvenOddWindingRule];
