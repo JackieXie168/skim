@@ -112,9 +112,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
         }
         [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
-        imageRect = SKSliceRect(imageRect, 10.0, topEdge);
-        imageRect.origin.x += 4.0;
-        imageRect.size.width = 10.0;
+        imageRect = NSOffsetRect(SKSliceRect(SKSliceRect(imageRect, 10.0, topEdge), 10.0, NSMinXEdge), 4.0, 0.0);
         if ([controlView isFlipped]) {
             topY = NSMinY(imageRect) + radius;
             bottomY = NSMaxY(imageRect);
