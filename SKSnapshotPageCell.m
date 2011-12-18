@@ -78,7 +78,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSRect textRect, imageRect;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
-    NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, topEdge);
+    NSDivideRect(cellFrame, &textRect, &imageRect, [super cellSizeForBounds:cellFrame].height + 1.0, topEdge);
     
     [super drawInteriorWithFrame:textRect inView:controlView];
     
