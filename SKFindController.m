@@ -209,7 +209,6 @@
 }
 
 - (void)findWithOptions:(NSStringCompareOptions)backForwardOption {
-    [ownerController commitEditing];
     BOOL found = YES;
     if ([findString length]) {
         NSInteger findOptions = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
