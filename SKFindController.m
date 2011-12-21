@@ -245,4 +245,12 @@
     return YES;
 }
 
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
+    if (command == @selector(cancelOperation:)) {
+        [doneButton performClick:nil];
+        return YES;
+    }
+    return NO;
+}
+
 @end
