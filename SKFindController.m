@@ -106,6 +106,11 @@
     }
 }
 
+- (void)windowDidResignKey:(NSNotification *)notification {
+    if ([findString length])
+        [self updateFindPboard];
+}
+
 - (void)updateFindPboard {
     NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
     [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
@@ -159,6 +164,7 @@
         barHeight = -barHeight;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:[findBar window]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:[findBar window]];
         [self windowDidBecomeKey:nil];
     } else {
 		if ([contentView isFlipped])
@@ -166,6 +172,8 @@
 		else
 			barRect.origin.y = NSMaxY([contentView bounds]) - barHeight;
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[findBar window]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:[findBar window]];
+        [self windowDidResignKey:nil];
     }
     viewFrame.size.height += barHeight;
     if ([contentView isFlipped]) {
@@ -226,9 +234,6 @@
 }
 
 - (IBAction)remove:(id)sender {
-    [ownerController commitEditing];
-    if ([findString length])
-        [self updateFindPboard];
     [self toggleAboveView:nil animate:YES];
 }
 
