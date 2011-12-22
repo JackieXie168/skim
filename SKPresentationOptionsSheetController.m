@@ -268,20 +268,16 @@ static char *SKTransitionPropertiesObservationContext;
         CGFloat extraWidth;
         id firstResponder = [window firstResponder];
         NSTextView *editor = nil;
-        NSRange selection;
         
         if ([firstResponder isKindOfClass:[NSTextView class]]) {
             editor = firstResponder;
-            selection = [editor selectedRange];
             if ([editor isFieldEditor])
                 firstResponder = [firstResponder delegate];
         }
         
         if ([objectController commitEditing] &&
-            editor && [window firstResponder] != editor && 
-            [window makeFirstResponder:firstResponder] && 
-            [[editor string] length] >= NSMaxRange(selection))
-            [editor setSelectedRange:selection];
+            editor && [window firstResponder] != editor)
+            [window makeFirstResponder:firstResponder]; 
         
         [objectController unbind:CONTENTOBJECT_BINDINGNAME];
         if (separate) {
