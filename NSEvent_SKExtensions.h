@@ -38,10 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
-    SKEscapeCharacter = 0x001b
-};
-
 @interface NSEvent (SKExtensions)
 
 + (NSUInteger)standardModifierFlags;

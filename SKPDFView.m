@@ -72,6 +72,8 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 
+#define SKEscapeCharacter 0x001b
+
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
 
