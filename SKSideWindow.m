@@ -226,21 +226,19 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    unichar ch = [theEvent firstCharacter];
-	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
-    
-    if (ch == SKEscapeCharacter && modifierFlags == 0) {
-        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
-            [controller closeSideWindow:self];
-        else
-            [controller exitFullscreen:self];
-    } else if (ch == 'p' && modifierFlags == 0 && [controller interactionMode] == SKPresentationMode) {
+    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && [controller interactionMode] == SKPresentationMode)
         [controller closeSideWindow:self];
-    } else {
+    else
         [super keyDown:theEvent];
-    }
 }
 
+- (void)cancelOperation:(id)sender {
+    if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+        [controller closeSideWindow:self];
+    else
+        [controller exitFullscreen:self];
+}
+    
 - (NSResponder *)nextResponder {
     return controller;
 }

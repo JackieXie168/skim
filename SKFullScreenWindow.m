@@ -39,7 +39,6 @@
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Actions.h"
-#import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 
 #define DURATION 0.25
@@ -186,15 +185,8 @@
     [super sendEvent:theEvent];
 }
 
-- (void)keyDown:(NSEvent *)theEvent {
-    unichar ch = [theEvent firstCharacter];
-	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
-    
-    if ((modifierFlags & ~NSAlphaShiftKeyMask) == 0 && ch == SKEscapeCharacter) {
-        [(SKMainWindowController *)[self windowController] exitFullscreen:self];
-        return;
-    }
-    [super keyDown:theEvent];
+- (void)cancelOperation:(id)sender {
+    [(SKMainWindowController *)[self windowController] exitFullscreen:self];
 }
 
 @end
