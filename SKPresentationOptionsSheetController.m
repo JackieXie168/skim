@@ -266,8 +266,23 @@ static char *SKTransitionPropertiesObservationContext;
         NSRect frame = [window frame];
         NSView *scrollView = [tableView enclosingScrollView];
         CGFloat extraWidth;
+        id firstResponder = [window firstResponder];
+        NSTextView *editor = nil;
+        NSRange selection;
         
-        [objectController commitEditing];
+        if ([firstResponder isKindOfClass:[NSTextView class]]) {
+            editor = firstResponder;
+            selection = [editor selectedRange];
+            if ([editor isFieldEditor])
+                firstResponder = [firstResponder delegate];
+        }
+        
+        if ([objectController commitEditing] &&
+            editor && [window firstResponder] != editor && 
+            [window makeFirstResponder:firstResponder] && 
+            [[editor string] length] >= NSMaxRange(selection))
+            [editor setSelectedRange:selection];
+        
         [objectController unbind:CONTENTOBJECT_BINDINGNAME];
         if (separate) {
             [self makeTransitions];
