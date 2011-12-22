@@ -122,7 +122,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (BOOL)canBecomeMainWindow { return NO; }
 
-- (BOOL)canBecomeKeyWindow { return YES; }
+- (BOOL)canBecomeKeyWindow {
+    return state == NSDrawerOpenState || state == NSDrawerOpeningState;
+}
 
 - (void)attachToWindow:(NSWindow *)window {
     NSRect frame;
