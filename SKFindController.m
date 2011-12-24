@@ -113,7 +113,7 @@
 - (void)updateFindPboard {
     NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
     [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-    [findPboard setString:findString forType:NSStringPboardType];
+    [findPboard setString:findString ?: @"" forType:NSStringPboardType];
     lastChangeCount = [findPboard changeCount];
 }
 
