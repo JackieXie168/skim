@@ -50,6 +50,7 @@
     NSObjectController *ownerController;
     NSString *findString;
     NSInteger lastChangeCount;
+    BOOL didChange;
     NSTextView *fieldEditor;
     BOOL animating;
 }

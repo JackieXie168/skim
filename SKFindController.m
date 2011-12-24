@@ -103,6 +103,7 @@
     if (lastChangeCount < [findPboard changeCount] && [findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]]) {
         [self setFindString:[findPboard stringForType:NSStringPboardType]];
         lastChangeCount = [findPboard changeCount];
+        didChange = NO;
     }
 }
 
@@ -111,10 +112,13 @@
 }
 
 - (void)updateFindPboard {
-    NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-    [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-    [findPboard setString:findString ?: @"" forType:NSStringPboardType];
-    lastChangeCount = [findPboard changeCount];
+    if (didChange) {
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [findPboard setString:findString ?: @"" forType:NSStringPboardType];
+        lastChangeCount = [findPboard changeCount];
+        didChange = NO;
+    }
 }
 
 - (void)endAnimation:(NSNumber *)visible {
@@ -205,6 +209,14 @@
     if (delegate && newDelegate == nil)
         [ownerController setContent:nil];
     delegate = newDelegate;
+}
+
+- (void)setFindString:(NSString *)newFindString {
+    if (findString != newFindString) {
+        [findString release];
+        findString = [newFindString retain];
+        didChange = YES;
+    }
 }
 
 - (NSTextView *)fieldEditor {
