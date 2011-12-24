@@ -107,8 +107,7 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-    if ([findString length])
-        [self updateFindPboard];
+    [self updateFindPboard];
 }
 
 - (void)updateFindPboard {
