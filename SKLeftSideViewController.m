@@ -95,10 +95,7 @@
     [groupedFindTableView setDelegate:mainController];
     [[thumbnailTableView menu] setDelegate:mainController];
     
-    SKTypeSelectHelper *typeSelectHelper = [SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch];
-    [typeSelectHelper setMatchesImmediately:NO];
-    [typeSelectHelper setCyclesSimilarResults:NO];
-    [thumbnailTableView setTypeSelectHelper:typeSelectHelper];
+    [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
 }
 

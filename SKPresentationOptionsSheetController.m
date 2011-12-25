@@ -173,10 +173,7 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView setBackgroundColor:[[NSColor controlAlternatingRowBackgroundColors] lastObject]];
     
-    SKTypeSelectHelper *typeSelectHelper = [SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch];
-    [typeSelectHelper setMatchesImmediately:NO];
-    [typeSelectHelper setCyclesSimilarResults:NO];
-    [tableView setTypeSelectHelper:typeSelectHelper];
+    [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     
     if ([transitionController pageTransitions]) {
         [[self undoManager] disableUndoRegistration];

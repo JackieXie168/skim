@@ -65,7 +65,7 @@
 @implementation SKTypeSelectHelper
 
 @synthesize dataSource, searchString;
-@dynamic cyclesSimilarResults, matchesImmediately, matchOption, isProcessing;
+@dynamic matchOption, isProcessing;
 
 
 + (id)typeSelectHelper {
@@ -82,8 +82,6 @@
         dataSource = nil;
         searchCache = nil;
         searchString = nil;
-        tshFlags.cycleResults = YES;
-        tshFlags.matchesImmediately = YES;
         tshFlags.matchOption = aMatchOption;
         tshFlags.processing = NO;
         timer = nil;
@@ -110,22 +108,6 @@
         dataSource = newDataSource;
         [self rebuildTypeSelectSearchCache];
     }
-}
-
-- (BOOL)cyclesSimilarResults {
-    return tshFlags.cycleResults;
-}
-
-- (void)setCyclesSimilarResults:(BOOL)newValue {
-    tshFlags.cycleResults = newValue;
-}
-
-- (BOOL)matchesImmediately {
-    return tshFlags.matchesImmediately;
-}
-
-- (void)setMatchesImmediately:(BOOL)newValue {
-    tshFlags.matchesImmediately = newValue;
 }
 
 - (SKTypeSelectMatchOption)matchOption {
@@ -183,7 +165,7 @@
     // Reset the timer if it hasn't expired yet
     [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
     
-    if (tshFlags.matchesImmediately)
+    if (tshFlags.matchOption != SKFullStringMatch)
         [self searchWithStickyMatch:tshFlags.processing];
     
     tshFlags.processing = YES;
@@ -278,7 +260,7 @@
 }
 
 - (void)typeSelectSearchTimeout:(id)sender {
-    if (tshFlags.matchesImmediately == NO)
+    if (tshFlags.matchOption == SKFullStringMatch)
         [self searchWithStickyMatch:NO];
     [self typeSelectCleanTimeout:sender];
 }
@@ -313,7 +295,7 @@
     if ([searchString length]) {
         NSUInteger selectedIndex, startIndex, foundIndex;
         
-        if (tshFlags.cycleResults) {
+        if (tshFlags.matchOption != SKFullStringMatch) {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
             if (selectedIndex >= [[self searchCache] count])
                 selectedIndex = NSNotFound;
