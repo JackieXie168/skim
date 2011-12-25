@@ -64,8 +64,7 @@
 
 @implementation SKTypeSelectHelper
 
-@synthesize dataSource, searchString;
-@dynamic matchOption, isProcessing;
+@synthesize dataSource, searchString, matchOption, isProcessing;
 
 
 + (id)typeSelectHelper {
@@ -82,8 +81,8 @@
         dataSource = nil;
         searchCache = nil;
         searchString = nil;
-        tshFlags.matchOption = aMatchOption;
-        tshFlags.processing = NO;
+        matchOption = aMatchOption;
+        isProcessing = NO;
         timer = nil;
     }
     return self;
@@ -110,18 +109,6 @@
     }
 }
 
-- (SKTypeSelectMatchOption)matchOption {
-    return tshFlags.matchOption;
-}
-
-- (void)setMatchOption:(SKTypeSelectMatchOption)newValue {
-    tshFlags.matchOption = newValue;
-}
-
-- (BOOL)isProcessing {
-    return tshFlags.processing;
-}
-
 #pragma mark API
 
 - (void)rebuildTypeSelectSearchCache {    
@@ -146,7 +133,7 @@
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
     
-    if (tshFlags.processing == NO) {
+    if (isProcessing == NO) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWin];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWin];
@@ -165,10 +152,10 @@
     // Reset the timer if it hasn't expired yet
     [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
     
-    if (tshFlags.matchOption != SKFullStringMatch)
-        [self searchWithStickyMatch:tshFlags.processing];
+    if (matchOption != SKFullStringMatch)
+        [self searchWithStickyMatch:isProcessing];
     
-    tshFlags.processing = YES;
+    isProcessing = YES;
 }
 
 - (void)repeatSearch {
@@ -179,7 +166,7 @@
     
     [self startTimerForSelector:@selector(typeSelectCleanTimeout:)];
     
-    tshFlags.processing = NO;
+    isProcessing = NO;
 }
 
 - (void)cancelSearch {
@@ -260,7 +247,7 @@
 }
 
 - (void)typeSelectSearchTimeout:(id)sender {
-    if (tshFlags.matchOption == SKFullStringMatch)
+    if (matchOption == SKFullStringMatch)
         [self searchWithStickyMatch:NO];
     [self typeSelectCleanTimeout:sender];
 }
@@ -270,7 +257,7 @@
         [dataSource typeSelectHelper:self updateSearchString:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
-    tshFlags.processing = NO;
+    isProcessing = NO;
     
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
@@ -295,7 +282,7 @@
     if ([searchString length]) {
         NSUInteger selectedIndex, startIndex, foundIndex;
         
-        if (tshFlags.matchOption != SKFullStringMatch) {
+        if (matchOption != SKFullStringMatch) {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
             if (selectedIndex >= [[self searchCache] count])
                 selectedIndex = NSNotFound;
@@ -332,7 +319,7 @@
     BOOL looped = NO;
     NSInteger options = NSCaseInsensitiveSearch;
     
-    if (tshFlags.matchOption == SKPrefixMatch)
+    if (matchOption == SKPrefixMatch)
         options |= NSAnchoredSearch;
     
     while (looped == NO) {
@@ -345,7 +332,7 @@
         
         label = [[self searchCache] objectAtIndex:labelIndex];
         
-        if (tshFlags.matchOption == SKFullStringMatch) {
+        if (matchOption == SKFullStringMatch) {
             if ([label isCaseInsensitiveEqual:searchString])
                 return labelIndex;
         } else {
