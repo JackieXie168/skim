@@ -48,12 +48,8 @@ typedef NSInteger SKTypeSelectMatchOption;
 
 @interface SKTypeSelectHelper : NSObject <NSTextViewDelegate> {
     id dataSource;
-    
-    struct _tshFlags {
-        unsigned int matchOption:2;
-        unsigned int processing:1;
-    } tshFlags;
-    
+    SKTypeSelectMatchOption matchOption;
+    BOOL isProcessing;
     NSArray *searchCache;
     NSString *searchString;
     NSTimer *timer;
