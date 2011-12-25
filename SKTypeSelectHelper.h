@@ -50,8 +50,6 @@ typedef NSInteger SKTypeSelectMatchOption;
     id dataSource;
     
     struct _tshFlags {
-        unsigned int cycleResults:1;
-        unsigned int matchesImmediately:1;
         unsigned int matchOption:2;
         unsigned int processing:1;
     } tshFlags;
@@ -62,7 +60,6 @@ typedef NSInteger SKTypeSelectMatchOption;
 }
 
 @property (nonatomic, assign) id dataSource;
-@property (nonatomic) BOOL cyclesSimilarResults, matchesImmediately;
 @property (nonatomic) SKTypeSelectMatchOption matchOption;
 @property (nonatomic, retain) NSString *searchString;
 @property (nonatomic, readonly) BOOL isProcessing;
