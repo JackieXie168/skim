@@ -46,8 +46,10 @@ enum {
 };
 typedef NSInteger SKTypeSelectMatchOption;
 
+@protocol SKTypeSelectDataSource;
+
 @interface SKTypeSelectHelper : NSObject <NSTextViewDelegate> {
-    id dataSource;
+    id <SKTypeSelectDataSource> dataSource;
     SKTypeSelectMatchOption matchOption;
     BOOL isProcessing;
     NSArray *searchCache;
@@ -55,7 +57,7 @@ typedef NSInteger SKTypeSelectMatchOption;
     NSTimer *timer;
 }
 
-@property (nonatomic, assign) id dataSource;
+@property (nonatomic, assign) id <SKTypeSelectDataSource> dataSource;
 @property (nonatomic) SKTypeSelectMatchOption matchOption;
 @property (nonatomic, retain) NSString *searchString;
 @property (nonatomic, readonly) BOOL isProcessing;
