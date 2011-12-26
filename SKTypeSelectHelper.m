@@ -55,7 +55,6 @@
 - (void)searchWithEvent:(NSEvent *)keyEvent;
 - (void)repeatSearch;
 - (void)cancelSearch;
-- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent;
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent;
 - (BOOL)isRepeatEvent:(NSEvent *)keyEvent;
 - (BOOL)isCancelEvent:(NSEvent *)keyEvent;
