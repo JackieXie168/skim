@@ -52,6 +52,13 @@
 #pragma mark -
 
 @interface SKTypeSelectHelper (SKPrivate)
+- (void)searchWithEvent:(NSEvent *)keyEvent;
+- (void)repeatSearch;
+- (void)cancelSearch;
+- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent;
+- (BOOL)isSearchEvent:(NSEvent *)keyEvent;
+- (BOOL)isRepeatEvent:(NSEvent *)keyEvent;
+- (BOOL)isCancelEvent:(NSEvent *)keyEvent;
 - (NSTimeInterval)timeoutInterval;
 - (NSArray *)searchCache;
 - (void)searchWithStickyMatch:(BOOL)allowUpdate;
@@ -129,6 +136,8 @@
     return NO;
 }
 
+#pragma mark Private methods
+
 - (void)searchWithEvent:(NSEvent *)keyEvent {
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
@@ -174,10 +183,6 @@
         [self typeSelectCleanTimeout:timer];
 }
 
-- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent {
-    return [self isSearchEvent:keyEvent] || [self isRepeatEvent:keyEvent] || [self isCancelEvent:keyEvent];
-}
-
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
         return NO;
@@ -216,8 +221,6 @@
     
     return modifierFlags == 0 && character == CANCEL_CHARACTER;
 }
-
-#pragma mark Private methods
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
 - (NSTimeInterval)timeoutInterval {
