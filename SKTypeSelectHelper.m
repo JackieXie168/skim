@@ -39,6 +39,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKRuntime.h"
 #import "NSString_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 #define SKWindowDidChangeFirstResponderNotification @"SKWindowDidChangeFirstResponderNotification"
 
@@ -122,7 +123,9 @@
 }
 
 - (BOOL)processKeyDownEvent:(NSEvent *)keyEvent {
-    if ([self isSearchEvent:keyEvent]) {
+    if ([keyEvent type] != NSKeyDown) {
+        return NO;
+    } else if ([self isSearchEvent:keyEvent]) {
         [self searchWithEvent:keyEvent];
         return YES;
     } else if ([self isRepeatEvent:keyEvent]) {
@@ -183,9 +186,7 @@
 }
 
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent {
-    if ([keyEvent type] != NSKeyDown)
-        return NO;
-    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask & ~NSNumericPadKeyMask)
+    if ([keyEvent deviceIndependentModifierFlags] & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask & ~NSNumericPadKeyMask)
         return NO;
     
     static NSCharacterSet *nonAlphanumericCharacterSet = nil;
@@ -198,27 +199,11 @@
 }
 
 - (BOOL)isRepeatEvent:(NSEvent *)keyEvent {
-    if ([keyEvent type] != NSKeyDown)
-        return NO;
-    
-    NSString *characters = [keyEvent charactersIgnoringModifiers];
-    unichar character = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	NSUInteger modifierFlags = [keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    return modifierFlags == 0 && character == REPEAT_CHARACTER;
+    return [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == REPEAT_CHARACTER;
 }
 
 - (BOOL)isCancelEvent:(NSEvent *)keyEvent {
-    if ([keyEvent type] != NSKeyDown)
-        return NO;
-    if ([self isProcessing] == NO)
-        return NO;
-    
-    NSString *characters = [keyEvent charactersIgnoringModifiers];
-    unichar character = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	NSUInteger modifierFlags = [keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    return modifierFlags == 0 && character == CANCEL_CHARACTER;
+    return [self isProcessing] == NO && [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == CANCEL_CHARACTER;
 }
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
