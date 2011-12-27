@@ -1033,7 +1033,7 @@ static NSArray *allMainDocumentPDFViews() {
         return;
     }
 	
-    NSStringCompareOptions findOptions = 0;
+    NSStringCompareOptions forward = YES;
     NSString *findString = nil;
     
     switch ([sender tag]) {
@@ -1041,18 +1041,16 @@ static NSArray *allMainDocumentPDFViews() {
             [self showFindBar];
             break;
 		case NSFindPanelActionPrevious:
-            findOptions |= NSBackwardsSearch;
+            forward = NO;
 		case NSFindPanelActionNext:
             if ([[findController view] window]) {
-                [findController findWithOptions:findOptions];
+                [findController findForward:forward];
             } else {
                 NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
                 if ([findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]])
                     findString = [findPboard stringForType:NSStringPboardType];
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
-                    findOptions |= NSCaseInsensitiveSearch;
                 if ([findString length] > 0)
-                    [self findString:findString options:findOptions];
+                    [self findString:findString forward:forward];
                 else
                     NSBeep();
             }

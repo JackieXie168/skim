@@ -1705,18 +1705,20 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return selection;
 }
 
-- (BOOL)findString:(NSString *)string options:(NSInteger)options {
+- (BOOL)findString:(NSString *)string forward:(BOOL)forward {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-    if (options & NSBackwardsSearch) {
-        while ([sel hasCharacters] == NO && ++pageIndex < [[pdfView document] pageCount]) {
+    NSInteger options = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
+    if (forward) {
+        while ([sel hasCharacters] == NO && pageIndex-- > 0) {
             PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
             NSUInteger length = [[page string] length];
             if (length > 0)
                 sel = [page selectionForRange:NSMakeRange(0, length)];
         }
     } else {
-        while ([sel hasCharacters] == NO && pageIndex-- > 0) {
+        options |= NSBackwardsSearch;
+        while ([sel hasCharacters] == NO && ++pageIndex < [[pdfView document] pageCount]) {
             PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
             NSUInteger length = [[page string] length];
             if (length > 0)
