@@ -1708,22 +1708,16 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-    NSInteger options = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
-    if (forward) {
-        while ([sel hasCharacters] == NO && pageIndex-- > 0) {
-            PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
-            NSUInteger length = [[page string] length];
-            if (length > 0)
-                sel = [page selectionForRange:NSMakeRange(0, length)];
-        }
-    } else {
+    NSInteger options = 0;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
+        options |= NSCaseInsensitiveSearch;
+    if (forward == NO)
         options |= NSBackwardsSearch;
-        while ([sel hasCharacters] == NO && ++pageIndex < [[pdfView document] pageCount]) {
-            PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
-            NSUInteger length = [[page string] length];
-            if (length > 0)
-                sel = [page selectionForRange:NSMakeRange(0, length)];
-        }
+    while ([sel hasCharacters] == NO && (forward ? pageIndex-- > 0 : ++pageIndex < [[pdfView document] pageCount])) {
+        PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+        NSUInteger length = [[page string] length];
+        if (length > 0)
+            sel = [page selectionForRange:NSMakeRange(0, length)];
     }
     PDFSelection *selection = [self findString:string fromSelection:sel withOptions:options];
     if ([selection hasCharacters] == NO && [sel hasCharacters])
