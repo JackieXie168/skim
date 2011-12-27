@@ -1918,7 +1918,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         if ([caseSensitive isKindOfClass:[NSNumber class]] == NO || [caseSensitive boolValue] == NO)
             options |= NSCaseInsensitiveSearch;
         
-        if ((selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options]))
+        if ((selection = [[self pdfDocument] findString:text fromSelection:selection withOptions:options]))
             specifier = [selection objectSpecifier];
     }
     

@@ -225,7 +225,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         interactionMode = SKNormalMode;
         searchResults = [[NSMutableArray alloc] init];
         searchResultIndex = 0;
-        mwcFlags.isSynchronousFind = 0;
         mwcFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveSearchKey];
         mwcFlags.wholeWordSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKWholeWordSearchKey];
         mwcFlags.caseInsensitiveNoteSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
@@ -1698,30 +1697,24 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
 }
 
-- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options {
-	mwcFlags.isSynchronousFind = 1;
-    selection = [[pdfView document] findString:string fromSelection:selection withOptions:options];
-	mwcFlags.isSynchronousFind = 0;
-    return selection;
-}
-
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
+    PDFDocument *pdfDoc = [pdfView document];
     NSInteger options = 0;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
         options |= NSCaseInsensitiveSearch;
     if (forward == NO)
         options |= NSBackwardsSearch;
-    while ([sel hasCharacters] == NO && (forward ? pageIndex-- > 0 : ++pageIndex < [[pdfView document] pageCount])) {
+    while ([sel hasCharacters] == NO && (forward ? pageIndex-- > 0 : ++pageIndex < [pdfDoc pageCount])) {
         PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
         NSUInteger length = [[page string] length];
         if (length > 0)
             sel = [page selectionForRange:NSMakeRange(0, length)];
     }
-    PDFSelection *selection = [self findString:string fromSelection:sel withOptions:options];
+    PDFSelection *selection = [pdfDoc findString:string fromSelection:sel withOptions:options];
     if ([selection hasCharacters] == NO && [sel hasCharacters])
-        selection = [self findString:string fromSelection:nil withOptions:options];
+        selection = [pdfDoc findString:string fromSelection:nil withOptions:options];
     if (selection) {
         [pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
@@ -1814,82 +1807,74 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 #pragma mark PDFDocument delegate
 
 - (void)didMatchString:(PDFSelection *)instance {
-    if (mwcFlags.isSynchronousFind == 0) {
-        if (mwcFlags.wholeWordSearch) {
-            PDFSelection *copy = [[instance copy] autorelease];
-            NSString *string = [instance string];
-            NSUInteger l = [string length];
-            [copy extendSelectionAtEnd:1];
-            string = [copy string];
-            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]])
-                return;
-            l = [string length];
-            [copy extendSelectionAtStart:1];
-            string = [copy string];
-            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]])
-                return;
-        }
-        [searchResults addObject:instance];
-        
-        PDFPage *page = [instance safeFirstPage];
-        SKGroupedSearchResult *result = [groupedSearchResults lastObject];
-        NSUInteger maxCount = [result maxCount];
-        if ([[result page] isEqual:page] == NO) {
-            result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
-            [groupedSearchResults addObject:result];
-        }
-        [result addMatch:instance];
-        
-        if ([result count] > maxCount) {
-            maxCount = [result count];
-            for (result in groupedSearchResults)
-                [result setMaxCount:maxCount];
-        }
+    if (mwcFlags.wholeWordSearch) {
+        PDFSelection *copy = [[instance copy] autorelease];
+        NSString *string = [instance string];
+        NSUInteger l = [string length];
+        [copy extendSelectionAtEnd:1];
+        string = [copy string];
+        if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]])
+            return;
+        l = [string length];
+        [copy extendSelectionAtStart:1];
+        string = [copy string];
+        if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]])
+            return;
+    }
+    [searchResults addObject:instance];
+    
+    PDFPage *page = [instance safeFirstPage];
+    SKGroupedSearchResult *result = [groupedSearchResults lastObject];
+    NSUInteger maxCount = [result maxCount];
+    if ([[result page] isEqual:page] == NO) {
+        result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
+        [groupedSearchResults addObject:result];
+    }
+    [result addMatch:instance];
+    
+    if ([result count] > maxCount) {
+        maxCount = [result count];
+        for (result in groupedSearchResults)
+            [result setMaxCount:maxCount];
     }
 }
 
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
-    if (mwcFlags.isSynchronousFind == 0) {
-        NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
-        [self setSearchResults:nil];
-        [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-        [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
-        [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-        [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
-        [self setGroupedSearchResults:nil];
-        [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
-        [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
-        [[statusBar progressIndicator] setDoubleValue:0.0];
-        [statusBar startAnimation:self];
-        [self willChangeValueForKey:SEARCHRESULTS_KEY];
-        [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
-    }
+    NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
+    [self setSearchResults:nil];
+    [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
+    [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
+    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
+    [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
+    [self setGroupedSearchResults:nil];
+    [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
+    [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
+    [[statusBar progressIndicator] setDoubleValue:0.0];
+    [statusBar startAnimation:self];
+    [self willChangeValueForKey:SEARCHRESULTS_KEY];
+    [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
-    if (mwcFlags.isSynchronousFind == 0) {
-        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
-        [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
-        [self didChangeValueForKey:SEARCHRESULTS_KEY];
-        [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-        [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
-        [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-        [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
-        [statusBar stopAnimation:self];
-        [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
-    }
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
+    [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+    [self didChangeValueForKey:SEARCHRESULTS_KEY];
+    [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
+    [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
+    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
+    [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
+    [statusBar stopAnimation:self];
+    [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
-    if (mwcFlags.isSynchronousFind == 0) {
-        NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
-        [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
-        if ([pageIndex unsignedIntegerValue] % 50 == 0) {
-            [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
-            [self didChangeValueForKey:SEARCHRESULTS_KEY];
-            [self willChangeValueForKey:SEARCHRESULTS_KEY];
-            [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
-        }
+    NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
+    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
+    if ([pageIndex unsignedIntegerValue] % 50 == 0) {
+        [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+        [self didChangeValueForKey:SEARCHRESULTS_KEY];
+        [self willChangeValueForKey:SEARCHRESULTS_KEY];
+        [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
     }
 }
 
