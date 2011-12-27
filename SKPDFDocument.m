@@ -60,4 +60,22 @@
     return NO;
 }
 
+// don't send out delegate methods during a synchronous find
+
+- (NSArray *)findString:(NSString *)string withOptions:(NSUInteger)options {
+    id delegate = [self delegate];
+    [self setDelegate:nil];
+    NSArray *array = [super findString:string withOptions:options];
+    [self setDelegate:delegate];
+    return array;
+}
+
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSUInteger)options {
+    id delegate = [self delegate];
+    [self setDelegate:nil];
+    selection = [super findString:string fromSelection:selection withOptions:options];
+    [self setDelegate:delegate];
+    return selection;
+}
+
 @end

@@ -164,7 +164,6 @@ enum {
         unsigned int updatingOutlineSelection:1;
         unsigned int updatingThumbnailSelection:1;
         unsigned int isAnimating:1;
-        unsigned int isSynchronousFind:1;
         unsigned int caseInsensitiveSearch:1;
         unsigned int wholeWordSearch:1;
         unsigned int updatingNoteSelection:1;
@@ -286,7 +285,6 @@ enum {
 - (void)displayNoteViewAnimating:(BOOL)animate;
 - (void)displaySnapshotViewAnimating:(BOOL)animate;
 
-- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options;
 - (void)showFindBar;
 
 - (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex;
