@@ -66,7 +66,7 @@
 
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate;
 
-- (void)findWithOptions:(NSStringCompareOptions)backForwardOption;
+- (void)findForward:(BOOL)forward;
 - (void)updateFindPboard;
 
 - (IBAction)find:(id)sender;
@@ -77,5 +77,5 @@
 
 
 @protocol SKFindControllerDelegate <NSObject>
-- (BOOL)findString:(NSString *)string options:(NSInteger)options;
+- (BOOL)findString:(NSString *)string forward:(BOOL)forward;
 @end

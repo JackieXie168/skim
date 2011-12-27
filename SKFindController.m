@@ -227,21 +227,18 @@
     return fieldEditor;
 }
 
-- (void)findWithOptions:(NSStringCompareOptions)backForwardOption {
+- (void)findForward:(BOOL)forward {
     BOOL found = YES;
     if ([findString length]) {
-        NSInteger findOptions = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey] ? NSCaseInsensitiveSearch : 0;
-        found = [delegate findString:findString options:findOptions | backForwardOption];
+        found = [delegate findString:findString forward:forward];
         [self updateFindPboard];
     }
     [messageField setHidden:found];
 }
 
 - (IBAction)find:(id)sender {
-    NSStringCompareOptions options = 0;
-    if ([sender isKindOfClass:[NSSegmentedControl class]] && [sender selectedTag] == 0)
-        options |= NSBackwardsSearch;
-    [self findWithOptions:options];
+    BOOL forward = [sender isKindOfClass:[NSSegmentedControl class]] == NO || [sender selectedTag] == 1;
+    [self findForward:forward];
 }
 
 - (IBAction)remove:(id)sender {
