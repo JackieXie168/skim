@@ -48,8 +48,7 @@
 
 @implementation SKFindController
 
-@synthesize delegate, findField, messageField, doneButton, navigationButton, ownerController, findString;
-@dynamic fieldEditor;
+@synthesize delegate, findField, messageField, doneButton, navigationButton, ownerController, findString, fieldEditor;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -96,6 +95,9 @@
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
     [[findField cell] setSearchMenuTemplate:menu];
+    
+    fieldEditor = [[SKFindFieldEditor alloc] init];
+    [fieldEditor setFieldEditor:YES];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
@@ -217,14 +219,6 @@
         findString = [newFindString retain];
         didChange = YES;
     }
-}
-
-- (NSTextView *)fieldEditor {
-    if (fieldEditor == nil) {
-        fieldEditor = [[SKFindFieldEditor alloc] init];
-        [fieldEditor setFieldEditor:YES];
-    }
-    return fieldEditor;
 }
 
 - (void)findForward:(BOOL)forward {
