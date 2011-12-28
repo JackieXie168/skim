@@ -153,6 +153,7 @@
 						<string key="NSFrame">{{119, 4}, {42, 19}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
+						<int key="NSTag">1</int>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSearchFieldCell" key="NSCell" id="505043563">
 							<int key="NSCellFlags">343014976</int>
@@ -160,6 +161,7 @@
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="930853778"/>
+							<int key="NSTag">1</int>
 							<bool key="NSDrawsBackground">YES</bool>
 							<int key="NSTextBezelStyle">1</int>
 							<object class="NSColor" key="NSBackgroundColor">
