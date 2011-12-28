@@ -237,8 +237,7 @@
 }
 
 - (IBAction)find:(id)sender {
-    BOOL forward = [sender isKindOfClass:[NSSegmentedControl class]] == NO || [sender selectedTag] == 1;
-    [self findForward:forward];
+    [self findForward:[sender selectedTag] == 1];
 }
 
 - (IBAction)remove:(id)sender {
