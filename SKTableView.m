@@ -59,18 +59,18 @@
 
 - (void)dealloc {
     SKDESTROY(trackingAreas);
-    [typeSelectHelper setDataSource:nil];
+    [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
     [super dealloc];
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
     if (typeSelectHelper != newTypeSelectHelper) {
-        if ([typeSelectHelper dataSource] == self)
-            [typeSelectHelper setDataSource:nil];
+        if ([typeSelectHelper delegate] == self)
+            [typeSelectHelper setDelegate:nil];
         [typeSelectHelper release];
         typeSelectHelper = [newTypeSelectHelper retain];
-        [typeSelectHelper setDataSource:self];
+        [typeSelectHelper setDelegate:self];
     }
 }
 
@@ -97,7 +97,7 @@
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToEndOfDocument:nil];
-    } else if ([typeSelectHelper processKeyDownEvent:theEvent] == NO) {
+    } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
 }
@@ -286,9 +286,9 @@
 
 #pragma mark SKTypeSelectHelper datasource protocol
 
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper {
-    if ([[self delegate] respondsToSelector:@selector(tableView:typeSelectHelperSelectionItems:)])
-        return [[self delegate] tableView:self typeSelectHelperSelectionItems:aTypeSelectHelper];
+- (NSArray *)typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper {
+    if ([[self delegate] respondsToSelector:@selector(tableView:typeSelectHelperSelectionStrings:)])
+        return [[self delegate] tableView:self typeSelectHelperSelectionStrings:aTypeSelectHelper];
     return nil;
 }
 

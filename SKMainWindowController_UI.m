@@ -538,7 +538,7 @@
     return nil;
 }
 
-- (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         return pageLabels;
     }
@@ -877,7 +877,7 @@
     }
 }
 
-- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSInteger i, count = [rightSideController.noteOutlineView numberOfRows];
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];

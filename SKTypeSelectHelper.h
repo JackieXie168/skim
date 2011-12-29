@@ -46,10 +46,10 @@ enum {
 };
 typedef NSInteger SKTypeSelectMatchOption;
 
-@protocol SKTypeSelectDataSource;
+@protocol SKTypeSelectDelegate;
 
 @interface SKTypeSelectHelper : NSObject <NSTextViewDelegate> {
-    id <SKTypeSelectDataSource> dataSource;
+    id <SKTypeSelectDelegate> delegate;
     SKTypeSelectMatchOption matchOption;
     BOOL isProcessing;
     NSArray *searchCache;
@@ -57,7 +57,7 @@ typedef NSInteger SKTypeSelectMatchOption;
     NSTimer *timer;
 }
 
-@property (nonatomic, assign) id <SKTypeSelectDataSource> dataSource;
+@property (nonatomic, assign) id <SKTypeSelectDelegate> delegate;
 @property (nonatomic) SKTypeSelectMatchOption matchOption;
 @property (nonatomic, retain) NSString *searchString;
 @property (nonatomic, readonly) BOOL isProcessing;
@@ -69,14 +69,14 @@ typedef NSInteger SKTypeSelectMatchOption;
 
 - (void)rebuildTypeSelectSearchCache;
 
-- (BOOL)processKeyDownEvent:(NSEvent *)keyEvent;
+- (BOOL)handleEvent:(NSEvent *)keyEvent;
 
 @end
 
 
-@protocol SKTypeSelectDataSource <NSObject>
+@protocol SKTypeSelectDelegate <NSObject>
 
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper; // required
+- (NSArray *)typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper; // required
 - (NSUInteger)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper; // required
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(NSUInteger)itemIndex; // required
 

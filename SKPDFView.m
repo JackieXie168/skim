@@ -289,7 +289,6 @@ enum {
     SKDESTROY(syncTimer);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
-    [typeSelectHelper setDataSource:nil];
     SKDESTROY(typeSelectHelper);
     SKDESTROY(transitionController);
     SKDESTROY(navWindow);
@@ -1088,7 +1087,7 @@ enum {
             [self setAnnotationMode:SKLineNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0)) {
             [self setAnnotationMode:SKInkNote];
-        } else if ([typeSelectHelper processKeyDownEvent:theEvent] == NO) {
+        } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
             [super keyDown:theEvent];
         }
         

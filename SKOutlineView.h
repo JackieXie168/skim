@@ -41,7 +41,7 @@
 
 @protocol SKOutlineViewDelegate, SKOutlineViewDataSource;
 
-@interface SKOutlineView : NSOutlineView <SKTypeSelectDataSource> {
+@interface SKOutlineView : NSOutlineView <SKTypeSelectDelegate> {
     SKTypeSelectHelper *typeSelectHelper;
 }
 
@@ -78,7 +78,7 @@
 - (void)outlineView:(NSOutlineView *)anOutlineView pasteFromPasteboard:(NSPasteboard *)pboard;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canPasteFromPasteboard:(NSPasteboard *)pboard;
 
-- (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
 

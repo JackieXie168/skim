@@ -778,7 +778,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 }
 
-- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     NSInteger i, count = [outlineView numberOfRows];
     NSMutableArray *labels = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
