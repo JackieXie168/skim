@@ -73,6 +73,12 @@
 
 @synthesize delegate, searchString, matchOption, isProcessing;
 
+static NSCharacterSet *nonAlphanumericCharacterSet = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    nonAlphanumericCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] invertedSet] copy];
+}
 
 + (id)typeSelectHelper {
     return [[[self alloc] init] autorelease];
@@ -188,10 +194,6 @@
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent {
     if ([keyEvent deviceIndependentModifierFlags] & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask & ~NSNumericPadKeyMask)
         return NO;
-    
-    static NSCharacterSet *nonAlphanumericCharacterSet = nil;
-    if (nonAlphanumericCharacterSet == nil)
-        nonAlphanumericCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] invertedSet] copy];
     
     NSCharacterSet *invalidCharacters = [self isProcessing] ? [NSCharacterSet controlCharacterSet] : nonAlphanumericCharacterSet;
     
