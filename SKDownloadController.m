@@ -461,7 +461,7 @@ static SKDownloadController *sharedDownloadController = nil;
     return (nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
 }
 
-- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     return [downloads valueForKey:SKDownloadFileNameKey];
 }
 

@@ -52,7 +52,7 @@
 @dynamic selectedItems, canDelete, canCopy, canPaste;
 
 - (void)dealloc {
-    [typeSelectHelper setDataSource:nil];
+    [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
     [super dealloc];
 }
@@ -71,11 +71,11 @@
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
     if (typeSelectHelper != newTypeSelectHelper) {
-        if ([typeSelectHelper dataSource] == self)
-            [typeSelectHelper setDataSource:nil];
+        if ([typeSelectHelper delegate] == self)
+            [typeSelectHelper setDelegate:nil];
         [typeSelectHelper release];
         typeSelectHelper = [newTypeSelectHelper retain];
-        [typeSelectHelper setDataSource:self];
+        [typeSelectHelper setDelegate:self];
     }
 }
 
@@ -111,7 +111,7 @@
         [self scrollToEndOfDocument:nil];
 	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
-    } else if ([typeSelectHelper processKeyDownEvent:theEvent] == NO) {
+    } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
 }
@@ -227,9 +227,9 @@
 
 #pragma mark SKTypeSelectHelper datasource protocol
 
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:typeSelectHelperSelectionItems:)])
-        return [[self delegate] outlineView:self typeSelectHelperSelectionItems:aTypeSelectHelper];
+- (NSArray *)typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:typeSelectHelperSelectionStrings:)])
+        return [[self delegate] outlineView:self typeSelectHelperSelectionStrings:aTypeSelectHelper];
     return nil;
 }
 

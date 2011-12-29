@@ -439,7 +439,7 @@ static char *SKTransitionPropertiesObservationContext;
     return ([tableView selectedRow] != -1 && [pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]);
 }
 
-- (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     return [transitions valueForKeyPath:@"thumbnail.label"];
 }
 
