@@ -71,7 +71,7 @@
 
 @implementation SKTypeSelectHelper
 
-@synthesize delegate, searchString, matchOption, isProcessing;
+@synthesize delegate, searchString, matchOption;
 
 static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
@@ -195,7 +195,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     if ([keyEvent deviceIndependentModifierFlags] & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask & ~NSNumericPadKeyMask)
         return NO;
     
-    NSCharacterSet *invalidCharacters = [self isProcessing] ? [NSCharacterSet controlCharacterSet] : nonAlphanumericCharacterSet;
+    NSCharacterSet *invalidCharacters = isProcessing ? [NSCharacterSet controlCharacterSet] : nonAlphanumericCharacterSet;
     
     return [[keyEvent characters] rangeOfCharacterFromSet:invalidCharacters].location == NSNotFound;
 }
@@ -205,7 +205,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (BOOL)isCancelEvent:(NSEvent *)keyEvent {
-    return [self isProcessing] == NO && [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == CANCEL_CHARACTER;
+    return isProcessing == NO && [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == CANCEL_CHARACTER;
 }
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
