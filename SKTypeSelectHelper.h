@@ -59,7 +59,6 @@ typedef NSInteger SKTypeSelectMatchOption;
 
 @property (nonatomic, assign) id <SKTypeSelectDelegate> delegate;
 @property (nonatomic) SKTypeSelectMatchOption matchOption;
-@property (nonatomic, retain) NSString *searchString;
 
 + (id)typeSelectHelper;
 + (id)typeSelectHelperWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;

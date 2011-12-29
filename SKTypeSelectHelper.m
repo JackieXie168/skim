@@ -71,7 +71,7 @@
 
 @implementation SKTypeSelectHelper
 
-@synthesize delegate, searchString, matchOption;
+@synthesize delegate, matchOption;
 
 static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
@@ -161,7 +161,8 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     
     // Append the new character to the search string
     [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
-    [self setSearchString:[fieldEditor string]];
+    [searchString release];
+    searchString = [[fieldEditor string] retain];
     
     if ([delegate respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
         [delegate typeSelectHelper:self updateSearchString:searchString];
