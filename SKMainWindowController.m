@@ -1936,7 +1936,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
 	// Establish maximum and current value for progress bar.
 	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
-	[[self progressController] setDoubleValue:0.0];
 	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
 	
 	// Bring up the save panel as a sheet.
