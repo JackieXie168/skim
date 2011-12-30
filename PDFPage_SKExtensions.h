@@ -45,6 +45,7 @@ extern NSString *SKPDFPageBoundsDidChangeNotification;
 extern NSString *SKPDFPagePageKey;
 extern NSString *SKPDFPageActionKey;
 extern NSString *SKPDFPageActionCrop;
+extern NSString *SKPDFPageActionResize;
 extern NSString *SKPDFPageActionRotate;
 
 @class SKMainDocument;
