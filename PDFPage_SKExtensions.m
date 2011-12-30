@@ -61,6 +61,7 @@ NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotif
 NSString *SKPDFPagePageKey = @"page";
 NSString *SKPDFPageActionKey = @"action";
 NSString *SKPDFPageActionCrop = @"crop";
+NSString *SKPDFPageActionResize = @"resize";
 NSString *SKPDFPageActionRotate = @"rotate";
 
 @implementation PDFPage (SKExtensions) 
@@ -416,7 +417,7 @@ static BOOL usesSequentialPageNumbering = NO;
         [self setBounds:newBounds forBox:kPDFDisplayBoxMediaBox];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionResize, SKPDFPageActionKey, self, SKPDFPagePageKey, nil]];
     }
 }
 
