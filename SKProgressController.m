@@ -44,7 +44,7 @@
 @implementation SKProgressController
 
 @synthesize progressBar, progressField;
-@dynamic message, indeterminate, minValue, maxValue, doubleValue;
+@dynamic message, indeterminate, maxValue, doubleValue;
 
 - (void)dealloc {
     SKDESTROY(progressBar);
@@ -77,20 +77,11 @@
 }
 
 - (BOOL)isIndeterminate {
-    [self window];
-    return [progressBar isIndeterminate];
+    return [[self progressBar] isIndeterminate];
 }
 
 - (void)setIndeterminate:(BOOL)flag {
     [[self progressBar] setIndeterminate:flag];
-}
-
-- (double)minValue {
-    return [[self progressBar] minValue];
-}
-
-- (void)setMinValue:(double)newMinimum {
-    [[self progressBar] setMinValue:newMinimum];
 }
 
 - (double)maxValue {
@@ -99,6 +90,7 @@
 
 - (void)setMaxValue:(double)newMaximum {
     [[self progressBar] setMaxValue:newMaximum];
+    [[self progressBar] setDoubleValue:0.0];
 }
 
 - (double)doubleValue {

@@ -48,7 +48,7 @@
 @property (nonatomic, retain) IBOutlet NSTextField *progressField;
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, getter=isIndeterminate) BOOL indeterminate;
-@property (nonatomic) double minValue, maxValue, doubleValue;
+@property (nonatomic) double maxValue, doubleValue;
 
 - (void)incrementBy:(double)delta;
 

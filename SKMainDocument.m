@@ -263,8 +263,10 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 }
 
 - (SKProgressController *)progressController {
-    if (progressController == nil)
+    if (progressController == nil) {
         progressController = [[SKProgressController alloc] init];
+        [progressController setIndeterminate:YES];
+    }
     return progressController;
 }
 
@@ -842,7 +844,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [[[self windowForSheet] attachedSheet] orderOut:self];
         
         [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] setIndeterminate:YES];
         [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
     }
     
@@ -949,7 +950,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
     [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] setIndeterminate:YES];
     [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
     
     PDFDocument *pdfDoc = [self pdfDocument];
@@ -1212,7 +1212,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)saveDiskImageToFile:(NSString *)fileName email:(BOOL)email {
     [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] setIndeterminate:YES];
     [[self progressController] show];
     
     NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], SOURCEPATH_KEY, fileName, TARGETPATH_KEY, [NSNumber numberWithBool:email], EMAIL_KEY, nil];
