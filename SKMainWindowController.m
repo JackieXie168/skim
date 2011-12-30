@@ -1948,7 +1948,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
+	[[self progressController] setDoubleValue:1.0 + [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
 }
 
 - (void)registerForDocumentNotifications {
