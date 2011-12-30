@@ -1909,12 +1909,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSDictionary *info = [notification userInfo];
     PDFPage *page = [info objectForKey:SKPDFPagePageKey];
     NSString *action = [info objectForKey:SKPDFPageActionKey];
-    BOOL displayChanged = YES;
-    
-    if ([action isEqualToString:SKPDFPageActionCrop])
-        displayChanged = ([pdfView displayBox] == kPDFDisplayBoxCropBox);
-    else if ([action isEqualToString:SKPDFPageActionResize])
-        displayChanged = ([pdfView displayBox] == kPDFDisplayBoxMediaBox);
+    BOOL displayChanged = [action isEqualToString:SKPDFPageActionCrop] == NO || [pdfView displayBox] == kPDFDisplayBoxCropBox;
         
     if (displayChanged)
         [pdfView layoutDocumentView];
