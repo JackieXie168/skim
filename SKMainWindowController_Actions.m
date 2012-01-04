@@ -957,6 +957,8 @@ static NSArray *allMainDocumentPDFViews() {
     
     if ([secondaryPdfView window]) {
         
+        lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
+        
         NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
         [self performSelector:@selector(removeSecondaryPdfContentView) withObject:nil afterDelay:delay];
