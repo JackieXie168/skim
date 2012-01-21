@@ -284,7 +284,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
             prefsPath = [(NSURL *)url path];
             CFRelease(url);
             
-            NSString *bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
+            NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
             
             bookmarksPath = [[[prefsPath stringByAppendingPathComponent:[bundleIdentifier stringByAppendingString:@".bookmarks"]] stringByAppendingPathExtension:@"plist"] copy];
         }
