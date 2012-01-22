@@ -206,7 +206,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (BOOL)isCancelEvent:(NSEvent *)keyEvent {
-    return isProcessing == NO && [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == CANCEL_CHARACTER;
+    return isProcessing && [keyEvent deviceIndependentModifierFlags] == 0 && [keyEvent firstCharacter] == CANCEL_CHARACTER;
 }
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
