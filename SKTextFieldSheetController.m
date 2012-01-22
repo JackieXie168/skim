@@ -86,33 +86,6 @@
 
 #pragma mark -
 
-@implementation SKPageSheetController
-
-@dynamic objectValues;
-
-- (NSString *)windowNibName { return @"PageSheet"; }
-
-- (NSArray *)objectValues {
-    return [(NSComboBox *)[self textField] objectValues];
-}
-
-- (void)setObjectValues:(NSArray *)objects {
-    [(NSComboBox *)[self textField] removeAllItems];
-    [(NSComboBox *)[self textField] addItemsWithObjectValues:objects];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKScaleSheetController
-
-- (NSString *)windowNibName { return @"ScaleSheet"; }
-
-@end
-
-#pragma mark -
-
 @implementation SKBookmarkSheetController
 
 @synthesize folderPopUp;
@@ -152,13 +125,5 @@
 - (SKBookmark *)selectedFolder {
     return [[folderPopUp selectedItem] representedObject];
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKPasswordSheetController
-
-- (NSString *)windowNibName { return @"PasswordSheet"; }
 
 @end

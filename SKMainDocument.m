@@ -1008,7 +1008,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self progressController] dismissSheet:nil];
 }
 
-- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)convertNotesPasswordSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
     
     if (returnCode == NSCancelButton) {
@@ -1018,7 +1018,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         
         if (pdfDocWithoutNotes && [pdfDocWithoutNotes allowsPrinting] == NO && 
             ([pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO || [pdfDocWithoutNotes allowsPrinting] == NO)) {
-            SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+            SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
             [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] modalDelegate:self didEndSelector:_cmd contextInfo:pdfDocWithoutNotes];
         } else {
             [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
@@ -1039,7 +1039,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
         if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO || [pdfDocWithoutNotes allowsPrinting] == NO) {
             
-            SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+            SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
             
             [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
                 modalDelegate:self 
