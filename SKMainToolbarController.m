@@ -883,13 +883,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 	}
 }
 
-- (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)scaleSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
         [mainController.pdfView setScaleFactor:[[controller textField] integerValue]];
 }
 
 - (IBAction)chooseScale:(id)sender {
-    SKScaleSheetController *scaleSheetController = [[[SKScaleSheetController alloc] init] autorelease];
+    SKTextFieldSheetController *scaleSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"ScaleSheet"] autorelease];
     
     [[scaleSheetController textField] setIntegerValue:[mainController.pdfView scaleFactor]];
     

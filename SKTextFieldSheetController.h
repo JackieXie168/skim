@@ -55,17 +55,6 @@
 
 #pragma mark -
 
-@interface SKPageSheetController : SKTextFieldSheetController
-@property (nonatomic, retain) NSArray *objectValues;
-@end
-
-#pragma mark -
-
-@interface SKScaleSheetController : SKTextFieldSheetController
-@end
-
-#pragma mark -
-
 @class SKBookmark;
 
 @interface SKBookmarkSheetController : SKTextFieldSheetController {
@@ -73,9 +62,4 @@
 }
 @property (nonatomic, retain) IBOutlet NSPopUpButton *folderPopUp;
 @property (nonatomic, readonly) SKBookmark *selectedFolder;
-@end
-
-#pragma mark -
-
-@interface SKPasswordSheetController : SKTextFieldSheetController
 @end

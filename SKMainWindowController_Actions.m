@@ -322,15 +322,15 @@ static NSArray *allMainDocumentPDFViews() {
     [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
 }
 
-- (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)pageSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
         [self setPageLabel:[controller stringValue]];
 }
 
 - (IBAction)doGoToPage:(id)sender {
-    SKPageSheetController *pageSheetController = [[[SKPageSheetController alloc] init] autorelease];
+    SKTextFieldSheetController *pageSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PageSheet"] autorelease];
     
-    [pageSheetController setObjectValues:pageLabels];
+    [(NSComboBox *)[pageSheetController textField] addItemsWithObjectValues:pageLabels];
     [pageSheetController setStringValue:[self pageLabel]];
     
     [pageSheetController beginSheetModalForWindow: [self window]
@@ -802,7 +802,7 @@ static NSArray *allMainDocumentPDFViews() {
         [[self pdfView] goToRect:[page boundsForBox:box] onPage:page];
 }
 
-- (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)passwordSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         [[controller window] orderOut:nil];
         [[pdfView document] unlockWithPassword:[controller stringValue]];
@@ -810,7 +810,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)password:(id)sender {
-    SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+    SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
     
     [passwordSheetController beginSheetModalForWindow: [self window]
         modalDelegate:self 
