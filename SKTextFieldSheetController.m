@@ -37,10 +37,6 @@
  */
 
 #import "SKTextFieldSheetController.h"
-#import "SKBookmarkController.h"
-#import "SKBookmark.h"
-#import "NSWindowController_SKExtensions.h"
-#import "NSMenu_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 
 
@@ -80,50 +76,6 @@
 
 - (void)setStringValue:(NSString *)string {
     [[self textField] setStringValue:string];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKBookmarkSheetController
-
-@synthesize folderPopUp;
-@dynamic selectedFolder;
-
-- (void)dealloc {
-    SKDESTROY(folderPopUp);
-    [super dealloc];
-}
-
-- (NSString *)windowNibName { return @"BookmarkSheet"; }
-
-- (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
-    for (SKBookmark *bm in bookmarks) {
-        if ([bm bookmarkType] == SKBookmarkTypeFolder) {
-            NSString *label = [bm label];
-            NSMenuItem *item = [menu addItemWithTitle:label ?: @"" action:NULL keyEquivalent:@""];
-            [item setImageAndSize:[bm icon]];
-            [item setIndentationLevel:level];
-            [item setRepresentedObject:bm];
-            [self addMenuItemsForBookmarks:[bm children] level:level+1 toMenu:menu];
-        }
-    }
-}
-
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
-    SKBookmarkController *bookmarkController = [SKBookmarkController sharedBookmarkController];
-    SKBookmark *root = [bookmarkController bookmarkRoot];
-    [self window];
-    [folderPopUp removeAllItems];
-    [self addMenuItemsForBookmarks:[NSArray arrayWithObjects:root, nil] level:0 toMenu:[folderPopUp menu]];
-    [folderPopUp selectItemAtIndex:0];
-    
-    [super beginSheetModalForWindow:window modalDelegate:delegate didEndSelector:didEndSelector contextInfo:contextInfo];
-}
-
-- (SKBookmark *)selectedFolder {
-    return [[folderPopUp selectedItem] representedObject];
 }
 
 @end
