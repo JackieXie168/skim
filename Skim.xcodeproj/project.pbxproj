@@ -248,6 +248,7 @@
 		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
 		CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
 		CEECD61C12E9E30B00B9E35E /* NSError_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEECD61B12E9E30B00B9E35E /* NSError_SKExtensions.m */; };
 		CEEE7C520E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */; };
@@ -963,6 +964,8 @@
 		CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSValueTransformer_SKExtensions.m; sourceTree = "<group>"; };
 		CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorCell.h; sourceTree = "<group>"; };
 		CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorCell.m; sourceTree = "<group>"; };
+		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
+		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
 		CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_UI.h; sourceTree = "<group>"; };
 		CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController_UI.m; sourceTree = "<group>"; };
 		CEECD61A12E9E30B00B9E35E /* NSError_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSError_SKExtensions.h; sourceTree = "<group>"; };
@@ -1501,6 +1504,8 @@
 				4530D8C80B27B04D007C59F4 /* SKApplicationController.m */,
 				CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */,
 				CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */,
+				CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */,
+				CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */,
 				CE31A6150C01FC45003612A9 /* SKDocumentController.h */,
 				CE31A6160C01FC45003612A9 /* SKDocumentController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SKMainDocument.h */,
@@ -2558,6 +2563,7 @@
 				CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */,
 				CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */,
 				CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */,
+				CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

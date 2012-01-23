@@ -1,10 +1,10 @@
 //
-//  SKTextFieldSheetController.h
+//  SKBookmarkSheetController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/29/08.
+//  Created by Christiaan Hofman on 1/23/12.
 /*
- This software is Copyright (c) 2008-2012
+ This software is Copyright (c) 2012
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,18 +37,15 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKWindowController.h"
+#import "SKTextFieldSheetController.h"
 
+@class SKBookmark;
 
-@interface SKTextFieldSheetController : SKWindowController {
-    NSTextField *textField;
-    NSArray *labelFields;
-    NSArray *controls;
-    NSArray *buttons;
+@interface SKBookmarkSheetController : SKTextFieldSheetController {
+    NSPopUpButton *folderPopUp;
 }
 
-@property (nonatomic, retain) IBOutlet NSTextField *textField;
-@property (nonatomic, retain) IBOutlet NSArray *labelFields, *controls, *buttons;
-@property (nonatomic, retain) NSString *stringValue;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *folderPopUp;
+@property (nonatomic, readonly) SKBookmark *selectedFolder;
 
 @end

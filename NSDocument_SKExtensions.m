@@ -46,7 +46,7 @@
 #import "SKFDFParser.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKTextFieldSheetController.h"
+#import "SKBookmarkSheetController.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
 #import "NSWindowController_SKExtensions.h"
