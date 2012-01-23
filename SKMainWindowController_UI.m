@@ -504,7 +504,7 @@
     return NO;
 }
 
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
+- (NSPointerArray *)tableViewHighlightedRows:(NSTableView *)tv {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         return lastViewedPages;
     }
@@ -842,14 +842,15 @@
     return NO;
 }
 
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
+- (NSPointerArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
     if ([ov isEqual:leftSideController.tocOutlineView]) {
-        NSMutableArray *array = [NSMutableArray array];
+        NSPointerArray *array = [[[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality] autorelease];
+        NSUInteger i, iMax = [lastViewedPages count];
         
-        for (NSNumber *rowNumber in lastViewedPages) {
-            NSInteger row = [self outlineRowForPageIndex:[rowNumber integerValue]];
+        for (i = 0; i < iMax; i++) {
+            NSInteger row = [self outlineRowForPageIndex:(NSUInteger)[lastViewedPages pointerAtIndex:i]];
             if (row != -1)
-                [array addObject:[NSNumber numberWithInteger:row]];
+                [array addPointer:(void *)row];
         }
         
         return array;
@@ -1603,12 +1604,14 @@ static NSArray *allMainDocumentPDFViews() {
         return;
     
     PDFPage *page = [pdfView currentPage];
-    NSNumber *number = [NSNumber numberWithUnsignedInteger:[page pageIndex]];
+    NSUInteger pageIndex = [page pageIndex];
     
-    if ([[lastViewedPages lastObject] isEqual:number] == NO) {
-        [lastViewedPages insertObject:number atIndex:0];
+    if ([lastViewedPages count] == 0) {
+        [lastViewedPages addPointer:(void *)pageIndex];
+    } else if ((NSUInteger)[lastViewedPages pointerAtIndex:0] != pageIndex) {
+        [lastViewedPages insertPointer:(void *)pageIndex atIndex:0];
         if ([lastViewedPages count] > 5)
-            [lastViewedPages removeLastObject];
+            [lastViewedPages setCount:5];
     }
     [leftSideController.thumbnailTableView setNeedsDisplay:YES];
     [leftSideController.tocOutlineView setNeedsDisplay:YES];
