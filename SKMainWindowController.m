@@ -84,7 +84,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
-#import "SKTextFieldSheetController.h"
 #import "SKColorSwatch.h"
 #import "SKApplicationController.h"
 #import "NSSegmentedControl_SKExtensions.h"
