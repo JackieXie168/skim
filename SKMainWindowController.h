@@ -138,7 +138,7 @@ enum {
     NSUInteger                          markedPageIndex;
     NSUInteger                          beforeMarkedPageIndex;
     
-    NSMutableArray                      *lastViewedPages;
+    NSPointerArray                      *lastViewedPages;
     
     IOPMAssertionID                     activityAssertionID;
     

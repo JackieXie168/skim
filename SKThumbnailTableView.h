@@ -59,7 +59,7 @@
 @protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
 @optional
 
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
+- (NSPointerArray *)tableViewHighlightedRows:(NSTableView *)tableView;
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 
 @end

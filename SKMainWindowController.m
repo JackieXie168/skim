@@ -236,7 +236,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
-        lastViewedPages = [[NSMutableArray alloc] init];
+        lastViewedPages = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
         rowHeights = [[SKFloatMapTable alloc] init];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
@@ -446,7 +446,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         if ([[pdfView document] isLocked]) {
             [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
         } else if ([[pdfView currentPage] pageIndex] != pageIndex) {
-            [lastViewedPages removeAllObjects];
+            [lastViewedPages setCount:0];
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         }
     }
@@ -777,7 +777,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [snapshots makeObjectsPerformSelector:@selector(close)];
             [self removeAllObjectsFromSnapshots];
             
-            [lastViewedPages removeAllObjects];
+            [lastViewedPages setCount:0];
             
             [self unregisterForDocumentNotifications];
             
@@ -1883,7 +1883,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     [self applyPDFSettings:[savedNormalSetup objectForKey:AUTOSCALES_KEY] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     if (pageIndex != NSNotFound) {
-        [lastViewedPages removeAllObjects];
+        [lastViewedPages setCount:0];
         [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
     }
     if ([snapshotSetups count]) {

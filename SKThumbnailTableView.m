@@ -82,11 +82,11 @@
             [NSGraphicsContext saveGraphicsState];
             
             NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-            NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
+            NSPointerArray *rows = [[self delegate] tableViewHighlightedRows:self];
             NSInteger i, count = MIN((NSInteger)[rows count], 5);
             
             for (i = 0; i < count; i++) {
-                row = [[rows objectAtIndex:i] integerValue];
+                row = (NSInteger)[rows pointerAtIndex:i];
                 rect = [self rectOfRow:row];
                 if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
                     [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];
