@@ -64,7 +64,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @implementation SKDownload
 
-@synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status, delegate;
+@synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status;
 @dynamic fileName, fileURL, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
 
 static NSSet *keysAffectedByFilePath = nil;
@@ -104,7 +104,6 @@ static NSSet *infoKeys = nil;
         receivedContentLength = 0;
         progressIndicator = nil;
         status = SKDownloadStatusUndefined;
-        delegate = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
@@ -278,7 +277,6 @@ static NSSet *infoKeys = nil;
         
         [URLDownload cancel];
         [self setStatus:SKDownloadStatusCanceled];
-        [delegate downloadDidEnd:self];
     }
 }
 
@@ -376,7 +374,6 @@ static NSSet *infoKeys = nil;
     if (expectedContentLength > 0)
 		[progressIndicator setDoubleValue:(double)expectedContentLength];
     [self setStatus:SKDownloadStatusFinished];
-    [delegate downloadDidEnd:self];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
@@ -384,7 +381,6 @@ static NSSet *infoKeys = nil;
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
     [self setFilePath:nil];
     [self setStatus:SKDownloadStatusFailed];
-    [delegate downloadDidEnd:self];
 }
 
 @end

@@ -133,6 +133,29 @@ static SKDownloadController *sharedDownloadController = nil;
     return [self addDownloadForURL:aURL showWindow:[[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey]];
 }
 
+- (void)openDownload:(SKDownload *)download {
+    if ([download status] == SKDownloadStatusFinished) {
+        NSURL *URL = [download fileURL];
+        NSString *fragment = [[download URL] fragment];
+        if ([fragment length] > 0)
+            URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingFormat:@"#%@", fragment]];
+        
+        NSError *error = nil;
+        id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
+        if (document == nil && [error isUserCancelledError] == NO)
+            [NSApp presentError:error];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
+            [[download retain] autorelease];
+            [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
+            // for the document to note that the file has been deleted
+            [document setFileURL:[download fileURL]];
+            if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
+                [[self window] close];
+        }
+    }
+}
+
 #pragma mark Images
 
 + (NSImage *)cancelImage {
@@ -201,7 +224,6 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
-    [download setDelegate:self];
     [downloads insertObject:download atIndex:anIndex];
     [self startObservingDownloads:[NSArray arrayWithObject:download]];
     [download start];
@@ -212,7 +234,6 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex {
     SKDownload *download = [downloads objectAtIndex:anIndex];
     [self endObservingDownloads:[NSArray arrayWithObject:download]];
-    [download setDelegate:nil];
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
@@ -329,31 +350,6 @@ static SKDownloadController *sharedDownloadController = nil;
         return (row != -1 && [[self objectInDownloadsAtIndex:row] canRemove]);
     }
     return YES;
-}
-
-#pragma mark SKDownloadDelegate
-
-- (void)downloadDidEnd:(SKDownload *)download {
-    if ([download status] == SKDownloadStatusFinished) {
-        NSURL *URL = [download fileURL];
-        NSString *fragment = [[download URL] fragment];
-        if ([fragment length] > 0)
-            URL = [NSURL URLWithString:[[URL absoluteString] stringByAppendingFormat:@"#%@", fragment]];
-        
-        NSError *error = nil;
-        id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
-        if (document == nil && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
-            [[download retain] autorelease];
-            [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
-            // for the document to note that the file has been deleted
-            [document setFileURL:[download fileURL]];
-            if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
-                [[self window] close];
-        }
-    }
 }
 
 #pragma mark NSTableViewDataSource
@@ -520,6 +516,8 @@ static SKDownloadController *sharedDownloadController = nil;
             NSUInteger row = [downloads indexOfObject:object];
             if (row != NSNotFound)
                 [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
+            if ([object status] == SKDownloadStatusFinished)
+                [self openDownload:object];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
