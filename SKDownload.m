@@ -380,10 +380,10 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
-    [self setStatus:SKDownloadStatusFailed];
     if (filePath)
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
     [self setFilePath:nil];
+    [self setStatus:SKDownloadStatusFailed];
     [delegate downloadDidEnd:self];
 }
 
