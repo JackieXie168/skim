@@ -280,6 +280,14 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     return [[SKInfoWindowController sharedInstance] infoForDocument:self];
 }
 
+- (NSDictionary *)scriptingInfo {
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    for (NSString *key in [[SKInfoWindowController sharedInstance] keys])
+        [info setObject:[NSNull null] forKey:key];
+    [info addEntriesFromDictionary:[self documentAttributes]];
+    return info;
+}
+
 - (BOOL)isPDFDocument { return NO; }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
