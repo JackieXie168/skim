@@ -73,7 +73,8 @@
 
 @implementation SKInfoWindowController
 
-@synthesize summaryTableView, attributesTableView, tabView, info, keys;
+@synthesize summaryTableView, attributesTableView, tabView, info;
+@dynamic keys;
 
 + (void)initialize {
     SKINITIALIZE;
