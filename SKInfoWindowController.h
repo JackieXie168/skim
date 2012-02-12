@@ -52,7 +52,7 @@
 @property (nonatomic, retain) IBOutlet NSTableView *summaryTableView, *attributesTableView;
 @property (nonatomic, retain) IBOutlet NSTabView *tabView;
 @property (nonatomic, copy) NSDictionary *info;
-@property (nonatomic, copy) NSArray *keys;
+@property (nonatomic, readonly) NSArray *keys;
 
 + (id)sharedInstance;
 
