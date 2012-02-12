@@ -1081,7 +1081,7 @@
                 description="The bounding rectangle of the note (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
-            <property name="modification date" code="ModD" type="date" access="r"
+            <property name="modification date" code="asmo" type="date" access="r"
                 description="The modification date of a note.">
                 <cocoa key="scriptingModificationDate"/>
             </property>
