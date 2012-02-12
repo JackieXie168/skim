@@ -42,14 +42,22 @@
 
 @implementation SKCenteredTextFieldCell
 
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+- (NSRect)centeredFrame:(NSRect)cellFrame inView:(NSView *)view {
     CGFloat height = [self cellSizeForBounds:cellFrame].height;
     if (height < NSHeight(cellFrame)) {
         cellFrame.origin.y += floor(0.5 * (NSHeight(cellFrame) - height));
-        cellFrame.origin.y += [controlView isFlipped] ? TEXT_OFFSET : -TEXT_OFFSET;
+        cellFrame.origin.y += [view isFlipped] ? TEXT_OFFSET : -TEXT_OFFSET;
         cellFrame.size.height = height;
     }
-    [super drawInteriorWithFrame:cellFrame inView:controlView];
+    return cellFrame;
+}
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    [super drawInteriorWithFrame:[self centeredFrame:cellFrame inView:controlView] inView:controlView];
+}
+
+- (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
+    return [super expansionFrameWithFrame:[self centeredFrame:cellFrame inView:view] inView:view];
 }
 
 @end
