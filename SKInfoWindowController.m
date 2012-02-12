@@ -73,7 +73,7 @@
 
 @implementation SKInfoWindowController
 
-@synthesize summaryTableView, attributesTableView, tabView, info;
+@synthesize summaryTableView, attributesTableView, tabView, info, keys;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -298,6 +298,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [dictionary setValue:[NSNumber numberWithDouble:[(SKMainDocument *)doc rating]] forKey:SKInfoRatingKey];
     
     return dictionary;
+}
+
+- (NSArray *)keys {
+    return [attributesKeys arrayByAddingObjectsFromArray:summaryKeys];
 }
 
 - (void)handleViewFrameDidChangeNotification:(NSNotification *)notification {
