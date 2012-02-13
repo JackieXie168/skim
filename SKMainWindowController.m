@@ -490,7 +490,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                     [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
                     [tc setMinWidth:16.0];
                     [tc setMaxWidth:1000.0];
-                    [tc setWidth:32.0];
+                    [tc setWidth:64.0];
                     [tc setDataCell:[[[SKCenteredTextFieldCell alloc] initTextCell:@""] autorelease]];
                     if ([columnID isEqualToString:AUTHOR_COLUMNID]) {
                         [[tc headerCell] setTitle:NSLocalizedString(@"Author", @"Table header title")];
