@@ -83,6 +83,8 @@
 #define NOTE_COLUMNID   @"note"
 #define TYPE_COLUMNID   @"type"
 #define COLOR_COLUMNID  @"color"
+#define AUTHOR_COLUMNID @"author"
+#define DATE_COLUMNID   @"date"
 #define IMAGE_COLUMNID  @"image"
 
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
@@ -620,15 +622,22 @@
             return [item type] ? [item color] : nil;
         else if([tcID isEqualToString:PAGE_COLUMNID])
             return [[item page] displayLabel];
+        else if([tcID isEqualToString:AUTHOR_COLUMNID])
+            return [item type] ? [item userName] : nil;
+        else if([tcID isEqualToString:DATE_COLUMNID])
+            return [item type] ? [item modificationDate] : nil;
     }
     return nil;
 }
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView] && [item type]) {
         if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
-            if ([item type] && [object isEqualToString:[item string]] == NO)
+            if ([(object ?: @"") isEqualToString:([item string] ?: @"")] == NO)
                 [item setString:object];
+        } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
+            if ([(object ?: @"") isEqualToString:([item userName] ?: @"")] == NO)
+                [item setUserName:object];
         }
     }
 }
@@ -676,6 +685,8 @@
             } else {
                 return YES;
             }
+        } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
+            return YES;
         }
     }
     return NO;
@@ -700,6 +711,10 @@
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            } else if ([tcID isEqualToString:AUTHOR_COLUMNID]) {
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationUserNameKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            } else if ([tcID isEqualToString:DATE_COLUMNID]) {
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES selector:@selector(compare:)] autorelease] atIndex:0];
             }
             sortDescriptors = sds;
             if (oldTableColumn)

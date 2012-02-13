@@ -66,6 +66,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "SKTemplateManager.h"
+#import "SKCenteredTextFieldCell.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -75,15 +76,19 @@
 
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
+#define SKNoteColumnsKey @"SKNoteColumns" 
+
 #define SKWindowFrameKey @"windowFrame"
 
 #define NOTES_KEY @"notes"
 #define PAGES_KEY @"pages"
 
-#define NOTE_COLUMNID  @"note"
-#define TYPE_COLUMNID  @"type"
-#define COLOR_COLUMNID @"color"
-#define PAGE_COLUMNID  @"page"
+#define NOTE_COLUMNID   @"note"
+#define TYPE_COLUMNID   @"type"
+#define COLOR_COLUMNID  @"color"
+#define PAGE_COLUMNID   @"page"
+#define AUTHOR_COLUMNID @"author"
+#define DATE_COLUMNID   @"date"
 
 @implementation SKNotesDocument
 
@@ -175,6 +180,50 @@
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
+    
+    NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNoteColumnsKey];
+    if (columnIDs) {
+        if ([columnIDs containsObject:NOTE_COLUMNID] == NO)
+            columnIDs = [[NSArray arrayWithObject:NOTE_COLUMNID] arrayByAddingObjectsFromArray:columnIDs];
+        if ([columnIDs isEqualToArray:[[outlineView tableColumns] valueForKey:@"identifier"]] == NO) {
+            NSInteger column, currentColumn = 0;
+            for (NSString *columnID in columnIDs) {
+                column = [outlineView columnWithIdentifier:columnID];
+                if (column == -1) {
+                    NSTableColumn *tc = [[[NSTableColumn alloc] initWithIdentifier:AUTHOR_COLUMNID] autorelease];
+                    [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
+                    [tc setMinWidth:16.0];
+                    [tc setMaxWidth:1000.0];
+                    [tc setWidth:32.0];
+                    [tc setDataCell:[[[SKCenteredTextFieldCell alloc] initTextCell:@""] autorelease]];
+                    if ([columnID isEqualToString:AUTHOR_COLUMNID]) {
+                        [[tc headerCell] setTitle:NSLocalizedString(@"Author", @"Table header title")];
+                        [tc setEditable:YES];
+                        [[tc dataCell] setEditable:YES];
+                    } else if ([columnID isEqualToString:DATE_COLUMNID]) {
+                        [[tc headerCell] setTitle:NSLocalizedString(@"Date", @"Table header title")];
+                        [tc setEditable:NO];
+                        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+                        [formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
+                        [formatter setDateStyle:NSDateFormatterShortStyle];
+                        [formatter setTimeStyle:NSDateFormatterNoStyle];
+                        [[tc dataCell] setFormatter:formatter];
+                    } else {
+                        continue;
+                    }
+                    column = [outlineView numberOfColumns];
+                    [outlineView addTableColumn:tc];
+                    [outlineView setAllowsColumnResizing:YES];
+                }
+                if (column > currentColumn)
+                    [outlineView moveColumn:column toColumn:currentColumn];
+                ++currentColumn;
+            }
+            while (currentColumn < [outlineView numberOfColumns])
+                [outlineView removeTableColumn:[[outlineView tableColumns] lastObject]];
+            [outlineView sizeToFit];
+        }
+    }
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
@@ -605,6 +654,10 @@
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+        } else if ([tcID isEqualToString:AUTHOR_COLUMNID]) {
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationUserNameKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+        } else if ([tcID isEqualToString:DATE_COLUMNID]) {
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES selector:@selector(compare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
             if (oldTableColumn == nil)
                 ascending = NO;
