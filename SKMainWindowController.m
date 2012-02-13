@@ -1870,9 +1870,17 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]])
             return;
     }
-    [searchResults addObject:instance];
     
     PDFPage *page = [instance safeFirstPage];
+    NSInteger i = [searchResults count];
+    while (i-- > 0) {
+        PDFSelection *prevResult = [searchResults objectAtIndex:i];
+        PDFPage *prevPage = [prevResult safeFirstPage];
+        if ([page isEqual:prevPage] == NO || SKCompareRects([instance boundsForPage:page], [prevResult boundsForPage:prevPage]) != NSOrderedAscending)
+            break;
+    }
+    [searchResults insertObject:instance atIndex:i + 1];
+    
     SKGroupedSearchResult *result = [groupedSearchResults lastObject];
     NSUInteger maxCount = [result maxCount];
     if ([[result page] isEqual:page] == NO) {

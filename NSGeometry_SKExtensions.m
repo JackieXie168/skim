@@ -140,3 +140,23 @@ SKRectEdges SKResizeHandleForPointFromRect(NSPoint point, NSRect rect, CGFloat d
     else
         return 0;
 }
+
+NSComparisonResult SKCompareRects(NSRect rect1, NSRect rect2) {
+    CGFloat top1 = NSMaxY(rect1);
+    CGFloat top2 = NSMaxY(rect2);
+    
+    if (top1 > top2)
+        return NSOrderedAscending;
+    else if (top1 < top2)
+        return NSOrderedDescending;
+    
+    CGFloat left1 = NSMinX(rect1);
+    CGFloat left2 = NSMinX(rect2);
+    
+    if (left1 < left2)
+        return NSOrderedAscending;
+    else if (left1 > left2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
+}

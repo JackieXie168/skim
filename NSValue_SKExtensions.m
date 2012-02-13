@@ -37,30 +37,13 @@
  */
 
 #import "NSValue_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation NSValue (SKExtensions)
 
 - (NSComparisonResult)boundsCompare:(NSValue *)aValue {
-    NSRect rect1 = [self rectValue];
-    NSRect rect2 = [aValue rectValue];
-    CGFloat top1 = NSMaxY(rect1);
-    CGFloat top2 = NSMaxY(rect2);
-    
-    if (top1 > top2)
-        return NSOrderedAscending;
-    else if (top1 < top2)
-        return NSOrderedDescending;
-    
-    CGFloat left1 = NSMinX(rect1);
-    CGFloat left2 = NSMinX(rect2);
-    
-    if (left1 < left2)
-        return NSOrderedAscending;
-    else if (left1 > left2)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
+    return SKCompareRects([self rectValue], [aValue rectValue]);
 }
 
 - (NSString *)rectString {
