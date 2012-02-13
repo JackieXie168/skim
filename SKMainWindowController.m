@@ -102,6 +102,7 @@
 #import "NSScreen_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
+#import "SKCenteredTextFieldCell.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -114,9 +115,11 @@
 #define THUMBNAILS_KEY              @"thumbnails"
 #define SNAPSHOTS_KEY               @"snapshots"
 
-#define PAGE_COLUMNID  @"page"
-#define NOTE_COLUMNID  @"note"
-#define COLOR_COLUMNID @"color"
+#define PAGE_COLUMNID   @"page"
+#define NOTE_COLUMNID   @"note"
+#define COLOR_COLUMNID  @"color"
+#define AUTHOR_COLUMNID @"author"
+#define DATE_COLUMNID   @"date"
 
 #define RELEVANCE_COLUMNID  @"relevance"
 #define RESULTS_COLUMNID    @"results"
@@ -155,7 +158,9 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKUsesDrawersKey @"SKUsesDrawers"
 
-#define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
+#define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds"
+
+#define SKNoteColumnsKey @"SKNoteColumns" 
 
 static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) {
     NSRect rect = [contentView bounds];
@@ -470,6 +475,51 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
     [noteTypeSheetController setDelegate:self];
     [[rightSideController.noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
+    
+    NSArray *columnIDs = [sud stringArrayForKey:SKNoteColumnsKey];
+    if (columnIDs) {
+        if ([columnIDs containsObject:NOTE_COLUMNID] == NO)
+            columnIDs = [[NSArray arrayWithObject:NOTE_COLUMNID] arrayByAddingObjectsFromArray:columnIDs];
+        NSOutlineView *ov = rightSideController.noteOutlineView;
+        if ([columnIDs isEqualToArray:[[ov tableColumns] valueForKey:@"identifier"]] == NO) {
+            NSInteger column, currentColumn = 0;
+            for (NSString *columnID in columnIDs) {
+                column = [ov columnWithIdentifier:columnID];
+                if (column == -1) {
+                    NSTableColumn *tc = [[[NSTableColumn alloc] initWithIdentifier:AUTHOR_COLUMNID] autorelease];
+                    [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
+                    [tc setMinWidth:16.0];
+                    [tc setMaxWidth:1000.0];
+                    [tc setWidth:32.0];
+                    [tc setDataCell:[[[SKCenteredTextFieldCell alloc] initTextCell:@""] autorelease]];
+                    if ([columnID isEqualToString:AUTHOR_COLUMNID]) {
+                        [[tc headerCell] setTitle:NSLocalizedString(@"Author", @"Table header title")];
+                        [tc setEditable:YES];
+                        [[tc dataCell] setEditable:YES];
+                    } else if ([columnID isEqualToString:DATE_COLUMNID]) {
+                        [[tc headerCell] setTitle:NSLocalizedString(@"Date", @"Table header title")];
+                        [tc setEditable:NO];
+                        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+                        [formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
+                        [formatter setDateStyle:NSDateFormatterShortStyle];
+                        [formatter setTimeStyle:NSDateFormatterNoStyle];
+                        [[tc dataCell] setFormatter:formatter];
+                    } else {
+                        continue;
+                    }
+                    column = [ov numberOfColumns];
+                    [ov addTableColumn:tc];
+                    [ov setAllowsColumnResizing:YES];
+                }
+                if (column > currentColumn)
+                    [ov moveColumn:column toColumn:currentColumn];
+                ++currentColumn;
+            }
+            while (currentColumn < [ov numberOfColumns])
+                [ov removeTableColumn:[[ov tableColumns] lastObject]];
+            [ov sizeToFit];
+        }
+    }
     
     [rightSideController.noteOutlineView registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
     
@@ -2260,7 +2310,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetPDFToolTipRects];
             
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqual:SKNPDFAnnotationColorKey]) {
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqual:SKNPDFAnnotationColorKey] ||
+                ([[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNoteColumnsKey] && ([keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]))) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
             }
