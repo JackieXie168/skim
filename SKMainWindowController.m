@@ -2270,7 +2270,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 [undoGroupOldPropertiesPerNote setObject:oldNoteProperties forKey:note];
                 [oldNoteProperties release];
                 // set the mod date here, need to do that only once for each note for a real user action
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO && isUndoOrRedo == NO)
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO && isUndoOrRedo == NO && [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO)
                     [note setModificationDate:[NSDate date]];
             }
             
