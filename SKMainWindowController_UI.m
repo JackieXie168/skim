@@ -697,6 +697,8 @@
         NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
         NSArray *sortDescriptors = nil;
         BOOL ascending = YES;
+        if ([NSEvent modifierFlags] & NSCommandKeyMask)
+            tableColumn = nil;
         if ([oldTableColumn isEqual:tableColumn]) {
             sortDescriptors = [[rightSideController.noteArrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
             ascending = [[sortDescriptors lastObject] ascending];
@@ -722,8 +724,9 @@
             [ov setHighlightedTableColumn:tableColumn]; 
         }
         [rightSideController.noteArrayController setSortDescriptors:sortDescriptors];
-        [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
-                inTableColumn:tableColumn];
+        if (tableColumn)
+            [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
+                    inTableColumn:tableColumn];
         [ov reloadData];
     }
 }
