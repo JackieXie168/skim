@@ -624,7 +624,9 @@
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:NOTE_COLUMNID]) {
+    if (tableColumn == nil) {
+        return [item text];
+    } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
         return [item type] ? (id)[item string] : (id)[item text];
     } else if([tcID isEqualToString:TYPE_COLUMNID]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item type], SKAnnotationTypeImageCellTypeKey, nil];
@@ -635,6 +637,14 @@
     }
     return nil;
 }
+
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if (tableColumn == nil && [item type] == nil) {
+        return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
+    }
+    return [tableColumn dataCellForRow:[ov rowForItem:item]];
+}
+
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     NSTableColumn *oldTableColumn = [ov highlightedTableColumn];

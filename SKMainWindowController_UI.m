@@ -614,7 +614,9 @@
         }
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        if ([tcID isEqualToString:NOTE_COLUMNID])
+        if (tableColumn == nil)
+            return [item text];
+        else if ([tcID isEqualToString:NOTE_COLUMNID])
             return [item type] ? (id)[item string] : (id)[item text];
         else if([tcID isEqualToString:TYPE_COLUMNID])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
@@ -671,21 +673,24 @@
 
 #pragma mark NSOutlineView delegate protocol
 
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [item type] == nil) {
+        return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
+    }
+    return [tableColumn dataCellForRow:[ov rowForItem:item]];
+}
+
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:rightSideController.noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
-            if ([item type] == nil) {
-                if ([pdfView hideNotes] == NO) {
-                    PDFAnnotation *annotation = [(SKNoteText *)item note];
-                    [pdfView scrollAnnotationToVisible:annotation];
-                    [pdfView setActiveAnnotation:annotation];
-                    [self showNote:annotation];
-                }
-                return NO;
-            } else {
-                return YES;
+        if (tableColumn == nil) {
+            if ([pdfView hideNotes] == NO) {
+                PDFAnnotation *annotation = [(SKNoteText *)item note];
+                [pdfView scrollAnnotationToVisible:annotation];
+                [pdfView setActiveAnnotation:annotation];
+                [self showNote:annotation];
             }
-        } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
+            return NO;
+        } else if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID] || [[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
             return YES;
         }
     }
@@ -743,7 +748,8 @@
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    if ([ov isEqual:rightSideController.noteOutlineView] && [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
+    if ([ov isEqual:rightSideController.noteOutlineView] && 
+        (tableColumn == nil || [[tableColumn identifier] isEqualToString:NOTE_COLUMNID])) {
         return [item string];
     }
     return nil;
