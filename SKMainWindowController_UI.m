@@ -716,7 +716,7 @@
             } else if ([tcID isEqualToString:AUTHOR_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationUserNameKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:DATE_COLUMNID]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES selector:@selector(compare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES] autorelease] atIndex:0];
             }
             sortDescriptors = sds;
             if (oldTableColumn)
