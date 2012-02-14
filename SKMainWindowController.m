@@ -1872,11 +1872,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
     
     PDFPage *page = [instance safeFirstPage];
+    NSRect bounds = [instance boundsForPage:page];
     NSInteger i = [searchResults count];
     while (i-- > 0) {
         PDFSelection *prevResult = [searchResults objectAtIndex:i];
         PDFPage *prevPage = [prevResult safeFirstPage];
-        if ([page isEqual:prevPage] == NO || SKCompareRects([instance boundsForPage:page], [prevResult boundsForPage:prevPage]) != NSOrderedAscending)
+        if ([page isEqual:prevPage] == NO || SKCompareRects(bounds, [prevResult boundsForPage:prevPage]) != NSOrderedAscending)
             break;
     }
     [searchResults insertObject:instance atIndex:i + 1];
