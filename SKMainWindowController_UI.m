@@ -1007,9 +1007,10 @@
     CGFloat height, rowHeight = [rightSideController.noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = [rightSideController.noteOutlineView indentationPerLevel];
+    CGFloat indentation = 16.0;
     NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
-    NSRect fullRect = NSMakeRect(0.0, 0.0,  NSWidth([rightSideController.noteOutlineView frame]) - 2 * indentation, CGFLOAT_MAX);
+    indentation += [rightSideController.noteOutlineView indentationPerLevel];
+    NSRect fullRect = NSMakeRect(0.0, 0.0,  NSWidth([rightSideController.noteOutlineView frame]) - indentation, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     
