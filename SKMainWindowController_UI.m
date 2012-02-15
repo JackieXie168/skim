@@ -1010,7 +1010,8 @@
     CGFloat indentation = [rightSideController.noteOutlineView indentationPerLevel];
     CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSRect rect = NSMakeRect(0, CGFLOAT_MAX, width, CGFLOAT_MAX);
-    NSRect smallRect = NSMakeRect(0, CGFLOAT_MAX, width - indentation, CGFLOAT_MAX);
+    width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, NSWidth([rightSideController.noteOutlineView frame]) - 2 * indentation, rowHeight)]);
+    NSRect smallRect = NSMakeRect(0, CGFLOAT_MAX, width, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     
