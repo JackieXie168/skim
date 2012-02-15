@@ -519,9 +519,10 @@
     CGFloat height,rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = [outlineView indentationPerLevel];
+    CGFloat indentation = 16.0;
     NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
-    NSRect fullRect = NSMakeRect(0.0, 0.0, NSWidth([outlineView frame]) - 2 * indentation, CGFLOAT_MAX);
+    indentation += [outlineView indentationPerLevel];
+    NSRect fullRect = NSMakeRect(0.0, 0.0, NSWidth([outlineView frame]) - indentation, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     
