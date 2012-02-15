@@ -180,6 +180,8 @@
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
+        [outlineView setIndentationPerLevel:1.0];
     
     NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNoteColumnsKey];
     if (columnIDs) {

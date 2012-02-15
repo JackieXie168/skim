@@ -476,6 +476,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [noteTypeSheetController setDelegate:self];
     [[rightSideController.noteOutlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
+        [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
+    
     NSArray *columnIDs = [sud stringArrayForKey:SKNoteColumnsKey];
     if (columnIDs) {
         if ([columnIDs containsObject:NOTE_COLUMNID] == NO)
