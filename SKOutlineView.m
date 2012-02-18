@@ -40,8 +40,6 @@
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"
-#import "NSUserDefaultsController_SKExtensions.h"
-#import "SKStringConstants.h"
 
 #define SPACE_CHARACTER 0x20
 
