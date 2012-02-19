@@ -42,7 +42,6 @@
 #import "SKMainWindowController_UI.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
-#import "SKColorCell.h"
 #import "SKTypeSelectHelper.h"
 #import "SKNoteOutlineView.h"
 
@@ -79,7 +78,6 @@
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
-    [[noteOutlineView tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     [noteOutlineView setAutoresizesOutlineColumn: NO];
     
     [noteOutlineView setDelegate:mainController];
