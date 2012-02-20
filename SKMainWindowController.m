@@ -116,6 +116,9 @@
 #define SNAPSHOTS_KEY               @"snapshots"
 
 #define PAGE_COLUMNID   @"page"
+#define COLOR_COLUMNID  @"color"
+#define AUTHOR_COLUMNID @"author"
+#define DATE_COLUMNID   @"date"
 
 #define RELEVANCE_COLUMNID  @"relevance"
 #define RESULTS_COLUMNID    @"results"
@@ -2283,7 +2286,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetPDFToolTipRects];
             
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqual:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
+            NSArray *columnIDs = [rightSideController.noteOutlineView tableColumnIdentifiers];
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || 
+                ([keyPath isEqualToString:SKNPDFAnnotationColorKey] && [columnIDs containsObject:COLOR_COLUMNID]) || 
+                ([keyPath isEqualToString:SKNPDFAnnotationUserNameKey] && [columnIDs containsObject:AUTHOR_COLUMNID]) || 
+                ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] && [columnIDs containsObject:DATE_COLUMNID])) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
             }
