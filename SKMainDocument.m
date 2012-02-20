@@ -412,7 +412,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
                                        alternateButton:nil
                                            otherButton:nil
-                             informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
+                             informativeTextWithFormat:message, [[absoluteURL path] lastPathComponent]];
         [alert runModal];
     }
     
