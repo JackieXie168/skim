@@ -483,7 +483,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
+    NSURL *destURL = [absoluteURL respondsToSelector:@selector(isFileReferenceURL)] && [absoluteURL isFileReferenceURL] ? [absoluteURL filePathURL] : absoluteURL;
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:destURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
