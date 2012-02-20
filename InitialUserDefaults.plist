@@ -145,6 +145,34 @@
 		<string>mate</string>
 		<key>SKTeXEditorArguments</key>
 		<string>-l %line &quot;%file&quot;</string>
+		<key>SKNoteColumns</key>
+		<array>
+			<string>note</string>
+			<string>type</string>
+			<string>color</string>
+			<string>page</string>
+		</array>
+		<key>SKNoteColumnWidths</key>
+		<dict>
+			<key>author</key>
+            <real>32</real>
+			<key>date</key>
+            <real>32</real>
+		</dict>
+		<key>SKNotesDocumentColumns</key>
+		<array>
+			<string>note</string>
+			<string>type</string>
+			<string>color</string>
+			<string>page</string>
+		</array>
+		<key>SKNotesDocumentColumnWidths</key>
+		<dict>
+			<key>author</key>
+            <real>64</real>
+			<key>date</key>
+            <real>64</real>
+		</dict>
 		<key>SKSwatchColors</key>
 		<array>
 			<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQAAAYY=</data>
