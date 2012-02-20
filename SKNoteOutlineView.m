@@ -41,19 +41,79 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKColorCell.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
-#define PAGE_COLUMNID  @"page"
-#define NOTE_COLUMNID  @"note"
-#define COLOR_COLUMNID @"color"
+#define PAGE_COLUMNID   @"page"
+#define NOTE_COLUMNID   @"note"
+#define TYPE_COLUMNID   @"type"
+#define COLOR_COLUMNID  @"color"
+#define AUTHOR_COLUMNID @"author"
+#define DATE_COLUMNID   @"date"
+
+@interface SKNoteOutlineView (SKPrivate)
+@end
 
 @implementation SKNoteOutlineView
 
+@dynamic tableColumnIdentifiers, tableColumnWidths;
+
+- (id)initWithFrame:(NSRect)frameRect {
+    self = [super initWithFrame:frameRect];
+    if (self) {
+        removedTableColumns = [[NSMutableSet alloc] init];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
+    if (self) {
+        removedTableColumns = [[NSMutableSet alloc] init];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    SKDESTROY(removedTableColumns);
+    [super dealloc];
+}
+
+static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
+    if ([identifier isEqualToString:NOTE_COLUMNID])
+        return NSLocalizedString(@"Note", @"Table header title");
+    else if ([identifier isEqualToString:TYPE_COLUMNID])
+        return NSLocalizedString(@"Type", @"Table header title");
+    else if ([identifier isEqualToString:COLOR_COLUMNID])
+        return NSLocalizedString(@"Color", @"Table header title");
+    else if ([identifier isEqualToString:PAGE_COLUMNID])
+        return NSLocalizedString(@"Page", @"Table header title");
+    else if ([identifier isEqualToString:AUTHOR_COLUMNID])
+        return NSLocalizedString(@"Author", @"Table header title");
+    else if ([identifier isEqualToString:DATE_COLUMNID])
+        return NSLocalizedString(@"Date", @"Table header title");
+    else
+        return nil;
+}
+
 - (void)awakeFromNib {
     [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
-    [[[self tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-    [[[self tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    
+    NSMenu *menu = [NSMenu menu];
+    
+    for (NSTableColumn *tc in [self tableColumns]) {
+        NSString *identifier = [tc identifier];
+        NSString *title = titleForTableColumnIdentifier(identifier);
+        if ([self outlineTableColumn] != tc) {
+            NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
+            [menuItem setRepresentedObject:identifier];
+        }
+        if ([tc maxWidth] >= 32.0)
+            [[tc headerCell] setTitle:title];
+    }
+    
+    [[self headerView] setMenu:menu];
 }
 
 - (void)resizeRow:(NSInteger)row withEvent:(NSEvent *)theEvent {
@@ -151,7 +211,7 @@
     [[self window] invalidateCursorRectsForView:self];
 }
 
--(void)resetCursorRects {
+- (void)resetCursorRects {
     if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
         [self discardCursorRects];
         [super resetCursorRects];
@@ -171,6 +231,101 @@
     } else {
         [super resetCursorRects];
     }
+}
+
+- (void)addTableColumn:(NSTableColumn *)tableColumn {
+    [super addTableColumn:tableColumn];
+    [removedTableColumns removeObject:tableColumn];
+    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
+        [[self delegate] outlineViewTableColumnsDidChange:self];
+}
+
+- (void)removeTableColumn:(NSTableColumn *)tableColumn {
+    [removedTableColumns addObject:tableColumn];
+    [super removeTableColumn:tableColumn];
+    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
+        [[self delegate] outlineViewTableColumnsDidChange:self];
+}
+
+- (NSTableColumn *)removedTableColumnWithIdentifier:(NSString *)identifier {
+    for (NSTableColumn *tc in removedTableColumns) {
+        if ([[tc identifier] isEqualToString:identifier])
+            return tc;
+    }
+    return nil;
+}
+
+- (NSArray *)tableColumnIdentifiers {
+    return [[self tableColumns] valueForKey:@"identifier"];
+}
+
+- (void)setTableColumnIdentifiers:(NSArray *)identifiers {
+    NSArray *outlineIdentifier = [[self outlineTableColumn] identifier];
+    if (outlineIdentifier && [identifiers containsObject:outlineIdentifier] == NO)
+        identifiers = [[NSArray arrayWithObject:outlineIdentifier] arrayByAddingObjectsFromArray:identifiers];
+    if ([identifiers isEqualToArray:[self tableColumnIdentifiers]] == NO) {
+        NSInteger column, currentColumn = 0;
+        for (NSString *identifier in identifiers) {
+            column = [self columnWithIdentifier:identifier];
+            if (column == -1) {
+                NSTableColumn *tc = [self removedTableColumnWithIdentifier:identifier];
+                if (tc == nil)
+                    continue;
+                column = [self numberOfColumns];
+                [self addTableColumn:tc];
+            }
+            if (column > currentColumn)
+                [self moveColumn:column toColumn:currentColumn];
+            ++currentColumn;
+        }
+        while (currentColumn < [self numberOfColumns])
+            [self removeTableColumn:[[self tableColumns] lastObject]];
+        [self sizeToFit];
+    }
+}
+
+- (NSDictionary *)tableColumnWidths {
+    NSArray *tableColumns = [self tableColumns];
+    return [NSDictionary dictionaryWithObjects:[tableColumns valueForKey:@"width"] forKeys:[tableColumns valueForKey:@"identifier"]];
+}
+
+- (void)setTableColumnWidths:(NSDictionary *)widths {
+    if (widths) {
+        BOOL didChange = NO;
+        for (NSTableColumn *tc in [self tableColumns]) {
+            if (([tc resizingMask] & NSTableColumnUserResizingMask)) {
+                NSNumber *width = [widths objectForKey:[tc identifier]];
+                if (width) {
+                    [tc setWidth:[width doubleValue]];
+                    didChange = YES;
+                }
+            }
+        }
+        if (didChange)
+            [self sizeToFit];
+    }
+}
+
+- (void)toggleTableColumn:(id)sender {
+    NSString *identifier = [sender representedObject];
+    NSTableColumn *tc = [self tableColumnWithIdentifier:identifier];
+    if (tc) {
+        [self removeTableColumn:tc];
+        [self sizeToFit];
+    } else if ((tc = [self removedTableColumnWithIdentifier:identifier])) {
+        [self addTableColumn:tc];
+        [self sizeToFit];
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(toggleTableColumn:)) {
+        [menuItem setState:[[self tableColumnIdentifiers] containsObject:[menuItem representedObject]] ? NSOnState : NSOffState];
+        return YES;
+    } else if ([[SKNoteOutlineView superclass] instancesRespondToSelector:_cmd]) {
+        return [super validateMenuItem:menuItem];
+    }
+    return YES;
 }
 
 #pragma mark Delegate

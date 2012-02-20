@@ -57,6 +57,7 @@
     NSRect windowRect;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
+    BOOL settingUpWindow;
 }
 
 @property (nonatomic, retain) IBOutlet SKNoteOutlineView *outlineView;

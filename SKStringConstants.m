@@ -130,3 +130,7 @@ NSString *SKWholeWordSearchKey = @"SKWholeWordSearch";
 NSString *SKCaseInsensitiveNoteSearchKey = @"SKCaseInsensitiveNoteSearch";
 NSString *SKCaseInsensitiveFindKey = @"SKCaseInsensitiveFind";
 NSString *SKDownloadsDirectoryKey = @"SKDownloadsDirectory";
+NSString *SKNoteColumnsKey = @"SKNoteColumns";
+NSString *SKNoteColumnWidthsKey = @"SKNoteColumnWidths";
+NSString *SKNotesDocumentColumnsKey = @"SKNotesDocumentColumns";
+NSString *SKNotesDocumentColumnWidthsKey = @"SKNotesDocumentColumnWidths";

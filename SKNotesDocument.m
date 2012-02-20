@@ -76,8 +76,6 @@
 
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
-#define SKNoteColumnsKey @"SKNoteColumns" 
-
 #define SKWindowFrameKey @"windowFrame"
 
 #define NOTES_KEY @"notes"
@@ -160,6 +158,8 @@
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
+    settingUpWindow = YES;
+    
     [aController setShouldCloseDocument:YES];
     
     [self setupToolbarForWindow:[aController window]];
@@ -183,49 +183,12 @@
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
         [outlineView setIndentationPerLevel:1.0];
     
-    NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNoteColumnsKey];
-    if (columnIDs) {
-        if ([columnIDs containsObject:NOTE_COLUMNID] == NO)
-            columnIDs = [[NSArray arrayWithObject:NOTE_COLUMNID] arrayByAddingObjectsFromArray:columnIDs];
-        if ([columnIDs isEqualToArray:[[outlineView tableColumns] valueForKey:@"identifier"]] == NO) {
-            NSInteger column, currentColumn = 0;
-            for (NSString *columnID in columnIDs) {
-                column = [outlineView columnWithIdentifier:columnID];
-                if (column == -1) {
-                    NSTableColumn *tc = [[[NSTableColumn alloc] initWithIdentifier:AUTHOR_COLUMNID] autorelease];
-                    [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
-                    [tc setMinWidth:16.0];
-                    [tc setMaxWidth:1000.0];
-                    [tc setWidth:64.0];
-                    [tc setDataCell:[[[SKCenteredTextFieldCell alloc] initTextCell:@""] autorelease]];
-                    if ([columnID isEqualToString:AUTHOR_COLUMNID]) {
-                        [[tc headerCell] setTitle:NSLocalizedString(@"Author", @"Table header title")];
-                        [tc setEditable:YES];
-                        [[tc dataCell] setEditable:YES];
-                    } else if ([columnID isEqualToString:DATE_COLUMNID]) {
-                        [[tc headerCell] setTitle:NSLocalizedString(@"Date", @"Table header title")];
-                        [tc setEditable:NO];
-                        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-                        [formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
-                        [formatter setDateStyle:NSDateFormatterShortStyle];
-                        [formatter setTimeStyle:NSDateFormatterNoStyle];
-                        [[tc dataCell] setFormatter:formatter];
-                    } else {
-                        continue;
-                    }
-                    column = [outlineView numberOfColumns];
-                    [outlineView addTableColumn:tc];
-                    [outlineView setAllowsColumnResizing:YES];
-                }
-                if (column > currentColumn)
-                    [outlineView moveColumn:column toColumn:currentColumn];
-                ++currentColumn;
-            }
-            while (currentColumn < [outlineView numberOfColumns])
-                [outlineView removeTableColumn:[[outlineView tableColumns] lastObject]];
-            [outlineView sizeToFit];
-        }
-    }
+    NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNotesDocumentColumnsKey];
+    if (columnIDs)
+        [outlineView setTableColumnIdentifiers:columnIDs];
+    NSDictionary *columnWidths = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNotesDocumentColumnWidthsKey];
+    if (columnWidths)
+        [outlineView setTableColumnWidths:columnWidths];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
@@ -236,8 +199,12 @@
     
     noteTypeSheetController = [[SKNoteTypeSheetController alloc] init];
     [noteTypeSheetController setDelegate:self];
-    [[outlineView headerView] setMenu:[noteTypeSheetController noteTypeMenu]];
     
+    menu = [[outlineView headerView] menu];
+    [menu addItem:[NSMenuItem separatorItem]];
+    [[menu addItemWithTitle:NSLocalizedString(@"Note Type", @"Menu item title") action:NULL keyEquivalent:@""] setSubmenu:[noteTypeSheetController noteTypeMenu]];
+    
+    settingUpWindow = NO;
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
@@ -647,7 +614,6 @@
     return [tableColumn dataCellForRow:[ov rowForItem:item]];
 }
 
-
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
     NSArray *sortDescriptors = nil;
@@ -686,6 +652,24 @@
         [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
                 inTableColumn:tableColumn];
     [ov reloadData];
+}
+
+- (void)outlineViewTableColumnsDidChange:(NSOutlineView *)ov {
+    if (settingUpWindow == NO)
+        [[NSUserDefaults standardUserDefaults] setObject:[outlineView tableColumnIdentifiers] forKey:SKNotesDocumentColumnsKey];
+}
+
+- (void)outlineViewColumnDidMove:(NSNotification *)notification {
+    if (settingUpWindow == NO)
+        [[NSUserDefaults standardUserDefaults] setObject:[outlineView tableColumnIdentifiers] forKey:SKNotesDocumentColumnsKey];
+}
+
+- (void)outlineViewColumnDidResize:(NSNotification *)notification {
+    if (settingUpWindow == NO) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNotesDocumentColumnWidthsKey]];
+        [dict addEntriesFromDictionary:[outlineView tableColumnWidths]];
+        [[NSUserDefaults standardUserDefaults] setObject:dict forKey:SKNotesDocumentColumnWidthsKey];
+    }
 }
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {

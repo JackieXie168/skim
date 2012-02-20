@@ -41,7 +41,16 @@
 
 @protocol SKNoteOutlineViewDelegate;
 
-@interface SKNoteOutlineView : SKOutlineView
+@interface SKNoteOutlineView : SKOutlineView {
+    NSMutableSet *removedTableColumns;
+}
+
+@property (nonatomic, retain) NSArray *tableColumnIdentifiers;
+@property (nonatomic, retain) NSDictionary *tableColumnWidths;
+
+- (NSTableColumn *)removedTableColumnWithIdentifier:(NSString *)identifier;
+
+- (void)toggleTableColumn:(id)sender;
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKNoteOutlineViewDelegate>)delegate;
@@ -57,5 +66,6 @@
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeight:(CGFloat)newHeight ofRowByItem:(id)item;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
+- (void)outlineViewTableColumnsDidChange:(NSOutlineView *)anOutlineView;
 
 @end

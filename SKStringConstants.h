@@ -129,3 +129,7 @@ extern NSString *SKWholeWordSearchKey;
 extern NSString *SKCaseInsensitiveNoteSearchKey;
 extern NSString *SKCaseInsensitiveFindKey;
 extern NSString *SKDownloadsDirectoryKey;
+extern NSString *SKNoteColumnsKey;
+extern NSString *SKNoteColumnWidthsKey;
+extern NSString *SKNotesDocumentColumnsKey;
+extern NSString *SKNotesDocumentColumnWidthsKey;
