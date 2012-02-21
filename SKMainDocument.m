@@ -479,7 +479,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [fileUpdateChecker stopCheckingFileUpdates];
         isSaving = YES;
-    } else if (exportUsingPanel) {
+    } else if (saveOperation == NSSaveToOperation && exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
