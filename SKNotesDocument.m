@@ -183,13 +183,6 @@
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
         [outlineView setIndentationPerLevel:1.0];
     
-    NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNotesDocumentColumnsKey];
-    if (columnIDs)
-        [outlineView setTableColumnIdentifiers:columnIDs];
-    NSDictionary *columnWidths = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNotesDocumentColumnWidthsKey];
-    if (columnWidths)
-        [outlineView setTableColumnWidths:columnWidths];
-    
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, stringSortDescriptor, nil]];
@@ -652,24 +645,6 @@
         [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
                 inTableColumn:tableColumn];
     [ov reloadData];
-}
-
-- (void)outlineViewTableColumnsDidChange:(NSOutlineView *)ov {
-    if (settingUpWindow == NO)
-        [[NSUserDefaults standardUserDefaults] setObject:[outlineView tableColumnIdentifiers] forKey:SKNotesDocumentColumnsKey];
-}
-
-- (void)outlineViewColumnDidMove:(NSNotification *)notification {
-    if (settingUpWindow == NO)
-        [[NSUserDefaults standardUserDefaults] setObject:[outlineView tableColumnIdentifiers] forKey:SKNotesDocumentColumnsKey];
-}
-
-- (void)outlineViewColumnDidResize:(NSNotification *)notification {
-    if (settingUpWindow == NO) {
-        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNotesDocumentColumnWidthsKey]];
-        [dict addEntriesFromDictionary:[outlineView tableColumnWidths]];
-        [[NSUserDefaults standardUserDefaults] setObject:dict forKey:SKNotesDocumentColumnWidthsKey];
-    }
 }
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {

@@ -768,37 +768,6 @@
     }
 }
 
-- (void)outlineViewTableColumnsDidChange:(NSOutlineView *)ov {
-    if ([ov isEqual:rightSideController.noteOutlineView] && mwcFlags.settingUpWindow == 0)
-        [[NSUserDefaults standardUserDefaults] setObject:[rightSideController.noteOutlineView tableColumnIdentifiers] forKey:SKNoteColumnsKey];
-}
-
-- (void)outlineViewColumnDidMove:(NSNotification *)notification {
-    if ([[notification object] isEqual:rightSideController.noteOutlineView] && mwcFlags.settingUpWindow == 0)
-        [[NSUserDefaults standardUserDefaults] setObject:[rightSideController.noteOutlineView tableColumnIdentifiers] forKey:SKNoteColumnsKey];
-}
-
-- (void)outlineViewColumnDidResize:(NSNotification *)notification {
-    if ([[notification object] isEqual:rightSideController.noteOutlineView]) {
-        BOOL shouldSave = NO;
-        if (mwcFlags.settingUpWindow == 0 && [self rightSidePaneIsOpen]) {
-            if ([self interactionMode] == SKNormalMode) {
-                if (mwcFlags.usesDrawers)
-                    shouldSave = [rightSideDrawer state] == NSDrawerOpenState;
-                else
-                    shouldSave = ([splitView isAnimating] == NO);
-            } else if ([self interactionMode] == SKFullScreenMode) {
-                shouldSave = [rightSideWindow state] == NSDrawerOpenState;
-            }
-        }
-        if (shouldSave) {
-            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNoteColumnWidthsKey]];
-            [dict addEntriesFromDictionary:[rightSideController.noteOutlineView tableColumnWidths]];
-            [[NSUserDefaults standardUserDefaults] setObject:dict forKey:SKNoteColumnWidthsKey];
-        }
-    }
-}
-
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];

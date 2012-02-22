@@ -57,8 +57,6 @@
 
 @implementation SKNoteOutlineView
 
-@dynamic tableColumnIdentifiers, tableColumnWidths;
-
 static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if ([identifier isEqualToString:NOTE_COLUMNID])
         return NSLocalizedString(@"Note", @"Table header title");
@@ -210,54 +208,11 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (NSArray *)shownTableColumns {
-    NSMutableArray *tableColumns = [NSMutableArray array];
-    for (NSTableColumn *tc in [self tableColumns])
-        if ([tc isHidden] == NO)
-            [tableColumns addObject:tc];
-    return tableColumns;
-}
-
-- (NSArray *)tableColumnIdentifiers {
-    return [[self shownTableColumns] valueForKey:@"identifier"];
-}
-
-- (void)setTableColumnIdentifiers:(NSArray *)identifiers {
-    if ([identifiers isEqualToArray:[self tableColumnIdentifiers]] == NO) {
-        for (NSTableColumn *tc in [self tableColumns])
-            [tc setHidden:[identifiers containsObject:[tc identifier]] == NO];
-    }
-}
-
-- (NSDictionary *)tableColumnWidths {
-    NSArray *tableColumns = [self shownTableColumns];
-    return [NSDictionary dictionaryWithObjects:[tableColumns valueForKey:@"width"] forKeys:[tableColumns valueForKey:@"identifier"]];
-}
-
-- (void)setTableColumnWidths:(NSDictionary *)widths {
-    if (widths) {
-        BOOL didChange = NO;
-        for (NSTableColumn *tc in [self shownTableColumns]) {
-            if (([tc resizingMask] & NSTableColumnUserResizingMask)) {
-                NSNumber *width = [widths objectForKey:[tc identifier]];
-                if (width) {
-                    [tc setWidth:[width doubleValue]];
-                    didChange = YES;
-                }
-            }
-        }
-        if (didChange)
-            [self sizeToFit];
-    }
-}
-
 - (void)toggleTableColumn:(id)sender {
     NSTableColumn *tc = [self tableColumnWithIdentifier:[sender representedObject]];
     [tc setHidden:[tc isHidden] == NO];
     if ([self outlineTableColumn] == tc && [tc isHidden])
         [self collapseItem:nil collapseChildren:YES];
-    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
-        [[self delegate] outlineViewTableColumnsDidChange:self];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
