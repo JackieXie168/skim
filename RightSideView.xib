@@ -224,7 +224,7 @@
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="NSTableColumn" id="729705595">
 										<string key="NSIdentifier">note</string>
-										<double key="NSWidth">37</double>
+										<double key="NSWidth">107</double>
 										<double key="NSMinWidth">33</double>
 										<double key="NSMaxWidth">1000</double>
 										<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -378,6 +378,7 @@
 										<bool key="NSIsResizeable">YES</bool>
 										<bool key="NSIsEditable">YES</bool>
 										<reference key="NSTableView" ref="138723689"/>
+										<bool key="NSHidden">YES</bool>
 									</object>
 									<object class="NSTableColumn" id="1039168517">
 										<string key="NSIdentifier">date</string>
@@ -421,6 +422,7 @@
 										<int key="NSResizingMask">3</int>
 										<bool key="NSIsResizeable">YES</bool>
 										<reference key="NSTableView" ref="138723689"/>
+										<bool key="NSHidden">YES</bool>
 									</object>
 								</object>
 								<double key="NSIntercellSpacingWidth">3</double>
@@ -436,9 +438,10 @@
 									</object>
 								</object>
 								<double key="NSRowHeight">17</double>
-								<int key="NSTvFlags">-624951296</int>
+								<int key="NSTvFlags">-608174080</int>
 								<reference key="NSDelegate"/>
 								<reference key="NSDataSource"/>
+								<string key="NSAutosaveName">SKNoteOutlineView</string>
 								<int key="NSColumnAutoresizingStyle">5</int>
 								<int key="NSDraggingSourceMaskForLocal">15</int>
 								<int key="NSDraggingSourceMaskForNonLocal">0</int>

@@ -479,13 +479,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
         [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
     
-    NSArray *columnIDs = [[NSUserDefaults standardUserDefaults] stringArrayForKey:SKNoteColumnsKey];
-    if (columnIDs)
-        [rightSideController.noteOutlineView setTableColumnIdentifiers:columnIDs];
-    NSDictionary *columnWidths = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKNoteColumnWidthsKey];
-    if (columnWidths)
-        [rightSideController.noteOutlineView setTableColumnWidths:columnWidths];
-    
     [rightSideController.noteOutlineView registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
@@ -2284,11 +2277,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetPDFToolTipRects];
             
-            NSArray *columnIDs = [rightSideController.noteOutlineView tableColumnIdentifiers];
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || 
-                ([keyPath isEqualToString:SKNPDFAnnotationColorKey] && [columnIDs containsObject:COLOR_COLUMNID]) || 
-                ([keyPath isEqualToString:SKNPDFAnnotationUserNameKey] && [columnIDs containsObject:AUTHOR_COLUMNID]) || 
-                ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] && [columnIDs containsObject:DATE_COLUMNID])) {
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
             }
