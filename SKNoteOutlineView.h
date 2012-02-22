@@ -41,9 +41,7 @@
 
 @protocol SKNoteOutlineViewDelegate;
 
-@interface SKNoteOutlineView : SKOutlineView {
-    NSArray *allTableColumns;
-}
+@interface SKNoteOutlineView : SKOutlineView
 
 @property (nonatomic, retain) NSArray *tableColumnIdentifiers;
 @property (nonatomic, retain) NSDictionary *tableColumnWidths;
