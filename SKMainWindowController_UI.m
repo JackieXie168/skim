@@ -1122,7 +1122,7 @@
             if ([pdfView hideNotes] == NO && [items count] == 1) {
                 PDFAnnotation *annotation = [[self noteItems:items] lastObject];
                 if ([annotation isEditable]) {
-                    if ([[items lastObject] type]) {
+                    if ([[items lastObject] type] && [[rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] isHidden] == NO) {
                         item = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editNoteFromTable:) target:self];
                         [item setRepresentedObject:annotation];
                         item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];

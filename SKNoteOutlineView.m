@@ -84,10 +84,8 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     for (NSTableColumn *tc in [self tableColumns]) {
         NSString *identifier = [tc identifier];
         NSString *title = titleForTableColumnIdentifier(identifier);
-        if ([self outlineTableColumn] != tc) {
-            NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
-            [menuItem setRepresentedObject:identifier];
-        }
+        NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
+        [menuItem setRepresentedObject:identifier];
         if ([tc maxWidth] >= 32.0)
             [[tc headerCell] setTitle:title];
     }
@@ -225,9 +223,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)setTableColumnIdentifiers:(NSArray *)identifiers {
-    NSArray *outlineIdentifier = [[self outlineTableColumn] identifier];
-    if (outlineIdentifier && [identifiers containsObject:outlineIdentifier] == NO)
-        identifiers = [[NSArray arrayWithObject:outlineIdentifier] arrayByAddingObjectsFromArray:identifiers];
     if ([identifiers isEqualToArray:[self tableColumnIdentifiers]] == NO) {
         for (NSTableColumn *tc in [self tableColumns])
             [tc setHidden:[identifiers containsObject:[tc identifier]] == NO];
@@ -259,6 +254,8 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 - (void)toggleTableColumn:(id)sender {
     NSTableColumn *tc = [self tableColumnWithIdentifier:[sender representedObject]];
     [tc setHidden:[tc isHidden] == NO];
+    if ([self outlineTableColumn] == tc && [tc isHidden])
+        [self collapseItem:nil collapseChildren:YES];
     if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
         [[self delegate] outlineViewTableColumnsDidChange:self];
 }
