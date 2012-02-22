@@ -648,8 +648,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
     NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
-    if (tableColumn == nil && [tv respondsToSelector:@selector(removedTableColumnWithIdentifier:)])
-        tableColumn = [(SKNoteOutlineView *)tv removedTableColumnWithIdentifier:PAGE_COLUMNID];
     id cell = [tableColumn dataCell];
     CGFloat labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
     

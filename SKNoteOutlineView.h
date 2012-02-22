@@ -42,13 +42,11 @@
 @protocol SKNoteOutlineViewDelegate;
 
 @interface SKNoteOutlineView : SKOutlineView {
-    NSMutableSet *removedTableColumns;
+    NSArray *allTableColumns;
 }
 
 @property (nonatomic, retain) NSArray *tableColumnIdentifiers;
 @property (nonatomic, retain) NSDictionary *tableColumnWidths;
-
-- (NSTableColumn *)removedTableColumnWithIdentifier:(NSString *)identifier;
 
 - (void)toggleTableColumn:(id)sender;
 
