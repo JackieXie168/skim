@@ -59,11 +59,6 @@
 
 @dynamic tableColumnIdentifiers, tableColumnWidths;
 
-- (void)dealloc {
-    SKDESTROY(allTableColumns);
-    [super dealloc];
-}
-
 static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if ([identifier isEqualToString:NOTE_COLUMNID])
         return NSLocalizedString(@"Note", @"Table header title");
@@ -82,8 +77,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)awakeFromNib {
-    allTableColumns = [[self tableColumns] copy];
-    
     [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     
     NSMenu *menu = [NSMenu menu];
@@ -219,17 +212,16 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (NSTableColumn *)tableColumnWithIdentifier:(NSString *)identifier {
-    NSTableColumn *tc = [super tableColumnWithIdentifier:identifier];
-    if (tc == nil) {
-        for (tc in allTableColumns)
-            if ([[tc identifier] isEqualToString:identifier]) break;
-    }
-    return tc;
+- (NSArray *)shownTableColumns {
+    NSMutableArray *tableColumns = [NSMutableArray array];
+    for (NSTableColumn *tc in [self tableColumns])
+        if ([tc isHidden] == NO)
+            [tableColumns addObject:tc];
+    return tableColumns;
 }
 
 - (NSArray *)tableColumnIdentifiers {
-    return [[self tableColumns] valueForKey:@"identifier"];
+    return [[self shownTableColumns] valueForKey:@"identifier"];
 }
 
 - (void)setTableColumnIdentifiers:(NSArray *)identifiers {
@@ -237,35 +229,20 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if (outlineIdentifier && [identifiers containsObject:outlineIdentifier] == NO)
         identifiers = [[NSArray arrayWithObject:outlineIdentifier] arrayByAddingObjectsFromArray:identifiers];
     if ([identifiers isEqualToArray:[self tableColumnIdentifiers]] == NO) {
-        NSInteger column, currentColumn = 0;
-        for (NSString *identifier in identifiers) {
-            column = [self columnWithIdentifier:identifier];
-            if (column == -1) {
-                NSTableColumn *tc = [self tableColumnWithIdentifier:identifier];
-                if (tc == nil)
-                    continue;
-                column = [self numberOfColumns];
-                [self addTableColumn:tc];
-            }
-            if (column > currentColumn)
-                [self moveColumn:column toColumn:currentColumn];
-            ++currentColumn;
-        }
-        while (currentColumn < [self numberOfColumns])
-            [self removeTableColumn:[[self tableColumns] lastObject]];
-        [self sizeToFit];
+        for (NSTableColumn *tc in [self tableColumns])
+            [tc setHidden:[identifiers containsObject:[tc identifier]] == NO];
     }
 }
 
 - (NSDictionary *)tableColumnWidths {
-    NSArray *tableColumns = [self tableColumns];
+    NSArray *tableColumns = [self shownTableColumns];
     return [NSDictionary dictionaryWithObjects:[tableColumns valueForKey:@"width"] forKeys:[tableColumns valueForKey:@"identifier"]];
 }
 
 - (void)setTableColumnWidths:(NSDictionary *)widths {
     if (widths) {
         BOOL didChange = NO;
-        for (NSTableColumn *tc in [self tableColumns]) {
+        for (NSTableColumn *tc in [self shownTableColumns]) {
             if (([tc resizingMask] & NSTableColumnUserResizingMask)) {
                 NSNumber *width = [widths objectForKey:[tc identifier]];
                 if (width) {
@@ -280,22 +257,15 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)toggleTableColumn:(id)sender {
-    NSString *identifier = [sender representedObject];
-    NSTableColumn *tc = [self tableColumnWithIdentifier:identifier];
-    if (tc) {
-        if ([[self tableColumns] containsObject:tc])
-            [self removeTableColumn:tc];
-        else
-            [self addTableColumn:tc];
-        [self sizeToFit];
-        if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
-            [[self delegate] outlineViewTableColumnsDidChange:self];
-    }
+    NSTableColumn *tc = [self tableColumnWithIdentifier:[sender representedObject]];
+    [tc setHidden:[tc isHidden] == NO];
+    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
+        [[self delegate] outlineViewTableColumnsDidChange:self];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(toggleTableColumn:)) {
-        [menuItem setState:[[self tableColumnIdentifiers] containsObject:[menuItem representedObject]] ? NSOnState : NSOffState];
+        [menuItem setState:[[self tableColumnWithIdentifier:[menuItem representedObject]] isHidden] ? NSOffState : NSOnState];
         return YES;
     } else if ([[SKNoteOutlineView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
