@@ -59,24 +59,8 @@
 
 @dynamic tableColumnIdentifiers, tableColumnWidths;
 
-- (id)initWithFrame:(NSRect)frameRect {
-    self = [super initWithFrame:frameRect];
-    if (self) {
-        removedTableColumns = [[NSMutableSet alloc] init];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
-    if (self) {
-        removedTableColumns = [[NSMutableSet alloc] init];
-    }
-    return self;
-}
-
 - (void)dealloc {
-    SKDESTROY(removedTableColumns);
+    SKDESTROY(allTableColumns);
     [super dealloc];
 }
 
@@ -98,6 +82,8 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)awakeFromNib {
+    allTableColumns = [[self tableColumns] copy];
+    
     [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     
     NSMenu *menu = [NSMenu menu];
@@ -233,26 +219,13 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (void)addTableColumn:(NSTableColumn *)tableColumn {
-    [super addTableColumn:tableColumn];
-    [removedTableColumns removeObject:tableColumn];
-    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
-        [[self delegate] outlineViewTableColumnsDidChange:self];
-}
-
-- (void)removeTableColumn:(NSTableColumn *)tableColumn {
-    [removedTableColumns addObject:tableColumn];
-    [super removeTableColumn:tableColumn];
-    if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
-        [[self delegate] outlineViewTableColumnsDidChange:self];
-}
-
-- (NSTableColumn *)removedTableColumnWithIdentifier:(NSString *)identifier {
-    for (NSTableColumn *tc in removedTableColumns) {
-        if ([[tc identifier] isEqualToString:identifier])
-            return tc;
+- (NSTableColumn *)tableColumnWithIdentifier:(NSString *)identifier {
+    NSTableColumn *tc = [super tableColumnWithIdentifier:identifier];
+    if (tc == nil) {
+        for (tc in allTableColumns)
+            if ([[tc identifier] isEqualToString:identifier]) break;
     }
-    return nil;
+    return tc;
 }
 
 - (NSArray *)tableColumnIdentifiers {
@@ -268,7 +241,7 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         for (NSString *identifier in identifiers) {
             column = [self columnWithIdentifier:identifier];
             if (column == -1) {
-                NSTableColumn *tc = [self removedTableColumnWithIdentifier:identifier];
+                NSTableColumn *tc = [self tableColumnWithIdentifier:identifier];
                 if (tc == nil)
                     continue;
                 column = [self numberOfColumns];
@@ -310,11 +283,13 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     NSString *identifier = [sender representedObject];
     NSTableColumn *tc = [self tableColumnWithIdentifier:identifier];
     if (tc) {
-        [self removeTableColumn:tc];
+        if ([[self tableColumns] containsObject:tc])
+            [self removeTableColumn:tc];
+        else
+            [self addTableColumn:tc];
         [self sizeToFit];
-    } else if ((tc = [self removedTableColumnWithIdentifier:identifier])) {
-        [self addTableColumn:tc];
-        [self sizeToFit];
+        if ([[self delegate] respondsToSelector:@selector(outlineViewTableColumnsDidChange:)])
+            [[self delegate] outlineViewTableColumnsDidChange:self];
     }
 }
 
