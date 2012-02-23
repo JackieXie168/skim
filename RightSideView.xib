@@ -224,7 +224,7 @@
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="NSTableColumn" id="729705595">
 										<string key="NSIdentifier">note</string>
-										<double key="NSWidth">107</double>
+										<double key="NSWidth">126</double>
 										<double key="NSMinWidth">33</double>
 										<double key="NSMaxWidth">1000</double>
 										<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -323,6 +323,7 @@
 											<reference key="NSTextColor" ref="727770376"/>
 										</object>
 										<reference key="NSTableView" ref="138723689"/>
+										<bool key="NSHidden">YES</bool>
 									</object>
 									<object class="NSTableColumn" id="281684963">
 										<string key="NSIdentifier">page</string>
