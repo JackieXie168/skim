@@ -45,6 +45,7 @@
 #import "SKStatusBar.h"
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
+#import "SKNoteTextView.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKSideWindow.h"
 #import "SKProgressController.h"
@@ -988,6 +989,12 @@
     [rightSideController.noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
 }
 
+- (void)editNoteTextFromTable:(id)sender {
+    [pdfView editThisAnnotation:sender];
+    SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:[sender representedObject]];
+    [[noteController window] makeFirstResponder:[noteController textView]];
+}
+
 - (void)deselectNote:(id)sender {
     [pdfView setActiveAnnotation:nil];
 }
@@ -1091,16 +1098,19 @@
             if ([pdfView hideNotes] == NO && [items count] == 1) {
                 PDFAnnotation *annotation = [[self noteItems:items] lastObject];
                 if ([annotation isEditable]) {
-                    if ([[items lastObject] type] && [[rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] isHidden] == NO) {
+                    if ([[items lastObject] type] == nil) {
+                        item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editNoteTextFromTable:) target:self];
+                        [item setRepresentedObject:annotation];
+                    } else if ([[rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] isHidden]) {
+                        item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
+                        [item setRepresentedObject:annotation];
+                    } else {
                         item = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editNoteFromTable:) target:self];
                         [item setRepresentedObject:annotation];
                         item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
                         [item setRepresentedObject:annotation];
                         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
                         [item setAlternate:YES];
-                    } else {
-                        item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
-                        [item setRepresentedObject:annotation];
                     }
                 }
                 if ([pdfView activeAnnotation] == annotation) {
