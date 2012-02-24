@@ -689,6 +689,9 @@
                 [pdfView scrollAnnotationToVisible:annotation];
                 [pdfView setActiveAnnotation:annotation];
                 [self showNote:annotation];
+                SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
+                [[noteController window] makeFirstResponder:[noteController textView]];
+                [[noteController textView] selectAll:nil];
             }
             return NO;
         } else if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID] || [[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
@@ -990,9 +993,13 @@
 }
 
 - (void)editNoteTextFromTable:(id)sender {
-    [pdfView editThisAnnotation:sender];
-    SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:[sender representedObject]];
+    PDFAnnotation *annotation = [sender representedObject];
+    [pdfView scrollAnnotationToVisible:annotation];
+    [pdfView setActiveAnnotation:annotation];
+    [self showNote:annotation];
+    SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
     [[noteController window] makeFirstResponder:[noteController textView]];
+    [[noteController textView] selectAll:nil];
 }
 
 - (void)deselectNote:(id)sender {
