@@ -82,7 +82,7 @@
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSTableColumn" id="268771062">
 													<string key="NSIdentifier">note</string>
-													<double key="NSWidth">367</double>
+													<double key="NSWidth">389</double>
 													<double key="NSMinWidth">16</double>
 													<double key="NSMaxWidth">1000</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -233,7 +233,6 @@
 													<int key="NSResizingMask">3</int>
 													<bool key="NSIsResizeable">YES</bool>
 													<reference key="NSTableView" ref="977420889"/>
-													<bool key="NSHidden">YES</bool>
 												</object>
 												<object class="NSTableColumn" id="660585538">
 													<string key="NSIdentifier">author</string>
@@ -304,6 +303,7 @@
 													<int key="NSResizingMask">3</int>
 													<bool key="NSIsResizeable">YES</bool>
 													<reference key="NSTableView" ref="977420889"/>
+													<bool key="NSHidden">YES</bool>
 												</object>
 											</object>
 											<double key="NSIntercellSpacingWidth">3</double>
