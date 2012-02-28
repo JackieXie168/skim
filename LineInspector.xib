@@ -211,14 +211,7 @@
 											<object class="NSLocale">
 												<string key="NS.identifier"/>
 											</object>
-											<object class="NSDecimalNumberPlaceholder" id="854816367">
-												<int key="NS.exponent">1</int>
-												<int key="NS.length">1</int>
-												<bool key="NS.negative">NO</bool>
-												<bool key="NS.compact">YES</bool>
-												<int key="NS.mantissa.bo">1</int>
-												<bytes key="NS.mantissa">AQAAAAAAAAAAAAAAAAAAAA</bytes>
-											</object>
+											<real value="100"/>
 											<object class="NSDecimalNumberPlaceholder" id="744597346">
 												<int key="NS.exponent">0</int>
 												<int key="NS.length">0</int>
@@ -245,7 +238,7 @@
 										<reference key="NSAttributes" ref="353249008"/>
 									</object>
 									<reference key="NS.min" ref="744597346"/>
-									<reference key="NS.max" ref="854816367"/>
+									<real value="100" key="NS.max"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
 									<string key="NS.thousand">,</string>
