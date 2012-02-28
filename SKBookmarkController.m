@@ -594,7 +594,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             NSInteger count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
         } else {
-            return [item path];
+            return [[item path] stringByAbbreviatingWithTildeInPath];
         }
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [item pageNumber];
