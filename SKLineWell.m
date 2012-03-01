@@ -177,10 +177,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                 [path appendBezierPathWithOvalInRect:NSMakeRect(startPoint.x - 1.5 * lineWidth, startPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleDiamond:
-                [path moveToPoint:NSMakePoint(startPoint.x - 2.0 * lineWidth, startPoint.y)];
-                [path lineToPoint:NSMakePoint(startPoint.x,  startPoint.y + 2.0 * lineWidth)];
-                [path lineToPoint:NSMakePoint(startPoint.x + 2.0 * lineWidth, startPoint.y)];
-                [path lineToPoint:NSMakePoint(startPoint.x,  startPoint.y - 2.0 * lineWidth)];
+                [path moveToPoint:NSMakePoint(startPoint.x - 1.5 * lineWidth, startPoint.y)];
+                [path lineToPoint:NSMakePoint(startPoint.x,  startPoint.y + 1.5 * lineWidth)];
+                [path lineToPoint:NSMakePoint(startPoint.x + 1.5 * lineWidth, startPoint.y)];
+                [path lineToPoint:NSMakePoint(startPoint.x,  startPoint.y - 1.5 * lineWidth)];
                 [path closePath];
                 break;
             case kPDFLineStyleOpenArrow:
@@ -209,10 +209,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                 [path appendBezierPathWithOvalInRect:NSMakeRect(endPoint.x - 1.5 * lineWidth, endPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleDiamond:
-                [path moveToPoint:NSMakePoint(endPoint.x + 2.0 * lineWidth, endPoint.y)];
-                [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y + 2.0 * lineWidth)];
-                [path lineToPoint:NSMakePoint(endPoint.x - 2.0 * lineWidth, endPoint.y)];
-                [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y - 2.0 * lineWidth)];
+                [path moveToPoint:NSMakePoint(endPoint.x + 1.5 * lineWidth, endPoint.y)];
+                [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y + 1.5 * lineWidth)];
+                [path lineToPoint:NSMakePoint(endPoint.x - 1.5 * lineWidth, endPoint.y)];
+                [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y - 1.5 * lineWidth)];
                 [path closePath];
                 break;
             case kPDFLineStyleOpenArrow:
