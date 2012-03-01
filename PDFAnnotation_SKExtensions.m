@@ -167,7 +167,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (CGFloat)lineWidth {
-    return [[self border] lineWidth];
+    return [self border] ? [[self border] lineWidth] : 0.0;
 }
 
 - (void)setLineWidth:(CGFloat)width {
@@ -235,8 +235,12 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
 }
 
-- (NSRect)displayRectForBounds:(NSRect)bounds {
+- (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
     return bounds;
+}
+
+- (NSRect)displayRect {
+    return [self displayRectForBounds:[self bounds] lineWidth:[self lineWidth]];
 }
 
 - (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor {

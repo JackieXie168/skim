@@ -2250,11 +2250,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 PDFPage *page = [note page];
                 NSRect oldRect = NSZeroRect;
                 if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO) {
-                    oldRect = [note displayRectForBounds:[oldValue rectValue]];
-                } else if ([[note type] isEqualToString:SKNInkString] && [keyPath isEqualToString:SKNPDFAnnotationBorderKey] && [oldValue isEqual:[NSNull null]] == NO) {
-                    CGFloat dw = [oldValue lineWidth] - ([oldValue isEqual:[NSNull null]] ? 0.0 : [newValue lineWidth]);
-                    if (dw > 0.0)
-                        oldRect = NSInsetRect([note displayRectForBounds:[note bounds]], -dw, -dw);
+                    oldRect = [note displayRectForBounds:[oldValue rectValue] lineWidth:[note lineWidth]];
+                } else if ([keyPath isEqualToString:SKNPDFAnnotationBorderKey] && [oldValue isEqual:[NSNull null]] == NO) {
+                    if ([oldValue lineWidth] > [note lineWidth])
+                        oldRect = [note displayRectForBounds:[note bounds] lineWidth:[oldValue lineWidth]];
                 }
                 
                 [self updateThumbnailAtPageIndex:[note pageIndex]];

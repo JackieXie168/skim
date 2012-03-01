@@ -82,7 +82,8 @@ extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
 - (BOOL)hitTest:(NSPoint)point;
 
-- (NSRect)displayRectForBounds:(NSRect)bounds;
+- (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth;
+- (NSRect)displayRect;
 
 - (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor;
 
