@@ -108,10 +108,11 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], delta);
 }
 
-- (NSRect)displayRectForBounds:(NSRect)bounds {
-    bounds = [super displayRectForBounds:bounds];
-    // need a large padding amount for large line width and cap changes, we may have this depend on the line width
-    return NSInsetRect(bounds, -16.0, -16.0);
+- (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
+    bounds = [super displayRectForBounds:bounds lineWidth:lineWidth];
+    // need a large padding amount for large line width and cap changes
+    CGFloat delta = ceil(fmax(2.0 * lineWidth, 2.0));
+    return NSInsetRect(bounds, -delta, -delta);
 }
 
 - (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor {

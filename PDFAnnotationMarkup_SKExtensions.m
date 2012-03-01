@@ -286,8 +286,8 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return isContained;
 }
 
-- (NSRect)displayRectForBounds:(NSRect)bounds {
-    bounds = [super displayRectForBounds:bounds];
+- (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
+    bounds = [super displayRectForBounds:bounds lineWidth:lineWidth];
     if ([self markupType] == kPDFMarkupTypeHighlight) {
         CGFloat delta = 0.03 * NSHeight(bounds);
         bounds.origin.y -= delta;

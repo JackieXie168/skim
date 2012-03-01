@@ -79,7 +79,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:page];
+    [self setNeedsDisplayInRect:[annotation displayRect] ofPage:page];
     [self annotationsChangedOnPage:page];
 }
 

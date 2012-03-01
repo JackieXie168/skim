@@ -4231,7 +4231,7 @@ enum {
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    NSRect rect = [annotation displayRectForBounds:[annotation bounds]];
+    NSRect rect = [annotation displayRect];
     if (annotation == activeAnnotation && [annotation isResizable]) {
         CGFloat margin = 4.0 / [self scaleFactor];
         rect = NSInsetRect(rect, -margin, -margin);

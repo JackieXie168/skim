@@ -127,7 +127,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:page];
+    [self setNeedsDisplayInRect:[annotation displayRect] ofPage:page];
 }
 
 - (void)redisplay {

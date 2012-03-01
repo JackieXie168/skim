@@ -163,13 +163,12 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
     return NO;
 }
 
-- (NSRect)displayRectForBounds:(NSRect)bounds {
-    CGFloat lineWidth = [self lineWidth];
+- (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
     NSRect rect = NSZeroRect;
     for (NSBezierPath *path in [self paths])
         rect = NSUnionRect(rect, NSInsetRect([path nonEmptyBounds], -lineWidth, -lineWidth));
     rect.origin = SKAddPoints(rect.origin, bounds.origin);
-    return NSUnionRect([super displayRectForBounds:bounds], NSIntegralRect(rect));
+    return NSUnionRect([super displayRectForBounds:bounds lineWidth:lineWidth], NSIntegralRect(rect));
 }
 
 - (NSArray *)pointLists {
