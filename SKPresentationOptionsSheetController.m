@@ -68,8 +68,12 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, objectController, arrayController, separate, transition, transitions, undoManager;
-@dynamic pageTransitions, notesDocument, isScrolling;
+@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, arrayController, separate, transition, transitions, undoManager;
+@dynamic currentTransitions, pageTransitions, notesDocument, isScrolling;
+
++ (NSSet *)keyPathsForValuesAffectingCurrentTransitions {
+    return [NSSet setWithObjects:@"separate", @"transitions", @"transition", nil];
+}
 
 - (id)initForController:(SKMainWindowController *)aController {
     self = [super init];
@@ -99,7 +103,6 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(transitionLabels);
     SKDESTROY(transitionControls);
     SKDESTROY(buttons);
-    SKDESTROY(objectController);
     SKDESTROY(arrayController);
     [super dealloc];
 }
@@ -181,6 +184,14 @@ static char *SKTransitionPropertiesObservationContext;
         [[self undoManager] enableUndoRegistration];
     }
     
+    NSBox *box = [boxes objectAtIndex:0];
+    NSDictionary *bindingInfo = [box infoForBinding:NSTitleBinding];
+    if (bindingInfo) {
+        NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[bindingInfo objectForKey:NSOptionsKey]];
+        [options setObject:[transition title] forKey:NSMultipleValuesPlaceholderBindingOption];
+        [box bind:NSTitleBinding toObject:[bindingInfo objectForKey:NSObservedObjectKey] withKeyPath:[bindingInfo objectForKey:NSObservedKeyPathKey] options:options];
+    }
+    
     // set the current notes document and observe changes for the popup
     [self handleDocumentsDidChangeNotification:nil];
     NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:[controller presentationNotesDocument]];
@@ -237,7 +248,7 @@ static char *SKTransitionPropertiesObservationContext;
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
     if ([sender tag] == NSCancelButton) {
         [super dismissSheet:sender];
-    } else if ([objectController commitEditing]) {
+    } else if ([arrayController commitEditing]) {
         // don't make changes when nothing was changed
         if ([undoManager canUndo]) {
             SKTransitionController *transitionController = [[controller pdfView] transitionController];
@@ -272,15 +283,12 @@ static char *SKTransitionPropertiesObservationContext;
                 firstResponder = [firstResponder delegate];
         }
         
-        if ([objectController commitEditing] &&
+        if ([arrayController commitEditing] &&
             editor && [window firstResponder] != editor)
             [window makeFirstResponder:firstResponder]; 
         
-        [objectController unbind:CONTENTOBJECT_BINDINGNAME];
         if (separate) {
             [self makeTransitions];
-            
-            [objectController bind:CONTENTOBJECT_BINDINGNAME toObject:arrayController withKeyPath:@"selection.self" options:nil];
             
             extraWidth = NSWidth([scrollView frame]) + 8.0;
             frame.size.width += extraWidth;
@@ -288,8 +296,6 @@ static char *SKTransitionPropertiesObservationContext;
             [window setFrame:frame display:isVisible animate:isVisible];
             [scrollView setHidden:NO];
         } else {
-            [objectController bind:CONTENTOBJECT_BINDINGNAME toObject:self withKeyPath:@"transition" options:nil];
-            
             [scrollView setHidden:YES];
             extraWidth = NSWidth([scrollView frame]) + 8.0;
             frame.size.width -= extraWidth;
@@ -308,6 +314,10 @@ static char *SKTransitionPropertiesObservationContext;
         transitions = [newTransitions copy];
         [self startObservingTransitions:transitions];
     }
+}
+
+- (NSArray *)currentTransitions {
+    return separate ? transitions : [NSArray arrayWithObjects:transition, nil];
 }
 
 - (NSArray *)pageTransitions {
@@ -381,10 +391,14 @@ static char *SKTransitionPropertiesObservationContext;
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
-    SKTransitionInfo *info = [transitions objectAtIndex:[rowIndexes firstIndex]];
-    [pboard declareTypes:[NSArray arrayWithObject:SKTransitionPboardType] owner:nil];
-    [pboard setPropertyList:[info properties] forType:SKTransitionPboardType];
-    return YES;
+    if ([rowIndexes count] == 1) {
+        SKTransitionInfo *info = [transitions objectAtIndex:[rowIndexes firstIndex]];
+        [pboard declareTypes:[NSArray arrayWithObject:SKTransitionPboardType] owner:nil];
+        [pboard setPropertyList:[info properties] forType:SKTransitionPboardType];
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
