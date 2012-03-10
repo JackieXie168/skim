@@ -51,7 +51,6 @@
     NSArray *transitionLabels;
     NSArray *transitionControls;
     NSArray *buttons;
-    NSObjectController *objectController;
     NSArrayController *arrayController;
     BOOL separate;
     SKTransitionInfo *transition;
@@ -64,11 +63,11 @@
 @property (nonatomic, retain) IBOutlet SKThumbnailTableView *tableView;
 @property (nonatomic, retain) IBOutlet NSButton *separateCheckButton;
 @property (nonatomic, retain) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
-@property (nonatomic, retain) IBOutlet NSObjectController *objectController;
 @property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
 @property (nonatomic) BOOL separate;
 @property (nonatomic, readonly) SKTransitionInfo *transition;
 @property (nonatomic, copy) NSArray *transitions;
+@property (nonatomic, readonly) NSArray *currentTransitions;
 @property (nonatomic, readonly) NSArray *pageTransitions;
 @property (nonatomic, readonly) NSDocument *notesDocument;
 @property (nonatomic, readonly) BOOL isScrolling;
