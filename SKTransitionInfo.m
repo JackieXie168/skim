@@ -45,10 +45,6 @@
 @synthesize transitionStyle, duration, shouldRestrict, thumbnail, label;
 @dynamic properties, title;
 
-+ (NSSet *)keyPathsForValuesAffectingTitle {
-    return [NSSet setWithObjects:@"label", nil];
-}
-
 - (id)init {
     self = [super init];
     if (self) {
@@ -89,10 +85,7 @@
 }
 
 - (NSString *)title {
-    NSString *title = NSLocalizedString(@"Page Transition", @"Box title");
-    if (label)
-        title = [NSString stringWithFormat:@"%@ %@", title, label];
-    return title;
+    return NSLocalizedString(@"Page Transition", @"Box title");
 }
 
 @end
