@@ -184,14 +184,6 @@ static char *SKTransitionPropertiesObservationContext;
         [[self undoManager] enableUndoRegistration];
     }
     
-    NSBox *box = [boxes objectAtIndex:0];
-    NSDictionary *bindingInfo = [box infoForBinding:NSTitleBinding];
-    if (bindingInfo) {
-        NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[bindingInfo objectForKey:NSOptionsKey]];
-        [options setObject:[transition title] forKey:NSMultipleValuesPlaceholderBindingOption];
-        [box bind:NSTitleBinding toObject:[bindingInfo objectForKey:NSObservedObjectKey] withKeyPath:[bindingInfo objectForKey:NSObservedKeyPathKey] options:options];
-    }
-    
     // set the current notes document and observe changes for the popup
     [self handleDocumentsDidChangeNotification:nil];
     NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:[controller presentationNotesDocument]];
