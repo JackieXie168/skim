@@ -939,9 +939,17 @@
                 description="The tool mode for the document.">
                 <cocoa key="toolMode"/>
             </property>
+            <property name="interaction mode" type="interaction mode type" code="IMod"
+                description="The interaction mode for the document.">
+                <cocoa key="interactionMode"/>
+            </property>
             <property name="containing PDF" type="boolean" code="iPDF" access="r"
                 description="Is this a PDF document?">
                 <cocoa key="isPDFDocument"/>
+            </property>
+            <property name="presentation notes document" type="document" code="NotD"
+                description="A document containing notes for a presentation that is synchronized.">
+                <cocoa key="presentationNotesDocument"/>
             </property>
             <responds-to name="revert">
                 <cocoa method="handleRevertScriptCommand:"/>
@@ -1790,6 +1798,21 @@
             <enumerator name="freehand note tool" code="TNIn"
                 description="Freehand note tool mode.">
                 <cocoa integer-value="12"/>
+            </enumerator>
+        </enumeration>
+
+        <enumeration name="interaction mode type" code="ModT">
+            <enumerator name="normal mode" code="ModN"
+                description="Normal mode.">
+                <cocoa integer-value="0"/>
+            </enumerator>
+            <enumerator name="full screen mode" code="ModF"
+                description="Full screen mode.">
+                <cocoa integer-value="1"/>
+            </enumerator>
+            <enumerator name="presentation mode" code="ModP"
+                description="Presentation mode.">
+                <cocoa integer-value="2"/>
             </enumerator>
         </enumeration>
 

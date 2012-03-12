@@ -1782,6 +1782,29 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     [[self pdfView] setToolMode:newToolMode];
 }
 
+- (NSInteger)interactionMode {
+    return [[self mainWindowController] interactionMode];
+}
+
+- (void)setInteractionMode:(NSInteger)interactionMode {
+    if ([[self pdfDocument] isLocked] == NO && interactionMode != [[self mainWindowController] interactionMode]) {
+        switch (interactionMode) {
+            case SKNormalMode:       [[self mainWindowController] exitFullscreen:nil];    break;
+            case SKFullScreenMode:   [[self mainWindowController] enterFullscreen:nil];   break;
+            case SKPresentationMode: [[self mainWindowController] enterPresentation:nil]; break;
+        }
+    }
+}
+
+- (NSDocument *)presentationNotesDocument {
+    return [[self mainWindowController] presentationNotesDocument];
+}
+
+- (void)setPresentationNotesDocument:(NSDocument *)document {
+    if ([document isPDFDocument] && [document countOfPages] == [self countOfPages] && document != self)
+        [[self mainWindowController] setPresentationNotesDocument:document];
+}
+
 - (BOOL)isPDFDocument {
     return YES;
 }
