@@ -276,6 +276,10 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSInteger)toolMode { return 0; }
 
+- (NSInteger)interactionMode { return 0; }
+
+- (NSDocument *)presentationNotesDocument { return nil; }
+
 - (NSDictionary *)documentAttributes {
     return [[SKInfoWindowController sharedInstance] infoForDocument:self];
 }
