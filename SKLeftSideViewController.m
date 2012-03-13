@@ -55,6 +55,7 @@
     [thumbnailTableView setDataSource:nil];
     [findTableView setDelegate:nil];
     [groupedFindTableView setDelegate:nil];
+    [groupedFindTableView setDataSource:nil];
     [tocOutlineView setDelegate:nil];
     [tocOutlineView setDataSource:nil];
     SKDESTROY(thumbnailArrayController);
@@ -93,6 +94,7 @@
     [thumbnailTableView setDataSource:mainController];
     [findTableView setDelegate:mainController];
     [groupedFindTableView setDelegate:mainController];
+    [groupedFindTableView setDataSource:mainController];
     [[thumbnailTableView menu] setDelegate:mainController];
     
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];

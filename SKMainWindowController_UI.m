@@ -374,6 +374,12 @@
     return nil;
 }
 
+- (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
+    if ([tv isEqual:leftSideController.groupedFindTableView]) {
+        [leftSideController.groupedFindArrayController setSortDescriptors:[tv sortDescriptors]];
+    }
+}
+
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {

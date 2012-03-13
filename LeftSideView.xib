@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
-		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">788</string>
-		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<int key="IBDocument.SystemTarget">1060</int>
+		<string key="IBDocument.SystemVersion">10K549</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">788</string>
+			<string key="NS.object.0">851</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -18,13 +18,8 @@
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.Metadata">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys" id="0">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-			</object>
-			<object class="NSMutableArray" key="dict.values">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-			</object>
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.RootObjects" id="1000">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -722,6 +717,11 @@
 										<int key="NSResizingMask">3</int>
 										<bool key="NSIsResizeable">YES</bool>
 										<reference key="NSTableView" ref="650696066"/>
+										<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+											<string key="NSKey">count</string>
+											<bool key="NSAscending">NO</bool>
+											<string key="NSSelector">compare:</string>
+										</object>
 									</object>
 									<object class="NSTableColumn" id="644479134">
 										<string key="NSIdentifier">page</string>
@@ -747,6 +747,11 @@
 										<int key="NSResizingMask">3</int>
 										<bool key="NSIsResizeable">YES</bool>
 										<reference key="NSTableView" ref="650696066"/>
+										<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+											<string key="NSKey">pageIndex</string>
+											<bool key="NSAscending">YES</bool>
+											<string key="NSSelector">compare:</string>
+										</object>
 									</object>
 								</object>
 								<double key="NSIntercellSpacingWidth">3</double>
@@ -1378,7 +1383,9 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="IBObjectRecord">
 						<int key="objectID">0</int>
-						<reference key="object" ref="0"/>
+						<object class="NSArray" key="object" id="0">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+						</object>
 						<reference key="children" ref="1000"/>
 						<nil key="parent"/>
 					</object>
@@ -2019,7 +2026,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">194</int>
+			<int key="maxID">196</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2028,7 +2035,7 @@
 					<string key="className">NSApplication</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKRichTextFormat.h</string>
+						<string key="minorKey">NSAttributedString_SKExtensions.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2050,13 +2057,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKAccessibilityFauxUIElement.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKFindController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2148,20 +2148,6 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">vendorsrc/ulikusterer/UKFileWatcher.h</string>
 					</object>
 				</object>
@@ -2202,6 +2188,24 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindow</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">toggleFullScreen:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">toggleFullScreen:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">toggleFullScreen:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKCompatibility.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKMainDocument.h</string>
@@ -2223,6 +2227,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">NSWindowController_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">PDFView_SKExtensions.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2381,7 +2392,7 @@
 							<string>createNewNote:</string>
 							<string>createNewTextNote:</string>
 							<string>cropAll:</string>
-							<string>enterFullScreen:</string>
+							<string>enterFullscreen:</string>
 							<string>enterPresentation:</string>
 							<string>goBackOrForward:</string>
 							<string>goToPreviousNextFirstLastPage:</string>
@@ -2389,12 +2400,14 @@
 							<string>selectColor:</string>
 							<string>toggleLeftSidePane:</string>
 							<string>toggleRightSidePane:</string>
+							<string>zoomActualPhysical:</string>
 							<string>zoomInActualOut:</string>
 							<string>zoomToFit:</string>
 							<string>zoomToSelection:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2436,7 +2449,7 @@
 							<string>createNewNote:</string>
 							<string>createNewTextNote:</string>
 							<string>cropAll:</string>
-							<string>enterFullScreen:</string>
+							<string>enterFullscreen:</string>
 							<string>enterPresentation:</string>
 							<string>goBackOrForward:</string>
 							<string>goToPreviousNextFirstLastPage:</string>
@@ -2444,6 +2457,7 @@
 							<string>selectColor:</string>
 							<string>toggleLeftSidePane:</string>
 							<string>toggleRightSidePane:</string>
+							<string>zoomActualPhysical:</string>
 							<string>zoomInActualOut:</string>
 							<string>zoomToFit:</string>
 							<string>zoomToSelection:</string>
@@ -2499,7 +2513,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">enterFullScreen:</string>
+								<string key="name">enterFullscreen:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -2528,6 +2542,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">toggleRightSidePane:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">zoomActualPhysical:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -2840,9 +2858,9 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>enterFullScreen:</string>
+							<string>enterFullscreen:</string>
 							<string>enterPresentation:</string>
-							<string>exitFullScreen:</string>
+							<string>exitFullscreen:</string>
 							<string>search:</string>
 							<string>searchNotes:</string>
 						</object>
@@ -2859,16 +2877,16 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>enterFullScreen:</string>
+							<string>enterFullscreen:</string>
 							<string>enterPresentation:</string>
-							<string>exitFullScreen:</string>
+							<string>exitFullscreen:</string>
 							<string>search:</string>
 							<string>searchNotes:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
-								<string key="name">enterFullScreen:</string>
+								<string key="name">enterFullscreen:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -2876,7 +2894,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">exitFullScreen:</string>
+								<string key="name">exitFullscreen:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -2988,6 +3006,9 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>alignCenter:</string>
+							<string>alignLeft:</string>
+							<string>alignRight:</string>
 							<string>allGoToFirstPage:</string>
 							<string>allGoToLastPage:</string>
 							<string>allGoToNextPage:</string>
@@ -2997,6 +3018,7 @@
 							<string>autoCropAll:</string>
 							<string>autoSelectContent:</string>
 							<string>changeAnnotationMode:</string>
+							<string>changeAttributes:</string>
 							<string>changeColor:</string>
 							<string>changeDisplayBox:</string>
 							<string>changeDisplayContinuous:</string>
@@ -3038,6 +3060,7 @@
 							<string>password:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
+							<string>performFindPanelAction:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
 							<string>rotateAllRight:</string>
@@ -3052,7 +3075,7 @@
 							<string>toggleCaseInsensitiveSearch:</string>
 							<string>toggleDisplayAsBook:</string>
 							<string>toggleDisplayPageBreaks:</string>
-							<string>toggleFullScreen:</string>
+							<string>toggleFullscreen:</string>
 							<string>toggleHideNotes:</string>
 							<string>toggleLeftSidePane:</string>
 							<string>togglePresentation:</string>
@@ -3064,6 +3087,11 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3143,6 +3171,9 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>alignCenter:</string>
+							<string>alignLeft:</string>
+							<string>alignRight:</string>
 							<string>allGoToFirstPage:</string>
 							<string>allGoToLastPage:</string>
 							<string>allGoToNextPage:</string>
@@ -3152,6 +3183,7 @@
 							<string>autoCropAll:</string>
 							<string>autoSelectContent:</string>
 							<string>changeAnnotationMode:</string>
+							<string>changeAttributes:</string>
 							<string>changeColor:</string>
 							<string>changeDisplayBox:</string>
 							<string>changeDisplayContinuous:</string>
@@ -3193,6 +3225,7 @@
 							<string>password:</string>
 							<string>paste:</string>
 							<string>pasteAsPlainText:</string>
+							<string>performFindPanelAction:</string>
 							<string>performFit:</string>
 							<string>rotateAllLeft:</string>
 							<string>rotateAllRight:</string>
@@ -3207,7 +3240,7 @@
 							<string>toggleCaseInsensitiveSearch:</string>
 							<string>toggleDisplayAsBook:</string>
 							<string>toggleDisplayPageBreaks:</string>
-							<string>toggleFullScreen:</string>
+							<string>toggleFullscreen:</string>
 							<string>toggleHideNotes:</string>
 							<string>toggleLeftSidePane:</string>
 							<string>togglePresentation:</string>
@@ -3219,6 +3252,18 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">alignCenter:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">alignLeft:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">alignRight:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">allGoToFirstPage:</string>
 								<string key="candidateClassName">id</string>
@@ -3253,6 +3298,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">changeAnnotationMode:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">changeAttributes:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -3420,6 +3469,10 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">performFindPanelAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">performFit:</string>
 								<string key="candidateClassName">id</string>
 							</object>
@@ -3476,7 +3529,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">toggleFullScreen:</string>
+								<string key="name">toggleFullscreen:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -3528,6 +3581,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKNoteOutlineView</string>
 					<string key="superclassName">SKOutlineView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">toggleTableColumn:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">toggleTableColumn:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">toggleTableColumn:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKNoteOutlineView.h</string>
@@ -3542,11 +3606,13 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>copy:</string>
 							<string>delete:</string>
+							<string>paste:</string>
 							<string>scrollToBeginningOfDocument:</string>
 							<string>scrollToEndOfDocument:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3559,6 +3625,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>copy:</string>
 							<string>delete:</string>
+							<string>paste:</string>
 							<string>scrollToBeginningOfDocument:</string>
 							<string>scrollToEndOfDocument:</string>
 						</object>
@@ -3570,6 +3637,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">delete:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">paste:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -4544,7 +4615,7 @@
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<integer value="1060" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
