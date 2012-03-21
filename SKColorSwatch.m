@@ -459,7 +459,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSMutableArray *children = [NSMutableArray array];
         NSInteger i, count = [colors count];
         for (i = 0; i < count; i++)
-            [children addObject:[[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i parent:self] autorelease]];
+            [children addObject:[SKAccessibilityColorSwatchElement elementWithIndex:i parent:self]];
         return NSAccessibilityUnignoredChildren(children);
     } else {
         return [super accessibilityAttributeValue:attribute];
