@@ -560,4 +560,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     return [[self parent] valueForFauxUIElement:self];
 }
 
+- (NSArray *)accessibilityActionNames {
+    return [NSArray arrayWithObject:NSAccessibilityPressAction];
+}
+
 @end
