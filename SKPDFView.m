@@ -311,7 +311,8 @@ enum {
 - (void)resetPDFToolTipRects {
     [self removePDFToolTipRects];
     
-    if ([self document] && [self window] && interactionMode != SKPresentationMode) {
+    if ([self document] && [self window] && interactionMode != SKPresentationMode && 
+        (toolMode == SKTextToolMode || toolMode == SKMoveToolMode || toolMode == SKNoteToolMode)) {
         NSRange range = [self visiblePageIndexRange];
         NSUInteger i, iMax = NSMaxRange(range);
         NSRect visibleRect = [self visibleContentRect];
@@ -491,6 +492,7 @@ enum {
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
         [self doUpdateCursor];
+        [self resetPDFToolTipRects];
     }
 }
 
