@@ -311,17 +311,17 @@ enum {
 - (void)resetPDFToolTipRects {
     [self removePDFToolTipRects];
     
-    if ([self document] && [self window] && interactionMode != SKPresentationMode && 
-        (toolMode == SKTextToolMode || toolMode == SKMoveToolMode || toolMode == SKNoteToolMode)) {
+    if ([self document] && [self window] && interactionMode != SKPresentationMode) {
         NSRange range = [self visiblePageIndexRange];
         NSUInteger i, iMax = NSMaxRange(range);
         NSRect visibleRect = [self visibleContentRect];
         NSView *docView = [self documentView];
+        BOOL hasLinkToolTips = (toolMode == SKTextToolMode || toolMode == SKMoveToolMode || toolMode == SKNoteToolMode);
         
         for (i = range.location; i < iMax; i++) {
             PDFPage *page = [[self document] pageAtIndex:i];
             for (PDFAnnotation *annotation in [page annotations]) {
-                if ([[annotation type] isEqualToString:SKNNoteString] || [annotation isLink]) {
+                if ([[annotation type] isEqualToString:SKNNoteString] || (hasLinkToolTips && [annotation isLink])) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:docView];
