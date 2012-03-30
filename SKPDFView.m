@@ -2482,7 +2482,7 @@ enum {
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                      name: NSWindowWillCloseNotification object: [self window]];
     }
-    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self hasSlider:interactionMode == SKFullScreenMode];
+    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
     
     [self doAutohide:YES];
 }
