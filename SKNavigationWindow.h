@@ -48,7 +48,7 @@
     SKNavigationButton *closeButton;
     NSSlider *zoomSlider;
 }
-- (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider;
+- (id)initWithPDFView:(SKPDFView *)pdfView;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 @end
 
