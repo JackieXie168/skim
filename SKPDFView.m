@@ -1899,11 +1899,10 @@ enum {
     [annotation setShouldPrint:hideNotes == NO || [annotation isSkimNote] == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
+    [self annotationsChangedOnPage:page];
     [self resetPDFToolTipRects];
-    if ([annotation isSkimNote]) {
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
-    }
+    if ([annotation isSkimNote])
+        SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
 }
 
@@ -1925,7 +1924,7 @@ enum {
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
     PDFAnnotation *wasAnnotation = [annotation retain];
-    PDFPage *page = [wasAnnotation page];
+    PDFPage *page = [[wasAnnotation page] retain];
     
     [[[self documentUndoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
@@ -1934,19 +1933,19 @@ enum {
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
-    if ([wasAnnotation isSkimNote]) {
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
-    }
+    if ([wasAnnotation isSkimNote])
+        SKDESTROY(accessibilityChildren);
+    [self annotationsChangedOnPage:page];
     if ([[wasAnnotation type] isEqualToString:SKNNoteString])
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
     [wasAnnotation release];
+    [page release];
 }
 
 - (void)moveAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
-    PDFPage *oldPage = [annotation page];
+    PDFPage *oldPage = [[annotation page] retain];
     [[[self documentUndoManager] prepareWithInvocationTarget:self] moveAnnotation:annotation toPage:oldPage];
     [[self documentUndoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [self setNeedsDisplayForAnnotation:annotation];
@@ -1955,11 +1954,13 @@ enum {
     [page addAnnotation:annotation];
     [annotation release];
     [self setNeedsDisplayForAnnotation:annotation];
+    [self annotationsChangedOnPage:oldPage];
+    [self annotationsChangedOnPage:page];
     if ([[annotation type] isEqualToString:SKNNoteString])
         [self resetPDFToolTipRects];
-    [accessibilityChildren release];
-    accessibilityChildren = nil;
+    SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
+    [oldPage release];
 }
 
 - (void)editThisAnnotation:(id)sender {
