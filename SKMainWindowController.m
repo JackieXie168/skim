@@ -2278,8 +2278,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                     [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
                 }
             }
-            if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
+            if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey]) {
+                [pdfView annotationsChangedOnPage:[note page]];
                 [pdfView resetPDFToolTipRects];
+            }
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
                 [rightSideController.noteArrayController rearrangeObjects];
