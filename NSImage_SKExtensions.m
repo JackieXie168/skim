@@ -116,6 +116,10 @@ NSString *SKImageNameSnapshotViewAdorn = @"SnapshotViewAdorn";
 NSString *SKImageNameFindViewAdorn = @"FindViewAdorn";
 NSString *SKImageNameGroupedFindViewAdorn = @"GroupedFindViewAdorn";
 
+NSString *SKImageNameTextAlignLeft = @"TextAlignLeft";
+NSString *SKImageNameTextAlignCenter = @"TextAlignCenter";
+NSString *SKImageNameTextAlignRight = @"TextAlignRight";
+
 NSString *SKImageNameResizeDiagonal45Cursor = @"ResizeDiagonal45Cursor";
 NSString *SKImageNameResizeDiagonal135Cursor = @"ResizeDiagonal135Cursor";
 NSString *SKImageNameZoomInCursor = @"ZoomInCursor";
@@ -1596,6 +1600,88 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [shadow1 release];
 }
 
++ (void)makeTextAlignImages {
+    static NSImage *textAlignLeftImage = nil;
+    static NSImage *textAlignCenterImage = nil;
+    static NSImage *textAlignRightImage = nil;
+    
+    if (textAlignLeftImage)
+        return;
+    
+    NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 11.0);
+    NSSize size = rect.size;
+    NSBezierPath *path;
+    
+    textAlignLeftImage = [[NSImage alloc] initWithSize:size];
+    [textAlignLeftImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [[NSColor blackColor] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(1.0, 1.5)];
+    [path lineToPoint:NSMakePoint(15.0, 1.5)];
+    [path moveToPoint:NSMakePoint(1.0, 3.5)];
+    [path lineToPoint:NSMakePoint(12.0, 3.5)];
+    [path moveToPoint:NSMakePoint(1.0, 5.5)];
+    [path lineToPoint:NSMakePoint(14.0, 5.5)];
+    [path moveToPoint:NSMakePoint(1.0, 7.5)];
+    [path lineToPoint:NSMakePoint(11.0, 7.5)];
+    [path moveToPoint:NSMakePoint(1.0, 9.5)];
+    [path lineToPoint:NSMakePoint(15.0, 9.5)];
+    [path setLineWidth:1.0];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+    [textAlignLeftImage unlockFocus];
+    [textAlignLeftImage setName:SKImageNameTextAlignLeft];
+    
+    textAlignCenterImage = [[NSImage alloc] initWithSize:size];
+    [textAlignCenterImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [[NSColor blackColor] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(1.0, 1.5)];
+    [path lineToPoint:NSMakePoint(15.0, 1.5)];
+    [path moveToPoint:NSMakePoint(4.0, 3.5)];
+    [path lineToPoint:NSMakePoint(12.0, 3.5)];
+    [path moveToPoint:NSMakePoint(2.0, 5.5)];
+    [path lineToPoint:NSMakePoint(14.0, 5.5)];
+    [path moveToPoint:NSMakePoint(5.0, 7.5)];
+    [path lineToPoint:NSMakePoint(11.0, 7.5)];
+    [path moveToPoint:NSMakePoint(1.0, 9.5)];
+    [path lineToPoint:NSMakePoint(15.0, 9.5)];
+    [path setLineWidth:1.0];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+    [textAlignCenterImage unlockFocus];
+    [textAlignCenterImage setName:SKImageNameTextAlignCenter];
+    
+    textAlignRightImage = [[NSImage alloc] initWithSize:size];
+    [textAlignRightImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [[NSColor blackColor] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(1.0, 1.5)];
+    [path lineToPoint:NSMakePoint(15.0, 1.5)];
+    [path moveToPoint:NSMakePoint(4.0, 3.5)];
+    [path lineToPoint:NSMakePoint(15.0, 3.5)];
+    [path moveToPoint:NSMakePoint(2.0, 5.5)];
+    [path lineToPoint:NSMakePoint(15.0, 5.5)];
+    [path moveToPoint:NSMakePoint(5.0, 7.5)];
+    [path lineToPoint:NSMakePoint(15.0, 7.5)];
+    [path moveToPoint:NSMakePoint(1.0, 9.5)];
+    [path lineToPoint:NSMakePoint(15.0, 9.5)];
+    [path setLineWidth:1.0];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+    [textAlignRightImage unlockFocus];
+    [textAlignRightImage setName:SKImageNameTextAlignRight];
+}
+
 + (void)makeCursorImages {
     static NSImage *resizeDiagonal45CursorImage = nil;
     static NSImage *resizeDiagonal135CursorImage = nil;
@@ -1888,6 +1974,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [self makeNoteImages];
     [self makeAdornImages];
     [self makeToolbarImages];
+    [self makeTextAlignImages];
     [self makeCursorImages];
 }
 

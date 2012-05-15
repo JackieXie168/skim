@@ -113,6 +113,10 @@ extern NSString *SKImageNameSnapshotViewAdorn;
 extern NSString *SKImageNameFindViewAdorn;
 extern NSString *SKImageNameGroupedFindViewAdorn;
 
+extern NSString *SKImageNameTextAlignLeft;
+extern NSString *SKImageNameTextAlignCenter;
+extern NSString *SKImageNameTextAlignRight;
+
 extern NSString *SKImageNameResizeDiagonal45Cursor;
 extern NSString *SKImageNameResizeDiagonal135Cursor;
 extern NSString *SKImageNameZoomInCursor;
