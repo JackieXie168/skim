@@ -171,7 +171,7 @@
 		CE1414221229B80300C9EBA0 /* skimpdf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = skimpdf.m; sourceTree = "<group>"; };
 		CE1414251229B86500C9EBA0 /* SkimPDF_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimPDF_Tool_Prefix.pch; sourceTree = "<group>"; };
 		CE157F2712D4EDC700515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/SkimNotes.strings; sourceTree = "<group>"; };
-		CE1632C71582ACC600CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/SkimNotes.strings; sourceTree = "<group>"; };
+		CE1632C71582ACC600CFF419 /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Debug.xcconfig"; sourceTree = "<group>"; };
 		CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Framework.xcconfig"; sourceTree = "<group>"; };
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
