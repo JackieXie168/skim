@@ -628,6 +628,33 @@
 		CE157F0A12D4EBE600515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE157F0B12D4EBE600515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ServicesMenu.strings; sourceTree = "<group>"; };
 		CE157F0C12D4EBE600515B85 /* Japanese */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CE1632AA1582AC0600CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/BookmarkSheet.strings; sourceTree = "<group>"; };
+		CE1632AB1582AC0D00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/BookmarksWindow.strings; sourceTree = "<group>"; };
+		CE1632AC1582AC1300CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/DisplayPreferences.strings; sourceTree = "<group>"; };
+		CE1632AD1582AC1800CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/DownloadsWindow.strings; sourceTree = "<group>"; };
+		CE1632AE1582AC1D00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/DownloadPreferenceSheet.strings; sourceTree = "<group>"; };
+		CE1632AF1582AC2200CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/FindBar.strings; sourceTree = "<group>"; };
+		CE1632B01582AC2900CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
+		CE1632B11582AC2D00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoWindow.strings; sourceTree = "<group>"; };
+		CE1632B21582AC3200CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/LineInspector.strings; sourceTree = "<group>"; };
+		CE1632B31582AC3700CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		CE1632B41582AC3C00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/NotesPanel.strings; sourceTree = "<group>"; };
+		CE1632B51582AC4100CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
+		CE1632B61582AC4700CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/NoteTypeSheet.strings; sourceTree = "<group>"; };
+		CE1632B71582AC4B00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/NoteWindow.strings; sourceTree = "<group>"; };
+		CE1632B81582AC4F00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/PageSheet.strings; sourceTree = "<group>"; };
+		CE1632B91582AC5200CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/PasswordSheet.strings; sourceTree = "<group>"; };
+		CE1632BA1582AC5600CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/PreferenceWindow.strings; sourceTree = "<group>"; };
+		CE1632BB1582AC5A00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/PrintAccessoryView.strings; sourceTree = "<group>"; };
+		CE1632BC1582AC5E00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		CE1632BD1582AC6200CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
+		CE1632BE1582AC6600CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
+		CE1632BF1582AC6A00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
+		CE1632C01582AC7000CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = zh_CN; path = zh_CN.lproj/Credits.rtf; sourceTree = "<group>"; };
+		CE1632C11582AC7700CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CE1632C21582AC7B00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CE1632C31582AC7F00CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ServicesMenu.strings; sourceTree = "<group>"; };
+		CE1632C41582AC8300CFF419 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFileUpdateChecker.h; sourceTree = "<group>"; };
 		CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFileUpdateChecker.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
@@ -2055,6 +2082,7 @@
 				cs,
 				zh_TW,
 				pl,
+				zh_CN,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* Skim */;
 			projectDirPath = "";
@@ -2374,6 +2402,7 @@
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/SkimHelp",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Spanish.lproj/SkimHelp",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ru.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_CN.lproj/SkimHelp",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_TW.lproj/SkimHelp",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/pl.lproj/SkimHelp",
 			);
@@ -2621,6 +2650,7 @@
 				CEB53FF50F261D1400723C1F /* zh_TW */,
 				CEF8773611905923006436A2 /* pl */,
 				CE157F0912D4EBE600515B85 /* Japanese */,
+				CE1632C11582AC7700CFF419 /* zh_CN */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2638,6 +2668,7 @@
 				CEB53FF20F261D1400723C1F /* zh_TW */,
 				CEF877371190592B006436A2 /* pl */,
 				CE157F0812D4EBE600515B85 /* Japanese */,
+				CE1632C01582AC7000CFF419 /* zh_CN */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -2655,6 +2686,7 @@
 				CE0E84EC114D521F00E37F38 /* zh_TW */,
 				CEF877541190593E006436A2 /* pl */,
 				CE157EEE12D4EBC100515B85 /* Japanese */,
+				CE1632BE1582AC6600CFF419 /* zh_CN */,
 			);
 			name = SyncPreferences.strings;
 			sourceTree = "<group>";
@@ -2672,6 +2704,7 @@
 				CE0E84ED114D521F00E37F38 /* zh_TW */,
 				CEF877481190593E006436A2 /* pl */,
 				CE157EE212D4EBC000515B85 /* Japanese */,
+				CE1632B51582AC4100CFF419 /* zh_CN */,
 			);
 			name = NotesPreferences.strings;
 			sourceTree = "<group>";
@@ -2689,6 +2722,7 @@
 				CE0E84EE114D521F00E37F38 /* zh_TW */,
 				CEF8773F1190593E006436A2 /* pl */,
 				CE157ED912D4EBC000515B85 /* Japanese */,
+				CE1632B01582AC2900CFF419 /* zh_CN */,
 			);
 			name = GeneralPreferences.strings;
 			sourceTree = "<group>";
@@ -2706,6 +2740,7 @@
 				CE0E84EF114D521F00E37F38 /* zh_TW */,
 				CEF8773B1190593E006436A2 /* pl */,
 				CE157ED512D4EBC000515B85 /* Japanese */,
+				CE1632AC1582AC1300CFF419 /* zh_CN */,
 			);
 			name = DisplayPreferences.strings;
 			sourceTree = "<group>";
@@ -2723,6 +2758,7 @@
 				CEB53FF80F261D1500723C1F /* zh_TW */,
 				CEF87733119058F7006436A2 /* pl */,
 				CE157F0A12D4EBE600515B85 /* Japanese */,
+				CE1632C21582AC7B00CFF419 /* zh_CN */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2740,6 +2776,7 @@
 				CEB540460F261D1700723C1F /* zh_TW */,
 				CEF8773411905909006436A2 /* pl */,
 				CE157F0C12D4EBE600515B85 /* Japanese */,
+				CE1632C41582AC8300CFF419 /* zh_CN */,
 			);
 			name = ZoomValues.strings;
 			sourceTree = "<group>";
@@ -2757,6 +2794,7 @@
 				CE9768A911611C2D008DCB8F /* zh_TW */,
 				CEF8773C1190593E006436A2 /* pl */,
 				CE157ED612D4EBC000515B85 /* Japanese */,
+				CE1632AE1582AC1D00CFF419 /* zh_CN */,
 			);
 			name = DownloadPreferenceSheet.strings;
 			sourceTree = "<group>";
@@ -2783,6 +2821,7 @@
 				CEF60E13114C0ED70074ACC4 /* zh_TW */,
 				CEF877551190593E006436A2 /* pl */,
 				CE157EEF12D4EBC100515B85 /* Japanese */,
+				CE1632BF1582AC6A00CFF419 /* zh_CN */,
 			);
 			name = TransitionSheet.strings;
 			sourceTree = "<group>";
@@ -2800,6 +2839,7 @@
 				CEF60E15114C0ED70074ACC4 /* zh_TW */,
 				CEF877521190593E006436A2 /* pl */,
 				CE157EEC12D4EBC100515B85 /* Japanese */,
+				CE1632BD1582AC6200CFF419 /* zh_CN */,
 			);
 			name = ScaleSheet.strings;
 			sourceTree = "<group>";
@@ -2817,6 +2857,7 @@
 				CEF60E16114C0ED70074ACC4 /* zh_TW */,
 				CEF877501190593E006436A2 /* pl */,
 				CE157EEA12D4EBC000515B85 /* Japanese */,
+				CE1632BC1582AC5E00CFF419 /* zh_CN */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -2834,6 +2875,7 @@
 				CEF60E18114C0ED70074ACC4 /* zh_TW */,
 				CEF8774E1190593E006436A2 /* pl */,
 				CE157EE812D4EBC000515B85 /* Japanese */,
+				CE1632BB1582AC5A00CFF419 /* zh_CN */,
 			);
 			name = PrintAccessoryView.strings;
 			sourceTree = "<group>";
@@ -2851,6 +2893,7 @@
 				CEF60E19114C0ED70074ACC4 /* zh_TW */,
 				CEF8774C1190593E006436A2 /* pl */,
 				CE157EE612D4EBC000515B85 /* Japanese */,
+				CE1632B91582AC5200CFF419 /* zh_CN */,
 			);
 			name = PasswordSheet.strings;
 			sourceTree = "<group>";
@@ -2868,6 +2911,7 @@
 				CEF60E1A114C0ED70074ACC4 /* zh_TW */,
 				CEF8774B1190593E006436A2 /* pl */,
 				CE157EE512D4EBC000515B85 /* Japanese */,
+				CE1632B81582AC4F00CFF419 /* zh_CN */,
 			);
 			name = PageSheet.strings;
 			sourceTree = "<group>";
@@ -2885,6 +2929,7 @@
 				CEF60E1B114C0ED70074ACC4 /* zh_TW */,
 				CEF8774A1190593E006436A2 /* pl */,
 				CE157EE412D4EBC000515B85 /* Japanese */,
+				CE1632B71582AC4B00CFF419 /* zh_CN */,
 			);
 			name = NoteWindow.strings;
 			sourceTree = "<group>";
@@ -2902,6 +2947,7 @@
 				CEF60E1C114C0ED70074ACC4 /* zh_TW */,
 				CEF877491190593E006436A2 /* pl */,
 				CE157EE312D4EBC000515B85 /* Japanese */,
+				CE1632B61582AC4700CFF419 /* zh_CN */,
 			);
 			name = NoteTypeSheet.strings;
 			sourceTree = "<group>";
@@ -2919,6 +2965,7 @@
 				CEF60E1D114C0ED70074ACC4 /* zh_TW */,
 				CEF877471190593E006436A2 /* pl */,
 				CE157EE112D4EBC000515B85 /* Japanese */,
+				CE1632B41582AC3C00CFF419 /* zh_CN */,
 			);
 			name = NotesPanel.strings;
 			sourceTree = "<group>";
@@ -2936,6 +2983,7 @@
 				CEF60E20114C0ED70074ACC4 /* zh_TW */,
 				CEF877421190593E006436A2 /* pl */,
 				CE157EDC12D4EBC000515B85 /* Japanese */,
+				CE1632B21582AC3200CFF419 /* zh_CN */,
 			);
 			name = LineInspector.strings;
 			sourceTree = "<group>";
@@ -2953,6 +3001,7 @@
 				CEF60E23114C0ED70074ACC4 /* zh_TW */,
 				CEF8773D1190593E006436A2 /* pl */,
 				CE157ED712D4EBC000515B85 /* Japanese */,
+				CE1632AD1582AC1800CFF419 /* zh_CN */,
 			);
 			name = DownloadsWindow.strings;
 			sourceTree = "<group>";
@@ -2970,6 +3019,7 @@
 				CEF60E25114C0ED70074ACC4 /* zh_TW */,
 				CEF877391190593E006436A2 /* pl */,
 				CE157ED312D4EBC000515B85 /* Japanese */,
+				CE1632AB1582AC0D00CFF419 /* zh_CN */,
 			);
 			name = BookmarksWindow.strings;
 			sourceTree = "<group>";
@@ -2987,6 +3037,7 @@
 				CEF60E26114C0ED70074ACC4 /* zh_TW */,
 				CEF877381190593E006436A2 /* pl */,
 				CE157ED212D4EBC000515B85 /* Japanese */,
+				CE1632AA1582AC0600CFF419 /* zh_CN */,
 			);
 			name = BookmarkSheet.strings;
 			sourceTree = "<group>";
@@ -3004,6 +3055,7 @@
 				CEF60E27114C0ED70074ACC4 /* zh_TW */,
 				CEF877431190593E006436A2 /* pl */,
 				CE157EDD12D4EBC000515B85 /* Japanese */,
+				CE1632B31582AC3700CFF419 /* zh_CN */,
 			);
 			name = MainMenu.strings;
 			sourceTree = "<group>";
@@ -3021,6 +3073,7 @@
 				CEF60E28114C0ED70074ACC4 /* zh_TW */,
 				CEF8774D1190593E006436A2 /* pl */,
 				CE157EE712D4EBC000515B85 /* Japanese */,
+				CE1632BA1582AC5600CFF419 /* zh_CN */,
 			);
 			name = PreferenceWindow.strings;
 			sourceTree = "<group>";
@@ -3038,6 +3091,7 @@
 				CEF60E21114C0ED70074ACC4 /* zh_TW */,
 				CEF877401190593E006436A2 /* pl */,
 				CE157EDA12D4EBC000515B85 /* Japanese */,
+				CE1632B11582AC2D00CFF419 /* zh_CN */,
 			);
 			name = InfoWindow.strings;
 			sourceTree = "<group>";
@@ -3055,6 +3109,7 @@
 				CEFBB34113AA73CB00162F75 /* ru */,
 				CEFBB34213AA73D400162F75 /* Spanish */,
 				CEFBB34313AA73D600162F75 /* zh_TW */,
+				CE1632AF1582AC2200CFF419 /* zh_CN */,
 			);
 			name = FindBar.strings;
 			sourceTree = "<group>";
@@ -3072,6 +3127,7 @@
 				CEFE719C1129AAD80018CD74 /* zh_TW */,
 				CEF8773511905912006436A2 /* pl */,
 				CE157F0B12D4EBE600515B85 /* Japanese */,
+				CE1632C31582AC7F00CFF419 /* zh_CN */,
 			);
 			name = ServicesMenu.strings;
 			sourceTree = "<group>";
