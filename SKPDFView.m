@@ -2224,7 +2224,7 @@ enum {
             }
         }
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
-            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:[readingBar page]];
+            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:page];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:page];
