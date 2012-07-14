@@ -2226,6 +2226,13 @@ enum {
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
             NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:page];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+            if (NSWidth(rect) > NSWidth(visibleRect)) {
+                if (NSMaxX(rect) < point.x + 0.5 * NSWidth(visibleRect))
+                    rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
+                else if (NSMinX(rect) < point.x - 0.5 * NSWidth(visibleRect))
+                    rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
+                rect.size.width = NSWidth(visibleRect);
+            }
         }
         [self goToRect:rect onPage:page];
         
