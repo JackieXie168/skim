@@ -60,6 +60,12 @@
 
 #endif
 
+#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+
+@protocol NSURLDownloadDelegate <NSObject> @end
+
+#endif
+
 #ifndef NSAppKitVersionNumber10_5
     #define NSAppKitVersionNumber10_5 949
 #endif
