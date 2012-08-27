@@ -307,15 +307,15 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    return [[SKFileBookmark alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel];
+    return (id)[[SKFileBookmark alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel];
 }
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
-    return [[SKFileBookmark alloc] initWithSetup:aSetupDict label:aLabel];
+    return (id)[[SKFileBookmark alloc] initWithSetup:aSetupDict label:aLabel];
 }
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[SKFolderBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
+    return (id)[[SKFolderBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
 
 - (id)initFolderWithLabel:(NSString *)aLabel {
@@ -323,7 +323,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initRootWithChildren:(NSArray *)aChildren {
-    return [[SKRootBookmark alloc] initFolderWithChildren:aChildren label:NSLocalizedString(@"Bookmarks Menu", @"Menu item title")];
+    return (id)[[SKRootBookmark alloc] initFolderWithChildren:aChildren label:NSLocalizedString(@"Bookmarks Menu", @"Menu item title")];
 }
 
 - (id)initSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel {
@@ -335,17 +335,17 @@ static Class SKBookmarkClass = Nil;
             [child release];
         }
     }
-    return [[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
+    return (id)[[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
 
 - (id)initSeparator {
-    return [[SKSeparatorBookmark alloc] init];
+    return (id)[[SKSeparatorBookmark alloc] init];
 }
 
 - (id)initWithProperties:(NSDictionary *)dictionary {
     NSString *type = [dictionary objectForKey:TYPE_KEY];
     if ([type isEqualToString:SEPARATOR_STRING]) {
-        return [[SKSeparatorBookmark alloc] init];
+        return (id)[[SKSeparatorBookmark alloc] init];
     } else if ([type isEqualToString:FOLDER_STRING] || [type isEqualToString:SESSION_STRING]) {
         Class bookmarkClass = [type isEqualToString:FOLDER_STRING] ? [SKFolderBookmark class] : [SKSessionBookmark class];
         NSMutableArray *newChildren = [NSMutableArray array];
@@ -357,12 +357,12 @@ static Class SKBookmarkClass = Nil;
             } else
                 NSLog(@"Failed to read child bookmark: %@", dict);
         }
-        return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
+        return (id)[[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
     } else if ([dictionary objectForKey:@"windowFrame"]) {
-        return [[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
+        return (id)[[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     } else {
         NSNumber *pageIndex = [dictionary objectForKey:PAGEINDEX_KEY];
-        return [[SKFileBookmark alloc] initWithAliasData:[dictionary objectForKey:ALIASDATA_KEY] pageIndex:(pageIndex ? [pageIndex unsignedIntegerValue] : NSNotFound) label:[dictionary objectForKey:LABEL_KEY]];
+        return (id)[[SKFileBookmark alloc] initWithAliasData:[dictionary objectForKey:ALIASDATA_KEY] pageIndex:(pageIndex ? [pageIndex unsignedIntegerValue] : NSNotFound) label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
