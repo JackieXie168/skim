@@ -210,7 +210,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings {
     NSInteger i = 0;
-    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
+    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", (unichar)0xe2, (unichar)0xe3, (unichar)0xcf, (unichar)0xd3];
     NSMutableString *annots = [NSMutableString string];
     for (PDFAnnotation *note in [self notes]) {
         [string appendFormat:@"%ld 0 obj<<%@>>\nendobj\n", (long)(++i), [note fdfString]];

@@ -54,7 +54,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 
-#define EM_DASH_CHARACTER 0x2014
+#define EM_DASH_CHARACTER (unichar)0x2014
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 

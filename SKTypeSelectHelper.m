@@ -43,8 +43,8 @@
 
 #define SKWindowDidChangeFirstResponderNotification @"SKWindowDidChangeFirstResponderNotification"
 
-#define REPEAT_CHARACTER 0x2F
-#define CANCEL_CHARACTER 0x1B
+#define REPEAT_CHARACTER (unichar)0x2F
+#define CANCEL_CHARACTER (unichar)0x1B
 
 @interface NSString (SKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(NSInteger)mask range:(NSRange)range;

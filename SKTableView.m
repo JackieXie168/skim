@@ -42,7 +42,7 @@
 #import "NSFont_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
 
-#define SPACE_CHARACTER 0x20
+#define SPACE_CHARACTER (unichar)0x20
 
 
 @interface SKTableView (SKPrivate)

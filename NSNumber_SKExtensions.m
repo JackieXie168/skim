@@ -38,7 +38,7 @@
 
 #import "NSNumber_SKExtensions.h"
 
-#define ALPHA_CHARACTER 0x03b1
+#define ALPHA_CHARACTER (unichar)0x03b1
 
 @implementation NSNumber (SKExtensions)
 

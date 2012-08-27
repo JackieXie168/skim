@@ -44,7 +44,7 @@
 #import "SKMainDocument.h"
 #import "NSPointerArray_SKExtensions.h"
 
-#define ELLIPSIS_CHARACTER 0x2026
+#define ELLIPSIS_CHARACTER (unichar)0x2026
 
 @interface NSTextStorage (SKNSSubTextStoragePrivateDeclarations)
 - (NSRange)range;
