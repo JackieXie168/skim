@@ -370,7 +370,7 @@ static Class SKBookmarkClass = Nil;
 
 - (id)autorelease { return self; }
 
-- (void)release {}
+- (oneway void)release {}
 
 - (NSUInteger)retainCount { return NSUIntegerMax; }
 
