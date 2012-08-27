@@ -104,7 +104,7 @@
 #import "NSScanner_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
 
-#define MULTIPLICATION_SIGN_CHARACTER 0x00d7
+#define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
 #define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
 

@@ -41,7 +41,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"
 
-#define SPACE_CHARACTER 0x20
+#define SPACE_CHARACTER (unichar)0x20
 
 
 @implementation SKOutlineView

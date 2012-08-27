@@ -51,7 +51,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 
-#define RIGHTARROW_CHARACTER 0x2192
+#define RIGHTARROW_CHARACTER (unichar)0x2192
 
 #define PAGE_COLUMNID @"page"
 #define IMAGE_COLUMNID @"image"

@@ -44,7 +44,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import <CoreFoundation/CoreFoundation.h>
 
-#define ELLIPSIS_CHARACTER 0x2026
+#define ELLIPSIS_CHARACTER (unichar)0x2026
 
 #pragma mark CFString extensions
 

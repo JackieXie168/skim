@@ -56,7 +56,7 @@
 #import "SKNoteTextView.h"
 #import "NSInvocation_SKExtensions.h"
 
-#define EM_DASH_CHARACTER 0x2014
+#define EM_DASH_CHARACTER (unichar)0x2014
 
 #define SKNoteWindowFrameAutosaveName @"SKNoteWindow"
 #define SKAnyNoteWindowFrameAutosaveName @"SKAnyNoteWindow"
