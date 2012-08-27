@@ -53,7 +53,7 @@ enum {
 };
 typedef NSInteger SKDownloadStatus;
 
-@interface SKDownload : NSObject {
+@interface SKDownload : NSObject <NSURLDownloadDelegate> {
     NSURL *URL;
     NSURLDownload *URLDownload;
     long long expectedContentLength;
