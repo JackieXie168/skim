@@ -96,7 +96,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
-    NSDocument *document = [[aWindow windowController] document];
+    NSDocument *document = [windowController document];
     NSWindowController *mainWindowController = [[document windowControllers] objectAtIndex:0];
     NSInteger numberOfItems = [windowsMenu numberOfItems];
     NSInteger itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
