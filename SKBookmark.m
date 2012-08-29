@@ -620,15 +620,16 @@ static Class SKBookmarkClass = Nil;
         NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
         NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
         NSString *aLabel = [properties objectForKey:@"label"];
-        NSInteger type = [[properties objectForKey:@"bookmarkType"] integerValue];
-        if (type == 0) {
-            if (aURL == nil)
-                type = SKBookmarkTypeSession;
-            else if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:aPath error:NULL] conformsToType:(NSString *)kUTTypeFolder])
-                type = SKBookmarkTypeFolder;
-            else
-                type = SKBookmarkTypeBookmark;
-        }
+        NSNumber *aType = [properties objectForKey:@"bookmarkType"];
+        NSInteger type;
+        if ([aType respondsToSelector:@selector(integerValue)])
+            type = [aType integerValue];
+        else if (aURL == nil)
+            type = SKBookmarkTypeSession;
+        else if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:aPath error:NULL] conformsToType:(NSString *)kUTTypeFolder])
+            type = SKBookmarkTypeFolder;
+        else
+            type = SKBookmarkTypeBookmark;
         switch (type) {
             case SKBookmarkTypeBookmark:
             {
