@@ -988,6 +988,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941CA0D94A70100DD942E /* ConfigFrameworkDebug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_VERSION = "";
 			};
 			name = Debug;
 		};
@@ -995,7 +997,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D50D94A70100DD942E /* ConfigFrameworkRelease.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_VERSION = "";
 			};
 			name = Release;
 		};
@@ -1025,6 +1029,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 61072EB20DF2640C008FE88B /* ConfigFrameworkReleaseGCSupport.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_VERSION = "";
 				INSTALL_PATH = "@loader_path/../Frameworks";
 			};
 			name = "Release (GC dual-mode; 10.5-only)";
@@ -1033,6 +1039,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D20D94A70100DD942E /* ConfigTestAppRelease.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_VERSION = "";
 			};
 			name = "Release (GC dual-mode; 10.5-only)";
 		};
@@ -1040,6 +1048,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D40D94A70100DD942E /* ConfigRelaunchRelease.xcconfig */;
 			buildSettings = {
+				GCC_VERSION = "";
 			};
 			name = "Release (GC dual-mode; 10.5-only)";
 		};
@@ -1048,6 +1057,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
@@ -1056,6 +1066,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "Tests/Sparkle Unit Tests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
@@ -1076,6 +1087,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1085,6 +1097,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "Tests/Sparkle Unit Tests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
@@ -1105,6 +1118,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
@@ -1113,6 +1127,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "Tests/Sparkle Unit Tests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
@@ -1132,6 +1147,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941CB0D94A70100DD942E /* ConfigTestAppDebug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_VERSION = "";
 			};
 			name = Debug;
 		};
@@ -1139,6 +1156,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D20D94A70100DD942E /* ConfigTestAppRelease.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_VERSION = "";
 			};
 			name = Release;
 		};
@@ -1146,6 +1165,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D30D94A70100DD942E /* ConfigRelaunchDebug.xcconfig */;
 			buildSettings = {
+				GCC_VERSION = "";
 			};
 			name = Debug;
 		};
@@ -1153,6 +1173,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941D40D94A70100DD942E /* ConfigRelaunchRelease.xcconfig */;
 			buildSettings = {
+				GCC_VERSION = "";
 			};
 			name = Release;
 		};
