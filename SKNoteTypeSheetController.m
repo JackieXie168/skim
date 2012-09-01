@@ -150,7 +150,7 @@
 }
 
 - (void)toggleDisplayNoteType:(id)sender {
-    [sender setState:NO == [sender state]];
+    [(NSMenuItem *)sender setState:NO == [(NSMenuItem *)sender state]];
     [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }
 
@@ -165,7 +165,7 @@
     if (returnCode == NSOKButton) {
         NSUInteger i;
         for (i = 0; i < NOTETYPES_COUNT; i++)
-            [[noteTypeMenu itemAtIndex:i] setState:[[matrix cellWithTag:i] state]];
+            [[noteTypeMenu itemAtIndex:i] setState:[(NSCell *)[matrix cellWithTag:i] state]];
         [delegate noteTypeSheetControllerNoteTypesDidChange:self];
     }
 }

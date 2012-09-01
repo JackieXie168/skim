@@ -343,19 +343,19 @@
 }
 
 - (NSInteger)leftState {
-    return [leftCell state];
+    return [(NSCell *)leftCell state];
 }
 
 - (void)setLeftState:(NSInteger)newState {
-    [leftCell setState:newState];
+    [(NSCell *)leftCell setState:newState];
 }
 
 - (NSInteger)rightState {
-    return [rightCell state];
+    return [(NSCell *)rightCell state];
 }
 
 - (void)setRightState:(NSInteger)newState {
-    [rightCell setState:newState];
+    [(NSCell *)rightCell setState:newState];
 }
 
 - (void)setIconCell:(id)newIconCell {

@@ -1329,7 +1329,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
     // prevent sleep
-    if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &activityAssertionID))
+    if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim"), &activityAssertionID))
         activityAssertionID = kIOPMNullAssertionID;
 }
 
