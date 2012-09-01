@@ -114,7 +114,7 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
     NSSlider *slider1 = [thumbnailSizeControls objectAtIndex:0];
     NSSlider *slider2 = [thumbnailSizeControls objectAtIndex:1];
-    if ([sender state] == NSOnState) {
+    if ([(NSButton *)sender state] == NSOnState) {
         [slider1 setNumberOfTickMarks:8];
         [slider2 setNumberOfTickMarks:8];
         [slider1 setAllowsTickMarkValuesOnly:YES];
