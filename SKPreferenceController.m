@@ -133,19 +133,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
             [[self window] setFrame:frame display:YES];
-        } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5) {
+        } else {
             [contentView replaceSubview:oldView with:view];
             [[self window] setFrame:frame display:YES animate:YES];
-        } else {
-            NSTimeInterval duration = [[self window] animationResizeTime:frame];
-            [contentView setWantsLayer:YES];
-            [contentView displayIfNeeded];
-            [NSAnimationContext beginGrouping];
-            [[NSAnimationContext currentContext] setDuration:duration];
-            [[contentView animator] replaceSubview:oldView with:view];
-            [[[self window] animator] setFrame:frame display:YES];
-            [NSAnimationContext endGrouping];
-            [self performSelector:@selector(endAnimation) withObject:nil afterDelay:duration];
         }
     }
 }

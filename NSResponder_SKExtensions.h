@@ -48,14 +48,3 @@
 - (void)magnifyWheel:(NSEvent *)theEvent;
 - (void)remoteButtonPressed:(NSEvent *)theEvent;
 @end
-
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@interface NSResponder (SKSnowLeopardExtension)
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
-- (void)rotateWithEvent:(NSEvent *)theEvent;
-- (void)swipeWithEvent:(NSEvent *)theEvent;
-- (void)beginGestureWithEvent:(NSEvent *)theEvent;
-- (void)endGestureWithEvent:(NSEvent *)theEvent;
-@end
-#endif

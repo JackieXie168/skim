@@ -225,7 +225,6 @@
         [super keyDown:theEvent];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKTocOutlineViewDelegate>)delegate {
     return (id <SKTocOutlineViewDelegate>)[super delegate];
 }
@@ -234,11 +233,5 @@
     [super setDelegate:newDelegate];
 	[self rebuildTrackingAreas];
 }
-#else
-- (void)setDelegate:(id)newDelegate {
-    [super setDelegate:newDelegate];
-	[self rebuildTrackingAreas];
-}
-#endif
 
 @end

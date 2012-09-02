@@ -50,10 +50,8 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow;
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate;
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate;
-#endif
 
 @end
 

@@ -38,43 +38,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-
-@protocol NSApplicationDelegate <NSObject> @end
-@protocol NSControlTextEditingDelegate <NSObject> @end
-@protocol NSTextFieldDelegate <NSControlTextEditingDelegate> @end
-@protocol NSTableViewDelegate <NSControlTextEditingDelegate> @end
-@protocol NSTableViewDataSource <NSObject> @end
-@protocol NSOutlineViewDelegate <NSControlTextEditingDelegate> @end
-@protocol NSOutlineViewDataSource <NSObject> @end
-@protocol NSToolbarDelegate <NSObject> @end
-@protocol NSMenuDelegate <NSObject> @end
-@protocol NSDrawerDelegate <NSObject> @end
-@protocol NSWindowDelegate <NSObject> @end
-@protocol NSAnimationDelegate <NSObject> @end
-@protocol NSTextDelegate <NSObject> @end
-@protocol NSTextViewDelegate <NSTextDelegate> @end
-@protocol NSTextStorageDelegate <NSObject> @end
-@protocol NSTabViewDelegate <NSObject> @end
-@protocol NSSplitViewDelegate <NSObject> @end
-
-#endif
-
-#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
-
-@protocol NSURLDownloadDelegate <NSObject> @end
-
-#endif
-
-#ifndef NSAppKitVersionNumber10_5
-    #define NSAppKitVersionNumber10_5 949
-#endif
-
 #ifndef NSAppKitVersionNumber10_6
     #define NSAppKitVersionNumber10_6 1038
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+
+@protocol NSURLDownloadDelegate <NSObject> @end
 
 enum {
     NSWindowAnimationBehaviorDefault = 0,

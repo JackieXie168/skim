@@ -50,63 +50,10 @@
 
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKRuntime.h"
 #import <CommonCrypto/CommonDigest.h>
 
 
 @implementation NSData (SKExtensions)
-
-- (NSRange)Leopard_rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange {
-    NSUInteger patternLength = [dataToFind length];
-    NSUInteger selfLength = [self length];
-    
-    if (searchRange.location > selfLength || NSMaxRange(searchRange) > selfLength)
-        [NSException raise:NSRangeException format:@"Range {%lu,%lu} exceeds length %lu", (unsigned long)searchRange.location, (unsigned long)searchRange.length, (unsigned long)selfLength];
-    
-    // This test is a nice shortcut, but it's also necessary to avoid crashing: zero-length NSDatas will sometimes(?) return NULL for their bytes pointer, and the resulting pointer arithmetic can underflow.
-    if (patternLength == 0 || patternLength > searchRange.length)
-        return NSMakeRange(NSNotFound, 0);
-    
-    const void *patternBytes = [dataToFind bytes];
-    const unsigned char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
-    const unsigned char firstPatternByte = *(const char *)patternBytes;
-    BOOL backward = (mask & NSDataSearchBackwards) != 0;
-    BOOL anchored = (mask & NSDataSearchAnchored) != 0;
-    
-    selfBufferStart = [self bytes];
-    selfPtrMax = selfBufferStart + NSMaxRange(searchRange) + 1 - patternLength;
-    if (backward) {
-        selfPtr = selfPtrMax - 1;
-        selfPtrEnd = selfBufferStart + searchRange.location - 1;
-    } else {
-        selfPtr = selfBufferStart + searchRange.location;
-        selfPtrEnd = selfPtrMax;
-    }
-    
-    for (;;) {
-        if (memcmp(selfPtr, patternBytes, patternLength) == 0)
-            return NSMakeRange(selfPtr - selfBufferStart, patternLength);
-        
-        if (anchored)
-            break;
-        
-        if (backward) {
-            do {
-                selfPtr--;
-            } while (*selfPtr != firstPatternByte && selfPtr > selfPtrEnd);
-            if (*selfPtr != firstPatternByte)
-                break;
-        } else {
-            selfPtr++;
-            if (selfPtr == selfPtrEnd)
-                break;
-            selfPtr = memchr(selfPtr, firstPatternByte, (selfPtrMax - selfPtr));
-            if (selfPtr == NULL)
-                break;
-        }
-    }
-    return NSMakeRange(NSNotFound, 0);
-}
 
 // Mapping from 4 bit pattern to ASCII character.
 static unsigned char hexEncodeTable[17] = "0123456789ABCDEF";
@@ -334,7 +281,7 @@ static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgh
 
 - (id)scriptingPdfDescriptor {
     return [NSAppleEventDescriptor descriptorWithDescriptorType:'PDF ' data:self];
-}
+} 
 
 + (id)scriptingTiffPictureWithDescriptor:(NSAppleEventDescriptor *)descriptor {
     return [descriptor data];
@@ -350,11 +297,6 @@ static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgh
 
 - (id)scriptingRtfDescriptor {
     return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:self];
-}
-
-+ (void)load {
-    // this should do nothing on Snow Leopard
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
 }
 
 @end

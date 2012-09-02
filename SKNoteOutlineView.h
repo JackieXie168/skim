@@ -45,10 +45,8 @@
 
 - (void)toggleTableColumn:(id)sender;
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKNoteOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKNoteOutlineViewDelegate>)newDelegate;
-#endif
 
 @end
 

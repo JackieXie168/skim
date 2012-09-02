@@ -124,7 +124,7 @@
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [[firstResponder window] makeFirstResponder:firstResponder];
         [[contentView window] recalculateKeyViewLoop];
-    } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
+    } else {
         isAnimating = YES;
         
         [contentView setWantsLayer:YES];
@@ -148,47 +148,6 @@
         [info setValue:firstResponder forKey:FIRSTRESPONDER_KEY];
         
         [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
-    } else {
-        [newView setHidden:YES];
-        [[oldView superview] addSubview:newView];
-        if (changeButton) {
-            [newButton setHidden:YES];
-            [[oldButton superview] addSubview:newButton];
-        }
-        
-        NSArray *viewAnimations = [NSArray arrayWithObjects:
-            [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-            [NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
-        
-        NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:0.7];
-        [animation setAnimationCurve:NSAnimationEaseIn];
-        isAnimating = YES;
-        [animation startAnimation];
-        isAnimating = NO;
-        
-        if (changeButton) {
-            viewAnimations = [NSArray arrayWithObjects:
-                [NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-                [NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
-            
-            animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-            [animation setAnimationBlockingMode:NSAnimationBlocking];
-            [animation setDuration:0.3];
-            [animation setAnimationCurve:NSAnimationEaseIn];
-            [animation startAnimation];
-        }
-        
-        [[firstResponder window] makeFirstResponder:firstResponder];
-        [oldView removeFromSuperview];
-        [oldView setHidden:NO];
-        [[newView window] recalculateKeyViewLoop];
-        
-        if (changeButton) {
-            [oldButton removeFromSuperview];
-            [oldButton setHidden:NO];
-        }
     }
 }
 
