@@ -83,14 +83,10 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 }
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
-    const static SystemUIMode modes[3] = {kUIModeNormal, kUIModeAllHidden, kUIModeAllHidden};
-    const static SystemUIOptions options[3] = {0, kUIOptionAutoShowMenuBar, kUIOptionDisableProcessSwitch};
-    SystemUIMode currentMode;
-    SystemUIOptions currentOptions;
-    GetSystemUIMode(&currentMode, &currentOptions);
+    const NSApplicationPresentationOptions options[3] = {NSApplicationPresentationDefault, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching};
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
-    if (currentMode != modes[mode] || currentOptions != options[mode])
-        SetSystemUIMode(modes[mode], options[mode]);
+    if ([self presentationOptions] != options[mode])
+        [self setPresentationOptions:options[mode]];
 }
 
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
