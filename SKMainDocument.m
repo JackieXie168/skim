@@ -942,7 +942,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
                               file:[path lastPathComponentReplacingPathExtension:@"skim"]
-                             types:[NSArray arrayWithObjects:@"skim", NSAppKitVersionNumber > NSAppKitVersionNumber10_5 ? nil : @"fdf", nil]
+                             types:[NSArray arrayWithObjects:@"skim", nil]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(readNotesPanelDidEnd:returnCode:contextInfo:)

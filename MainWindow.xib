@@ -87,7 +87,7 @@
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSSplitView" id="425696215">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="202565042">
@@ -95,10 +95,14 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrameSize">{265, 250}</string>
 						<reference key="NSSuperview" ref="425696215"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 				</array>
 				<string key="NSFrameSize">{265, 250}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<int key="NSDividerStyle">3</int>
 			</object>
 			<object class="NSCustomObject" id="441088418">
 				<string key="NSClassName">SKLeftSideViewController</string>

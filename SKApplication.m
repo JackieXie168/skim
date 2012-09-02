@@ -209,9 +209,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
-#endif
 
 @end

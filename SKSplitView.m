@@ -44,44 +44,6 @@
 
 @implementation SKSplitView
 
-- (id)initWithCoder:(NSCoder *)coder{
-    self = [super initWithCoder:coder];
-    if (self) {
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && [self dividerStyle] == NSSplitViewDividerStyleThick)
-            [self setDividerStyle:3]; // NSSplitViewDividerStylePaneSplitter
-    }
-    return self;
-}
-
-- (void)drawDividerInRect:(NSRect)aRect {
-	if ([self dividerStyle] == NSSplitViewDividerStyleThick) {
-        NSRect topRect, bottomRect, innerRect;
-        NSDivideRect(aRect, &topRect, &innerRect, 1.0, NSMaxYEdge);
-        NSDivideRect(innerRect, &bottomRect, &innerRect, 1.0, NSMinYEdge);
-        
-        [NSGraphicsContext saveGraphicsState];
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.98 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.91 alpha:1.0]] autorelease];
-        [gradient drawInRect:innerRect angle:90.0];
-        [[NSColor colorWithDeviceWhite:0.69 alpha:1.0] setFill];
-        NSRectFill(topRect);
-        NSRectFill(bottomRect);
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    [super drawDividerInRect:aRect];
-}
-
-- (CGFloat)dividerThickness {
-	if ([self dividerStyle] == NSSplitViewDividerStyleThick)
-        return 10.0;
-    return [super dividerThickness];
-}
-
-- (void)adjustSubviews {
-    [super adjustSubviews];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
-        [self resetCursorRects];
-}
-
 - (BOOL)isAnimating {
     return animating;
 }

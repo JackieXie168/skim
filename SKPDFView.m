@@ -1168,11 +1168,7 @@ enum {
             } else if (area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                 [self doDragWithEvent:theEvent];
             } else {
-                // before 10.6 PDFView did not select behind an annotation
-                if (hitAnnotation && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
-                    [self doSelectTextWithEvent:theEvent];
-                else // [super mouseDown:] since 10.5 runs a mouse-tracking loop, 
-                    [super mouseDown:theEvent];
+                [super mouseDown:theEvent];
                 if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
                     [self addAnnotationWithType:annotationMode];
                     [self setCurrentSelection:nil];
@@ -3333,7 +3329,7 @@ enum {
     if (([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
         pathColor = [[activeAnnotation color] retain];
         [bezierPath setLineWidth:[activeAnnotation lineWidth]];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && [activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
+        if ([activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
             [bezierPath setDashPattern:[activeAnnotation dashPattern]];
             [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }
@@ -3342,7 +3338,7 @@ enum {
         NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
         pathColor = [[sud colorForKey:SKInkNoteColorKey] retain];
         [bezierPath setLineWidth:[sud floatForKey:SKInkNoteLineWidthKey]];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && (PDFBorderStyle)[sud integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+        if ((PDFBorderStyle)[sud integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
             [bezierPath setDashPattern:[sud arrayForKey:SKInkNoteDashPatternKey]];
             [bezierPath setLineCapStyle:NSButtLineCapStyle];
         }

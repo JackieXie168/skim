@@ -180,8 +180,7 @@
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
-        [outlineView setIndentationPerLevel:1.0];
+    [outlineView setIndentationPerLevel:1.0];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
@@ -290,15 +289,6 @@
         *outError = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes", @"Error description")];
     
     return data;
-}
-
-+ (NSArray *)readableTypes {
-    NSArray *types = [super readableTypes];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
-        return types;
-    NSMutableArray *mutableTypes = [[types mutableCopy] autorelease];
-    [mutableTypes removeObject:SKNotesFDFDocumentType];
-    return mutableTypes;
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {

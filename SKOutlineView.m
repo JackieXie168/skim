@@ -250,11 +250,9 @@
         [[self delegate] outlineView:self typeSelectHelper:aTypeSelectHelper updateSearchString:searchString];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKOutlineViewDelegate>)delegate { return (id <SKOutlineViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 - (id <SKOutlineViewDataSource>)dataSource { return (id <SKOutlineViewDataSource>)[super dataSource]; }
 - (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource { [super setDataSource:newDataSource]; }
-#endif
 
 @end

@@ -476,8 +476,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [menu addItem:[NSMenuItem separatorItem]];
     [[menu addItemWithTitle:NSLocalizedString(@"Note Type", @"Menu item title") action:NULL keyEquivalent:@""] setSubmenu:[noteTypeSheetController noteTypeMenu]];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5)
-        [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
+    [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
     
     [rightSideController.noteOutlineView registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
     

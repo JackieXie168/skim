@@ -162,7 +162,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil];
         if (self) {
             PDFPage *page = [selection safeFirstPage];
-            NSInteger rotation = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 ? [page rotation] : 0;
+            NSInteger rotation = [page rotation];
             NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
             NSRect newBounds = NSZeroRect;
             if (selection) {

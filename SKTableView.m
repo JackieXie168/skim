@@ -309,7 +309,6 @@
         [[self delegate] tableView:self typeSelectHelper:aTypeSelectHelper updateSearchString:searchString];
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKTableViewDelegate>)delegate {
     return (id <SKTableViewDelegate>)[super delegate];
 }
@@ -318,11 +317,5 @@
     [super setDelegate:newDelegate];
 	[self rebuildTrackingAreas];
 }
-#else
-- (void)setDelegate:(id)newDelegate {
-    [super setDelegate:newDelegate];
-	[self rebuildTrackingAreas];
-}
-#endif
 
 @end

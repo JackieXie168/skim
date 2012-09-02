@@ -49,8 +49,3 @@
 - (NSPoint)locationInView:(NSView *)view;
 
 @end
-
-@interface NSEvent (SKLeopardGestures)
-- (CGFloat)magnification;
-- (CGFloat)rotation;
-@end
