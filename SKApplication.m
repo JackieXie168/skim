@@ -40,7 +40,6 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
-#import <Carbon/Carbon.h>
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
