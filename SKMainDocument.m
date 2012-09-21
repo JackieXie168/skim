@@ -231,7 +231,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
     NSString *searchString;
     
-    if ([event eventID] == kAEOpenDocuments && 
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+        [event eventID] == kAEOpenDocuments && 
         (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) && 
         [@"" isEqualToString:searchString] == NO) {
         if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
