@@ -133,3 +133,4 @@ extern NSString *SKNoteColumnsKey;
 extern NSString *SKNoteColumnWidthsKey;
 extern NSString *SKNotesDocumentColumnsKey;
 extern NSString *SKNotesDocumentColumnWidthsKey;
+extern NSString *SKDisableSearchAfterSpotlighKey;

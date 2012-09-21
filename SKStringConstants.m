@@ -134,3 +134,4 @@ NSString *SKNoteColumnsKey = @"SKNoteColumns";
 NSString *SKNoteColumnWidthsKey = @"SKNoteColumnWidths";
 NSString *SKNotesDocumentColumnsKey = @"SKNotesDocumentColumns";
 NSString *SKNotesDocumentColumnWidthsKey = @"SKNotesDocumentColumnWidths";
+NSString *SKDisableSearchAfterSpotlighKey = @"SKDisableSearchAfterSpotligh";

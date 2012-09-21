@@ -133,7 +133,8 @@
     NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
     NSString *searchString;
     
-    if ([event eventID] == kAEOpenDocuments && 
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+        [event eventID] == kAEOpenDocuments && 
         (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) && 
         [@"" isEqualToString:searchString] == NO &&
         [searchField window]) {
