@@ -50,7 +50,8 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
                                      {@"LyX",            @"lyxeditor",   @"\"%file\" %line"}, 
                                      {@"TeXMaker",       @"texmaker",    @"\"%file\" -line %line"}, 
                                      {@"AlphaX",         @"alphac",      @"+%line \"%file\""}, 
-                                     {@"MacVim",         @"mvim",        @"--remote-silent +\":%line\" \"%file\""}};
+                                     {@"MacVim",         @"mvim",        @"--remote-silent +\":%line\" \"%file\""}, 
+                                     {@"Sublime Text 2", @"subl",        @"\"%file\":%line"}};
 #define SKTeXEditorCount (sizeof(SKTeXEditors) / sizeof(SKTeXEditor))
 #define SKNullTeXEditor ((SKTeXEditor){nil, nil, nil})
 
