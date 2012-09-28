@@ -88,6 +88,7 @@
 #import "SKPrintAccessoryController.h"
 #import "SKTemporaryData.h"
 #import "SKTemplateManager.h"
+#import "SKExportAccessoryController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -115,6 +116,12 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
+enum {
+    SKExportOptionDefault,
+    SKExportOptionWithoutNotes,
+    SKExportOptionWithEmbeddedNotes,
+};
+
 
 #if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 @interface NSUndoManager (SKLionExtensions)
@@ -135,6 +142,13 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 @interface PDFDocument (SKLionDeclarations)
 - (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate;
 @end
+
+
+@interface NSDocument (SKPrivateDeclarations)
+// private method used as the action for the file format popup in the save panel, decalred so we can override
+- (void)changeSaveType:(id)sender;
+@end
+
 
 
 @interface SKMainDocument (SKPrivate)
@@ -304,21 +318,13 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
-    if ([[self fileType] isEqualToString:SKPostScriptDocumentType] == NO) {
+    if ([[self fileType] isEqualToString:SKPostScriptDocumentType] == NO)
         [writableTypes removeObject:SKPostScriptDocumentType];
-        [writableTypes removeObject:SKBarePostScriptDocumentType];
-    }
-    if ([[self fileType] isEqualToString:SKDVIDocumentType] == NO) {
+    if ([[self fileType] isEqualToString:SKDVIDocumentType] == NO)
         [writableTypes removeObject:SKDVIDocumentType];
-        [writableTypes removeObject:SKBareDVIDocumentType];
-    }
-    if ([[self fileType] isEqualToString:SKXDVDocumentType] == NO) {
+    if ([[self fileType] isEqualToString:SKXDVDocumentType] == NO)
         [writableTypes removeObject:SKXDVDocumentType];
-        [writableTypes removeObject:SKBareXDVDocumentType];
-    }
     if (saveOperation == NSSaveToOperation) {
-        if ([[self pdfDocument] allowsPrinting] == NO)
-            [writableTypes removeObject:SKEmbeddedPDFDocumentType];
         [[SKTemplateManager sharedManager] resetCustomTemplateTypes];
         [writableTypes addObjectsFromArray:[[SKTemplateManager sharedManager] customTemplateTypes]];
     }
@@ -329,18 +335,57 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForTemplateType:typeName];
 }
 
+- (void)updateExportAccessoryView {
+    NSString *typeName = [self fileTypeFromLastRunSavePanel];
+    NSMatrix *matrix = [exportAccessoryController matrix];
+    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) {
+        [matrix setHidden:NO];
+        if ([typeName isEqualToString:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
+            [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
+        } else {
+            [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:NO];
+            if (exportOption == SKExportOptionWithEmbeddedNotes) {
+                exportOption = SKExportOptionDefault;
+                [matrix selectCellWithTag:SKExportOptionDefault];
+            }
+        }
+    } else {
+        [matrix setHidden:YES];
+    }
+}
+
+- (void)changeSaveType:(id)sender {
+    if ([NSDocument instancesRespondToSelector:_cmd])
+        [super changeSaveType:sender];
+    if (exportUsingPanel && exportAccessoryController)
+        [self updateExportAccessoryView];
+}
+
+- (void)changeExportOption:(id)sender {
+    exportOption = [[sender selectedCell] tag];
+}
+
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
     if (success && exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
-        NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
-        if (formatPopup && lastExportedType) {
-            NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
-            if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
-                [formatPopup selectItemAtIndex:idx];
-                [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
-                [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
+        if (formatPopup) {
+            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
+            if (lastExportedType) {
+                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
+                    [formatPopup selectItemAtIndex:idx];
+                    [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+                    [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
+                }
             }
+            
+            exportAccessoryController = [[SKExportAccessoryController alloc] init];
+            [exportAccessoryController addFormatPopUpButton:formatPopup];
+            [[exportAccessoryController matrix] setTarget:self];
+            [[exportAccessoryController matrix] setAction:@selector(changeExportOption:)];
+            [savePanel setAccessoryView:[exportAccessoryController view]];
+            [self updateExportAccessoryView];
         }
     }
     return success;
@@ -349,6 +394,8 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
     exportUsingPanel = (saveOperation == NSSaveToOperation);
+    // Should already be reset long ago, just to be sure
+    exportOption = SKExportOptionDefault;
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
@@ -435,7 +482,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) {
+        if (([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) && exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
         } else if ([typeName isEqualToString:SKPDFBundleDocumentType] && tmpPath) {
@@ -466,6 +513,9 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     
     // in case we saved using the panel we should reset this for the next save
     exportUsingPanel = NO;
+    exportOption = SKExportOptionDefault;
+    
+    SKDESTROY(exportAccessoryController);
     
     NSInvocation *invocation = [info objectForKey:CALLBACK_KEY];
     if (invocation) {
@@ -483,6 +533,9 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
     } else if (saveOperation == NSSaveToOperation && exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
+    // just to make sure
+    if (saveOperation != NSSaveToOperation)
+        exportOption = SKExportOptionDefault;
     
     NSURL *destURL = [absoluteURL respondsToSelector:@selector(filePathURL)] ? [absoluteURL filePathURL] : absoluteURL;
     NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:destURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
@@ -544,18 +597,18 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     NSError *error = nil;
-    if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
-        // this must be checked before PDF, as we check for comformance to the UTI
-        didWrite = [[self pdfDocument] writeToURL:absoluteURL];
-    } else if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKBarePostScriptDocumentType]) {
+    if ([typeName isEqualToString:SKPDFDocumentType]) {
+        if (exportOption == SKExportOptionWithEmbeddedNotes)
+            didWrite = [[self pdfDocument] writeToURL:absoluteURL];
+        else
+            didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
+    } else if ([typeName isEqualToString:SKPostScriptDocumentType]) {
         if ([[self fileType] isEqualToString:SKPostScriptDocumentType])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKBareDVIDocumentType]) {
+    } else if ([typeName isEqualToString:SKDVIDocumentType]) {
         if ([[self fileType] isEqualToString:SKDVIDocumentType])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKXDVDocumentType] || [typeName isEqualToString:SKBareXDVDocumentType]) {
+    } else if ([typeName isEqualToString:SKXDVDocumentType]) {
         if ([[self fileType] isEqualToString:SKXDVDocumentType])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
@@ -622,7 +675,7 @@ static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
-        [typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType])
+        [typeName isEqualToString:SKPDFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [typeName isEqualToString:SKPDFBundleDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDFD'] forKey:NSFileHFSTypeCode];
@@ -1858,16 +1911,32 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     // we don't want to expose the pboard types to the user, and we allow template file names without extension
     if (fileType) {
         NSString *normalizedType = nil;
-        if ([fileType isEqualToString:@"PDF"])
+        if ([fileType isEqualToString:@"PDF"]) {
             normalizedType = SKPDFDocumentType;
-        else if ([fileType isEqualToString:@"PostScript"])
+        } else if ([fileType isEqualToString:@"PDF With Embeded Notes"]) {
+            normalizedType = SKPDFDocumentType;
+            exportOption = SKExportOptionWithEmbeddedNotes;
+        } else if ([fileType isEqualToString:@"PDF Without Notes"]) {
+            normalizedType = SKPDFDocumentType;
+            exportOption = SKExportOptionWithoutNotes;
+        } else if ([fileType isEqualToString:@"PostScript"]) {
             normalizedType = SKPostScriptDocumentType;
-        else if ([fileType isEqualToString:@"DVI"])
+        } else if ([fileType isEqualToString:@"PostScript Without Notes"]) {
+            normalizedType = SKPostScriptDocumentType;
+            exportOption = SKExportOptionWithoutNotes;
+        } else if ([fileType isEqualToString:@"DVI"]) {
             normalizedType = SKDVIDocumentType;
-        else if ([fileType isEqualToString:@"XDV"])
+        } else if ([fileType isEqualToString:@"DVI Without Notes"]) {
+            normalizedType = SKDVIDocumentType;
+            exportOption = SKExportOptionWithoutNotes;
+        } else if ([fileType isEqualToString:@"XDV"]) {
             normalizedType = SKXDVDocumentType;
-        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO)
+        } else if ([fileType isEqualToString:@"XDV Without Notes"]) {
+            normalizedType = SKXDVDocumentType;
+            exportOption = SKExportOptionWithoutNotes;
+        } else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
             normalizedType = [[SKTemplateManager sharedManager] templateTypeForDisplayName:fileType];
+        }
         if (normalizedType) {
             fileType = normalizedType;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];

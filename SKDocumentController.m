@@ -58,19 +58,14 @@
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = @"PDF Bundle";
-NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
-NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 NSString *SKNotesDocumentType = @"Skim Notes";
 NSString *SKNotesTextDocumentType = @"Notes as Text";
 NSString *SKNotesRTFDocumentType = @"Notes as RTF";
 NSString *SKNotesRTFDDocumentType = @"Notes as RTFD";
 NSString *SKNotesFDFDocumentType = @"Notes as FDF";
 NSString *SKPostScriptDocumentType = nil;
-NSString *SKBarePostScriptDocumentType = @"PostScript Without Notes";
 NSString *SKDVIDocumentType = @"DVI document";
-NSString *SKBareDVIDocumentType = @"DVI Without Notes";
 NSString *SKXDVDocumentType = @"XDV document";
-NSString *SKBareXDVDocumentType = @"XDV Without Notes";
 NSString *SKFolderDocumentType = @"Folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";

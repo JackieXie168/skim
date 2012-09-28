@@ -1,10 +1,10 @@
 //
-//  SKDocumentController.h
+//  SKExportAccessoryController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 5/21/07.
+//  Created by Christiaan on 9/27/12.
 /*
- This software is Copyright (c) 2007-2012
+ This software is Copyright (c) 2012
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,38 +37,17 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKViewController.h"
 
-extern NSString *SKPDFDocumentType;
-extern NSString *SKPDFBundleDocumentType;
-extern NSString *SKNotesDocumentType;
-extern NSString *SKNotesTextDocumentType;
-extern NSString *SKNotesRTFDocumentType;
-extern NSString *SKNotesRTFDDocumentType;
-extern NSString *SKNotesFDFDocumentType;
-extern NSString *SKPostScriptDocumentType;
-extern NSString *SKDVIDocumentType;
-extern NSString *SKXDVDocumentType;
-extern NSString *SKFolderDocumentType;
 
-extern NSString *SKDocumentSetupAliasKey;
-extern NSString *SKDocumentSetupFileNameKey;
+@interface SKExportAccessoryController : SKViewController {
+    NSMatrix *matrix;
+    NSTextField *labelField;
+}
 
-extern NSString *SKDocumentControllerWillRemoveDocumentNotification;
-extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
-extern NSString *SKDocumentDidShowNotification;
+@property (nonatomic, retain) IBOutlet NSMatrix *matrix;
+@property (nonatomic, retain) IBOutlet NSTextField *labelField;
 
-extern NSString *SKDocumentControllerDocumentKey;
-
-@interface SKDocumentController : NSDocumentController
-
-- (IBAction)newDocumentFromClipboard:(id)sender;
-
-- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
-// this method may return an SKDownload instance
-- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError;
-
-- (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
-
-- (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
+- (void)addFormatPopUpButton:(NSPopUpButton *)popupButton;
 
 @end
