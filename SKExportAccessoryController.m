@@ -1,10 +1,10 @@
 //
-//  SKDocumentController.h
+//  SKExportAccessoryController.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 5/21/07.
+//  Created by Christiaan on 9/27/12.
 /*
- This software is Copyright (c) 2007-2012
+ This software is Copyright (c) 2012
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,39 +36,43 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKExportAccessoryController.h"
+#import "NSGraphics_SKExtensions.h"
 
-extern NSString *SKPDFDocumentType;
-extern NSString *SKPDFBundleDocumentType;
-extern NSString *SKNotesDocumentType;
-extern NSString *SKNotesTextDocumentType;
-extern NSString *SKNotesRTFDocumentType;
-extern NSString *SKNotesRTFDDocumentType;
-extern NSString *SKNotesFDFDocumentType;
-extern NSString *SKPostScriptDocumentType;
-extern NSString *SKDVIDocumentType;
-extern NSString *SKXDVDocumentType;
-extern NSString *SKFolderDocumentType;
 
-extern NSString *SKDocumentSetupAliasKey;
-extern NSString *SKDocumentSetupFileNameKey;
+@implementation SKExportAccessoryController
 
-extern NSString *SKDocumentControllerWillRemoveDocumentNotification;
-extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
-extern NSString *SKDocumentDidShowNotification;
+@synthesize matrix, labelField;
 
-extern NSString *SKDocumentControllerDocumentKey;
+- (void)dealloc {
+    SKDESTROY(matrix);
+    SKDESTROY(labelField);
+    [super dealloc];
+}
 
-@interface SKDocumentController : NSDocumentController
+- (NSString *)nibName {
+    return @"ExportAccessoryView";
+}
 
-- (IBAction)newDocumentFromClipboard:(id)sender;
+- (void)loadView {
+    [super loadView];
+    [matrix sizeToFit];
+    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:matrix, nil], NO);
+}
 
-- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
-// this method may return an SKDownload instance
-- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError;
-
-- (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
-
-- (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
+- (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
+    NSView *view = [self view];
+    NSRect frame = [view frame];
+    NSRect matrixFrame = [matrix frame];
+    NSRect popupFrame = [popupButton frame];
+    
+    popupFrame.origin.x = NSMinX(matrixFrame) - 3.0;
+    popupFrame.origin.y = NSMaxY(matrixFrame) + 16.0;
+    frame.size.width = fmax(NSMaxX(popupFrame) + 13.0, NSMaxX(matrixFrame) + 16.0);
+    
+    [popupButton setFrame:popupFrame];
+    [view setFrame:frame];
+    [view addSubview:popupButton];
+}
 
 @end

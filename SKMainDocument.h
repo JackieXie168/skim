@@ -41,7 +41,7 @@
 
 extern NSString *SKSkimFileDidSaveNotification;
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData, SKFileUpdateChecker;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData, SKFileUpdateChecker, SKExportAccessoryController;
 
 @interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
 {
@@ -63,8 +63,11 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     SKFileUpdateChecker *fileUpdateChecker;
     
+    SKExportAccessoryController *exportAccessoryController;
+    
     BOOL isSaving;
     BOOL exportUsingPanel;
+    NSInteger exportOption;
 }
 
 - (void)undoableActionIsDiscardable;
