@@ -837,7 +837,6 @@
         for (item in [self noteItems:items]) {
             if ([item isMovable]) {
                 noteData = [NSKeyedArchiver archivedDataWithRootObject:[item SkimNoteProperties]];
-                [types addObject:SKSkimNotePboardType];
                 break;
             }
         }
