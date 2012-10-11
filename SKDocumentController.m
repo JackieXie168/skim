@@ -77,6 +77,9 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 NSString *SKDocumentControllerDocumentKey = @"document";
 
+#define SKPasteboardTypePostScript @"com.adobe.postscript"
+#define SKPasteboardTypeEncapsulatedPostScript @"com.adobe.encapsulated-postscript"
+
 @interface NSDocumentController (SKDeprecated)
 // we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName;
@@ -198,22 +201,32 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
-    // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
-    pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]];
     id document = nil;
+    NSData *data = nil;
+    NSString *type = nil;
     
-    if (pboardType) {
-        
-        NSData *data = [pboard dataForType:pboardType];
-        
-        // if it's image data, convert to PDF, then explicitly set the pboard type to PDF
-        if ([pboardType isEqualToString:NSTIFFPboardType]) {
-            data = convertTIFFDataToPDF(data);
-            pboardType = NSPDFPboardType;
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypePDF, nil]]) {
+        [pboard types];
+        data = [pboard dataForType:NSPasteboardTypePDF];
+        type = SKPDFDocumentType;
+    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeEncapsulatedPostScript, SKPasteboardTypePostScript, nil]]) {
+        [pboard types];
+        data = [pboard dataForType:SKPasteboardTypeEncapsulatedPostScript] ?: [pboard dataForType:SKPasteboardTypePostScript];
+        type = SKPostScriptDocumentType;
+    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil]]) {
+        [pboard types];
+        data = convertTIFFDataToPDF([pboard dataForType:NSPasteboardTypeTIFF]);
+        type = SKPDFDocumentType;
+    } else {
+        NSArray *images = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSImage class]] options:[NSDictionary dictionary]];
+        if ([images count] > 0) {
+            data = convertTIFFDataToPDF([[images objectAtIndex:0] TIFFRepresentation]);
+            type = SKPDFDocumentType;
         }
+    }
+    
+    if (data && type) {
         
-        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
         NSError *error = nil;
         
         document = [self makeUntitledDocumentOfType:type error:&error];
@@ -236,7 +249,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError {
-    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
+    NSArray *theURLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    NSURL *theURL = [theURLs count] > 0 ? [theURLs objectAtIndex:0] : nil;
     id document = nil;
     
     if ([theURL isFileURL]) {
@@ -400,8 +414,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
-        NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
-        return ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]] != nil);
+        return [[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[NSImage class], [SKURL class], nil] options:[NSDictionary dictionary]];
     } else if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd]) {
         return [super validateUserInterfaceItem:anItem];
     } else

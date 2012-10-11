@@ -640,44 +640,37 @@
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    NSMutableArray *types = [NSMutableArray array];
-    NSData *noteData = nil;
-    NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
-    NSMutableString *string = [NSMutableString string];
+    NSMutableArray *copiedItems = [NSMutableArray array];
+    NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
+    BOOL isAttributed = NO;
     id item;
     
     for (item in items) {
-        if ([item type] == nil || ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO)) {
-            PDFAnnotation *note = [item type] ? item : [item note];
-            noteData = [NSKeyedArchiver archivedDataWithRootObject:[note SkimNoteProperties]];
-            [types addObject:SKSkimNotePboardType];
-            break;
-        }
+        if ([item type] == nil)
+            item = [item note];
+        
+        if ([copiedItems containsObject:item] == NO && 
+            ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO))
+            [copiedItems addObject:item];
     }
     for (item in items) {
-        if ([string length])
-            [string appendString:@"\n\n"];
         if ([attrString length])
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-        [string appendString:[item string]];
-        if ([item type])
+        if ([item type]) {
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
-        else
+        } else {
             [attrString appendAttributedString:[(SKNoteText *)item text]];
+            isAttributed = YES;
+        }
     }
     
-    if ([string length])
-        [types addObject:NSStringPboardType];
-    if (noteData)
-        [pboard setData:noteData forType:SKSkimNotePboardType];
-    if ([attrString length])
-        [types addObject:NSRTFPboardType];
-    if ([types count])
-        [pboard declareTypes:types owner:nil];
-    if ([string length])
-        [pboard setString:string forType:NSStringPboardType];
-    if ([attrString length])
-        [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
+    [pboard clearContents];
+    if (isAttributed)
+        [pboard writeObjects:[NSArray arrayWithObjects:attrString, nil]];
+    else
+        [pboard writeObjects:[NSArray arrayWithObjects:[attrString string], nil]];
+    if ([copiedItems count] > 0)
+        [pboard writeObjects:copiedItems];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {

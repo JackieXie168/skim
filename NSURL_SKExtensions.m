@@ -39,7 +39,6 @@
 #import "NSURL_SKExtensions.h"
 #import "SKRuntime.h"
 
-NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 @implementation NSURL (SKExtensions)
 
@@ -57,32 +56,6 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 + (void)load {
     original_initFileURLWithPath = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacement_initFileURLWithPath:));
     original_initWithString = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacement_initWithString:));
-}
-
-+ (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {
-    NSString *pboardType = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:SKWeblocFilePboardType, NSURLPboardType, NSStringPboardType, nil]];
-    NSURL *theURL = nil;
-    if ([pboardType isEqualToString:NSURLPboardType]) {
-        theURL = [NSURL URLFromPasteboard:pasteboard];
-    } else if ([pboardType isEqualToString:SKWeblocFilePboardType]) {
-        theURL = [NSURL URLWithString:[pasteboard stringForType:SKWeblocFilePboardType]];
-    } else if ([pboardType isEqualToString:NSStringPboardType]) {
-        NSString *string = [[pasteboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([string rangeOfString:@"://"].length) {
-            if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
-                string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
-            theURL = [NSURL URLWithString:string];
-            if (theURL == nil)
-                theURL = [NSURL URLWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        }
-        if (theURL == nil) {
-            if ([string hasPrefix:@"~"])
-                string = [string stringByExpandingTildeInPath];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:string])
-                theURL = [NSURL fileURLWithPath:string];
-        }
-    }
-    return theURL;
 }
 
 - (NSString *)pathReplacingPathExtension:(NSString *)ext {
@@ -130,6 +103,49 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
         [attachment release];
     }
     return attrString;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKURL
+
++ (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
+    return [NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSPasteboardTypeString, nil];
+}
+
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type pasteboard:(NSPasteboard *)pasteboard {
+    if ([type isEqualToString:(NSString *)kUTTypeURL] || [type isEqualToString:(NSString *)kUTTypeFileURL] || [type isEqualToString:NSPasteboardTypeString])
+        return NSPasteboardReadingAsString;
+    return NSPasteboardReadingAsData;
+}
+
+
+- (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type {
+    [self release];
+    self = nil;
+    if ([propertyList isKindOfClass:[NSString class]]) {
+        NSString *string = propertyList;
+        if ([type isEqualToString:(NSString *)kUTTypeURL] || [type isEqualToString:(NSString *)kUTTypeFileURL]) {
+            self = [[NSURL alloc] initWithString:string];
+        } else if ([type isEqualToString:NSPasteboardTypeString]) {
+            if ([string rangeOfString:@"://"].length) {
+                if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
+                    string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
+                self = [[NSURL alloc] initWithString:string];
+                if (self == nil)
+                    self = [[NSURL alloc] initWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            }
+            if (self == nil) {
+                if ([string hasPrefix:@"~"])
+                    string = [string stringByExpandingTildeInPath];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:string])
+                    self = [[NSURL alloc] initFileURLWithPath:string];
+            }
+        }
+    }
+    return self;
 }
 
 @end

@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern NSString *SKLineStylePboardType;
+extern NSString *SKPasteboardTypeLineStyle;
 // these keys are used in the userInfo dictionary of this pboard type
 extern NSString *SKLineWellLineWidthKey;
 extern NSString *SKLineWellStyleKey;

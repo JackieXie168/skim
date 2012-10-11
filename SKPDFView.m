@@ -71,6 +71,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSArray_SKExtensions.h"
 
 #define SKEscapeCharacter 0x001b
 
@@ -94,8 +95,6 @@ NSString *SKPDFViewAnnotationKey = @"annotation";
 NSString *SKPDFViewPageKey = @"page";
 NSString *SKPDFViewOldPageKey = @"oldPage";
 NSString *SKPDFViewNewPageKey = @"newPage";
-
-NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 #define SKSmallMagnificationWidthKey @"SKSmallMagnificationWidth"
 #define SKSmallMagnificationHeightKey @"SKSmallMagnificationHeight"
@@ -187,7 +186,7 @@ enum {
 + (void)initialize {
     SKINITIALIZE;
     
-    NSArray *sendTypes = [NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil];
+    NSArray *sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:nil];
     
     NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
@@ -239,7 +238,7 @@ enum {
     trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
     [self addTrackingArea:trackingArea];
     
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:self];
@@ -715,38 +714,25 @@ enum {
 
 - (IBAction)copy:(id)sender
 {
-    if ([[self document] allowsCopying]) {
-        [super copy:sender];
-    } else {
-        NSString *string = [[self currentSelection] string];
-        if ([string length]) {
-            NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-            NSAttributedString *attrString = [[self currentSelection] attributedString];
-            
-            [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, NSRTFPboardType, nil] owner:nil];
-            [pboard setString:string forType:NSStringPboardType];
-            [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
-        }
-    }
+    NSAttributedString *attrString = [[self currentSelection] attributedString];
+    NSPasteboardItem *imageItem = nil;
+    PDFAnnotation *note = nil;
     
-    NSMutableArray *types = [NSMutableArray array];
-    NSData *noteData = nil;
-    NSData *pdfData = nil;
-    NSData *tiffData = nil;
-    
-    if ([self hideNotes] == NO && [activeAnnotation isSkimNote] && [activeAnnotation isMovable]) {
-        if ((noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation SkimNoteProperties]]))
-            [types addObject:SKSkimNotePboardType];
-    }
+    if ([self hideNotes] == NO && [activeAnnotation isSkimNote] && [activeAnnotation isMovable])
+        note = activeAnnotation;
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
         NSRect selRect = NSIntegralRect(selectionRect);
         PDFPage *page = [self currentSelectionPage];
+        NSData *pdfData = nil;
+        NSData *tiffData = nil;
+        
+        imageItem = [[[NSPasteboardItem alloc] init] autorelease];
         
         if ([[self document] allowsPrinting] && (pdfData = [page PDFDataForRect:selRect]))
-            [types addObject:NSPDFPboardType];
+            [imageItem setData:pdfData forType:NSPasteboardTypePDF];
         if ((tiffData = [page TIFFDataForRect:selRect]))
-            [types addObject:NSTIFFPboardType];
+            [imageItem setData:tiffData forType:NSPasteboardTypeTIFF];
         
         /*
          Possible hidden default?  Alternate way of getting a bitmap rep; this varies resolution with zoom level, which is very useful if you want to copy a single figure or equation for a non-PDF-capable program.  The first copy: action has some odd behavior, though (view moves).  Preview produces a fixed resolution bitmap for a given selection area regardless of zoom.
@@ -758,21 +744,22 @@ enum {
          */
     }
     
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    if ([attrString length] > 0  || imageItem || note) {
     
-    if ([types count]) {
-        if ([[self currentSelection] hasCharacters])
-            [pboard addTypes:types owner:nil];
-        else
-            [pboard declareTypes:types owner:nil];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        
+        [pboard clearContents];
+        
+        if ([attrString length] > 0)
+            [pboard writeObjects:[NSArray arrayWithObject:attrString]];
+        if (imageItem)
+            [pboard writeObjects:[NSArray arrayWithObject:imageItem]];
+        if (note)
+            [pboard writeObjects:[NSArray arrayWithObject:note]];
+        
+    } else {
+        [super copy:sender];
     }
-    
-    if (noteData)
-        [pboard setData:noteData forType:SKSkimNotePboardType];
-    if (pdfData)
-        [pboard setData:pdfData forType:NSPDFPboardType];
-    if (tiffData)
-        [pboard setData:tiffData forType:NSTIFFPboardType];
 }
 
 - (void)pasteNote:(BOOL)preferNote plainText:(BOOL)isPlainText {
@@ -781,88 +768,101 @@ enum {
         return;
     }
     
-    NSMutableArray *pboardTypes = [NSMutableArray arrayWithObjects:NSStringPboardType, nil];
-    if (isPlainText || preferNote)
-        [pboardTypes addObject:NSRTFPboardType];
-    if (isPlainText == NO)
-        [pboardTypes addObject:SKSkimNotePboardType];
-    
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:pboardTypes];
-    if (pboardType == nil) {
-        NSBeep();
-        return;
-    }
-    
-    PDFAnnotation *newAnnotation;
+    NSDictionary *options = [NSDictionary dictionary];
+    NSArray *newAnnotations = nil;
     PDFPage *page;
     
-    if ([pboardType isEqualToString:SKSkimNotePboardType]) {
+    if (isPlainText == NO)
+        newAnnotations = [pboard readObjectsForClasses:[NSArray arrayWithObject:[PDFAnnotation class]] options:options];
     
-        NSData *data = [pboard dataForType:SKSkimNotePboardType];
-        NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        NSRect bounds;
+    if ([newAnnotations count] > 0) {
         
-        newAnnotation = [[[PDFAnnotation alloc] initSkimNoteWithProperties:note] autorelease];
-        bounds = [newAnnotation bounds];
-        page = [self currentPage];
-        bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
+        for (PDFAnnotation *newAnnotation in newAnnotations) {
+            
+            NSRect bounds = [newAnnotation bounds];
+            page = [self currentPage];
+            bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
+            
+            [newAnnotation setBounds:bounds];
+            
+            [newAnnotation registerUserName];
+            [self addAnnotation:newAnnotation toPage:page];
+            
+            [self setActiveAnnotation:newAnnotation];
+
+        }
         
-        [newAnnotation setBounds:bounds];
+        [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         
     } else {
         
-        NSAssert([pboardType isEqualToString:NSStringPboardType] || (isPlainText && [pboardType isEqualToString:NSRTFPboardType]), @"inconsistent pasteboard type");
+        id str = nil;
         
-		// First try the current mouse position
-        NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        if (isPlainText || preferNote)
+            str = [[pboard readObjectsForClasses:[NSArray arrayWithObjects:[NSAttributedString class], [NSString class], nil] options:options] firstObject];
+        else
+            str = [[pboard readObjectsForClasses:[NSArray arrayWithObjects:[NSString class], nil] options:options] firstObject];
         
-        // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-        page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
         
-        if (page == nil) {
-            // Get center of the PDFView.
-            NSRect viewFrame = [self frame];
-            center = SKCenterPoint(viewFrame);
-            page = [self pageForPoint: center nearest: YES];
-        }
-		
-		// Convert to "page space".
-		center = SKIntegralPoint([self convertPoint: center toPage: page]);
-        
-        CGFloat defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
-        CGFloat defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        NSSize defaultSize = preferNote ? SKNPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
-        NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
-        
-        bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
-        
-        if (preferNote) {
-            newAnnotation = [[[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds] autorelease];
-            NSMutableAttributedString *attrString = nil;
-            if ([pboardType isEqualToString:NSStringPboardType])
-                attrString = [[[NSMutableAttributedString alloc] initWithString:[pboard stringForType:NSStringPboardType]] autorelease];
-            else if ([pboardType isEqualToString:NSRTFPboardType])
-                attrString = [[[NSMutableAttributedString alloc] initWithRTF:[pboard dataForType:NSRTFPboardType] documentAttributes:NULL] autorelease];
-            if (isPlainText || [pboardType isEqualToString:NSStringPboardType]) {
-                NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-                CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-                NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : [NSFont userFontOfSize:fontSize];
-                [attrString setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil] range:NSMakeRange(0, [attrString length])];
+        if (str) {
+            
+            // First try the current mouse position
+            NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+            
+            // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
+            page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
+            
+            if (page == nil) {
+                // Get center of the PDFView.
+                NSRect viewFrame = [self frame];
+                center = SKCenterPoint(viewFrame);
+                page = [self pageForPoint: center nearest: YES];
             }
-            [(SKNPDFAnnotationNote *)newAnnotation setText:attrString];
-        } else {
-            newAnnotation = [[[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds] autorelease];
-            [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
-        }
-        
-    }
-    
-    [newAnnotation registerUserName];
-    [self addAnnotation:newAnnotation toPage:page];
-    [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            
+            // Convert to "page space".
+            center = SKIntegralPoint([self convertPoint: center toPage: page]);
+            
+            CGFloat defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+            CGFloat defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+            NSSize defaultSize = preferNote ? SKNPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
+            NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
+            
+            bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
+            
+            PDFAnnotation *newAnnotation = nil;
+            
+            if (preferNote) {
+                newAnnotation = [[[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds] autorelease];
+                NSMutableAttributedString *attrString = nil;
+                if ([str isKindOfClass:[NSString class]])
+                    attrString = [[[NSMutableAttributedString alloc] initWithString:str] autorelease];
+                else if ([str isKindOfClass:[NSAttributedString class]])
+                    attrString = [[[NSMutableAttributedString alloc] initWithAttributedString:str] autorelease];
+                if (isPlainText || [str isKindOfClass:[NSString class]]) {
+                    NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+                    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+                    NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : [NSFont userFontOfSize:fontSize];
+                    [attrString setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil] range:NSMakeRange(0, [attrString length])];
+                }
+                [(SKNPDFAnnotationNote *)newAnnotation setText:attrString];
+            } else {
+                newAnnotation = [[[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds] autorelease];
+                [newAnnotation setString:([str isKindOfClass:[NSAttributedString class]] ? [str string] : str)];
+            }
+            
+            [newAnnotation registerUserName];
+            [self addAnnotation:newAnnotation toPage:page];
+            [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
-    [self setActiveAnnotation:newAnnotation];
+            [self setActiveAnnotation:newAnnotation];
+            
+        } else {
+            
+            NSBeep();
+            
+        }
+    }
 }
 
 - (IBAction)paste:(id)sender {
@@ -1416,7 +1416,7 @@ enum {
             [item setTarget:self];
         }
         
-        if ([[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]]) {
+        if ([[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[PDFAnnotation class], [NSString class], nil] options:[NSDictionary dictionary]]) {
             SEL selector = ([theEvent modifierFlags] & NSAlternateKeyMask) ? @selector(alternatePaste:) : @selector(paste:);
             item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@"" atIndex:0];
         }
@@ -1602,8 +1602,7 @@ enum {
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSDragOperation dragOp = NSDragOperationNone;
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
-    if (pboardType) {
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
         return [self draggingUpdated:sender];
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingEntered:sender];
@@ -1614,8 +1613,7 @@ enum {
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
     NSDragOperation dragOp = NSDragOperationNone;
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
-    if (pboardType) {
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
         NSPoint location = [self convertPoint:[sender draggingLocation] fromView:nil];
         PDFPage *page = [self pageForPoint:location nearest:NO];
         if (page) {
@@ -1627,7 +1625,7 @@ enum {
                 annotation = [annotations objectAtIndex:i];
                 NSString *type = [annotation type];
                 if ([annotation isSkimNote] && [annotation hitTest:location] && 
-                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
+                    ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation)
                             [self setNeedsDisplayForAnnotation:highlightAnnotation];
@@ -1651,8 +1649,7 @@ enum {
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
-    if (pboardType) {
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
         if (highlightAnnotation) {
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
@@ -1665,11 +1662,10 @@ enum {
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
     BOOL performedDrag = NO;
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
-    if (pboardType) {
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
-            if ([pboardType isEqualToString:NSColorPboardType]) {
+            if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]]) {
                 if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
                     [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
                 else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
@@ -1678,7 +1674,8 @@ enum {
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
             } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
-                NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
+                [pboard types];
+                NSDictionary *dict = [pboard propertyListForType:SKPasteboardTypeLineStyle];
                 NSNumber *number;
                 if ((number = [dict objectForKey:SKLineWellLineWidthKey]))
                     [highlightAnnotation setLineWidth:[number doubleValue]];
@@ -1706,27 +1703,27 @@ enum {
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && 
-        (([[self document] allowsPrinting] && [types containsObject:NSPDFPboardType]) || [types containsObject:NSTIFFPboardType])) {
+        (([[self document] allowsPrinting] && [types containsObject:NSPasteboardTypePDF]) || [types containsObject:NSPasteboardTypeTIFF])) {
         NSMutableArray *writeTypes = [NSMutableArray array];
         NSData *pdfData = nil;
         NSData *tiffData = nil;
         NSRect selRect = NSIntegralRect(selectionRect);
         
-        if ([types containsObject:NSPDFPboardType]  &&
+        if ([types containsObject:NSPasteboardTypePDF]  &&
             [[self document] allowsPrinting] &&
             (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
-            [writeTypes addObject:NSPDFPboardType];
+            [writeTypes addObject:NSPasteboardTypePDF];
         
-        if ([types containsObject:NSTIFFPboardType] &&
+        if ([types containsObject:NSPasteboardTypeTIFF] &&
             (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
-            [writeTypes addObject:NSTIFFPboardType];
+            [writeTypes addObject:NSPasteboardTypeTIFF];
         
         if ([writeTypes count] > 0) {
             [pboard declareTypes:writeTypes owner:nil];
             if (pdfData)
-                [pboard setData:pdfData forType:NSPDFPboardType];
+                [pboard setData:pdfData forType:NSPasteboardTypePDF];
             if (tiffData)
-                [pboard setData:tiffData forType:NSTIFFPboardType];
+                [pboard setData:tiffData forType:NSPasteboardTypeTIFF];
             
             return YES;
         } else {
@@ -1741,7 +1738,7 @@ enum {
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && 
-        (([[self document] allowsPrinting] && [sendType isEqualToString:NSPDFPboardType]) || [sendType isEqualToString:NSTIFFPboardType])) {
+        (([[self document] allowsPrinting] && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
@@ -2404,11 +2401,11 @@ enum {
             return YES;
         return NO;
     } else if (action == @selector(paste:)) {
-        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
+        return [[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[PDFAnnotation class], [NSString class], nil] options:[NSDictionary dictionary]];
     } else if (action == @selector(alternatePaste:)) {
-        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSRTFPboardType, NSStringPboardType, nil]];
+        return [[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[PDFAnnotation class], [NSAttributedString class], [NSString class], nil] options:[NSDictionary dictionary]];
     } else if (action == @selector(pasteAsPlainText:)) {
-        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSRTFPboardType, NSStringPboardType, nil]];
+        return [[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[NSAttributedString class], [NSString class], nil] options:[NSDictionary dictionary]];
     } else if (action == @selector(delete:)) {
         return [activeAnnotation isSkimNote];
     } else if (action == @selector(selectAll:)) {

@@ -300,29 +300,28 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *filename = [self draggedFileNameForPage:page];
+            NSString *fileExt = nil;
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             if ([[pdfView document] allowsPrinting]) {
                 NSData *pdfData = [page dataRepresentation];
-                filename = [filename stringByAppendingPathExtension:@"pdf"];
-                [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
-                [pboard setData:pdfData forType:NSPDFPboardType];
+                fileExt = @"pdf";
+                [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
+                [pboard setData:pdfData forType:NSPasteboardTypePDF];
             } else {
-                filename = [filename stringByAppendingPathExtension:@"tiff"];
-                [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
+                fileExt = @"tiff";
+                [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
             }
-            [pboard setData:tiffData forType:NSTIFFPboardType];
-            [pboard setPropertyList:[NSArray arrayWithObject:filename] forType:NSFilesPromisePboardType];
+            [pboard setData:tiffData forType:NSPasteboardTypeTIFF];
+            [pboard setPropertyList:[NSArray arrayWithObject:fileExt] forType:NSFilesPromisePboardType];
             return YES;
         }
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
-            PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
-            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSTIFFPboardType];
-            [pboard setPropertyList:[NSArray arrayWithObject:[self draggedFileNameForPage:page]] forType:NSFilesPromisePboardType];
+            [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
+            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [pboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
             return YES;
         }
     }
@@ -465,14 +464,12 @@
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-            if ([[pdfView document] allowsPrinting]) {
-                NSData *pdfData = [page dataRepresentation];
-                [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
-                [pboard setData:pdfData forType:NSPDFPboardType];
-            } else {
-                [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, nil] owner:nil];
-            }
-            [pboard setData:tiffData forType:NSTIFFPboardType];
+            NSPasteboardItem *pboardItem = [[[NSPasteboardItem alloc] init] autorelease];
+            if ([[pdfView document] allowsPrinting])
+                [pboardItem setData:[page dataRepresentation] forType:NSPasteboardTypePDF];
+            [pboardItem setData:tiffData forType:NSPasteboardTypeTIFF];
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:pboardItem, nil]];
         }
     } else if ([tv isEqual:leftSideController.findTableView]) {
         NSMutableString *string = [NSMutableString string];
@@ -485,8 +482,8 @@
             idx = [rowIndexes indexGreaterThanIndex:idx];
         }
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
-        [pboard setString:string forType:NSStringPboardType];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
         NSMutableString *string = [NSMutableString string];
         NSUInteger idx = [rowIndexes firstIndex];
@@ -501,8 +498,8 @@
             idx = [rowIndexes indexGreaterThanIndex:idx];
         }
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
-        [pboard setString:string forType:NSStringPboardType];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     }
 }
 
@@ -655,7 +652,7 @@
     NSDragOperation dragOp = NSDragOperationNone;
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
-        if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]] &&
+        if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSColor class]] options:[NSDictionary dictionary]] &&
             anIndex == NSOutlineViewDropOnItemIndex && [item type] != nil)
             dragOp = NSDragOperationEvery;
     }
@@ -665,7 +662,7 @@
 - (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
-        if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, nil]]) {
+        if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSColor class]] options:[NSDictionary dictionary]]) {
             if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setInteriorColor:)])
                 [item setInteriorColor:[NSColor colorFromPasteboard:pboard]];
             else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setFontColor:)])
@@ -828,43 +825,33 @@
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     if ([ov isEqual:rightSideController.noteOutlineView] && [items count]) {
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        NSMutableArray *types = [NSMutableArray array];
-        NSData *noteData = nil;
-        NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
-        NSMutableString *string = [NSMutableString string];
+        NSMutableArray *copiedItems = [NSMutableArray array];
+        NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
+        BOOL isAttributed = NO;
         id item;
         
         for (item in [self noteItems:items]) {
-            if ([item isMovable]) {
-                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item SkimNoteProperties]];
-                break;
-            }
+            if ([item isMovable])
+                [copiedItems addObject:item];
         }
         for (item in items) {
-            if ([string length])
-                [string appendString:@"\n\n"];
             if ([attrString length])
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-            [string appendString:[item string]];
-            if ([item type])
+            if ([item type]) {
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
-            else
+            } else {
                 [attrString appendAttributedString:[(SKNoteText *)item text]];
+                isAttributed = YES;
+            }
         }
-        if (noteData)
-            [types addObject:SKSkimNotePboardType];
-        if ([string length])
-            [types addObject:NSStringPboardType];
-        if ([attrString length])
-            [types addObject:NSRTFPboardType];
-        if ([types count])
-            [pboard declareTypes:types owner:nil];
-        if (noteData)
-            [pboard setData:noteData forType:SKSkimNotePboardType];
-        if ([string length])
-            [pboard setString:string forType:NSStringPboardType];
-        if ([attrString length])
-            [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
+        
+        [pboard clearContents];
+        if (isAttributed)
+            [pboard writeObjects:[NSArray arrayWithObjects:attrString, nil]];
+        else
+            [pboard writeObjects:[NSArray arrayWithObjects:[attrString string], nil]];
+        if ([copiedItems count] > 0)
+            [pboard writeObjects:copiedItems];
     }
 }
 

@@ -107,7 +107,7 @@ static char SKFontWellFontSizeObservationContext;
     [super setAction:@selector(changeActive:)];
     [super setTarget:self];
     bindingInfo = [[NSMutableDictionary alloc] init];
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, NSColorPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, NSPasteboardTypeColor, nil]];
 }
 
 - (id)initWithFrame:(NSRect)frame {
@@ -363,7 +363,7 @@ static char SKFontWellFontSizeObservationContext;
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
         [[self cell] setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -373,7 +373,7 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
         [[self cell] setHighlighted:NO];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -381,12 +381,12 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
-    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]];
+    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]];
 } 
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSColorPboardType : nil), nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]];
     NSFont *droppedFont = nil;
     NSColor *droppedColor = nil;
     
@@ -408,7 +408,7 @@ static char SKFontWellFontSizeObservationContext;
             NSString *family = ([families isKindOfClass:[NSArray class]] && [families count]) ? [families objectAtIndex:0] : nil;
             if ([family isKindOfClass:[NSString class]])
                 droppedFont = [[NSFontManager sharedFontManager] convertFont:[self font] toFamily:family];
-        } else if ([type isEqualToString:NSColorPboardType]) {
+        } else if ([type isEqualToString:NSPasteboardTypeColor]) {
             droppedColor = [NSColor colorFromPasteboard:pboard];
         }
     }

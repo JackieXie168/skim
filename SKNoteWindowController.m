@@ -332,9 +332,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
-        [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSTIFFPboardType, nil] owner:nil];
-        [pasteboard setPropertyList:[NSArray arrayWithObjects:[name stringByAppendingPathExtension:@"tiff"], nil] forType:NSFilesPromisePboardType];
-        [pasteboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+        [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSPasteboardTypeTIFF, nil] owner:nil];
+        [pasteboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
+        [pasteboard setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
         return YES;
     } else return NO;
 }

@@ -66,6 +66,8 @@ NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
 NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
 NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
+NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimnote";
+
 
 @implementation PDFAnnotation (SKExtensions)
 
@@ -80,6 +82,35 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [currentActiveAnnotation release];
         currentActiveAnnotation = [annotation retain];
     }
+}
+
++ (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
+    return [NSArray arrayWithObjects:SKPasteboardTypeSkimNote, nil];
+}
+
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type pasteboard:(NSPasteboard *)pasteboard {
+    return NSPasteboardReadingAsData;
+}
+
+- (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type {
+    if ([type isEqualToString:SKPasteboardTypeSkimNote] &&
+        [propertyList isKindOfClass:[NSData class]]) {
+        self = [self initSkimNoteWithProperties:[NSKeyedUnarchiver unarchiveObjectWithData:propertyList]];
+    } else {
+        [[self initWithBounds:NSZeroRect] release];
+        self = nil;
+    }
+    return self;
+}
+
+- (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pasteboard {
+    return [NSArray arrayWithObjects:SKPasteboardTypeSkimNote, nil];
+}
+
+- (id)pasteboardPropertyListForType:(NSString *)type {
+    if ([type isEqualToString:SKPasteboardTypeSkimNote])
+        return [NSKeyedArchiver archivedDataWithRootObject:[self SkimNoteProperties]];
+    return nil;
 }
 
 - (NSString *)fdfString {

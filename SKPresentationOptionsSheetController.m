@@ -62,8 +62,6 @@
 #define PROPERTIES_KEY @"properties"
 #define CONTENTOBJECT_BINDINGNAME @"contentObject"
 
-static NSString *SKTransitionPboardType = @"SKTransitionPboardType";
-
 static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
@@ -172,7 +170,7 @@ static char *SKTransitionPropertiesObservationContext;
     // collapse the table
     [[self window] setFrame:NSInsetRect([[self window] frame], 0.5 * NSWidth([[tableView enclosingScrollView] frame]) + 4.0, 0.0) display:NO];
     
-    [tableView registerForDraggedTypes:[NSArray arrayWithObject:SKTransitionPboardType]];
+    [tableView registerForDraggedTypes:[SKTransitionInfo readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
     [tableView setBackgroundColor:[[NSColor controlAlternatingRowBackgroundColors] lastObject]];
     
@@ -384,9 +382,8 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
     if ([rowIndexes count] == 1) {
-        SKTransitionInfo *info = [transitions objectAtIndex:[rowIndexes firstIndex]];
-        [pboard declareTypes:[NSArray arrayWithObject:SKTransitionPboardType] owner:nil];
-        [pboard setPropertyList:[info properties] forType:SKTransitionPboardType];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:[transitions objectAtIndex:[rowIndexes firstIndex]], nil]];
         return YES;
     } else {
         return NO;
@@ -394,7 +391,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
-    if (nil != [[info draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]) {
+    if ([[info draggingPasteboard] canReadObjectForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]]) {
         if (operation == NSTableViewDropAbove)
             [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
         return NSDragOperationEvery;
@@ -404,12 +401,16 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (BOOL)tableView:(NSTableView *)tv acceptDrop:(id < NSDraggingInfo >)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
     NSPasteboard *pboard = [info draggingPasteboard];
-    if (operation == NSTableViewDropOn && [pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]) {
-        if (row == -1)
-            [transitions setValue:[pboard propertyListForType:SKTransitionPboardType] forKey:PROPERTIES_KEY];
-        else
-            [[transitions objectAtIndex:row] setProperties:[pboard propertyListForType:SKTransitionPboardType]];
-        return YES;
+    if (operation == NSTableViewDropOn) {
+        NSArray *infos = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]];
+        if ([infos count] > 0) {
+            NSDictionary *properties = [[infos objectAtIndex:0] properties];
+            if (row == -1)
+                [transitions setValue:properties forKey:PROPERTIES_KEY];
+            else
+                [(SKTransitionInfo *)[transitions objectAtIndex:row] setProperties:properties];
+            return YES;
+        }
     }
     return NO;
 }
@@ -428,8 +429,8 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    [pboard declareTypes:[NSArray arrayWithObject:SKTransitionPboardType] owner:nil];
-    [pboard setPropertyList:[[transitions objectAtIndex:[rowIndexes firstIndex]] properties] forType:SKTransitionPboardType];
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:[transitions objectAtIndex:[rowIndexes firstIndex]], nil]];
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
@@ -437,12 +438,13 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
-    if ([pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]])
-        [[transitions objectAtIndex:[tableView selectedRow]] setProperties:[pboard propertyListForType:SKTransitionPboardType]];
+    NSArray *infos = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]];
+    if ([infos count] > 0)
+        [[transitions objectsAtIndexes:[tableView selectedRowIndexes]] setValue:[[infos objectAtIndex:0] properties] forKey:PROPERTIES_KEY];
 }
 
 - (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
-    return ([tableView selectedRow] != -1 && [pboard availableTypeFromArray:[NSArray arrayWithObject:SKTransitionPboardType]]);
+    return ([tableView selectedRow] != -1 && [pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]]);
 }
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

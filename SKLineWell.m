@@ -40,7 +40,7 @@
 #import "SKLineInspector.h"
 #import "NSGraphics_SKExtensions.h"
 
-NSString *SKLineStylePboardType = @"SKLineStylePboardType";
+NSString *SKPasteboardTypeLineStyle = @"net.sourceforge.skim-app.pasteboard.line-style";
 
 NSString *SKLineWellLineWidthKey = @"lineWidth";
 NSString *SKLineWellStyleKey = @"style";
@@ -83,7 +83,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     lwFlags.highlighted = 0;
     lwFlags.existsActiveLineWell = 0;
     
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]];
 }
 
 - (id)initWithFrame:(NSRect)frame {
@@ -341,15 +341,16 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                     [self setHighlighted:NO];
                     [self setNeedsDisplay:YES];
                     
-                    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-                    [pboard declareTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil] owner:nil];
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                         [NSNumber numberWithDouble:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInteger:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
                     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
                         [dict setObject:[NSNumber numberWithInteger:startLineStyle] forKey:SKLineWellStartLineStyleKey];
                         [dict setObject:[NSNumber numberWithInteger:endLineStyle] forKey:SKLineWellEndLineStyleKey];
                     }
-                    [pboard setPropertyList:dict forType:SKLineStylePboardType];
+                    
+                    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+                    [pboard clearContents];
+                    [pboard setPropertyList:dict forType:SKPasteboardTypeLineStyle];
                     
                     NSRect bounds = [self bounds];
                     NSPoint imageLoc = NSMakePoint(NSMinX(bounds) + 1.0, NSMinY(bounds) + 1.0);
@@ -577,7 +578,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKLineStylePboardType, nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -587,7 +588,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
-    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKLineStylePboardType, nil]]) {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:NO];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -595,12 +596,15 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
-    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
+    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]];
 } 
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
+    
+    [pboard types];
+    
+    NSDictionary *dict = [pboard propertyListForType:SKPasteboardTypeLineStyle];
     
     if ([dict objectForKey:SKLineWellLineWidthKey])
         [self takeValueForKey:SKLineWellLineWidthKey from:dict];

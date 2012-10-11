@@ -39,6 +39,7 @@
 #import "SKTransitionInfo.h"
 #import "SKThumbnail.h"
 
+NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.transition";
 
 @implementation SKTransitionInfo
 
@@ -61,6 +62,39 @@
     SKDESTROY(thumbnail);
     SKDESTROY(label);
     [super dealloc];
+}
+
++ (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
+    return [NSArray arrayWithObjects:SKPasteboardTypeTransition, nil];
+}
+
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type pasteboard:(NSPasteboard *)pasteboard {
+    if ([type isEqualToString:SKPasteboardTypeTransition])
+        return NSPasteboardReadingAsPropertyList;
+    return NSPasteboardReadingAsData;
+}
+
+- (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pasteboard {
+    return [NSArray arrayWithObjects:SKPasteboardTypeTransition, nil];
+}
+
+- (id)pasteboardPropertyListForType:(NSString *)type {
+    if ([type isEqualToString:SKPasteboardTypeTransition])
+        return [self properties];
+    return nil;
+}
+
+- (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type {
+    self = [self init];
+    if (self) {
+        if ([type isEqualToString:SKPasteboardTypeTransition]) {
+            [self setProperties:propertyList];
+        } else {
+            [self release];
+            self = nil;
+        }
+    }
+    return self;
 }
 
 - (NSString *)description {
