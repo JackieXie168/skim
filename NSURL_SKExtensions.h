@@ -38,15 +38,21 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKWeblocFilePboardType;
 
 @interface NSURL (SKExtensions)
-
-+ (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard;
 
 - (NSString *)pathReplacingPathExtension:(NSString *)ext;
 
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 
+@end
+
+#pragma mark -
+
+// Dummy subclass for reading from pasteboard
+// Reads public.url before public.file-url, unlike NSURL, so it gets the target URL for webloc/fileloc files rather than its file location
+// Also tries to interpret a plain string as a URL
+// Don't use for anything else
+@interface SKURL : NSURL <NSPasteboardReading>
 @end

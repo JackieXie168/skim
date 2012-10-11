@@ -1046,8 +1046,9 @@ static NSArray *allMainDocumentPDFViews() {
                 [findController findForward:forward];
             } else {
                 NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-                if ([findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]])
-                    findString = [findPboard stringForType:NSStringPboardType];
+                NSArray *strings = [findPboard readObjectsForClasses:[NSArray arrayWithObject:[NSString class]] options:[NSDictionary dictionary]];
+                if ([strings count] > 0)
+                    findString = [strings objectAtIndex:0];
                 if ([findString length] > 0)
                     [self findString:findString forward:forward];
                 else
@@ -1063,8 +1064,8 @@ static NSArray *allMainDocumentPDFViews() {
                 [findController updateFindPboard];
             } else {
                 NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-                [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-                [findPboard setString:findString forType:NSStringPboardType];
+                [findPboard clearContents];
+                [findPboard writeObjects:[NSArray arrayWithObjects:findString, nil]];
             }
             break;
         default:

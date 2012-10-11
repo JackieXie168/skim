@@ -421,9 +421,9 @@
 			</dict>
 			<key>NSSendTypes</key>
 			<array>
-				<string>NSURLPboardType</string>
-				<string>NSStringPboardType</string>
-				<string>CorePasteboardFlavorType 0x75726C20</string>
+				<string>public.url</string>
+				<string>public.file-url</string>
+				<string>public.plain-text</string>
 			</array>
 		</dict>
 		<dict>
@@ -443,9 +443,8 @@
 			</dict>
 			<key>NSSendTypes</key>
 			<array>
-				<string>NSURLPboardType</string>
-				<string>NSStringPboardType</string>
-				<string>CorePasteboardFlavorType 0x75726C20</string>
+				<string>public.url</string>
+				<string>public.plain-text</string>
 			</array>
 		</dict>
 		<dict>
@@ -460,9 +459,10 @@
 			<string>Skim</string>
 			<key>NSSendTypes</key>
 			<array>
-				<string>NSPDFPboardType</string>
-				<string>NSPostScriptPboardType</string>
-				<string>NSTIFFPboardType</string>
+				<string>com.adobe.pdf</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>public.tiff</string>
 			</array>
 		</dict>
 		<dict>
@@ -482,9 +482,9 @@
 			</dict>
 			<key>NSSendTypes</key>
 			<array>
-				<string>NSURLPboardType</string>
-				<string>NSStringPboardType</string>
-				<string>CorePasteboardFlavorType 0x75726C20</string>
+				<string>public.url</string>
+				<string>public.file-url</string>
+				<string>public.plain-text</string>
 			</array>
 		</dict>
 	</array>

@@ -47,8 +47,9 @@
 #import "SKStringConstants.h"
 #import "SKSeparatorCell.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
-#define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
+#define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
 #define SKBookmarksToolbarIdentifier                 @"SKBookmarksToolbarIdentifier"
 #define SKBookmarksNewFolderToolbarItemIdentifier    @"SKBookmarksNewFolderToolbarItemIdentifier"
@@ -196,7 +197,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
+    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, (NSString *)kUTTypeFileURL, nil]];
     
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
 }
@@ -616,8 +617,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (BOOL)outlineView:(NSOutlineView *)ov writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
     [self setDraggedBookmarks:minimumCoverForBookmarks(items)];
-    [pboard declareTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil] owner:nil];
-    [pboard setData:[NSData data] forType:SKBookmarkRowsPboardType];
+    [pboard clearContents];
+    [pboard setData:[NSData data] forType:SKPasteboardTypeBookmarkRows];
     return YES;
 }
 
@@ -625,20 +626,20 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSDragOperation dragOp = NSDragOperationNone;
     if (anIndex != NSOutlineViewDropOnItemIndex) {
         NSPasteboard *pboard = [info draggingPasteboard];
-        NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
-        if ([type isEqualToString:NSFilenamesPboardType])
-            dragOp = NSDragOperationEvery;
-        else if ([type isEqualToString:SKBookmarkRowsPboardType] && [item isDescendantOfArray:[self draggedBookmarks]] == NO)
+        if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
+            [info draggingSource] == self)
             dragOp = NSDragOperationMove;
+        else if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]])
+            dragOp = NSDragOperationEvery;
     }
     return dragOp;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, NSFilenamesPboardType, nil]];
     
-    if ([type isEqualToString:SKBookmarkRowsPboardType]) {
+    if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
+        [info draggingSource] == self) {
         NSMutableArray *movedBookmarks = [NSMutableArray array];
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         
@@ -667,9 +668,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
         
         return YES;
-    } else if ([type isEqualToString:NSFilenamesPboardType]) {
-        NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
-        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:paths relativeToPath:nil];
+    } else {
+        NSArray *urls = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
         if ([newBookmarks count] > 0) {
             [self endEditing];
             if (item == nil) item = bookmarkRoot;
@@ -756,9 +757,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
-    if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
-        NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
-        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:paths relativeToPath:nil];
+    NSArray *urls = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+    if ([urls count] > 0) {
+        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
         if ([newBookmarks count] > 0) {
             SKBookmark *item = nil;
             NSUInteger anIndex = 0;
@@ -775,7 +776,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canPasteFromPasteboard:(NSPasteboard *)pboard {
-    return nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

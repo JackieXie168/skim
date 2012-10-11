@@ -39,9 +39,11 @@
 #import <Cocoa/Cocoa.h>
 #import "SKTransitionController.h"
 
+extern NSString *SKPasteboardTypeTransition;
+
 @class SKThumbnail;
 
-@interface SKTransitionInfo : NSObject {
+@interface SKTransitionInfo : NSObject <NSPasteboardReading, NSPasteboardWriting> {
     SKAnimationTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;

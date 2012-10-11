@@ -478,7 +478,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
     
-    [rightSideController.noteOutlineView registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+    [rightSideController.noteOutlineView registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
@@ -1698,8 +1698,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [self displayGroupedFindViewAnimating:YES];
         
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
+        [findPboard clearContents];
+        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
     }
 }
 
@@ -1805,8 +1805,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self updateNoteFilterPredicate];
     if ([[sender stringValue] length]) {
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
+        [findPboard clearContents];
+        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
     }
 }
 

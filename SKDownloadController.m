@@ -112,7 +112,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
+    [tableView registerForDraggedTypes:[SKURL readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
@@ -131,6 +131,21 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL {
     return [self addDownloadForURL:aURL showWindow:[[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey]];
+}
+
+- (BOOL)pasteFromPasteboard:(NSPasteboard *)pboard {
+    BOOL success = NO;
+    NSArray *theURLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    for (NSURL *theURL in theURLs) {
+        if ([theURL isFileURL]) {
+            if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
+                success = YES;
+        } else {
+            [self addDownloadForURL:theURL showWindow:NO];
+            success = YES;
+        }
+    }
+    return success;
 }
 
 - (void)openDownload:(SKDownload *)download {
@@ -360,9 +375,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
-    
-    if (type) {
+    if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]]) {
         [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
         return NSDragOperationEvery;
     }
@@ -370,17 +383,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
        
 - (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)op {
-    NSPasteboard *pboard = [info draggingPasteboard];
-    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
-    
-    if ([theURL isFileURL]) {
-        if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
-            return YES;
-    } else if (theURL) {
-        [self addDownloadForURL:theURL showWindow:NO];
-        return YES;
-    }
-    return NO;
+    return [self pasteFromPasteboard:[info draggingPasteboard]];
 }
 
 #pragma mark NSTableViewDelegate
@@ -445,16 +448,12 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
-    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
-    
-    if ([theURL isFileURL])
-        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL];
-    else if (theURL)
-        [self addDownloadForURL:theURL showWindow:NO];
+    if (NO == [self pasteFromPasteboard:pboard])
+        NSBeep();
 }
 
 - (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
-    return (nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
+    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
 }
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

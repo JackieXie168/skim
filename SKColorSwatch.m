@@ -80,7 +80,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     clickedIndex = -1;
     draggedIndex = -1;
     
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+    [self registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
 }
 
 - (id)initWithFrame:(NSRect)frame {
@@ -208,8 +208,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     
                     NSColor *color = [colors objectAtIndex:i];
                     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-                    [pboard declareTypes:[NSArray arrayWithObjects:NSColorPboardType, nil] owner:nil];
-                    [color writeToPasteboard:pboard];
+                    [pboard clearContents];
+                    [pboard writeObjects:[NSArray arrayWithObjects:color, nil]];
                     
                     NSRect rect = NSMakeRect(0.0, 0.0, 12.0, 12.0);
                     NSImage *image = [[NSImage alloc] initWithSize:rect.size];

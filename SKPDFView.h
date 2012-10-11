@@ -59,8 +59,6 @@ extern NSString *SKPDFViewPageKey;
 extern NSString *SKPDFViewOldPageKey;
 extern NSString *SKPDFViewNewPageKey;
 
-extern NSString *SKSkimNotePboardType;
-
 enum _SKToolMode {
     SKTextToolMode,
     SKMoveToolMode,
