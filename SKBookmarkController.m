@@ -627,7 +627,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if (anIndex != NSOutlineViewDropOnItemIndex) {
         NSPasteboard *pboard = [info draggingPasteboard];
         if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
-            [info draggingSource] == self)
+            [info draggingSource] == ov)
             dragOp = NSDragOperationMove;
         else if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]])
             dragOp = NSDragOperationEvery;
@@ -639,7 +639,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSPasteboard *pboard = [info draggingPasteboard];
     
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
-        [info draggingSource] == self) {
+        [info draggingSource] == ov) {
         NSMutableArray *movedBookmarks = [NSMutableArray array];
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         
