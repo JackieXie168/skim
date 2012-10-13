@@ -67,7 +67,9 @@
             BOOL isDir;
             if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
                 for (NSString *file in [fm subpathsAtPath:templatesPath]) {
-                    if ([file hasPrefix:@"."] == NO && [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO)
+                    if ([file hasPrefix:@"."] == NO &&
+                        [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO &&
+                        [templates containsObject:file] == NO)
                         [templates addObject:file];
                 }
             }
