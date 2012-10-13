@@ -112,7 +112,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [tableView registerForDraggedTypes:[SKURL readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
+    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, nil]];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
@@ -135,7 +135,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (BOOL)pasteFromPasteboard:(NSPasteboard *)pboard {
     BOOL success = NO;
-    NSArray *theURLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    NSArray *theURLs = [NSURL readURLsFromPasteboard:pboard];
     for (NSURL *theURL in theURLs) {
         if ([theURL isFileURL]) {
             if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
@@ -375,7 +375,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
-    if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]]) {
+    if ([NSURL canReadURLFromPasteboard:pboard]) {
         [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
         return NSDragOperationEvery;
     }
@@ -453,7 +453,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tv canPasteFromPasteboard:(NSPasteboard *)pboard {
-    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    return [NSURL canReadURLFromPasteboard:pboard];
 }
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

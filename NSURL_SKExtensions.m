@@ -39,6 +39,14 @@
 #import "NSURL_SKExtensions.h"
 #import "SKRuntime.h"
 
+// Dummy subclass for reading from pasteboard
+// Reads public.url before public.file-url, unlike NSURL, so it gets the target URL for webloc/fileloc files rather than its file location
+// Also tries to interpret a plain string as a URL
+// Don't use for anything else
+@interface SKURL : NSURL
+@end
+
+#pragma mark -
 
 @implementation NSURL (SKExtensions)
 
@@ -56,6 +64,49 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 + (void)load {
     original_initFileURLWithPath = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacement_initFileURLWithPath:));
     original_initWithString = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacement_initWithString:));
+}
+
++ (BOOL)canReadURLFromPasteboard:(NSPasteboard *)pboard {
+    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]] ||
+           nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
+}
+
++ (NSArray *)readURLsFromPasteboard:(NSPasteboard *)pboard {
+    NSArray *URLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    if ([URLs count] == 0) {
+        NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
+        if ([type isEqualToString:NSURLPboardType]) {
+            URLs = [NSArray arrayWithObjects:[NSURL URLFromPasteboard:self], nil];
+        } else if ([type isEqualToString:NSFilenamesPboardType]) {
+            NSArray *filenames = [pboard propertyListForType:NSFilenamesPboardType];
+            if ([filenames count]  > 0) {
+                NSMutableArray *files = [NSMutableArray array];
+                for (NSString *filename in filenames)
+                    [files addObject:[NSURL fileURLWithPath:[filename stringByExpandingTildeInPath]]];
+                URLs = files;
+            }
+        }
+    }
+    return URLs;
+}
+
++ (BOOL)canReadFileURLFromPasteboard:(NSPasteboard *)pboard {
+    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]] ||
+           nil != [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+}
+
++ (NSArray *)readFileURLsFromPasteboard:(NSPasteboard *)pboard {
+    NSArray *fileURLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+    if ([fileURLs count] == 0 && [[pboard types] containsObject:NSFilenamesPboardType]) {
+        NSArray *filenames = [pboard propertyListForType:NSFilenamesPboardType];
+        if ([filenames count]  > 0) {
+            NSMutableArray *files = [NSMutableArray array];
+            for (NSString *filename in filenames)
+                [files addObject:[NSURL fileURLWithPath:[filename stringByExpandingTildeInPath]]];
+            fileURLs = files;
+        }
+    }
+    return fileURLs;
 }
 
 - (NSString *)pathReplacingPathExtension:(NSString *)ext {
@@ -120,7 +171,6 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
         return NSPasteboardReadingAsString;
     return NSPasteboardReadingAsData;
 }
-
 
 - (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type {
     [self release];

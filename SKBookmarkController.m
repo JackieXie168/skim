@@ -197,7 +197,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, (NSString *)kUTTypeFileURL, nil]];
+    [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, (NSString *)kUTTypeFileURL, NSFilenamesPboardType, nil]];
     
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
 }
@@ -629,7 +629,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
             [info draggingSource] == ov)
             dragOp = NSDragOperationMove;
-        else if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]])
+        else if ([NSURL canReadFileURLFromPasteboard:pboard])
             dragOp = NSDragOperationEvery;
     }
     return dragOp;
@@ -669,7 +669,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         
         return YES;
     } else {
-        NSArray *urls = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+        NSArray *urls = [NSURL readFileURLsFromPasteboard:pboard];
         NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
         if ([newBookmarks count] > 0) {
             [self endEditing];
@@ -757,7 +757,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
-    NSArray *urls = [pboard readObjectsForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+    NSArray *urls = [NSURL readFileURLsFromPasteboard:pboard];
     if ([urls count] > 0) {
         NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
         if ([newBookmarks count] > 0) {
@@ -776,7 +776,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canPasteFromPasteboard:(NSPasteboard *)pboard {
-    return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSURL class]] options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil]];
+    return [NSURL canReadFileURLFromPasteboard:pboard];
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
