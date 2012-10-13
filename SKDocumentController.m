@@ -249,7 +249,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError {
-    NSArray *theURLs = [pboard readObjectsForClasses:[NSArray arrayWithObject:[SKURL class]] options:[NSDictionary dictionary]];
+    NSArray *theURLs = [NSURL readURLsFromPasteboard:pboard];
     NSURL *theURL = [theURLs count] > 0 ? [theURLs objectAtIndex:0] : nil;
     id document = nil;
     
@@ -414,7 +414,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
-        return [[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[NSImage class], [SKURL class], nil] options:[NSDictionary dictionary]];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        return [pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSImage class]] options:[NSDictionary dictionary]] ||
+               [NSURL canReadURLFromPasteboard:pboard];
     } else if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd]) {
         return [super validateUserInterfaceItem:anItem];
     } else
