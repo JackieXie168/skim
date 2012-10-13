@@ -112,11 +112,11 @@
     return nil;
 }
 
-- (BOOL)isRichTextTemplateType:(NSString *)isRichTextTemplateFile {
+- (BOOL)isRichTextTemplateType:(NSString *)typeName {
     static NSSet *types = nil;
     if (types == nil)
         types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"webarchive", @"rtfd", nil];
-    return [types containsObject:[[isRichTextTemplateFile pathExtension] lowercaseString]];
+    return [types containsObject:[[typeName pathExtension] lowercaseString]];
 }
 
 - (BOOL)isRichTextBundleTemplateType:(NSString *)typeName {
