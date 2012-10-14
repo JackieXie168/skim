@@ -112,7 +112,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
-    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, nil]];
+    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, NSPasteboardTypeString, nil]];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
