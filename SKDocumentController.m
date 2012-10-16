@@ -77,7 +77,6 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 NSString *SKDocumentControllerDocumentKey = @"document";
 
-#define SKPasteboardTypePostScript @"com.adobe.postscript"
 #define SKPasteboardTypeEncapsulatedPostScript @"com.adobe.encapsulated-postscript"
 
 @interface NSDocumentController (SKDeprecated)
@@ -209,9 +208,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         [pboard types];
         data = [pboard dataForType:NSPasteboardTypePDF];
         type = SKPDFDocumentType;
-    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeEncapsulatedPostScript, SKPasteboardTypePostScript, nil]]) {
+    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeEncapsulatedPostScript, nil]]) {
         [pboard types];
-        data = [pboard dataForType:SKPasteboardTypeEncapsulatedPostScript] ?: [pboard dataForType:SKPasteboardTypePostScript];
+        data = [pboard dataForType:SKPasteboardTypeEncapsulatedPostScript];
         type = SKPostScriptDocumentType;
     } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil]]) {
         [pboard types];

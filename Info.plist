@@ -460,7 +460,6 @@
 			<key>NSSendTypes</key>
 			<array>
 				<string>com.adobe.pdf</string>
-				<string>com.adobe.postscript</string>
 				<string>com.adobe.encapsulated-postscript</string>
 				<string>public.tiff</string>
 			</array>
