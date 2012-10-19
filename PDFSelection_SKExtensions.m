@@ -202,24 +202,27 @@
 }
 
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
-    NSUInteger length = [string length];
-    NSRange range = NSMakeRange(0, 0);
-    NSUInteger i, iMax = [substrings count];
-    
-    if (anIndex >= iMax)
+    if (anIndex >= [substrings count])
         return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i <= anIndex; i++) {
-        NSString *substring = [substrings objectAtIndex:i]; 
+    
+    NSUInteger length = [string length];
+    __block NSRange range = NSMakeRange(0, 0);
+    
+    [substrings enumerateObjectsUsingBlock:^(id substring, NSUInteger i, BOOL *stop) {
         NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
         if ([substring length] == 0) {
-            if (i == anIndex)
-                return NSMakeRange(NSNotFound, 0);
-            continue;
+            if (i == anIndex) {
+                range = NSMakeRange(NSNotFound, 0);
+                *stop = YES;
+            }
+            return;
         }
         range = [string rangeOfString:substring options:NSLiteralSearch range:searchRange];
-        if (range.location == NSNotFound)
-            return NSMakeRange(NSNotFound, 0);
-    }
+        if (range.location == NSNotFound) {
+            range = NSMakeRange(NSNotFound, 0);
+            *stop = YES;
+        }
+    }];
     return range;
 }
 

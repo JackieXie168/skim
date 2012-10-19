@@ -2401,13 +2401,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)resetThumbnails {
-    NSUInteger i, count = [pageLabels count];
     // cancel all delayed perform requests for makeImageForThumbnail:
     for (SKThumbnail *tn in thumbnails)
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
-    if (count) {
+    if ([pageLabels count] > 0) {
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
         PDFPage *emptyPage = [[[SKPDFPage alloc] init] autorelease];
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
@@ -2424,13 +2423,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
         
-        for (i = 0; i < count; i++) {
-            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
+        [pageLabels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:label pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
             [thumbnail release];
-        }
+        }];
     }
     [self didChangeValueForKey:THUMBNAILS_KEY];
     [self allThumbnailsNeedUpdate];
@@ -2470,33 +2469,29 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)updateNoteSelection {
 
     NSArray *orderedNotes = [rightSideController.noteArrayController arrangedObjects];
-    PDFAnnotation *annotation, *selAnnotation = nil;
+    __block PDFAnnotation *selAnnotation = nil;
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-	NSInteger i, count = [orderedNotes count];
     NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
     
     for (selAnnotation in [self selectedNotes])
         [selPageIndexes addIndex:[selAnnotation pageIndex]];
     
-    if (count == 0 || [selPageIndexes containsIndex:pageIndex])
+    if ([orderedNotes count] == 0 || [selPageIndexes containsIndex:pageIndex])
 		return;
 	
 	// Walk outline view looking for best firstpage number match.
-	for (i = 0; i < count; i++) {
-		// Get the destination of the given row....
-        annotation = [orderedNotes objectAtIndex:i];
-		
+    [orderedNotes enumerateObjectsUsingBlock:^(id annotation, NSUInteger i, BOOL *stop) {
 		if ([annotation pageIndex] == pageIndex) {
             selAnnotation = annotation;
-			break;
+			*stop = YES;
 		} else if ([annotation pageIndex] > pageIndex) {
 			if (i == 0)
 				selAnnotation = [orderedNotes objectAtIndex:0];
 			else if ([selPageIndexes containsIndex:[[orderedNotes objectAtIndex:i - 1] pageIndex]])
                 selAnnotation = [orderedNotes objectAtIndex:i - 1];
-			break;
+			*stop = YES;
 		}
-	}
+    }];
     if (selAnnotation) {
         mwcFlags.updatingNoteSelection = 1;
         [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
