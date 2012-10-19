@@ -82,30 +82,25 @@
     [self updateDownloadsFolderPopUp];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSFileHandlingPanelOKButton) {
-        [[NSUserDefaults standardUserDefaults] setObject:[[[openPanel URL] path] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey];
-        [self updateDownloadsFolderPopUp];
-    }
-}
-
 - (IBAction)chooseDownloadsFolder:(id)sender {
     if ([sender selectedItem] == [sender lastItem]) {
         [sender selectItemAtIndex:0];
         
         NSString *downloadsFolder = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
+        NSURL *downloadsFolderURL = [NSURL fileURLWithPath:downloadsFolder];
         
         NSOpenPanel *openPanel = [NSOpenPanel openPanel];
         [openPanel setCanChooseDirectories:YES];
         [openPanel setCanChooseFiles:NO];
         [openPanel setPrompt:NSLocalizedString(@"Select", @"Button title")];
-        [openPanel beginSheetForDirectory:[downloadsFolder stringByDeletingLastPathComponent]
-                                     file:[downloadsFolder lastPathComponent]
-                                    types:nil
-                           modalForWindow:[self window]
-                            modalDelegate:self
-                           didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
-                              contextInfo:NULL];		
+        [openPanel setDirectoryURL:[downloadsFolderURL URLByDeletingLastPathComponent]];
+        [openPanel setNameFieldStringValue:[downloadsFolderURL lastPathComponent]];
+        [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result){
+                if (result == NSFileHandlingPanelOKButton) {
+                    [[NSUserDefaults standardUserDefaults] setObject:[[[openPanel URL] path] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey];
+                    [self updateDownloadsFolderPopUp];
+                }
+            }];
     }
 }
 

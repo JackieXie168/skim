@@ -126,16 +126,15 @@ static NSUInteger maxRecentDocumentsCount = 0;
             NSMutableArray *bookmarks = [NSMutableArray array];
             NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
             if (data) {
-                NSString *error = nil;
+                NSError *error = nil;
                 NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
-                id plist = [NSPropertyListSerialization propertyListFromData:data
-                                                            mutabilityOption:NSPropertyListMutableContainers
+                id plist = [NSPropertyListSerialization propertyListWithData:data
+                                                                     options:NSPropertyListMutableContainers
                                                                       format:&format 
-                                                            errorDescription:&error];
+                                                                       error:&error];
                 
                 if (error) {
                     NSLog(@"Error deserializing: %@", error);
-                    [error release];
                 } else if ([plist isKindOfClass:[NSDictionary class]]) {
                     [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
                     for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
@@ -541,13 +540,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
     [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
     NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[bookmarkRoot children] valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENTDOCUMENTS_KEY, nil];
-    NSString *error = nil;
+    NSError *error = nil;
     NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:bookmarksDictionary format:format options:0 error:&error];
     
 	if (error) {
 		NSLog(@"Error serializing: %@", error);
-        [error release];
 	} else {
         [data writeToFile:[self bookmarksFilePath] atomically:YES];
     }
