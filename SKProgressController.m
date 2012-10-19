@@ -107,10 +107,10 @@
     [[self progressBar] displayIfNeeded];
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
+- (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
     [[self progressBar] startAnimation:self];
     [(SKApplication *)NSApp setUserAttentionDisabled:YES];
-    [super beginSheetModalForWindow:window modalDelegate:delegate didEndSelector:didEndSelector contextInfo:contextInfo];
+    [super beginSheetModalForWindow:window completionHandler:handler];
     [(SKApplication *)NSApp setUserAttentionDisabled:NO];
 }
 

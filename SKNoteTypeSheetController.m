@@ -161,15 +161,6 @@
     [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }
 
-- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        NSUInteger i;
-        for (i = 0; i < NOTETYPES_COUNT; i++)
-            [[noteTypeMenu itemAtIndex:i] setState:[(NSCell *)[matrix cellWithTag:i] state]];
-        [delegate noteTypeSheetControllerNoteTypesDidChange:self];
-    }
-}
-
 - (void)selectNoteTypes:(id)sender {
     [self window];
     
@@ -177,10 +168,14 @@
     for (i = 0; i < NOTETYPES_COUNT; i++)
         [[matrix cellWithTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
 	
-    [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self]
-        modalDelegate:self 
-       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
+    [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton) {
+                NSUInteger i;
+                for (i = 0; i < NOTETYPES_COUNT; i++)
+                    [[noteTypeMenu itemAtIndex:i] setState:[(NSCell *)[matrix cellWithTag:i] state]];
+                [delegate noteTypeSheetControllerNoteTypesDidChange:self];
+            }
+        }];
 }
 
 @end

@@ -89,47 +89,43 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSession };
 
-- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn) {
-        NSString *label = [controller stringValue];
-        SKBookmark *folder = [controller selectedFolder] ?: [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
-        SKBookmark *bookmark = nil;
-        switch ((NSInteger)contextInfo) {
-            case SKAddBookmarkTypeBookmark:
-            {
-                NSString *path = [[self fileURL] path];
-                PDFPage *page = [self currentPage];
-                NSUInteger pageIndex = page ? [page pageIndex] : NSNotFound;
-                bookmark = [SKBookmark bookmarkWithPath:path pageIndex:pageIndex label:label];
-                break;
-            }
-            case SKAddBookmarkTypeSetup:
-            {
-                NSDictionary *setup = [self currentDocumentSetup];
-                bookmark = [SKBookmark bookmarkWithSetup:setup label:label];
-                break;
-            }
-            case SKAddBookmarkTypeSession:
-            {
-                NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
-                bookmark = [SKBookmark bookmarkSessionWithSetups:setups label:label];
-                break;
-            }
-            default:
-                break;
-        }
-        if (bookmark)
-            [[folder mutableArrayValueForKey:@"children"] addObject:bookmark];
-    }
-}
-
 - (IBAction)addBookmark:(id)sender {
+    NSInteger addBookmarkType = [sender tag];
     SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
 	[bookmarkSheetController setStringValue:[self displayName]];
-    [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet] 
-                                        modalDelegate:self  
-                                       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:) 
-                                          contextInfo:(void *)[sender tag]];
+    [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
+            if (result == NSAlertDefaultReturn) {
+                NSString *label = [bookmarkSheetController stringValue];
+                SKBookmark *folder = [bookmarkSheetController selectedFolder] ?: [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
+                SKBookmark *bookmark = nil;
+                switch (addBookmarkType) {
+                    case SKAddBookmarkTypeBookmark:
+                    {
+                        NSString *path = [[self fileURL] path];
+                        PDFPage *page = [self currentPage];
+                        NSUInteger pageIndex = page ? [page pageIndex] : NSNotFound;
+                        bookmark = [SKBookmark bookmarkWithPath:path pageIndex:pageIndex label:label];
+                        break;
+                    }
+                    case SKAddBookmarkTypeSetup:
+                    {
+                        NSDictionary *setup = [self currentDocumentSetup];
+                        bookmark = [SKBookmark bookmarkWithSetup:setup label:label];
+                        break;
+                    }
+                    case SKAddBookmarkTypeSession:
+                    {
+                        NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+                        bookmark = [SKBookmark bookmarkSessionWithSetups:setups label:label];
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                if (bookmark)
+                    [[folder mutableArrayValueForKey:@"children"] addObject:bookmark];
+            }
+        }];
 }
 
 #pragma mark PDF Document

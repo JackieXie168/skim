@@ -333,10 +333,10 @@ static NSArray *allMainDocumentPDFViews() {
     [(NSComboBox *)[pageSheetController textField] addItemsWithObjectValues:pageLabels];
     [pageSheetController setStringValue:[self pageLabel]];
     
-    [pageSheetController beginSheetModalForWindow: [self window]
-        modalDelegate: self
-       didEndSelector: @selector(pageSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: nil];
+    [pageSheetController beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton)
+                [self setPageLabel:[pageSheetController stringValue]];
+        }];
 }
 
 - (IBAction)doGoBack:(id)sender {
@@ -802,20 +802,15 @@ static NSArray *allMainDocumentPDFViews() {
         [[self pdfView] goToRect:[page boundsForBox:box] onPage:page];
 }
 
-- (void)passwordSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        [[controller window] orderOut:nil];
-        [[pdfView document] unlockWithPassword:[controller stringValue]];
-    }
-}
-
 - (IBAction)password:(id)sender {
     SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
     
-    [passwordSheetController beginSheetModalForWindow: [self window]
-        modalDelegate:self 
-       didEndSelector:@selector(passwordSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
+    [passwordSheetController beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton) {
+                [[passwordSheetController window] orderOut:nil];
+                [[pdfView document] unlockWithPassword:[passwordSheetController stringValue]];
+            }
+        }];
 }
 
 - (IBAction)toggleReadingBar:(id)sender {
@@ -829,18 +824,12 @@ static NSArray *allMainDocumentPDFViews() {
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
-- (void)presentationSheetDidEnd:(SKPresentationOptionsSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    [presentationSheetController release];
-    presentationSheetController = nil;
-}
-
 - (IBAction)chooseTransition:(id)sender {
     presentationSheetController = [[SKPresentationOptionsSheetController alloc] initForController:self];
     
-    [presentationSheetController beginSheetModalForWindow: [self window]
-        modalDelegate: self
-       didEndSelector: @selector(presentationSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: NULL];
+    [presentationSheetController beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+            SKDESTROY(presentationSheetController);
+        }];
 }
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
