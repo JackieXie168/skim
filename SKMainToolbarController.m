@@ -883,20 +883,15 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 	}
 }
 
-- (void)scaleSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton)
-        [mainController.pdfView setScaleFactor:[[controller textField] integerValue]];
-}
-
 - (IBAction)chooseScale:(id)sender {
     SKTextFieldSheetController *scaleSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"ScaleSheet"] autorelease];
     
     [[scaleSheetController textField] setIntegerValue:[mainController.pdfView scaleFactor]];
     
-    [scaleSheetController beginSheetModalForWindow: [mainController window]
-        modalDelegate: self
-       didEndSelector: @selector(scaleSheetDidEnd:returnCode:contextInfo:)
-          contextInfo: nil];
+    [scaleSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton)
+                [mainController.pdfView setScaleFactor:[[scaleSheetController textField] integerValue]];
+        }];
 }
 
 - (IBAction)zoomActualPhysical:(id)sender {

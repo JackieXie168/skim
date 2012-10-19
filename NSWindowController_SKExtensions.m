@@ -68,24 +68,18 @@
 - (BOOL)isNoteWindowController { return NO; }
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
-    if (invocation) {
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation invoke];
+	if (contextInfo != NULL) {
+        void (^handler)(NSInteger) = (void(^)(NSInteger))contextInfo;
+        handler(returnCode);
+        Block_release(handler);
     }
 }
 
 - (void)beginSheetModalForWindow:(NSWindow *)window {
-    [self beginSheetModalForWindow:window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    [self beginSheetModalForWindow:window completionHandler:NULL];
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
-    NSInvocation *invocation = nil;
-    if (delegate != nil && didEndSelector != NULL) {
-        invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector];
-		[invocation setArgument:&self atIndex:2];
-		[invocation setArgument:&contextInfo atIndex:4];
-	}
+- (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
     
 	[self retain]; // make sure we stay around long enough
 	
@@ -93,7 +87,7 @@
 	   modalForWindow:window
 		modalDelegate:self
 	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
-		  contextInfo:[invocation retain]];
+		  contextInfo:handler ? Block_copy(handler) : NULL];
 }
 
 - (IBAction)dismissSheet:(id)sender {

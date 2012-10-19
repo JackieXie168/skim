@@ -1055,22 +1055,21 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self progressController] dismissSheet:nil];
 }
 
-- (void)convertNotesPasswordSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
+- (void)beginConvertNotesPasswordSheetForPDFDocument:(PDFDocument *)pdfDoc {
+    SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
     
-    if (returnCode == NSCancelButton) {
-        [pdfDocWithoutNotes release];
-    } else {
-        [[controller window] orderOut:nil];
-        
-        if (pdfDocWithoutNotes && [pdfDocWithoutNotes allowsPrinting] == NO && 
-            ([pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO || [pdfDocWithoutNotes allowsPrinting] == NO)) {
-            SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
-            [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] modalDelegate:self didEndSelector:_cmd contextInfo:pdfDocWithoutNotes];
-        } else {
-            [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
-        }
-    }
+    [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton) {
+                [[passwordSheetController window] orderOut:nil];
+                
+                if (pdfDoc && [pdfDoc allowsPrinting] == NO && 
+                    ([pdfDoc unlockWithPassword:[passwordSheetController stringValue]] == NO || [pdfDoc allowsPrinting] == NO)) {
+                    [self beginConvertNotesPasswordSheetForPDFDocument:pdfDoc];
+                } else {
+                    [self convertNotesUsingPDFDocument:[pdfDoc autorelease]];
+                }
+            }
+        }];
 }
 
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
@@ -1083,20 +1082,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[alert window] orderOut:nil];
     
     if ([[self pdfDocument] allowsPrinting] == NO) {
-        pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
+        pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO || [pdfDocWithoutNotes allowsPrinting] == NO) {
-            
-            SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
-            
-            [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
-                modalDelegate:self 
-               didEndSelector:@selector(convertNotesPasswordSheetDidEnd:returnCode:contextInfo:)
-                  contextInfo:pdfDocWithoutNotes];
-            
+            [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
             return;
         }
     }
-    [self convertNotesUsingPDFDocument:[pdfDocWithoutNotes autorelease]];
+    [self convertNotesUsingPDFDocument:pdfDocWithoutNotes];
 }
 
 - (BOOL)hasConvertibleAnnotations {
