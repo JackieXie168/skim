@@ -259,7 +259,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (IBAction)showDownloadPreferences:(id)sender {
     SKDownloadPreferenceController *prefController = [[[SKDownloadPreferenceController alloc] init] autorelease];
-    [prefController beginSheetModalForWindow:[self window]];
+    [prefController beginSheetModalForWindow:[self window] completionHandler:NULL];
 }
 
 - (IBAction)clearDownloads:(id)sender {

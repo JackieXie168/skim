@@ -896,7 +896,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [[[self windowForSheet] attachedSheet] orderOut:self];
         
         [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+        [[self progressController] beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
     }
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
@@ -997,7 +997,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
     [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+    [[self progressController] beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];

@@ -75,10 +75,6 @@
     }
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window {
-    [self beginSheetModalForWindow:window completionHandler:NULL];
-}
-
 - (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
     
 	[self retain]; // make sure we stay around long enough
