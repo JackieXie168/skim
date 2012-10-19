@@ -580,7 +580,7 @@ static inline NSRange addSpecifierWithCharacterRangeAndPageOrAppendRange(NSMutab
 - (id)objectSpecifier {
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
-        NSRange range = NSMakeRange(0, 0);
+        __block NSRange range = NSMakeRange(0, 0);
         if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
             for (i = 0; i < iMax; i++)
@@ -588,11 +588,9 @@ static inline NSRange addSpecifierWithCharacterRangeAndPageOrAppendRange(NSMutab
         } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
             NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
             if (indexes) {
-                NSUInteger idx = [indexes firstIndex];
-                while (idx != NSNotFound) {
+                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
                     range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, NSMakeRange(idx, 1), range, page);
-                    idx = [indexes indexGreaterThanIndex:idx];
-                }
+                }];
             }
         } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             NSInteger i, iMax = [self numberOfRangesOnPage:page];

@@ -473,21 +473,18 @@
         }
     } else if ([tv isEqual:leftSideController.findTableView]) {
         NSMutableString *string = [NSMutableString string];
-        NSUInteger idx = [rowIndexes firstIndex];
-        while (idx != NSNotFound) {
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
             PDFSelection *match = [searchResults objectAtIndex:idx];
             [string appendString:@"* "];
             [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
             [string appendFormat:@": %@\n", [[match contextString] string]];
-            idx = [rowIndexes indexGreaterThanIndex:idx];
-        }
+        }];
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         [pboard clearContents];
         [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
         NSMutableString *string = [NSMutableString string];
-        NSUInteger idx = [rowIndexes firstIndex];
-        while (idx != NSNotFound) {
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
             SKGroupedSearchResult *result = [groupedSearchResults objectAtIndex:idx];
             NSArray *matches = [result matches];
             [string appendString:@"* "];
@@ -495,8 +492,7 @@
             [string appendString:@": "];
             [string appendFormat:NSLocalizedString(@"%ld Results", @""), (long)[matches count]];
             [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
-            idx = [rowIndexes indexGreaterThanIndex:idx];
-        }
+        }];
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         [pboard clearContents];
         [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
@@ -1080,11 +1076,9 @@
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
-            NSUInteger rowIdx = [rowIndexes firstIndex];
-            while (rowIdx != NSNotFound) {
+            [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger rowIdx, BOOL *stop) {
                 [items addObject:[rightSideController.noteOutlineView itemAtRow:rowIdx]];
-                rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
-            }
+            }];
             
             if ([self outlineView:rightSideController.noteOutlineView canDeleteItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) target:self];

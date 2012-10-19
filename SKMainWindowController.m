@@ -1141,16 +1141,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (NSArray *)selectedNotes {
     NSMutableArray *selectedNotes = [NSMutableArray array];
     NSIndexSet *rowIndexes = [rightSideController.noteOutlineView selectedRowIndexes];
-    NSUInteger row = [rowIndexes firstIndex];
-    id item = nil;
-    while (row != NSNotFound) {
-        item = [rightSideController.noteOutlineView itemAtRow:row];
+    [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop) {
+        id item = [rightSideController.noteOutlineView itemAtRow:row];
         if ([item type] == nil)
             item = [(SKNoteText *)item note];
         if ([selectedNotes containsObject:item] == NO)
             [selectedNotes addObject:item];
-        row = [rowIndexes indexGreaterThanIndex:row];
-    }
+    }];
     return selectedNotes;
 }
 

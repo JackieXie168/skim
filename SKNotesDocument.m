@@ -728,11 +728,9 @@
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
-            NSUInteger rowIdx = [rowIndexes firstIndex];
-            while (rowIdx != NSNotFound) {
+            [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger rowIdx, BOOL *stop) {
                 [items addObject:[outlineView itemAtRow:rowIdx]];
-                rowIdx = [rowIndexes indexGreaterThanIndex:rowIdx];
-            }
+            }];
             
             if ([self outlineView:outlineView canCopyItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];

@@ -231,20 +231,17 @@
         NSRect visibleRect = [self visibleRect];
         NSRange rowRange = [self rowsInRect:visibleRect];
         NSIndexSet *columnIndexes = [self columnIndexesInRect:visibleRect];
-        NSUInteger row, column;
-        NSTableColumn *tableColumn;
+        NSUInteger row;
         
         for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
             if ([[self delegate] tableView:self hasImageContextForTableColumn:nil row:row]) {
                 [self addTrackingAreaForColumn:-1 row:row];
             } else {
-                column = [columnIndexes firstIndex];
-                while (column != NSNotFound) {
-                    tableColumn = [[self tableColumns] objectAtIndex:column];
+                [columnIndexes enumerateIndexesUsingBlock:^(NSUInteger column, BOOL *stop) {
+                    NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
                     if ([[self delegate] tableView:self hasImageContextForTableColumn:tableColumn row:row])
                         [self addTrackingAreaForColumn:column row:row];
-                    column = [columnIndexes indexGreaterThanIndex:column];
-                }
+                }];
             }
         }
     }
