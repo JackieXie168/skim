@@ -151,26 +151,24 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)reloadPagePopUpButton {
     NSArray *labels = [[self document] pageLabels];
-    NSUInteger i, count = [pagePopUpButton numberOfItems];
-    NSString *label;
-    CGFloat width, maxWidth = 0.0;
+    NSUInteger count = [pagePopUpButton numberOfItems];
     NSSize size = NSMakeSize(1000.0, 1000.0);
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
-    NSUInteger maxIndex = 0;
+    __block CGFloat maxWidth = 0.0;
+    __block NSUInteger maxIndex = 0;
     
     while (count--)
         [pagePopUpButton removeItemAtIndex:count];
     
-    if ((count = [labels count])) {
-        for (i = 0; i < count; i++) {
-            label = [labels objectAtIndex:i];
-            width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
+    if ([labels count] > 0) {
+        [labels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
+            CGFloat width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
             if (width > maxWidth) {
                 maxWidth = width;
                 maxIndex = i;
             }
             [pagePopUpButton addItemWithTitle:label];
-        }
+        }];
         
         sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
