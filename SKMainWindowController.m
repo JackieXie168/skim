@@ -1954,7 +1954,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
 	
 	// Bring up the save panel as a sheet.
-	[[self progressController] beginSheetModalForWindow:[self window]];
+	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {

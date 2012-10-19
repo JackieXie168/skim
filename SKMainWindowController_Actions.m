@@ -572,7 +572,7 @@ static NSArray *allMainDocumentPDFViews() {
         
         [[self progressController] setMaxValue:(double)MIN(18, count)];
         [[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] beginSheetModalForWindow:[self window]];
+        [[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
         
         if (count == 1) {
             rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
@@ -616,7 +616,7 @@ static NSArray *allMainDocumentPDFViews() {
     
 	[[self progressController] setMaxValue:(double)iMax];
 	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-	[[self progressController] beginSheetModalForWindow:[self window]];
+	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
     
     for (i = 0; i < iMax; i++) {
         NSRect rect = [[pdfDoc pageAtIndex:i] foregroundBox];
@@ -638,7 +638,7 @@ static NSArray *allMainDocumentPDFViews() {
     
 	[[self progressController] setMaxValue:1.1 * iMax];
 	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-	[[self progressController] beginSheetModalForWindow:[self window]];
+	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];

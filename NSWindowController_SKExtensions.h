@@ -45,7 +45,6 @@
 
 - (BOOL)isNoteWindowController;
 
-- (void)beginSheetModalForWindow:(NSWindow *)window;
 - (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler;
 
 - (IBAction)dismissSheet:(id)sender;
