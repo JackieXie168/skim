@@ -198,7 +198,7 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
         NSString *path = [fileURL path];
         unsigned long long componentSize;
         unsigned long long logicalComponentSize;
-        for (NSString *file in [[NSFileManager defaultManager] subpathsAtPath:path]) {
+        for (NSString *file in [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:NULL]) {
             SKFileSizeStringForFileURL([NSURL fileURLWithPath:[path stringByAppendingPathComponent:file]], &componentSize, &logicalComponentSize);
             size += componentSize;
             logicalSize += logicalComponentSize;
