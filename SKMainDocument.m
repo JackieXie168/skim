@@ -579,7 +579,7 @@ enum {
     [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
     if ((data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding]))
         [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
-    if ((data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL]))
+    if ((data = [NSPropertyListSerialization dataWithPropertyList:info format:NSPropertyListXMLFormat_v1_0 options:0 error:NULL]))
         [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
     if ([[self notes] count] > 0) {
         if ((data = [self notesData]))
@@ -763,7 +763,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
         if (pdfFile) {
             NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
-            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
+            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSDataReadingUncached error:&error]) &&
                 (pdfDoc = [[SKPDFDocument alloc] initWithURL:pdfURL])) {
                 NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
                 if (array == nil) {
@@ -783,7 +783,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
     } else  {
-        if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error])) {
+        if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
             if ([docType isEqualToString:SKPDFDocumentType]) {
                 data = [fileData retain];
                 pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
@@ -857,11 +857,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             if ([docType isEqualToString:SKPDFBundleDocumentType]) {
                 NSData *infoData = [NSData dataWithContentsOfFile:[[[absoluteURL path] stringByAppendingPathComponent:BUNDLE_DATA_FILENAME] stringByAppendingPathExtension:@"plist"]];
                 if (infoData) {
-                    NSString *errorString = nil;
-                    NSDictionary *info = [NSPropertyListSerialization propertyListFromData:infoData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:&errorString];
-                    if (info == nil) {
-                        [errorString release];
-                    } else if ([info isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *info = [NSPropertyListSerialization propertyListWithData:infoData options:NSPropertyListImmutable format:NULL error:NULL];
+                    if ([info isKindOfClass:[NSDictionary class]]) {
                         dictionary = [info objectForKey:SKPresentationOptionsKey];
                         array = [info objectForKey:SKTagsKey];
                         number = [info objectForKey:SKRatingKey];
@@ -949,7 +946,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 #pragma mark Actions
 
-- (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
+- (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {log_method();return;
     NSString *extension = [[notesURL path] pathExtension];
     NSArray *array = nil;
     
@@ -968,17 +965,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSBeep();
 }
 
-- (void)readNotesPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSFileHandlingPanelOKButton) {
-        NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
-        BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
-        [self readNotesFromURL:notesURL replace:replace];
-    }
-}
-
 - (IBAction)readNotes:(id)sender{
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-    NSString *path = [[self fileURL] path];
+    NSURL *fileURL = [self fileURL];
     
     if ([[[self mainWindowController] notes] count]) {
         if (readNotesAccessoryView == nil) {
@@ -994,13 +983,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [replaceNotesCheckButton setState:NSOnState];
     }
     
-    [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
-                              file:[path lastPathComponentReplacingPathExtension:@"skim"]
-                             types:[NSArray arrayWithObjects:@"skim", nil]
-                    modalForWindow:[self windowForSheet]
-                     modalDelegate:self
-                    didEndSelector:@selector(readNotesPanelDidEnd:returnCode:contextInfo:)
-                       contextInfo:NULL];		
+    [oPanel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
+    [oPanel setNameFieldStringValue:[fileURL lastPathComponent]];
+    [oPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"skim", nil]];
+    [oPanel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
+            if (result == NSFileHandlingPanelOKButton) {
+                NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
+                BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
+                [self readNotesFromURL:notesURL replace:replace];
+            }
+        }];
 }
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
@@ -1139,23 +1131,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
 }
 
-- (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
-    if (NSFileHandlingPanelOKButton == returnCode && [self fileURL])
-        [self saveArchiveToFile:[sheet filename]];
-}
-
 - (IBAction)saveArchive:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"tgz"];
         [sp setCanCreateDirectories:YES];
-        [sp beginSheetForDirectory:nil
-                              file:[path lastPathComponentReplacingPathExtension:@"tgz"]
-                    modalForWindow:[self windowForSheet]
-                     modalDelegate:self
-                    didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
-                       contextInfo:NULL];
+        [sp setNameFieldStringValue:[path lastPathComponentReplacingPathExtension:@"tgz"]];
+        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
+                if (NSFileHandlingPanelOKButton == result && [self fileURL])
+                    [self saveArchiveToFile:[[sp URL] path]];
+            }];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
@@ -1273,23 +1259,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
 }
 
-- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
-    if (NSFileHandlingPanelOKButton == returnCode && [self fileURL])
-        [self saveDiskImageToFile:[sheet filename] email:NO];
-}
-
 - (IBAction)saveDiskImage:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"dmg"];
         [sp setCanCreateDirectories:YES];
-        [sp beginSheetForDirectory:nil
-                              file:[path lastPathComponentReplacingPathExtension:@"dmg"]
-                    modalForWindow:[self windowForSheet]
-                     modalDelegate:self
-                    didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:)
-                       contextInfo:NULL];
+        [sp setNameFieldStringValue:[path lastPathComponentReplacingPathExtension:@"dmg"]];
+        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
+                if (NSFileHandlingPanelOKButton == result && [self fileURL])
+                    [self saveDiskImageToFile:[[sp URL] path] email:NO];
+            }];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];

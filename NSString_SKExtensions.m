@@ -480,7 +480,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 }
 
 - (NSString *)xmlString {
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:self format:NSPropertyListXMLFormat_v1_0 options:0 error:NULL];
     NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     NSInteger loc = NSMaxRange([string rangeOfString:@"<string>"]);
     if (loc == NSNotFound)
