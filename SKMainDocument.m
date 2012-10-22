@@ -335,10 +335,17 @@ enum {
     return [super fileNameExtensionForType:typeName saveOperation:saveOperation] ?: [[SKTemplateManager sharedManager] fileNameExtensionForTemplateType:typeName];
 }
 
+- (BOOL)canAttachNotesForType:(NSString *)typeName {
+    return ([typeName isEqualToString:SKPDFDocumentType] || 
+            [typeName isEqualToString:SKPostScriptDocumentType] || 
+            [typeName isEqualToString:SKDVIDocumentType] || 
+            [typeName isEqualToString:SKXDVDocumentType]);
+}
+
 - (void)updateExportAccessoryView {
     NSString *typeName = [self fileTypeFromLastRunSavePanel];
     NSMatrix *matrix = [exportAccessoryController matrix];
-    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) {
+    if ([self canAttachNotesForType:typeName]) {
         [matrix setHidden:NO];
         if ([typeName isEqualToString:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
@@ -482,7 +489,7 @@ enum {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if (([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType]) && exportOption == SKExportOptionDefault) {
+        if ([self canAttachNotesForType:typeName] && exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
         } else if ([typeName isEqualToString:SKPDFBundleDocumentType] && tmpPath) {
@@ -602,14 +609,10 @@ enum {
             didWrite = [[self pdfDocument] writeToURL:absoluteURL];
         else
             didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKPostScriptDocumentType]) {
-        if ([[self fileType] isEqualToString:SKPostScriptDocumentType])
-            didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKDVIDocumentType]) {
-        if ([[self fileType] isEqualToString:SKDVIDocumentType])
-            didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKXDVDocumentType]) {
-        if ([[self fileType] isEqualToString:SKXDVDocumentType])
+    } else if ([typeName isEqualToString:SKPostScriptDocumentType] || 
+               [typeName isEqualToString:SKDVIDocumentType] || 
+               [typeName isEqualToString:SKXDVDocumentType]) {
+        if ([[self fileType] isEqualToString:typeName])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
         NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension]];
@@ -671,7 +674,8 @@ enum {
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPostScriptDocumentType] || [typeName isEqualToString:SKDVIDocumentType] || [typeName isEqualToString:SKXDVDocumentType] || [typeName isEqualToString:SKNotesDocumentType]))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && 
+        ([[self class] isNativeType:typeName] || [typeName isEqualToString:SKNotesDocumentType]))
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
