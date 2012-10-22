@@ -350,20 +350,23 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     } else if ([type isEqualToString:SKFolderDocumentType]) {
         NSDocument *doc = nil;
         NSError *error = nil;
-        NSString *basePath = [absoluteURL path];
-        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:basePath];
-        NSString *path;
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
+                       enumeratorAtURL:absoluteURL
+            includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLNameKey, NSURLIsDirectoryKey, nil]
+                               options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
+                          errorHandler:nil];
         NSMutableArray *urls = [NSMutableArray array];
         BOOL failed = NO;
         
-        while ((path = [dirEnum nextObject])) {
-            NSString *fullPath = [basePath stringByAppendingPathComponent:path];
-            NSURL *url = [NSURL fileURLWithPath:fullPath];
-            if ([self documentClassForContentsOfURL:url])
+        for (NSURL *url in dirEnum) {
+            NSString *fileName;
+            NSNumber *isDirectory;
+            [url getResourceValue:&fileName forKey:NSURLIsDirectoryKey error:NULL];
+            [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+            if ([isDirectory boolValue] && [fileName hasPrefix:@"."])
+                [dirEnum skipDescendants];
+            else if ([self documentClassForContentsOfURL:url])
                 [urls addObject:url];
-            if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory] &&
-                ([[path lastPathComponent] hasPrefix:@"."] || NO == isFolderAtPath(fullPath)))
-                [dirEnum skipDescendents];
         }
         
         if ([urls count] > 10) {
