@@ -352,20 +352,14 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSError *error = nil;
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
                        enumeratorAtURL:absoluteURL
-            includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLNameKey, NSURLIsDirectoryKey, nil]
+            includingPropertiesForKeys:nil
                                options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
                           errorHandler:nil];
         NSMutableArray *urls = [NSMutableArray array];
         BOOL failed = NO;
         
         for (NSURL *url in dirEnum) {
-            NSString *fileName;
-            NSNumber *isDirectory;
-            [url getResourceValue:&fileName forKey:NSURLIsDirectoryKey error:NULL];
-            [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
-            if ([isDirectory boolValue] && [fileName hasPrefix:@"."])
-                [dirEnum skipDescendants];
-            else if ([self documentClassForContentsOfURL:url])
+            if ([self documentClassForContentsOfURL:url])
                 [urls addObject:url];
         }
         
