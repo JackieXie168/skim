@@ -21,7 +21,7 @@
 <key>HPDBookAccessPath</key>
 <string>SkimHelp.html</string>
 <key>HPDBookIconPath</key>
-<string>shrd/SkimLogo.png</string>
+<string>shrd/SkimIcon.png</string>
 <key>HPDBookIndexPath</key>
 <string>SkimHelp.helpindex</string>
 <key>HPDBookKBProduct</key>
