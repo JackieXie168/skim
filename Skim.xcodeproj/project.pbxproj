@@ -2390,21 +2390,21 @@
 			inputPaths = (
 				"$(SRCROOT)/SkimHelp/applehelp.init",
 				"$(SRCROOT)/SkimHelp/postprocess-nontitle.py",
-				"$(SRCROOT)/English.lproj/SkimHelp/skim.texi",
-				"$(SRCROOT)/English.lproj/SkimHelp/version.texi",
-				"$(SRCROOT)/Dutch.lproj/SkimHelp/skim.texi",
-				"$(SRCROOT)/Dutch.lproj/SkimHelp/version.texi",
+				"$(SRCROOT)/Skim.help/Contents/Resources/English.lproj/skim.texi",
+				"$(SRCROOT)/Skim.help/Contents/Resources/English.lproj/version.texi",
+				"$(SRCROOT)/Skim.help/Contents/Resources/Dutch.lproj/skim.texi",
+				"$(SRCROOT)/Skim.help/Contents/Resources/Dutch.lproj/version.texi",
 			);
 			name = "Run Script: Build Help";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp/SkimHelp.html",
-				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp/SkimHelp.helpindex",
-				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp/SkimHelp.html",
-				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp/SkimHelp.helpindex",
+				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp.helpindex",
+				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp.helpindex",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "HELP_NAME=\"SkimHelp\"\n\nLOC_LANGS=(English Dutch)\n\nINPUT=\"${HELP_NAME}/skim.texi\"\nTOOLS=\"${HELP_NAME}\"\nDEST=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\"\n\nHELP_INDEXER=\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\"\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LANG in ${LOC_LANGS[*]}; do\n\tLOC_TARGET=\"${TARGET}/${LANG}.lproj/${DEST}\";\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\";\n\t\n\techo \"*** Creating help files in ${LOC_TARGET} ***\";\n\t\"${TOOLS}/texi2html\" \"${LANG}.lproj/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html;\n\t\n\techo \"*** Indexing Help in ${LOC_TARGET} ***\"\n\tif [ \"${LANG}\" = \"French\" ]; then STOPWORDS=\"fr\";\n\telif [ \"${LANG}\" = \"German\" ]; then STOPWORDS=\"de\";\n\telif [ \"${LANG}\" = \"Hungarian\" ]; then STOPWORDS=\"hu\";\n\telif [ \"${LANG}\" = \"Italian\" ]; then STOPWORDS=\"it\";\n\telif [ \"${LANG}\" = \"Spanish\" ]; then STOPWORDS=\"es\";\n\telif [ \"${LANG}\" = \"Swedish\" ]; then STOPWORDS=\"sv\";\n\telif [ \"${LANG}\" = \"Dutch\" ]; then STOPWORDS=\"${SOURCE_ROOT}/${HELP_NAME}/stopwords-nl.txt\";\n\telse STOPWORDS=\"en\";\n\tfi;\n\tif [ \"${LANG}\" = \"Japanese\" -o \"${LANG}\" = \"zh_CN\" -o \"${LANG}\" = \"zh_TW\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\tif [ -x /usr/bin/hiutil ]; then\n\t\t/usr/bin/hiutil -Cagf \"${LOC_TARGET}/${HELP_NAME}.helpindex\" -s \"${STOPWORDS}\" -m \"${MINTERMLENGTH}\" \"${LOC_TARGET}\";\n\telif [ -x \"${HELP_INDEXER}\" ]; then\n\t\t\"${HELP_INDEXER}\" \"${LOC_TARGET}\" -ShowProgress NO -LogStyle 2 -IndexAnchors YES -TigerIndexing YES -GenerateSummaries YES -Stopwords \"${STOPWORDS}\" -MinTermLength \"${MINTERMLENGTH}\";\n\tfi;\ndone;\n";
+			shellScript = "HELP_NAME=\"SkimHelp\"\n\nLOC_LANGS=(English Dutch)\n\nINPUT=\"skim.texi\"\nSOURCE=\"Skim.help/Contents/Resources\"\nTOOLS=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\"\n\nHELP_INDEXER=\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\"\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LANG in ${LOC_LANGS[*]}; do\n\tLOC_TARGET=\"${TARGET}/${LANG}.lproj\";\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\";\n\t\n\techo \"*** Creating help files in ${LOC_TARGET} ***\";\n\t\"${TOOLS}/texi2html\" \"${SOURCE}/${LANG}.lproj/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html;\n\t\n\techo \"*** Indexing Help in ${LOC_TARGET} ***\"\n\tif [ \"${LANG}\" = \"French\" ]; then STOPWORDS=\"fr\";\n\telif [ \"${LANG}\" = \"German\" ]; then STOPWORDS=\"de\";\n\telif [ \"${LANG}\" = \"Hungarian\" ]; then STOPWORDS=\"hu\";\n\telif [ \"${LANG}\" = \"Italian\" ]; then STOPWORDS=\"it\";\n\telif [ \"${LANG}\" = \"Spanish\" ]; then STOPWORDS=\"es\";\n\telif [ \"${LANG}\" = \"Swedish\" ]; then STOPWORDS=\"sv\";\n\telif [ \"${LANG}\" = \"Dutch\" ]; then STOPWORDS=\"${SOURCE_ROOT}/${HELP_NAME}/stopwords-nl.txt\";\n\telse STOPWORDS=\"en\";\n\tfi;\n\tif [ \"${LANG}\" = \"Japanese\" -o \"${LANG}\" = \"zh_CN\" -o \"${LANG}\" = \"zh_TW\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\tif [ -x /usr/bin/hiutil ]; then\n\t\t/usr/bin/hiutil -Cagf \"${LOC_TARGET}/${HELP_NAME}.helpindex\" -s \"${STOPWORDS}\" -m \"${MINTERMLENGTH}\" \"${LOC_TARGET}\";\n\telif [ -x \"${HELP_INDEXER}\" ]; then\n\t\t\"${HELP_INDEXER}\" \"${LOC_TARGET}\" -ShowProgress NO -LogStyle 2 -IndexAnchors YES -TigerIndexing YES -GenerateSummaries YES -Stopwords \"${STOPWORDS}\" -MinTermLength \"${MINTERMLENGTH}\";\n\tfi;\ndone;\n";
 		};
 		CEF82CAD0C772A4200A3AD51 /* Run Script: Copy Help */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2412,25 +2412,17 @@
 			files = (
 			);
 			inputPaths = (
-				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp/SkimHelp.html",
-				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp/SkimHelp.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp.html",
+				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp.html",
 			);
 			name = "Run Script: Copy Help";
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/SkimHelp/SkimHelp.html",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/SkimHelp/SkimHelp.html",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/French.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/German.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Spanish.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ru.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_CN.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/zh_TW.lproj/SkimHelp",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/pl.lproj/SkimHelp",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Skim.help/Contents/Resources/English.lproj/SkimHelp.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Skim.help/Contents/Resources/Dutch.lproj/SkimHelp.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "HELP_NAME=\"SkimHelp\"\n\nSOURCE=\"${DERIVED_FILE_DIR}/${HELP_NAME}\";\nTARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"${HELP_NAME}\";\n\ncd \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do\n\tLOC_SOURCE=\"${SOURCE}/${LOC_DIR}/${DEST}\";\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\";\n\tif [ -d \"${LOC_SOURCE}\" ]; then\n\t\techo \"*** Copying help files from ${LOC_SOURCE} to ${LOC_TARGET} ***\";\n\t\t/bin/rm -rf \"${LOC_TARGET}/\"*.html;\n\t\t/bin/cp -Rf \"${LOC_SOURCE}/\"*.html \"${LOC_TARGET}\";\n\t\t[ -f \"${LOC_SOURCE}/${HELP_NAME}.helpindex\" ] && \\\n\t\t\t/bin/cp -f \"${LOC_SOURCE}/${HELP_NAME}.helpindex\" \"${LOC_TARGET}\";\n\telse\n\t\techo \"*** Linking help files from ${LOC_TARGET} to ${TARGET}/English.lproj/${DEST} ***\";\n\t\t( cd \"${LOC_DIR}\"; /bin/rm -rf \"${DEST}\"; /bin/ln -fFs ../English.lproj/\"${DEST}\"; )\n\tfi;\ndone;\n";
+			shellScript = "HELP_NAME=\"SkimHelp\"\n\nSOURCE=\"${DERIVED_FILE_DIR}/${HELP_NAME}\";\nTARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Skim.help/Contents/Resources\";\nDEST=\"${HELP_NAME}\";\n\ncd \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do\n\tLOC_SOURCE=\"${SOURCE}/${LOC_DIR}\";\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}\";\n\tif [ -d \"${LOC_SOURCE}\" ]; then\n\t\techo \"*** Copying help files from ${LOC_SOURCE} to ${LOC_TARGET} ***\";\n\t\t/bin/rm -rf \"${LOC_TARGET}/\"*.html;\n\t\t/bin/cp -Rf \"${LOC_SOURCE}/\"*.html \"${LOC_TARGET}\";\n\t\t[ -f \"${LOC_SOURCE}/${HELP_NAME}.helpindex\" ] && \\\n\t\t\t/bin/cp -f \"${LOC_SOURCE}/${HELP_NAME}.helpindex\" \"${LOC_TARGET}\";\n\tfi;\ndone;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
