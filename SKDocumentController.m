@@ -336,7 +336,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([fragment length] > 0)
         absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
     // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
-    if ([absoluteURL respondsToSelector:@selector(filePathURL)] && [absoluteURL isFileURL])
+    if ([absoluteURL isFileURL])
         absoluteURL = [absoluteURL filePathURL];
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
