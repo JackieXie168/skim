@@ -264,9 +264,9 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleHelpBookFolder</key>
-	<string>SkimHelp</string>
+	<string>Skim.help</string>
 	<key>CFBundleHelpBookName</key>
-	<string>Skim Help</string>
+	<string>net.sourceforge.skim-app.skim.help</string>
 	<key>CFBundleIconFile</key>
 	<string>Skim</string>
 	<key>CFBundleIdentifier</key>
