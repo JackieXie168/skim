@@ -55,18 +55,18 @@
 
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
 
-// See CFBundleTypeName in Info.plist
-NSString *SKPDFDocumentType = nil;
-NSString *SKPDFBundleDocumentType = @"PDF Bundle";
-NSString *SKNotesDocumentType = @"Skim Notes";
-NSString *SKNotesTextDocumentType = @"Notes as Text";
-NSString *SKNotesRTFDocumentType = @"Notes as RTF";
-NSString *SKNotesRTFDDocumentType = @"Notes as RTFD";
-NSString *SKNotesFDFDocumentType = @"Notes as FDF";
-NSString *SKPostScriptDocumentType = nil;
-NSString *SKDVIDocumentType = @"DVI document";
-NSString *SKXDVDocumentType = @"XDV document";
-NSString *SKFolderDocumentType = @"Folder";
+NSString *SKPDFDocumentType = @"com.adobe.pdf";
+NSString *SKPDFBundleDocumentType = @"net.sourceforge.skim-app.pdfd";
+NSString *SKNotesDocumentType = @"net.sourceforge.skim-app.skimnotes";
+NSString *SKNotesTextDocumentType = @"public.plain-text";
+NSString *SKNotesRTFDocumentType = @"public.rtf";
+NSString *SKNotesRTFDDocumentType = @"com.apple.rtfd";
+NSString *SKNotesFDFDocumentType = @"com.adobe.fdf";
+NSString *SKPostScriptDocumentType = @"com.adobe.postscript";
+NSString *SKEncapsulatedPostScriptDocumentType = @"com.adobe.encapsulated-postscript";
+NSString *SKDVIDocumentType = @"org.tug.tex.dvi";
+NSString *SKXDVDocumentType = @"org.tug.tex.xdv";
+NSString *SKFolderDocumentType = @"public.folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
@@ -77,7 +77,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 NSString *SKDocumentControllerDocumentKey = @"document";
 
-#define SKPasteboardTypeEncapsulatedPostScript @"com.adobe.encapsulated-postscript"
+#define SKPasteboardTypePostScript @"com.adobe.encapsulated-postscript"
 
 @interface NSDocumentController (SKDeprecated)
 // we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
@@ -85,13 +85,6 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 @end
 
 @implementation SKDocumentController
-
-+ (void)initialize {
-    SKINITIALIZE;
-    
-    SKPDFDocumentType = NSPDFPboardType;
-    SKPostScriptDocumentType = NSPostScriptPboardType;
-}
 
 - (id)init {
     self = [super init];
@@ -115,47 +108,55 @@ NSString *SKDocumentControllerDocumentKey = @"document";
     return [super runModalOpenPanel:openPanel forTypes:extensions];
 }
 
-static BOOL isFolderAtPath(NSString *path) {
-    return [[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:path error:NULL] conformsToType:(NSString *)kUTTypeFolder];
-}
-
-- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
-    NSUInteger headerLength = 5;
-    
+static BOOL isPDFData(NSData *data) {
     static NSData *pdfHeaderData = nil;
     if (nil == pdfHeaderData) {
         char *h = "%PDF-";
-        pdfHeaderData = [[NSData alloc] initWithBytes:h length:headerLength];
+        pdfHeaderData = [[NSData alloc] initWithBytes:h length:5];
     }
+    return ([data length] >= 5 && NSNotFound != [data rangeOfData:pdfHeaderData options:NSDataSearchAnchored range:NSMakeRange(0, 5)].location);
+}
+
+static BOOL isPostScriptData(NSData *data) {
     static NSData *psHeaderData = nil;
     if (nil == psHeaderData) {
         char *h = "%!PS-";
-        psHeaderData = [[NSData alloc] initWithBytes:h length:headerLength];
+        psHeaderData = [[NSData alloc] initWithBytes:h length:5];
     }
-    
+    return ([data length] >= 5 && NSNotFound != [data rangeOfData:psHeaderData options:NSDataSearchAnchored range:NSMakeRange(0, 5)].location);
+}
+
+static BOOL isEncapsulatedPostScriptData(NSData *data) {
+    static NSData *epsHeaderData = nil;
+    if (nil == epsHeaderData) {
+        char *h = " EPSF-";
+        epsHeaderData = [[NSData alloc] initWithBytes:h length:6];
+    }
+    return ([data length] >= 20 && NSNotFound != [data rangeOfData:epsHeaderData options:NSDataSearchAnchored range:NSMakeRange(14, 6)].location);
+}
+
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    // folders are not recognized, so we have to check for those ourselves, rdar://problem/7056540
-    if (isFolderAtPath([inAbsoluteURL path])) {
-        type = SKFolderDocumentType;
-    } else if ([self documentClassForType:type] == NULL) {
+    if ([ws type:type conformsToType:SKFolderDocumentType] == NO && [self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
-            NSData *leadingData = [[NSFileHandle fileHandleForReadingAtPath:[inAbsoluteURL path]] readDataOfLength:headerLength];
-            if ([pdfHeaderData isEqual:leadingData])
+            NSData *leadingData = [[NSFileHandle fileHandleForReadingAtPath:[inAbsoluteURL path]] readDataOfLength:20];
+            if (isPDFData(leadingData))
                 type = SKPDFDocumentType;
-            else if ([psHeaderData isEqual:leadingData])
-                type = SKPostScriptDocumentType;
+            else if (isPostScriptData(leadingData))
+                type = isEncapsulatedPostScriptData(leadingData) ? SKEncapsulatedPostScriptDocumentType : SKPostScriptDocumentType;
         }
         if (type == nil && outError)
             *outError = error;
-    } else if ([type isEqualToString:SKNotesFDFDocumentType]) {
+    } else if ([ws type:type conformsToType:SKNotesFDFDocumentType]) {
         // Springer sometimes sends PDF files with an .fdf extension for review, huh?
         NSString *fileName = [inAbsoluteURL path];
         NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-        NSData *leadingData = [fh readDataOfLength:headerLength];
-        if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]])
+        NSData *leadingData = [fh readDataOfLength:5];
+        if (isPDFData(leadingData))
             type = SKPDFDocumentType;
     }
     
@@ -208,10 +209,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         [pboard types];
         data = [pboard dataForType:NSPasteboardTypePDF];
         type = SKPDFDocumentType;
-    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeEncapsulatedPostScript, nil]]) {
+    } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypePostScript, nil]]) {
         [pboard types];
-        data = [pboard dataForType:SKPasteboardTypeEncapsulatedPostScript];
-        type = SKPostScriptDocumentType;
+        data = [pboard dataForType:SKPasteboardTypePostScript];
+        type = isEncapsulatedPostScriptData(data) ? SKEncapsulatedPostScriptDocumentType : SKPostScriptDocumentType;
     } else if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil]]) {
         [pboard types];
         data = convertTIFFDataToPDF([pboard dataForType:NSPasteboardTypeTIFF]);
@@ -268,7 +269,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             } else {
                 NSData *data = nil;
                 
-                if ([type isEqualToString:SKPDFBundleDocumentType]) {
+                if ([[NSWorkspace sharedWorkspace] type:type conformsToType:SKPDFBundleDocumentType]) {
                     NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
                     data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
                 } else {
@@ -339,7 +340,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         absoluteURL = [absoluteURL filePathURL];
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    if ([type isEqualToString:SKNotesDocumentType]) {
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    if ([ws type:type conformsToType:SKNotesDocumentType]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
             NSString *pdfFile = [absoluteURL pathReplacingPathExtension:@"pdf"];
@@ -347,7 +349,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
                 absoluteURL = [NSURL fileURLWithPath:pdfFile];
         }
-    } else if ([type isEqualToString:SKFolderDocumentType]) {
+    } else if ([ws type:type conformsToType:SKFolderDocumentType]) {
         NSDocument *doc = nil;
         NSError *error = nil;
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]

@@ -318,11 +318,17 @@ enum {
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
-    if ([[self fileType] isEqualToString:SKPostScriptDocumentType] == NO)
+    NSString *type = [self fileType];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    if ([ws type:type conformsToType:SKEncapsulatedPostScriptDocumentType] == NO)
+        [writableTypes removeObject:SKEncapsulatedPostScriptDocumentType];
+    else
         [writableTypes removeObject:SKPostScriptDocumentType];
-    if ([[self fileType] isEqualToString:SKDVIDocumentType] == NO)
+    if ([ws type:type conformsToType:SKPostScriptDocumentType] == NO)
+        [writableTypes removeObject:SKPostScriptDocumentType];
+    if ([ws type:type conformsToType:SKDVIDocumentType] == NO)
         [writableTypes removeObject:SKDVIDocumentType];
-    if ([[self fileType] isEqualToString:SKXDVDocumentType] == NO)
+    if ([ws type:type conformsToType:SKXDVDocumentType] == NO)
         [writableTypes removeObject:SKXDVDocumentType];
     if (saveOperation == NSSaveToOperation) {
         [[SKTemplateManager sharedManager] resetCustomTemplateTypes];
@@ -336,10 +342,11 @@ enum {
 }
 
 - (BOOL)canAttachNotesForType:(NSString *)typeName {
-    return ([typeName isEqualToString:SKPDFDocumentType] || 
-            [typeName isEqualToString:SKPostScriptDocumentType] || 
-            [typeName isEqualToString:SKDVIDocumentType] || 
-            [typeName isEqualToString:SKXDVDocumentType]);
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    return ([ws type:typeName conformsToType:SKPDFDocumentType] || 
+            [ws type:typeName conformsToType:SKPostScriptDocumentType] || 
+            [ws type:typeName conformsToType:SKDVIDocumentType] || 
+            [ws type:typeName conformsToType:SKXDVDocumentType]);
 }
 
 - (void)updateExportAccessoryView {
@@ -347,7 +354,7 @@ enum {
     NSMatrix *matrix = [exportAccessoryController matrix];
     if ([self canAttachNotesForType:typeName]) {
         [matrix setHidden:NO];
-        if ([typeName isEqualToString:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
+        if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
         } else {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:NO];
@@ -492,7 +499,7 @@ enum {
         if ([self canAttachNotesForType:typeName] && exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
-        } else if ([typeName isEqualToString:SKPDFBundleDocumentType] && tmpPath) {
+        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpPath) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
             NSString *path = [absoluteURL path];
@@ -545,6 +552,7 @@ enum {
         exportOption = SKExportOptionDefault;
     
     NSURL *destURL = [absoluteURL respondsToSelector:@selector(filePathURL)] ? [absoluteURL filePathURL] : absoluteURL;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:destURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
@@ -552,7 +560,7 @@ enum {
         [info setObject:invocation forKey:CALLBACK_KEY];
     }
     
-    if ([typeName isEqualToString:SKPDFBundleDocumentType] && [[self fileType] isEqualToString:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation) {
+    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [[self fileURL] path];
         NSString *tmpPath = nil;
@@ -604,46 +612,47 @@ enum {
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     NSError *error = nil;
-    if ([typeName isEqualToString:SKPDFDocumentType]) {
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    if ([ws type:SKPDFDocumentType conformsToType:typeName]) {
         if (exportOption == SKExportOptionWithEmbeddedNotes)
             didWrite = [[self pdfDocument] writeToURL:absoluteURL];
         else
             didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKPostScriptDocumentType] || 
-               [typeName isEqualToString:SKDVIDocumentType] || 
-               [typeName isEqualToString:SKXDVDocumentType]) {
-        if ([[self fileType] isEqualToString:typeName])
+    } else if ([ws type:SKEncapsulatedPostScriptDocumentType conformsToType:typeName] || 
+               [ws type:SKDVIDocumentType conformsToType:typeName] || 
+               [ws type:SKXDVDocumentType conformsToType:typeName]) {
+        if ([ws type:[self fileType] conformsToType:typeName])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+    } else if ([ws type:SKPDFBundleDocumentType conformsToType:typeName]) {
         NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension]];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
-    } else if ([typeName isEqualToString:SKNotesDocumentType]) {
+    } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
         didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] toSkimFileAtURL:absoluteURL error:&error];
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
+    } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
         NSData *data = [self notesRTFData];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTF", @"Error description")];
-    } else if ([typeName isEqualToString:SKNotesRTFDDocumentType]) {
+    } else if ([ws type:SKNotesRTFDDocumentType conformsToType:typeName]) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description")];
-    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
+    } else if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
         NSString *string = [self notesString];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+    } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
-        if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType])
+        if (filename && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType])
             filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
         NSData *data = [self notesFDFDataForFile:filename fileIDStrings:[[self pdfDocument] fileIDStrings:pdfData]];
         if (data)
@@ -672,6 +681,7 @@ enum {
 
 - (NSDictionary *)fileAttributesToWriteToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation originalContentsURL:(NSURL *)absoluteOriginalContentsURL error:(NSError **)outError {
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     // only set the creator code for our native types
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && 
@@ -679,17 +689,17 @@ enum {
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
-        [typeName isEqualToString:SKPDFDocumentType])
+        [ws type:typeName conformsToType:SKPDFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [typeName isEqualToString:SKPDFBundleDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [ws type:typeName conformsToType:SKPDFBundleDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDFD'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [typeName isEqualToString:SKNotesFDFDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [ws type:typeName conformsToType:SKNotesFDFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'FDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -724,7 +734,7 @@ enum {
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
-    if ([docType isEqualToString:SKPostScriptDocumentType])
+    if ([[NSWorkspace sharedWorkspace] type:docType conformsToType:SKPostScriptDocumentType])
         data = [[SKConversionProgressController newPDFDataWithPostScriptData:data error:&error] autorelease];
     
     if (data)
@@ -758,11 +768,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
-    if ([docType isEqualToString:SKPDFBundleDocumentType]) {
+    if ([ws type:docType conformsToType:SKPDFBundleDocumentType]) {
         NSString *path = [absoluteURL path];
         NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
         if (pdfFile) {
@@ -788,15 +799,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
     } else  {
         if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
-            if ([docType isEqualToString:SKPDFDocumentType]) {
+            if ([ws type:docType conformsToType:SKPDFDocumentType]) {
                 data = [fileData retain];
                 pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else {
-                if ([docType isEqualToString:SKPostScriptDocumentType])
+                if ([ws type:docType conformsToType:SKPostScriptDocumentType])
                     data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error];
-                else if ([docType isEqualToString:SKDVIDocumentType])
+                else if ([ws type:docType conformsToType:SKDVIDocumentType])
                     data = [SKConversionProgressController newPDFDataWithDVIFile:[absoluteURL path] error:&error];
-                else if ([docType isEqualToString:SKXDVDocumentType])
+                else if ([ws type:docType conformsToType:SKXDVDocumentType])
                     data = [SKConversionProgressController newPDFDataWithXDVFile:[absoluteURL path] error:&error];
                 if (data)
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
@@ -1108,7 +1119,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)convertNotes:(id)sender {
-    if (([[self fileType] isEqualToString:SKPDFDocumentType] == NO && [[self fileType] isEqualToString:SKPDFBundleDocumentType] == NO) ||
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    if (([ws type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO) ||
         [self hasConvertibleAnnotations] == NO) {
         NSBeep();
         return;
@@ -1339,7 +1351,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
-        return [[self fileType] isEqualToString:SKPDFDocumentType] && [[self pdfDocument] isLocked] == NO;
+        return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] isLocked] == NO;
     } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
         NSString *path = [[self fileURL] path];
         return path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO;
@@ -1884,39 +1896,66 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id fileType = [args objectForKey:@"FileType"];
-    // we don't want to expose the pboard types to the user, and we allow template file names without extension
-    if (fileType) {
+    id file = [args objectForKey:@"File"];
+    // we don't want to expose the UTI types to the user, and we allow template file names without extension
+    if (fileType && file) {
         NSString *normalizedType = nil;
+        NSInteger option = SKExportOptionDefault;
+        NSArray *writableTypes = [self writableTypesForSaveOperation:NSSaveToOperation];
+        SKTemplateManager *tm = [SKTemplateManager sharedManager];
         if ([fileType isEqualToString:@"PDF"]) {
             normalizedType = SKPDFDocumentType;
         } else if ([fileType isEqualToString:@"PDF With Embeded Notes"]) {
             normalizedType = SKPDFDocumentType;
-            exportOption = SKExportOptionWithEmbeddedNotes;
+            option = SKExportOptionWithEmbeddedNotes;
         } else if ([fileType isEqualToString:@"PDF Without Notes"]) {
             normalizedType = SKPDFDocumentType;
-            exportOption = SKExportOptionWithoutNotes;
+            option = SKExportOptionWithoutNotes;
         } else if ([fileType isEqualToString:@"PostScript"]) {
-            normalizedType = SKPostScriptDocumentType;
+            normalizedType = [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKEncapsulatedPostScriptDocumentType] ? SKEncapsulatedPostScriptDocumentType : SKPostScriptDocumentType;
         } else if ([fileType isEqualToString:@"PostScript Without Notes"]) {
-            normalizedType = SKPostScriptDocumentType;
-            exportOption = SKExportOptionWithoutNotes;
+            normalizedType = [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKEncapsulatedPostScriptDocumentType] ? SKEncapsulatedPostScriptDocumentType : SKPostScriptDocumentType;
+            option = SKExportOptionWithoutNotes;
+        } else if ([fileType isEqualToString:@"Encapsulated PostScript"]) {
+            normalizedType = SKEncapsulatedPostScriptDocumentType;
+        } else if ([fileType isEqualToString:@"Encapsulated PostScript Without Notes"]) {
+            normalizedType = SKEncapsulatedPostScriptDocumentType;
+            option = SKExportOptionWithoutNotes;
         } else if ([fileType isEqualToString:@"DVI"]) {
             normalizedType = SKDVIDocumentType;
         } else if ([fileType isEqualToString:@"DVI Without Notes"]) {
             normalizedType = SKDVIDocumentType;
-            exportOption = SKExportOptionWithoutNotes;
+            option = SKExportOptionWithoutNotes;
         } else if ([fileType isEqualToString:@"XDV"]) {
             normalizedType = SKXDVDocumentType;
         } else if ([fileType isEqualToString:@"XDV Without Notes"]) {
             normalizedType = SKXDVDocumentType;
-            exportOption = SKExportOptionWithoutNotes;
-        } else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-            normalizedType = [[SKTemplateManager sharedManager] templateTypeForDisplayName:fileType];
+            option = SKExportOptionWithoutNotes;
+        } else if ([fileType isEqualToString:@"PDF Bundle"]) {
+            normalizedType = SKPDFBundleDocumentType;
+        } else if ([fileType isEqualToString:@"Skim Notes"]) {
+            normalizedType = SKNotesDocumentType;
+        } else if ([fileType isEqualToString:@"Notes as Text"]) {
+            normalizedType = SKNotesTextDocumentType;
+        } else if ([fileType isEqualToString:@"Notes as RTF"]) {
+            normalizedType = SKNotesRTFDocumentType;
+        } else if ([fileType isEqualToString:@"Notes as RTFD"]) {
+            normalizedType = SKNotesRTFDDocumentType;
+        } else if ([fileType isEqualToString:@"Notes as FDF"]) {
+            normalizedType = SKNotesFDFDocumentType;
+        } else if ([writableTypes containsObject:fileType] == NO) {
+            normalizedType = [tm templateTypeForDisplayName:fileType];
         }
-        if (normalizedType) {
-            fileType = normalizedType;
+        if ([writableTypes containsObject:normalizedType] || [[tm customTemplateTypes] containsObject:fileType]) {
+            exportOption = option;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-            [arguments setObject:fileType forKey:@"FileType"];
+            if (normalizedType) {
+                fileType = normalizedType;
+                [arguments setObject:fileType forKey:@"FileType"];
+            }
+            // for some reason the default implementation adds the extension twice for template types
+            if ([[file pathExtension] isCaseInsensitiveEqual:[tm fileNameExtensionForTemplateType:fileType]])
+                [arguments setObject:[file URLByDeletingPathExtension] forKey:@"File"];
             [command setArguments:arguments];
             [arguments release];
         }
@@ -2019,7 +2058,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
-    if ([[self fileType] isEqualToString:SKPDFDocumentType] == NO && [[self fileType] isEqualToString:SKPDFBundleDocumentType] == NO)
+    if ([[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO)
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
     else if ([self hasConvertibleAnnotations])
         [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
@@ -2033,7 +2072,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     } else {
         NSNumber *replaceNumber = [args objectForKey:@"Replace"];
         NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:notesURL error:NULL];
-        if ([fileType isEqualToString:SKNotesDocumentType] || [fileType isEqualToString:SKNotesFDFDocumentType])
+        if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKNotesDocumentType] || [[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKNotesFDFDocumentType])
             [self readNotesFromURL:notesURL replace:(replaceNumber ? [replaceNumber boolValue] : YES)];
         else
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];

@@ -139,7 +139,7 @@ static Class SKBookmarkClass = Nil;
             NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
             Class docClass;
             SKBookmark *bookmark;
-            if ([fileType isEqualToString:SKFolderDocumentType]) {
+            if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKFolderDocumentType]) {
                 NSArray *children = [self bookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] relativeToPath:path];
                 if ([children count] && (bookmark = [[self alloc] initFolderWithChildren:children label:[fm displayNameAtPath:path]])) {
                     [array addObject:bookmark];

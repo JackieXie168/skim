@@ -7,369 +7,258 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>pdf</string>
-				<string>ai</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>PDFDocument</string>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/pdf</string>
-			</array>
 			<key>CFBundleTypeName</key>
-			<string>NSPDFPboardType</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>PDF </string>
-			</array>
+			<string>PDF</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Alternate</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
 			<key>NSDocumentClass</key>
 			<string>SKMainDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>pdfd</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>PDFDDocument</string>
 			<key>CFBundleTypeName</key>
 			<string>PDF Bundle</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>PDFD</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
-			<key>LSTypeIsPackage</key>
-			<true/>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>net.sourceforge.skim-app.pdfd</string>
+			</array>
 			<key>NSDocumentClass</key>
 			<string>SKMainDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
 			</array>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
+			<key>CFBundleTypeIconFile</key>
+			<string>PSDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>PostScript</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
 			<array>
-				<string>skim</string>
+				<string>com.adobe.postscript</string>
 			</array>
+			<key>NSDocumentClass</key>
+			<string>SKMainDocument</string>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>PSDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>Encapsulated PostScript</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.encapsulated-postscript</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>SKMainDocument</string>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>DVIDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>DVI</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.tug.tex.dvi</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>SKMainDocument</string>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>XDVDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>XDV</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.tug.tex.xdv</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>SKMainDocument</string>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
+			</array>
+		</dict>
+		<dict>
 			<key>CFBundleTypeIconFile</key>
 			<string>NoteDocument</string>
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>SKNT</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+			</array>
 			<key>NSDocumentClass</key>
 			<string>SKNotesDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>Notes as RTF</string>
-				<string>Notes as Text</string>
-			</array>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>ps</string>
-				<string>epi</string>
-				<string>eps</string>
-				<string>epsf</string>
-				<string>epsi</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>PSDocument</string>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/postscript</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>NSPostScriptPboardType</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKMainDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPostScriptPboardType</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>NSPostScriptPboardType</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>public.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>dvi</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>DVIDocument</string>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/x-dvi</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>DVI document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>*DVI</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKMainDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>DVI document</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>DVI document</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>xdv</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>XDVDocument</string>
-			<key>CFBundleTypeName</key>
-			<string>XDV document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKMainDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>XDV document</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>XDV document</string>
-				<string>NSPDFPboardType</string>
-				<string>PDF Bundle</string>
-				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>txt</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>text/plain</string>
-			</array>
 			<key>CFBundleTypeName</key>
 			<string>Notes as Text</string>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>rtf</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>text/rtf</string>
-			</array>
 			<key>CFBundleTypeName</key>
 			<string>Notes as RTF</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>RTF </string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.rtf</string>
+			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>rtfd</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>text/rtfd</string>
-			</array>
 			<key>CFBundleTypeName</key>
 			<string>Notes as RTFD</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>RTFD</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSTypeIsPackage</key>
-			<true/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.apple.rtfd</string>
+			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>fdf</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/vnd.fdf</string>
-			</array>
 			<key>CFBundleTypeName</key>
 			<string>Notes as FDF</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>FDF </string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.fdf</string>
+			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>Folder</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>fold</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.folder</string>
+			</array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -538,6 +427,58 @@
 				<array>
 					<string>skim</string>
 				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DVI</string>
+			<key>UTTypeIdentifier</key>
+			<string>org.tug.tex.dvi</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>dvi</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>XDV</string>
+			<key>UTTypeIdentifier</key>
+			<string>org.tug.tex.xdv</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>xdv</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Adobe Acrobat Forms Document (FDF)</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.fdf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<string>fdf</string>
 			</dict>
 		</dict>
 	</array>

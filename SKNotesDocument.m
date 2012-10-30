@@ -252,10 +252,15 @@
 
 - (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError **)outError {
     NSFileWrapper *fileWrapper = nil;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    if ([typeName isEqualToString:SKNotesRTFDocumentType])
+    if ([ws type:SKNotesRTFDocumentType conformsToType:typeName])
         fileWrapper = [self notesRTFDFileWrapper];
-    else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKNotesFDFDocumentType] || [[SKTemplateManager sharedManager] isRichTextBundleTemplateType:typeName] == NO)
+    else if ([ws type:SKNotesDocumentType conformsToType:typeName] || 
+             [ws type:SKNotesTextDocumentType conformsToType:typeName] || 
+             [ws type:SKNotesRTFDocumentType conformsToType:typeName] || 
+             [ws type:SKNotesFDFDocumentType conformsToType:typeName] || 
+             [[SKTemplateManager sharedManager] isRichTextBundleTemplateType:typeName] == NO)
         fileWrapper = [super fileWrapperOfType:typeName error:outError];
     else
         fileWrapper = [self notesFileWrapperForTemplateType:typeName];
@@ -268,14 +273,15 @@
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
     NSData *data = nil;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    if ([typeName isEqualToString:SKNotesDocumentType]) {
+    if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
         data = [self notesData];
-    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
+    } else if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
+    } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
         data = [self notesRTFData];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+    } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
         NSString *filename = [[self fileURL] pathReplacingPathExtension:@"pdf"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:filename])
             filename = [filename lastPathComponent];
@@ -295,10 +301,11 @@
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
     BOOL didRead = NO;
     NSArray *array = nil;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    if ([typeName isEqualToString:SKNotesDocumentType]) {
+    if ([ws type:typeName conformsToType:SKNotesDocumentType]) {
         array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+    } else if ([ws type:typeName conformsToType:SKNotesFDFDocumentType]) {
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }
     
@@ -343,16 +350,17 @@
 
 - (NSDictionary *)fileAttributesToWriteToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation originalContentsURL:(NSURL *)absoluteOriginalContentsURL error:(NSError **)outError {
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && [typeName isEqualToString:SKNotesDocumentType])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && [ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType])
+    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -836,12 +844,32 @@
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id fileType = [args objectForKey:@"FileType"];
-    // we allow template file names without extension
-    if (fileType && [[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO) {
-        NSString *normalizedType = [[SKTemplateManager sharedManager] templateTypeForDisplayName:fileType];
-        if (normalizedType) {
+    id file = [args objectForKey:@"File"];
+    // we don't want to expose the UTI types to the user, and we allow template file names without extension
+    if (fileType && file) {
+        NSString *normalizedType = nil;
+        SKTemplateManager *tm = [SKTemplateManager sharedManager];
+        if ([fileType isEqualToString:@"Skim Notes"])
+            normalizedType = SKNotesDocumentType;
+        else if ([fileType isEqualToString:@"Notes as Text"])
+            normalizedType = SKNotesTextDocumentType;
+        else if ([fileType isEqualToString:@"Notes as RTF"])
+            normalizedType = SKNotesRTFDocumentType;
+        else if ([fileType isEqualToString:@"Notes as RTFD"])
+            normalizedType = SKNotesRTFDDocumentType;
+        else if ([fileType isEqualToString:@"Notes as FDF"])
+            normalizedType = SKNotesFDFDocumentType;
+        else if ([[self writableTypesForSaveOperation:NSSaveToOperation] containsObject:fileType] == NO)
+            normalizedType = [tm templateTypeForDisplayName:fileType];
+        if (normalizedType || [[tm customTemplateTypes] containsObject:fileType]) {
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-            [arguments setObject:normalizedType forKey:@"FileType"];
+            if (normalizedType) {
+                fileType = normalizedType;
+                [arguments setObject:fileType forKey:@"FileType"];
+            }
+            // for some reason the default implementation adds the extension twice for template types
+            if ([[file pathExtension] isCaseInsensitiveEqual:[tm fileNameExtensionForTemplateType:fileType]])
+                [arguments setObject:[file URLByDeletingPathExtension] forKey:@"File"];
             [command setArguments:arguments];
             [arguments release];
         }

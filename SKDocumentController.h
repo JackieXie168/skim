@@ -46,6 +46,7 @@ extern NSString *SKNotesRTFDocumentType;
 extern NSString *SKNotesRTFDDocumentType;
 extern NSString *SKNotesFDFDocumentType;
 extern NSString *SKPostScriptDocumentType;
+extern NSString *SKEncapsulatedPostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 extern NSString *SKXDVDocumentType;
 extern NSString *SKFolderDocumentType;
