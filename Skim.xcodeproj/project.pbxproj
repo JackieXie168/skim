@@ -1017,9 +1017,6 @@
 		CEECD61B12E9E30B00B9E35E /* NSError_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSError_SKExtensions.m; sourceTree = "<group>"; };
 		CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationInk_SKExtensions.h; sourceTree = "<group>"; };
 		CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationInk_SKExtensions.m; sourceTree = "<group>"; };
-		CEF1D620117EFB460069E249 /* skim.texi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = skim.texi; path = English.lproj/SkimHelp/skim.texi; sourceTree = "<group>"; };
-		CEF1D621117EFB460069E249 /* version.texi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.texi; path = English.lproj/SkimHelp/version.texi; sourceTree = "<group>"; };
-		CEF1D624117EFB500069E249 /* skimhelp.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = skimhelp.css; path = English.lproj/SkimHelp/sty/skimhelp.css; sourceTree = "<group>"; };
 		CEF1D626117EFB760069E249 /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = applehelp.init; path = SkimHelp/applehelp.init; sourceTree = "<group>"; };
 		CEF1D627117EFB760069E249 /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "postprocess-nontitle.py"; path = "SkimHelp/postprocess-nontitle.py"; sourceTree = "<group>"; };
 		CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLocalization.h; sourceTree = "<group>"; };
@@ -1822,9 +1819,6 @@
 		CE4DA8CF0B9E157E0039E89C /* Help Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CEF1D620117EFB460069E249 /* skim.texi */,
-				CEF1D621117EFB460069E249 /* version.texi */,
-				CEF1D624117EFB500069E249 /* skimhelp.css */,
 				CEF1D626117EFB760069E249 /* applehelp.init */,
 				CEF1D627117EFB760069E249 /* postprocess-nontitle.py */,
 			);
