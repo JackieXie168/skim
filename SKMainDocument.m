@@ -551,7 +551,7 @@ enum {
     if (saveOperation != NSSaveToOperation)
         exportOption = SKExportOptionDefault;
     
-    NSURL *destURL = [absoluteURL respondsToSelector:@selector(filePathURL)] ? [absoluteURL filePathURL] : absoluteURL;
+    NSURL *destURL = [absoluteURL filePathURL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:destURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
     if (delegate && didSaveSelector) {
