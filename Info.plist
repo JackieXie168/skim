@@ -308,6 +308,16 @@
 				<key>NSTextContent</key>
 				<string>FilePath</string>
 			</dict>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+			</array>
 			<key>NSSendTypes</key>
 			<array>
 				<string>public.url</string>
@@ -330,6 +340,16 @@
 				<key>NSTextContent</key>
 				<string>URL</string>
 			</dict>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+			</array>
 			<key>NSSendTypes</key>
 			<array>
 				<string>public.url</string>
@@ -368,6 +388,16 @@
 				<key>NSTextContent</key>
 				<string>FilePath</string>
 			</dict>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>com.adobe.postscript</string>
+				<string>com.adobe.encapsulated-postscript</string>
+				<string>org.tug.tex.dvi</string>
+				<string>org.tug.tex.xdv</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+			</array>
 			<key>NSSendTypes</key>
 			<array>
 				<string>public.url</string>
