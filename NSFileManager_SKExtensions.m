@@ -41,6 +41,10 @@
 
 @implementation NSFileManager (SKExtensions)
 
+- (BOOL)fileExistsAtURL:(NSURL *)aURL {
+    return [self fileExistsAtPath:[aURL path]];
+}
+
 - (BOOL)isTrashedFileAtURL:(NSURL *)aURL {
     NSCParameterAssert([aURL isFileURL]);    
     FSRef fileRef;
@@ -63,6 +67,16 @@
         applicationSupportDirectoryURLs = [urlArray copy];
     }
     return applicationSupportDirectoryURLs;
+}
+
+- (NSString *)uniqueFile:(NSString *)path {
+    NSString *uniquePath = path;
+    NSString *basePath = [path stringByDeletingPathExtension];
+    NSString *extension = [path pathExtension];
+    NSInteger i = 0;
+    while ([self fileExistsAtPath:path])
+        uniquePath = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:extension];
+    return uniquePath;
 }
 
 @end

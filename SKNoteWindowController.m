@@ -55,6 +55,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "SKNoteTextView.h"
 #import "NSInvocation_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -345,12 +346,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
-        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:name];
-        NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
-        NSInteger i = 0;
-        NSFileManager *fm = [NSFileManager defaultManager];
-        while ([fm fileExistsAtPath:path])
-            path = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
+        name = [name stringByAppendingPathExtension:@"tiff"];
+        NSString *path = [[[dropDestination path] stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"tiff"];
+        path = [[NSFileManager defaultManager] uniqueFile:path];
         if ([[image TIFFRepresentation] writeToFile:path atomically:YES])
             return [NSArray arrayWithObjects:[path lastPathComponent], nil];
     }

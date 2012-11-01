@@ -88,11 +88,12 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
         NSInteger itemIndex = [[NSApp mainMenu] numberOfItems] - 1;
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *folders = [NSMutableArray array];
-        BOOL isDir;
         
         for (NSURL *folderURL in [fm applicationSupportDirectoryURLs]) {
+            NSNumber *isDir = nil;
             folderURL = [folderURL URLByAppendingPathComponent:SCRIPTS_FOLDER_NAME];
-            if ([fm fileExistsAtPath:[folderURL path] isDirectory:&isDir] && isDir)
+            [folderURL getResourceValue:&isDir forKey:NSURLIsDirectoryKey error:NULL];
+            if ([isDir boolValue])
                 [folders addObject:folderURL];
         }
         

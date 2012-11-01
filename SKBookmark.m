@@ -632,7 +632,7 @@ static Class SKBookmarkClass = Nil;
                 if (aURL == nil) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a file."];
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:[aURL path]] == NO) {
+                } else if ([[NSFileManager defaultManager] fileExistsAtURL:aURL] == NO) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
                 } else if ((docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL])) {

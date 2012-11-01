@@ -75,6 +75,7 @@
 #import "NSError_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -333,7 +334,7 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
+            NSString *path = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
             NSString *pathExt = nil;
             NSData *data = nil;
             
@@ -345,12 +346,7 @@
                 data = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             }
             
-            NSString *path = [basePath stringByAppendingPathExtension:pathExt];
-            NSFileManager *fm = [NSFileManager defaultManager];
-            NSInteger i = 0;
-            
-            while ([fm fileExistsAtPath:path])
-                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:pathExt];
+            path = [[NSFileManager defaultManager] uniqueFile:[path stringByAppendingPathExtension:pathExt]];
             if ([data writeToFile:path atomically:YES])
                 return [NSArray arrayWithObjects:[path lastPathComponent], nil];
         }
@@ -359,13 +355,8 @@
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
-            NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
-            NSFileManager *fm = [NSFileManager defaultManager];
-            NSInteger i = 0;
-            
-            while ([fm fileExistsAtPath:path])
-                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
+            NSString *path = [[[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]] stringByAppendingPathExtension:@"tiff"];
+            path = [[NSFileManager defaultManager] uniqueFile:path];
             if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToFile:path atomically:YES])
                 return [NSArray arrayWithObjects:[path lastPathComponent], nil];
         }
