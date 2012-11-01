@@ -62,13 +62,13 @@
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templates = [NSMutableArray array];
         
-        for (NSString *appSupportPath in [[NSFileManager defaultManager] applicationSupportDirectories]) {
-            NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY];
+        for (NSURL *appSupportURL in [[NSFileManager defaultManager] applicationSupportDirectoryURLs]) {
+            NSURL *templatesURL = [appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY];
             BOOL isDir;
-            if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
-                for (NSString *file in [fm contentsOfDirectoryAtPath:templatesPath error:NULL]) {
-                    if ([file hasPrefix:@"."] == NO &&
-                        [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO &&
+            if ([fm fileExistsAtPath:[templatesURL path] isDirectory:&isDir] && isDir) {
+                for (NSURL *url in [fm contentsOfDirectoryAtURL:templatesURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]) {
+                    NSString *file = [url lastPathComponent];
+                    if ([[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO &&
                         [templates containsObject:file] == NO)
                         [templates addObject:file];
                 }
@@ -84,18 +84,18 @@
     SKDESTROY(customTemplateTypes);
 }
 
-- (NSString *)pathForTemplateType:(NSString *)typeName {
+- (NSURL *)URLForTemplateType:(NSString *)typeName {
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *fullPath = nil;
+    NSURL *url = nil;
     
-    for (NSString *appSupportPath in [[fm applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
-        fullPath = [[appSupportPath stringByAppendingPathComponent:TEMPLATES_DIRECTORY] stringByAppendingPathComponent:typeName];
-        if ([fm fileExistsAtPath:fullPath] == NO)
-            fullPath = nil;
+    for (NSURL *appSupportURL in [[fm applicationSupportDirectoryURLs] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
+        url = [[appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY] URLByAppendingPathComponent:typeName];
+        if ([fm fileExistsAtPath:[url path]] == NO)
+            url = nil;
         else break;
     }
     
-    return fullPath;
+    return url;
 }
 
 - (NSString *)fileNameExtensionForTemplateType:(NSString *)typeName {

@@ -59,7 +59,7 @@
 + (id)sharedController;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
-- (NSArray *)directoryContentsAtPath:(NSString *)path recursionDepth:(NSInteger)depth;
+- (NSArray *)directoryContentsAtURL:(NSURL *)url recursionDepth:(NSInteger)depth;
 - (void)executeScript:(id)sender;
 
 @end
@@ -90,10 +90,10 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
         NSMutableArray *folders = [NSMutableArray array];
         BOOL isDir;
         
-        for (NSString *folder in [fm applicationSupportDirectories]) {
-            folder = [folder stringByAppendingPathComponent:SCRIPTS_FOLDER_NAME];
-            if ([fm fileExistsAtPath:folder isDirectory:&isDir] && isDir)
-                [folders addObject:folder];
+        for (NSURL *folderURL in [fm applicationSupportDirectoryURLs]) {
+            folderURL = [folderURL URLByAppendingPathComponent:SCRIPTS_FOLDER_NAME];
+            if ([fm fileExistsAtPath:[folderURL path] isDirectory:&isDir] && isDir)
+                [folders addObject:folderURL];
         }
         
         if (itemIndex > 0 && [folders count]) {
@@ -111,7 +111,7 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             streamRef = FSEventStreamCreate(kCFAllocatorDefault,
                                             (FSEventStreamCallback)&fsevents_callback, // callback
                                             NULL, // context
-                                            (CFArrayRef)scriptFolders, // pathsToWatch
+                                            (CFArrayRef)[scriptFolders valueForKey:@"path"], // pathsToWatch
                                             kFSEventStreamEventIdSinceNow, // sinceWhen
                                             1.0, // latency
                                             kFSEventStreamCreateFlagWatchRoot); // flags
@@ -161,8 +161,8 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     if (menuNeedsUpdate) {
         NSMutableArray *scripts = [NSMutableArray array];
-        for (NSString *folder in scriptFolders)
-            [scripts addObjectsFromArray:[self directoryContentsAtPath:folder recursionDepth:0]];
+        for (NSURL *folderURL in scriptFolders)
+            [scripts addObjectsFromArray:[self directoryContentsAtURL:folderURL recursionDepth:0]];
         [scripts sortUsingDescriptors:sortDescriptors];
         
         [self updateSubmenu:menu withScripts:scripts];
@@ -200,21 +200,22 @@ static BOOL isFolderUTI(NSString *theUTI) {
     return [[NSWorkspace sharedWorkspace] type:theUTI conformsToType:(id)kUTTypeFolder];
 }
 
-- (NSArray *)directoryContentsAtPath:(NSString *)path recursionDepth:(NSInteger)depth {
+- (NSArray *)directoryContentsAtURL:(NSURL *)url recursionDepth:(NSInteger)depth {
     NSMutableArray *files = [NSMutableArray array];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    NSArray *keys = [NSArray arrayWithObjects:NSURLIsDirectoryKey, nil];
     
-    for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
-        if ([file hasPrefix:@"."]) continue;
-        
-        NSString *filePath = [path stringByAppendingPathComponent:file];
-        NSDictionary *fileAttributes = [fm attributesOfItemAtPath:filePath error:NULL];
-        NSString *fileType = [fileAttributes valueForKey:NSFileType];
-        BOOL isDir = [fileType isEqualToString:NSFileTypeDirectory];
-        NSString *theUTI = [ws typeOfFile:[[filePath stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
+    for (NSURL *fileURL in [fm contentsOfDirectoryAtURL:url includingPropertiesForKeys:keys options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]) {
+        NSNumber *isDirNumber = nil;
+        BOOL isDir;
+        NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
+        NSString *filePath = [fileURL path];
         NSString *title = [[NSFileManager defaultManager] displayNameAtPath:filePath];
         NSDictionary *dict = nil;
+        
+        [fileURL getResourceValue:&isDirNumber forKey:NSURLIsDirectoryKey error:NULL];
+        isDir = [isDirNumber boolValue];
         
         NSScanner *scanner = [NSScanner scannerWithString:title];
         [scanner setCharactersToBeSkipped:nil];
@@ -231,7 +232,7 @@ static BOOL isFolderUTI(NSString *theUTI) {
                 title = [title stringByDeletingPathExtension];
             dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, nil];
         } else if (isDir && isFolderUTI(theUTI) && depth < 3) {
-            NSArray *content = [self directoryContentsAtPath:filePath recursionDepth:depth + 1];
+            NSArray *content = [self directoryContentsAtURL:fileURL recursionDepth:depth + 1];
             if ([content count] > 0)
                 dict = [[NSDictionary alloc] initWithObjectsAndKeys:filePath, FILENAME_KEY, title, TITLE_KEY, content, CONTENT_KEY, nil];
         }

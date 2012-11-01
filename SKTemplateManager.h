@@ -48,7 +48,7 @@
 - (NSArray *)customTemplateTypes;
 - (void)resetCustomTemplateTypes;
 
-- (NSString *)pathForTemplateType:(NSString *)typeName;
+- (NSURL *)URLForTemplateType:(NSString *)typeName;
 
 - (NSString *)fileNameExtensionForTemplateType:(NSString *)typeName;
 - (NSString *)displayNameForTemplateType:(NSString *)typeName;
