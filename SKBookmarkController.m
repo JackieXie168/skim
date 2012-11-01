@@ -668,7 +668,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         return YES;
     } else {
         NSArray *urls = [NSURL readFileURLsFromPasteboard:pboard];
-        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
+        NSArray *newBookmarks = [SKBookmark bookmarksForURLs:urls];
         if ([newBookmarks count] > 0) {
             [self endEditing];
             if (item == nil) item = bookmarkRoot;
@@ -757,7 +757,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
     NSArray *urls = [NSURL readFileURLsFromPasteboard:pboard];
     if ([urls count] > 0) {
-        NSArray *newBookmarks = [SKBookmark bookmarksForPaths:[urls valueForKey:@"path"] relativeToPath:nil];
+        NSArray *newBookmarks = [SKBookmark bookmarksForURLs:urls];
         if ([newBookmarks count] > 0) {
             SKBookmark *item = nil;
             NSUInteger anIndex = 0;

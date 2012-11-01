@@ -108,8 +108,8 @@ static Class SKBookmarkClass = Nil;
     return SKBookmarkClass == self ? defaultPlaceholderBookmark : [super allocWithZone:aZone];
 }
 
-+ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    return [[[self alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel] autorelease];
++ (id)bookmarkWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
+    return [[[self alloc] initWithURL:aURL pageIndex:aPageIndex label:aLabel] autorelease];
 }
 
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
@@ -128,28 +128,26 @@ static Class SKBookmarkClass = Nil;
     return [[[self alloc] initSeparator] autorelease];
 }
 
-+ (NSArray *)bookmarksForPaths:(NSArray *)paths relativeToPath:(NSString *)basePath {
++ (NSArray *)bookmarksForURLs:(NSArray *)urls {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDocumentController *dc = [NSDocumentController sharedDocumentController];
     NSMutableArray *array = [NSMutableArray array];
     
-    for (NSString *file in paths) {
-        if ([[file lastPathComponent] hasPrefix:@"."] == NO) {
-            NSString *path = [basePath stringByAppendingPathComponent:file] ?: file;
-            NSString *fileType = [dc typeForContentsOfURL:[NSURL fileURLWithPath:path] error:NULL];
-            Class docClass;
-            SKBookmark *bookmark;
-            if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKFolderDocumentType]) {
-                NSArray *children = [self bookmarksForPaths:[fm contentsOfDirectoryAtPath:path error:NULL] relativeToPath:path];
-                if ([children count] && (bookmark = [[self alloc] initFolderWithChildren:children label:[fm displayNameAtPath:path]])) {
-                    [array addObject:bookmark];
-                    [bookmark release];
-                }
-            } else if ((docClass = [dc documentClassForType:fileType])) {
-                if ((bookmark = [[self alloc] initWithPath:path pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:[fm displayNameAtPath:path]])) {
-                    [array addObject:bookmark];
-                    [bookmark release];
-                }
+    for (NSURL *url in urls) {
+        NSString *fileType = [dc typeForContentsOfURL:url error:NULL];
+        Class docClass;
+        SKBookmark *bookmark;
+        NSString *label = [fm displayNameAtPath:[url path]];
+        if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKFolderDocumentType]) {
+            NSArray *children = [self bookmarksForURLs:[fm contentsOfDirectoryAtURL:url includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
+            if ([children count] && (bookmark = [[self alloc] initFolderWithChildren:children label:label])) {
+                [array addObject:bookmark];
+                [bookmark release];
+            }
+        } else if ((docClass = [dc documentClassForType:fileType])) {
+            if ((bookmark = [[self alloc] initWithURL:url pageIndex:([docClass isPDFDocument] ? 0 : NSNotFound) label:label])) {
+                [array addObject:bookmark];
+                [bookmark release];
             }
         }
     }
@@ -157,7 +155,7 @@ static Class SKBookmarkClass = Nil;
     return array;
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
+- (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
@@ -306,8 +304,8 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    return (id)[[SKFileBookmark alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel];
+- (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
+    return (id)[[SKFileBookmark alloc] initWithURL:aURL pageIndex:aPageIndex label:aLabel];
 }
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
@@ -401,10 +399,10 @@ static Class SKBookmarkClass = Nil;
     return image;
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
+- (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     self = [super init];
     if (self) {
-        alias = [[BDAlias alloc] initWithPath:aPath];
+        alias = [[BDAlias alloc] initWithURL:aURL];
         if (alias) {
             aliasData = [[alias aliasData] retain];
             pageIndex = aPageIndex;
@@ -618,7 +616,6 @@ static Class SKBookmarkClass = Nil;
     if ([key isEqualToString:@"bookmarks"]) {
         SKBookmark *bookmark = nil;
         NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
-        NSString *aPath = [aURL respondsToSelector:@selector(path)] ? [aURL path] : nil;
         NSString *aLabel = [properties objectForKey:@"label"];
         NSNumber *aType = [properties objectForKey:@"bookmarkType"];
         NSInteger type;
@@ -626,7 +623,7 @@ static Class SKBookmarkClass = Nil;
             type = [aType integerValue];
         else if (aURL == nil)
             type = SKBookmarkTypeSession;
-        else if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:aPath error:NULL] conformsToType:(NSString *)kUTTypeFolder])
+        else if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:[aURL path] error:NULL] conformsToType:(NSString *)kUTTypeFolder])
             type = SKBookmarkTypeFolder;
         else
             type = SKBookmarkTypeBookmark;
@@ -634,10 +631,10 @@ static Class SKBookmarkClass = Nil;
             case SKBookmarkTypeBookmark:
             {
                 Class docClass;
-                if (aPath == nil) {
+                if (aURL == nil) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires a file."];
-                } else if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
+                } else if ([[NSFileManager defaultManager] fileExistsAtPath:[aURL path]] == NO) {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"New file bookmark requires an existing file."];
                 } else if ((docClass = [[NSDocumentController sharedDocumentController] documentClassForContentsOfURL:aURL])) {
@@ -647,8 +644,8 @@ static Class SKBookmarkClass = Nil;
                     else
                         aPageNumber = [docClass isPDFDocument] ? 0 : NSNotFound;
                     if (aLabel == nil)
-                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
-                    bookmark = [[SKBookmark alloc] initWithPath:aPath pageIndex:aPageNumber label:aLabel ?: @""];
+                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:[aURL path]];
+                    bookmark = [[SKBookmark alloc] initWithURL:aURL pageIndex:aPageNumber label:aLabel ?: @""];
                 } else {
                     [[NSScriptCommand currentCommand] setScriptErrorNumber:NSArgumentsWrongScriptError];
                     [[NSScriptCommand currentCommand] setScriptErrorString:@"Unsupported file type for new bookmark."];
@@ -658,10 +655,10 @@ static Class SKBookmarkClass = Nil;
             case SKBookmarkTypeFolder:
             {
                 NSArray *aChildren = nil;
-                if (aPath) {
-                    aChildren = [SKBookmark bookmarksForPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:aPath error:NULL] relativeToPath:aPath];
+                if (aURL) {
+                    aChildren = [SKBookmark bookmarksForURLs:[[NSFileManager defaultManager] contentsOfDirectoryAtURL:aURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
                     if (aLabel == nil)
-                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:aPath];
+                        aLabel = [[NSFileManager defaultManager] displayNameAtPath:[aURL path]];
                 }
                 bookmark = [[SKBookmark alloc] initFolderWithChildren:aChildren label:aLabel ?: @""];
                 break;
