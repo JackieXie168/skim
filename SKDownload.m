@@ -46,7 +46,7 @@ NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
 NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
-#define SKFilePathKey  @"filePath"
+#define SKFileURLKey  @"fileURL"
 #define SKFileIconKey  @"fileIcon"
 #define SKCanCancelKey @"canCancel"
 #define SKCanRemoveKey @"canRemove"
@@ -55,7 +55,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @interface SKDownload ()
 @property (nonatomic) SKDownloadStatus status;
-@property (nonatomic, retain) NSString *filePath;
+@property (nonatomic, retain) NSURL *fileURL;
 @property (nonatomic, retain) NSImage *fileIcon;
 @property (nonatomic) long long expectedContentLength, receivedContentLength;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
@@ -64,28 +64,28 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @implementation SKDownload
 
-@synthesize URL, filePath, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic fileName, fileURL, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
+@synthesize URL, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
+@dynamic fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
 
-static NSSet *keysAffectedByFilePath = nil;
+static NSSet *keysAffectedByFileURL = nil;
 static NSSet *keysAffectedByDownloadStatus = nil;
-static NSSet *filePathSet = nil;
+static NSSet *fileURLSet = nil;
 static NSSet *downloadStatusSet = nil;
 static NSSet *infoKeys = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    keysAffectedByFilePath = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKFileIconKey, nil];
+    keysAffectedByFileURL = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKFileIconKey, nil];
     keysAffectedByDownloadStatus = [[NSSet alloc] initWithObjects:SKCanCancelKey, SKCanRemoveKey, SKCanResumeKey, nil];
-    filePathSet = [[NSSet alloc] initWithObjects:SKFilePathKey, nil];
+    fileURLSet = [[NSSet alloc] initWithObjects:SKFileURLKey, nil];
     downloadStatusSet = [[NSSet alloc] initWithObjects:SKDownloadStatusKey, nil];
     infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *set = [super keyPathsForValuesAffectingValueForKey:key];
-    if ([keysAffectedByFilePath containsObject:key])
-        return [set count] > 0 ? [set setByAddingObjectsFromSet:filePathSet] : filePathSet;
+    if ([keysAffectedByFileURL containsObject:key])
+        return [set count] > 0 ? [set setByAddingObjectsFromSet:fileURLSet] : fileURLSet;
     if ([keysAffectedByDownloadStatus containsObject:key])
         return [set count] > 0 ? [set setByAddingObjectsFromSet:downloadStatusSet] : downloadStatusSet;
     if ([SKInfoKey isEqualToString:key])
@@ -98,7 +98,7 @@ static NSSet *infoKeys = nil;
     if (self) {
         URL = [aURL retain];
         URLDownload = nil;
-        filePath = nil;
+        fileURL = nil;
         fileIcon = nil;
         expectedContentLength = NSURLResponseUnknownLength;
         receivedContentLength = 0;
@@ -120,7 +120,7 @@ static NSSet *infoKeys = nil;
     [self cancel];
     SKDESTROY(URL);
     SKDESTROY(URLDownload);
-    SKDESTROY(filePath);
+    SKDESTROY(fileURL);
     SKDESTROY(fileIcon);
     SKDESTROY(progressIndicator);
     [super dealloc];
@@ -160,19 +160,9 @@ static NSSet *infoKeys = nil;
     }
 }
 
-- (void)setFilePath:(NSString *)newFilePath {
-    if (filePath != newFilePath) {
-        [filePath release];
-        filePath = [newFilePath retain];
-        
-        if (fileIcon == nil && filePath) {
-            fileIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:[filePath pathExtension]] retain];
-        }
-    }
-}
-
 - (NSString *)fileName {
-    NSString *fileName = [[NSFileManager defaultManager] displayNameAtPath:filePath];
+    NSString *fileName = nil;
+    [fileURL getResourceValue:&fileName forKey:NSURLLocalizedNameKey error:NULL];
     if (fileName == nil) {
         if ([[URL path] length] > 1) {
             fileName = [[URL path] lastPathComponent];
@@ -185,8 +175,15 @@ static NSSet *infoKeys = nil;
     return fileName;
 }
 
-- (NSURL *)fileURL {
-    return filePath ? [NSURL fileURLWithPath:filePath] : nil;
+- (void)setFileURL:(NSURL *)newFileURL {
+    if (fileURL != newFileURL) {
+        [fileURL release];
+        fileURL = [newFileURL retain];
+        
+        if (fileIcon == nil && fileURL) {
+            fileIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:[fileURL pathExtension]] retain];
+        }
+    }
 }
 
 - (NSImage *)fileIcon {
@@ -290,14 +287,14 @@ static NSSet *infoKeys = nil;
         if (resumeData) {
             
             [URLDownload release];
-            URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[self filePath]];
+            URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[[self fileURL] path]];
             [URLDownload setDeletesFileUponFailure:NO];
             [self setStatus:SKDownloadStatusDownloading];
             
         } else {
             
             [self cleanup];
-            [self setFilePath:nil];
+            [self setFileURL:nil];
             [URLDownload release];
             URLDownload = nil;
             [self start];
@@ -308,17 +305,17 @@ static NSSet *infoKeys = nil;
 
 - (void)cleanup {
     [self cancel];
-    if (filePath)
-        [[NSFileManager defaultManager] removeItemAtPath:[filePath stringByDeletingLastPathComponent] error:NULL];
+    if (fileURL)
+        [[NSFileManager defaultManager] removeItemAtURL:[fileURL URLByDeletingLastPathComponent] error:NULL];
 }
 
 - (void)moveToTrash {
-    if ([self canRemove] && filePath) {
-        NSString *folderPath = [filePath stringByDeletingLastPathComponent];
-        NSString *fileName = [filePath lastPathComponent];
+    if ([self canRemove] && fileURL) {
+        NSURL *folderURL = [fileURL URLByDeletingLastPathComponent];
+        NSString *fileName = [fileURL lastPathComponent];
         NSInteger tag = 0;
         
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
     }
 }
 
@@ -360,7 +357,7 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
-    [self setFilePath:path];
+    [self setFileURL:[NSURL fileURLWithPath:path]];
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
@@ -377,9 +374,9 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
-    if (filePath)
-        [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
-    [self setFilePath:nil];
+    if (fileURL)
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:NULL];
+    [self setFileURL:nil];
     [self setStatus:SKDownloadStatusFailed];
 }
 

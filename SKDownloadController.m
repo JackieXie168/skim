@@ -344,7 +344,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (download && [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
-        [[NSWorkspace sharedWorkspace] selectFile:[download filePath] inFileViewerRootedAtPath:nil];
+        [[NSWorkspace sharedWorkspace] selectFile:[[download fileURL] path] inFileViewerRootedAtPath:nil];
     }
 }
 
@@ -480,7 +480,7 @@ static SKDownloadController *sharedDownloadController = nil;
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
             [menuItem setRepresentedObject:download];
         }
-        if ([download status] == SKDownloadStatusFinished && [[NSFileManager defaultManager] fileExistsAtPath:[download filePath]]) {
+        if ([download status] == SKDownloadStatusFinished && [[NSFileManager defaultManager] fileExistsAtPath:[[download fileURL] path]]) {
             menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
             [menuItem setRepresentedObject:download];
             
