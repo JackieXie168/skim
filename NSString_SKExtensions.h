@@ -49,8 +49,6 @@
 
 - (NSString *)stringByAppendingEllipsis;
 
-- (NSString *)lastPathComponentReplacingPathExtension:(NSString *)ext;
-
 - (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet;
 - (NSString *)stringByEscapingShellChars;
 - (NSString *)stringByEscapingParenthesis;

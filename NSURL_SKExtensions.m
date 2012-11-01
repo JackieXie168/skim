@@ -113,6 +113,10 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     return [[self URLByDeletingPathExtension] URLByAppendingPathExtension:ext];
 }
 
+- (NSString *)lastPathComponentReplacingPathExtension:(NSString *)ext {
+    return [[self URLReplacingPathExtension:ext] lastPathComponent];
+}
+
 - (NSAttributedString *)icon {
     NSAttributedString *attrString = nil;
     

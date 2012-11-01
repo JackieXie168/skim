@@ -253,11 +253,6 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return [self stringByAppendingFormat:@"%C", ELLIPSIS_CHARACTER];
 }
 
-- (NSString *)lastPathComponentReplacingPathExtension:(NSString *)ext;
-{
-    return [[[self lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
-}
-
 - (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet {
     NSUInteger location = [self rangeOfCharacterFromSet:charSet].location;
     if (location == NSNotFound)
