@@ -204,16 +204,17 @@ static BOOL isFolderUTI(NSString *theUTI) {
     NSMutableArray *files = [NSMutableArray array];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    NSArray *keys = [NSArray arrayWithObjects:NSURLIsDirectoryKey, nil];
+    NSArray *keys = [NSArray arrayWithObjects:NSURLIsDirectoryKey, NSURLLocalizedNameKey, nil];
     
     for (NSURL *fileURL in [fm contentsOfDirectoryAtURL:url includingPropertiesForKeys:keys options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]) {
         NSNumber *isDirNumber = nil;
         BOOL isDir;
         NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
         NSString *filePath = [fileURL path];
-        NSString *title = [[NSFileManager defaultManager] displayNameAtPath:filePath];
+        NSString *title = nil;
         NSDictionary *dict = nil;
         
+        [fileURL getResourceValue:&title forKey:NSURLLocalizedNameKey error:NULL];
         [fileURL getResourceValue:&isDirNumber forKey:NSURLIsDirectoryKey error:NULL];
         isDir = [isDirNumber boolValue];
         
