@@ -50,15 +50,15 @@ typedef NSInteger SKBookmarkType;
     SKBookmark *parent;
 }
 
-+ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
++ (id)bookmarkWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel;
 + (id)bookmarkSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel;
 + (id)bookmarkSeparator;
 
-+ (NSArray *)bookmarksForPaths:(NSArray *)paths relativeToPath:(NSString *)basePath;
++ (NSArray *)bookmarksForURLs:(NSArray *)urls;
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
+- (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
