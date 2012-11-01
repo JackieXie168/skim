@@ -425,7 +425,7 @@ enum {
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
         NSURL *notesURL = [absoluteURL URLReplacingPathExtension:@"skim"];
-        BOOL fileExists = [fm fileExistsAtPath:[notesURL path]];
+        BOOL fileExists = [fm fileExistsAtURL:notesURL];
         
         if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesURL lastPathComponent]]
@@ -832,7 +832,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
                 if (pdfDoc) {
                     NSURL *url = [absoluteURL URLReplacingPathExtension:@"skim"];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+                    if ([[NSFileManager defaultManager] fileExistsAtURL:url]) {
                         NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                         if (readOption == NSAlertOtherReturn) {
                             NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
@@ -1139,7 +1139,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (IBAction)saveArchive:(id)sender {
     NSURL *fileURL = [self fileURL];
-    if (fileURL && [[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]] && [self isDocumentEdited] == NO) {
+    if (fileURL && [[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"tgz"];
         [sp setCanCreateDirectories:YES];
@@ -1267,7 +1267,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (IBAction)saveDiskImage:(id)sender {
     NSURL *fileURL = [self fileURL];
-    if (fileURL && [[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]] && [self isDocumentEdited] == NO) {
+    if (fileURL && [[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"dmg"];
         [sp setCanCreateDirectories:YES];
@@ -1295,12 +1295,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)moveToTrash:(id)sender {
-    NSString *path = [[self fileURL] path];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSString *folderPath = [path stringByDeletingLastPathComponent];
-        NSString *fileName = [path lastPathComponent];
+    NSURL *fileURL = [self fileURL];
+    if ([[NSFileManager defaultManager] fileExistsAtURL:fileURL]) {
+        NSURL *folderURL = [fileURL URLByDeletingLastPathComponent];
+        NSString *fileName = [fileURL lastPathComponent];
         NSInteger tag = 0;
-        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
+        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
             [self close];
         else NSBeep();
     } else NSBeep();
@@ -1341,8 +1341,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
 	if ([anItem action] == @selector(revertDocumentToSaved:)) {
-        NSString *fileName = [[self fileURL] path];
-        if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
+        if ([self fileURL] == nil || [[NSFileManager defaultManager] fileExistsAtURL:[self fileURL]] == NO)
             return NO;
         return [self isDocumentEdited] || [fileUpdateChecker fileChangedOnDisk] ||
                NSOrderedAscending == [[self fileModificationDate] compare:[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate]];
@@ -1351,11 +1350,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([anItem action] == @selector(convertNotes:)) {
         return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] isLocked] == NO;
     } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
-        NSString *path = [[self fileURL] path];
-        return path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO;
+        return [self fileURL] && [[NSFileManager defaultManager] fileExistsAtURL:[self fileURL]] && [self isDocumentEdited] == NO;
     } else if ([anItem action] == @selector(moveToTrash:)) {
-        NSString *path = [[self fileURL] path];
-        return path && [[NSFileManager defaultManager] fileExistsAtPath:path];
+        return [self fileURL] && [[NSFileManager defaultManager] fileExistsAtURL:[self fileURL]];
     }
     return [super validateUserInterfaceItem:anItem];
 }
@@ -1962,7 +1959,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
-    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
+    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtURL:[self fileURL]]) {
         if ([fileUpdateChecker isUpdatingFile] == NO && [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];

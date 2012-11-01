@@ -62,10 +62,11 @@
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templates = [NSMutableArray array];
         
-        for (NSURL *appSupportURL in [[NSFileManager defaultManager] applicationSupportDirectoryURLs]) {
+        for (NSURL *appSupportURL in [fm applicationSupportDirectoryURLs]) {
             NSURL *templatesURL = [appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY];
-            BOOL isDir;
-            if ([fm fileExistsAtPath:[templatesURL path] isDirectory:&isDir] && isDir) {
+            NSNumber *isDir = nil;
+            [appSupportURL getResourceValue:&isDir forKey:NSURLIsDirectoryKey error:NULL];
+            if ([isDir boolValue]) {
                 for (NSURL *url in [fm contentsOfDirectoryAtURL:templatesURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]) {
                     NSString *file = [url lastPathComponent];
                     if ([[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO &&
@@ -90,7 +91,7 @@
     
     for (NSURL *appSupportURL in [[fm applicationSupportDirectoryURLs] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
         url = [[appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY] URLByAppendingPathComponent:typeName];
-        if ([fm fileExistsAtPath:[url path]] == NO)
+        if ([fm fileExistsAtURL:url] == NO)
             url = nil;
         else break;
     }

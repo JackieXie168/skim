@@ -39,6 +39,7 @@
 #import "SKDragImageView.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 
 @implementation SKDragImageView
 
@@ -54,14 +55,9 @@
         return;
     }
     
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *basePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SkimNote"];
-    NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
-    NSInteger i = 0;
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SkimNote.tiff"];
     
-    while ([fm fileExistsAtPath:path])
-        path = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
-    
+    path = [[NSFileManager defaultManager] uniqueFile:path];
     [[image TIFFRepresentation] writeToFile:path atomically:YES];
     [[NSWorkspace sharedWorkspace] openFile:path];
 }

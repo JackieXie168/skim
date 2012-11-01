@@ -290,7 +290,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 - (BOOL)isPDFDocument { return NO; }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
-    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
+    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtURL:[self fileURL]]) {
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];

@@ -50,6 +50,7 @@
 #import "SKDownloadPreferenceController.h"
 #import "NSError_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -480,7 +481,7 @@ static SKDownloadController *sharedDownloadController = nil;
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
             [menuItem setRepresentedObject:download];
         }
-        if ([download status] == SKDownloadStatusFinished && [[NSFileManager defaultManager] fileExistsAtPath:[[download fileURL] path]]) {
+        if ([download status] == SKDownloadStatusFinished && [[NSFileManager defaultManager] fileExistsAtURL:[download fileURL]]) {
             menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
             [menuItem setRepresentedObject:download];
             
