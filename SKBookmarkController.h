@@ -69,8 +69,8 @@
 - (IBAction)deleteBookmark:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
-- (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path;
-- (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path;
+- (void)addRecentDocumentForURL:(NSURL *)fileURL pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
+- (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL;
+- (NSArray *)snapshotsForRecentDocumentAtURL:(NSURL *)fileURL;
 
 @end

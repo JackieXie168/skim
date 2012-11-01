@@ -143,7 +143,7 @@ static BOOL isEncapsulatedPostScriptData(NSData *data) {
     if ([ws type:type conformsToType:SKFolderDocumentType] == NO && [self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
-            NSData *leadingData = [[NSFileHandle fileHandleForReadingAtPath:[inAbsoluteURL path]] readDataOfLength:20];
+            NSData *leadingData = [[NSFileHandle fileHandleForReadingFromURL:inAbsoluteURL error:NULL] readDataOfLength:20];
             if (isPDFData(leadingData))
                 type = SKPDFDocumentType;
             else if (isPostScriptData(leadingData))
@@ -153,8 +153,7 @@ static BOOL isEncapsulatedPostScriptData(NSData *data) {
             *outError = error;
     } else if ([ws type:type conformsToType:SKNotesFDFDocumentType]) {
         // Springer sometimes sends PDF files with an .fdf extension for review, huh?
-        NSString *fileName = [inAbsoluteURL path];
-        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingFromURL:inAbsoluteURL error:NULL];
         NSData *leadingData = [fh readDataOfLength:5];
         if (isPDFData(leadingData))
             type = SKPDFDocumentType;
@@ -344,10 +343,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([ws type:type conformsToType:SKNotesDocumentType]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-            NSString *pdfFile = [absoluteURL pathReplacingPathExtension:@"pdf"];
+            NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
             BOOL isDir;
-            if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
-                absoluteURL = [NSURL fileURLWithPath:pdfFile];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[pdfURL path] isDirectory:&isDir] && isDir == NO)
+                absoluteURL = pdfURL;
         }
     } else if ([ws type:type conformsToType:SKFolderDocumentType]) {
         NSDocument *doc = nil;

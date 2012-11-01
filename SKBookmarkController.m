@@ -48,6 +48,7 @@
 #import "SKSeparatorCell.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
@@ -218,28 +219,29 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #pragma mark Recent Documents
 
-- (NSDictionary *)recentDocumentInfoAtPath:(NSString *)path {
+- (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
+    NSString *path = [fileURL path];
     for (NSMutableDictionary *info in recentDocuments) {
         BDAlias *alias = [info valueForKey:ALIAS_KEY];
         if (alias == nil) {
             alias = [BDAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
             [info setValue:alias forKey:ALIAS_KEY];
         }
-        if ([[alias fullPathNoUI] isEqualToString:path])
+        if ([[alias fullPathNoUI] isCaseInsensitiveEqual:path])
             return info;
     }
     return nil;
 }
 
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups {
-    if (path == nil)
+- (void)addRecentDocumentForURL:(NSURL *)fileURL pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups {
+    if (fileURL == nil)
         return;
     
-    NSDictionary *info = [self recentDocumentInfoAtPath:path];
+    NSDictionary *info = [self recentDocumentInfoAtURL:fileURL];
     if (info)
         [recentDocuments removeObjectIdenticalTo:info];
     
-    BDAlias *alias = [BDAlias aliasWithPath:path];
+    BDAlias *alias = [BDAlias aliasWithURL:fileURL];
     if (alias) {
         NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, [alias aliasData], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
         [recentDocuments insertObject:bm atIndex:0];
@@ -248,17 +250,17 @@ static NSUInteger maxRecentDocumentsCount = 0;
     }
 }
 
-- (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path {
-    if (path == nil)
+- (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL {
+    if (fileURL == nil)
         return NSNotFound;
-    NSDictionary *info = [self recentDocumentInfoAtPath:path];
-    return info == nil ? NSNotFound : [[info objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
+    NSNumber *pageIndex = [[self recentDocumentInfoAtURL:fileURL] objectForKey:PAGEINDEX_KEY];
+    return pageIndex == nil ? NSNotFound : [pageIndex unsignedIntegerValue];
 }
 
-- (NSArray *)snapshotsForRecentDocumentAtPath:(NSString *)path {
-    if (path == nil)
+- (NSArray *)snapshotsForRecentDocumentAtURL:(NSURL *)fileURL {
+    if (fileURL == nil)
         return nil;
-    NSArray *setups = [[self recentDocumentInfoAtPath:path] objectForKey:SNAPSHOTS_KEY];
+    NSArray *setups = [[self recentDocumentInfoAtURL:fileURL] objectForKey:SNAPSHOTS_KEY];
     return [setups count] ? setups : nil;
 }
 

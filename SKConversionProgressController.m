@@ -68,7 +68,7 @@ enum {
 + (NSString *)dviToolPath;
 + (NSString *)xdvToolPath;
 - (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-- (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
+- (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
 - (void)conversionCompleted;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -112,19 +112,19 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return [[[[self alloc] init] autorelease] newPDFDataWithPostScriptData:psData error:outError];
 }
 
-+ (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile error:(NSError **)outError {
++ (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL error:(NSError **)outError {
     NSString *dviToolPath = [self dviToolPath];
     if (dviToolPath)
-        return [[[[self alloc] init] autorelease] newPDFDataWithDVIFile:dviFile toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
+        return [[[[self alloc] init] autorelease] newPDFDataWithDVIAtURL:dviURL toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
     else
         NSBeep();
     return nil;
 }
 
-+ (NSData *)newPDFDataWithXDVFile:(NSString *)xdvFile error:(NSError **)outError {
++ (NSData *)newPDFDataWithXDVAtURL:(NSURL *)xdvURL error:(NSError **)outError {
     NSString *xdvToolPath = [self xdvToolPath];
     if (xdvToolPath)
-        return [[[[self alloc] init] autorelease] newPDFDataWithDVIFile:xdvFile toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
+        return [[[[self alloc] init] autorelease] newPDFDataWithDVIAtURL:xdvURL toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
     else
         NSBeep();
     return nil;
@@ -378,7 +378,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }
 
-- (NSData *)newPDFDataWithDVIFile:(NSString *)dviFile toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
+- (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
     NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     NSMutableData *pdfData = nil;
@@ -394,7 +394,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSAssert(converter != NULL, @"unable to create PS converter");
     }
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, INPUTFILE_KEY, pdfData, PDFDATA_KEY, toolPath, TOOLPATH_KEY, nil];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[dviURL path], INPUTFILE_KEY, pdfData, PDFDATA_KEY, toolPath, TOOLPATH_KEY, nil];
     
     NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
     
