@@ -47,6 +47,7 @@
 + (NSArray *)readFileURLsFromPasteboard:(NSPasteboard *)pboard;
 
 - (NSURL *)URLReplacingPathExtension:(NSString *)ext;
+- (NSString *)lastPathComponentReplacingPathExtension:(NSString *)ext;
 
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;

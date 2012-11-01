@@ -1138,12 +1138,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)saveArchive:(id)sender {
-    NSString *path = [[self fileURL] path];
-    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+    NSURL *fileURL = [self fileURL];
+    if (fileURL && [[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"tgz"];
         [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:[path lastPathComponentReplacingPathExtension:@"tgz"]];
+        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"tgz"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result && [self fileURL])
                     [self saveArchiveToFile:[[sp URL] path]];
@@ -1229,7 +1229,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[self fileURL] path] lastPathComponentReplacingPathExtension:@"tgz"]];
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
         if ([self saveArchiveToFile:tmpFile] == NO || [self emailAttachmentFile:tmpFile] == NO)
             NSBeep();
     } else {
@@ -1266,12 +1266,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)saveDiskImage:(id)sender {
-    NSString *path = [[self fileURL] path];
-    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+    NSURL *fileURL = [self fileURL];
+    if (fileURL && [[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setRequiredFileType:@"dmg"];
         [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:[path lastPathComponentReplacingPathExtension:@"dmg"]];
+        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"dmg"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result && [self fileURL])
                     [self saveDiskImageToFile:[[sp URL] path] email:NO];
@@ -1286,7 +1286,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[self fileURL] path] lastPathComponentReplacingPathExtension:@"dmg"]];
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"dmg"]];
         [self saveDiskImageToFile:tmpFile email:YES];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];

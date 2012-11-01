@@ -50,7 +50,7 @@
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
-#define INPUTFILE_KEY   @"inputFile"
+#define INPUTURL_KEY    @"inputURL"
 #define PDFDATA_KEY     @"pdfData"
 #define TOOLPATH_KEY    @"toolPath"
 
@@ -322,12 +322,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doDVIConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *dviFile = [info objectForKey:INPUTFILE_KEY];
+    NSURL *dviURL = [info objectForKey:INPUTURL_KEY];
+    NSString *dviFile = [dviURL path];
     NSString *commandPath = [info objectForKey:TOOLPATH_KEY];
     NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueTemporaryDirectory();
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
-    NSString *outFile = [tmpDir stringByAppendingPathComponent:[dviFile lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
+    NSString *outFile = [tmpDir stringByAppendingPathComponent:[dviURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
     BOOL success = NO;
     
@@ -394,7 +395,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSAssert(converter != NULL, @"unable to create PS converter");
     }
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[dviURL path], INPUTFILE_KEY, pdfData, PDFDATA_KEY, toolPath, TOOLPATH_KEY, nil];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviURL, INPUTURL_KEY, pdfData, PDFDATA_KEY, toolPath, TOOLPATH_KEY, nil];
     
     NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
     
