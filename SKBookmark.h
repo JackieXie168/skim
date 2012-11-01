@@ -71,7 +71,7 @@ typedef NSInteger SKBookmarkType;
 @property (nonatomic, readonly) SKBookmarkType bookmarkType;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, readonly) NSImage *icon, *alternateIcon;
-@property (nonatomic, readonly) NSString *path;
+@property (nonatomic, readonly) NSURL *fileURL;
 @property (nonatomic) NSUInteger pageIndex;
 @property (nonatomic, retain) NSNumber *pageNumber;
 @property (nonatomic, assign) SKBookmark *parent;
@@ -82,7 +82,6 @@ typedef NSInteger SKBookmarkType;
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
 
-@property (nonatomic, readonly) NSURL *scriptingFile;
 @property (nonatomic, readonly) SKBookmark *scriptingParent;
 @property (nonatomic, readonly) NSArray *entireContents;
 

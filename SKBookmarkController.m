@@ -208,7 +208,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (row != -1) {
         SKBookmark *bookmark = [outlineView itemAtRow:row];
         if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
-            message = [bookmark path];
+            message = [[bookmark fileURL] path];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
             NSInteger count = [bookmark countOfChildren];
             message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
@@ -595,7 +595,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             NSInteger count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
         } else {
-            return [[item path] stringByAbbreviatingWithTildeInPath];
+            return [[[item fileURL] path] stringByAbbreviatingWithTildeInPath];
         }
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [item pageNumber];
@@ -730,7 +730,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             NSInteger count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
         } else {
-            return [item path];
+            return [[item fileURL] path];
         }
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [[item pageNumber] stringValue];

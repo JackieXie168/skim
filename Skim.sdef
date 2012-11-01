@@ -1203,7 +1203,7 @@
             </property>
             <contents name="file" code="file" type="file" access="r"
                 description="The file for the bookmark.">
-                <cocoa key="scriptingFile"/>
+                <cocoa key="fileURL"/>
             </contents>
             <property name="page index" code="PIdx" type="integer"
                 description="The page index for the bookmark.">
