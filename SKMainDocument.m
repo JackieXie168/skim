@@ -104,7 +104,7 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define TYPE_KEY            @"type"
 #define SAVEOPERATION_KEY   @"saveOperation"
 #define CALLBACK_KEY        @"callback"
-#define TMPPATH_KEY         @"tmpPath"
+#define TMPURL_KEY          @"tmpURL"
 
 #define SOURCEPATH_KEY  @"sourcePath"
 #define TARGETPATH_KEY  @"targetPath"
@@ -286,10 +286,10 @@ enum {
 }
 
 - (void)saveRecentDocumentInfo {
-    NSString *path = [[self fileURL] path];
+    NSURL *fileURL = [self fileURL];
     NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
-    if (path && pageIndex != NSNotFound && [self mainWindowController])
-        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
+    if (fileURL && pageIndex != NSNotFound && [self mainWindowController])
+        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
 - (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
@@ -424,15 +424,15 @@ enum {
     BOOL saveNotesOK = NO;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-        NSString *notesPath = [absoluteURL pathReplacingPathExtension:@"skim"];
-        BOOL fileExists = [fm fileExistsAtPath:notesPath];
+        NSURL *notesURL = [absoluteURL URLReplacingPathExtension:@"skim"];
+        BOOL fileExists = [fm fileExistsAtPath:[notesURL path]];
         
         if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
-            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
+            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesURL lastPathComponent]]
                                              defaultButton:NSLocalizedString(@"Save", @"Button title")
                                            alternateButton:NSLocalizedString(@"Cancel", @"Button title")
                                                otherButton:nil
-                                 informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
+                                 informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesURL URLByDeletingLastPathComponent] lastPathComponent]];
             
             saveNotesOK = NSAlertDefaultReturn == [alert runModal];
         } else {
@@ -441,9 +441,9 @@ enum {
         
         if (saveNotesOK) {
             if ([[self notes] count] > 0)
-                saveNotesOK = [self writeSafelyToURL:[NSURL fileURLWithPath:notesPath] ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
+                saveNotesOK = [self writeSafelyToURL:notesURL ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
             else if (fileExists)
-                saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
+                saveNotesOK = [fm removeItemAtURL:notesURL error:NULL];
         }
     }
     
@@ -474,7 +474,7 @@ enum {
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
                                        alternateButton:nil
                                            otherButton:nil
-                             informativeTextWithFormat:message, [[absoluteURL path] lastPathComponent]];
+                             informativeTextWithFormat:message, [absoluteURL lastPathComponent]];
         [alert runModal];
     }
     
@@ -490,7 +490,7 @@ enum {
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
     NSSaveOperationType saveOperation = [[info objectForKey:SAVEOPERATION_KEY] unsignedIntegerValue];
-    NSString *tmpPath = [info objectForKey:TMPPATH_KEY];
+    NSURL *tmpURL = [info objectForKey:TMPURL_KEY];
     
     if (didSave) {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
@@ -499,12 +499,11 @@ enum {
         if ([self canAttachNotesForType:typeName] && exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
-        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpPath) {
+        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpURL) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
-            NSString *path = [absoluteURL path];
-            for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
-                [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
+            for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
+                [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
@@ -517,8 +516,8 @@ enum {
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     }
     
-    if (tmpPath)
-        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
+    if (tmpURL)
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [fileUpdateChecker checkFileUpdatesIfNeeded];
@@ -562,19 +561,19 @@ enum {
     
     if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation) {
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSString *path = [[self fileURL] path];
-        NSString *tmpPath = nil;
+        NSURL *fileURL = [self fileURL];
+        NSURL *tmpURL = nil;
         // we move everything that's not ours out of the way, so we can preserve version control info
         NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-        for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
-            if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
-                if (tmpPath == nil)
-                    tmpPath = SKUniqueTemporaryDirectory();
-                [fm copyItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
+        for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
+            if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
+                if (tmpURL == nil)
+                    tmpURL = [NSURL fileURLWithPath:SKUniqueTemporaryDirectory()];
+                [fm copyItemAtURL:url toURL:[tmpURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
             }
         }
-        if (tmpPath)
-            [info setObject:tmpPath forKey:TMPPATH_KEY];
+        if (tmpURL)
+            [info setObject:tmpURL forKey:TMPURL_KEY];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
@@ -624,9 +623,9 @@ enum {
         if ([ws type:[self fileType] conformsToType:typeName])
             didWrite = [originalData writeToURL:absoluteURL options:0 error:&error];
     } else if ([ws type:SKPDFBundleDocumentType conformsToType:typeName]) {
-        NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension]];
+        NSFileWrapper *fileWrapper = [self PDFBundleFileWrapperForName:[[absoluteURL lastPathComponent] stringByDeletingPathExtension]];
         if (fileWrapper)
-            didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+            didWrite = [fileWrapper writeToURL:absoluteURL options:0 originalContentsURL:nil error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
     } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
@@ -640,7 +639,7 @@ enum {
     } else if ([ws type:SKNotesRTFDDocumentType conformsToType:typeName]) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
-            didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+            didWrite = [fileWrapper writeToURL:absoluteURL options:0 originalContentsURL:nil error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description")];
     } else if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
@@ -662,7 +661,7 @@ enum {
     } else if ([[SKTemplateManager sharedManager] isRichTextBundleTemplateType:typeName]) {
         NSFileWrapper *fileWrapper = [self notesFileWrapperForTemplateType:typeName];
         if (fileWrapper)
-            didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+            didWrite = [fileWrapper writeToURL:absoluteURL options:0 originalContentsURL:nil error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes using template", @"Error description")];
     } else {
@@ -688,18 +687,17 @@ enum {
         ([[self class] isNativeType:typeName] || [typeName isEqualToString:SKNotesDocumentType]))
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
-        [ws type:typeName conformsToType:SKPDFDocumentType])
+    if ([ws type:typeName conformsToType:SKPDFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [ws type:typeName conformsToType:SKPDFBundleDocumentType])
+    else if ([ws type:typeName conformsToType:SKPDFBundleDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'PDFD'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [ws type:typeName conformsToType:SKNotesDocumentType])
+    else if ([ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [ws type:typeName conformsToType:SKNotesFDFDocumentType])
+    else if ([ws type:typeName conformsToType:SKNotesFDFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'FDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
+    else if ([[absoluteURL pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
+    else if ([[absoluteURL pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -806,9 +804,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if ([ws type:docType conformsToType:SKPostScriptDocumentType])
                     data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error];
                 else if ([ws type:docType conformsToType:SKDVIDocumentType])
-                    data = [SKConversionProgressController newPDFDataWithDVIFile:[absoluteURL path] error:&error];
+                    data = [SKConversionProgressController newPDFDataWithDVIAtURL:absoluteURL error:&error];
                 else if ([ws type:docType conformsToType:SKXDVDocumentType])
-                    data = [SKConversionProgressController newPDFDataWithXDVFile:[absoluteURL path] error:&error];
+                    data = [SKConversionProgressController newPDFDataWithXDVAtURL:absoluteURL error:&error];
                 if (data)
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
@@ -833,8 +831,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     }
                 }
                 if (pdfDoc) {
-                    NSString *path = [absoluteURL pathReplacingPathExtension:@"skim"];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                    NSURL *url = [absoluteURL URLReplacingPathExtension:@"skim"];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
                         NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                         if (readOption == NSAlertOtherReturn) {
                             NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
@@ -845,7 +843,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                             readOption = [alert runModal];
                         }
                         if (readOption == NSAlertDefaultReturn) {
-                            array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:[NSURL fileURLWithPath:path] error:NULL];
+                            array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:url error:NULL];
                             if ([array count]) {
                                 [tmpData setNoteDicts:array];
                                 [self updateChangeCount:NSChangeDone];
@@ -870,7 +868,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             NSArray *array = nil;
             NSNumber *number = nil;
             if ([docType isEqualToString:SKPDFBundleDocumentType]) {
-                NSData *infoData = [NSData dataWithContentsOfFile:[[[absoluteURL path] stringByAppendingPathComponent:BUNDLE_DATA_FILENAME] stringByAppendingPathExtension:@"plist"]];
+                NSData *infoData = [NSData dataWithContentsOfURL:[[absoluteURL URLByAppendingPathComponent:BUNDLE_DATA_FILENAME] URLByAppendingPathExtension:@"plist"]];
                 if (infoData) {
                     NSDictionary *info = [NSPropertyListSerialization propertyListWithData:infoData options:NSPropertyListImmutable format:NULL error:NULL];
                     if ([info isKindOfClass:[NSDictionary class]]) {
@@ -962,7 +960,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 #pragma mark Actions
 
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {log_method();return;
-    NSString *extension = [[notesURL path] pathExtension];
+    NSString *extension = [notesURL pathExtension];
     NSArray *array = nil;
     
     if ([extension isCaseInsensitiveEqual:@"skim"]) {
@@ -1135,7 +1133,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (BOOL)saveArchiveToFile:(NSString *)fileName {
     return [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                               arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[[self fileURL] path] lastPathComponent], nil]
+                               arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[self fileURL] lastPathComponent], nil]
                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
 }
 
@@ -1324,7 +1322,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
              [super revertDocumentToSaved:sender]; 	 
          } else if ([fileUpdateChecker fileChangedOnDisk] || 
                     NSOrderedAscending == [[self fileModificationDate] compare:[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate]]) {
-             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[[self fileURL] path] lastPathComponent]] 	 
+             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileURL] lastPathComponent]] 	 
                                               defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
                                             alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
                                                 otherButton:nil 	 
@@ -1991,7 +1989,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
             source = [self fileURL];
-        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[source pathReplacingPathExtension:@"tex"] options:options];
+        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source URLReplacingPathExtension:@"tex"] path] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([selection hasCharacters]) {

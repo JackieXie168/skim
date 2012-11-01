@@ -109,8 +109,8 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     return fileURLs;
 }
 
-- (NSString *)pathReplacingPathExtension:(NSString *)ext {
-    return [[[self path] stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
+- (NSURL *)URLReplacingPathExtension:(NSString *)ext {
+    return [[self URLByDeletingPathExtension] URLByAppendingPathExtension:ext];
 }
 
 - (NSAttributedString *)icon {

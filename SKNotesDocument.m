@@ -282,11 +282,10 @@
     } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
         data = [self notesRTFData];
     } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
-        NSString *filename = [[self fileURL] pathReplacingPathExtension:@"pdf"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:filename])
-            filename = [filename lastPathComponent];
-        else
-            filename = nil;
+        NSString *filename = nil;
+        NSURL *pdfURL = [[self fileURL] URLReplacingPathExtension:@"pdf"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[pdfURL path]])
+            filename = [pdfURL lastPathComponent];
         data = [self notesFDFDataForFile:filename fileIDStrings:nil];
     } else {
         data = [self notesDataForTemplateType:typeName];
@@ -356,11 +355,11 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && [ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [ws type:typeName conformsToType:SKNotesDocumentType])
+    if ([ws type:typeName conformsToType:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
+    else if ([[absoluteURL pathExtension] isEqualToString:@"rtf"] || [ws type:typeName conformsToType:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
+    else if ([[absoluteURL pathExtension] isEqualToString:@"txt"] || [ws type:typeName conformsToType:SKNotesTextDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -400,7 +399,7 @@
 
 - (NSString *)displayName {
     if (sourceFileURL)
-        return [[[sourceFileURL path] lastPathComponent] stringByDeletingPathExtension];
+        return [[sourceFileURL lastPathComponent] stringByDeletingPathExtension];
     return [super displayName];
 }
 
@@ -439,21 +438,18 @@
 #pragma mark Actions
 
 - (IBAction)openPDF:(id)sender {
-    NSString *path = [sourceFileURL path] ?: [[self fileURL] pathReplacingPathExtension:@"pdf"];
+    NSURL *url = sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"];
     NSError *error = nil;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         // resolve symlinks and aliases
-        NSURL *url = nil;
         FSRef fileRef;
         Boolean isFolder, isAlias;
-        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &fileRef, NULL)) {
+        if (noErr == FSPathMakeRef((const unsigned char *)[[[url URLByResolvingSymlinksInPath] path] fileSystemRepresentation], &fileRef, NULL)) {
             CFStringRef theUTI = NULL;
             if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
                 FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kResolveAliasFileNoUI);
-           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
+           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease] ?: url;
         }
-        if (url == nil)
-            url = [NSURL fileURLWithPath:path];
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error] && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
     } else NSBeep();
@@ -835,7 +831,7 @@
     if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
-        return [[NSFileManager defaultManager] fileExistsAtPath:[sourceFileURL path] ?: [[self fileURL] pathReplacingPathExtension:@"pdf"]];
+        return [[NSFileManager defaultManager] fileExistsAtPath:[(sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"]) path]];
     return YES;
 }
 

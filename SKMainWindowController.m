@@ -442,7 +442,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (hasWindowSetup)
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
-        pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
+        pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtURL:[[self document] fileURL]];
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex) {
         if ([[pdfView document] isLocked]) {
             [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
@@ -461,7 +461,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (hasWindowSetup)
         snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
-        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtPath:[[[self document] fileURL] path]];
+        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtURL:[[self document] fileURL]];
     if ([snapshotSetups count]) {
         if ([[pdfView document] isLocked])
             [savedNormalSetup setObject:snapshotSetups forKey:SNAPSHOTS_KEY];
