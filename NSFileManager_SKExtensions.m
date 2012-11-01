@@ -53,16 +53,16 @@
     return result;
 }
 
-- (NSArray *)applicationSupportDirectories {
-    static NSArray *applicationSupportDirectories = nil;
-    if (applicationSupportDirectories == nil) {
-        NSMutableArray *pathArray = [NSMutableArray array];
+- (NSArray *)applicationSupportDirectoryURLs {
+    static NSArray *applicationSupportDirectoryURLs = nil;
+    if (applicationSupportDirectoryURLs == nil) {
+        NSMutableArray *urlArray = [NSMutableArray array];
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-        for (NSString *path in NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES))
-            [pathArray addObject:[path stringByAppendingPathComponent:appName]];
-        applicationSupportDirectories = [pathArray copy];
+        for (NSURL *url in [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSAllDomainsMask])
+            [urlArray addObject:[url URLByAppendingPathComponent:appName]];
+        applicationSupportDirectoryURLs = [urlArray copy];
     }
-    return applicationSupportDirectories;
+    return applicationSupportDirectoryURLs;
 }
 
 @end

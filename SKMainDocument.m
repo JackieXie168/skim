@@ -1449,7 +1449,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     [searchPaths insertObject:[appBundle sharedSupportPath] atIndex:0];
                 }
             } else {
-                [searchPaths addObjectsFromArray:[[NSFileManager defaultManager] applicationSupportDirectories]];
+                [searchPaths addObjectsFromArray:[[[NSFileManager defaultManager] applicationSupportDirectoryURLs] valueForKey:@"path"]];
             }
             
             for (path in searchPaths) {

@@ -120,9 +120,9 @@
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
-    NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
-    if ([downloadDirs count] > 0)
-        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[[downloadDirs objectAtIndex:0] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey]];
+    NSURL *downloadsURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    if (downloadsURL)
+        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[[downloadsURL path] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey]];
     
     // if your application supports resetting a subset of the defaults to 
     // factory values, you should set those values 

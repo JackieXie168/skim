@@ -43,7 +43,7 @@
 
 - (BOOL)isTrashedFileAtURL:(NSURL *)aURL;
 
-- (NSArray *)applicationSupportDirectories;
+- (NSArray *)applicationSupportDirectoryURLs;
 
 @end
 
