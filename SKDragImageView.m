@@ -56,12 +56,8 @@
     }
     
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-    NSURL *tmpDirURL = [[NSURL fileURLWithPath:NSTemporaryDirectory()] URLByAppendingPathComponent:appName];
-    if ([fm fileExistsAtURL:tmpDirURL] == NO)
-        [fm createDirectoryAtPath:[tmpDirURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
-    
-    NSURL *fileURL = [fm uniqueFileURL:[tmpDirURL URLByAppendingPathComponent:@"SkimNote.tiff"]];
+    NSURL *fileURL = [[fm temporaryDirectoryURL] URLByAppendingPathComponent:@"SkimNote.tiff"];
+    fileURL = [fm uniqueFileURL:fileURL];
     [[image TIFFRepresentation] writeToURL:fileURL atomically:YES];
     [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }

@@ -108,4 +108,17 @@
    return uniqueURL;
 }
 
+- (NSURL *)temporaryDirectoryURL {
+    static NSURL *temporaryDirectoryURL = nil;
+    if (temporaryDirectoryURL == nil) {
+        char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"Skim.XXXXXX"] fileSystemRepresentation]);
+        const char *tempPath = mkdtemp(template);
+        temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:[self stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)] ];
+        free(template);
+    }
+    if ([self fileExistsAtURL:temporaryDirectoryURL] == NO)
+        [self createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
+    return temporaryDirectoryURL;
+}
+
 @end

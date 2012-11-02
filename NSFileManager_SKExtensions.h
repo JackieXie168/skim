@@ -49,5 +49,6 @@
 
 - (NSURL *)uniqueFileURL:(NSURL *)fileURL;
 - (NSURL *)uniqueChewableItemsDirectoryURL;
+- (NSURL *)temporaryDirectoryURL;
 
 @end
