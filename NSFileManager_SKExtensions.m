@@ -95,10 +95,13 @@
        }
     }
     
-    CFUUIDRef uuid = CFUUIDCreate(NULL);
-    NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
-    CFRelease(uuid);
-    NSURL *uniqueURL = [chewableItemsDirectoryURL URLByAppendingPathComponent:tmpDirName];
+    NSURL *uniqueURL = nil;
+    
+    do {
+        CFUUIDRef uuid = CFUUIDCreate(NULL);
+        uniqueURL = [chewableItemsDirectoryURL URLByAppendingPathComponent:[(NSString *)CFUUIDCreateString(NULL, uuid) autorelease]];
+        CFRelease(uuid);
+    } while ([self fileExistsAtURL:uniqueURL]);
     
     [self createDirectoryAtPath:[uniqueURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
    
