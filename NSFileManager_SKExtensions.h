@@ -48,11 +48,6 @@
 - (NSArray *)applicationSupportDirectoryURLs;
 
 - (NSURL *)uniqueFileURL:(NSURL *)fileURL;
+- (NSURL *)uniqueChewableItemsDirectoryURL;
 
 @end
-
-// These functions are thread safe
-
-extern NSURL *SKChewableItemsDirectoryURL();
-extern NSURL *SKUniqueTemporaryDirectoryURL();
-extern NSURL *SKUniqueChewableItemsDirectoryURL();
