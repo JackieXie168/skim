@@ -80,67 +80,28 @@
     return uniqueFileURL;
 }
 
-@end
-
-static NSURL *SKUniqueDirectoryURL(NSURL *baseURL) {
+- (NSURL *)uniqueChewableItemsDirectoryURL {
+    // chewable items are automatically cleaned up at restart, and it's hidden from the user
+    static NSURL *chewableItemsDirectoryURL = nil;
+    if (chewableItemsDirectoryURL == nil) {
+        FSRef chewableRef;
+        if (noErr == FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef)) {
+            NSURL *chewableURL = (NSURL *)CFURLCreateFromFSRef(kCFAllocatorDefault, &chewableRef);
+            chewableItemsDirectoryURL = [[chewableURL URLByAppendingPathComponent:@"Skim"] copy];
+            if ([self fileExistsAtURL:chewableItemsDirectoryURL] == NO)
+                [self createDirectoryAtPath:[chewableItemsDirectoryURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
+            [chewableURL release];
+       }
+    }
+    
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
     CFRelease(uuid);
+    NSURL *uniqueURL = [chewableItemsDirectoryURL URLByAppendingPathComponent:tmpDirName];
     
-    BOOL success = YES;
-    FSRef tmpRef;
-    UniCharCount length = [tmpDirName length];
-    UniChar *tmpName = (UniChar *)NSZoneMalloc(NULL, length * sizeof(UniChar));
-    [tmpDirName getCharacters:tmpName];
-    success = CFURLGetFSRef((CFURLRef)baseURL, &tmpRef) &&
-              noErr == FSCreateDirectoryUnicode(&tmpRef, length, tmpName, kFSCatInfoNone, NULL, NULL, NULL, NULL);
-    NSZoneFree(NULL, tmpName);
-    
-    return success ? [baseURL URLByAppendingPathComponent:tmpDirName] : nil;
+    [self createDirectoryAtPath:[uniqueURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
+   
+   return uniqueURL;
 }
 
-NSURL *SKChewableItemsDirectoryURL() {
-    // chewable items are automatically cleaned up at restart, and it's hidden from the user
-    NSURL *chewableItemsDirectoryURL = nil;
-    FSRef chewableRef;
-    OSErr err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
-    
-    CFAllocatorRef alloc = CFAllocatorGetDefault();
-    CFURLRef chewableURL = NULL;
-    if (noErr == err) {
-        chewableURL = CFURLCreateFromFSRef(alloc, &chewableRef);
-        
-        CFStringRef baseName = CFStringCreateWithFileSystemRepresentation(alloc, "Skim");
-        CFURLRef newURL = CFURLCreateCopyAppendingPathComponent(alloc, chewableURL, baseName, TRUE);
-        FSRef newRef;
-        
-        if (chewableURL) CFRelease(chewableURL);
-        
-        assert(NULL != newURL);
-        
-        if (CFURLGetFSRef(newURL, &newRef) == false) {
-            CFIndex nameLength = CFStringGetLength(baseName);
-            UniChar *nameBuf = CFAllocatorAllocate(alloc, nameLength * sizeof(UniChar), 0);
-            CFStringGetCharacters(baseName, CFRangeMake(0, nameLength), nameBuf);
-            err = FSCreateDirectoryUnicode(&chewableRef, nameLength, nameBuf, kFSCatInfoNone, NULL, NULL, NULL, NULL);
-            CFAllocatorDeallocate(alloc, nameBuf);
-        }
-        
-        if (noErr == err)
-            chewableItemsDirectoryURL = (NSURL *)newURL;
-        else if (newURL)
-            CFRelease(newURL);
-        if (baseName) CFRelease(baseName);
-        
-        assert(nil != chewableItemsDirectoryURL);
-    }
-    return chewableItemsDirectoryURL;
-}
-
-NSURL *SKUniqueTemporaryDirectoryURL() {
-    return SKUniqueDirectoryURL([NSURL fileURLWithPath:NSTemporaryDirectory()]);
-}
-
-NSURL *SKUniqueChewableItemsDirectoryURL() {
-    return SKUniqueDirectoryURL(SKChewableItemsDirectoryURL());
-}
+@end

@@ -568,7 +568,7 @@ enum {
         for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
             if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
                 if (tmpURL == nil)
-                    tmpURL = SKUniqueTemporaryDirectoryURL();
+                    tmpURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
                 [fm copyItemAtURL:url toURL:[tmpURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
             }
         }
@@ -1228,7 +1228,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)emailArchive:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSURL *tmpDirURL = SKUniqueChewableItemsDirectoryURL();
+        NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
         NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
         if ([self saveArchiveToURL:tmpFileURL] == NO || [self emailAttachmentAtURL:tmpFileURL] == NO)
             NSBeep();
@@ -1285,7 +1285,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)emailDiskImage:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSURL *tmpDirURL = SKUniqueChewableItemsDirectoryURL();
+        NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
         NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"dmg"]];
         [self saveDiskImageToURL:tmpFileURL email:YES];
     } else {

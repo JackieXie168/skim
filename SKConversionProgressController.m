@@ -322,17 +322,16 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doDVIConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
     NSURL *dviURL = [info objectForKey:INPUTURL_KEY];
     NSString *dviFile = [dviURL path];
     NSString *commandPath = [info objectForKey:TOOLPATH_KEY];
     NSString *commandName = [commandPath lastPathComponent];
-    NSURL *tmpDirURL = SKUniqueTemporaryDirectoryURL();
+    NSURL *tmpDirURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:dviURL create:YES error:NULL];
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
     NSString *outFile = [[tmpDirURL URLByAppendingPathComponent:[dviURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]] path];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
     BOOL success = NO;
-    
-    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
     
     if ([self shouldKeepRunning] && [fm fileExistsAtPath:dviFile]) {
         NSTask *task = [NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
