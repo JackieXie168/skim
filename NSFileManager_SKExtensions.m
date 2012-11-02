@@ -87,7 +87,8 @@
         FSRef chewableRef;
         if (noErr == FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef)) {
             NSURL *chewableURL = (NSURL *)CFURLCreateFromFSRef(kCFAllocatorDefault, &chewableRef);
-            chewableItemsDirectoryURL = [[chewableURL URLByAppendingPathComponent:@"Skim"] copy];
+            NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
+            chewableItemsDirectoryURL = [[chewableURL URLByAppendingPathComponent:appName] copy];
             if ([self fileExistsAtURL:chewableItemsDirectoryURL] == NO)
                 [self createDirectoryAtPath:[chewableItemsDirectoryURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
             [chewableURL release];
