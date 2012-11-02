@@ -55,11 +55,11 @@
         return;
     }
     
-    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SkimNote.tiff"];
+    NSURL *fileURL = [[NSURL fileURLWithPath:NSTemporaryDirectory()] URLByAppendingPathComponent:@"SkimNote.tiff"];
     
-    path = [[NSFileManager defaultManager] uniqueFile:path];
-    [[image TIFFRepresentation] writeToFile:path atomically:YES];
-    [[NSWorkspace sharedWorkspace] openFile:path];
+    fileURL = [[NSFileManager defaultManager] uniqueFileURL:fileURL];
+    [[image TIFFRepresentation] writeToURL:fileURL atomically:YES];
+    [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

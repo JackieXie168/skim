@@ -334,7 +334,7 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *path = [[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]];
+            NSURL *fileURL = [dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]];
             NSString *pathExt = nil;
             NSData *data = nil;
             
@@ -346,19 +346,19 @@
                 data = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             }
             
-            path = [[NSFileManager defaultManager] uniqueFile:[path stringByAppendingPathExtension:pathExt]];
-            if ([data writeToFile:path atomically:YES])
-                return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+            fileURL = [[NSFileManager defaultManager] uniqueFileURL:[fileURL URLByAppendingPathExtension:pathExt]];
+            if ([data writeToURL:fileURL atomically:YES])
+                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *path = [[[dropDestination path] stringByAppendingPathComponent:[self draggedFileNameForPage:page]] stringByAppendingPathExtension:@"tiff"];
-            path = [[NSFileManager defaultManager] uniqueFile:path];
-            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToFile:path atomically:YES])
-                return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]] URLByAppendingPathExtension:@"tiff"];
+            fileURL = [[NSFileManager defaultManager] uniqueFileURL:fileURL];
+            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }
     }
     return nil;

@@ -347,10 +347,10 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         if ([name length] == 0)
             name = @"NoteImage";
         name = [name stringByAppendingPathExtension:@"tiff"];
-        NSString *path = [[[dropDestination path] stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"tiff"];
-        path = [[NSFileManager defaultManager] uniqueFile:path];
-        if ([[image TIFFRepresentation] writeToFile:path atomically:YES])
-            return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+        NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
+        fileURL = [[NSFileManager defaultManager] uniqueFileURL:fileURL];
+        if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
+            return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
     }
     return nil;
 }

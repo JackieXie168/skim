@@ -47,7 +47,7 @@
 
 - (NSArray *)applicationSupportDirectoryURLs;
 
-- (NSString *)uniqueFile:(NSString *)path;
+- (NSURL *)uniqueFileURL:(NSURL *)fileURL;
 
 @end
 

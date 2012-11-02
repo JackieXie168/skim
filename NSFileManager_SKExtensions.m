@@ -69,14 +69,15 @@
     return applicationSupportDirectoryURLs;
 }
 
-- (NSString *)uniqueFile:(NSString *)path {
-    NSString *uniquePath = path;
-    NSString *basePath = [path stringByDeletingPathExtension];
-    NSString *extension = [path pathExtension];
+- (NSURL *)uniqueFileURL:(NSURL *)fileURL {
+    NSURL *uniqueFileURL = fileURL;
+    NSURL *baseURL = [fileURL URLByDeletingLastPathComponent];
+    NSString *baseName = [[fileURL lastPathComponent] stringByDeletingPathExtension];
+    NSString *extension = [fileURL pathExtension];
     NSInteger i = 0;
-    while ([self fileExistsAtPath:path])
-        uniquePath = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:extension];
-    return uniquePath;
+    while ([self fileExistsAtURL:uniqueFileURL])
+        uniqueFileURL = [baseURL URLByAppendingPathComponent:[[baseName stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:extension]];
+    return uniqueFileURL;
 }
 
 @end
