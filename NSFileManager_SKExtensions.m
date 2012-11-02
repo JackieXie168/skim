@@ -81,7 +81,7 @@
 
 @end
 
-static NSString *SKUniqueDirectory(NSString *basePath) {
+static NSURL *SKUniqueDirectoryURL(NSURL *baseURL) {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
     CFRelease(uuid);
@@ -91,16 +91,16 @@ static NSString *SKUniqueDirectory(NSString *basePath) {
     UniCharCount length = [tmpDirName length];
     UniChar *tmpName = (UniChar *)NSZoneMalloc(NULL, length * sizeof(UniChar));
     [tmpDirName getCharacters:tmpName];
-    success = noErr == FSPathMakeRef((UInt8 *)[basePath fileSystemRepresentation], &tmpRef, NULL) &&
+    success = CFURLGetFSRef((CFURLRef)baseURL, &tmpRef) &&
               noErr == FSCreateDirectoryUnicode(&tmpRef, length, tmpName, kFSCatInfoNone, NULL, NULL, NULL, NULL);
     NSZoneFree(NULL, tmpName);
     
-    return success ? [basePath stringByAppendingPathComponent:tmpDirName] : nil;
+    return success ? [baseURL URLByAppendingPathComponent:tmpDirName] : nil;
 }
 
-NSString *SKChewableItemsDirectory() {
+NSURL *SKChewableItemsDirectoryURL() {
     // chewable items are automatically cleaned up at restart, and it's hidden from the user
-    NSString *chewableItemsDirectory = nil;
+    NSURL *chewableItemsDirectoryURL = nil;
     FSRef chewableRef;
     OSErr err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
     
@@ -126,20 +126,20 @@ NSString *SKChewableItemsDirectory() {
         }
         
         if (noErr == err)
-            chewableItemsDirectory = (NSString *)CFURLCopyFileSystemPath(newURL, kCFURLPOSIXPathStyle);
-        
-        if (newURL) CFRelease(newURL);
+            chewableItemsDirectoryURL = (NSURL *)newURL;
+        else if (newURL)
+            CFRelease(newURL);
         if (baseName) CFRelease(baseName);
         
-        assert(nil != chewableItemsDirectory);
+        assert(nil != chewableItemsDirectoryURL);
     }
-    return chewableItemsDirectory;
+    return chewableItemsDirectoryURL;
 }
 
-NSString *SKUniqueTemporaryDirectory() {
-    return SKUniqueDirectory(NSTemporaryDirectory());
+NSURL *SKUniqueTemporaryDirectoryURL() {
+    return SKUniqueDirectoryURL([NSURL fileURLWithPath:NSTemporaryDirectory()]);
 }
 
-NSString *SKUniqueChewableItemsDirectory() {
-    return SKUniqueDirectory(SKChewableItemsDirectory());
+NSURL *SKUniqueChewableItemsDirectoryURL() {
+    return SKUniqueDirectoryURL(SKChewableItemsDirectoryURL());
 }

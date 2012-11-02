@@ -106,8 +106,8 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define CALLBACK_KEY        @"callback"
 #define TMPURL_KEY          @"tmpURL"
 
-#define SOURCEPATH_KEY  @"sourcePath"
-#define TARGETPATH_KEY  @"targetPath"
+#define SOURCEURL_KEY   @"sourceURL"
+#define TARGETURL_KEY   @"targetURL"
 #define EMAIL_KEY       @"email"
 
 #define SKPresentationOptionsKey    @"PresentationOptions"
@@ -568,7 +568,7 @@ enum {
         for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
             if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
                 if (tmpURL == nil)
-                    tmpURL = [NSURL fileURLWithPath:SKUniqueTemporaryDirectory()];
+                    tmpURL = SKUniqueTemporaryDirectoryURL();
                 [fm copyItemAtURL:url toURL:[tmpURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
             }
         }
@@ -1131,9 +1131,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (BOOL)saveArchiveToFile:(NSString *)fileName {
+- (BOOL)saveArchiveToURL:(NSURL *)fileURL {
     return [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                               arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[self fileURL] lastPathComponent], nil]
+                               arguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]
                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
 }
 
@@ -1146,7 +1146,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"tgz"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result && [self fileURL])
-                    [self saveArchiveToFile:[[sp URL] path]];
+                    [self saveArchiveToURL:[sp URL]];
             }];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -1154,7 +1154,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
 }
 
-- (BOOL)emailAttachmentFile:(NSString *)fileName {
+- (BOOL)emailAttachmentAtURL:(NSURL *)fileURL {
     NSString *scriptFormat = nil;
     NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease];
     
@@ -1211,7 +1211,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     
-    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self displayName], fileName];
+    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self displayName], [fileURL path]];
     NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
     NSDictionary *errorDict = nil;
     if ([script compileAndReturnError:&errorDict] == NO) {
@@ -1228,9 +1228,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)emailArchive:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
-        if ([self saveArchiveToFile:tmpFile] == NO || [self emailAttachmentFile:tmpFile] == NO)
+        NSURL *tmpDirURL = SKUniqueChewableItemsDirectoryURL();
+        NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
+        if ([self saveArchiveToURL:tmpFileURL] == NO || [self emailAttachmentAtURL:tmpFileURL] == NO)
             NSBeep();
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -1242,26 +1242,26 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    NSString *sourcePath = [[[info objectForKey:SOURCEPATH_KEY] copy] autorelease];
-    NSString *targetPath = [[[info objectForKey:TARGETPATH_KEY] copy] autorelease];
-    NSArray *arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
+    NSURL *sourceURL = [[[info objectForKey:SOURCEURL_KEY] copy] autorelease];
+    NSURL *targetURL = [[[info objectForKey:TARGETURL_KEY] copy] autorelease];
+    NSArray *arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", [sourceURL path], @"-format", @"UDZO", @"-volname", [[targetURL lastPathComponent] stringByDeletingPathExtension], [targetURL path], nil];
     
-    if ([NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]] == NO)
+    if ([NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:arguments currentDirectoryPath:[[sourceURL URLByDeletingLastPathComponent] path]] == NO)
         NSBeep();
     
     [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
     
     if ([[info objectForKey:EMAIL_KEY] boolValue])
-        [self performSelectorOnMainThread:@selector(emailAttachmentFile:) withObject:targetPath waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(emailAttachmentAtURL:) withObject:targetURL waitUntilDone:NO];
     
     [pool release];
 }
 
-- (void)saveDiskImageToFile:(NSString *)fileName email:(BOOL)email {
+- (void)saveDiskImageToURL:(NSURL *)fileURL email:(BOOL)email {
     [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
     [[self progressController] show];
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], SOURCEPATH_KEY, fileName, TARGETPATH_KEY, [NSNumber numberWithBool:email], EMAIL_KEY, nil];
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self fileURL], SOURCEURL_KEY, fileURL, TARGETURL_KEY, [NSNumber numberWithBool:email], EMAIL_KEY, nil];
     [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
 }
 
@@ -1274,7 +1274,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"dmg"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result && [self fileURL])
-                    [self saveDiskImageToFile:[[sp URL] path] email:NO];
+                    [self saveDiskImageToURL:[sp URL] email:NO];
             }];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -1285,9 +1285,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)emailDiskImage:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSString *tmpDir = SKUniqueChewableItemsDirectory();
-        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"dmg"]];
-        [self saveDiskImageToFile:tmpFile email:YES];
+        NSURL *tmpDirURL = SKUniqueChewableItemsDirectoryURL();
+        NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"dmg"]];
+        [self saveDiskImageToURL:tmpFileURL email:YES];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];

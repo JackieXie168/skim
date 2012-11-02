@@ -53,6 +53,6 @@
 
 // These functions are thread safe
 
-extern NSString *SKChewableItemsDirectory();
-extern NSString *SKUniqueTemporaryDirectory();
-extern NSString *SKUniqueChewableItemsDirectory();
+extern NSURL *SKChewableItemsDirectoryURL();
+extern NSURL *SKUniqueTemporaryDirectoryURL();
+extern NSURL *SKUniqueChewableItemsDirectoryURL();
