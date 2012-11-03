@@ -132,9 +132,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (void)dealloc {
     SKCFDESTROY(converter);
-    SKCFDESTROY(cancelButton);
-    SKCFDESTROY(progressBar);
-    SKCFDESTROY(textField);
+    SKDESTROY(cancelButton);
+    SKDESTROY(progressBar);
+    SKDESTROY(textField);
     [super dealloc];
 }
 
