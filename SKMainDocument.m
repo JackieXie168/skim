@@ -89,6 +89,7 @@
 #import "SKTemporaryData.h"
 #import "SKTemplateManager.h"
 #import "SKExportAccessoryController.h"
+#import "SKAttachmentEmailer.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -148,7 +149,6 @@ enum {
 // private method used as the action for the file format popup in the save panel, decalred so we can override
 - (void)changeSaveType:(id)sender;
 @end
-
 
 
 @interface SKMainDocument (SKPrivate)
@@ -1131,10 +1131,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (BOOL)saveArchiveToURL:(NSURL *)fileURL {
-    return [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                               arguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]
-                    currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
+- (void)saveArchiveToURL:(NSURL *)fileURL email:(BOOL)email {
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    [task setLaunchPath:@"/usr/bin/tar"];
+    [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
+    [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
+    
+    if (email)
+        [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
+    
+    [task launch];
 }
 
 - (IBAction)saveArchive:(id)sender {
@@ -1146,7 +1152,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"tgz"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result && [self fileURL])
-                    [self saveArchiveToURL:[sp URL]];
+                    [self saveArchiveToURL:[sp URL] email:NO];
             }];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -1154,115 +1160,28 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
 }
 
-- (BOOL)emailAttachmentAtURL:(NSURL *)fileURL {
-    NSString *scriptFormat = nil;
-    NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease];
-    
-    if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"Microsoft Entourage\"\n"
-                       @"activate\n"
-                       @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
-                       @"tell m\n"
-                       @"make new attachment with properties {file:POSIX file \"%@\"}\n"
-                       @"end tell\n"
-                       @"end tell\n";
-    } else if ([@"com.microsoft.outlook" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"Microsoft Outlook\"\n"
-                       @"activate\n"
-                       @"set m to make new draft window with properties {subject:\"%@\", visible:true}\n"
-                       @"tell m\n"
-                       @"make new attachment with properties {file:POSIX file \"%@\"}\n"
-                       @"end tell\n"
-                       @"end tell\n";
-    } else if ([@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"Mailsmith\"\n"
-                       @"activate\n"
-                       @"set m to make new message window with properties {subject:\"%@\", visible:true}\n"
-                       @"tell m\n"
-                       @"make new enclosure with properties {file:POSIX file \"%@\"}\n"
-                       @"end tell\n"
-                       @"end tell\n";
-    } else if ([@"com.mailplaneapp.Mailplane" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"Mailplane\"\n"
-                       @"activate\n"
-                       @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
-                       @"tell m\n"
-                       @"make new mail attachment with properties {path:\"%@\"}\n"
-                       @"end tell\n"
-                       @"end tell\n";
-    } else if ([@"com.postbox-inc.postboxexpress" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"PostboxExpress\"\n"
-                       @"activate\n"
-                       @"send message subject \"%@\" attachment \"%@\"\n"
-                       @"end tell\n";
-    } else if ([@"com.postbox-inc.postbox" isCaseInsensitiveEqual:mailAppID]) {
-        scriptFormat = @"tell application \"Postbox\"\n"
-                       @"activate\n"
-                       @"send message subject \"%@\" attachment \"%@\"\n"
-                       @"end tell\n";
-    } else {
-        scriptFormat = @"tell application \"Mail\"\n"
-                       @"activate\n"
-                       @"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n"
-                       @"tell content of m\n"
-                       @"make new attachment at after last character with properties {file name:\"%@\"}\n"
-                       @"end tell\n"
-                       @"end tell\n";
-    }
-    
-    
-    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self displayName], [fileURL path]];
-    NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
-    NSDictionary *errorDict = nil;
-    if ([script compileAndReturnError:&errorDict] == NO) {
-        NSLog(@"Error compiling mail to script: %@", errorDict);
-        return NO;
-    }
-    if ([script executeAndReturnError:&errorDict] == NO) {
-        NSLog(@"Error running mail to script: %@", errorDict);
-        return NO;
-    }
-    return YES;
-}
-
 - (IBAction)emailArchive:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
         NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
-        if ([self saveArchiveToURL:tmpFileURL] == NO || [self emailAttachmentAtURL:tmpFileURL] == NO)
-            NSBeep();
+        [self saveArchiveToURL:tmpFileURL email:YES];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }
 
-- (void)saveDiskImageWithInfo:(NSDictionary *)info {
-    
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    NSURL *sourceURL = [[[info objectForKey:SOURCEURL_KEY] copy] autorelease];
-    NSURL *targetURL = [[[info objectForKey:TARGETURL_KEY] copy] autorelease];
-    NSArray *arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", [sourceURL path], @"-format", @"UDZO", @"-volname", [[targetURL lastPathComponent] stringByDeletingPathExtension], [targetURL path], nil];
-    
-    if ([NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:arguments currentDirectoryPath:[[sourceURL URLByDeletingLastPathComponent] path]] == NO)
-        NSBeep();
-    
-    [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
-    
-    if ([[info objectForKey:EMAIL_KEY] boolValue])
-        [self performSelectorOnMainThread:@selector(emailAttachmentAtURL:) withObject:targetURL waitUntilDone:NO];
-    
-    [pool release];
-}
-
 - (void)saveDiskImageToURL:(NSURL *)fileURL email:(BOOL)email {
-    [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] show];
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    [task setLaunchPath:@"/usr/bin/hdiutil"];
+    [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
+    [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self fileURL], SOURCEURL_KEY, fileURL, TARGETURL_KEY, [NSNumber numberWithBool:email], EMAIL_KEY, nil];
-    [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
+    if (email)
+        [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
+    
+    [task launch];
 }
 
 - (IBAction)saveDiskImage:(id)sender {
