@@ -170,9 +170,9 @@
 	
     [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self] completionHandler:^(NSInteger result) {
             if (result == NSOKButton) {
-                NSUInteger i;
-                for (i = 0; i < NOTETYPES_COUNT; i++)
-                    [[noteTypeMenu itemAtIndex:i] setState:[(NSCell *)[matrix cellWithTag:i] state]];
+                NSUInteger idx;
+                for (idx = 0; idx < NOTETYPES_COUNT; idx++)
+                    [[noteTypeMenu itemAtIndex:idx] setState:[(NSCell *)[matrix cellWithTag:idx] state]];
                 [delegate noteTypeSheetControllerNoteTypesDidChange:self];
             }
         }];

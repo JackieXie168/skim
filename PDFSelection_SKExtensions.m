@@ -201,7 +201,7 @@
     return [self safeFirstPage] != nil;
 }
 
-static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
+static NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
     if (anIndex >= [substrings count])
         return NSMakeRange(NSNotFound, 0);
     
