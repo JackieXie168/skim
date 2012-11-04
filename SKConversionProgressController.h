@@ -45,8 +45,10 @@
     NSTextField *textField;
     NSString *fileType;
     CGPSConverterRef converter;
-    volatile int32_t convertingPS;
-    volatile int32_t cancelled;
+    NSTask *task;
+    NSString *outputFile;
+    NSData *outputData;
+    BOOL cancelled;
 }
 
 @property (nonatomic, retain) IBOutlet NSButton *cancelButton;
