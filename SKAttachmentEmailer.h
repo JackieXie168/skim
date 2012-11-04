@@ -52,5 +52,6 @@
 - (void)emailAttachmentFile;
 
 - (void)waitForTaskTermination:(NSTask *)task;
+- (void)taskFailed;
 
 @end
