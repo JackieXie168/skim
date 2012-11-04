@@ -62,21 +62,4 @@
     return task;
 }
 
-+ (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
-    NSTask *task = [self launchedTaskWithLaunchPath:launchPath arguments:arguments currentDirectoryPath:directoryPath];
-    BOOL success = task != nil;
-    
-    if (success) {
-        if ([task isRunning])
-            [task waitUntilExit];
-        if ([task isRunning]) {
-            [task terminate];
-            success = NO;
-        } else {
-            success = 0 == [task terminationStatus];
-        }
-    }
-    return success;
-}
-
 @end
