@@ -126,8 +126,10 @@
 }
 
 - (void)taskFinished:(NSNotification *)notification {
-    if ([[NSFileManager defaultManager] fileExistsAtURL:fileURL] == NO)
+    if ([[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [[notification object] terminationStatus] == 0)
         [self emailAttachmentFile];
+    else
+        NSBeep();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }
