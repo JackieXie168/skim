@@ -41,5 +41,4 @@
 
 @interface NSTask (SKExtensions)
 + (NSTask *)launchedTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath;
-+ (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath;
 @end
