@@ -1137,10 +1137,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
     [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
     
+    SKAttachmentEmailer *emailer = nil;
     if (email)
-        [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
+        emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
     
-    [task launch];
+    @try {
+        [task launch];
+    }
+    @catch (id exception) {
+        [emailer taskFailed];
+    }
 }
 
 - (IBAction)saveArchive:(id)sender {
@@ -1178,10 +1184,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
     [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
     
+    SKAttachmentEmailer *emailer = nil;
     if (email)
-        [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
+        emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
     
-    [task launch];
+    @try {
+        [task launch];
+    }
+    @catch (id exception) {
+        [emailer taskFailed];
+    }
 }
 
 - (IBAction)saveDiskImage:(id)sender {

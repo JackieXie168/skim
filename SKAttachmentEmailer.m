@@ -128,12 +128,18 @@
 - (void)taskFinished:(NSNotification *)notification {
     if ([[NSFileManager defaultManager] fileExistsAtURL:fileURL] == NO)
         [self emailAttachmentFile];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }
 
 - (void)waitForTaskTermination:(NSTask *)task {
     [self retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
+}
+
+- (void)taskFailed {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self autorelease];
 }
 
 @end
