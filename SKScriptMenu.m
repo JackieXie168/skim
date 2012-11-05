@@ -251,15 +251,18 @@ static BOOL isFolderUTI(NSString *theUTI) {
     NSString *scriptFilename = [sender representedObject];
     NSString *theUTI = [[NSWorkspace sharedWorkspace] typeOfFile:[[scriptFilename stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
     
-    if (isAppleScriptUTI(theUTI)) {
-        [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
-    } else if (isApplicationUTI(theUTI)) {
-        [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
-    } else if (isAutomatorWorkflowUTI(theUTI)) {
-        [NSTask launchedTaskWithLaunchPath:@"/usr/bin/automator" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
-    } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
-        [NSTask launchedTaskWithLaunchPath:scriptFilename arguments:[NSArray array]];
+    @try {
+        if (isAppleScriptUTI(theUTI)) {
+            [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
+        } else if (isApplicationUTI(theUTI)) {
+            [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
+        } else if (isAutomatorWorkflowUTI(theUTI)) {
+            [NSTask launchedTaskWithLaunchPath:@"/usr/bin/automator" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
+        } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
+            [NSTask launchedTaskWithLaunchPath:scriptFilename arguments:[NSArray array]];
+        }
     }
+    @catch (id exception) {}
 }
 
 @end
