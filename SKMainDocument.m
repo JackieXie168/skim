@@ -1135,6 +1135,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [task setLaunchPath:@"/usr/bin/tar"];
     [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
     [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
     SKAttachmentEmailer *emailer = nil;
     if (email)
@@ -1182,6 +1184,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [task setLaunchPath:@"/usr/bin/hdiutil"];
     [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
     [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
     SKAttachmentEmailer *emailer = nil;
     if (email)

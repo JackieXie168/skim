@@ -377,8 +377,8 @@
         if (runImporter) {
             NSString *mdimportPath = @"/usr/bin/mdimport";
             if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
-                [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
-                
+                @try { [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]]; }
+                @catch(id exception) {}
                 NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
                 [[NSUserDefaults standardUserDefaults] setObject:info forKey:SKSpotlightVersionInfoKey];
                 
