@@ -51,6 +51,7 @@ enum {
     id <SKPDFSynchronizerDelegate> delegate;
     
     dispatch_queue_t queue;
+    dispatch_queue_t lockQueue;
     
     NSString *fileName;
     NSString *syncFileName;
