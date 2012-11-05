@@ -61,7 +61,6 @@
 #import "SKLine.h"
 #import "SKApplicationController.h"
 #import "NSFileManager_SKExtensions.h"
-#import "NSTask_SKExtensions.h"
 #import "SKFDFParser.h"
 #import "NSData_SKExtensions.h"
 #import "SKProgressController.h"
@@ -1431,7 +1430,18 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if ([ws type:theUTI conformsToType:@"com.apple.applescript.script"] || [ws type:theUTI conformsToType:@"com.apple.applescript.text"])
             [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         
-        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent]];
+        NSTask *task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:@"/bin/sh"];
+        [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
+        [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
+        [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+        [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+        @try {
+            [task launch];
+        }
+        @catch(id exception) {
+            NSLog(@"%@ %@ failed", [task description], [task launchPath]);
+        }
     }
 }
 
