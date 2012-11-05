@@ -325,9 +325,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         if (success)
             outputData = [outData retain];
         [self conversionCompleted];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSApp stopModalWithCode:success ? SKConversionSucceeded : SKConversionFailed];
-        });
+        [NSApp stopModalWithCode:success ? SKConversionSucceeded : SKConversionFailed];
     }
 }
 
@@ -363,9 +361,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         }
         @catch(id exception) {
             SKDESTROY(task);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [NSApp stopModalWithCode:SKConversionFailed];
-            });
+            [NSApp stopModalWithCode:SKConversionFailed];
         }
     }];
     
