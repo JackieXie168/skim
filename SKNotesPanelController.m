@@ -47,10 +47,8 @@
 static SKNotesPanelController *sharedController = nil;
 
 + (id)sharedController {
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
+    if (sharedController == nil)
         sharedController = [[self alloc] init];
-    });
     return sharedController;
 }
 
