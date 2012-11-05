@@ -61,7 +61,6 @@
 #import "SKDocumentController.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
-#import "NSTask_SKExtensions.h"
 #import "SKRuntime.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
