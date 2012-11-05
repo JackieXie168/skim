@@ -60,8 +60,10 @@ NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorL
 static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
-    if (sharedLineInspector == nil)
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
         sharedLineInspector = [[self alloc] init];
+    });
     return sharedLineInspector;
 }
 
@@ -70,7 +72,6 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (id)init {
-    if (sharedLineInspector) NSLog(@"Attempt to allocate second instance of %@", self);
     self = [super initWithWindowNibName:@"LineInspector"];
     if (self) {
         style = kPDFBorderStyleSolid;

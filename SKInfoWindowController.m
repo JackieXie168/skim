@@ -84,16 +84,17 @@
     [transformer release];
 }
 
-static SKInfoWindowController *sharedInstance = nil;
-
+    
 + (id)sharedInstance {
-    if (sharedInstance == nil)
+    static SKInfoWindowController *sharedInstance = nil;
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
         sharedInstance = [[self alloc] init];
+    });
     return sharedInstance;
 }
 
 - (id)init {
-    if (sharedInstance) NSLog(@"Attempt to allocate second instance of %@", self);
     self = [super initWithWindowNibName:@"InfoWindow"];
     if (self){
         info = nil;
