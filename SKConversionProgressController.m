@@ -39,7 +39,6 @@
 #import "SKConversionProgressController.h"
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
-#import "NSTask_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "SKDocumentController.h"
