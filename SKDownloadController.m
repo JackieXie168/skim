@@ -74,16 +74,16 @@ static char SKDownloadPropertiesObservationContext;
 
 @synthesize arrayController, tableView, clearButton, prefButton;
 
+static SKDownloadController *sharedDownloadController = nil;
+
 + (id)sharedDownloadController {
-    static SKDownloadController *sharedDownloadController = nil;
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
+    if (sharedDownloadController == nil)
         sharedDownloadController = [[self alloc] init];
-    });
     return sharedDownloadController;
 }
 
 - (id)init {
+    if (sharedDownloadController) NSLog(@"Attempt to allocate second instance of %@", [self class]);
     self = [super initWithWindowNibName:@"DownloadsWindow"];
     if (self) {
         downloads = [[NSMutableArray alloc] init];

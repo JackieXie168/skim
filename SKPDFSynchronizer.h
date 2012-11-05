@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "synctex_parser.h"
 
 enum {
     SKPDFSynchronizerDefaultOptions = 0,
@@ -49,13 +50,27 @@ enum {
 @interface SKPDFSynchronizer : NSObject {
     id <SKPDFSynchronizerDelegate> delegate;
     
-    id server;
-    id serverProxy;
-    NSConnection *connection;
+    dispatch_queue_t queue;
+    
+    NSString *fileName;
+    NSString *syncFileName;
+    NSDate *lastModDate;
+    BOOL isPdfsync;
+    
+    NSFileManager *fileManager;
+    
+    NSMutableArray *pages;
+    NSMapTable *lines;
+    
+    NSMapTable *filenames;
+    synctex_scanner_t scanner;
+    
+    volatile int32_t shouldKeepRunning;
 }
 
 @property (nonatomic, assign) id <SKPDFSynchronizerDelegate> delegate;
 @property (copy) NSString *fileName;
+@property BOOL shouldKeepRunning;
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
 - (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options;
