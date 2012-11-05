@@ -43,16 +43,16 @@
 
 @synthesize textView;
 
-static SKReleaseNotesController *sharedReleaseNotesController = nil;
-
 + (id)sharedReleaseNotesController {
-    if (sharedReleaseNotesController == nil)
+    static SKReleaseNotesController *sharedReleaseNotesController = nil;
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
         sharedReleaseNotesController = [[self alloc] init];
+    });
     return sharedReleaseNotesController;
 }
 
 - (id)init {
-    if (sharedReleaseNotesController) NSLog(@"Attempt to allocate second instance of %@", self);
     return [super initWithWindowNibName:@"ReleaseNotes"];
 }
 
