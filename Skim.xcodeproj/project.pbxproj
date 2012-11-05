@@ -83,7 +83,6 @@
 		CE12A73E134F215F003AED67 /* SKSelectCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE12A73D134F215F003AED67 /* SKSelectCommand.m */; };
 		CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE139A161450207500E9C069 /* NSGraphics_SKExtensions.m */; };
 		CE171E3512C3AC1600291179 /* SKFileUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */; };
-		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE19446310627483007E8770 /* BookmarksWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445C10627483007E8770 /* BookmarksWindow.xib */; };
 		CE19446410627483007E8770 /* ConversionProgressWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445D10627483007E8770 /* ConversionProgressWindow.xib */; };
 		CE19446510627483007E8770 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19445E10627483007E8770 /* MainWindow.xib */; };
@@ -676,8 +675,6 @@
 		CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFileUpdateChecker.h; sourceTree = "<group>"; };
 		CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFileUpdateChecker.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
-		CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizerServer.h; sourceTree = "<group>"; };
-		CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizerServer.m; sourceTree = "<group>"; };
 		CE19445C10627483007E8770 /* BookmarksWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksWindow.xib; sourceTree = "<group>"; };
 		CE19445D10627483007E8770 /* ConversionProgressWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversionProgressWindow.xib; sourceTree = "<group>"; };
 		CE19445E10627483007E8770 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -1780,8 +1777,6 @@
 				CE5FA1660C909886008BE480 /* SKFDFParser.m */,
 				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
 				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
-				CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */,
-				CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */,
 				CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */,
 				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
 			);
@@ -2558,7 +2553,6 @@
 				CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */,
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
-				CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */,
 				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
 				CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */,
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
