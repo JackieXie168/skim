@@ -43,7 +43,6 @@
 #import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "SKDocumentController.h"
-#import <libkern/OSAtomic.h>
 #import "NSGraphics_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSError_SKExtensions.h"
