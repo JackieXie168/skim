@@ -959,12 +959,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 #pragma mark Actions
 
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {log_method();return;
-    NSString *extension = [notesURL pathExtension];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    NSString *type = [ws typeOfFile:[notesURL path] error:NULL];
     NSArray *array = nil;
     
-    if ([extension isCaseInsensitiveEqual:@"skim"]) {
+    if ([ws type:type conformsToType:SKNotesDocumentType]) {
         array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
-    } else {
+    } else if ([ws type:type conformsToType:SKNotesFDFDocumentType]) {
         NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
         if (fdfData)
             array = [SKFDFParser noteDictionariesFromFDFData:fdfData];
@@ -997,7 +998,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     [oPanel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
     [oPanel setNameFieldStringValue:[fileURL lastPathComponent]];
-    [oPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"skim", nil]];
+    [oPanel setAllowedFileTypes:[NSArray arrayWithObjects:SKNotesDocumentType, nil]];
     [oPanel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
             if (result == NSFileHandlingPanelOKButton) {
                 NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
