@@ -52,11 +52,9 @@
     FSEventStreamRef streamRef;
     NSArray *scriptFolders;
     NSArray *sortDescriptors;
-    BOOL menuNeedsUpdate;
 }
 
 @property (nonatomic, readonly) NSMenu *scriptMenu;
-@property (nonatomic) BOOL menuNeedsUpdate;
 
 + (id)sharedController;
 
@@ -68,7 +66,9 @@
 
 @implementation SKScriptMenuController
 
-@synthesize scriptMenu, menuNeedsUpdate;
+static BOOL menuNeedsUpdate = NO;
+
+@synthesize scriptMenu;
 
 + (id)sharedController {
     static SKScriptMenuController *sharedController = nil;
@@ -78,7 +78,7 @@
 }
 
 static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackInfo, int numEvents, const char *const eventPaths[], const FSEventStreamEventFlags *eventMasks, const uint64_t *eventIDs) {
-    [(id)clientCallBackInfo setMenuNeedsUpdate:YES];
+    menuNeedsUpdate = YES;
 }
 
 - (id)init {
@@ -111,7 +111,7 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             
             streamRef = FSEventStreamCreate(kCFAllocatorDefault,
                                             (FSEventStreamCallback)&fsevents_callback, // callback
-                                            (void *)self, // context
+                                            NULL, // context
                                             (CFArrayRef)[scriptFolders valueForKey:@"path"], // pathsToWatch
                                             kFSEventStreamEventIdSinceNow, // sinceWhen
                                             1.0, // latency
