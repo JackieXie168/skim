@@ -1155,7 +1155,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSURL *fileURL = [self fileURL];
     if (fileURL && [[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
-        [sp setRequiredFileType:@"tgz"];
+        [sp setAllowedFileTypes:[NSArray arrayWithObjects:@"tgz", nil]];
         [sp setCanCreateDirectories:YES];
         [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"tgz"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
@@ -1204,7 +1204,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSURL *fileURL = [self fileURL];
     if (fileURL && [[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [self isDocumentEdited] == NO) {
         NSSavePanel *sp = [NSSavePanel savePanel];
-        [sp setRequiredFileType:@"dmg"];
+        [sp setAllowedFileTypes:[NSArray arrayWithObjects:@"dmg", nil]];
         [sp setCanCreateDirectories:YES];
         [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"dmg"]];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
