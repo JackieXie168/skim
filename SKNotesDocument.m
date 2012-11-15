@@ -442,13 +442,12 @@
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtURL:url]) {
         // resolve symlinks and aliases
-        FSRef fileRef;
-        Boolean isFolder, isAlias;
-        if (noErr == FSPathMakeRef((const unsigned char *)[[[url URLByResolvingSymlinksInPath] path] fileSystemRepresentation], &fileRef, NULL)) {
-            CFStringRef theUTI = NULL;
-            if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
-                FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kResolveAliasFileNoUI);
-           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease] ?: url;
+        NSNumber *isAlias = nil;
+        url = [url URLByResolvingSymlinksInPath];
+        while ([url getResourceValue:&isAlias forKey:NSURLIsAliasFileKey error:NULL] && [isAlias boolValue]) {
+            NSData *data = [NSURL bookmarkDataWithContentsOfURL:url error:NULL];
+            if (data)
+                url = [NSURL URLByResolvingBookmarkData:data options:NSURLBookmarkResolutionWithoutUI relativeToURL:nil bookmarkDataIsStale:NULL error:NULL] ?: url;
         }
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error] && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
