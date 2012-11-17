@@ -58,7 +58,7 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
 @implementation SKPDFSynchronizer
 
 @synthesize delegate;
-@dynamic fileName;
+@dynamic fileName, shouldKeepRunning;
 
 + (void)initialize {
     SKINITIALIZE;
