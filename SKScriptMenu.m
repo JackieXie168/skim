@@ -52,9 +52,11 @@
     FSEventStreamRef streamRef;
     NSArray *scriptFolders;
     NSArray *sortDescriptors;
+    BOOL menuNeedsUpdate;
 }
 
 @property (nonatomic, readonly) NSMenu *scriptMenu;
+@property (nonatomic) BOOL menuNeedsUpdate;
 
 + (id)sharedController;
 
@@ -66,9 +68,7 @@
 
 @implementation SKScriptMenuController
 
-static BOOL menuNeedsUpdate = NO;
-
-@synthesize scriptMenu;
+@synthesize scriptMenu, menuNeedsUpdate;
 
 + (id)sharedController {
     static SKScriptMenuController *sharedController = nil;
@@ -78,7 +78,7 @@ static BOOL menuNeedsUpdate = NO;
 }
 
 static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackInfo, int numEvents, const char *const eventPaths[], const FSEventStreamEventFlags *eventMasks, const uint64_t *eventIDs) {
-    menuNeedsUpdate = YES;
+    [(id)clientCallBackInfo setMenuNeedsUpdate:YES];
 }
 
 - (id)init {
@@ -103,6 +103,8 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             [menuItem setImage:[NSImage imageNamed:@"ScriptMenu"]];
             [[NSApp mainMenu] insertItem:menuItem atIndex:itemIndex];
             
+            FSEventStreamContext context = {0, (void *)self, NULL, NULL, NULL};
+            
             scriptMenu = [[menuItem submenu] retain];
             
             sortDescriptors = [[NSArray alloc] initWithObjects:[[[NSSortDescriptor alloc] initWithKey:FILENAME_KEY ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease], nil];
@@ -111,7 +113,7 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             
             streamRef = FSEventStreamCreate(kCFAllocatorDefault,
                                             (FSEventStreamCallback)&fsevents_callback, // callback
-                                            NULL, // context
+                                            &context, // context
                                             (CFArrayRef)[scriptFolders valueForKey:@"path"], // pathsToWatch
                                             kFSEventStreamEventIdSinceNow, // sinceWhen
                                             1.0, // latency
