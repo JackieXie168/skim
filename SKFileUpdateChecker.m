@@ -37,7 +37,6 @@
  */
 
 #import "SKFileUpdateChecker.h"
-#import "UKKQueue.h"
 #import "SKStringConstants.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSData_SKExtensions.h"
@@ -45,6 +44,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
+#import "SKWatchedPath.h"
 
 #define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
 
@@ -85,12 +85,11 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 - (void)stopCheckingFileUpdates {
     if (watchedFile) {
         // remove from kqueue and invalidate timer; maybe we've changed filesystems
-        UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
-        [kQueue removePath:watchedFile];
+        [SKWatchedPath removeWatchedPath:watchedFile];
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:UKFileWatcherWriteNotification object:kQueue];
-        [nc removeObserver:self name:UKFileWatcherRenameNotification object:kQueue];
-        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:kQueue];
+        [nc removeObserver:self name:SKWatchedPathWriteNotification object:nil];
+        [nc removeObserver:self name:SKWatchedPathRenameNotification object:nil];
+        [nc removeObserver:self name:SKWatchedPathDeleteNotification object:nil];
         SKDESTROY(watchedFile);
     }
     if (fileUpdateTimer) {
@@ -141,12 +140,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if (isFileOnHFSVolume(fileName)) {
                 watchedFile = [fileName retain];
                 
-                UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
-                [kQueue addPath:watchedFile];
+                [SKWatchedPath addWatchedPath:watchedFile];
                 NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:kQueue];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:kQueue];
-                [nc addObserver:self selector:@selector(handleFileDeleteNotification:) name:UKFileWatcherDeleteNotification object:kQueue];
+                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:SKWatchedPathWriteNotification object:nil];
+                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:SKWatchedPathRenameNotification object:nil];
+                [nc addObserver:self selector:@selector(handleFileDeleteNotification:) name:SKWatchedPathDeleteNotification object:nil];
             } else if (nil == fileUpdateTimer) {
                 // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
                 fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
