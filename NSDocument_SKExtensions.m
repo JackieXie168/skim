@@ -72,12 +72,12 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [[self fileURL] path];
+    NSURL *fileURL = [self fileURL];
     
-    if (fileName) {
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+    if (fileURL) {
+        NSData *data = [[BDAlias aliasWithURL:fileURL] aliasData];
         
-        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
+        [setup setObject:[fileURL path] forKey:SKDocumentSetupFileNameKey];
         if(data)
             [setup setObject:data forKey:SKDocumentSetupAliasKey];
     }
