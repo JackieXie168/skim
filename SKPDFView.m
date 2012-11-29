@@ -3318,6 +3318,7 @@ enum {
     NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     BOOL didDraw = NO;
+    BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
     
     bezierPath = [[NSBezierPath alloc] init];
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
@@ -3342,6 +3343,8 @@ enum {
     }
     pathPageIndex = [page pageIndex];
     
+    [NSEvent setMouseCoalescingEnabled:NO];
+    
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
@@ -3350,6 +3353,8 @@ enum {
         [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         didDraw = YES;
     }
+    
+    [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
     if (didDraw) {
         NSMutableArray *paths = [[NSMutableArray alloc] init];
