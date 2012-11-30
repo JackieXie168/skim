@@ -42,6 +42,8 @@
 
 @implementation NSEvent (SKExtensions)
 
+static NSPointingDeviceType currentPointingDeviceType = NSUnknownPointingDevice;
+
 + (NSUInteger)standardModifierFlags {
     return [self modifierFlags] & SKStandardModifierFlagsMask;
 }
@@ -52,6 +54,14 @@
 
 - (NSUInteger)standardModifierFlags {
     return [self modifierFlags] & SKStandardModifierFlagsMask;
+}
+
++ (NSPointingDeviceType)currentPointingDeviceType {
+    return currentPointingDeviceType;
+}
+
++ (void)setCurrentPointingDeviceType:(NSPointingDeviceType)newCurrentPointingDeviceType {
+    currentPointingDeviceType = newCurrentPointingDeviceType;
 }
 
 - (unichar)firstCharacter {

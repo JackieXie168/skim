@@ -156,6 +156,7 @@ enum {
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent;
+- (void)doEraseAnnotationsWithEvent:(NSEvent *)theEvent;
 - (void)doSelectWithEvent:(NSEvent *)theEvent;
 - (void)doSelectTextWithEvent:(NSEvent *)theEvent;
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
@@ -1108,7 +1109,7 @@ enum {
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
     } else if (interactionMode == SKPresentationMode) {
-        if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype)) {
+        if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSPenPointingDevice) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
         } else if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
@@ -1148,6 +1149,8 @@ enum {
         } else if (toolMode == SKMagnifyToolMode) {
             [self setCurrentSelection:nil];                
             [self doMagnifyWithEvent:theEvent];
+        } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
+            [self doEraseAnnotationsWithEvent:theEvent];
         } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
             if ([activeAnnotation isLink]) {
                 [self doSelectLinkAnnotationWithEvent:theEvent];
@@ -3387,6 +3390,37 @@ enum {
     
     SKDESTROY(bezierPath);
     SKDESTROY(pathColor);
+}
+
+- (void)doEraseAnnotationsWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseDownLoc = [theEvent locationInView:self];
+    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
+    
+    NSArray *annotations;
+    NSInteger i;
+    NSPoint pagePoint;
+    
+    while (YES) {
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        
+        NSPoint mouseDownOnPage = [theEvent locationInView:self];
+        page = [self pageForPoint:mouseDownOnPage nearest:YES];
+        pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+        
+        annotations = [page annotations];
+        i = [annotations count];
+        
+        while (i-- > 0) {
+            PDFAnnotation *annotation = [annotations objectAtIndex:i];
+            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
+                [self removeAnnotation:annotation];
+                [[self documentUndoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+                break;
+            }
+        }
+    }
 }
 
 - (void)doDragWithEvent:(NSEvent *)theEvent {

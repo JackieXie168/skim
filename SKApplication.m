@@ -40,6 +40,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
@@ -69,6 +70,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [target remoteButtonPressed:anEvent];
             return;
         }
+    } else if ([anEvent type] == NSTabletProximity) {
+        [NSEvent setCurrentPointingDeviceType:[anEvent isEnteringProximity] ? [anEvent pointingDeviceType] : NSUnknownPointingDevice];
     }
     [super sendEvent:anEvent];
 }
