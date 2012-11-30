@@ -3393,24 +3393,16 @@ enum {
 }
 
 - (void)doEraseAnnotationsWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseDownLoc = [theEvent locationInView:self];
-    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
-    
-    NSArray *annotations;
-    NSInteger i;
-    NSPoint pagePoint;
-    
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
         NSPoint mouseDownOnPage = [theEvent locationInView:self];
-        page = [self pageForPoint:mouseDownOnPage nearest:YES];
-        pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
-        
-        annotations = [page annotations];
-        i = [annotations count];
+        PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
+        NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+        NSArray *annotations = [page annotations];
+        NSInteger i = [annotations count];
         
         while (i-- > 0) {
             PDFAnnotation *annotation = [annotations objectAtIndex:i];
