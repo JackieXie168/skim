@@ -44,6 +44,9 @@
 - (NSUInteger)deviceIndependentModifierFlags;
 - (NSUInteger)standardModifierFlags;
 
++ (NSPointingDeviceType)currentPointingDeviceType;
++ (void)setCurrentPointingDeviceType:(NSPointingDeviceType)newCurrentPointingDeviceType;
+
 - (unichar)firstCharacter;
 
 - (NSPoint)locationInView:(NSView *)view;
