@@ -146,8 +146,18 @@
 - (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @abstract   Returns the full path for the file of a given type inside a PDF bundle.
+    @abstract   Returns the file URL for the file of a given type inside a PDF bundle.
     @discussion If more than one bundled files with the given extension exist in the PDF bundle, this will follow the naming rules followed by Skim to find the best match.
+    @param      extension The file extension for which to find a bundled file.
+    @param      aURL The URL to the PDF bundle.
+    @param      outError If there is an error getting the bundled file, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     A file URL to the bundled file inside the PDF bundle, or <code>NULL</code> if no bundled file was found.
+*/
+- (NSURL *)bundledFileURLWithExtension:(NSString *)extension inPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
+
+/*!
+    @abstract   Returns the full path for the file of a given type inside a PDF bundle.
+    @discussion If more than one bundled files with the given extension exist in the PDF bundle, this will follow the naming rules followed by Skim to find the best match. This method is deprecated.
     @param      extension The file extension for which to find a bundled file.
     @param      path The path to the PDF bundle.
     @param      outError If there is an error getting the bundled file, upon return contains an <code>NSError</code> object that describes the problem.
