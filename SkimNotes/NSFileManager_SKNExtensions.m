@@ -148,13 +148,13 @@
     BOOL isDir;
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *skimFile = [self bundledFileWithExtension:SKIM_EXTENSION inPDFBundleAtPath:path error:&error];
-        NSData *data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
+        NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:&error];
+        NSData *data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:0 error:&error] : nil;
         
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
-        } else if (data || skimFile == nil) {
+        } else if (data || skimFileURL == nil) {
             notes = [NSArray array];
         }
     }
@@ -166,14 +166,13 @@
 - (NSString *)readSkimTextNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSString *string = nil;
     NSError *error = nil;
-    NSString *path = [aURL path];
     BOOL isDir;
     
-    if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *notesFile = [self bundledFileWithExtension:TXT_EXTENSION inPDFBundleAtPath:path error:&error];
+    if ([aURL isFileURL] && [self fileExistsAtPath:[aURL path] isDirectory:&isDir] && isDir) {
+        NSURL *notesFileURL = [self bundledFileURLWithExtension:TXT_EXTENSION inPDFBundleAtURL:aURL error:&error];
         
-        if (notesFile)
-            string = [NSString stringWithContentsOfFile:notesFile encoding:NSUTF8StringEncoding error:&error];
+        if (notesFileURL)
+            string = [NSString stringWithContentsOfURL:notesFileURL encoding:NSUTF8StringEncoding error:&error];
         
         if (string == nil)
             string = [NSString string];
@@ -186,14 +185,13 @@
 - (NSData *)readSkimRTFNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSData *data = nil;
     NSError *error = nil;
-    NSString *path = [aURL path];
     BOOL isDir;
     
-    if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *notesFile = [self bundledFileWithExtension:RTF_EXTENSION inPDFBundleAtPath:path error:&error];
+    if ([aURL isFileURL] && [self fileExistsAtPath:[aURL path] isDirectory:&isDir] && isDir) {
+        NSURL *notesFileURL = [self bundledFileURLWithExtension:RTF_EXTENSION inPDFBundleAtURL:aURL error:&error];
         
-        if (notesFile)
-            data = [NSData dataWithContentsOfFile:notesFile options:0 error:&error];
+        if (notesFileURL)
+            data = [NSData dataWithContentsOfURL:notesFileURL options:0 error:&error];
         
         if (data == nil)
             data = [NSData data];
@@ -206,10 +204,9 @@
 - (NSArray *)readSkimNotesFromSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSArray *notes = nil;
     NSError *error = nil;
-    NSString *path = [aURL path];
     
-    if ([aURL isFileURL] && [self fileExistsAtPath:path]) {
-        NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+    if ([aURL isFileURL] && [self fileExistsAtPath:[aURL path]]) {
+        NSData *data = [NSData dataWithContentsOfURL:aURL options:0 error:&error];
         
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
@@ -223,33 +220,34 @@
     return notes;
 }
 
-- (NSString *)bundledFileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path error:(NSError **)outError {
-    NSString *filePath = nil;
+- (NSURL *)bundledFileURLWithExtension:(NSString *)extension inPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError {
+    NSURL *fileURL= nil;
     
     extension = [extension lowercaseString];
     if ([extension isEqualToString:SKIM_EXTENSION] || [extension isEqualToString:PDF_EXTENSION]) {
-        NSArray *files = [self subpathsAtPath:path];
-        NSString *filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
+        NSArray *files = [self subpathsAtPath:[aURL path]];
+        NSString *filename = [[[aURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
         if ([files containsObject:filename] == NO) {
-            filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-            if ([files containsObject:filename] == NO) {
-                NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
-                filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
-            }
+            NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
+            filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
         }
         if (filename)
-            filePath = [path stringByAppendingPathComponent:filename];
+            fileURL = [aURL URLByAppendingPathComponent:filename];
     } else {
-        NSString *skimFile = [self bundledFileWithExtension:SKIM_EXTENSION inPDFBundleAtPath:path error:outError];
-        if (skimFile) {
-            filePath = [[skimFile stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-            if ([self fileExistsAtPath:filePath] == NO)
-                filePath = nil;
+        NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:outError];
+        if (skimFileURL) {
+            fileURL = [[skimFileURL URLByDeletingPathExtension] URLByAppendingPathExtension:extension];
+            if ([self fileExistsAtPath:[fileURL path]] == NO)
+                fileURL = nil;
         }
     }
-    if (filePath == nil && outError) 
+    if (fileURL == nil && outError) 
         *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Notes file not found.", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    return filePath;
+    return fileURL;
+}
+
+- (NSString *)bundledFileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path error:(NSError **)outError {
+    return [[self bundledFileURLWithExtension:extension inPDFBundleAtURL:[NSURL fileURLWithPath:path] error:outError] path];
 }
 
 @end
