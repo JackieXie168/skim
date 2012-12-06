@@ -188,10 +188,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
         NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
         if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
-            NSString *fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:[fileURL path] error:NULL];
-            if (fileName == nil)
+            fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
+            if (fileURL == nil)
                 return NO;
-            fileURL = [NSURL fileURLWithPath:fileName];
         } else if ([extension isCaseInsensitiveEqual:@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
             isDVI = YES;
         }

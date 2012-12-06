@@ -268,8 +268,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 NSData *data = nil;
                 
                 if ([[NSWorkspace sharedWorkspace] type:type conformsToType:SKPDFBundleDocumentType]) {
-                    NSString *skimFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"skim" inPDFBundleAtPath:[theURL path] error:&error];
-                    data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
+                    NSURL *skimFileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"skim" inPDFBundleAtURL:theURL error:&error];
+                    data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:0 error:&error] : nil;
                 } else {
                     data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
                 }

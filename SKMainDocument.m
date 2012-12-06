@@ -648,11 +648,10 @@ enum {
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
     } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
-        NSString *filePath = [[self fileURL] path];
-        NSString *filename = [filePath lastPathComponent];
-        if (filename && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType])
-            filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-        NSData *data = [self notesFDFDataForFile:filename fileIDStrings:[[self pdfDocument] fileIDStrings:pdfData]];
+        NSURL *fileURL = [self fileURL];
+        if (fileURL && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType])
+            fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
+        NSData *data = [self notesFDFDataForFile:[fileURL lastPathComponent] fileIDStrings:[[self pdfDocument] fileIDStrings:pdfData]];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
@@ -771,10 +770,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     tmpData = [[SKTemporaryData alloc] init];
     
     if ([ws type:docType conformsToType:SKPDFBundleDocumentType]) {
-        NSString *path = [absoluteURL path];
-        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
-        if (pdfFile) {
-            NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
+        NSURL *pdfURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:absoluteURL error:&error];
+        if (pdfURL) {
             if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSDataReadingUncached error:&error]) &&
                 (pdfDoc = [[SKPDFDocument alloc] initWithURL:pdfURL])) {
                 NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
@@ -783,7 +780,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                      defaultButton:NSLocalizedString(@"No", @"Button title")
                                                    alternateButton:NSLocalizedString(@"Yes", @"Button title")
                                                        otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[pdfURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
                         SKDESTROY(data);
                         SKDESTROY(pdfDoc);
