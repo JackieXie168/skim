@@ -1133,8 +1133,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)saveArchiveToURL:(NSURL *)fileURL email:(BOOL)email {
     NSTask *task = [[[NSTask alloc] init] autorelease];
-    [task setLaunchPath:@"/usr/bin/tar"];
-    [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
+    if ([[fileURL pathExtension] isEqualToString:@"dmg"]) {
+        [task setLaunchPath:@"/usr/bin/hdiutil"];
+        [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
+    } else {
+        [task setLaunchPath:@"/usr/bin/tar"];
+        [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
+    }
     [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
@@ -1148,85 +1153,46 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     @catch (id exception) {
         [emailer taskFailed];
+    }
+}
+
+- (void)saveArchiveWithExtension:(NSString *)ext email:(BOOL)email {
+    NSURL *fileURL = [self fileURL];
+    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
+        if (email) {
+            NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
+            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
+            [self saveArchiveToURL:tmpFileURL email:YES];
+        } else {
+            NSSavePanel *sp = [NSSavePanel savePanel];
+            [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
+            [sp setCanCreateDirectories:YES];
+            [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:ext]];
+            [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
+                    if (NSFileHandlingPanelOKButton == result)
+                        [self saveArchiveToURL:[sp URL] email:NO];
+                }];
+        }
+    } else {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }
 
 - (IBAction)saveArchive:(id)sender {
-    NSURL *fileURL = [self fileURL];
-    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        NSSavePanel *sp = [NSSavePanel savePanel];
-        [sp setAllowedFileTypes:[NSArray arrayWithObjects:@"tgz", nil]];
-        [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"tgz"]];
-        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
-                if (NSFileHandlingPanelOKButton == result && [self fileURL])
-                    [self saveArchiveToURL:[sp URL] email:NO];
-            }];
-    } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-    }
+    [self saveArchiveWithExtension:@"tgz" email:NO];
 }
 
 - (IBAction)emailArchive:(id)sender {
-    NSURL *fileURL = [self fileURL];
-    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-        NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"tgz"]];
-        [self saveArchiveToURL:tmpFileURL email:YES];
-    } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-    }
-}
-
-- (void)saveDiskImageToURL:(NSURL *)fileURL email:(BOOL)email {
-    NSTask *task = [[[NSTask alloc] init] autorelease];
-    [task setLaunchPath:@"/usr/bin/hdiutil"];
-    [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
-    [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-    
-    SKAttachmentEmailer *emailer = nil;
-    if (email)
-        emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
-    
-    @try {
-        [task launch];
-    }
-    @catch (id exception) {
-        [emailer taskFailed];
-    }
+    [self saveArchiveWithExtension:@"tgz" email:YES];
 }
 
 - (IBAction)saveDiskImage:(id)sender {
-    NSURL *fileURL = [self fileURL];
-    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        NSSavePanel *sp = [NSSavePanel savePanel];
-        [sp setAllowedFileTypes:[NSArray arrayWithObjects:@"dmg", nil]];
-        [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:@"dmg"]];
-        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
-                if (NSFileHandlingPanelOKButton == result && [self fileURL])
-                    [self saveDiskImageToURL:[sp URL] email:NO];
-            }];
-    } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-    }
+    [self saveArchiveWithExtension:@"dmg" email:NO];
 }
 
 - (IBAction)emailDiskImage:(id)sender {
-    NSURL *fileURL = [self fileURL];
-    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-        NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:@"dmg"]];
-        [self saveDiskImageToURL:tmpFileURL email:YES];
-    } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-    }
+    [self saveArchiveWithExtension:@"dmg" email:YES];
 }
 
 - (IBAction)moveToTrash:(id)sender {
