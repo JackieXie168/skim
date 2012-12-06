@@ -91,7 +91,7 @@
     
     for (NSURL *appSupportURL in [[fm applicationSupportDirectoryURLs] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
         url = [[appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY] URLByAppendingPathComponent:typeName];
-        if ([fm fileExistsAtURL:url] == NO)
+        if ([url checkResourceIsReachableAndReturnError:NULL] == NO)
             url = nil;
         else break;
     }

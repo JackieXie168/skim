@@ -117,6 +117,17 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     return [[self URLReplacingPathExtension:ext] lastPathComponent];
 }
 
+- (NSURL *)uniqueFileURL {
+    NSURL *uniqueFileURL = self;
+    NSURL *baseURL = [self URLByDeletingLastPathComponent];
+    NSString *baseName = [[self lastPathComponent] stringByDeletingPathExtension];
+    NSString *extension = [self pathExtension];
+    NSInteger i = 0;
+    while ([uniqueFileURL checkResourceIsReachableAndReturnError:NULL])
+        uniqueFileURL = [baseURL URLByAppendingPathComponent:[[baseName stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:extension]];
+    return uniqueFileURL;
+}
+
 - (NSAttributedString *)icon {
     NSAttributedString *attrString = nil;
     

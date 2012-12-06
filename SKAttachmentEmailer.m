@@ -126,7 +126,7 @@
 }
 
 - (void)taskFinished:(NSNotification *)notification {
-    if ([[NSFileManager defaultManager] fileExistsAtURL:fileURL] && [[notification object] terminationStatus] == 0)
+    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [[notification object] terminationStatus] == 0)
         [self emailAttachmentFile];
     else
         NSBeep();

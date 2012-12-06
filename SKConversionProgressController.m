@@ -136,7 +136,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (void)dealloc {
     SKCFDESTROY(converter);
-    SKDESTROY(outputFile);
+    SKDESTROY(outputFileURL);
     SKDESTROY(outputData);
     SKDESTROY(task);
     SKDESTROY(cancelButton);
@@ -310,15 +310,15 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)taskFinished:(NSNotification *)notification {
     NSData *outData = nil;
     BOOL success = [[notification object] terminationStatus] == 0 &&
-                   [[NSFileManager defaultManager] fileExistsAtPath:outputFile] &&
+                   [outputFileURL checkResourceIsReachableAndReturnError:NULL] &&
                    cancelled == NO;
     
     SKDESTROY(task);
     
     if (success)
-        outData = [NSData dataWithContentsOfFile:outputFile];
+        outData = [NSData dataWithContentsOfURL:outputFileURL];
     
-    if ([[outputFile pathExtension] isCaseInsensitiveEqual:@"ps"]) {
+    if ([[outputFileURL pathExtension] isCaseInsensitiveEqual:@"ps"]) {
         [self convertPostScriptData:outData];
     } else {
         if (success)
@@ -335,23 +335,22 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     cancelled = NO;
     
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *dviFile = [dviURL path];
     NSString *commandName = [toolPath lastPathComponent];
     NSURL *tmpDirURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:dviURL create:YES error:NULL];
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
-    NSString *outFile = [[tmpDirURL URLByAppendingPathComponent:[dviURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]] path];
-    NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
+    NSURL *outFileURL = [tmpDirURL URLByAppendingPathComponent:[dviURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
+    NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:[dviURL path], [outFileURL path], nil] : [NSArray arrayWithObjects:@"-o", [outFileURL path], [dviURL path], nil];
     
     task = [[NSTask alloc] init];
     [task setLaunchPath:toolPath];
     [task setArguments:arguments];
-    [task setCurrentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
+    [task setCurrentDirectoryPath:[[dviURL URLByDeletingLastPathComponent] path]];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
     
-    outputFile = [outFile retain];
+    outputFileURL = [outFileURL retain];
     
     NSInteger rv = [self runModalBlock:^{
         @try {
