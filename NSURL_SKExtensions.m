@@ -128,6 +128,18 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     return uniqueFileURL;
 }
 
+- (BOOL)isTrashedFileURL {
+    NSCParameterAssert([self isFileURL]);    
+    FSRef fileRef;
+    Boolean result = false;
+    if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
+        FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
+        if (result == false)
+            FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
+    }
+    return result;
+}
+
 - (NSAttributedString *)icon {
     NSAttributedString *attrString = nil;
     

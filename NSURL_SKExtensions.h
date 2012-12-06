@@ -51,6 +51,8 @@
 
 - (NSURL *)uniqueFileURL;
 
+- (BOOL)isTrashedFileURL;
+
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 

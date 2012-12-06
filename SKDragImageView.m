@@ -56,9 +56,16 @@
         return;
     }
     
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSURL *fileURL = [[fm temporaryDirectoryURL] URLByAppendingPathComponent:@"SkimNote.tiff"];
-    fileURL = [fileURL uniqueFileURL];
+    static NSURL *temporaryDirectoryURL = nil;
+    if (temporaryDirectoryURL == nil) {
+        char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"Skim.XXXXXX"] fileSystemRepresentation]);
+        const char *tempPath = mkdtemp(template);
+        temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:[[NSFileManager defaultManager] stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)] ];
+        free(template);
+    }
+    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
+    NSURL *fileURL = [[temporaryDirectoryURL URLByAppendingPathComponent:@"SkimNote.tiff"] uniqueFileURL];
     [[image TIFFRepresentation] writeToURL:fileURL atomically:YES];
     [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }

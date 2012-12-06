@@ -41,7 +41,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "SKDocumentController.h"
-#import "NSFileManager_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
@@ -517,7 +517,7 @@ static Class SKBookmarkClass = Nil;
         document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] error:&error];
     } else {
         NSURL *fileURL = [self fileURL];
-        if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
+        if (fileURL && NO == [fileURL isTrashedFileURL] && 
             (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
             [document isPDFDocument] && [self pageIndex] != NSNotFound)
             [[document mainWindowController] setPageNumber:[self pageIndex] + 1];
