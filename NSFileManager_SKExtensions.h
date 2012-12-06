@@ -41,11 +41,8 @@
 
 @interface NSFileManager (SKExtensions)
 
-- (BOOL)isTrashedFileAtURL:(NSURL *)aURL;
-
 - (NSArray *)applicationSupportDirectoryURLs;
 
 - (NSURL *)uniqueChewableItemsDirectoryURL;
-- (NSURL *)temporaryDirectoryURL;
 
 @end

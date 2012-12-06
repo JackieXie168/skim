@@ -41,18 +41,6 @@
 
 @implementation NSFileManager (SKExtensions)
 
-- (BOOL)isTrashedFileAtURL:(NSURL *)aURL {
-    NSCParameterAssert([aURL isFileURL]);    
-    FSRef fileRef;
-    Boolean result = false;
-    if (CFURLGetFSRef((CFURLRef)aURL, &fileRef)) {
-        FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
-        if (result == false)
-            FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
-    }
-    return result;
-}
-
 - (NSArray *)applicationSupportDirectoryURLs {
     static NSArray *applicationSupportDirectoryURLs = nil;
     if (applicationSupportDirectoryURLs == nil) {
@@ -91,19 +79,6 @@
     [self createDirectoryAtPath:[uniqueURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
    
    return uniqueURL;
-}
-
-- (NSURL *)temporaryDirectoryURL {
-    static NSURL *temporaryDirectoryURL = nil;
-    if (temporaryDirectoryURL == nil) {
-        char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"Skim.XXXXXX"] fileSystemRepresentation]);
-        const char *tempPath = mkdtemp(template);
-        temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:[self stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)] ];
-        free(template);
-    }
-    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
-        [self createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
-    return temporaryDirectoryURL;
 }
 
 @end
