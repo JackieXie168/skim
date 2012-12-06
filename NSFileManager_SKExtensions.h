@@ -41,13 +41,10 @@
 
 @interface NSFileManager (SKExtensions)
 
-- (BOOL)fileExistsAtURL:(NSURL *)aURL;
-
 - (BOOL)isTrashedFileAtURL:(NSURL *)aURL;
 
 - (NSArray *)applicationSupportDirectoryURLs;
 
-- (NSURL *)uniqueFileURL:(NSURL *)fileURL;
 - (NSURL *)uniqueChewableItemsDirectoryURL;
 - (NSURL *)temporaryDirectoryURL;
 

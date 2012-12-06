@@ -284,7 +284,7 @@
     } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
         NSString *filename = nil;
         NSURL *pdfURL = [[self fileURL] URLReplacingPathExtension:@"pdf"];
-        if ([[NSFileManager defaultManager] fileExistsAtURL:pdfURL])
+        if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
             filename = [pdfURL lastPathComponent];
         data = [self notesFDFDataForFile:filename fileIDStrings:nil];
     } else {
@@ -440,7 +440,7 @@
 - (IBAction)openPDF:(id)sender {
     NSURL *url = sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"];
     NSError *error = nil;
-    if ([[NSFileManager defaultManager] fileExistsAtURL:url]) {
+    if ([url checkResourceIsReachableAndReturnError:NULL]) {
         // resolve symlinks and aliases
         NSNumber *isAlias = nil;
         url = [url URLByResolvingSymlinksInPath];
@@ -830,7 +830,7 @@
     if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
-        return [[NSFileManager defaultManager] fileExistsAtURL:(sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"])];
+        return [(sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"]) checkResourceIsReachableAndReturnError:NULL];
     return YES;
 }
 

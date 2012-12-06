@@ -75,7 +75,7 @@
 #import "NSError_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
-#import "NSFileManager_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -346,7 +346,7 @@
                 data = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             }
             
-            fileURL = [[NSFileManager defaultManager] uniqueFileURL:[fileURL URLByAppendingPathExtension:pathExt]];
+            fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
             if ([data writeToURL:fileURL atomically:YES])
                 return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }
@@ -356,7 +356,7 @@
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
             NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]] URLByAppendingPathExtension:@"tiff"];
-            fileURL = [[NSFileManager defaultManager] uniqueFileURL:fileURL];
+            fileURL = [fileURL uniqueFileURL];
             if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
                 return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }

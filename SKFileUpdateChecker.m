@@ -181,22 +181,23 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     fucFlags.receivedFileUpdateNotification = NO;
 }
 
-- (BOOL)canUpdateFromFile:(NSString *)fileName {
-    NSString *extension = [fileName pathExtension];
+- (BOOL)canUpdateFromURL:(NSURL *)fileURL {
+    NSString *extension = [fileURL pathExtension];
     BOOL isDVI = NO;
     if (extension) {
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:[[fileName stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
+        NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
         if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
-            fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
+            NSString *fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:[fileURL path] error:NULL];
             if (fileName == nil)
                 return NO;
+            fileURL = [NSURL fileURLWithPath:fileName];
         } else if ([extension isCaseInsensitiveEqual:@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
             isDVI = YES;
         }
     }
     
-    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+    NSFileHandle *fh = [NSFileHandle fileHandleForReadingFromURL:fileURL error:NULL];
     
     // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
     unsigned long long fileEnd = [fh seekToEndOfFile];
@@ -216,14 +217,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)fileUpdated {
-    NSString *fileName = [[document fileURL] path];
+    NSURL *fileURL = [document fileURL];
     
     // should never happen
     if (fucFlags.isUpdatingFile)
-        NSLog(@"*** already busy updating file %@", fileName);
+        NSLog(@"*** already busy updating file %@", [fileURL path]);
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
+        [fileURL checkResourceIsReachableAndReturnError:NULL]) {
         
         fucFlags.fileChangedOnDisk = YES;
         
@@ -236,7 +237,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([docWindow attachedSheet]) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:docWindow];
-        } else if ([self canUpdateFromFile:fileName]) {
+        } else if ([self canUpdateFromURL:fileURL]) {
             BOOL shouldAutoUpdate = fucFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
             if (fucFlags.disableAutoReload == NO && shouldAutoUpdate && documentHasEdits == NO) {

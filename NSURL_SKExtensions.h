@@ -49,6 +49,8 @@
 - (NSURL *)URLReplacingPathExtension:(NSString *)ext;
 - (NSString *)lastPathComponentReplacingPathExtension:(NSString *)ext;
 
+- (NSURL *)uniqueFileURL;
+
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 

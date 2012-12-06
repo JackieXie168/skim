@@ -41,10 +41,6 @@
 
 @implementation NSFileManager (SKExtensions)
 
-- (BOOL)fileExistsAtURL:(NSURL *)aURL {
-    return [self fileExistsAtPath:[aURL path]];
-}
-
 - (BOOL)isTrashedFileAtURL:(NSURL *)aURL {
     NSCParameterAssert([aURL isFileURL]);    
     FSRef fileRef;
@@ -62,22 +58,11 @@
     if (applicationSupportDirectoryURLs == nil) {
         NSMutableArray *urlArray = [NSMutableArray array];
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-        for (NSURL *url in [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSAllDomainsMask])
+        for (NSURL *url in [self URLsForDirectory:NSApplicationSupportDirectory inDomains:NSAllDomainsMask])
             [urlArray addObject:[url URLByAppendingPathComponent:appName]];
         applicationSupportDirectoryURLs = [urlArray copy];
     }
     return applicationSupportDirectoryURLs;
-}
-
-- (NSURL *)uniqueFileURL:(NSURL *)fileURL {
-    NSURL *uniqueFileURL = fileURL;
-    NSURL *baseURL = [fileURL URLByDeletingLastPathComponent];
-    NSString *baseName = [[fileURL lastPathComponent] stringByDeletingPathExtension];
-    NSString *extension = [fileURL pathExtension];
-    NSInteger i = 0;
-    while ([self fileExistsAtURL:uniqueFileURL])
-        uniqueFileURL = [baseURL URLByAppendingPathComponent:[[baseName stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:extension]];
-    return uniqueFileURL;
 }
 
 - (NSURL *)uniqueChewableItemsDirectoryURL {
@@ -89,7 +74,7 @@
             NSURL *chewableURL = (NSURL *)CFURLCreateFromFSRef(kCFAllocatorDefault, &chewableRef);
             NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
             chewableItemsDirectoryURL = [[chewableURL URLByAppendingPathComponent:appName] copy];
-            if ([self fileExistsAtURL:chewableItemsDirectoryURL] == NO)
+            if ([chewableItemsDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
                 [self createDirectoryAtPath:[chewableItemsDirectoryURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
             [chewableURL release];
        }
@@ -101,7 +86,7 @@
         CFUUIDRef uuid = CFUUIDCreate(NULL);
         uniqueURL = [chewableItemsDirectoryURL URLByAppendingPathComponent:[(NSString *)CFUUIDCreateString(NULL, uuid) autorelease]];
         CFRelease(uuid);
-    } while ([self fileExistsAtURL:uniqueURL]);
+    } while ([uniqueURL checkResourceIsReachableAndReturnError:NULL]);
     
     [self createDirectoryAtPath:[uniqueURL path] withIntermediateDirectories:NO attributes:nil error:NULL];
    
@@ -116,7 +101,7 @@
         temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:[self stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)] ];
         free(template);
     }
-    if ([self fileExistsAtURL:temporaryDirectoryURL] == NO)
+    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
         [self createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
     return temporaryDirectoryURL;
 }

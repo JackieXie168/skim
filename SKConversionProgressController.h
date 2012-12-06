@@ -46,7 +46,7 @@
     NSString *fileType;
     CGPSConverterRef converter;
     NSTask *task;
-    NSString *outputFile;
+    NSURL *outputFileURL;
     NSData *outputData;
     BOOL cancelled;
 }

@@ -40,6 +40,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
 @implementation SKDragImageView
 
@@ -57,7 +58,7 @@
     
     NSFileManager *fm = [NSFileManager defaultManager];
     NSURL *fileURL = [[fm temporaryDirectoryURL] URLByAppendingPathComponent:@"SkimNote.tiff"];
-    fileURL = [fm uniqueFileURL:fileURL];
+    fileURL = [fileURL uniqueFileURL];
     [[image TIFFRepresentation] writeToURL:fileURL atomically:YES];
     [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }
