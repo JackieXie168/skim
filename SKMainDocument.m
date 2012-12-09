@@ -1976,7 +1976,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     } else {
         NSNumber *replaceNumber = [args objectForKey:@"Replace"];
         NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:notesURL error:NULL];
-        if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKNotesDocumentType] || [[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKNotesFDFDocumentType])
+        if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKNotesDocumentType])
             [self readNotesFromURL:notesURL replace:(replaceNumber ? [replaceNumber boolValue] : YES)];
         else
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
