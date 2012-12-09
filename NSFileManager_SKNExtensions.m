@@ -226,17 +226,17 @@
     extension = [extension lowercaseString];
     if ([extension isEqualToString:SKIM_EXTENSION] || [extension isEqualToString:PDF_EXTENSION]) {
         NSArray *files = [self subpathsAtPath:[aURL path]];
-        NSString *filename = [[[aURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
+        NSString *filename = [[[[aURL path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
         if ([files containsObject:filename] == NO) {
             NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
             filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
         }
         if (filename)
-            fileURL = [aURL URLByAppendingPathComponent:filename];
+            fileURL = [NSURL fileURLWithPath:[[aURL path] stringByAppendingPathComponent:filename]];
     } else {
         NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:outError];
         if (skimFileURL) {
-            fileURL = [[skimFileURL URLByDeletingPathExtension] URLByAppendingPathExtension:extension];
+            fileURL = [NSURL fileURLWithPath:[[[skimFileURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:extension]];
             if ([self fileExistsAtPath:[fileURL path]] == NO)
                 fileURL = nil;
         }
