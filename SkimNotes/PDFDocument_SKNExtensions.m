@@ -47,7 +47,7 @@
 - (id)initWithURL:(NSURL *)url readSkimNotes:(NSArray **)notes {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSURL *pdfURL = url;
-    BOOL isPDFBundle = [[url pathExtension] caseInsensitiveCompare:@"pdfd"] == NSOrderedSame;
+    BOOL isPDFBundle = [[[url path] pathExtension] caseInsensitiveCompare:@"pdfd"] == NSOrderedSame;
     if (isPDFBundle)
         pdfURL = [fm bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:url error:NULL];
     if (self = [self initWithURL:pdfURL]) {
