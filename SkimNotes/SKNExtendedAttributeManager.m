@@ -462,7 +462,7 @@ static id sharedNoSplitManager = nil;
     if  (nil == allAttributes)
         return NO;
     
-    const char *fsPath;
+    const char *fsPath = [path fileSystemRepresentation];
     ssize_t status;
     int xopts;
     
@@ -475,7 +475,6 @@ static id sharedNoSplitManager = nil;
     NSString *attrName;
     while ((attrName = [e nextObject])) {
         
-        fsPath = [path fileSystemRepresentation];
         status = removexattr(fsPath, [attrName UTF8String], xopts);
         
         // return NO as soon as any single removal fails
