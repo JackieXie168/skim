@@ -162,7 +162,6 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
 
 - (NSImage *)copyWithAddBadge {
     NSBezierPath *addPath = [NSBezierPath bezierPath];
-    addPath = [NSBezierPath bezierPath];
     [addPath appendBezierPathWithRect:NSMakeRect(17.0, 4.0, 6.0, 2.0)];
     [addPath appendBezierPathWithRect:NSMakeRect(19.0, 2.0, 2.0, 6.0)];
     
