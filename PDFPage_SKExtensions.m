@@ -361,7 +361,7 @@ static BOOL usesSequentialPageNumbering = NO;
 - (void)setRotationAngle:(NSInteger)angle {
     if ([self isNotesPage] == NO && angle != [self rotation]) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
-        [[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
+        [(PDFPage *)[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
         [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
         // this will dirty the document, even though no saveable change has been made
         // but we cannot undo the document change count because there may be real changes to the document in the script
