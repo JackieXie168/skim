@@ -37,7 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKOutlineView.h";
+#import "SKOutlineView.h"
 
 @protocol SKNoteOutlineViewDelegate;
 
