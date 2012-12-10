@@ -150,14 +150,14 @@
     return pageLabels;
 }
 
-inline NSRange SKRangeBetweenRanges(NSRange startRange, NSRange endRange) {
+static inline NSRange SKRangeBetweenRanges(NSRange startRange, NSRange endRange) {
     NSRange r;
     r.location = NSMaxRange(startRange);
     r.length = endRange.location - r.location;
     return r;
 }
 
-inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
+static inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     NSRange r;
     if (end > length) {
         r.location = end - length;
