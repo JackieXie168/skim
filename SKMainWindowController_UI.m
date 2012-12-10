@@ -605,6 +605,7 @@
         }
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
+        PDFAnnotation *item = item;
         if (tableColumn == nil)
             return [item text];
         else if ([tcID isEqualToString:NOTE_COLUMNID])
@@ -623,7 +624,7 @@
     return nil;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
+- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(PDFAnnotation *)item{
     if ([ov isEqual:rightSideController.noteOutlineView] && [item type]) {
         if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
             if ([(object ?: @"") isEqualToString:([item string] ?: @"")] == NO)
@@ -635,7 +636,7 @@
     }
 }
 
-- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
+- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(PDFAnnotation *)item proposedChildIndex:(NSInteger)anIndex {
     NSDragOperation dragOp = NSDragOperationNone;
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
@@ -664,7 +665,7 @@
 
 #pragma mark NSOutlineView delegate protocol
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(PDFAnnotation *)item {
     if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [item type] == nil) {
         return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
     }
@@ -762,7 +763,7 @@
     }
 }
 
-- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(PDFAnnotation *)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
         return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
@@ -824,7 +825,7 @@
         for (item in items) {
             if ([attrString length])
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-            if ([item type]) {
+            if ([(PDFAnnotation *)item type]) {
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
             } else {
                 [attrString appendAttributedString:[(SKNoteText *)item text]];
@@ -1014,7 +1015,7 @@
     }
     
     for (id item in items) {
-        if ([item type]) {
+        if ([(PDFAnnotation *)item type]) {
             [cell setObjectValue:[item string]];
             height = [cell cellSizeForBounds:rect].height;
         } else {
@@ -1082,7 +1083,7 @@
             if ([pdfView hideNotes] == NO && [items count] == 1) {
                 PDFAnnotation *annotation = [[self noteItems:items] lastObject];
                 if ([annotation isEditable]) {
-                    if ([[items lastObject] type] == nil) {
+                    if ([(PDFAnnotation *)[items lastObject] type] == nil) {
                         item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editNoteTextFromTable:) target:self];
                         [item setRepresentedObject:annotation];
                     } else if ([[rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] isHidden]) {
@@ -1537,7 +1538,7 @@ static NSArray *allMainDocumentPDFViews() {
         [menuItem setState:mwcFlags.rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(toggleSplitPDF:)) {
-        if ([secondaryPdfView window])
+        if ([(NSView *)secondaryPdfView window])
             [menuItem setTitle:NSLocalizedString(@"Hide Split PDF", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Split PDF", @"Menu item title")];
