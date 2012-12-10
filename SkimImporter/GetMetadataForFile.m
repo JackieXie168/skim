@@ -134,21 +134,21 @@ Boolean GetMetadataForFile(void* thisInterface,
         if (info) {
             id value;
             id pageWidth = [info objectForKey:@"PageWidth"], pageHeight = [info objectForKey:@"PageHeight"];
-            if (value = [info objectForKey:@"Title"])
+            if ((value = [info objectForKey:@"Title"]))
                 CFDictionarySetValue(attributes, kMDItemTitle, value);
-            if (value = [info objectForKey:@"Author"])
+            if ((value = [info objectForKey:@"Author"]))
                 CFDictionarySetValue(attributes, kMDItemAuthors, value);
-            if (value = [info objectForKey:@"Keywords"])
+            if ((value = [info objectForKey:@"Keywords"]))
                 CFDictionarySetValue(attributes, kMDItemKeywords, value);
-            if (value = [info objectForKey:@"Creator"])
+            if ((value = [info objectForKey:@"Creator"]))
                 CFDictionarySetValue(attributes, kMDItemCreator, value);
-            if (value = [info objectForKey:@"Producer"])
+            if ((value = [info objectForKey:@"Producer"]))
                 CFDictionarySetValue(attributes, kMDItemEncodingApplications, value);
-            if (value = [info objectForKey:@"Version"])
+            if ((value = [info objectForKey:@"Version"]))
                 CFDictionarySetValue(attributes, kMDItemVersion, value);
-            if (value = [info objectForKey:@"Encrypted"])
+            if ((value = [info objectForKey:@"Encrypted"]))
                 CFDictionarySetValue(attributes, kMDItemSecurityMethod, [value boolValue] ? @"Password Encrypted" : @"None");
-            if (value = [info objectForKey:@"PageCount"])
+            if ((value = [info objectForKey:@"PageCount"]))
                 CFDictionarySetValue(attributes, kMDItemNumberOfPages, value);
             if (pageWidth && pageHeight) {
                 CFDictionarySetValue(attributes, kMDItemPageWidth, pageWidth);
@@ -167,9 +167,9 @@ Boolean GetMetadataForFile(void* thisInterface,
         
         NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:(NSString *)pathToFile error:NULL];
         NSDate *date;
-        if (date = [fileAttributes objectForKey:NSFileModificationDate])
+        if ((date = [fileAttributes objectForKey:NSFileModificationDate]))
             CFDictionarySetValue(attributes, kMDItemContentModificationDate, date);
-        if (date = [fileAttributes objectForKey:NSFileCreationDate])
+        if ((date = [fileAttributes objectForKey:NSFileCreationDate]))
             CFDictionarySetValue(attributes, kMDItemContentCreationDate, date);
     }
     
