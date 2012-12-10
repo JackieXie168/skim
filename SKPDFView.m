@@ -2067,9 +2067,8 @@ enum {
             [[self window] makeFirstResponder:self];
             rv = YES;
         }
-    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
-       rv = [(id<NSControlTextEditingDelegate>)super control:control textView:textView doCommandBySelector:command];
     }
+    // PDFView does not implement this method since 10.5, as it uses a separate controller object
     return rv;
 }
 
