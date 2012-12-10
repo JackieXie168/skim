@@ -490,7 +490,7 @@
     }
     
     for (id item in items) {
-        if ([item type]) {
+        if ([(PDFAnnotation *)item type]) {
             [cell setObjectValue:[item string]];
             height = [cell cellSizeForBounds:rect].height;
         } else {
@@ -578,7 +578,7 @@
     }
 }
 
-- (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
+- (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(PDFAnnotation *)item {
     NSString *tcID = [tableColumn identifier];
     if (tableColumn == nil) {
         return [item text];
@@ -594,7 +594,7 @@
     return nil;
 }
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(PDFAnnotation *)item {
     if (tableColumn == nil && [item type] == nil) {
         return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
     }
@@ -646,11 +646,11 @@
     NSMutableArray *copiedItems = [NSMutableArray array];
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     BOOL isAttributed = NO;
-    id item;
+    PDFAnnotation *item;
     
     for (item in items) {
         if ([item type] == nil)
-            item = [item note];
+            item = [(SKNoteText *)item note];
         
         if ([copiedItems containsObject:item] == NO && 
             ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO))
@@ -680,7 +680,7 @@
     return [items count] > 0;
 }
 
-- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(PDFAnnotation *)item {
     CGFloat rowHeight = [rowHeights floatForKey:item];
     return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
 }
