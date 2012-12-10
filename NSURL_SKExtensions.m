@@ -76,7 +76,7 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     if ([URLs count] == 0) {
         NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
         if ([type isEqualToString:NSURLPboardType]) {
-            URLs = [NSArray arrayWithObjects:[NSURL URLFromPasteboard:self], nil];
+            URLs = [NSArray arrayWithObjects:[NSURL URLFromPasteboard:pboard], nil];
         } else if ([type isEqualToString:NSFilenamesPboardType]) {
             NSArray *filenames = [pboard propertyListForType:NSFilenamesPboardType];
             if ([filenames count]  > 0) {
@@ -205,20 +205,20 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     if ([propertyList isKindOfClass:[NSString class]]) {
         NSString *string = propertyList;
         if ([type isEqualToString:(NSString *)kUTTypeURL] || [type isEqualToString:(NSString *)kUTTypeFileURL]) {
-            self = [[NSURL alloc] initWithString:string];
+            self = (id)[[NSURL alloc] initWithString:string];
         } else if ([type isEqualToString:NSPasteboardTypeString]) {
             if ([string rangeOfString:@"://"].length) {
                 if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
                     string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
-                self = [[NSURL alloc] initWithString:string];
+                self = (id)[[NSURL alloc] initWithString:string];
                 if (self == nil)
-                    self = [[NSURL alloc] initWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                    self = (id)[[NSURL alloc] initWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
             }
             if (self == nil) {
                 if ([string hasPrefix:@"~"])
                     string = [string stringByExpandingTildeInPath];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:string])
-                    self = [[NSURL alloc] initFileURLWithPath:string];
+                    self = (id)[[NSURL alloc] initFileURLWithPath:string];
             }
         }
     }
