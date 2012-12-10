@@ -190,7 +190,6 @@ enum {
     SKDESTROY(fileUpdateChecker);
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
-    SKDESTROY(readNotesAccessoryView);
     SKDESTROY(progressController);
     SKDESTROY(tmpData);
     [super dealloc];
@@ -978,17 +977,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)readNotes:(id)sender{
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     NSURL *fileURL = [self fileURL];
+    NSButton *replaceNotesCheckButton = nil;
+    NSView *readNotesAccessoryView = nil;
     
     if ([[[self mainWindowController] notes] count]) {
-        if (readNotesAccessoryView == nil) {
-            replaceNotesCheckButton = [[[NSButton alloc] init] autorelease];
-            [replaceNotesCheckButton setButtonType:NSSwitchButton];
-            [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Check button title")];
-            [replaceNotesCheckButton sizeToFit];
-            [replaceNotesCheckButton setFrameOrigin:NSMakePoint(16.0, 8.0)];
-            readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -16.0, -8.0)];
-            [readNotesAccessoryView addSubview:replaceNotesCheckButton];
-        }
+        replaceNotesCheckButton = [[[NSButton alloc] init] autorelease];
+        [replaceNotesCheckButton setButtonType:NSSwitchButton];
+        [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Check button title")];
+        [replaceNotesCheckButton sizeToFit];
+        [replaceNotesCheckButton setFrameOrigin:NSMakePoint(16.0, 8.0)];
+        readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -16.0, -8.0)];
+        [readNotesAccessoryView addSubview:replaceNotesCheckButton];
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];
     }
@@ -999,7 +998,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [oPanel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
             if (result == NSFileHandlingPanelOKButton) {
                 NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
-                BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
+                BOOL replace = (replaceNotesCheckButton && [replaceNotesCheckButton state] == NSOnState);
                 [self readNotesFromURL:notesURL replace:replace];
             }
         }];

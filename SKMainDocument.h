@@ -45,9 +45,6 @@ extern NSString *SKSkimFileDidSaveNotification;
 
 @interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
 {
-    NSView *readNotesAccessoryView;
-    NSButton *replaceNotesCheckButton;
-    
     SKMainWindowController *mainWindowController;
     
     // variables to be saved:
