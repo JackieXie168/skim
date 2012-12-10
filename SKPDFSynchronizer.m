@@ -467,7 +467,7 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
                 [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
                 [filename release];
             }
-        } while (node = synctex_node_next(node));
+        } while ((node = synctex_node_next(node)));
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
     }
