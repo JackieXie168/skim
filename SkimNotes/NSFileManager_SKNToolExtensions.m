@@ -198,13 +198,13 @@
     if ([extension caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
         NSString *notePath;
 #if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
-        if (notePath = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL])
+        if ((notePath = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL]))
             success1 = [self removeItemAtPath:notePath error:NULL];
-        if (notePath = [self notesFileWithExtension:TXT_EXTENSION atPath:path error:NULL])
+        if ((notePath = [self notesFileWithExtension:TXT_EXTENSION atPath:path error:NULL]))
             success2 = [self removeItemAtPath:notePath error:NULL];
-        if (notePath = [self notesFileWithExtension:RTF_EXTENSION atPath:path error:NULL])
+        if ((notePath = [self notesFileWithExtension:RTF_EXTENSION atPath:path error:NULL]))
             success3 = [self removeItemAtPath:notePath error:NULL];
-        if (notePath = [self notesFileWithExtension:FDF_EXTENSION atPath:path error:NULL])
+        if ((notePath = [self notesFileWithExtension:FDF_EXTENSION atPath:path error:NULL]))
             [self removeItemAtPath:notePath error:NULL];
 #else
         if (notePath = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL])
