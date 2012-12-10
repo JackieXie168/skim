@@ -232,7 +232,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
-        tags = [[NSMutableArray alloc] init];
+        tags = [[NSArray alloc] init];
         rating = 0.0;
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];

@@ -111,7 +111,7 @@ enum {
     NSTimer                             *snapshotTimer;
     CGFloat                             roundedSnapshotThumbnailSize;
     
-    NSMutableArray                      *tags;
+    NSArray                             *tags;
     double                              rating;
     
     NSWindow                            *mainWindow;
