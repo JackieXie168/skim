@@ -162,7 +162,7 @@ static id replacement_accessibilityRangeForPositionAttributeForParameter(id self
 }
 
 static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
-    id pdfView = SKGetPDFView(self);
+    PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]);
         return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
@@ -171,7 +171,7 @@ static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL
 }
 
 static id replacement_accessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
-    id pdfView = SKGetPDFView(self);
+    PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         return [attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]) accessibilityAttributedString];
     }
@@ -179,7 +179,7 @@ static id replacement_accessibilityAttributedStringForRangeAttributeForParameter
 }
 
 static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
-    id pdfView = SKGetPDFView(self);
+    PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         // make sure the accessibility table is generated
         [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
