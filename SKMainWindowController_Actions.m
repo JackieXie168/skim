@@ -148,7 +148,7 @@
                 [annotation setLineWidth:[sender lineWidth]];
                 break;
             case SKStyleLineChangeAction:
-                [annotation setBorderStyle:[sender style]];
+                [annotation setBorderStyle:[(SKLineInspector *)sender style]];
                 break;
             case SKDashPatternLineChangeAction:
                 [annotation setDashPattern:[sender dashPattern]];
