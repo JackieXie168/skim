@@ -598,50 +598,54 @@
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         NSString *tcID = [tableColumn identifier];
+        PDFOutline *ol = item;
         if([tcID isEqualToString:LABEL_COLUMNID]) {
-            return [(PDFOutline *)item label];
+            return [ol label];
         } else if([tcID isEqualToString:PAGE_COLUMNID]) {
-            return [(PDFOutline *)item pageLabel];
+            return [ol pageLabel];
         }
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        PDFAnnotation *item = item;
+        PDFAnnotation *note = item;
         if (tableColumn == nil)
-            return [item text];
+            return [note text];
         else if ([tcID isEqualToString:NOTE_COLUMNID])
-            return [item type] ? (id)[item string] : (id)[item text];
+            return [note type] ? (id)[note string] : (id)[note text];
         else if([tcID isEqualToString:TYPE_COLUMNID])
-            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
+            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:note == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [note type], SKAnnotationTypeImageCellTypeKey, nil];
         else if([tcID isEqualToString:COLOR_COLUMNID])
-            return [item type] ? [item color] : nil;
+            return [note type] ? [item color] : nil;
         else if([tcID isEqualToString:PAGE_COLUMNID])
-            return [[item page] displayLabel];
+            return [[note page] displayLabel];
         else if([tcID isEqualToString:AUTHOR_COLUMNID])
-            return [item type] ? [item userName] : nil;
+            return [note type] ? [note userName] : nil;
         else if([tcID isEqualToString:DATE_COLUMNID])
-            return [item type] ? [item modificationDate] : nil;
+            return [note type] ? [note modificationDate] : nil;
     }
     return nil;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(PDFAnnotation *)item{
-    if ([ov isEqual:rightSideController.noteOutlineView] && [item type]) {
-        if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
-            if ([(object ?: @"") isEqualToString:([item string] ?: @"")] == NO)
-                [item setString:object];
-        } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
-            if ([(object ?: @"") isEqualToString:([item userName] ?: @"")] == NO)
-                [item setUserName:object];
+- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        PDFAnnotation *note = item;
+        if ([note type]) {
+            if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
+                if ([(object ?: @"") isEqualToString:([note string] ?: @"")] == NO)
+                    [note setString:object];
+            } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
+                if ([(object ?: @"") isEqualToString:([note userName] ?: @"")] == NO)
+                    [note setUserName:object];
+            }
         }
     }
 }
 
-- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(PDFAnnotation *)item proposedChildIndex:(NSInteger)anIndex {
+- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
     NSDragOperation dragOp = NSDragOperationNone;
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
         if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSColor class]] options:[NSDictionary dictionary]] &&
-            anIndex == NSOutlineViewDropOnItemIndex && [item type] != nil)
+            anIndex == NSOutlineViewDropOnItemIndex && [(PDFAnnotation *)item type] != nil)
             dragOp = NSDragOperationEvery;
     }
     return dragOp;
@@ -665,8 +669,8 @@
 
 #pragma mark NSOutlineView delegate protocol
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(PDFAnnotation *)item {
-    if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [item type] == nil) {
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [(PDFAnnotation *)item type] == nil) {
         return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
     }
     return [tableColumn dataCellForRow:[ov rowForItem:item]];
@@ -763,10 +767,10 @@
     }
 }
 
-- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(PDFAnnotation *)item {
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
-        return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
+        return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + 2.0 : 85.0));
     }
     return [ov rowHeight];
 }

@@ -578,24 +578,25 @@
     }
 }
 
-- (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(PDFAnnotation *)item {
+- (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
+    PDFAnnotation *note = item;
     if (tableColumn == nil) {
-        return [item text];
+        return [note text];
     } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
-        return [item type] ? (id)[item string] : (id)[item text];
+        return [note type] ? (id)[note string] : (id)[note text];
     } else if([tcID isEqualToString:TYPE_COLUMNID]) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[item type], SKAnnotationTypeImageCellTypeKey, nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil];
     } else if([tcID isEqualToString:COLOR_COLUMNID]) {
-        return [item type] ? [item color] : nil;
+        return [note type] ? [note color] : nil;
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [item type] ? [NSString stringWithFormat:@"%lu", (unsigned long)([item pageIndex] + 1)] : nil;
+        return [note type] ? [NSString stringWithFormat:@"%lu", (unsigned long)([note pageIndex] + 1)] : nil;
     }
     return nil;
 }
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(PDFAnnotation *)item {
-    if (tableColumn == nil && [item type] == nil) {
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if (tableColumn == nil && [(PDFAnnotation *)item type] == nil) {
         return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
     }
     return [tableColumn dataCellForRow:[ov rowForItem:item]];
@@ -680,9 +681,9 @@
     return [items count] > 0;
 }
 
-- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(PDFAnnotation *)item {
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = [rowHeights floatForKey:item];
-    return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
+    return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + 2.0 : 85.0));
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
