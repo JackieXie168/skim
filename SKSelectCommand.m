@@ -53,7 +53,7 @@
     
     if ([doc respondsToSelector:@selector(pdfView)]) {
         SKPDFView *pdfView = [doc pdfView];
-        [[pdfView window] makeKeyAndOrderFront:nil];
+        [[(NSView *)pdfView window] makeKeyAndOrderFront:nil];
         [pdfView goToSelection:selection];
         [pdfView setCurrentSelection:selection animate:animate];
     }
