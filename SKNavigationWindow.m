@@ -168,7 +168,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [zoomButton setState:[[notification object] autoScales] ? NSOnState : NSOffState];
-    [zoomSlider setDoubleValue:log([[notification object] scaleFactor])];
+    [zoomSlider setDoubleValue:log([(PDFView *)[notification object] scaleFactor])];
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
