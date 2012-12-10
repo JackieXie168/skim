@@ -67,7 +67,7 @@
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
-#import "SKNoteTypeSheetController.h";
+#import "SKNoteTypeSheetController.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
@@ -232,7 +232,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
-        tags = [[NSArray alloc] init];
+        tags = [[NSMutableArray alloc] init];
         rating = 0.0;
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
@@ -1143,7 +1143,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSIndexSet *rowIndexes = [rightSideController.noteOutlineView selectedRowIndexes];
     [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop) {
         id item = [rightSideController.noteOutlineView itemAtRow:row];
-        if ([item type] == nil)
+        if ([(PDFAnnotation *)item type] == nil)
             item = [(SKNoteText *)item note];
         if ([selectedNotes containsObject:item] == NO)
             [selectedNotes addObject:item];
