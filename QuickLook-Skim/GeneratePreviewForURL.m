@@ -91,7 +91,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             NSArray *notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
             NSString *htmlString = [SKQLConverter htmlStringWithNotes:notes];
             [data release];
-            if (data = [htmlString dataUsingEncoding:NSUTF8StringEncoding]) {
+            if ((data = [htmlString dataUsingEncoding:NSUTF8StringEncoding])) {
                 NSSet *types = [NSSet setWithArray:[notes valueForKey:@"type"]];
                 NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:
                                             @"UTF-8", (NSString *)kQLPreviewPropertyTextEncodingNameKey,
