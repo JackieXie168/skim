@@ -81,9 +81,9 @@ enum {
 };
 typedef NSInteger SKNoteType;
 
-@class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow;
+@class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor;
 
-@interface SKPDFView : PDFView <NSTextFieldDelegate> {
+@interface SKPDFView : PDFView {
     SKToolMode toolMode;
     SKNoteType annotationMode;
     SKInteractionMode interactionMode;
@@ -103,7 +103,7 @@ typedef NSInteger SKNoteType;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
-    NSTextField *editField;
+    SKTextNoteEditor *editor;
     NSRect selectionRect;
     NSUInteger selectionPageIndex;
     NSPoint syncPoint;
