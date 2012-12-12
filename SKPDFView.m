@@ -136,6 +136,7 @@ enum {
 
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
+- (NSRange)displayedPageIndexRange;
 
 - (void)enableNavigation;
 - (void)disableNavigation;
@@ -2216,23 +2217,7 @@ enum {
 - (NSArray *)accessibilityChildren {
     if (accessibilityChildren == nil) {
         PDFDocument *pdfDoc = [self document];
-        NSUInteger pageCount = [pdfDoc pageCount];
-        NSRange range = NSMakeRange(0, pageCount);
-        if (pageCount && ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp)) {
-            range = NSMakeRange([[self currentPage] pageIndex], 1);
-            if ([self displayMode] == kPDFDisplayTwoUp) {
-                range.length = 2;
-                if ((NSUInteger)[self displaysAsBook] != (range.location % 2)) {
-                    if (range.location == 0)
-                        range.length = 1;
-                    else
-                        range.location -= 1;
-                }
-                if (NSMaxRange(range) == pageCount)
-                    range.length = 1;
-            }
-        }
-        
+        NSRange range = [self displayedPageIndexRange];
         NSMutableArray *children = [NSMutableArray array];
         
         //[children addObject:[SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]];
@@ -2431,6 +2416,27 @@ enum {
         NSUInteger first = [firstPage pageIndex];
         NSUInteger last = [lastPage pageIndex];
         range = NSMakeRange(first, last - first + 1);
+    }
+    return range;
+}
+
+- (NSRange)displayedPageIndexRange {
+    NSUInteger pageCount = [[self document] pageCount];
+    PDFDisplayMode displayMode = [self displayMode];
+    NSRange range = NSMakeRange(0, pageCount);
+    if (pageCount && (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)) {
+        range = NSMakeRange([[self currentPage] pageIndex], 1);
+        if (displayMode == kPDFDisplayTwoUp) {
+            range.length = 2;
+            if ([self displaysAsBook] != (BOOL)(range.location % 2)) {
+                if (range.location == 0)
+                    range.length = 1;
+                else
+                    range.location -= 1;
+            }
+            if (NSMaxRange(range) == pageCount)
+                range.length = 1;
+        }
     }
     return range;
 }
@@ -4197,25 +4203,7 @@ enum {
 
 - (void)relayoutEditField {
     if ([self isEditing]) {
-        PDFDisplayMode displayMode = [self displayMode];
-        PDFPage *page = [activeAnnotation page];
-        PDFPage *currentPage = [self currentPage];
-        BOOL isVisible = YES;
-        if ([page isEqual:currentPage] == NO && displayMode != kPDFDisplaySinglePageContinuous && displayMode != kPDFDisplayTwoUpContinuous) {
-            if (displayMode == kPDFDisplayTwoUp) {
-                NSInteger currentPageIndex = [currentPage pageIndex];
-                NSInteger facingPageIndex = currentPageIndex;
-                if ([self displaysAsBook] == (BOOL)(currentPageIndex % 2))
-                    facingPageIndex++;
-                else
-                    facingPageIndex--;
-                if ((NSInteger)[page pageIndex] != facingPageIndex)
-                    isVisible = NO;
-            } else {
-                isVisible = NO;
-            }
-        }
-        if (isVisible) {
+        if (NSLocationInRange([activeAnnotation pageIndex], [self displayedPageIndexRange])) {
             [editor updateFrame];
             if ([[editor textField] superview] == nil) {
                 [[self documentView] addSubview:[editor textField]];
