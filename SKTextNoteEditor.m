@@ -88,7 +88,6 @@
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
     if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
         [pdfView commitEditing];
-        [[pdfView window] makeFirstResponder:pdfView];
         return YES;
     }
     return NO;
