@@ -144,8 +144,6 @@ enum {
 - (void)doAutohide:(BOOL)flag;
 - (void)showNavWindow:(BOOL)flag;
 
-- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
-
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
@@ -2506,28 +2504,6 @@ enum {
 
 #pragma mark Event handling
 
-- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
-    
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    BOOL doLink = NO;
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL && [[ann destination] page]){
-            dest = [ann destination];
-            doLink = YES;
-        } 
-        // Set link = NO if the annotation links outside the document (e.g. for a URL); currently this is only used for the tool tip window.  We could do something clever like show a URL icon in the tool tip window (or a WebView!), but for now we'll just ignore these links.
-    }
-    
-    if (isLink) *isLink = doLink;
-    return dest;
-}
-
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta {
     NSRect bounds = [activeAnnotation bounds];
     NSRect newBounds = bounds;
@@ -3897,13 +3873,14 @@ enum {
         
     } else {
         
-        BOOL isLink = NO;
-        PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
-        
-        if (isLink) {
-            page = [dest page];
-            point = [self convertPoint:[dest point] fromPage:page];
-            point.y -= 100.0;
+        PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
+        if ([annotation isLink]) {
+            PDFDestination *destination = [annotation destination];
+            if ([destination page]) {
+                page = [destination page];
+                point = [self convertPoint:[destination point] fromPage:page];
+                point.y -= 100.0;
+            }
         }
         
         rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
