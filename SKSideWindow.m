@@ -37,7 +37,6 @@
  */
 
 #import "SKSideWindow.h"
-#import "SKMainWindowController.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -77,7 +76,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
-- (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
+- (id)initWithMainController:(NSWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
     NSRect contentRect = NSInsetRect(SKSliceRect([screen frame], DEFAULT_WINDOW_WIDTH, anEdge), 0.0, WINDOW_INSET);
     
@@ -228,17 +227,15 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && [controller interactionMode] == SKPresentationMode)
+    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO && [controller respondsToSelector:@selector(closeSideWindow:)])
         [controller closeSideWindow:self];
     else
         [super keyDown:theEvent];
 }
 
 - (void)cancelOperation:(id)sender {
-    if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+    if ([controller respondsToSelector:@selector(closeSideWindow:)])
         [controller closeSideWindow:self];
-    else
-        [controller exitFullscreen:self];
 }
     
 - (NSResponder *)nextResponder {
