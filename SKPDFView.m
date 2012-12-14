@@ -182,7 +182,7 @@ enum {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper;
 @synthesize currentMagnification=magnification, isZooming;
-@dynamic isEditing, hasReadingBar, currentSelectionPage, currentSelectionRect, documentUndoManager;
+@dynamic isEditing, hasReadingBar, currentSelectionPage, currentSelectionRect;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -794,7 +794,7 @@ enum {
 
         }
         
-        [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         
     } else {
         
@@ -854,7 +854,7 @@ enum {
             
             [newAnnotation registerUserName];
             [self addAnnotation:newAnnotation toPage:page];
-            [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
             [self setActiveAnnotation:newAnnotation];
             
@@ -1476,7 +1476,7 @@ enum {
 }
 
 - (void)rotatePageAtIndex:(NSUInteger)idx by:(NSInteger)rotation {
-    NSUndoManager *undoManager = [self documentUndoManager];
+    NSUndoManager *undoManager = [self undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
     [[[[self window] windowController] document] undoableActionIsDiscardable];
@@ -1747,12 +1747,6 @@ enum {
     return [super validRequestorForSendType:sendType returnType:returnType];
 }
 
-#pragma mark UndoManager
-
-- (NSUndoManager *)documentUndoManager {
-    return [[[[self window] windowController] document] undoManager];
-}
-
 #pragma mark Annotation management
 
 - (void)addAnnotation:(id)sender {
@@ -1880,7 +1874,7 @@ enum {
         
         [newAnnotation registerUserName];
         [self addAnnotation:newAnnotation toPage:page];
-        [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
         [self setActiveAnnotation:newAnnotation];
         [newAnnotation release];
@@ -1890,7 +1884,7 @@ enum {
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
-    [[[self documentUndoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [annotation setShouldDisplay:hideNotes == NO || [annotation isSkimNote] == NO];
     [annotation setShouldPrint:hideNotes == NO || [annotation isSkimNote] == NO];
     [page addAnnotation:annotation];
@@ -1905,7 +1899,7 @@ enum {
 - (void)removeActiveAnnotation:(id)sender{
     if ([activeAnnotation isSkimNote]) {
         [self removeAnnotation:activeAnnotation];
-        [[self documentUndoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
 
@@ -1914,7 +1908,7 @@ enum {
     
     if (annotation) {
         [self removeAnnotation:annotation];
-        [[self documentUndoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
 
@@ -1922,7 +1916,7 @@ enum {
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [[wasAnnotation page] retain];
     
-    [[[self documentUndoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
+    [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
         [self commitEditing];
 	if (activeAnnotation == annotation)
@@ -1942,8 +1936,8 @@ enum {
 
 - (void)moveAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
     PDFPage *oldPage = [[annotation page] retain];
-    [[[self documentUndoManager] prepareWithInvocationTarget:self] moveAnnotation:annotation toPage:oldPage];
-    [[self documentUndoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [[[self undoManager] prepareWithInvocationTarget:self] moveAnnotation:annotation toPage:oldPage];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [self setNeedsDisplayForAnnotation:annotation];
     [annotation retain];
     [oldPage removeAnnotation:annotation];
@@ -2394,7 +2388,7 @@ enum {
     } else if (context == &SKPDFViewTransitionsObservationContext) {
         id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
         if ([oldValue isEqual:[NSNull null]]) oldValue = nil;
-        [[[self documentUndoManager] prepareWithInvocationTarget:self] setTransitionControllerValue:oldValue forKey:keyPath];
+        [[[self undoManager] prepareWithInvocationTarget:self] setTransitionControllerValue:oldValue forKey:keyPath];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -3209,7 +3203,7 @@ enum {
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
             [newAnnotation registerUserName];
             [self addAnnotation:newAnnotation toPage:page];
-            [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
         } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
@@ -3254,7 +3248,7 @@ enum {
                 [self removeAnnotation:newActiveAnnotation];
                 [self removeActiveAnnotation:nil];
                 [self addAnnotation:newAnnotation toPage:page];
-                [[self documentUndoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 newActiveAnnotation = newAnnotation;
             }
         }
@@ -3323,7 +3317,7 @@ enum {
         }
         [annotation registerUserName]; 
         [self addAnnotation:annotation toPage:page];
-        [[self documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         
         [paths release];
         [annotation release];
@@ -3358,7 +3352,7 @@ enum {
             PDFAnnotation *annotation = [annotations objectAtIndex:i];
             if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && ([self isEditing] == NO || annotation != activeAnnotation)) {
                 [self removeAnnotation:annotation];
-                [[self documentUndoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+                [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
                 break;
             }
         }

@@ -454,7 +454,7 @@ static BOOL usesSequentialPageNumbering = NO;
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
         [pdfView addAnnotation:newNote toPage:self];
-        [[pdfView documentUndoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
     }
 }
 
@@ -464,7 +464,7 @@ static BOOL usesSequentialPageNumbering = NO;
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
         [pdfView removeAnnotation:note];
-        [[pdfView documentUndoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+        [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
 
