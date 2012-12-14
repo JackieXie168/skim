@@ -54,6 +54,8 @@ typedef NSInteger SKInteractionMode;
 
 - (SKInteractionMode)systemInteractionMode;
 
+- (void)undoableActionIsDiscardable;
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo;

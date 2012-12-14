@@ -39,8 +39,6 @@
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
 #import "SKImageToolTipWindow.h"
-#import "SKMainWindowController.h"
-#import "SKMainWindowController_Actions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
@@ -53,8 +51,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKReadingBar.h"
-#import "SKMainDocument.h"
-#import "SKPDFSynchronizer.h"
+#import "NSDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "SKLineWell.h"
@@ -927,7 +924,8 @@ enum {
 }
 
 - (void)exitFullscreen:(id)sender {
-    [[[self window] windowController] exitFullscreen:sender];
+    if ([[self delegate] respondsToSelector:@selector(PDFViewExitFullscreen:)])
+        [[self delegate] PDFViewExitFullscreen:self];
 }
 
 - (void)showColorsForThisAnnotation:(id)sender {
@@ -1027,7 +1025,8 @@ enum {
                    (eventChar == NSLeftArrowFunctionKey) &&  (modifiers == 0)) {
             [self goToPreviousPage:self];
         } else if ((eventChar == 'p') && (modifiers == 0)) {
-            [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
+            if ([[self delegate] respondsToSelector:@selector(PDFViewToggleContents:)])
+                [[self delegate] PDFViewToggleContents:self];
         } else if ((eventChar == 'a') && (modifiers == 0)) {
             [self toggleAutoActualSize:self];
         } else if ((eventChar == 'b') && (modifiers == 0)) {
@@ -2294,9 +2293,8 @@ enum {
         rect = [self convertRect:rect toPage:page];
     }
     
-    SKMainWindowController *controller = [[self window] windowController];
-    
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits];
+    if ([[self delegate] respondsToSelector:@selector(PDFView:showSnapshotAtPageNumber:forRect:scaleFactor:autoFits:)])
+        [[self delegate] PDFView:self showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits];
 }
 
 #pragma mark Notification handling
@@ -3883,9 +3881,8 @@ enum {
         
     }
     
-    SKMainWindowController *controller = [[self window] windowController];
-    
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
+    if ([[self delegate] respondsToSelector:@selector(PDFView:showSnapshotAtPageNumber:forRect:scaleFactor:autoFits:)])
+        [[self delegate] PDFView:self showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
 }
 
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent {
@@ -4029,9 +4026,7 @@ enum {
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
     [self doNothingWithEvent:theEvent];
     
-    SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
-    
-    if ([document respondsToSelector:@selector(synchronizer)]) {
+    if ([[self delegate] respondsToSelector:@selector(PDFView:findFileAndLineForLocation:inRect:pageBounds:atPageIndex:)]) {
         
         NSPoint mouseLoc = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
@@ -4040,7 +4035,7 @@ enum {
         PDFSelection *sel = [page selectionForLineAtPoint:location];
         NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         
-        [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
+        [[self delegate] PDFView:self findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }
 }
 

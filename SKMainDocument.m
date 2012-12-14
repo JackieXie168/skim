@@ -123,13 +123,6 @@ enum {
 };
 
 
-#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
-@interface NSUndoManager (SKLionExtensions)
-- (void)setActionIsDiscardable:(BOOL)discardable;
-@end
-#endif
-
-
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
 @end
@@ -288,21 +281,6 @@ enum {
     NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
     if (fileURL && pageIndex != NSNotFound && [self mainWindowController])
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
-}
-
-- (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
-	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
-    // this should be automatic, but Leopard does not seem to do this
-    if ([[self valueForKey:@"changeCount"] integerValue] == 0)
-        [self updateChangeCount:NSChangeCleared];
-}
-
-- (void)undoableActionIsDiscardable {
-	// This action, while undoable, shouldn't mark the document dirty
-    if ([[self undoManager] respondsToSelector:@selector(setActionIsDiscardable:)])
-        [[self undoManager] setActionIsDiscardable:YES];
-	else
-        [self performSelector:@selector(undoableActionIsDiscardableDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
 - (SKInteractionMode)systemInteractionMode {

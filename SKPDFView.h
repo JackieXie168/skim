@@ -185,7 +185,11 @@ typedef NSInteger SKNoteType;
 #pragma mark -
 
 @interface NSObject (SKPDFViewDelegate)
-- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;
 - (void)PDFViewDidBeginEditing:(PDFView *)sender;
 - (void)PDFViewDidEndEditing:(PDFView *)sender;
+- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;
+- (void)PDFView:(PDFView *)sender showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
+- (void)PDFView:(PDFView *)sender findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
+- (void)PDFViewExitFullscreen:(PDFView *)sender;
+- (void)PDFViewToggleContents:(PDFView *)sender;
 @end
