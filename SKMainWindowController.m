@@ -1015,6 +1015,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         } else if (sideWindow == rightSideWindow) {
             [self toggleRightSidePane:self];
         }
+    } else if ([self interactionMode] == SKPresentationMode) {
+        [self exitFullscreen:nil];
     }
 }
 
