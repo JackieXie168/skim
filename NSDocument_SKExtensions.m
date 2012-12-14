@@ -57,11 +57,34 @@
 
 NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeNotification";
 
+
+#if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+@interface NSUndoManager (SKLionExtensions)
+- (void)setActionIsDiscardable:(BOOL)discardable;
+@end
+#endif
+
+
 @implementation NSDocument (SKExtensions)
 
 + (BOOL)isPDFDocument { return NO; }
 
 - (SKInteractionMode)systemInteractionMode { return SKNormalMode; }
+
+- (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
+	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
+    // this should be automatic, but Leopard does not seem to do this
+    if ([[self valueForKey:@"changeCount"] integerValue] == 0)
+        [self updateChangeCount:NSChangeCleared];
+}
+
+- (void)undoableActionIsDiscardable {
+	// This action, while undoable, shouldn't mark the document dirty
+    if ([[self undoManager] respondsToSelector:@selector(setActionIsDiscardable:)])
+        [[self undoManager] setActionIsDiscardable:YES];
+	else
+        [self performSelector:@selector(undoableActionIsDiscardableDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
+}
 
 #pragma mark Document Setup
 

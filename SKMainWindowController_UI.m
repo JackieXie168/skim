@@ -1244,10 +1244,6 @@
     [[self document] printDocument:sender];
 }
 
-- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
-    [self showNote:annotation];
-}
-
 - (void)PDFViewDidBeginEditing:(PDFView *)sender {
     if (mwcFlags.isEditingPDF == NO && mwcFlags.isEditingTable == NO)
         [[self document] objectDidBeginEditing:self];
@@ -1258,6 +1254,27 @@
     if (mwcFlags.isEditingPDF && mwcFlags.isEditingTable == NO)
         [[self document] objectDidEndEditing:self];
     mwcFlags.isEditingPDF = NO;
+}
+
+- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
+    [self showNote:annotation];
+}
+
+- (void)PDFView:(PDFView *)sender showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits {
+    [self showSnapshotAtPageNumber:pageNum forRect:rect scaleFactor:scaleFactor autoFits:autoFits];
+}
+
+- (void)PDFView:(PDFView *)sender findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
+    if ([[self document] respondsToSelector:@selector(synchronizer)])
+        [[[self document] synchronizer] findFileAndLineForLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
+}
+
+- (void)PDFViewExitFullscreen:(PDFView *)sender {
+    [self exitFullscreen:sender];
+}
+
+- (void)PDFViewToggleContents:(PDFView *)sender {
+    [self toggleLeftSidePane:sender];
 }
 
 #pragma mark NSSplitView delegate protocol

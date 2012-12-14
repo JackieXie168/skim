@@ -67,8 +67,6 @@ extern NSString *SKSkimFileDidSaveNotification;
     NSInteger exportOption;
 }
 
-- (void)undoableActionIsDiscardable;
-
 - (IBAction)readNotes:(id)sender;
 - (IBAction)convertNotes:(id)sender;
 - (IBAction)saveArchive:(id)sender;
