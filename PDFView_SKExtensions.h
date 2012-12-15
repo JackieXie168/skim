@@ -51,4 +51,6 @@
 - (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page;
 - (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page;
 
+- (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
+
 @end

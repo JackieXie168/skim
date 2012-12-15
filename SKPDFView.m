@@ -158,7 +158,6 @@ enum {
 - (void)doSelectTextWithEvent:(NSEvent *)theEvent;
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
-- (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 - (void)doNothingWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
@@ -4021,22 +4020,6 @@ enum {
 	[documentView setPostsBoundsChangedNotifications:postNotification];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
-}
-
-- (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
-    [self doNothingWithEvent:theEvent];
-    
-    if ([[self delegate] respondsToSelector:@selector(PDFView:findFileAndLineForLocation:inRect:pageBounds:atPageIndex:)]) {
-        
-        NSPoint mouseLoc = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
-        NSPoint location = [self convertPoint:mouseLoc toPage:page];
-        NSUInteger pageIndex = [page pageIndex];
-        PDFSelection *sel = [page selectionForLineAtPoint:location];
-        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
-        
-        [[self delegate] PDFView:self findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
-    }
 }
 
 - (void)doNothingWithEvent:(NSEvent *)theEvent {
