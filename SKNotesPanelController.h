@@ -45,3 +45,7 @@
 + (BOOL)sharedControllerExists;
 - (IBAction)addNote:(id)sender;
 @end
+
+@interface NSObject (SKNotesPanelControllerTarget)
+- (void)addNoteFromPanel:(id)sender;
+@end
