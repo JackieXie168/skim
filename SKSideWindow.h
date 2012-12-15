@@ -77,8 +77,3 @@
 }
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge;
 @end
-
-
-@interface NSWindowController (SKSideWindowController)
-- (void)closeSideWindow:(SKSideWindow *)sideWindow;
-@end

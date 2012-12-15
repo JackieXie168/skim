@@ -227,15 +227,16 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO && [controller respondsToSelector:@selector(closeSideWindow:)])
-        [controller closeSideWindow:self];
+    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO)
+        [self cancelOperation:self];
     else
         [super keyDown:theEvent];
 }
 
 - (void)cancelOperation:(id)sender {
-    if ([controller respondsToSelector:@selector(closeSideWindow:)])
-        [controller closeSideWindow:self];
+    // for some reason this action method is not passed on up the responder chain, so we do this ourselves
+    if ([controller respondsToSelector:@selector(cancelOperation:)])
+        [controller cancelOperation:self];
 }
     
 - (NSResponder *)nextResponder {
