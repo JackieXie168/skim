@@ -276,8 +276,6 @@ enum {
 
 @property (nonatomic, readonly) BOOL leftSidePaneIsOpen, rightSidePaneIsOpen;
 
-- (void)closeSideWindow:(SKSideWindow *)sideWindow;
-
 - (void)displayTocViewAnimating:(BOOL)animate;
 - (void)displayThumbnailViewAnimating:(BOOL)animate;
 - (void)displayFindViewAnimating:(BOOL)animate;

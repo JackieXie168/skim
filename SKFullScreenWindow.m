@@ -37,8 +37,6 @@
  */
 
 #import "SKFullScreenWindow.h"
-#import "SKMainWindowController.h"
-#import "SKMainWindowController_Actions.h"
 #import "SKStringConstants.h"
 
 #define DURATION 0.25
@@ -175,18 +173,17 @@
 - (BOOL)canBecomeMainWindow { return YES; }
 
 - (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown) {
-        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if ([wc interactionMode] == SKPresentationMode && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
-            [wc doGoToPreviousPage:self];
+    if ([theEvent type] == NSRightMouseDown || ([theEvent type] == NSLeftMouseDown && ([theEvent modifierFlags] & NSControlKeyMask))) {
+        if ([[self windowController] respondsToSelector:@selector(handleRightMouseDown:)] && [[self windowController] handleRightMouseDown:theEvent])
             return;
-        }
     }
     [super sendEvent:theEvent];
 }
 
 - (void)cancelOperation:(id)sender {
-    [(SKMainWindowController *)[self windowController] exitFullscreen:self];
+    // for some reason this action method is not passed on to the window controller, so we do this ourselves
+    if ([[self windowController] respondsToSelector:@selector(cancelOperation:)])
+        [[self windowController] cancelOperation:self];
 }
 
 @end

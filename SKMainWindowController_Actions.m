@@ -1061,4 +1061,21 @@ static NSArray *allMainDocumentPDFViews() {
 	}
 }
 
+- (void)cancelOperation:(id)sender {
+    // passed on from SKSideWindow or SKFullScreenWindow
+    if ([self interactionMode] != SKNormalMode) {
+        if (sender == [self window]) {
+            [self exitFullscreen:sender];
+        } else if (sender == leftSideWindow || sender == rightSideWindow) {
+            NSDrawerState state = [(SKSideWindow *)sender state];
+            if (state == NSDrawerClosedState || state == NSDrawerClosingState)
+                [self exitFullscreen:sender];
+            else if (sender == leftSideWindow)
+                [self toggleLeftSidePane:sender];
+            else if (sender == rightSideWindow)
+                [self toggleRightSidePane:sender];
+        }
+    }
+}
+
 @end

@@ -1008,18 +1008,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
-- (void)closeSideWindow:(SKSideWindow *)sideWindow {    
-    if ([sideWindow state] == NSDrawerOpenState || [sideWindow state] == NSDrawerOpeningState) {
-        if (sideWindow == leftSideWindow) {
-            [self toggleLeftSidePane:self];
-        } else if (sideWindow == rightSideWindow) {
-            [self toggleRightSidePane:self];
-        }
-    } else if ([self interactionMode] == SKPresentationMode) {
-        [self exitFullscreen:nil];
-    }
-}
-
 - (NSArray *)notes {
     return [[notes copy] autorelease];
 }
@@ -1615,6 +1603,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self synchronizeWindowTitleWithDocumentName];
     
     [self removeBlankingWindows];
+}
+
+- (BOOL)handleRightMouseDown:(NSEvent *)theEvent {
+    if ([self interactionMode] == SKPresentationMode) {
+        [self doGoToPreviousPage:nil];
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark Swapping tables

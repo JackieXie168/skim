@@ -56,3 +56,8 @@
 
 @interface SKMainFullScreenWindow : SKFullScreenWindow
 @end
+
+
+@interface NSWindowController (SKMainFullScreenWindow)
+- (BOOL)handleRightMouseDown:(NSEvent *)theEvent;
+@end
