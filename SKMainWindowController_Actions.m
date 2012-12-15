@@ -174,6 +174,12 @@
     else NSBeep();
 }
 
+- (void)addNoteFromPanel:(id)sender {
+    [self createNewNote:sender];
+    [[self window] makeKeyWindow];
+    [[self window] makeFirstResponder:[self pdfView]];
+}
+
 - (void)selectSelectedNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         NSArray *selectedNotes = [self selectedNotes];

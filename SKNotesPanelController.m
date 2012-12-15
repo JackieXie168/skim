@@ -37,8 +37,6 @@
  */
 
 #import "SKNotesPanelController.h"
-#import "SKMainWindowController.h"
-#import "SKMainWindowController_Actions.h"
 
 #define SKNotesPanelFrameAutosaveName @"SKNotesPanel"
 
@@ -67,13 +65,10 @@ static SKNotesPanelController *sharedController = nil;
 
 - (IBAction)addNote:(id)sender {
     id controller = [[NSApp mainWindow] windowController];
-    if ([controller respondsToSelector:@selector(createNewNote:)]) {
-        [(SKMainWindowController *)controller createNewNote:sender];
-        [[controller window] makeKeyWindow];
-        [[controller window] makeFirstResponder:(NSResponder *)[(SKMainWindowController *)controller pdfView]];
-    } else {
+    if ([controller respondsToSelector:@selector(addNoteFromPanel:)])
+        [controller addNoteFromPanel:sender];
+    else
         NSBeep();
-    }
 }
 
 @end
