@@ -1264,11 +1264,6 @@
     [self showSnapshotAtPageNumber:pageNum forRect:rect scaleFactor:scaleFactor autoFits:autoFits];
 }
 
-- (void)PDFView:(PDFView *)sender findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
-    if ([[self document] respondsToSelector:@selector(synchronizer)])
-        [[[self document] synchronizer] findFileAndLineForLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
-}
-
 - (void)PDFViewExitFullscreen:(PDFView *)sender {
     [self exitFullscreen:sender];
 }

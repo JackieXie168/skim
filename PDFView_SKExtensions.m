@@ -38,6 +38,11 @@
 
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKMainDocument.h"
+#import "SKPDFSynchronizer.h"
+#import "PDFPage_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation PDFView (SKExtensions)
@@ -93,6 +98,36 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page {
     return [self convertRect:[self convertRect:rect fromView:[self documentView]] toPage:page];
+}
+
+- (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
+    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+    while (YES) {
+        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+            break;
+    }
+    
+    SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
+    
+    if ([document respondsToSelector:@selector(synchronizer)]) {
+        
+        NSPoint mouseLoc = [theEvent locationInView:self];
+        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
+        NSPoint location = [self convertPoint:mouseLoc toPage:page];
+        NSUInteger pageIndex = [page pageIndex];
+        PDFSelection *sel = [page selectionForLineAtPoint:location];
+        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+        
+        [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
+    }
+}
+
+- (void)doNothingWithEvent:(NSEvent *)theEvent {
+    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+    while (YES) {
+        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+            break;
+    }
 }
 
 @end

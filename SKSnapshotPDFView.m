@@ -421,25 +421,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)mouseDown:(NSEvent *)theEvent{
     [[self window] makeFirstResponder:self];
 	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
-        // eat up mouseDragged/mouseUp events, so we won't get their event handlers
-        while (YES) {
-            if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-                break;
-        }
-        
-        SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
-        
-        if ([document respondsToSelector:@selector(synchronizer)]) {
-            
-            NSPoint mouseLoc = [theEvent locationInView:self];
-            PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
-            NSPoint location = [self convertPoint:mouseLoc toPage:page];
-            NSUInteger pageIndex = [page pageIndex];
-            PDFSelection *sel = [page selectionForLineAtPoint:location];
-            NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
-            
-            [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
-        }
+        [self doPdfsyncWithEvent:theEvent];
     } else {
         [[NSCursor closedHandCursor] push];
     }
