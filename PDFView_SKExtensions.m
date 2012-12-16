@@ -122,12 +122,4 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     }
 }
 
-- (void)doNothingWithEvent:(NSEvent *)theEvent {
-    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
-    while (YES) {
-        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-            break;
-    }
-}
-
 @end
