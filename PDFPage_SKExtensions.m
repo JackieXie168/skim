@@ -322,7 +322,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (BOOL)isEditable {
-    return YES;
+    return NO;
 }
 
 #pragma mark Scripting support

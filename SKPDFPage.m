@@ -48,6 +48,8 @@
 
 @implementation SKPDFPage
 
+- (BOOL)isEditable { return YES; }
+
 - (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
     NSRect bounds = [self boundsForBox:box];
     NSBitmapImageRep *imageRep;
