@@ -256,7 +256,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (BOOL)isMovable { return NO; }
 
-- (BOOL)isEditable { return [self isSkimNote] && [[self page] isNotesPage] == NO; }
+- (BOOL)isEditable { return [self isSkimNote] && [[self page] isEditable]; }
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
 

@@ -45,7 +45,7 @@
 
 - (NSString *)label { return [self sequentialLabel]; }
 
-- (BOOL)isNotesPage { return YES; }
+- (BOOL)isEditable { return NO; }
 
 - (NSAttributedString *)attributedString {
     // on 10.6 the attributedstring is over-released by one

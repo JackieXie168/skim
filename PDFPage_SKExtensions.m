@@ -321,8 +321,8 @@ static BOOL usesSequentialPageNumbering = NO;
     return label ?: [self sequentialLabel];
 }
 
-- (BOOL)isNotesPage {
-    return NO;
+- (BOOL)isEditable {
+    return YES;
 }
 
 #pragma mark Scripting support
@@ -359,7 +359,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setRotationAngle:(NSInteger)angle {
-    if ([self isNotesPage] == NO && angle != [self rotation]) {
+    if ([self isEditable] && angle != [self rotation]) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [(PDFPage *)[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
         [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
@@ -378,7 +378,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([self isNotesPage] == NO && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setBoundsAsQDRect:[self boundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
@@ -402,7 +402,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([self isNotesPage] == NO && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+    if ([self isEditable] && inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setMediaBoundsAsQDRect:[self mediaBoundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
@@ -450,7 +450,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
-    if ([self isNotesPage] == NO) {
+    if ([self isEditable]) {
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
         [pdfView addAnnotation:newNote toPage:self];
@@ -459,7 +459,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
-    if ([self isNotesPage] == NO) {
+    if ([self isEditable]) {
         PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
