@@ -79,7 +79,7 @@ extern NSString *SKPDFPageActionRotate;
 - (NSString *)sequentialLabel;
 - (NSString *)displayLabel;
 
-- (BOOL)isNotesPage;
+- (BOOL)isEditable;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (NSDocument *)containingDocument;
