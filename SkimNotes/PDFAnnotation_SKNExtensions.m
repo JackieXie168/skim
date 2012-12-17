@@ -90,7 +90,7 @@ NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
 @implementation PDFAnnotation (SKNExtensions)
 
-static id SkimNotes = nil;
+static NSHashTable *SkimNotes = nil;
 
 static IMP original_dealloc = NULL;
 
@@ -101,32 +101,9 @@ static void replacement_dealloc(id self, SEL _cmd) {
 
 + (void)load {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [NSGarbageCollector defaultCollector])
-        SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory capacity:0];
-    else
-#endif
-    {
-        Method deallocMethod = class_getInstanceMethod(self, @selector(dealloc));
-#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
-        original_dealloc = method_setImplementation(deallocMethod, (IMP)replacement_dealloc);
-#else
-#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-        if (method_setImplementation != NULL)
-            original_dealloc = method_setImplementation(deallocMethod, (IMP)replacement_dealloc);
-        else
-#endif
-        {
-            original_dealloc = deallocMethod->method_imp;
-            deallocMethod->method_imp = (IMP)replacement_dealloc;
-            // Flush the method cache
-            extern void _objc_flush_caches(Class);
-            if (_objc_flush_caches != NULL)
-                _objc_flush_caches(self);
-        }
-#endif
-        SkimNotes = (NSMutableSet *)CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
-    }
+    SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
+    if ([NSGarbageCollector defaultCollector] == nil)
+        original_dealloc = method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
     [pool release];
 }
 
@@ -202,8 +179,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
                     [[self border] setLineWidth:[lineWidth floatValue]];
                 if ([dashPattern isKindOfClass:arrayClass])
                     [[self border] setDashPattern:dashPattern];
-                if ([borderStyle respondsToSelector:@selector(intValue)])
-                    [[self border] setStyle:[borderStyle intValue]];
+                if ([borderStyle respondsToSelector:@selector(integerValue)])
+                    [[self border] setStyle:[borderStyle integerValue]];
             }
         }
         
@@ -223,10 +200,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
     if ([self respondsToSelector:@selector(userName)])
         [dict setValue:[self userName] forKey:SKNPDFAnnotationUserNameKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
-    [dict setValue:[NSNumber numberWithUnsignedInt:pageIndex == NSNotFound ? 0 : pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
+    [dict setValue:[NSNumber numberWithUnsignedInteger:pageIndex == NSNotFound ? 0 : pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
     if ([self border]) {
         [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:SKNPDFAnnotationLineWidthKey];
-        [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:SKNPDFAnnotationBorderStyleKey];
+        [dict setValue:[NSNumber numberWithInteger:[[self border] style]] forKey:SKNPDFAnnotationBorderStyleKey];
         [dict setValue:[[self border] dashPattern] forKey:SKNPDFAnnotationDashPatternKey];
     }
     return dict;
@@ -312,10 +289,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
             [self setStartPoint:NSPointFromString(startPoint)];
         if ([endPoint isKindOfClass:stringClass])
             [self setEndPoint:NSPointFromString(endPoint)];
-        if ([startLineStyle respondsToSelector:@selector(intValue)])
-            [self setStartLineStyle:[startLineStyle intValue]];
-        if ([endLineStyle respondsToSelector:@selector(intValue)])
-            [self setEndLineStyle:[endLineStyle intValue]];
+        if ([startLineStyle respondsToSelector:@selector(integerValue)])
+            [self setStartLineStyle:[startLineStyle integerValue]];
+        if ([endLineStyle respondsToSelector:@selector(integerValue)])
+            [self setEndLineStyle:[endLineStyle integerValue]];
         if ([interiorColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setInteriorColor:)])
             [self setInteriorColor:interiorColor];
     }
@@ -324,8 +301,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
 
 - (NSDictionary *)SkimNoteProperties {
     NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:SKNPDFAnnotationStartLineStyleKey];
-    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKNPDFAnnotationEndLineStyleKey];
+    [dict setValue:[NSNumber numberWithInteger:[self startLineStyle]] forKey:SKNPDFAnnotationStartLineStyleKey];
+    [dict setValue:[NSNumber numberWithInteger:[self endLineStyle]] forKey:SKNPDFAnnotationEndLineStyleKey];
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKNPDFAnnotationStartPointKey];
     [dict setValue:NSStringFromPoint([self endPoint]) forKey:SKNPDFAnnotationEndPointKey];
     if ([self respondsToSelector:@selector(interiorColor)])
@@ -359,10 +336,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
             [self setFont:font];
         if ([fontColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setFontColor:)])
             [self setFontColor:fontColor];
-        if ([alignment respondsToSelector:@selector(intValue)])
-            [self setAlignment:[alignment intValue]];
-        if ([rotation respondsToSelector:@selector(intValue)] && [self respondsToSelector:@selector(setRotation:)])
-            [self setRotation:[rotation intValue]];
+        if ([alignment respondsToSelector:@selector(integerValue)])
+            [self setAlignment:[alignment integerValue]];
+        if ([rotation respondsToSelector:@selector(integerValue)] && [self respondsToSelector:@selector(setRotation:)])
+            [self setRotation:[rotation integerValue]];
     }
     return self;
 }
@@ -372,9 +349,9 @@ static void replacement_dealloc(id self, SEL _cmd) {
     [dict setValue:[self font] forKey:SKNPDFAnnotationFontKey];
     if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
         [dict setValue:[self fontColor] forKey:SKNPDFAnnotationFontColorKey];
-    [dict setValue:[NSNumber numberWithInt:[self alignment]] forKey:SKNPDFAnnotationAlignmentKey];
+    [dict setValue:[NSNumber numberWithInteger:[self alignment]] forKey:SKNPDFAnnotationAlignmentKey];
     if ([self respondsToSelector:@selector(rotation)])
-        [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKNPDFAnnotationRotationKey];
+        [dict setValue:[NSNumber numberWithInteger:[self rotation]] forKey:SKNPDFAnnotationRotationKey];
     return dict;
 }
 
@@ -446,15 +423,15 @@ static void replacement_dealloc(id self, SEL _cmd) {
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
     if (self = [super initSkimNoteWithProperties:dict]) {
         NSNumber *iconType = [dict objectForKey:SKNPDFAnnotationIconTypeKey];
-        if ([iconType respondsToSelector:@selector(intValue)])
-            [self setIconType:[iconType intValue]];
+        if ([iconType respondsToSelector:@selector(integerValue)])
+            [self setIconType:[iconType integerValue]];
     }
     return self;
 }
 
 - (NSDictionary *)SkimNoteProperties{
     NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
+    [dict setValue:[NSNumber numberWithInteger:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
     return dict;
 }
 

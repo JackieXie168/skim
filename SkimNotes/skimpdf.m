@@ -111,15 +111,9 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
     if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
         NSFileManager *fm = [NSFileManager defaultManager];
         
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
         if ([fm fileExistsAtPath:outPath])
             [fm removeItemAtPath:outPath error:NULL];
         success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
-#else
-        if ([fm fileExistsAtPath:outPath])
-            [fm removeFileAtPath:outPath handler:nil];
-        success = [fm copyPath:inPath toPath:outPath handler:nil];
-#endif
         if (success) {
             NSURL *inURL = [NSURL fileURLWithPath:inPath];
             NSURL *outURL = [NSURL fileURLWithPath:outPath];
@@ -316,8 +310,8 @@ int main (int argc, const char * argv[]) {
             
             while ((note = [e nextObject])) {
                 NSMutableDictionary *mutableNote = [note mutableCopy];
-                NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue] + count;
-                [mutableNote setObject:[NSNumber numberWithUnsignedInt:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
+                NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue] + count;
+                [mutableNote setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
                 [notes addObject:mutableNote];
                 [mutableNote release];
             }
@@ -349,16 +343,16 @@ int main (int argc, const char * argv[]) {
                 NSString *option = [args objectAtIndex:offset + 3];
                 
                 if ([option caseInsensitiveCompare:RANGE_OPTION_STRING] == NSOrderedSame) {
-                    NSInteger start = argc < 5 + offset ? 1 : [[args objectAtIndex:offset + 4] intValue];
+                    NSInteger start = argc < 5 + offset ? 1 : [[args objectAtIndex:offset + 4] integerValue];
                     if (start < 0)
                         start += pageCount + 1;
-                    NSInteger length = argc < 6 + offset ? (NSInteger)pageCount - start + 1 : [[args objectAtIndex:offset + 5] intValue];
+                    NSInteger length = argc < 6 + offset ? (NSInteger)pageCount - start + 1 : [[args objectAtIndex:offset + 5] integerValue];
                     if (start > 0 && length > 0)
                         [indexes addIndexesInRange:NSMakeRange(start - 1, length)];
                 } else if ([option caseInsensitiveCompare:PAGE_OPTION_STRING] == NSOrderedSame) {
                     NSInteger i;
                     for (i = offset + 4; i < argc; i++) {
-                        NSInteger page = [[args objectAtIndex:i] intValue];
+                        NSInteger page = [[args objectAtIndex:i] integerValue];
                         if (page < 0)
                             page += pageCount + 1;
                         if (page > 0)
@@ -393,12 +387,12 @@ int main (int argc, const char * argv[]) {
                 NSDictionary *note;
                 
                 while ((note = [e nextObject])) {
-                    NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+                    NSUInteger pageIndex = [[note objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
                     if ([indexes containsIndex:pageIndex]) {
                         NSUInteger newPageIndex = [indexes countOfIndexesInRange:NSMakeRange(0, pageIndex)];
                         if (newPageIndex != pageIndex) {
                             NSMutableDictionary *mutableNote = [note mutableCopy];
-                            [mutableNote setObject:[NSNumber numberWithUnsignedInt:newPageIndex] forKey:SKNPDFAnnotationPageIndexKey];
+                            [mutableNote setObject:[NSNumber numberWithUnsignedInteger:newPageIndex] forKey:SKNPDFAnnotationPageIndexKey];
                             [notes addObject:mutableNote];
                             [mutableNote release];
                         } else {

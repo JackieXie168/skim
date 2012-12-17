@@ -197,7 +197,6 @@
     
     if ([extension caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
         NSString *notePath;
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
         if ((notePath = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL]))
             success1 = [self removeItemAtPath:notePath error:NULL];
         if ((notePath = [self notesFileWithExtension:TXT_EXTENSION atPath:path error:NULL]))
@@ -206,16 +205,6 @@
             success3 = [self removeItemAtPath:notePath error:NULL];
         if ((notePath = [self notesFileWithExtension:FDF_EXTENSION atPath:path error:NULL]))
             [self removeItemAtPath:notePath error:NULL];
-#else
-        if (notePath = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL])
-            success1 = [self removeFileAtPath:notePath handler:nil];
-        if (notePath = [self notesFileWithExtension:TXT_EXTENSION atPath:path error:NULL])
-            success2 = [self removeFileAtPath:notePath handler:nil];
-        if (notePath = [self notesFileWithExtension:RTF_EXTENSION atPath:path error:NULL])
-            success3 = [self removeFileAtPath:notePath handler:nil];
-        if (notePath = [self notesFileWithExtension:FDF_EXTENSION atPath:path error:NULL])
-            [self removeFileAtPath:notePath handler:nil];
-#endif
         if (success1 == NO || success2 == NO || success3 == NO)
             error1 = error2 = error3 = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Could not remove notes file", NSLocalizedDescriptionKey, nil]];
     } else {

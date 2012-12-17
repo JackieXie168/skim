@@ -290,11 +290,7 @@ int main (int argc, const char * argv[]) {
                     if ([data length]) {
                         success = [data writeToFile:notesPath options:NSAtomicWrite error:&error];
                     } else if ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
                         success = [fm removeItemAtPath:notesPath error:NULL];
-#else
-                        success = [fm removeFileAtPath:notesPath handler:nil];
-#endif
                         if (success == NO)
                             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EACCES userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Unable to remove file", NSLocalizedDescriptionKey, nil]];
                     } else {
@@ -349,17 +345,9 @@ int main (int argc, const char * argv[]) {
                 }
                 if (filename)
                     pdfFilePath = [pdfPath stringByAppendingPathComponent:filename];
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
                 success = [fm copyItemAtPath:pdfFilePath toPath:notesPath error:NULL];
-#else
-                success = [fm copyPath:pdfFilePath toPath:notesPath handler:nil];
-#endif
             } else {
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
                 success = [fm createDirectoryAtPath:notesPath withIntermediateDirectories:NO attributes:nil error:NULL];
-#else
-                success = [fm createDirectoryAtPath:notesPath attributes:nil];
-#endif
                 if (success) {
                     NSString *pdfFilePath = [notesPath stringByAppendingPathComponent:[[[notesPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION]];
                     success = [[NSData dataWithContentsOfFile:pdfPath options:0 error:&error] writeToFile:pdfFilePath options:0 error:&error];
