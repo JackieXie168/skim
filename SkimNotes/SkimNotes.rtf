@@ -149,28 +149,6 @@ ARCHS = ppc i386 x86_64\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 \CocoaLigature1 \
-Tiger Support
-\b0 \
-\
-If you need to build the frameworks and/or the tool with support for Mac OS X 10.4, you will need to change the build configuration and build them yourself.  Easiest is to edit SkimNotes-Common.xcconfig.  Set the deployment target for 32-bit to 10.4 by replacing the 
-\f2\fs22 \CocoaLigature0 MACOSX_DEPLOYMENT_TARGET
-\f0\fs24 \CocoaLigature1  line by the following two lines:\
-\
-\pard\tx560\pardeftab560\ql\qnatural\pardirnatural
-
-\f2\fs22 \cf0 \CocoaLigature0 MACOSX_DEPLOYMENT_TARGET = \cf4 10.4\cf0 \
-MACOSX_DEPLOYMENT_TARGET[arch=x86_64] = \cf4 10.5\cf0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-
-\f0\fs24 \cf0 \CocoaLigature1 \
-Also delete the line for 
-\f2\fs22 \CocoaLigature0 GCC_ENABLE_OBJC_GC
-\f0\fs24 \CocoaLigature1 .  And you may want to change the 
-\f2\fs22 \CocoaLigature0 ARCHS
-\f0\fs24 \CocoaLigature1  line as for 10.5.\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-
-\b \cf0 \
 SkimNotes Framework Documentation
 \b0 \
 \
