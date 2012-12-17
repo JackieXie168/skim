@@ -246,7 +246,7 @@ static id sharedNoSplitManager = nil;
     if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
         
         NSString *uniqueValue = [plist objectForKey:uniqueKey];
-        NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
+        NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntegerValue];
         NSString *name;
 
         NSMutableData *buffer = [NSMutableData data];
@@ -329,7 +329,7 @@ static id sharedNoSplitManager = nil;
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
         NSUInteger numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
-        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, uniqueValue, uniqueKey, [NSNumber numberWithUnsignedInt:numberOfFragments], fragmentsKey, nil];
+        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, uniqueValue, uniqueKey, [NSNumber numberWithUnsignedInteger:numberOfFragments], fragmentsKey, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
         
@@ -429,7 +429,7 @@ static id sharedNoSplitManager = nil;
             if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
                 
                 NSString *uniqueValue = [plist objectForKey:uniqueKey];
-                NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
+                NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntegerValue];
                 NSString *name;
                 
                 // remove the sub attributes

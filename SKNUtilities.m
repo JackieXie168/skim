@@ -51,7 +51,7 @@ NSString *SKNSkimTextNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
-        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
+        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntegerValue];
         NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
         NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
@@ -78,7 +78,7 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
-        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
+        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntegerValue];
         NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
         NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
