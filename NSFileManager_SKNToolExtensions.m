@@ -61,7 +61,7 @@
         NSString *skimFile = [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:error];
         if (skimFile) {
             filePath = [[skimFile stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath] == NO)
+            if ([self fileExistsAtPath:filePath] == NO)
                 filePath = nil;
         }
     }
