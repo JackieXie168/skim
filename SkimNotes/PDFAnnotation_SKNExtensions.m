@@ -38,8 +38,6 @@
 
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
-#import <objc/objc.h>
-#import <objc/objc-class.h>
 #import <objc/objc-runtime.h>
 
 NSString *SKNFreeTextString = @"FreeText";
