@@ -38,10 +38,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface SKNAgentListener : NSObject
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-    <NSConnectionDelegate>
-#endif
+@interface SKNAgentListener : NSObject <NSConnectionDelegate>
 {
     NSConnection *connection;
 }
