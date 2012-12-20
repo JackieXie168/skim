@@ -56,20 +56,6 @@ NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 @implementation PDFAnnotationMarkup (SKExtensions)
 
-static NSArray *createPointsFromStrings(NSArray *strings)
-{
-    if (strings == nil)
-        return nil;
-    NSMutableArray *points = [[NSMutableArray alloc] init];
-    for (NSString *string in strings) {
-        NSPoint p = NSPointFromString(string);
-        NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
-        [points addObject:value];
-        [value release];
-    }
-    return points;
-}
-
 /*
  http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
   The docs are wrong (as is Adobe's spec).  The ordering at zero rotation is:
@@ -132,7 +118,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return nil;
 }
 
-- (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(NSInteger)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
+- (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(NSInteger)type {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
         [self setMarkupType:type];
@@ -140,16 +126,12 @@ static void (*original_dealloc)(id, SEL) = NULL;
         NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:type];
         if (color)
             [self setColor:color];
-        
-        NSArray *quadPoints = pointStrings ? createPointsFromStrings(pointStrings) : createQuadPointsWithBounds(bounds, bounds.origin, 0);
-        [self setQuadrilateralPoints:quadPoints];
-        [quadPoints release];
     }
     return self;
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
-    self = [self initSkimNoteWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
+    self = [self initSkimNoteWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
     return self;
 }
 
@@ -159,7 +141,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
     } else {
-        self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil];
+        self = [self initSkimNoteWithBounds:bounds markupType:type];
         if (self) {
             PDFPage *page = [selection safeFirstPage];
             NSInteger rotation = [page rotation];
