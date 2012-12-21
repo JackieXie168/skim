@@ -367,7 +367,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
             NSInteger markupType = kPDFMarkupTypeHighlight;
             if ([type isEqualToString:SKNUnderlineString])
                 markupType = kPDFMarkupTypeUnderline;
-            else if ([type isKindOfClass:stringClass] && [type isEqualToString:SKNStrikeOutString])
+            else if ([type isEqualToString:SKNStrikeOutString])
                 markupType = kPDFMarkupTypeStrikeOut;
             if (markupType != [self markupType]) {
                 [self setMarkupType:markupType];
