@@ -40,5 +40,6 @@
 
 
 @interface NSAffineTransform (SKExtensions)
+// should only be used for combinations of translations and rotations by multiples of 90 degrees
 - (NSRect)transformRect:(NSRect)aRect;
 @end
