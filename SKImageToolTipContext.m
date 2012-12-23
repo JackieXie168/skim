@@ -128,8 +128,6 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     }
     [transform rotateByDegrees:-[page rotation]];
     
-    bounds = [transform transformRect:bounds];
-    
     sourceRect.size.width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
     sourceRect.size.height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey];
     sourceRect.origin = SKAddPoints([transform transformPoint:[self point]], offset);
@@ -137,9 +135,10 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     
     
     if ([selection hasCharacters]) {
-        NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
-        CGFloat top = ceil(fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
-        CGFloat left = floor(fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
+        NSRect selBounds = [selection boundsForPage:page];
+        selBounds = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(selBounds)], [transform transformPoint:SKTopRightPoint(selBounds)]);
+        CGFloat top = ceil(fmax(NSMaxY(selBounds), NSMinY(selBounds) + NSHeight(sourceRect)));
+        CGFloat left = floor(fmin(NSMinX(selBounds), NSMaxX(selBounds) - NSWidth(sourceRect)));
         if (top < NSMaxY(sourceRect))
             sourceRect.origin.y = top - NSHeight(sourceRect);
         if (left > NSMinX(sourceRect))

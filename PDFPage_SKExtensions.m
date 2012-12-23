@@ -224,7 +224,7 @@ static BOOL usesSequentialPageNumbering = NO;
             case 270: [transform translateXBy:NSHeight(bounds) yBy:0.0]; break;
         }
         [transform rotateByDegrees:-[self rotation]];
-        rect = [transform transformRect:rect];
+        rect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     }
     
     PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
@@ -260,7 +260,7 @@ static BOOL usesSequentialPageNumbering = NO;
     }
     [transform rotateByDegrees:-[self rotation]];
     
-    NSRect sourceRect = [transform transformRect:rect];
+    NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     NSRect targetRect = {NSZeroPoint, sourceRect.size};
     
     NSImage *image = [[NSImage alloc] initWithSize:targetRect.size];
