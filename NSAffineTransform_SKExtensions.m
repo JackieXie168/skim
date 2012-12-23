@@ -43,26 +43,7 @@
 @implementation NSAffineTransform (SKExtensions)
 
 - (NSRect)transformRect:(NSRect)aRect {
-    NSPoint point, minPoint, maxPoint;
-    
-    minPoint = maxPoint = [self transformPoint:SKBottomLeftPoint(aRect)];
-    point = [self transformPoint:SKBottomRightPoint(aRect)];
-    minPoint.x = fmin(minPoint.x, point.x);
-    minPoint.y = fmin(minPoint.y, point.y);
-    maxPoint.x = fmax(maxPoint.x, point.x);
-    maxPoint.y = fmax(maxPoint.y, point.y);
-    point = [self transformPoint:SKTopLeftPoint(aRect)];
-    minPoint.x = fmin(minPoint.x, point.x);
-    minPoint.y = fmin(minPoint.y, point.y);
-    maxPoint.x = fmax(maxPoint.x, point.x);
-    maxPoint.y = fmax(maxPoint.y, point.y);
-    point = [self transformPoint:SKTopRightPoint(aRect)];
-    minPoint.x = fmin(minPoint.x, point.x);
-    minPoint.y = fmin(minPoint.y, point.y);
-    maxPoint.x = fmax(maxPoint.x, point.x);
-    maxPoint.y = fmax(maxPoint.y, point.y);
-    
-    return SKIntegralRectFromPoints(minPoint, maxPoint);
+    return SKRectFromPoints([self transformPoint:SKBottomLeftPoint(aRect)], [self transformPoint:SKTopRightPoint(aRect)]);
 }
 
 @end
