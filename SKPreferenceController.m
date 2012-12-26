@@ -54,7 +54,7 @@
 
 #define SKLastSelectedPreferencePaneKey @"SKLastSelectedPreferencePane"
 
-#define NIBNAME_KEY @"nibName"
+#define IDENTIFIER_KEY @"identifier"
 
 #define BOTTOM_MARGIN 27.0
 
@@ -106,7 +106,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
     for (SKPreferencePane *pane in preferencePanes)
-        if ([[pane nibName] isEqualToString:itemIdent])
+        if ([[pane identifier] isEqualToString:itemIdent])
             return pane;
     return nil;
 }
@@ -130,20 +130,20 @@ static SKPreferenceController *sharedPrefenceController = nil;
         frame.size.height -= dh;
         
         if (direction == NSSelectingNext) {
-            [backwardHistory addObject:[currentPane nibName]];
+            [backwardHistory addObject:[currentPane identifier]];
             [forwardHistory removeLastObject];
         } else if (direction == NSSelectingPrevious) {
-            [forwardHistory addObject:[currentPane nibName]];
+            [forwardHistory addObject:[currentPane identifier]];
             [backwardHistory removeLastObject];
         } else {
-            [backwardHistory addObject:[currentPane nibName]];
+            [backwardHistory addObject:[currentPane identifier]];
             [forwardHistory removeAllObjects];
         }
         
         currentPane = pane;
         
         [[self window] setTitle:[currentPane title]];
-        [[NSUserDefaults standardUserDefaults] setObject:[currentPane nibName] forKey:SKLastSelectedPreferencePaneKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[currentPane identifier] forKey:SKLastSelectedPreferencePaneKey];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
@@ -197,7 +197,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     }
     
     currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
-    [toolbar setSelectedItemIdentifier:[currentPane nibName]];
+    [toolbar setSelectedItemIdentifier:[currentPane identifier]];
     [window setTitle:[currentPane title]];
     
     view = [currentPane view];
@@ -282,7 +282,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
     if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count]) {
         SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane identifier]];
         [self selectPane:pane direction:NSDirectSelection];
     }
 }
@@ -291,7 +291,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
     if (itemIndex != NSNotFound && itemIndex-- > 0) {
         SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane nibName]];
+        [[[self window] toolbar] setSelectedItemIdentifier:[pane identifier]];
         [self selectPane:pane direction:NSDirectSelection];
     }
 }
@@ -339,7 +339,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return [preferencePanes valueForKey:NIBNAME_KEY];
+    return [preferencePanes valueForKey:IDENTIFIER_KEY];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
