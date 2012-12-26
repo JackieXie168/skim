@@ -45,6 +45,8 @@
     NSArray *resetButtons;
     NSArray *preferencePanes;
     SKPreferencePane *currentPane;
+    NSMutableArray *forwardHistory;
+    NSMutableArray *backwardHistory;
 }
 
 @property (nonatomic, retain) IBOutlet NSArray *resetButtons;
@@ -59,5 +61,7 @@
 
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
+- (IBAction)doGoBack:(id)sender;
+- (IBAction)doGoForward:(id)sender;
 
 @end
