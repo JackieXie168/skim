@@ -146,6 +146,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [window setTitle:[currentPane title]];
         [[NSUserDefaults standardUserDefaults] setObject:[currentPane identifier] forKey:SKLastSelectedPreferencePaneKey];
         [[window toolbar] setSelectedItemIdentifier:[currentPane identifier]];
+        // insert the pane into the responder chain so it can respond to changeFont: and changeAttributes:
+        [self setNextResponder:currentPane];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
@@ -221,11 +223,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     // make sure edits are committed
     [currentPane commitEditing];
     [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
-}
-
-// insert the pane into the responder chain so it can respond to changeFont: and changeAttributes:
-- (NSResponder *)nextResponder {
-    return currentPane;
 }
 
 #pragma mark Actions
