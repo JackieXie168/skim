@@ -203,6 +203,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
     [toolbar setSelectedItemIdentifier:[currentPane identifier]];
     [window setTitle:[currentPane title]];
+    [self setNextResponder:currentPane];
     
     view = [currentPane view];
     CGFloat dh = NSHeight([[window contentView] frame]) - NSMaxY([view frame]);
