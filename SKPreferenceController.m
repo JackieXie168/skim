@@ -120,12 +120,13 @@ static SKPreferenceController *sharedPrefenceController = nil;
         // make sure edits are committed
         [currentPane commitEditing];
         [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
-        NSView *oldView = [currentPane view];
         
-        NSView *contentView = [[self window] contentView];
+        NSWindow *window = [self window];
+        NSView *contentView = [window contentView];
+        NSView *oldView = [currentPane view];
         NSView *view = [pane view];
         CGFloat dh = NSHeight([contentView frame]) - NSMaxY([view frame]);
-        NSRect frame = [[self window] frame];
+        NSRect frame = [window frame];
         frame.origin.y += dh;
         frame.size.height -= dh;
         
@@ -142,20 +143,21 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         currentPane = pane;
         
-        [[self window] setTitle:[currentPane title]];
+        [window setTitle:[currentPane title]];
         [[NSUserDefaults standardUserDefaults] setObject:[currentPane identifier] forKey:SKLastSelectedPreferencePaneKey];
+        [[window toolbar] setSelectedItemIdentifier:[currentPane identifier]];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
-            [[self window] setFrame:frame display:YES];
+            [window setFrame:frame display:YES];
         } else {
-            NSTimeInterval duration = [[self window] animationResizeTime:frame];
+            NSTimeInterval duration = [window animationResizeTime:frame];
             [contentView setWantsLayer:YES];
             [contentView displayIfNeeded];
             [NSAnimationContext beginGrouping];
             [[NSAnimationContext currentContext] setDuration:duration];
             [[contentView animator] replaceSubview:oldView with:view];
-            [[[self window] animator] setFrame:frame display:YES];
+            [[window animator] setFrame:frame display:YES];
             [NSAnimationContext endGrouping];
             [self performSelector:@selector(endAnimation) withObject:nil afterDelay:duration];
         }
@@ -280,38 +282,24 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (IBAction)doGoToNextPage:(id)sender {
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
-    if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count]) {
-        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane identifier]];
-        [self selectPane:pane direction:NSDirectSelection];
-    }
+    if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count])
+        [self selectPane:[preferencePanes objectAtIndex:itemIndex] direction:NSDirectSelection];
 }
 
 - (IBAction)doGoToPreviousPage:(id)sender {
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
-    if (itemIndex != NSNotFound && itemIndex-- > 0) {
-        SKPreferencePane *pane = [preferencePanes objectAtIndex:itemIndex];
-        [[[self window] toolbar] setSelectedItemIdentifier:[pane identifier]];
-        [self selectPane:pane direction:NSDirectSelection];
-    }
+    if (itemIndex != NSNotFound && itemIndex-- > 0)
+        [self selectPane:[preferencePanes objectAtIndex:itemIndex] direction:NSDirectSelection];
 }
 
 - (IBAction)doGoBack:(id)sender {
-    if ([backwardHistory count] > 0) {
-        NSString *identifier = [backwardHistory lastObject];
-        SKPreferencePane *pane = [self preferencePaneForItemIdentifier:identifier];
-        [[[self window] toolbar] setSelectedItemIdentifier:identifier];
-        [self selectPane:pane direction:NSSelectingPrevious];
-    }
+    if ([backwardHistory count] > 0)
+        [self selectPane:[self preferencePaneForItemIdentifier:[backwardHistory lastObject]] direction:NSSelectingPrevious];
 }
 
 - (IBAction)doGoForward:(id)sender {
-    if ([forwardHistory count] > 0) {
-        NSString *identifier = [forwardHistory lastObject];
-        SKPreferencePane *pane = [self preferencePaneForItemIdentifier:identifier];
-        [[[self window] toolbar] setSelectedItemIdentifier:identifier];
-        [self selectPane:pane direction:NSSelectingNext];
-    }
+    if ([forwardHistory count] > 0)
+        [self selectPane:[self preferencePaneForItemIdentifier:[forwardHistory lastObject]] direction:NSSelectingNext];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
