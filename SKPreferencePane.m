@@ -61,7 +61,4 @@
 
 - (void)defaultsDidRevert {}
 
-- (IBAction)changeFont:(id)sender {}
-- (IBAction)changeAttributes:(id)sender {}
-
 @end

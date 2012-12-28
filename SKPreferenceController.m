@@ -223,6 +223,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [[NSUserDefaultsController sharedUserDefaultsController] commitEditing];
 }
 
+// insert the pane into the responder chain so it can respond to changeFont: and changeAttributes:
+- (NSResponder *)nextResponder {
+    return currentPane;
+}
+
 #pragma mark Actions
 
 - (void)selectPaneAction:(id)sender {
@@ -270,14 +275,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
                       modalDelegate:self
                      didEndSelector:@selector(resetCurrentSheetDidEnd:returnCode:contextInfo:)
                         contextInfo:NULL];
-}
-
-- (IBAction)changeFont:(id)sender {
-    [currentPane changeFont:sender];
-}
-
-- (IBAction)changeAttributes:(id)sender {
-    [currentPane changeAttributes:sender];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
