@@ -118,7 +118,7 @@
 
 @implementation SKMainWindowController (UI)
 
-#pragma mark UI updating
+#pragma mark Utility panel updating
 
 - (NSButton *)newColorAccessoryButtonWithTitle:(NSString *)title {
     NSButton *button = [[NSButton alloc] init];
