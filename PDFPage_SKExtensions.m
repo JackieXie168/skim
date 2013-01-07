@@ -49,7 +49,6 @@
 #import "NSData_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainWindowController.h"
-#import "NSAffineTransform_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"

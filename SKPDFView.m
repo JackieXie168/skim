@@ -57,7 +57,6 @@
 #import "SKLineWell.h"
 #import <CoreServices/CoreServices.h>
 #import "SKTypeSelectHelper.h"
-#import "NSAffineTransform_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityFauxUIElement.h"
