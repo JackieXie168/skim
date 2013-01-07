@@ -42,7 +42,6 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "NSAffineTransform_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 
