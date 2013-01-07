@@ -322,9 +322,9 @@
         return YES;
     } else if (action == @selector(orderFrontNotesPanel:)) {
         if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Hide Note Type", @"Menu item title")];
         else
-            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Show Note Type", @"Menu item title")];
         return YES;
     }
     return YES;
