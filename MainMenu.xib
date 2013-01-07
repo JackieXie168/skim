@@ -1817,7 +1817,7 @@
 								</object>
 								<object class="NSMenuItem" id="596278458">
 									<reference key="NSMenu" ref="927851407"/>
-									<string key="NSTitle">Show Notes</string>
+									<string key="NSTitle">Show Note Type</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -6248,6 +6248,24 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">addNoteFromPanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKNotesPanelController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="842210981">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFDocument.h</string>
@@ -6258,6 +6276,8 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="PDFViewDidBeginEditing:">PDFView</string>
 						<string key="PDFViewDidEndEditing:">PDFView</string>
+						<string key="PDFViewExitFullscreen:">PDFView</string>
+						<string key="PDFViewToggleContents:">PDFView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="PDFViewDidBeginEditing:">
@@ -6266,6 +6286,14 @@
 						</object>
 						<object class="IBActionInfo" key="PDFViewDidEndEditing:">
 							<string key="name">PDFViewDidEndEditing:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewExitFullscreen:">
+							<string key="name">PDFViewExitFullscreen:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewToggleContents:">
+							<string key="name">PDFViewToggleContents:</string>
 							<string key="candidateClassName">PDFView</string>
 						</object>
 					</dictionary>
@@ -6279,20 +6307,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKTemplateParser.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKFileWatcher.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKKQueue.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6425,6 +6439,13 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">NSWindowController_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFullScreenWindow.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7938,20 +7959,20 @@
 					<string key="className">SKPreferenceController</string>
 					<string key="superclassName">SKWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="changeAttributes:">id</string>
-						<string key="changeFont:">id</string>
+						<string key="doGoBack:">id</string>
+						<string key="doGoForward:">id</string>
 						<string key="doGoToNextPage:">id</string>
 						<string key="doGoToPreviousPage:">id</string>
 						<string key="resetAll:">id</string>
 						<string key="resetCurrent:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="changeAttributes:">
-							<string key="name">changeAttributes:</string>
+						<object class="IBActionInfo" key="doGoBack:">
+							<string key="name">doGoBack:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="changeFont:">
-							<string key="name">changeFont:</string>
+						<object class="IBActionInfo" key="doGoForward:">
+							<string key="name">doGoForward:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="doGoToNextPage:">
