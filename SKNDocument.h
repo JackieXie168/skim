@@ -46,10 +46,9 @@
 //#define ToolSample
 
 @interface SKNDocument : NSDocument {
-    NSMutableArray *notes;
+    NSArray *notes;
 }
-- (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
+@property (nonatomic, copy) NSArray *notes;
 @end
 
 
