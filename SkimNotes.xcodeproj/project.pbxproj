@@ -52,6 +52,8 @@
 		CE1F649C0E34FAC300E07E76 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1F649B0E34FAC300E07E76 /* Quartz.framework */; };
 		CE1F64E20E34FF7F00E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		CE1F64E30E34FF8000E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
+		CE268622169DB35200B36A1E /* SkimNotesBase.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */; };
+		CE268630169DB39300B36A1E /* SkimNotesBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */; };
 		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
 		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
@@ -87,8 +89,6 @@
 		CEDB9AF50E2E9F260057FD09 /* SKNSkimReader.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9AC60E2E9D760057FD09 /* SKNSkimReader.m */; };
 		CEDB9AFC0E2E9F7E0057FD09 /* SKNDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDB9AFA0E2E9F7E0057FD09 /* SKNDocument.xib */; };
 		CEDB9AFF0E2E9F8A0057FD09 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDB9AFD0E2E9F8A0057FD09 /* MainMenu.xib */; };
-		CEDB9B010E2E9FF80057FD09 /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */; };
-		CEDB9B030E2EA0120057FD09 /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */; };
 		CEDB9B040E2EA0200057FD09 /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CEBA2B550E0566B00000B2E6 /* skimnotes */; };
 		CEDB9B060E2EA0450057FD09 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		CEDB9B210E2EA2F30057FD09 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9B200E2EA2F30057FD09 /* main.m */; };
@@ -101,6 +101,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = CE14113E1229B64D00C9EBA0;
 			remoteInfo = "SkimConvert Tool";
+		};
+		CE268608169DB31E00B36A1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteInfo = SkimNotesBase;
+		};
+		CE26860E169DB32600B36A1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
+			remoteInfo = "SkimNotes Tool";
 		};
 		CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -123,20 +137,6 @@
 			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
 			remoteInfo = skimnotes;
 		};
-		CEDB9AF00E2E9F170057FD09 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = SkimNotes;
-		};
-		CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
-			remoteInfo = skimnotes;
-		};
 		CEEE7B610E7BD90F00B7B208 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -153,7 +153,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEDB9B030E2EA0120057FD09 /* SkimNotes.framework in CopyFiles */,
+				CE268622169DB35200B36A1E /* SkimNotesBase.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDB9B060E2EA0450057FD09 /* Cocoa.framework in Frameworks */,
-				CEDB9B010E2E9FF80057FD09 /* SkimNotes.framework in Frameworks */,
+				CE268630169DB39300B36A1E /* SkimNotesBase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,8 +564,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				CEDB9AF10E2E9F170057FD09 /* PBXTargetDependency */,
-				CEDB9AF30E2E9F170057FD09 /* PBXTargetDependency */,
+				CE268609169DB31E00B36A1E /* PBXTargetDependency */,
+				CE26860F169DB32600B36A1E /* PBXTargetDependency */,
 			);
 			name = SkimNotesTest;
 			productName = SkimNotesTest;
@@ -744,6 +744,16 @@
 			target = CE14113E1229B64D00C9EBA0 /* SkimPDF Tool */;
 			targetProxy = CE1414341229B8F800C9EBA0 /* PBXContainerItemProxy */;
 		};
+		CE268609169DB31E00B36A1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			targetProxy = CE268608169DB31E00B36A1E /* PBXContainerItemProxy */;
+		};
+		CE26860F169DB32600B36A1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
+			targetProxy = CE26860E169DB32600B36A1E /* PBXContainerItemProxy */;
+		};
 		CEA5F6090E2D270500F65088 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CE665A840E1C086D00D0704D /* HeaderDocs */;
@@ -758,16 +768,6 @@
 			isa = PBXTargetDependency;
 			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
 			targetProxy = CEBA2EAB0E067F420000B2E6 /* PBXContainerItemProxy */;
-		};
-		CEDB9AF10E2E9F170057FD09 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
-			targetProxy = CEDB9AF00E2E9F170057FD09 /* PBXContainerItemProxy */;
-		};
-		CEDB9AF30E2E9F170057FD09 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
-			targetProxy = CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */;
 		};
 		CEEE7B620E7BD90F00B7B208 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
