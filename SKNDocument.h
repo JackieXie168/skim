@@ -51,3 +51,7 @@
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
 @end
+
+
+@interface SKNPlusOneTransformer : NSValueTransformer
+@end
