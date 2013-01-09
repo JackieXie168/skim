@@ -48,13 +48,15 @@
 
 @implementation SKNDocument
 
+@synthesize notes;
+
 + (void)initialize {
     [NSValueTransformer setValueTransformer:[[[SKNPlusOneTransformer alloc] init] autorelease] forName:@"SKNPlusOne"];
 }
  
 - (id)init {
     if (self = [super init]) {
-        notes = [[NSMutableArray alloc] init];    
+        notes = [[NSArray alloc] init];    
     }
     return self;
 }
@@ -66,11 +68,6 @@
 
 - (NSString *)windowNibName {
     return @"SKNDocument";
-}
-
-- (void)windowControllerDidLoadNib:(NSWindowController *)aController {
-    [super windowControllerDidLoadNib:aController];
-    [aController setShouldCloseDocument:YES];
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError {
@@ -191,14 +188,6 @@
     }
     
     return array != nil;
-}
-
-- (NSArray *)notes {
-    return notes;
-}
-
-- (void)setNotes:(NSArray *)newNotes {
-    [notes setArray:newNotes];
 }
 
 @end
