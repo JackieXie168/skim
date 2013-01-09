@@ -95,7 +95,7 @@
 #define SKDocumentToolbarPrintItemIdentifier @"SKDocumentToolbarPrintItemIdentifier"
 #define SKDocumentToolbarCustomizeItemIdentifier @"SKDocumentToolbarCustomizeItemIdentifier"
 
-NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
+NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 

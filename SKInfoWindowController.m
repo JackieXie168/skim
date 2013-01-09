@@ -44,8 +44,6 @@
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
 
-#define SKBoolStringTransformerName @"SKBoolStringTransformer"
-
 #define SKInfoVersionKey @"Version"
 #define SKInfoPageCountKey @"PageCount"
 #define SKInfoPageSizeKey @"PageSize"
@@ -75,14 +73,6 @@
 
 @synthesize summaryTableView, attributesTableView, tabView, info;
 @dynamic keys;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    
-    SKBoolStringTransformer *transformer = [[SKBoolStringTransformer alloc] init];
-    [NSValueTransformer setValueTransformer:transformer forName:SKBoolStringTransformerName];
-    [transformer release];
-}
 
 static SKInfoWindowController *sharedInstance = nil;
     
@@ -420,23 +410,6 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 
 - (BOOL)tableView:(NSTableView *)tv shouldSelectRow:(NSInteger)row {
     return NO;
-}
-
-@end
-
-
-@implementation SKBoolStringTransformer
-
-+ (Class)transformedValueClass {
-    return [NSString class];
-}
-
-+ (BOOL)allowsReverseTransformation {
-    return NO;
-}
-
-- (id)transformedValue:(id)value {
-	return value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
 }
 
 @end

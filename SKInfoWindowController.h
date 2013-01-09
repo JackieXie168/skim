@@ -59,7 +59,3 @@
 - (NSDictionary *)infoForDocument:(NSDocument *)doc;
 
 @end
-
-
-@interface SKBoolStringTransformer : NSValueTransformer
-@end
