@@ -48,6 +48,10 @@
 
 @implementation SKNDocument
 
++ (void)initialize {
+    [NSValueTransformer setValueTransformer:[[[SKNPlusOneTransformer alloc] init] autorelease] forName:@"SKNPlusOne"];
+}
+ 
 - (id)init {
     if (self = [super init]) {
         notes = [[NSMutableArray alloc] init];    
@@ -195,6 +199,23 @@
 
 - (void)setNotes:(NSArray *)newNotes {
     [notes setArray:newNotes];
+}
+
+@end
+
+
+@implementation SKNPlusOneTransformer
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)value {
+	return value == nil ? nil : [NSNumber numberWithUnsignedInteger:[value unsignedIntegerValue] + 1];
 }
 
 @end
