@@ -301,8 +301,8 @@
 				CEBA303C0E06C92F0000B2E6 /* License.txt */,
 				CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */,
 				CE83E4251059A831007E3D28 /* ReleaseNotes.rtf */,
-				CEBA2B620E0567290000B2E6 /* Shared Classes */,
-				08FB77AEFE84172EC02AAC07 /* Framework Classes */,
+				08FB77AEFE84172EC02AAC07 /* Framework Base Classes */,
+				CE268662169DB7C300B36A1E /* Framework PDF Classes */,
 				CEBA2B610E0566E60000B2E6 /* SkimNotes Tool Classes */,
 				CE4A4FDB122D79750095AE41 /* SkimPDF Tool Classes */,
 				CEDB9ABF0E2E9D2D0057FD09 /* Test App Classes */,
@@ -334,21 +334,19 @@
 			name = "Framework Resources";
 			sourceTree = "<group>";
 		};
-		08FB77AEFE84172EC02AAC07 /* Framework Classes */ = {
+		08FB77AEFE84172EC02AAC07 /* Framework Base Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CEBA2B630E05675E0000B2E6 /* SKNExtendedAttributeManager.h */,
+				CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */,
 				CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */,
 				CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */,
-				CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */,
-				CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */,
-				CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */,
-				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
-				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
-				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
+				CE37768A0E2FC26100261604 /* SKNUtilities.h */,
+				CE37768B0E2FC26100261604 /* SKNUtilities.m */,
 				CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */,
 				CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */,
 			);
-			name = "Framework Classes";
+			name = "Framework Base Classes";
 			sourceTree = "<group>";
 		};
 		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
@@ -383,6 +381,19 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		CE268662169DB7C300B36A1E /* Framework PDF Classes */ = {
+			isa = PBXGroup;
+			children = (
+				CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */,
+				CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */,
+				CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */,
+				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
+				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
+				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
+			);
+			name = "Framework PDF Classes";
+			sourceTree = "<group>";
+		};
 		CE4A4FDB122D79750095AE41 /* SkimPDF Tool Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -402,17 +413,6 @@
 				CEBA2B5C0E0566DF0000B2E6 /* SKNAgentListenerProtocol.h */,
 			);
 			name = "SkimNotes Tool Classes";
-			sourceTree = "<group>";
-		};
-		CEBA2B620E0567290000B2E6 /* Shared Classes */ = {
-			isa = PBXGroup;
-			children = (
-				CEBA2B630E05675E0000B2E6 /* SKNExtendedAttributeManager.h */,
-				CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */,
-				CE37768A0E2FC26100261604 /* SKNUtilities.h */,
-				CE37768B0E2FC26100261604 /* SKNUtilities.m */,
-			);
-			name = "Shared Classes";
 			sourceTree = "<group>";
 		};
 		CEBA30790E06DC4C0000B2E6 /* Configurations */ = {
