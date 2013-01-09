@@ -40,6 +40,12 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKNSkimReader.h"
 
+#define SKNPDFDocumentType @"com.adobe.pdf"
+#define SKNPDFBundleDocumentType @"net.sourceforge.skim-app.pdfd"
+#define SKNSkimNotesDocumentType @"net.sourceforge.skim-app.skimnotes"
+
+#define SKNDocumentErrorDomain @"SKNDocumentErrorDomain"
+
 @implementation SKNDocument
 
 - (id)init {
@@ -67,11 +73,11 @@
     
 #if defined(FrameworkSample)
     
-    if ([[NSWorkspace sharedWorkspace] type:docType conformsToType:@"net.sourceforge.skim-app.skimnotes"]) {
+    if ([[NSWorkspace sharedWorkspace] type:SKNSkimNotesDocumentType conformsToType:docType]) {
         return [[NSFileManager defaultManager] writeSkimNotes:notes toSkimFileAtURL:absoluteURL error:outError];
     } else {
         if (outError)
-            *outError = [NSError errorWithDomain:@"SKNDocumentErrorDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to save notes", @""), NSLocalizedDescriptionKey, nil]];
+            *outError = [NSError errorWithDomain:SKNDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to save notes", @""), NSLocalizedDescriptionKey, nil]];
         return NO;
     }
     
@@ -85,11 +91,11 @@
 
 - (NSData *)dataOfType:(NSString *)docType error:(NSError **)outError {
     NSData *data = nil;
-    if ([[NSWorkspace sharedWorkspace] type:docType conformsToType:@"net.sourceforge.skim-app.skimnotes"]) {
+    if ([[NSWorkspace sharedWorkspace] type:SKNSkimNotesDocumentType conformsToType:docType]) {
         data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     }
     if (data == nil && outError)
-        *outError = [NSError errorWithDomain:@"SKNDocumentErrorDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to save notes", @""), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError errorWithDomain:SKNDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to save notes", @""), NSLocalizedDescriptionKey, nil]];
     return data;
 }
 
@@ -101,32 +107,35 @@
     
 #if defined(FrameworkSample)
     
-    if ([ws type:docType conformsToType:@"com.adobe.pdf"]) {
+    if ([ws type:docType conformsToType:SKNPDFDocumentType]) {
         array = [fm readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
-    } else if ([ws type:docType conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
+    } else if ([ws type:docType conformsToType:SKNPDFBundleDocumentType]) {
         array = [fm readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
-    } else if ([ws type:docType conformsToType:@"net.sourceforge.skim-app.skimnotes"]) {
+    } else if ([ws type:docType conformsToType:SKNSkimNotesDocumentType]) {
         array = [fm readSkimNotesFromSkimFileAtURL:absoluteURL error:&error];
     }
     
 #elif defined(AgentSample)
     
-    if ([ws type:docType conformsToType:@"com.adobe.pdf"] ||
-        [ws type:docType conformsToType:@"net.sourceforge.skim-app.pdfd"] ||
-        [ws type:docType conformsToType:@"net.sourceforge.skim-app.skimnotes"]) {
+    if ([ws type:docType conformsToType:SKNPDFDocumentType] ||
+        [ws type:docType conformsToType:SKNPDFBundleDocumentType] ||
+        [ws type:docType conformsToType:SKNSkimNotesDocumentType]) {
         array = [[SKNSkimReader sharedReader] SkimNotesAtURL:absoluteURL];
     }
     
 #elif defined(ToolSample)
     
-    if ([ws type:docType conformsToType:@"com.adobe.pdf"]) {
+    if ([ws type:docType conformsToType:SKNPDFDocumentType]) {
         NSString *path = [absoluteURL path];
-        NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+        NSString *tmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+        NSString *tmpPath = [tmpDir stringByAppendingPathComponent:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]];
         NSString *binPath = [[NSBundle mainBundle] pathForResource:@"skimnotes" ofType:nil];
         NSArray *arguments = [NSArray arrayWithObjects:@"get", path, tmpPath, nil];
         
+        [[NSFileManager defaultManager] createDirectoryAtPath:tmpDir withIntermediateDirectories:YES attributes:nil error:NULL];
+        
         NSTask *task = [[NSTask alloc] init];
-        [task setCurrentDirectoryPath:NSTemporaryDirectory()];
+        [task setCurrentDirectoryPath:tmpDir];
         [task setLaunchPath:binPath];
         [task setArguments:arguments];
         [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
@@ -151,8 +160,8 @@
         
         [task release];
         task = nil;
-        [fm removeFileAtPath:tmpPath handler:nil];
-    } else if ([ws type:docType conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
+        [fm removeItemAtPath:tmpDir error:NULL];
+    } else if ([ws type:docType conformsToType:SKNPDFBundleDocumentType]) {
         NSString *bundlePath = [absoluteURL path];
         NSString *filename = [[[bundlePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathComponent:@"skim"];
         NSString *skimPath = [bundlePath stringByAppendingPathComponent:filename];
@@ -165,7 +174,7 @@
             }
         }
         array = [NSKeyedUnarchiver unarchiveObjectWithFile:skimPath];
-    } else if ([ws type:docType conformsToType:@"net.sourceforge.skim-app.skimnotes"]) {
+    } else if ([ws type:docType conformsToType:SKNSkimNotesDocumentType]) {
         array = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
     }
     
@@ -174,7 +183,7 @@
     if (array) {
         [self setNotes:array];
     } else if (outError) {
-        *outError = error ? error : [NSError errorWithDomain:@"SKNDocumentErrorDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to read notes", @""), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? error : [NSError errorWithDomain:SKNDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to read notes", @""), NSLocalizedDescriptionKey, nil]];
     }
     
     return array != nil;
