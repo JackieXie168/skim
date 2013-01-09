@@ -185,22 +185,12 @@
         [self establishConnection];
     
     // these checks are client side to avoid connecting to the server unless it's really necessary
-    CFTypeRef theUTI = NULL;
-    FSRef fileRef;
-    OSStatus err = noErr;
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    NSString *fileType = [ws typeOfFile:[fileURL path] error:NULL];
     
-    if (FALSE == CFURLGetFSRef((CFURLRef)fileURL, &fileRef))
-        err = coreFoundationUnknownErr; // should never happen
-    
-    // kLSItemContentType returns a CFStringRef, according to the header
-    if (noErr == err)
-        err = LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, &theUTI);
-    
-    [(id)theUTI autorelease];
-    
-    if (noErr == err && theUTI != NULL && UTTypeConformsTo(theUTI, kUTTypePDF) || 
-        UTTypeConformsTo(theUTI, CFSTR("net.sourceforge.skim-app.pdfd")) || 
-        UTTypeConformsTo(theUTI, CFSTR("net.sourceforge.skim-app.skimnotes")))
+    if (fileType != nil && [ws type:fileType conformsToType:(NSString *)kUTTypePDF] || 
+        [ws type:fileType conformsToType:@"net.sourceforge.skim-app.pdfd"] || 
+        [ws type:fileType conformsToType:@"net.sourceforge.skim-app.skimnotes"])
         return YES;
     
     return NO;
