@@ -37,7 +37,7 @@
  */
 
 #import "SKNDocument.h"
-#import <SkimNotes/SkimNotes.h>
+#import <SkimNotesBase/SkimNotesBase.h>
 #import "SKNSkimReader.h"
 
 #define SKNPDFDocumentType @"com.adobe.pdf"
