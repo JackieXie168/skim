@@ -106,14 +106,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088;
 			remoteInfo = SkimNotesBase;
 		};
 		CE26860E169DB32600B36A1E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
+			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
 			remoteInfo = "SkimNotes Tool";
 		};
 		CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */ = {
