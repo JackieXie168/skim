@@ -297,7 +297,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Skim/Open File in Skim</string>
+				<string>Open File in Skim</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>openDocumentFromURLOnPboard</string>
@@ -329,7 +329,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Skim/Open URL in Skim</string>
+				<string>Open URL in Skim</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>openDocumentFromURLOnPboard</string>
@@ -360,7 +360,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Skim/Open Selected PDF</string>
+				<string>Open Selected PDF</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>openDocumentFromDataOnPboard</string>
@@ -377,7 +377,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Skim/Show Skim Notes</string>
+				<string>Show Skim Notes</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>openNotesDocumentFromURLOnPboard</string>
