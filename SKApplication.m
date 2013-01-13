@@ -54,7 +54,9 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 - (void)sendEvent:(NSEvent *)anEvent {
     if ([anEvent type] == NSScrollWheel && ([anEvent modifierFlags] & NSAlternateKeyMask)) {
-        id target = [self targetForAction:@selector(magnifyWheel:)];
+        NSResponder *target = [[anEvent window] firstResponder] ?: [anEvent window];
+        while (target && [target respondsToSelector:@selector(magnifyWheel:)] == NO)
+            target = [target nextResponder];
         if (target) {
             [target magnifyWheel:anEvent];
             return;
