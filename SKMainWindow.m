@@ -38,13 +38,23 @@
 
 #import "SKMainWindow.h"
 #import "SKImageToolTipWindow.h"
+#import "NSResponder_SKExtensions.h"
 
 
 @implementation SKMainWindow
 
 - (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSKeyDown)
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSKeyDown) {
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
+    } else if ([theEvent type] == NSScrollWheel && ([theEvent modifierFlags] & NSAlternateKeyMask)) {
+        NSResponder *target = (NSResponder *)[[self contentView] hitTest:[theEvent locationInWindow]] ?: (NSResponder *)self;
+        while (target && [target respondsToSelector:@selector(magnifyWheel:)] == NO)
+            target = [target nextResponder];
+        if (target) {
+            [target magnifyWheel:theEvent];
+            return;
+        }
+    }
     [super sendEvent:theEvent];
 }
 
