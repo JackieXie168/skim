@@ -252,19 +252,29 @@ static BOOL isFolderUTI(NSString *theUTI) {
 - (void)executeScript:(id)sender {
     NSString *scriptFilename = [sender representedObject];
     NSString *theUTI = [[NSWorkspace sharedWorkspace] typeOfFile:[[scriptFilename stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
+    NSTask *task = nil;
     
-    @try {
-        if (isAppleScriptUTI(theUTI)) {
-            [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
-        } else if (isApplicationUTI(theUTI)) {
-            [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
-        } else if (isAutomatorWorkflowUTI(theUTI)) {
-            [NSTask launchedTaskWithLaunchPath:@"/usr/bin/automator" arguments:[NSArray arrayWithObjects:scriptFilename, nil]];
-        } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
-            [NSTask launchedTaskWithLaunchPath:scriptFilename arguments:[NSArray array]];
-        }
+    if (isAppleScriptUTI(theUTI)) {
+        task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:@"/usr/bin/osascript"];
+        [task setArguments:[NSArray arrayWithObjects:scriptFilename, nil]];
+    } else if (isAutomatorWorkflowUTI(theUTI)) {
+        task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:@"/usr/bin/automator"];
+        [task setArguments:[NSArray arrayWithObjects:scriptFilename, nil]];
+    } else if ([[NSFileManager defaultManager] isExecutableFileAtPath:scriptFilename]) {
+        task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:scriptFilename];
+        [task setArguments:[NSArray array]];
+    } else if (isApplicationUTI(theUTI)) {
+        [[NSWorkspace sharedWorkspace] launchApplication:scriptFilename];
     }
-    @catch (id exception) {}
+    if (task) {
+        [task setStandardInput:[NSFileHandle fileHandleWithNullDevice]];
+        [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+        @try { [task launch]; }
+        @catch (id exception) {}
+    }
 }
 
 @end
