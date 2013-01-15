@@ -89,7 +89,7 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSURL *url = nil;
     
-    for (NSURL *appSupportURL in [[fm applicationSupportDirectoryURLs] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
+    for (NSURL *appSupportURL in [[fm applicationSupportDirectoryURLs] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportURL]]) {
         url = [[appSupportURL URLByAppendingPathComponent:TEMPLATES_DIRECTORY] URLByAppendingPathComponent:typeName];
         if ([url checkResourceIsReachableAndReturnError:NULL] == NO)
             url = nil;
