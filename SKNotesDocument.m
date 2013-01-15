@@ -254,7 +254,7 @@
     NSFileWrapper *fileWrapper = nil;
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    if ([ws type:SKNotesRTFDocumentType conformsToType:typeName])
+    if ([ws type:SKNotesRTFDDocumentType conformsToType:typeName])
         fileWrapper = [self notesRTFDFileWrapper];
     else if ([ws type:SKNotesDocumentType conformsToType:typeName] || 
              [ws type:SKNotesTextDocumentType conformsToType:typeName] || 
