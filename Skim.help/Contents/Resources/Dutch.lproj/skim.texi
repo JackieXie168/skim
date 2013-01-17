@@ -1265,7 +1265,7 @@ Normaal worden notities en markeringen die aan een PDF-bestand zijn toegevoegd w
 @heading Om een kopie van een PDF-document met de notities inbegrepen te bewaren:
 @enumerate
 @item Kies Archief > Exporteer@dots{}. 
-@item Selecteer "PDF met ingebedde notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@item Selecteer "PDF" van de Structuur popup, selecteer de "Met ingebedde notities" optie, kies een locatie om de notities te bewaren, en druk op de OK-knop.
 @end enumerate
 @endbox
 
@@ -1285,7 +1285,7 @@ U kunt in Skim een kopie van een PDF-bestand zonder de notities en markeringen b
 @heading Om een kopie van een PDF-document zonder de notities te bewaren:
 @enumerate
 @item Kies Archief > Exporteer@dots{}. 
-@item Select "PDF zonder notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@item Select "PDF" van de Structuur popup, selecteer de "Zonder notities" optie, kies een locatie om de notities te bewaren, en druk op de OK-knop.
 @end enumerate
 @endbox
 
