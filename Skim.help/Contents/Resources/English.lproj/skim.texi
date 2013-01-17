@@ -1257,7 +1257,7 @@ Normally, Notes and highlights you add to a PDF document are not saved in the PD
 @heading To save a copy of the PDF with notes included:
 @enumerate
 @item Choose File > Export@dots{}. 
-@item Select "PDF With Embedded Notes" from the File Format popup, choose a location to save the PDF to, and press OK. 
+@item Select "PDF" from the File Format popup, select the "With Embedded Notes" option, choose a location to save the PDF to, and press OK. 
 @end enumerate
 @endbox
 
@@ -1277,7 +1277,7 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @heading To save a copy of the PDF without notes:
 @enumerate
 @item Choose File > Export@dots{}. 
-@item Select "PDF Without Notes" from the File Format popup, choose a location to save the PDF to, and press OK. 
+@item Select "PDF" from the File Format popup, select the "Without Notes" option, choose a location to save the PDF to, and press OK. 
 @end enumerate
 @endbox
 
