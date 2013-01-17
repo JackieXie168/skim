@@ -154,7 +154,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (NSString *)windowNibName { return @"ConversionProgressWindow"; }
 
-- (IBAction)close:(id)sender { [self close]; }
+- (IBAction)close:(id)sender { [NSApp stopModalWithCode:SKConversionFailed]; }
 
 - (IBAction)cancel:(id)sender {
     if (cancelled == YES) {
