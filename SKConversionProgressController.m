@@ -78,21 +78,15 @@ enum {
 static void PSConverterBeginDocumentCallback(void *info)
 {
     id delegate = (id)info;
-    if ([delegate respondsToSelector:@selector(conversionStarted)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [delegate conversionStarted];
-        });
-    }
+    if ([delegate respondsToSelector:@selector(conversionStarted)])
+        [delegate performSelectorOnMainThread:@selector(conversionStarted) withObject:nil waitUntilDone:NO];
 }
 
 static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
-    if ([delegate respondsToSelector:@selector(conversionCompleted)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [delegate conversionCompleted];
-        });
-    }
+    if ([delegate respondsToSelector:@selector(conversionCompleted)])
+        [delegate performSelectorOnMainThread:@selector(conversionCompleted) withObject:nil waitUntilDone:NO];
 }
 
 CGPSConverterCallbacks SKPSConverterCallbacks = { 
@@ -215,6 +209,10 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 #pragma mark PostScript
 
+- (void)stopModalWithResult:(NSNumber *)result {
+    [NSApp stopModalWithCode:[result boolValue] ? SKConversionSucceeded : SKConversionFailed];
+}
+
 - (void)convertPostScriptData:(NSData *)psData {
     // pass self as info
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
@@ -234,9 +232,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         CGDataConsumerRelease(consumer);
         CFRelease(pdfData);
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSApp stopModalWithCode:success ? SKConversionSucceeded : SKConversionFailed];
-        });
+        [self performSelectorOnMainThread:@selector(stopModalWithResult:) withObject:[NSNumber numberWithBool:success] waitUntilDone:NO];
     });
     
 }
