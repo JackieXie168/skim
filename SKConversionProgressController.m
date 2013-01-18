@@ -232,6 +232,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         CGDataConsumerRelease(consumer);
         CFRelease(pdfData);
         
+        // we don't use GCD for the callback, because on Mountain Lion the messages is never received, even though that works on Snow Leopard
         [self performSelectorOnMainThread:@selector(stopModalWithResult:) withObject:[NSNumber numberWithBool:success] waitUntilDone:NO];
     });
     
