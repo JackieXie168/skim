@@ -43,7 +43,7 @@
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKApplicationController.h"
-#import "BDAlias.h"
+#import "SKAlias.h"
 #import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
@@ -310,7 +310,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError {
     id document = nil;
     NSError *error = nil;
-    NSURL *fileURL = [[BDAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
+    NSURL *fileURL = [[SKAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
     if(fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if(fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {

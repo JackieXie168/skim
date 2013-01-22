@@ -38,7 +38,7 @@
 
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
-#import "BDAlias.h"
+#import "SKAlias.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
 #import "SKTextWithIconCell.h"
@@ -222,12 +222,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
     NSString *path = [fileURL path];
     for (NSMutableDictionary *info in recentDocuments) {
-        BDAlias *alias = [info valueForKey:ALIAS_KEY];
+        SKAlias *alias = [info valueForKey:ALIAS_KEY];
         if (alias == nil) {
-            alias = [BDAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
+            alias = [SKAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
             [info setValue:alias forKey:ALIAS_KEY];
         }
-        if ([[alias fullPathNoUI] isCaseInsensitiveEqual:path])
+        if ([[[alias fileURLNoUI] path] isCaseInsensitiveEqual:path])
             return info;
     }
     return nil;
@@ -241,9 +241,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (info)
         [recentDocuments removeObjectIdenticalTo:info];
     
-    BDAlias *alias = [BDAlias aliasWithURL:fileURL];
+    SKAlias *alias = [SKAlias aliasWithURL:fileURL];
     if (alias) {
-        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, [alias aliasData], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
+        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, [alias data], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
         [recentDocuments insertObject:bm atIndex:0];
         if ([recentDocuments count] > maxRecentDocumentsCount)
             [recentDocuments removeLastObject];
