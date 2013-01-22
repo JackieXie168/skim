@@ -26,7 +26,6 @@
 		4530D7EF0B27AAD6007C59F4 /* SKMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */; };
 		4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D8C80B27B04D007C59F4 /* SKApplicationController.m */; };
 		4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530DCF60B27CACE007C59F4 /* SKPDFView.m */; };
-		453DC2770B4F242200A72509 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 453DC2750B4F242200A72509 /* BDAlias.m */; };
 		455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
 		45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A3BD070B4F0770002B297F /* SKStringConstants.m */; };
 		45A3BD390B4F097D002B297F /* InitialUserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */; };
@@ -101,6 +100,7 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
+		CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2083E316ADFFD600BC5AFB /* SKAlias.m */; };
 		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
@@ -504,8 +504,6 @@
 		4530D8C80B27B04D007C59F4 /* SKApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplicationController.m; sourceTree = "<group>"; };
 		4530DCF50B27CACE007C59F4 /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
 		4530DCF60B27CACE007C59F4 /* SKPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFView.m; sourceTree = "<group>"; };
-		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
-		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
 		455989F70B2662FF00E5419B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		45A3BD060B4F0770002B297F /* SKStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStringConstants.h; sourceTree = "<group>"; };
 		45A3BD070B4F0770002B297F /* SKStringConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStringConstants.m; sourceTree = "<group>"; };
@@ -701,6 +699,8 @@
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
 		CE1F67FD0E37552400E07E76 /* SKRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRuntime.h; sourceTree = "<group>"; };
+		CE2083E216ADFFD600BC5AFB /* SKAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAlias.h; sourceTree = "<group>"; };
+		CE2083E316ADFFD600BC5AFB /* SKAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAlias.m; sourceTree = "<group>"; };
 		CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKGradientView.h; sourceTree = "<group>"; };
 		CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
@@ -1366,7 +1366,6 @@
 		453DC2740B4F23E500A72509 /* Third Party Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CE9BD6FB0D096F0500EB1A6C /* BDAlias */,
 				CE9BD6FA0D096EE300EB1A6C /* HIDRemote */,
 				CE33639E0E26E086005F99E6 /* SyncTeX */,
 			);
@@ -1714,6 +1713,8 @@
 			children = (
 				CEE177940DBE140900E6C317 /* SKAccessibilityFauxUIElement.h */,
 				CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */,
+				CE2083E216ADFFD600BC5AFB /* SKAlias.h */,
+				CE2083E316ADFFD600BC5AFB /* SKAlias.m */,
 				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
 				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
 				CEA3DF6C106BDAC1002FB3DB /* SKFloatMapTable.h */,
@@ -1870,16 +1871,6 @@
 			);
 			name = HIDRemote;
 			path = iospirit/HIDRemote;
-			sourceTree = "<group>";
-		};
-		CE9BD6FB0D096F0500EB1A6C /* BDAlias */ = {
-			isa = PBXGroup;
-			children = (
-				453DC2750B4F242200A72509 /* BDAlias.m */,
-				453DC2760B4F242200A72509 /* BDAlias.h */,
-			);
-			name = BDAlias;
-			path = BDistributed/BDAlias;
 			sourceTree = "<group>";
 		};
 		CEC0ABED118307F900384CFD /* View Helpers */ = {
@@ -2418,7 +2409,6 @@
 				F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */,
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
-				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
 				CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */,
 				CE3A41580B790C56006B64D3 /* SKDragImageView.m in Sources */,
 				CE3A45530B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m in Sources */,
@@ -2581,6 +2571,7 @@
 				CE5347141645DD3000737191 /* SKAttachmentEmailer.m in Sources */,
 				CE1B651B16595C5200B74339 /* SKWatchedPath.m in Sources */,
 				CE40D6161677A9DC00573882 /* SKTextNoteEditor.m in Sources */,
+				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

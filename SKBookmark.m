@@ -37,7 +37,7 @@
  */
 
 #import "SKBookmark.h"
-#import "BDAlias.h"
+#import "SKAlias.h"
 #import "NSImage_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "SKDocumentController.h"
@@ -62,14 +62,14 @@
 @end
 
 @interface SKFileBookmark : SKBookmark {
-    BDAlias *alias;
+    SKAlias *alias;
     NSData *aliasData;
     NSString *label;
     NSUInteger pageIndex;
     NSDictionary *setup;
 }
 - (id)initWithAliasData:(NSData *)aData pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
-- (BDAlias *)alias;
+- (SKAlias *)alias;
 - (NSData *)aliasData;
 @end
 
@@ -398,9 +398,9 @@ static Class SKBookmarkClass = Nil;
 - (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     self = [super init];
     if (self) {
-        alias = [[BDAlias alloc] initWithURL:aURL];
+        alias = [[SKAlias alloc] initWithURL:aURL];
         if (alias) {
-            aliasData = [[alias aliasData] retain];
+            aliasData = [[alias data] retain];
             pageIndex = aPageIndex;
             label = [aLabel copy];
             setup = nil;
@@ -415,7 +415,7 @@ static Class SKBookmarkClass = Nil;
 - (id)initWithAliasData:(NSData *)aData pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     self = [super init];
     if (self) {
-        alias = [[BDAlias alloc] initWithData:aData];
+        alias = [[SKAlias alloc] initWithData:aData];
         if (aData && alias) {
             aliasData = [aData retain];
             pageIndex = aPageIndex;
@@ -464,14 +464,14 @@ static Class SKBookmarkClass = Nil;
     return [alias fileURLNoUI];
 }
 
-- (BDAlias *)alias {
+- (SKAlias *)alias {
     return alias;
 }
 
 - (NSData *)aliasData {
     NSData *data = nil;
     if ([self fileURL])
-        data = [alias aliasData];
+        data = [alias data];
     return data ?: aliasData;
 }
 

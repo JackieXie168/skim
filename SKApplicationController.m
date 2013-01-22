@@ -48,7 +48,7 @@
 #import "SKMainWindowController_Actions.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
-#import "BDAlias.h"
+#import "SKAlias.h"
 #import "SKVersionNumber.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import <Quartz/Quartz.h>

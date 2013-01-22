@@ -41,7 +41,7 @@
 #import "SKTemplateParser.h"
 #import "NSFileManager_SKExtensions.h"
 #import "SKDocumentController.h"
-#import "BDAlias.h"
+#import "SKAlias.h"
 #import "SKInfoWindowController.h"
 #import "SKFDFParser.h"
 #import "PDFAnnotation_SKExtensions.h"
@@ -98,7 +98,7 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     NSURL *fileURL = [self fileURL];
     
     if (fileURL) {
-        NSData *data = [[BDAlias aliasWithURL:fileURL] aliasData];
+        NSData *data = [[SKAlias aliasWithURL:fileURL] data];
         
         [setup setObject:[fileURL path] forKey:SKDocumentSetupFileNameKey];
         if(data)
