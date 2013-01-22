@@ -516,7 +516,8 @@ static Class SKBookmarkClass = Nil;
     if (setup) {
         document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] error:&error];
     } else {
-        NSURL *fileURL = [self fileURL];
+        // we allow UI when resolving alias for opening the bookmark, so don't use -fileURL, also consistent with openDocumentWithSetup:error:
+        NSURL *fileURL = [alias fileURL];
         if (fileURL && NO == [fileURL isTrashedFileURL] && 
             (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
             [document isPDFDocument] && [self pageIndex] != NSNotFound)
