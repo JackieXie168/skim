@@ -148,13 +148,17 @@
 }
 
 - (void)setFrame:(NSRect)frameRect {
+    BOOL changed = fabs(NSWidth([self frame]) - NSWidth(frameRect)) > 0.0;
     [super setFrame:frameRect];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
+        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 - (void)setFrameSize:(NSSize)frameSize {
+    BOOL changed = fabs(NSWidth([self frame]) - frameSize.width) > 0.0;
     [super setFrameSize:frameSize];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
+        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
