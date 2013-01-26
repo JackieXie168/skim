@@ -47,6 +47,7 @@
     NSDictionary *info;
     NSArray *summaryKeys;
     NSArray *attributesKeys;
+    NSDictionary *labels;
 }
 
 @property (nonatomic, retain) IBOutlet NSTableView *summaryTableView, *attributesTableView;
