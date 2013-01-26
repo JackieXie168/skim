@@ -480,6 +480,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [rightSideController.noteOutlineView registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
+    [leftSideController.thumbnailTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
+    [rightSideController.snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
+    
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
     [[self window] recalculateKeyViewLoop];

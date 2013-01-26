@@ -139,10 +139,12 @@
 
 - (void)awakeFromNib {
     NSScroller *scroller = [[self enclosingScrollView] verticalScroller];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
-                                                 name:SKScrollerWillScrollNotification object:scroller];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:)
-                                                 name:SKScrollerDidScrollNotification object:scroller];
+    if ([scroller isKindOfClass:[SKScroller class]]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
+                                                     name:SKScrollerWillScrollNotification object:scroller];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:)
+                                                     name:SKScrollerDidScrollNotification object:scroller];
+    }
 }
 
 - (void)setFrame:(NSRect)frameRect {
@@ -162,10 +164,6 @@
             return;
     }
     [super mouseDown:theEvent];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
-    return NSDragOperationEvery;
 }
 
 - (NSImage *)dragImageForRowsWithIndexes:(NSIndexSet *)dragRows tableColumns:(NSArray *)tableColumns event:(NSEvent *)dragEvent offset:(NSPointPointer)dragImageOffset{
