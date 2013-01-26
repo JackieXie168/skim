@@ -106,6 +106,23 @@ static SKInfoWindowController *sharedInstance = nil;
                             PDFDocumentCreationDateAttribute,
                             PDFDocumentModificationDateAttribute,
                             SKInfoKeywordsStringKey, nil];
+        labels = [[NSDictionary alloc] initWithObjectsAndKeys:
+                            NSLocalizedString(@"File name:", @"Info label"), SKInfoFileNameKey, 
+                            NSLocalizedString(@"File size:", @"Info label"), SKInfoFileSizeKey, 
+                            NSLocalizedString(@"Page size:", @"Info label"), SKInfoPageSizeKey, 
+                            NSLocalizedString(@"Page count:", @"Info label"), SKInfoPageCountKey, 
+                            NSLocalizedString(@"PDF Version:", @"Info label"), SKInfoVersionKey, 
+                            NSLocalizedString(@"Encrypted:", @"Info label"), SKInfoEncryptedKey, 
+                            NSLocalizedString(@"Allows printing:", @"Info label"), SKInfoAllowsPrintingKey, 
+                            NSLocalizedString(@"Allows copying:", @"Info label"), SKInfoAllowsCopyingKey, 
+                            NSLocalizedString(@"Title:", @"Info label"), PDFDocumentTitleAttribute, 
+                            NSLocalizedString(@"Author:", @"Info label"), PDFDocumentAuthorAttribute, 
+                            NSLocalizedString(@"Subject:", @"Info label"), PDFDocumentSubjectAttribute, 
+                            NSLocalizedString(@"Content Creator:", @"Info label"), PDFDocumentCreatorAttribute, 
+                            NSLocalizedString(@"PDF Producer:", @"Info label"), PDFDocumentProducerAttribute, 
+                            NSLocalizedString(@"Creation date:", @"Info label"), PDFDocumentCreationDateAttribute, 
+                            NSLocalizedString(@"Modification date:", @"Info label"), PDFDocumentModificationDateAttribute, 
+                            NSLocalizedString(@"Keywords:", @"Info label"), SKInfoKeywordsStringKey, nil];
     }
     return self;
 }
@@ -115,6 +132,7 @@ static SKInfoWindowController *sharedInstance = nil;
     SKDESTROY(info);
     SKDESTROY(summaryKeys);
     SKDESTROY(attributesKeys);
+    SKDESTROY(labels);
     SKDESTROY(summaryTableView);
     SKDESTROY(attributesTableView);
     SKDESTROY(tabView);
@@ -319,43 +337,6 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [self updateForDocument:doc];
 }
 
-- (NSString *)labelForKey:(NSString *)key {
-    if ([key isEqualToString:SKInfoFileNameKey])
-        return NSLocalizedString(@"File name:", @"Info label");
-    if ([key isEqualToString:SKInfoFileSizeKey])
-        return NSLocalizedString(@"File size:", @"Info label");
-    if ([key isEqualToString:SKInfoPageSizeKey])
-        return NSLocalizedString(@"Page size:", @"Info label");
-    if ([key isEqualToString:SKInfoPageCountKey])
-        return NSLocalizedString(@"Page count:", @"Info label");
-    if ([key isEqualToString:SKInfoVersionKey])
-        return NSLocalizedString(@"PDF Version:", @"Info label");
-    if ([key isEqualToString:SKInfoEncryptedKey])
-        return NSLocalizedString(@"Encrypted:", @"Info label");
-    if ([key isEqualToString:SKInfoAllowsPrintingKey])
-        return NSLocalizedString(@"Allows printing:", @"Info label");
-    if ([key isEqualToString:SKInfoAllowsCopyingKey])
-        return NSLocalizedString(@"Allows copying:", @"Info label");
-    if ([key isEqualToString:PDFDocumentTitleAttribute])
-        return NSLocalizedString(@"Title:", @"Info label");
-    if ([key isEqualToString:PDFDocumentAuthorAttribute])
-        return NSLocalizedString(@"Author:", @"Info label");
-    if ([key isEqualToString:PDFDocumentSubjectAttribute])
-        return NSLocalizedString(@"Subject:", @"Info label");
-    if ([key isEqualToString:PDFDocumentCreatorAttribute])
-        return NSLocalizedString(@"Content Creator:", @"Info label");
-    if ([key isEqualToString:PDFDocumentProducerAttribute])
-        return NSLocalizedString(@"PDF Producer:", @"Info label");
-    if ([key isEqualToString:PDFDocumentCreationDateAttribute])
-        return NSLocalizedString(@"Creation date:", @"Info label");
-    if ([key isEqualToString:PDFDocumentModificationDateAttribute])
-        return NSLocalizedString(@"Modification date:", @"Info label");
-    if ([key isEqualToString:SKInfoKeywordsStringKey])
-        return NSLocalizedString(@"Keywords:", @"Info label");
-    return [key stringByAppendingString:@":"];
-}
-
-
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
     NSArray *keys = nil;
     if ([tv isEqual:summaryTableView])
@@ -382,7 +363,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     id value = nil;
     if ([key length]) {
         if ([tcID isEqualToString:@"label"]) {
-            value = [self labelForKey:key];
+            value = [labels objectForKey:key] ?: [key stringByAppendingString:@":"];
         } else if ([tcID isEqualToString:@"value"]) {
             value = [info objectForKey:key];
             if (value == nil)
