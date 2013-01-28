@@ -102,6 +102,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
+#define SKDisableFreeHandNoteUncoalescingKey @"SKDisableFreeHandNoteUncoalescing"
 
 #define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
@@ -3286,7 +3287,8 @@ enum {
     }
     pathPageIndex = [page pageIndex];
     
-    [NSEvent setMouseCoalescingEnabled:NO];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableFreeHandNoteUncoalescingKey] == NO)
+        [NSEvent setMouseCoalescingEnabled:NO];
     
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
