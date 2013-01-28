@@ -176,6 +176,8 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     
+    [tableView setHasImageToolTips:YES];
+    
     if ([transitionController pageTransitions]) {
         [[self undoManager] disableUndoRegistration];
         [self setSeparate:YES];
@@ -415,16 +417,8 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
-- (BOOL)tableView:(NSTableView *)tv hasImageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
-        return YES;
-    return NO;
-}
-
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
-        return [[controller pdfDocument] pageAtIndex:row];
-    return nil;
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
+    return [[controller pdfDocument] pageAtIndex:row];
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
