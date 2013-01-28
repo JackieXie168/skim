@@ -48,6 +48,7 @@
 }
 
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
+@property (nonatomic) BOOL hasImageToolTips;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (void)delete:(id)sender;
@@ -75,8 +76,7 @@
 - (void)tableView:(NSTableView *)aTableView pasteFromPasteboard:(NSPasteboard *)pboard;
 - (BOOL)tableView:(NSTableView *)aTableView canPasteFromPasteboard:(NSPasteboard *)pboard;
 
-- (BOOL)tableView:(NSTableView *)aTableView hasImageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForRow:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

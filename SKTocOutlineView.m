@@ -45,6 +45,8 @@
 
 @implementation SKTocOutlineView
 
+@dynamic hasImageToolTips;
+
 - (void)dealloc {
     SKDESTROY(trackingAreas);
     [super dealloc];
@@ -126,15 +128,20 @@
 }
 
 - (void)removeTrackingAreas {
+    if (trackingAreas == nil)
+        return;
+    
     for (NSTrackingArea *area in trackingAreas)
         [self removeTrackingArea:area];
     [trackingAreas removeAllObjects];
 }
 
-- (void)addTrackingAreaForColumn:(NSInteger)column row:(NSInteger)row {
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", [NSNumber numberWithInteger:column], @"column", nil];
-    NSRect rect = column == -1 ? [self rectOfRow:row] : [self frameOfCellAtColumn:column row:row];
-    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+- (void)addTrackingAreaForRow:(NSInteger)row {
+    if (trackingAreas == nil)
+        return;
+    
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", nil];
+    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self rectOfRow:row] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
     [self addTrackingArea:area];
     [trackingAreas addObject:area];
     [area release];
@@ -142,34 +149,18 @@
 }
 
 - (void)rebuildTrackingAreas {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:hasImageContextForTableColumn:item:)] == NO ||
-        [[self delegate] respondsToSelector:@selector(outlineView:imageContextForTableColumn:item:)] == NO)
+    if (trackingAreas == nil || [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)] == NO)
         return;
     
-    if (trackingAreas == nil)
-        trackingAreas = [[NSMutableSet alloc] init];
-    else
-        [self removeTrackingAreas];
+    [self removeTrackingAreas];
     
     if ([self window]) {
         NSRect visibleRect = [self visibleRect];
         NSRange rowRange = [self rowsInRect:visibleRect];
-        NSIndexSet *columnIndexes = [self columnIndexesInRect:visibleRect];
         NSUInteger row;
-        id item;
         
-        for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-            item = [self itemAtRow:row];
-            if ([[self delegate] outlineView:self hasImageContextForTableColumn:nil item:item]) {
-                [self addTrackingAreaForColumn:-1 row:row];
-            } else {
-                [columnIndexes enumerateIndexesUsingBlock:^(NSUInteger column, BOOL *stop) {
-                    NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-                    if ([[self delegate] outlineView:self hasImageContextForTableColumn:tableColumn item:item])
-                        [self addTrackingAreaForColumn:column row:row];
-                }];
-            }
-        }
+        for (row = rowRange.location; row < NSMaxRange(rowRange); row++)
+            [self addTrackingAreaForRow:row];
     }
 }
 
@@ -188,15 +179,31 @@
 	[self rebuildTrackingAreas];
 }
 
+- (BOOL)hasImageToolTips {
+    return trackingAreas != nil;
+}
+
+- (void)setHasImageToolTips:(BOOL)flag {
+    if (flag && trackingAreas == nil) {
+        trackingAreas = [[NSMutableSet alloc] init];
+        if ([self window])
+            [self rebuildTrackingAreas];
+    } else if (flag == NO && trackingAreas) {
+        if ([self window])
+            [self removeTrackingAreas];
+        SKDESTROY(trackingAreas);
+    }
+}
+
 - (void)mouseEntered:(NSEvent *)theEvent{
+    if (trackingAreas == nil)
+        return;
+    
     NSDictionary *userInfo = [theEvent userData];
-    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
     NSNumber *rowNumber = [userInfo objectForKey:@"row"];
-    if (columnNumber && rowNumber) {
-        NSInteger column = [columnNumber integerValue];
+    if (rowNumber) {
         id item = [self itemAtRow:[rowNumber integerValue]];
-        NSTableColumn *tableColumn = (columnNumber == nil || column == -1) ? nil : [[self tableColumns] objectAtIndex:column];
-        id <SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForTableColumn:tableColumn item:item];
+        id <SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForItem:item];
         if (context)
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
     }
@@ -204,9 +211,7 @@
 
 - (void)mouseExited:(NSEvent *)theEvent{
     NSDictionary *userInfo = [theEvent userData];
-    NSNumber *columnNumber = [userInfo objectForKey:@"column"];
-    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
-    if (columnNumber && rowNumber)
+    if ([userInfo objectForKey:@"row"])
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
 }
 

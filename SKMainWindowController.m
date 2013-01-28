@@ -63,8 +63,10 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "SKOutlineView.h"
 #import "SKTocOutlineView.h"
 #import "SKNoteOutlineView.h"
+#import "SKTableView.h"
 #import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
 #import "SKNoteTypeSheetController.h"
@@ -158,6 +160,8 @@ static char SKMainWindowDefaultsObservationContext;
 #define SKUsesDrawersKey @"SKUsesDrawers"
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds"
+
+#define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
 static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) {
     NSRect rect = [contentView bounds];
@@ -482,6 +486,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [leftSideController.thumbnailTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
     [rightSideController.snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
+    
+    if (NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey]) {
+        [leftSideController.tocOutlineView setHasImageToolTips:YES];
+        [leftSideController.findTableView setHasImageToolTips:YES];
+        [leftSideController.groupedFindTableView setHasImageToolTips:YES];
+    }
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     

@@ -46,8 +46,12 @@
 @interface SKTocOutlineView : SKOutlineView {
     NSMutableSet *trackingAreas;
 }
+
+@property (nonatomic) BOOL hasImageToolTips;
+
 - (id <SKTocOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate;
+
 @end
 
 
@@ -55,7 +59,6 @@
 @optional
 
 - (NSPointerArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView hasImageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForItem:(id)item;
 
 @end

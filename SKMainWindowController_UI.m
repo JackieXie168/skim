@@ -92,8 +92,6 @@
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
-#define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
-
 @interface SKMainWindowController (SKPrivateMain)
 
 - (void)selectSelectedNote:(id)sender;
@@ -517,13 +515,7 @@
     }
 }
 
-- (BOOL)tableView:(NSTableView *)tv hasImageContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView]))
-        return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
-    return NO;
-}
-
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.findTableView])
         return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
     else if ([tv isEqual:leftSideController.groupedFindTableView])
@@ -870,13 +862,7 @@
     return nil;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov hasImageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:leftSideController.tocOutlineView])
-        return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO;
-    return NO;
-}
-
-- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForItem:(id)item {
     if ([ov isEqual:leftSideController.tocOutlineView])
         return [item destination];
     return nil;
