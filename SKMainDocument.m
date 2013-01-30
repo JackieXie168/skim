@@ -98,6 +98,7 @@
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
+#define SKLastExportedOptionKey @"SKLastExportedOption"
 #define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
 #define URL_KEY             @"URL"
@@ -328,6 +329,7 @@ enum {
 - (void)updateExportAccessoryView {
     NSString *typeName = [self fileTypeFromLastRunSavePanel];
     NSMatrix *matrix = [exportAccessoryController matrix];
+    [matrix selectCellWithTag:exportOption];
     if ([self canAttachNotesForType:typeName]) {
         [matrix setHidden:NO];
         if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
@@ -361,6 +363,7 @@ enum {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
+            NSInteger lastExportedOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastExportedOptionKey];
             if (lastExportedType) {
                 NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
                 if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
@@ -369,6 +372,7 @@ enum {
                     [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
                 }
             }
+            exportOption = lastExportedOption;
             
             exportAccessoryController = [[SKExportAccessoryController alloc] init];
             [exportAccessoryController addFormatPopUpButton:formatPopup];
@@ -521,6 +525,7 @@ enum {
         isSaving = YES;
     } else if (saveOperation == NSSaveToOperation && exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
+        [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
     }
     // just to make sure
     if (saveOperation != NSSaveToOperation)
