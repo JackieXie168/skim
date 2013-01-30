@@ -3247,7 +3247,7 @@ enum {
     NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSWindow *window = [self window];
-    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
     BOOL didDraw = NO;
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
     NSBezierPath *bezierPath = [[[NSBezierPath alloc] init] autorelease];
@@ -3295,7 +3295,7 @@ enum {
         [window restoreCachedImage];
         [window cacheImageInRect:[self convertRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page] toView:nil]];
         
-        [self lockFocus];
+        [[self documentView] lockFocus];
         [NSGraphicsContext saveGraphicsState];
         [transform concat];
         [page transformContextForBox:[self displayBox]];
@@ -3303,7 +3303,7 @@ enum {
         [pathShadow set];
         [bezierPath stroke];
         [NSGraphicsContext restoreGraphicsState];
-        [self unlockFocus];
+        [[self documentView] unlockFocus];
         
         [window flushWindow];
         
@@ -3822,11 +3822,11 @@ enum {
         
         [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
         
-        [self lockFocus];
+        [[self documentView] lockFocus];
         [[NSColor blackColor] set];
         [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
-        [self unlockFocus];
+        [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
+        [[self documentView] unlockFocus];
         [[self window] enableFlushWindow];
         [[self window] flushWindow];
         
