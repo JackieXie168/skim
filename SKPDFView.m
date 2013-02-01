@@ -3285,6 +3285,8 @@ enum {
     
     [NSEvent setMouseCoalescingEnabled:NO];
     
+    [window cacheImageInRect:[self convertRect:[self visibleContentRect] toView:nil]];
+    
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
@@ -3293,7 +3295,6 @@ enum {
         [bezierPath lineToPoint:[self convertPoint:[theEvent locationInView:self] toPage:page]];
         
         [window restoreCachedImage];
-        [window cacheImageInRect:[self convertRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page] toView:nil]];
         
         [[self documentView] lockFocus];
         [NSGraphicsContext saveGraphicsState];
@@ -3310,11 +3311,11 @@ enum {
         didDraw = YES;
     }
     
+    [window discardCachedImage];
+    
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
     if (didDraw) {
-        [window discardCachedImage];
-        
         NSMutableArray *paths = [[NSMutableArray alloc] init];
         if (activeAnnotation)
             [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
