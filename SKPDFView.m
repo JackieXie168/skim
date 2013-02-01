@@ -2163,7 +2163,7 @@ enum {
                 [self setNeedsDisplay:YES];
                 [userInfo setObject:page forKey:SKPDFViewNewPageKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
-            } else if ([sel hasCharacters] && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode)) {
+            } else if ([sel hasCharacters] && [self toolMode] == SKTextToolMode) {
                 [self setCurrentSelection:sel];
             }
         }
