@@ -451,8 +451,7 @@ enum {
     [syncTimer invalidate];
     SKDESTROY(syncTimer);
     [self removePDFToolTipRects];
-    [accessibilityChildren release];
-    accessibilityChildren = nil;
+    SKDESTROY(accessibilityChildren);
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [super setDocument:document];
     [self resetPDFToolTipRects];
@@ -538,8 +537,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self relayoutEditField];
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
+        SKDESTROY(accessibilityChildren);
     }
 }
 
@@ -2285,11 +2283,9 @@ enum {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
-        if ([self isEditing])
-            [self relayoutEditField];
+        [self relayoutEditField];
         [self resetPDFToolTipRects];
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
+        SKDESTROY(accessibilityChildren);
     }
 }
 
