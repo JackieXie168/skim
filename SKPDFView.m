@@ -354,11 +354,6 @@ enum {
     if ([[activeAnnotation page] isEqual:pdfPage] && [self isEditing] == NO)
         [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
     
-    if ([[highlightAnnotation page] isEqual:pdfPage]) {
-        [[NSColor blackColor] setFill];
-        NSFrameRectWithWidth([highlightAnnotation bounds], 1.0);
-    }
-    
     if (readingBar) {
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
@@ -1579,6 +1574,28 @@ enum {
 
 #pragma mark NSDraggingDestination protocol
 
+- (void)clearDragHighlight {
+    if (highlightAnnotation) {
+        highlightAnnotation = nil;
+        [[self window] restoreCachedImage];
+        [[self window] flushWindow];
+    }
+}
+
+- (void)drawDragHighlightForAnnotation:(PDFAnnotation *)annotation {
+    [self clearDragHighlight];
+    highlightAnnotation = annotation;
+    NSRect rect = [self convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
+    [[self window] cacheImageInRect:[[self documentView] convertRect:rect toView:nil]];
+    [[self documentView] lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor blackColor] setFill];
+    NSFrameRectWithWidth(rect, 1.0);
+    [NSGraphicsContext restoreGraphicsState];
+    [[self documentView] unlockFocus];
+    [[self window] flushWindow];
+}
+
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSDragOperation dragOp = NSDragOperationNone;
     NSPasteboard *pboard = [sender draggingPasteboard];
@@ -1606,21 +1623,15 @@ enum {
                 NSString *type = [annotation type];
                 if ([annotation isSkimNote] && [annotation hitTest:location] && 
                     ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-                    if ([annotation isEqual:highlightAnnotation] == NO) {
-                        if (highlightAnnotation)
-                            [self setNeedsDisplayForAnnotation:highlightAnnotation];
-                        highlightAnnotation = annotation;
-                        [self setNeedsDisplayForAnnotation:highlightAnnotation];
-                    }
+                    if ([annotation isEqual:highlightAnnotation] == NO)
+                        [self drawDragHighlightForAnnotation:annotation];
                     dragOp = NSDragOperationGeneric;
                     break;
                 }
             }
         }
-        if (dragOp == NSDragOperationNone && highlightAnnotation) {
-            [self setNeedsDisplayForAnnotation:highlightAnnotation];
-            highlightAnnotation = nil;
-        }
+        if (dragOp == NSDragOperationNone)
+            [self clearDragHighlight];
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingUpdated:sender];
     }
@@ -1630,10 +1641,7 @@ enum {
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
-        if (highlightAnnotation) {
-            [self setNeedsDisplayForAnnotation:highlightAnnotation];
-            highlightAnnotation = nil;
-        }
+        [self clearDragHighlight];
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super draggingExited:sender];
     }
@@ -1670,8 +1678,7 @@ enum {
                 }
                 performedDrag = YES;
             }
-            [self setNeedsDisplayForAnnotation:highlightAnnotation];
-            highlightAnnotation = nil;
+            [self clearDragHighlight];
         }
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         performedDrag = [super performDragOperation:sender];
