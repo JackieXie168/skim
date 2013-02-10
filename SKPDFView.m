@@ -382,11 +382,7 @@ enum {
         }
     }
     
-    if (toolMode != SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
-        NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
-        [[NSColor blackColor] setStroke];
-        [NSBezierPath strokeRect:rect];
-    } else if (toolMode == SKSelectToolMode && selectionPageIndex != NSNotFound) {
+    if (toolMode == SKSelectToolMode && selectionPageIndex != NSNotFound) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = 4.0 / [self scaleFactor];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
