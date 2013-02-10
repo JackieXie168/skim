@@ -163,6 +163,8 @@ enum {
 
 - (void)relayoutEditField;
 
+- (void)transformDocumentViewContextForPage:(PDFPage *)page;
+
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleViewChangedNotification:(NSNotification *)notification;
@@ -402,12 +404,7 @@ enum {
     if (syncPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
         
-        NSRect rect = [self convertRect:[pdfPage boundsForBox:[self displayBox]] toDocumentViewFromPage:pdfPage];
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
-        [transform scaleBy:[self scaleFactor]];
-        [transform concat];
-        [pdfPage transformContextForBox:[self displayBox]];
+        [self transformDocumentViewContextForPage:pdfPage];
         
         CGFloat s = 6.0;
         if (syncPhase < 1.0) {
@@ -3245,16 +3242,11 @@ enum {
     NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSWindow *window = [self window];
-    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
     BOOL didDraw = NO;
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
     NSBezierPath *bezierPath = [[[NSBezierPath alloc] init] autorelease];
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    
-    [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
-    [transform scaleBy:[self scaleFactor]];
     
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3297,8 +3289,7 @@ enum {
         
         [[self documentView] lockFocus];
         [NSGraphicsContext saveGraphicsState];
-        [transform concat];
-        [page transformContextForBox:[self displayBox]];
+        [self transformDocumentViewContextForPage:page];
         [pathColor setStroke];
         [pathShadow set];
         [bezierPath stroke];
@@ -4103,6 +4094,15 @@ enum {
     }
     [self setNeedsDisplayInRect:rect ofPage:page];
     [self annotationsChangedOnPage:page];
+}
+
+- (void)transformDocumentViewContextForPage:(PDFPage *)page {
+    NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
+    [transform scaleBy:[self scaleFactor]];
+    [transform concat];
+    [page transformContextForBox:[self displayBox]];
 }
 
 @end
