@@ -38,6 +38,9 @@
 
 #import "SKReadingBar.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKStringConstants.h"
+#import "NSGeometry_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 
 @implementation SKReadingBar
@@ -175,6 +178,29 @@
         if (NSMaxY(*(NSRectPointer)[lineRects pointerAtIndex:i]) >= point.y) break;
     currentLine = MAX(0, i);
     return YES;
+}
+
+- (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box {
+    NSRect rect = [self currentBoundsForBox:box];
+    
+    [NSGraphicsContext saveGraphicsState];
+    
+    [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
+        NSRect bounds = [pdfPage boundsForBox:box];
+        if (NSEqualRects(rect, NSZeroRect) || [page isEqual:pdfPage] == NO) {
+            [NSBezierPath fillRect:bounds];
+        } else {
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)];
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)];
+        }
+    } else if ([page isEqual:pdfPage]) {
+        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+        [NSBezierPath fillRect:rect];
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 @end
