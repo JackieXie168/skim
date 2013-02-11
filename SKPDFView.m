@@ -3289,6 +3289,7 @@ enum {
         
         [[self documentView] lockFocus];
         [NSGraphicsContext saveGraphicsState];
+        [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
         [self transformDocumentViewContextForPage:page];
         [pathColor setStroke];
         [pathShadow set];
