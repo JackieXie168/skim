@@ -2382,8 +2382,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSSize newSize, oldSize = [thumbnail size];
     PDFDocument *pdfDoc = [pdfView document];
     PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
-    NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
-    NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
+    SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
+    NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBar:readingBar];
     
     [thumbnail setImage:image];
     

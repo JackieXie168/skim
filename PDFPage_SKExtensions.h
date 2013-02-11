@@ -48,7 +48,7 @@ extern NSString *SKPDFPageActionCrop;
 extern NSString *SKPDFPageActionResize;
 extern NSString *SKPDFPageActionRotate;
 
-@class SKMainDocument;
+@class SKMainDocument, SKReadingBar;
 
 @interface PDFPage (SKExtensions)
 
@@ -59,8 +59,8 @@ extern NSString *SKPDFPageActionRotate;
 
 - (NSImage *)image;
 - (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box;
-- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect;
-- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect;
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar;
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBar:(SKReadingBar *)readingBar;
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
 - (NSAttributedString *)thumbnailAttachment;

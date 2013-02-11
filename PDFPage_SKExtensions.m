@@ -40,6 +40,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKMainDocument.h"
 #import "SKPDFView.h"
+#import "SKReadingBar.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKRuntime.h"
 #import "NSBitmapImageRep_SKExtensions.h"
@@ -81,20 +82,20 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSImage *)image {
-    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
-    return  [self thumbnailWithSize:aSize forBox:box readingBarRect:NSZeroRect];
+    return  [self thumbnailWithSize:aSize forBox:box readingBar:nil];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar {
     CGFloat shadowBlurRadius = round(aSize / 32.0);
     CGFloat shadowOffset = - ceil(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBar:readingBar];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBar:(SKReadingBar *)readingBar {
     NSRect bounds = [self boundsForBox:box];
     NSSize pageSize = bounds.size;
     BOOL isScaled = aSize > 0.0;
@@ -161,16 +162,9 @@ static BOOL usesSequentialPageNumbering = NO;
         [pageImage release];
     }
     
-    if (NSIsEmptyRect(readingBarRect) == NO) {
+    if (readingBar) {
         [self transformContextForBox:box];
-        [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge)];
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge)];
-        } else {
-            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
-            [NSBezierPath fillRect:readingBarRect];
-        }
+        [readingBar drawForPage:self withBox:box];
     }
     
     [image unlockFocus];
@@ -242,7 +236,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSData *)TIFFDataForRect:(NSRect)rect {
     PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
-    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
     NSRect bounds = [self boundsForBox:box];
     
     if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))

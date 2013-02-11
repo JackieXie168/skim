@@ -335,9 +335,38 @@ enum {
 
 #pragma mark Drawing
 
-- (void)drawPage:(PDFPage *)pdfPage {
-    [NSGraphicsContext saveGraphicsState];
+- (void)drawSelectionForPage:(PDFPage *)pdfPage {
+    NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
+    CGFloat radius = 4.0 / [self scaleFactor];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
+    [path appendBezierPathWithRect:selectionRect];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
+    [path setWindingRule:NSEvenOddWindingRule];
+    [path fill];
+    if ([pdfPage pageIndex] != selectionPageIndex) {
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
+        [NSBezierPath fillRect:selectionRect];
+    }
+    SKDrawResizeHandles(selectionRect, radius);
+}
+
+- (void)drawSyncHighlight {
+    CGFloat s = 6.0;
+    if (syncPhase < 1.0) {
+        s += 8.0 * sin(syncPhase * M_PI);
+        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+        [shade setShadowBlurRadius:2.0];
+        [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
+        [shade set];
+    } else {
+        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+    }
     
+    [[NSColor redColor] setFill];
+    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(syncPoint, s)] fill];
+}
+
+- (void)drawPage:(PDFPage *)pdfPage {
     NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
     // smooth graphics when anti-aliasing
     if (interpolation == NSImageInterpolationDefault)
@@ -351,78 +380,29 @@ enum {
     
     [PDFAnnotation setCurrentActiveAnnotation:nil];
 	
-    [pdfPage transformContextForBox:[self displayBox]];
-    
-    if ([[activeAnnotation page] isEqual:pdfPage] && [self isEditing] == NO)
-        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
-    
-    if (readingBar) {
-        NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
-        BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
-        NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey];
-        
-        [color setFill];
-        
-        if (invert) {
-            NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-            if (NSEqualRects(rect, NSZeroRect) || [[readingBar page] isEqual:pdfPage] == NO) {
-                [NSBezierPath fillRect:bounds];
-            } else {
-                [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)];
-                [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)];
-            }
-        } else if ([[readingBar page] isEqual:pdfPage]) {
-            [NSGraphicsContext saveGraphicsState];
-            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-            [NSBezierPath fillRect:rect];
-            [NSGraphicsContext restoreGraphicsState];
-        }
-    }
-    
-    if (toolMode == SKSelectToolMode && selectionPageIndex != NSNotFound) {
-        NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-        CGFloat radius = 4.0 / [self scaleFactor];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
-        [path appendBezierPathWithRect:selectionRect];
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
-        [path setWindingRule:NSEvenOddWindingRule];
-        [path fill];
-        if ([pdfPage pageIndex] != selectionPageIndex) {
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
-            [NSBezierPath fillRect:selectionRect];
-        }
-        SKDrawResizeHandles(selectionRect, radius);
-    }
-    
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)drawPagePost:(PDFPage *)pdfPage {
     [super drawPagePost:pdfPage];
     
-    if (syncPageIndex == [pdfPage pageIndex]) {
-        [NSGraphicsContext saveGraphicsState];
-        
-        [self transformDocumentViewContextForPage:pdfPage];
-        
-        CGFloat s = 6.0;
-        if (syncPhase < 1.0) {
-            s += 8.0 * sin(syncPhase * M_PI);
-            NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-            [shade setShadowBlurRadius:2.0];
-            [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
-            [shade set];
-        } else {
-            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-        }
-        
-        [[NSColor redColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(syncPoint, s)] fill];
-        
-        [NSGraphicsContext restoreGraphicsState];
-    }
+    [NSGraphicsContext saveGraphicsState];
     
+    [self transformDocumentViewContextForPage:pdfPage];
+    
+    if ([[activeAnnotation page] isEqual:pdfPage] && [self isEditing] == NO)
+        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
+    
+    if (readingBar)
+        [readingBar drawForPage:pdfPage withBox:[self displayBox]];
+    
+    if (selectionPageIndex != NSNotFound)
+        [self drawSelectionForPage:pdfPage];
+    
+    if (syncPageIndex == [pdfPage pageIndex]) 
+        [self drawSyncHighlight];
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 #pragma mark Accessors
