@@ -38,9 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import "SKMainWindowController.h"
-#import "SKTransitionController.h"
-#import "NSGeometry_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
@@ -81,7 +78,7 @@ enum {
 };
 typedef NSInteger SKNoteType;
 
-@class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor;
+@class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
@@ -103,16 +100,19 @@ typedef NSInteger SKNoteType;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
+    
     SKTextNoteEditor *editor;
+    
     NSRect selectionRect;
     NSUInteger selectionPageIndex;
-    NSPoint syncPoint;
-    NSUInteger syncPageIndex;
-    NSTimer *syncTimer;
-    CGFloat syncPhase;
+    
+    SKSyncDot *syncDot;
+    
     CGFloat magnification;
+    
     CGFloat gestureRotation;
     NSUInteger gesturePageIndex;
+    
     BOOL isZooming;
     
     NSTrackingArea *trackingArea;

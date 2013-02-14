@@ -51,24 +51,26 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKReadingBar.h"
+#import "SKTransitionController.h"
+#import "SKTextNoteEditor.h"
+#import "SKSyncDot.h"
+#import "SKLineInspector.h"
+#import "SKLineWell.h"
+#import "SKTypeSelectHelper.h"
+#import "SKAccessibilityFauxUIElement.h"
+#import <CoreServices/CoreServices.h>
 #import "NSDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
-#import "SKLineWell.h"
-#import <CoreServices/CoreServices.h>
-#import "SKTypeSelectHelper.h"
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
-#import "SKAccessibilityFauxUIElement.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKLineInspector.h"
 #import "PDFView_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
-#import "SKTextNoteEditor.h"
 
 #define SKEscapeCharacter 0x001b
 
@@ -222,10 +224,7 @@ enum {
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
     
-    syncPoint = NSZeroPoint;
-    syncPageIndex = NSNotFound;
-    syncPhase = 0.0;
-    syncTimer = nil;
+    syncDot = nil;
     
     magnification = 0.0;
     
@@ -281,8 +280,8 @@ enum {
     [self doAutohide:NO];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
-    [syncTimer invalidate];
-    SKDESTROY(syncTimer);
+    [syncDot invalidate];
+    SKDESTROY(syncDot);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
     SKDESTROY(typeSelectHelper);
@@ -350,22 +349,6 @@ enum {
     SKDrawResizeHandles(selectionRect, radius);
 }
 
-- (void)drawSyncHighlight {
-    CGFloat s = 6.0;
-    if (syncPhase < 1.0) {
-        s += 8.0 * sin(syncPhase * M_PI);
-        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-        [shade setShadowBlurRadius:2.0];
-        [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
-        [shade set];
-    } else {
-        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-    }
-    
-    [[NSColor redColor] setFill];
-    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(syncPoint, s)] fill];
-}
-
 - (void)drawPage:(PDFPage *)pdfPage {
     NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
     // smooth graphics when anti-aliasing
@@ -399,8 +382,8 @@ enum {
     if (selectionPageIndex != NSNotFound)
         [self drawSelectionForPage:pdfPage];
     
-    if (syncPageIndex == [pdfPage pageIndex]) 
-        [self drawSyncHighlight];
+    if (syncDot && [syncDot pageIndex] == [pdfPage pageIndex])
+        [syncDot draw];
     
     [NSGraphicsContext restoreGraphicsState];
 }
@@ -412,11 +395,8 @@ enum {
     readingBar = nil;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
-    syncPoint = NSZeroPoint;
-    syncPageIndex = NSNotFound;
-    syncPhase = 0.0;
-    [syncTimer invalidate];
-    SKDESTROY(syncTimer);
+    [syncDot invalidate];
+    SKDESTROY(syncDot);
     [self removePDFToolTipRects];
     SKDESTROY(accessibilityChildren);
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2104,26 +2084,6 @@ enum {
     [self goToRect:[annotation bounds] onPage:[annotation page]];
 }
 
-- (void)removeSyncPoint:(NSTimer *)timer {
-    if (syncPageIndex != NSNotFound)
-        [self setNeedsDisplayInRect:SKRectFromCenterAndSquareSize(syncPoint, 8.0) ofPage:[[self document] pageAtIndex:syncPageIndex]];
-    syncPoint = NSZeroPoint;
-    syncPageIndex = NSNotFound;
-    [syncTimer invalidate];
-    SKDESTROY(syncTimer);
-}
-
-- (void)animateSyncPoint:(NSTimer *)timer {
-    if (syncPageIndex != NSNotFound)
-        [self setNeedsDisplayInRect:SKRectFromCenterAndSquareSize(syncPoint, 20.0) ofPage:[[self document] pageAtIndex:syncPageIndex]];
-    syncPhase += 0.1;
-    if (syncPhase >= 1.0) {
-        [syncTimer invalidate];
-        [syncTimer release];
-        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(removeSyncPoint:) userInfo:NULL repeats:NO] retain];
-    }
-}
-
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
@@ -2157,13 +2117,18 @@ enum {
         }
         [self goToRect:rect onPage:page];
         
-        syncPoint = point;
-        syncPageIndex = pageIndex;
-        syncPhase = 0.0;
-        [syncTimer invalidate];
-        [syncTimer release];
-        syncTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(animateSyncPoint:) userInfo:NULL repeats:YES] retain];
+        if (syncDot) {
+            [syncDot invalidate];
+            SKDESTROY(syncDot);
+        }
+        syncDot = [[SKSyncDot alloc] initWithPoint:point pageIndex:pageIndex delegate:self];
     }
+}
+
+- (void)syncDotDidUpdate:(SKSyncDot *)aSyncDot finished:(BOOL)finished {
+    [self setNeedsDisplayInRect:[syncDot bounds] ofPage:[[self document] pageAtIndex:[syncDot pageIndex]]];
+    if (finished)
+        SKDESTROY(syncDot);
 }
 
 - (NSArray *)accessibilityChildren {
