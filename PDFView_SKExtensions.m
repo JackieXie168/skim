@@ -136,7 +136,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
                 else
                     range.location -= 1;
             }
-            if (NSMaxRange(range) == pageCount)
+            if (NSMaxRange(range) > pageCount)
                 range.length = 1;
         }
     }
