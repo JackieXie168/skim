@@ -81,7 +81,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return [self boundsForBox:kPDFDisplayBoxCropBox];
 }
 
-- (NSImage *)image {
+- (NSImage *)thumbnail {
     return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
 }
 
