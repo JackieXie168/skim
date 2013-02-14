@@ -134,7 +134,6 @@ enum {
 
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
-- (NSRange)displayedPageIndexRange;
 
 - (void)enableNavigation;
 - (void)disableNavigation;
@@ -162,8 +161,6 @@ enum {
 - (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
 - (void)doUpdateCursor;
-
-- (void)relayoutEditField;
 
 - (void)transformDocumentViewContextForPage:(PDFPage *)page;
 
@@ -483,7 +480,7 @@ enum {
         [super setDisplayMode:mode];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
-        [self relayoutEditField];
+        [editor relayout];
         SKDESTROY(accessibilityChildren);
     }
 }
@@ -494,14 +491,14 @@ enum {
         [super setDisplayBox:box];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
-        [self relayoutEditField];
+        [editor relayout];
     }
 }
 
 - (void)setDisplaysAsBook:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
         [super setDisplaysAsBook:asBook];
-        [self relayoutEditField];
+        [editor relayout];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self];
     }
 }
@@ -1926,8 +1923,6 @@ enum {
     } else if (hideNotes == NO && [type isEqualToString:SKNFreeTextString]) {
         
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
-        [[self documentView] addSubview:[editor textField]];
-        [[editor textField] selectText:nil];
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
@@ -1945,36 +1940,21 @@ enum {
     
 }
 
+- (void)textNoteEditorDidEndEditing:(SKTextNoteEditor *)textNoteEditor {
+    [self setNeedsDisplayForAnnotation:activeAnnotation];
+    
+    if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
+        [[self delegate] PDFViewDidEndEditing:self];
+}
+
 - (void)discardEditing {
-    if ([self isEditing]) {
-        [[editor textField] abortEditing];
-        [[editor textField] removeFromSuperview];
-        SKDESTROY(editor);
-        
-        if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
-        
-        if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
-            [[self delegate] PDFViewDidEndEditing:self];
-    }
+    if ([self isEditing])
+        [editor discardEditing];
 }
 
 - (BOOL)commitEditing {
-    if ([self isEditing]) {
-        if ([[editor textField] currentEditor] && [[self window] makeFirstResponder:self] == NO)
-            return NO;
-        NSString *newValue = [[editor textField] stringValue];
-        if ([newValue isEqualToString:[activeAnnotation string]] == NO)
-            [activeAnnotation setString:newValue];
-        [[editor textField] removeFromSuperview];
-        SKDESTROY(editor);
-        
-        if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
-        
-        if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
-            [[self delegate] PDFViewDidEndEditing:self];
-    }
+    if ([self isEditing])
+        return [editor commitEditing];
     return YES;
 }
 
@@ -2227,7 +2207,7 @@ enum {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
-        [self relayoutEditField];
+        [editor relayout];
         [self resetPDFToolTipRects];
         SKDESTROY(accessibilityChildren);
     }
@@ -2330,27 +2310,6 @@ enum {
         NSUInteger first = [firstPage pageIndex];
         NSUInteger last = [lastPage pageIndex];
         range = NSMakeRange(first, last - first + 1);
-    }
-    return range;
-}
-
-- (NSRange)displayedPageIndexRange {
-    NSUInteger pageCount = [[self document] pageCount];
-    PDFDisplayMode displayMode = [self displayMode];
-    NSRange range = NSMakeRange(0, pageCount);
-    if (pageCount && (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)) {
-        range = NSMakeRange([[self currentPage] pageIndex], 1);
-        if (displayMode == kPDFDisplayTwoUp) {
-            range.length = 2;
-            if ([self displaysAsBook] != (BOOL)(range.location % 2)) {
-                if (range.location == 0)
-                    range.length = 1;
-                else
-                    range.location -= 1;
-            }
-            if (NSMaxRange(range) == pageCount)
-                range.length = 1;
-        }
     }
     return range;
 }
@@ -4012,24 +3971,6 @@ enum {
                                       clickCount:1
                                         pressure:0.0];
     [[self getCursorForEvent:event] set];
-}
-
-- (void)relayoutEditField {
-    if ([self isEditing]) {
-        if (NSLocationInRange([activeAnnotation pageIndex], [self displayedPageIndexRange])) {
-            [editor updateFrame];
-            if ([[editor textField] superview] == nil) {
-                [[self documentView] addSubview:[editor textField]];
-                if ([[[self window] firstResponder] isEqual:self])
-                    [[editor textField] selectText:nil];
-            }
-        } else if ([[editor textField] superview]) {
-            BOOL wasFirstResponder = ([[editor textField] currentEditor] != nil);
-            [[editor textField] removeFromSuperview];
-            if (wasFirstResponder)
-                [[self window] makeFirstResponder:self];
-        }
-    }
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {

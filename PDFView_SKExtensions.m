@@ -47,7 +47,7 @@
 
 @implementation PDFView (SKExtensions)
 
-@dynamic physicalScaleFactor, scrollView;
+@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange;
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {
     NSScreen *screen = [[view window] screen];
@@ -120,6 +120,27 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         
         [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }
+}
+
+- (NSRange)displayedPageIndexRange {
+    NSUInteger pageCount = [[self document] pageCount];
+    PDFDisplayMode displayMode = [self displayMode];
+    NSRange range = NSMakeRange(0, pageCount);
+    if (pageCount && (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)) {
+        range = NSMakeRange([[self currentPage] pageIndex], 1);
+        if (displayMode == kPDFDisplayTwoUp) {
+            range.length = 2;
+            if ([self displaysAsBook] != (BOOL)(range.location % 2)) {
+                if (range.location == 0)
+                    range.length = 1;
+                else
+                    range.location -= 1;
+            }
+            if (NSMaxRange(range) == pageCount)
+                range.length = 1;
+        }
+    }
+    return range;
 }
 
 @end
