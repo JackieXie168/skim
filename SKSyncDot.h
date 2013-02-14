@@ -47,9 +47,9 @@
     id delegate;
 }
 
-@property (nonatomic) NSPoint point;
-@property (nonatomic) NSUInteger pageIndex;
-@property (nonatomic) NSRect bounds;
+@property (nonatomic, readonly) NSPoint point;
+@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) NSRect bounds;
 
 - (id)initWithPoint:(NSPoint)aPoint pageIndex:(NSUInteger)aPageIndex delegate:(id)aDelegate;
 
