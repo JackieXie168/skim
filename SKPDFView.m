@@ -1941,6 +1941,8 @@ enum {
 }
 
 - (void)textNoteEditorDidEndEditing:(SKTextNoteEditor *)textNoteEditor {
+    SKDESTROY(editor);
+    
     [self setNeedsDisplayForAnnotation:activeAnnotation];
     
     if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
