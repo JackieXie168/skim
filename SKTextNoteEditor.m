@@ -38,6 +38,7 @@
 
 #import "SKTextNoteEditor.h"
 #import "PDFView_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 
@@ -63,6 +64,8 @@
         [textField setDelegate:self];
         [self updateFont];
         [self updateFrame];
+        [[pdfView documentView] addSubview:textField];
+        [textField selectText:nil];
     }
     return self;
 }
@@ -91,6 +94,46 @@
         return YES;
     }
     return NO;
+}
+
+- (void)relayout {
+    if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
+        [self updateFrame];
+        if ([textField superview] == nil) {
+            [[pdfView documentView] addSubview:textField];
+            if ([[[pdfView window] firstResponder] isEqual:pdfView])
+                [textField selectText:nil];
+        }
+    } else if ([textField superview]) {
+        BOOL wasFirstResponder = ([textField currentEditor] != nil);
+        [textField removeFromSuperview];
+        if (wasFirstResponder)
+            [[pdfView window] makeFirstResponder:pdfView];
+    }
+}
+
+- (void)discardEditing {
+    [textField abortEditing];
+    [textField removeFromSuperview];
+    
+    if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
+        [pdfView textNoteEditorDidEndEditing:self];
+}
+
+- (BOOL)commitEditing {
+    if ([textField currentEditor] && [[pdfView window] makeFirstResponder:pdfView] == NO)
+        return NO;
+    
+    NSString *newValue = [textField stringValue];
+    if ([newValue isEqualToString:[annotation string]] == NO)
+        [annotation setString:newValue];
+    
+    [textField removeFromSuperview];
+    
+    if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
+        [pdfView textNoteEditorDidEndEditing:self];
+    
+    return YES;
 }
 
 @end

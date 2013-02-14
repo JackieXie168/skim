@@ -53,4 +53,13 @@
 - (void)updateFont;
 - (void)updateFrame;
 
+- (void)relayout;
+
+- (void)discardEditing;
+- (BOOL)commitEditing;
+
+@end
+
+@interface PDFView (SKTextNoteEditor)
+- (void)textNoteEditorDidEndEditing:(SKTextNoteEditor *)textNoteEditor;
 @end
