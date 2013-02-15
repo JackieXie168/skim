@@ -379,7 +379,7 @@ enum {
     if (selectionPageIndex != NSNotFound)
         [self drawSelectionForPage:pdfPage];
     
-    if (syncDot && [syncDot pageIndex] == [pdfPage pageIndex])
+    if ([[syncDot page] isEqual:pdfPage])
         [syncDot draw];
     
     [NSGraphicsContext restoreGraphicsState];
@@ -2103,12 +2103,12 @@ enum {
             [syncDot invalidate];
             SKDESTROY(syncDot);
         }
-        syncDot = [[SKSyncDot alloc] initWithPoint:point pageIndex:pageIndex delegate:self];
+        syncDot = [[SKSyncDot alloc] initWithPoint:point page:page delegate:self];
     }
 }
 
 - (void)syncDotDidUpdate:(SKSyncDot *)aSyncDot finished:(BOOL)finished {
-    [self setNeedsDisplayInRect:[syncDot bounds] ofPage:[[self document] pageAtIndex:[syncDot pageIndex]]];
+    [self setNeedsDisplayInRect:[syncDot bounds] ofPage:[syncDot page]];
     if (finished)
         SKDESTROY(syncDot);
 }

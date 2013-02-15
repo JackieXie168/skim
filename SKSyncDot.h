@@ -37,21 +37,22 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 
 @interface SKSyncDot : NSObject {
     NSPoint point;
-    NSUInteger pageIndex;
+    PDFPage *page;
     NSTimer *timer;
     CGFloat phase;
     id delegate;
 }
 
 @property (nonatomic, readonly) NSPoint point;
-@property (nonatomic, readonly) NSUInteger pageIndex;
+@property (nonatomic, readonly) PDFPage *page;
 @property (nonatomic, readonly) NSRect bounds;
 
-- (id)initWithPoint:(NSPoint)aPoint pageIndex:(NSUInteger)aPageIndex delegate:(id)aDelegate;
+- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage delegate:(id)aDelegate;
 
 - (void)invalidate;
 

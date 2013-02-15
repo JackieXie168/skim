@@ -48,14 +48,14 @@
 
 @implementation SKSyncDot
 
-@synthesize point, pageIndex;
+@synthesize point, page;
 @dynamic bounds;
 
-- (id)initWithPoint:(NSPoint)aPoint pageIndex:(NSUInteger)aPageIndex delegate:(id)aDelegate {
+- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage delegate:(id)aDelegate {
     self = [super init];
     if (self) {
         point = aPoint;
-        pageIndex = aPageIndex;
+        page = [aPage retain];
         phase = 0.0;
         timer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(animate:) userInfo:NULL repeats:YES] retain];
         delegate = aDelegate;
@@ -68,6 +68,7 @@
     delegate = nil;
     [timer invalidate];
     SKDESTROY(timer);
+    SKDESTROY(page);
     [super dealloc];
 }
 
