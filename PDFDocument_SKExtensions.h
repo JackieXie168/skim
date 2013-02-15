@@ -41,7 +41,6 @@
 
 
 @interface PDFDocument (SKExtensions)
-- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
 - (NSArray *)pageLabels;
 - (NSArray *)fileIDStrings:(NSData *)pdfData;
 @end
