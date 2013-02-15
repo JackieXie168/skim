@@ -126,18 +126,16 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     NSUInteger pageCount = [[self document] pageCount];
     PDFDisplayMode displayMode = [self displayMode];
     NSRange range = NSMakeRange(0, pageCount);
-    if (pageCount && (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)) {
+    if (pageCount > 0 && (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)) {
         range = NSMakeRange([[self currentPage] pageIndex], 1);
         if (displayMode == kPDFDisplayTwoUp) {
-            range.length = 2;
-            if ([self displaysAsBook] != (BOOL)(range.location % 2)) {
-                if (range.location == 0)
-                    range.length = 1;
-                else
-                    range.location -= 1;
+            if ([self displaysAsBook] == (BOOL)(range.location % 2)) {
+                if (NSMaxRange(range) < pageCount)
+                    range.length = 2;
+            } else if (range.location > 0) {
+                range.location -= 1;
+                range.length = 2;
             }
-            if (NSMaxRange(range) > pageCount)
-                range.length = 1;
         }
     }
     return range;
