@@ -50,39 +50,6 @@
 
 @implementation PDFDocument (SKExtensions)
 
-- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {
-    PDFSelection *sel = selection;
-    
-    if ([selection hasCharacters]) {
-        PDFPage *firstPage = [selection safeFirstPage];
-        PDFPage *lastPage = [selection safeLastPage];
-        NSUInteger pageIndex = [self indexForPage:page];
-        NSUInteger firstPageIndex = [self indexForPage:firstPage];
-        NSUInteger lastPageIndex = [self indexForPage:lastPage];
-        NSUInteger firstChar = [selection safeIndexOfFirstCharacterOnPage:firstPage];
-        NSUInteger lastChar = [selection safeIndexOfLastCharacterOnPage:lastPage];
-        NSRect firstRect, lastRect;
-        
-        if (firstChar != NSNotFound) {
-            firstRect = [firstPage characterBoundsAtIndex:firstChar];
-        } else {
-            NSRect bounds = [selection boundsForPage:firstPage];
-            firstRect = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - 10.0, 5.0, 10.0);
-        }
-        if (lastChar != NSNotFound && lastChar != 0) {
-            lastRect = [lastPage characterBoundsAtIndex:lastChar - 1];
-        } else {
-            NSRect bounds = [selection boundsForPage:lastPage];
-            lastRect = NSMakeRect(NSMaxX(bounds) - 5.0, NSMinY(bounds), 5.0, 10.0);
-        }
-        if (pageIndex < firstPageIndex || (pageIndex == firstPageIndex && (point.y > NSMaxY(firstRect) || (point.y > NSMinY(firstRect) && point.x < NSMinX(firstRect)))))
-            sel = [self selectionFromPage:page atPoint:point toPage:lastPage atPoint:NSMakePoint(NSMaxX(lastRect), NSMidY(lastRect))];
-        if (pageIndex > lastPageIndex || (pageIndex == lastPageIndex && (point.y < NSMinY(lastRect) || (point.y < NSMaxY(lastRect) && point.x > NSMaxX(lastRect)))))
-            sel = [self selectionFromPage:firstPage atPoint:NSMakePoint(NSMinX(firstRect), NSMidY(firstRect)) toPage:page atPoint:point];
-    }
-    return sel;
-}
-
 - (NSArray *)pageLabels {
     NSUInteger pageCount = [self pageCount];
     NSMutableArray *pageLabels = [NSMutableArray array];
