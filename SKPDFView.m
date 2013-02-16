@@ -3917,15 +3917,16 @@ enum {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
+                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && [self isEditing] == NO;
+                if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
                     area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
                 if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
-                else if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
-                else if ([activeAnnotation isMovable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
+                else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     cursor = [NSCursor openHandCursor];
                 else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
                     cursor = [NSCursor openHandCursor];
