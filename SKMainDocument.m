@@ -976,7 +976,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     [oPanel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
-    [oPanel setNameFieldStringValue:[fileURL lastPathComponent]];
     [oPanel setAllowedFileTypes:[NSArray arrayWithObjects:SKNotesDocumentType, nil]];
     [oPanel beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
             if (result == NSFileHandlingPanelOKButton) {
