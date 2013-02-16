@@ -94,7 +94,6 @@
 
 @interface SKMainWindowController (SKPrivateMain)
 
-- (void)selectSelectedNote:(id)sender;
 - (void)goToSelectedOutlineItem:(id)sender;
 
 - (void)updatePageNumber;
