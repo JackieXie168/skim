@@ -93,8 +93,10 @@
         [openPanel setCanChooseDirectories:YES];
         [openPanel setCanChooseFiles:NO];
         [openPanel setPrompt:NSLocalizedString(@"Select", @"Button title")];
-        [openPanel setDirectoryURL:[downloadsFolderURL URLByDeletingLastPathComponent]];
-        [openPanel setNameFieldStringValue:[downloadsFolderURL lastPathComponent]];
+        if (downloadsFolderURL) {
+            [openPanel setDirectoryURL:[downloadsFolderURL URLByDeletingLastPathComponent]];
+            [openPanel setNameFieldStringValue:[downloadsFolderURL lastPathComponent]];
+        }
         [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result){
                 if (result == NSFileHandlingPanelOKButton) {
                     [[NSUserDefaults standardUserDefaults] setObject:[[[openPanel URL] path] stringByAbbreviatingWithTildeInPath] forKey:SKDownloadsDirectoryKey];
