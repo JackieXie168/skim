@@ -78,6 +78,8 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define SKPasteboardTypePostScript @"com.adobe.encapsulated-postscript"
 
+#define WARNING_LIMIT 10
+
 @interface NSDocumentController (SKDeprecated)
 // we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName;
@@ -362,7 +364,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 [urls addObject:url];
         }
         
-        if ([urls count] > 10) {
+        if ([urls count] > WARNING_LIMIT) {
             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]
                                              defaultButton:NSLocalizedString(@"Cancel", @"Button title")
                                            alternateButton:NSLocalizedString(@"Open", @"Button title")
