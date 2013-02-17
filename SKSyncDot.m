@@ -108,12 +108,17 @@
         [shade setShadowBlurRadius:2.0];
         [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
         [shade set];
+        [[NSColor redColor] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
+        [NSGraphicsContext restoreGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.3 blue:0.3 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0]] autorelease];
+        [gradient drawInBezierPath:[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] relativeCenterPosition:NSMakePoint(0, 0.7)];
     } else {
         CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
+        [[NSColor redColor] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
     }
-    
-    [[NSColor redColor] setFill];
-    [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
     
     [NSGraphicsContext restoreGraphicsState];
 }
