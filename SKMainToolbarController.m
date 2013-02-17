@@ -95,8 +95,6 @@
 #define SKDocumentToolbarPrintItemIdentifier @"SKDocumentToolbarPrintItemIdentifier"
 #define SKDocumentToolbarCustomizeItemIdentifier @"SKDocumentToolbarCustomizeItemIdentifier"
 
-#define MIN_SCALE 10
-#define MAX_SCALE 2000
 #define PERCENT_FACTOR 100.0
 
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
@@ -879,12 +877,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)changeScaleFactor:(id)sender {
-    NSInteger scale = [sender integerValue];
-
-	if (scale >= MIN_SCALE && scale <= MAX_SCALE ) {
-		[mainController.pdfView setScaleFactor:scale / PERCENT_FACTOR];
-		[mainController.pdfView setAutoScales:NO];
-	}
+    [mainController.pdfView setScaleFactor:[sender integerValue] / PERCENT_FACTOR];
+    [mainController.pdfView setAutoScales:NO];
 }
 
 - (IBAction)chooseScale:(id)sender {
