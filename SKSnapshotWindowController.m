@@ -56,6 +56,8 @@
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
+#define SMALL_DELAY 0.1
+
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
 #define PAGE_KEY            @"page"
@@ -217,7 +219,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
-        [self performSelector:@selector(notifiyDidFinishSetup) withObject:nil afterDelay:0.1];
+        [self performSelector:@selector(notifiyDidFinishSetup) withObject:nil afterDelay:SMALL_DELAY];
     
     if ([self hasWindow])
         [self showWindow:nil];
@@ -261,7 +263,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
-    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
+    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:SMALL_DELAY];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {

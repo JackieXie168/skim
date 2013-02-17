@@ -92,6 +92,16 @@
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
+#define MIN_SIDE_PANE_WIDTH 100.0
+#define DEFAULT_SPLIT_PANE_HEIGHT 200.0
+#define MIN_SPLIT_PANE_HEIGHT 50.0
+
+#define SNAPSHOT_HEIGHT 200.0
+
+#define COLUMN_INDENTATION 16.0
+#define EXTRA_ROW_HEIGHT 2.0
+#define DEFAULT_TEXT_ROW_HEIGHT 85.0
+
 @interface SKMainWindowController (SKPrivateMain)
 
 - (void)goToSelectedOutlineItem:(id)sender;
@@ -398,8 +408,8 @@
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:kPDFDisplayBoxCropBox];
         
-        rect.origin.y = NSMidY(rect) - 100.0;
-        rect.size.height = 200.0;
+        rect.origin.y = NSMidY(rect) - 0.5 * SNAPSHOT_HEIGHT;
+        rect.size.height = SNAPSHOT_HEIGHT;
         [self showSnapshotAtPageNumber:row forRect:rect scaleFactor:[pdfView scaleFactor] autoFits:NO];
         return YES;
     }
@@ -761,7 +771,7 @@
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
-        return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + 2.0 : 85.0));
+        return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT));
     }
     return [ov rowHeight];
 }
@@ -990,7 +1000,7 @@
     CGFloat height, rowHeight = [rightSideController.noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = 16.0;
+    CGFloat indentation = COLUMN_INDENTATION;
     NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
     indentation += [rightSideController.noteOutlineView indentationPerLevel];
     NSRect fullRect = NSMakeRect(0.0, 0.0,  NSWidth([rightSideController.noteOutlineView frame]) - indentation, CGFLOAT_MAX);
@@ -1011,7 +1021,7 @@
             [cell setObjectValue:[item text]];
             height = [cell cellSizeForBounds:fullRect].height;
         }
-        [rowHeights setFloat:fmax(height, rowHeight) + 2.0 forKey:item];
+        [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [rightSideController.noteOutlineView reloadData];
@@ -1279,7 +1289,7 @@
             CGFloat position = [pdfSplitView maxPossiblePositionOfDividerAtIndex:dividerIndex];
             if ([pdfSplitView isSubviewCollapsed:secondaryPdfContentView]) {
                 if (lastSplitPDFHeight <= 0.0)
-                    lastSplitPDFHeight = 200.0;
+                    lastSplitPDFHeight = DEFAULT_SPLIT_PANE_HEIGHT;
                 if (lastSplitPDFHeight > NSHeight([pdfContentView frame]))
                     lastSplitPDFHeight = floor(0.5 * NSHeight([pdfContentView frame]));
                 position -= lastSplitPDFHeight;
@@ -1298,15 +1308,15 @@
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex {
     if ([sender isEqual:splitView] && dividerIndex == 1)
-        return proposedMax - 100.0;
+        return proposedMax - MIN_SIDE_PANE_WIDTH;
     else if ([sender isEqual:pdfSplitView])
-        return proposedMax - 50.0;
+        return proposedMax - MIN_SPLIT_PANE_HEIGHT;
     return proposedMax;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
     if ([sender isEqual:splitView] && dividerIndex == 0)
-        return proposedMin + 100.0;
+        return proposedMin + MIN_SIDE_PANE_WIDTH;
     return proposedMin;
 }
 

@@ -52,6 +52,8 @@
 #define LABEL_OFFSET 10.0
 #define LABEL_TEXT_MARGIN 2.0
 
+#define CORNER_RADIUS 10.0
+
 
 static inline NSBezierPath *nextButtonPath(NSSize size);
 static inline NSBezierPath *previousButtonPath(NSSize size);
@@ -186,11 +188,11 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [[NSGraphicsContext currentContext] saveGraphicsState];
     rect = NSInsetRect([self bounds], 1.0, 1.0);
     [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
-    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
     [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] set];
     [NSBezierPath setDefaultLineWidth:1.0];
-    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] stroke];
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] stroke];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 

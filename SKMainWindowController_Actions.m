@@ -68,6 +68,14 @@
 #import "SKFindController.h"
 #import "PDFView_SKExtensions.h"
 
+#define STATUSBAR_HEIGHT 22.0
+
+#define PAGE_BREAK_MARGIN 8.0
+
+#define DEFAULT_SIDE_PANE_WIDTH 250.0
+#define MIN_SIDE_PANE_WIDTH 100.0
+
+#define DEFAULT_SPLIT_PDF_FACTOR 0.3
 
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
@@ -424,7 +432,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
     CGFloat scrollerWidth = 0.0;
-    CGFloat margin = [pdfView displaysPageBreaks] ? 8.0 : 0.0;
+    CGFloat margin = [pdfView displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     CGFloat scaleFactor;
     NSUInteger pageCount = [[pdfView document] pageCount];
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
@@ -726,7 +734,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleStatusBar:(id)sender {
     if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 22.0)];
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), STATUSBAR_HEIGHT)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
@@ -786,7 +794,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else {
         size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]);
         if ([[self pdfView] displaysPageBreaks])
-            size.height += 8.0 * scaleFactor;
+            size.height += PAGE_BREAK_MARGIN * scaleFactor;
         size.width += [NSScroller scrollerWidth];
     }
     if (autoScales)
@@ -882,10 +890,10 @@ static NSArray *allMainDocumentPDFViews() {
         if ([self leftSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:leftSideContentView])
                 [[self window] makeFirstResponder:pdfView];
-            lastLeftSidePaneWidth = fmaxf(100.0, NSWidth([leftSideContentView frame]));
+            lastLeftSidePaneWidth = fmaxf(MIN_SIDE_PANE_WIDTH, NSWidth([leftSideContentView frame]));
         } else {
             if(lastLeftSidePaneWidth <= 0.0)
-                lastLeftSidePaneWidth = 250.0; // a reasonable value to start
+                lastLeftSidePaneWidth = DEFAULT_SIDE_PANE_WIDTH; // a reasonable value to start
             if (lastLeftSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastLeftSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position = lastLeftSidePaneWidth;
@@ -915,10 +923,10 @@ static NSArray *allMainDocumentPDFViews() {
         if ([self rightSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:rightSideContentView])
                 [[self window] makeFirstResponder:pdfView];
-            lastRightSidePaneWidth = fmaxf(100.0, NSWidth([rightSideContentView frame]));
+            lastRightSidePaneWidth = fmaxf(MIN_SIDE_PANE_WIDTH, NSWidth([rightSideContentView frame]));
         } else {
             if(lastRightSidePaneWidth <= 0.0)
-                lastRightSidePaneWidth = 250.0; // a reasonable value to start
+                lastRightSidePaneWidth = DEFAULT_SIDE_PANE_WIDTH; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastRightSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
@@ -961,7 +969,7 @@ static NSArray *allMainDocumentPDFViews() {
         NSRect frame = [pdfSplitView bounds];
         
         if (lastSplitPDFHeight <= 0.0)
-            lastSplitPDFHeight = floor(0.3 * NSHeight(frame));
+            lastSplitPDFHeight = floor(DEFAULT_SPLIT_PDF_FACTOR * NSHeight(frame));
         
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
         NSPoint point = NSZeroPoint;

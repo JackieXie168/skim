@@ -52,6 +52,10 @@
 #define AUTHOR_COLUMNID @"author"
 #define DATE_COLUMNID   @"date"
 
+#define SMALL_COLUMN_WIDTH 32.0
+
+#define RESIZE_EDGE_HEIGHT 5.0
+
 @interface SKNoteOutlineView (SKPrivate)
 @end
 
@@ -84,7 +88,7 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         NSString *title = titleForTableColumnIdentifier(identifier);
         NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
         [menuItem setRepresentedObject:identifier];
-        if ([tc maxWidth] >= 32.0)
+        if ([tc maxWidth] >= SMALL_COLUMN_WIDTH)
             [[tc headerCell] setTitle:title];
     }
     
@@ -117,7 +121,7 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         NSInteger row = [self rowAtPoint:mouseLoc];
         
         if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
-            NSRect rect = SKSliceRect([self rectOfRow:row], 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            NSRect rect = SKSliceRect([self rectOfRow:row], RESIZE_EDGE_HEIGHT, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
             if (NSMouseInRect(mouseLoc, rect, [self isFlipped]) && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
                 [self resizeRow:row withEvent:theEvent];
                 return;
@@ -201,7 +205,7 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
             id item = [self itemAtRow:row];
             if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
                 continue;
-            [self addCursorRect:SKSliceRect([self rectOfRow:row], 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge) cursor:[NSCursor resizeUpDownCursor]];
+            [self addCursorRect:SKSliceRect([self rectOfRow:row], RESIZE_EDGE_HEIGHT, [self isFlipped] ? NSMaxYEdge : NSMinYEdge) cursor:[NSCursor resizeUpDownCursor]];
         }
     } else {
         [super resetCursorRects];

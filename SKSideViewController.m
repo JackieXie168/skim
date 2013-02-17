@@ -47,6 +47,9 @@
 #define BUTTONVIEW_KEY @"buttonView"
 #define FIRSTRESPONDER_KEY @"firstResponder"
 
+#define GRADIENT_MIN_WIDTH 111.0
+
+#define DURATION 0.7
 
 @implementation SKSideViewController
 
@@ -66,7 +69,7 @@
     [super loadView];
     
     [gradientView setAutoTransparent:YES];
-    [gradientView setMinSize:NSMakeSize(111.0, NSHeight([gradientView frame]))];
+    [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
 }
 
 #pragma mark View animation
@@ -135,7 +138,7 @@
         }
         
         [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:0.7]; 
+        [[NSAnimationContext currentContext] setDuration:DURATION]; 
         [[contentView animator] replaceSubview:oldView with:newView];
         if (changeButton)
             [[buttonView animator] replaceSubview:oldButton with:newButton];
@@ -147,7 +150,7 @@
         [info setValue:contentView forKey:CONTENTVIEW_KEY];
         [info setValue:firstResponder forKey:FIRSTRESPONDER_KEY];
         
-        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
+        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:DURATION];
     }
 }
 

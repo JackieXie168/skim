@@ -38,6 +38,7 @@
 
 #import "SKBorderlessImageWindow.h"
 
+#define RESIZE_TIME_FACTOR 0.6
 
 @implementation SKBorderlessImageWindow
 
@@ -63,7 +64,7 @@
 - (BOOL)canBecomeKeyWindow { return NO; }
 
 - (NSTimeInterval)animationResizeTime:(NSRect)newWindowFrame {
-    return 0.6 * [super animationResizeTime:newWindowFrame];
+    return RESIZE_TIME_FACTOR * [super animationResizeTime:newWindowFrame];
 }
 
 @end

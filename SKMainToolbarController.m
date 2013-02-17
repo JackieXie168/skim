@@ -95,6 +95,10 @@
 #define SKDocumentToolbarPrintItemIdentifier @"SKDocumentToolbarPrintItemIdentifier"
 #define SKDocumentToolbarCustomizeItemIdentifier @"SKDocumentToolbarCustomizeItemIdentifier"
 
+#define MIN_SCALE 10
+#define MAX_SCALE 2000
+#define PERCENT_FACTOR 100.0
+
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
@@ -877,8 +881,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (IBAction)changeScaleFactor:(id)sender {
     NSInteger scale = [sender integerValue];
 
-	if (scale >= 10.0 && scale <= 500.0 ) {
-		[mainController.pdfView setScaleFactor:scale / 100.0f];
+	if (scale >= MIN_SCALE && scale <= MAX_SCALE ) {
+		[mainController.pdfView setScaleFactor:scale / PERCENT_FACTOR];
 		[mainController.pdfView setAutoScales:NO];
 	}
 }
@@ -1057,7 +1061,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [scaleField setDoubleValue:[mainController.pdfView scaleFactor] * 100.0];
+    [scaleField setDoubleValue:[mainController.pdfView scaleFactor] * PERCENT_FACTOR];
     
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:1];

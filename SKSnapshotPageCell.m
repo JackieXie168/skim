@@ -43,6 +43,8 @@
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
+#define MIN_CELL_WIDTH 32.0
+
 @implementation SKSnapshotPageCell
 
 static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
@@ -71,7 +73,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 
 - (NSSize)cellSizeForBounds:(NSRect)aRect {
     NSSize size = [super cellSizeForBounds:aRect];
-    size.width = fmin(fmax(size.width, 16.0), NSWidth(aRect));
+    size.width = fmin(fmax(size.width, MIN_CELL_WIDTH), NSWidth(aRect));
     return size;
 }
 

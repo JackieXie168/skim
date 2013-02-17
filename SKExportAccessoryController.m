@@ -39,6 +39,9 @@
 #import "SKExportAccessoryController.h"
 #import "NSGraphics_SKExtensions.h"
 
+#define MARGIN_X 16.0
+#define MARGIN_Y 16.0
+#define POPUP_MATRIX_OFFSET 3.0
 
 @implementation SKExportAccessoryController
 
@@ -66,9 +69,9 @@
     NSRect matrixFrame = [matrix frame];
     NSRect popupFrame = [popupButton frame];
     
-    popupFrame.origin.x = NSMinX(matrixFrame) - 3.0;
-    popupFrame.origin.y = NSMaxY(matrixFrame) + 16.0;
-    frame.size.width = fmax(NSMaxX(popupFrame) + 13.0, NSMaxX(matrixFrame) + 16.0);
+    popupFrame.origin.x = NSMinX(matrixFrame) - POPUP_MATRIX_OFFSET;
+    popupFrame.origin.y = NSMaxY(matrixFrame) + MARGIN_Y;
+    frame.size.width = fmax(NSMaxX(popupFrame) + MARGIN_X - POPUP_MATRIX_OFFSET, NSMaxX(matrixFrame) + MARGIN_X);
     
     [popupButton setFrame:popupFrame];
     [view setFrame:frame];

@@ -88,6 +88,12 @@
 #define AUTHOR_COLUMNID @"author"
 #define DATE_COLUMNID   @"date"
 
+#define STATUSBAR_HEIGHT 22.0
+
+#define COLUMN_INDENTATION 16.0
+#define EXTRA_ROW_HEIGHT 2.0
+#define DEFAULT_TEXT_ROW_HEIGHT 85.0
+
 @implementation SKNotesDocument
 
 @synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
@@ -460,7 +466,7 @@
 
 - (IBAction)toggleStatusBar:(id)sender {
     if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([[outlineView enclosingScrollView] frame]), 22.0)];
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([[outlineView enclosingScrollView] frame]), STATUSBAR_HEIGHT)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
     }
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowNotesStatusBarKey];
@@ -475,7 +481,7 @@
     CGFloat height,rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = 16.0;
+    CGFloat indentation = COLUMN_INDENTATION;
     NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
     indentation += [outlineView indentationPerLevel];
     NSRect fullRect = NSMakeRect(0.0, 0.0, NSWidth([outlineView frame]) - indentation, CGFLOAT_MAX);
@@ -497,7 +503,7 @@
             [cell setObjectValue:[item text]];
             height = [cell cellSizeForBounds:fullRect].height;
         }
-        [rowHeights setFloat:fmax(height, rowHeight) + 2.0 forKey:item];
+        [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [outlineView reloadData];
@@ -683,7 +689,7 @@
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = [rowHeights floatForKey:item];
-    return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + 2.0 : 85.0));
+    return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT));
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {

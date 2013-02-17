@@ -60,6 +60,8 @@
 #define SKInfoTagsKey @"Tags"
 #define SKInfoRatingKey @"Rating"
 
+#define LABEL_COLUMN_ID @"label"
+#define VALUE_COLUMN_ID @"value"
 
 @interface SKInfoWindowController (SKPrivate)
 - (void)handleViewFrameDidChangeNotification:(NSNotification *)notification;
@@ -177,6 +179,10 @@ static SKInfoWindowController *sharedInstance = nil;
                                                  name: SKDocumentFileURLDidChangeNotification object: nil];
 }
 
+#define BYTE_FACTOR 1024
+#define BYTE_FACTOR_F 1024.0f
+#define BYTE_SHIFT 10
+
 static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
     if (fileURL == nil)
         return @"";
@@ -218,40 +224,40 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     if (logicalSizePtr)
         *logicalSizePtr = logicalSize;
     
-    if (size >> 40 == 0) {
+    if (size >> (4 * BYTE_SHIFT) == 0) {
         if (size == 0) {
             [string appendFormat:@"0 %@", NSLocalizedString(@"bytes", @"size unit")];
-        } else if (size < 1024) {
+        } else if (size < BYTE_FACTOR) {
             [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
         } else {
-            UInt32 adjSize = size >> 10;
-            if (adjSize < 1024) {
-                [string appendFormat:@"%.1f KB", size / 1024.0f, NSLocalizedString(@"KB", @"size unit")];
+            UInt32 adjSize = size >> BYTE_SHIFT;
+            if (adjSize < BYTE_FACTOR) {
+                [string appendFormat:@"%.1f KB", size / BYTE_FACTOR_F, NSLocalizedString(@"KB", @"size unit")];
             } else {
-                adjSize >>= 10;
-                size >>= 10;
-                if (adjSize < 1024) {
-                    [string appendFormat:@"%.1f MB", size / 1024.0f, NSLocalizedString(@"MB", @"size unit")];
+                adjSize >>= BYTE_SHIFT;
+                size >>= BYTE_SHIFT;
+                if (adjSize < BYTE_FACTOR) {
+                    [string appendFormat:@"%.1f MB", size / BYTE_FACTOR_F, NSLocalizedString(@"MB", @"size unit")];
                 } else {
                     //adjSize >>= 10;
-                    size >>= 10;
-                    [string appendFormat:@"%.1f GB", size / 1024.0f, NSLocalizedString(@"GB", @"size unit")];
+                    size >>= BYTE_SHIFT;
+                    [string appendFormat:@"%.1f GB", size / BYTE_FACTOR_F, NSLocalizedString(@"GB", @"size unit")];
                 }
             }
         }
     } else {
-        UInt32 adjSize = size >> 40; size >>= 30;
-        if (adjSize < 1024) {
-            [string appendFormat:@"%.1f TB", size / 1024.0f, NSLocalizedString(@"TB", @"size unit")];
+        UInt32 adjSize = size >> (4 * BYTE_SHIFT); size >>= (3 * BYTE_SHIFT);
+        if (adjSize < BYTE_FACTOR) {
+            [string appendFormat:@"%.1f TB", size / BYTE_FACTOR_F, NSLocalizedString(@"TB", @"size unit")];
         } else {
-            adjSize >>= 10;
-            size >>= 10;
-            if (adjSize < 1024) {
-                [string appendFormat:@"%.1f PB", size / 1024.0f, NSLocalizedString(@"PB", @"size unit")];
+            adjSize >>= BYTE_SHIFT;
+            size >>= BYTE_SHIFT;
+            if (adjSize < BYTE_FACTOR) {
+                [string appendFormat:@"%.1f PB", size / BYTE_FACTOR_F, NSLocalizedString(@"PB", @"size unit")];
             } else {
-                //adjSize >>= 10;
-                size >>= 10;
-                [string appendFormat:@"%.1f EB", size / 1024.0f, NSLocalizedString(@"EB", @"size unit")];
+                //adjSize >>= BYTE_SHIFT;
+                size >>= BYTE_SHIFT;
+                [string appendFormat:@"%.1f EB", size / BYTE_FACTOR_F, NSLocalizedString(@"EB", @"size unit")];
             }
         }
     }
@@ -265,11 +271,14 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     return string;
 }
 
+#define CM_PER_POINT 0.035277778
+#define INCH_PER_POINT 0.013888889
+
 static inline 
 NSString *SKSizeString(NSSize size, NSSize altSize) {
     BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
     NSString *units = useMetric ? NSLocalizedString(@"cm", @"size unit") : NSLocalizedString(@"in", @"size unit");
-    CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
+    CGFloat factor = useMetric ? CM_PER_POINT : INCH_PER_POINT;
     if (NSEqualSizes(size, altSize))
         return [NSString stringWithFormat:@"%.1f x %.1f %@", size.width * factor, size.height * factor, units];
     else
@@ -362,9 +371,9 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     NSString *tcID = [tableColumn identifier];
     id value = nil;
     if ([key length]) {
-        if ([tcID isEqualToString:@"label"]) {
+        if ([tcID isEqualToString:LABEL_COLUMN_ID]) {
             value = [labels objectForKey:key] ?: [key stringByAppendingString:@":"];
-        } else if ([tcID isEqualToString:@"value"]) {
+        } else if ([tcID isEqualToString:VALUE_COLUMN_ID]) {
             value = [info objectForKey:key];
             if (value == nil)
                 value = @"-";
@@ -378,7 +387,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 }
 
 - (void)tableView:(NSTableView *)tv willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([tv isEqual:attributesTableView] && [[tableColumn identifier] isEqualToString:@"label"])
+    if ([tv isEqual:attributesTableView] && [[tableColumn identifier] isEqualToString:LABEL_COLUMN_ID])
         [cell setLineBreakMode:row == [tv numberOfRows] - 1 ? NSLineBreakByWordWrapping : NSLineBreakByTruncatingTail];
 }
 

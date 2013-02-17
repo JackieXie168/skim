@@ -110,6 +110,12 @@
 
 #define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
 
+#define TINY_SIZE  32.0
+#define SMALL_SIZE 64.0
+#define LARGE_SIZE 128.0
+#define HUGE_SIZE  256.0
+#define FUDGE_SIZE 0.1
+
 #define PAGELABELS_KEY              @"pageLabels"
 #define SEARCHRESULTS_KEY           @"searchResults"
 #define GROUPEDSEARCHRESULTS_KEY    @"groupedSearchResults"
@@ -626,6 +632,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [statusBar setLeftStringValue:message];
 }
 
+#define CM_PER_POINT 0.035277778
+#define INCH_PER_POINT 0.013888889
+
 - (void)updateRightStatus {
     NSRect rect = [pdfView currentSelectionRect];
     CGFloat magnification = [pdfView currentMagnification];
@@ -638,7 +647,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? NSLocalizedString(@"cm", @"size unit") : NSLocalizedString(@"in", @"size unit");
-            CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
+            CGFloat factor = useMetric ? CM_PER_POINT : INCH_PER_POINT;
             message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(rect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(rect) * factor, NSMinX(rect) * factor, NSMinY(rect) * factor, units];
         } else {
             message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) %@", (long)NSWidth(rect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(rect), (long)NSMinX(rect), (long)NSMinY(rect), NSLocalizedString(@"pt", @"size unit")];
@@ -1752,6 +1761,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [[findController findField] selectText:nil];
 }
 
+#define FIND_RESULT_MARGIN 50.0
+
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction {
     NSArray *findResults = nil;
     
@@ -1786,7 +1797,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 if ([[sel pages] containsObject:page])
                     rect = NSUnionRect(rect, [sel boundsForPage:page]);
             }
-            rect = NSIntersectionRect(NSInsetRect(rect, -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
+            rect = NSIntersectionRect(NSInsetRect(rect, -FIND_RESULT_MARGIN, -FIND_RESULT_MARGIN), [page boundsForBox:kPDFDisplayBoxCropBox]);
             [pdfView goToPage:page];
             [pdfView goToRect:rect onPage:page];
         }
@@ -2447,9 +2458,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     roundedThumbnailSize = round([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
 
     CGFloat defaultSize = roundedThumbnailSize;
-    CGFloat thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    CGFloat thumbnailSize = (defaultSize < TINY_SIZE + FUDGE_SIZE) ? TINY_SIZE : (defaultSize < SMALL_SIZE + FUDGE_SIZE) ? SMALL_SIZE : (defaultSize < LARGE_SIZE + FUDGE_SIZE) ? LARGE_SIZE : HUGE_SIZE;
     
-    if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
+    if (fabs(thumbnailSize - thumbnailCacheSize) > FUDGE_SIZE) {
         thumbnailCacheSize = thumbnailSize;
         
         if ([self countOfThumbnails])
@@ -2517,9 +2528,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)resetSnapshotSizeIfNeeded {
     roundedSnapshotThumbnailSize = round([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
     CGFloat defaultSize = roundedSnapshotThumbnailSize;
-    CGFloat snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    CGFloat snapshotSize = (defaultSize < TINY_SIZE + FUDGE_SIZE) ? TINY_SIZE : (defaultSize < SMALL_SIZE + FUDGE_SIZE) ? SMALL_SIZE : (defaultSize < LARGE_SIZE + FUDGE_SIZE) ? LARGE_SIZE : HUGE_SIZE;
     
-    if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
+    if (fabs(snapshotSize - snapshotCacheSize) > FUDGE_SIZE) {
         snapshotCacheSize = snapshotSize;
         
         if (snapshotTimer) {
