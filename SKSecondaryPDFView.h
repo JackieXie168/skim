@@ -46,7 +46,7 @@
     PDFView *synchronizedPDFView;
     BOOL synchronizeZoom;
     BOOL switching;
-    CGFloat pinchZoomFactor;
+    BOOL didMagnify;
 }
 
 @property (nonatomic, retain) PDFView *synchronizedPDFView;
