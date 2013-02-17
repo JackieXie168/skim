@@ -79,6 +79,24 @@
 
 #define ANNOTATION_MODE_IS_MARKUP (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)
 
+#define READINGBAR_RESIZE_EDGE_HEIGHT 3.0
+#define NAVIGATION_BOTTOM_EDGE_HEIGHT 3.0
+
+#define TEXT_SELECT_MARGIN_X 40.0
+#define TEXT_SELECT_MARGIN_Y 50.0
+
+#define TOOLTIP_OFFSET_FRACTION 0.3
+
+#define DEFAULT_SNAPSHOT_HEIGHT 200.0
+
+#define MIN_NOTE_SIZE 8.0
+
+#define HANDLE_SIZE 4.0
+
+#define DEFAULT_MAGNIFICATION 2.5
+#define SMALL_MAGNIFICATION   1.5
+#define LARGE_MAGNIFICATION   4.0
+
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -333,7 +351,7 @@ enum {
 
 - (void)drawSelectionForPage:(PDFPage *)pdfPage {
     NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-    CGFloat radius = 4.0 / [self scaleFactor];
+    CGFloat radius = HANDLE_SIZE / [self scaleFactor];
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
     [path appendBezierPathWithRect:selectionRect];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
@@ -1057,7 +1075,7 @@ enum {
         BOOL hitAnnotation = NO;
         
         if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && area != kPDFLinkArea && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
-            if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
+            if (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT)
                 [self doResizeReadingBarWithEvent:theEvent];
             else
                 [self doDragReadingBarWithEvent:theEvent];
@@ -1094,7 +1112,7 @@ enum {
             [self setActiveAnnotation:nil];
             if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
                 [self doNothingWithEvent:theEvent];
-            } else if (area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
+            } else if (area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:NSMakeRect(p.x - TEXT_SELECT_MARGIN_X, p.y - TEXT_SELECT_MARGIN_Y, 2.0 * TEXT_SELECT_MARGIN_X, 2.0 * TEXT_SELECT_MARGIN_Y)] hasCharacters] == NO) {
                 [self doDragWithEvent:theEvent];
             } else {
                 [super mouseDown:theEvent];
@@ -1126,7 +1144,7 @@ enum {
                 [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
             }
             [navWindow fadeIn];
-        } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0) {
+        } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
             [self showNavWindow:YES];
         }
     }
@@ -1995,7 +2013,7 @@ enum {
         [self setActiveAnnotation:annotation];
         if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
-            NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
+            NSPoint point = NSMakePoint(NSMinX(bounds) + TOOLTIP_OFFSET_FRACTION * NSWidth(bounds), NSMinY(bounds) + TOOLTIP_OFFSET_FRACTION * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
@@ -2044,7 +2062,7 @@ enum {
         [self setActiveAnnotation:annotation];
         if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
-            NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
+            NSPoint point = NSMakePoint(NSMinX(bounds) + TOOLTIP_OFFSET_FRACTION * NSWidth(bounds), NSMinY(bounds) + TOOLTIP_OFFSET_FRACTION * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
@@ -2195,8 +2213,8 @@ enum {
         point = [self convertPoint:point toPage:page];
         
         rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
-        rect.origin.y = point.y - 100.0;
-        rect.size.height = 200.0;
+        rect.origin.y = point.y - 0.5 * DEFAULT_SNAPSHOT_HEIGHT;
+        rect.size.height = DEFAULT_SNAPSHOT_HEIGHT;
         
         rect = [self convertRect:rect toPage:page];
     }
@@ -2364,7 +2382,7 @@ enum {
 }
 
 - (void)showNavWindowDelayed {
-    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0) {
+    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
         if ([navWindow parentWindow] == nil) {
             [navWindow setAlphaValue:0.0];
             [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
@@ -2568,13 +2586,13 @@ enum {
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
             newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
             
-            if (NSWidth(newBounds) < 8.0) {
-                newBounds.size.width = 8.0;
-                newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+            if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.size.width = MIN_NOTE_SIZE;
+                newBounds.origin.x = floor(0.5 * ((startPoint.x + endPoint.x) - MIN_NOTE_SIZE));
             }
-            if (NSHeight(newBounds) < 8.0) {
-                newBounds.size.height = 8.0;
-                newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+            if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.size.height = MIN_NOTE_SIZE;
+                newBounds.origin.y = floor(0.5 * ((startPoint.y + endPoint.y) - MIN_NOTE_SIZE));
             }
             
             startPoint = SKSubstractPoints(startPoint, newBounds.origin);
@@ -2597,15 +2615,15 @@ enum {
                     }
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     newBounds.size.width -= delta;
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.size.width = 8.0;
+                    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.size.width = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     newBounds.origin.y += delta;
                     newBounds.size.height -= delta;
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                        newBounds.size.height = 8.0;
+                    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.origin.y += NSHeight(newBounds) - MIN_NOTE_SIZE;
+                        newBounds.size.height = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
@@ -2626,13 +2644,13 @@ enum {
                     }
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     newBounds.size.height -= delta;
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.size.height = 8.0;
+                    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.size.height = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     newBounds.size.width -= delta;
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.size.width = 8.0;
+                    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.size.width = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
@@ -2654,14 +2672,14 @@ enum {
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     newBounds.origin.x += delta;
                     newBounds.size.width -= delta;
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                        newBounds.size.width = 8.0;
+                    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.origin.x += NSWidth(newBounds) - MIN_NOTE_SIZE;
+                        newBounds.size.width = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     newBounds.size.height -= delta;
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.size.height = 8.0;
+                    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.size.height = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds)) {
@@ -2683,16 +2701,16 @@ enum {
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     newBounds.origin.y += delta;
                     newBounds.size.height -= delta;
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                        newBounds.size.height = 8.0;
+                    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.origin.y += NSHeight(newBounds) - MIN_NOTE_SIZE;
+                        newBounds.size.height = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     newBounds.origin.x += delta;
                     newBounds.size.width -= delta;
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                        newBounds.size.width = 8.0;
+                    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                        newBounds.origin.x += NSWidth(newBounds) - MIN_NOTE_SIZE;
+                        newBounds.size.width = MIN_NOTE_SIZE;
                     }
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     if (NSMinX(bounds) - delta >= NSMinX(pageBounds)) {
@@ -2817,13 +2835,13 @@ enum {
     
     NSRect newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
     
-    if (NSWidth(newBounds) < 8.0) {
-        newBounds.size.width = 8.0;
-        newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+        newBounds.size.width = MIN_NOTE_SIZE;
+        newBounds.origin.x = floor(0.5 * ((startPoint.x + endPoint.x) - MIN_NOTE_SIZE));
     }
-    if (NSHeight(newBounds) < 8.0) {
-        newBounds.size.height = 8.0;
-        newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+        newBounds.size.height = MIN_NOTE_SIZE;
+        newBounds.origin.y = floor(0.5 * ((startPoint.y + endPoint.y) - MIN_NOTE_SIZE));
     }
     
     [(PDFAnnotationLine *)activeAnnotation setStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
@@ -2853,13 +2871,13 @@ enum {
         CGFloat height = NSHeight(newBounds);
         
         if (resizeHandle & SKMaxXEdgeMask)
-            width = fmax(8.0, width + relPoint.x);
+            width = fmax(MIN_NOTE_SIZE, width + relPoint.x);
         else if (resizeHandle & SKMinXEdgeMask)
-            width = fmax(8.0, width - relPoint.x);
+            width = fmax(MIN_NOTE_SIZE, width - relPoint.x);
         if (resizeHandle & SKMaxYEdgeMask)
-            height = fmax(8.0, height + relPoint.y);
+            height = fmax(MIN_NOTE_SIZE, height + relPoint.y);
         else if (resizeHandle & SKMinYEdgeMask)
-            height = fmax(8.0, height - relPoint.y);
+            height = fmax(MIN_NOTE_SIZE, height - relPoint.y);
         
         if (resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
             if (resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask))
@@ -2872,17 +2890,17 @@ enum {
         
         if (resizeHandle & SKMinXEdgeMask) {
             if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
-                width = height = fmax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
+                width = height = fmax(MIN_NOTE_SIZE, NSMaxX(newBounds) - NSMinX(pageBounds));
         } else {
             if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
-                width = height = fmax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
+                width = height = fmax(MIN_NOTE_SIZE, NSMaxX(pageBounds) - NSMinX(newBounds));
         }
         if (resizeHandle & SKMinYEdgeMask) {
             if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
-                width = height = fmax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
+                width = height = fmax(MIN_NOTE_SIZE, NSMaxY(newBounds) - NSMinY(pageBounds));
         } else {
             if (NSMinY(newBounds) + height > NSMaxY(pageBounds))
-                width = height = fmax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
+                width = height = fmax(MIN_NOTE_SIZE, NSMaxY(pageBounds) - NSMinY(newBounds));
         }
         
         if (resizeHandle & SKMinXEdgeMask)
@@ -2897,8 +2915,8 @@ enum {
             newBounds.size.width += relPoint.x;
             if (NSMaxX(newBounds) > NSMaxX(pageBounds))
                 newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
-            if (NSWidth(newBounds) < 8.0) {
-                newBounds.size.width = 8.0;
+            if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.size.width = MIN_NOTE_SIZE;
             }
         } else if (resizeHandle & SKMinXEdgeMask) {
             newBounds.origin.x += relPoint.x;
@@ -2907,9 +2925,9 @@ enum {
                 newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
                 newBounds.origin.x = NSMinX(pageBounds);
             }
-            if (NSWidth(newBounds) < 8.0) {
-                newBounds.origin.x = NSMaxX(newBounds) - 8.0;
-                newBounds.size.width = 8.0;
+            if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.origin.x = NSMaxX(newBounds) - MIN_NOTE_SIZE;
+                newBounds.size.width = MIN_NOTE_SIZE;
             }
         }
         if (resizeHandle & SKMaxYEdgeMask) {
@@ -2917,8 +2935,8 @@ enum {
             if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
                 newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
             }
-            if (NSHeight(newBounds) < 8.0) {
-                newBounds.size.height = 8.0;
+            if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.size.height = MIN_NOTE_SIZE;
             }
         } else if (resizeHandle & SKMinYEdgeMask) {
             newBounds.origin.y += relPoint.y;
@@ -2927,9 +2945,9 @@ enum {
                 newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
                 newBounds.origin.y = NSMinY(pageBounds);
             }
-            if (NSHeight(newBounds) < 8.0) {
-                newBounds.origin.y = NSMaxY(newBounds) - 8.0;
-                newBounds.size.height = 8.0;
+            if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+                newBounds.origin.y = NSMaxY(newBounds) - MIN_NOTE_SIZE;
+                newBounds.size.height = MIN_NOTE_SIZE;
             }
         }
     }
@@ -3305,7 +3323,7 @@ enum {
         return;
     }
     
-    CGFloat margin = 4.0 / [self scaleFactor];
+    CGFloat margin = HANDLE_SIZE / [self scaleFactor];
     
     if (selectionPageIndex != NSNotFound && [page pageIndex] != selectionPageIndex) {
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:[self currentSelectionPage]];
@@ -3695,13 +3713,13 @@ enum {
             if ([destination page]) {
                 page = [destination page];
                 point = [self convertPoint:[destination point] fromPage:page];
-                point.y -= 100.0;
+                point.y -= 0.5 * DEFAULT_SNAPSHOT_HEIGHT;
             }
         }
         
         rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
-        rect.origin.y = point.y - 100.0;
-        rect.size.height = 200.0;
+        rect.origin.y = point.y - 0.5 * DEFAULT_SNAPSHOT_HEIGHT;
+        rect.size.height = DEFAULT_SNAPSHOT_HEIGHT;
         
     }
     
@@ -3750,7 +3768,7 @@ enum {
                 [[self window] restoreCachedImage];
                 [[self window] cacheImageInRect:visibleRect];
             }
-            magnification = (modifierFlags & NSCommandKeyMask) ? 4.0 : (modifierFlags & NSControlKeyMask) ? 1.5 : 2.5;
+            magnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
             if (modifierFlags & NSShiftKeyMask) {
                 magnification = 1.0 / magnification;
             }
@@ -3923,7 +3941,7 @@ enum {
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
                 if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
-                    cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
+                    cursor = p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
@@ -3944,7 +3962,7 @@ enum {
                 if (area == kPDFNoArea) {
                     cursor = [NSCursor openHandCursor];
                 } else {
-                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, 4.0 / [self scaleFactor]);
+                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor]);
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
                     if (cursor == nil)
                         cursor = NSPointInRect(p, selectionRect) ? [NSCursor openHandCursor] : [NSCursor crosshairCursor];
@@ -3979,7 +3997,7 @@ enum {
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
     NSRect rect = [annotation displayRect];
     if (annotation == activeAnnotation && [annotation isResizable]) {
-        CGFloat margin = 4.0 / [self scaleFactor];
+        CGFloat margin = HANDLE_SIZE / [self scaleFactor];
         rect = NSInsetRect(rect, -margin, -margin);
     }
     [self setNeedsDisplayInRect:rect ofPage:page];

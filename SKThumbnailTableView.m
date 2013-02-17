@@ -44,6 +44,8 @@
 #define SKScrollerWillScrollNotification @"SKScrollerWillScrollNotification"
 #define SKScrollerDidScrollNotification @"SKScrollerDidScrollNotification"
 
+#define MAX_HIGHLIGHTS 5
+
 @implementation SKThumbnailTableView
 
 @synthesize isScrolling;
@@ -83,13 +85,13 @@
             
             NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
             NSPointerArray *rows = [[self delegate] tableViewHighlightedRows:self];
-            NSInteger i, count = MIN((NSInteger)[rows count], 5);
+            NSInteger i, count = MIN((NSInteger)[rows count], MAX_HIGHLIGHTS);
             
             for (i = 0; i < count; i++) {
                 row = (NSInteger)[rows pointerAtIndex:i];
                 rect = [self rectOfRow:row];
                 if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
-                    [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];
+                    [[color colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - i)] setFill];
                     [NSBezierPath fillRect:rect];
                 }
                 [rowIndexes addIndex:row];

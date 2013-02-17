@@ -45,6 +45,9 @@
 #define PRINTSCALINGMODE_KEYPATH @"representedObject.dictionary.PDFPrintScalingMode"
 #define REPRESENTEDOBJECT_KEY @"representedObject"
 
+#define BUTTON_MARGIN 18.0
+#define MATRIX_MARGIN 20.0
+
 @implementation SKPrintAccessoryController
 
 @synthesize autoRotateButton, printScalingModeMatrix;
@@ -87,7 +90,7 @@
     [printScalingModeMatrix sizeToFit];
     
     NSRect frame = [[self view] frame];
-    frame.size.width = fmax(NSMaxX([autoRotateButton frame]) + 18.0, NSMaxX([printScalingModeMatrix frame]) + 20.0);
+    frame.size.width = fmax(NSMaxX([autoRotateButton frame]) + BUTTON_MARGIN, NSMaxX([printScalingModeMatrix frame]) + MATRIX_MARGIN);
     [[self view] setFrame:frame];
 }
 

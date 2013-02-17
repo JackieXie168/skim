@@ -62,6 +62,8 @@
 #define PROPERTIES_KEY @"properties"
 #define CONTENTOBJECT_BINDINGNAME @"contentObject"
 
+#define TABLE_OFFSET 8.0
+
 static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
@@ -168,7 +170,7 @@ static char *SKTransitionPropertiesObservationContext;
     }
     
     // collapse the table
-    [[self window] setFrame:NSInsetRect([[self window] frame], 0.5 * NSWidth([[tableView enclosingScrollView] frame]) + 4.0, 0.0) display:NO];
+    [[self window] setFrame:NSInsetRect([[self window] frame], 0.5 * (NSWidth([[tableView enclosingScrollView] frame]) + TABLE_OFFSET), 0.0) display:NO];
     
     [tableView registerForDraggedTypes:[SKTransitionInfo readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
@@ -282,14 +284,14 @@ static char *SKTransitionPropertiesObservationContext;
         if (separate) {
             [self makeTransitions];
             
-            extraWidth = NSWidth([scrollView frame]) + 8.0;
+            extraWidth = NSWidth([scrollView frame]) + TABLE_OFFSET;
             frame.size.width += extraWidth;
             frame.origin.x -= floor(0.5 * extraWidth);
             [window setFrame:frame display:isVisible animate:isVisible];
             [scrollView setHidden:NO];
         } else {
             [scrollView setHidden:YES];
-            extraWidth = NSWidth([scrollView frame]) + 8.0;
+            extraWidth = NSWidth([scrollView frame]) + TABLE_OFFSET;
             frame.size.width -= extraWidth;
             frame.origin.x += floor(0.5 * extraWidth);
             [window setFrame:frame display:isVisible animate:isVisible];

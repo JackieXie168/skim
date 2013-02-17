@@ -64,6 +64,8 @@
 
 #define SKKeepNoteWindowsOnTopKey @"SKKeepNoteWindowsOnTop"
 
+#define DEFAULT_TEXT_HEIGHT 29.0
+
 static char SKNoteWindowPageObservationContext;
 static char SKNoteWindowBoundsObservationContext;
 static char SKNoteWindowDefaultsObservationContext;
@@ -158,7 +160,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
-    [[self window] setContentBorderThickness:22.0 forEdge:NSMinYEdge];
+    [[self window] setContentBorderThickness:NSHeight([statusBar frame]) forEdge:NSMinYEdge];
     
     [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
@@ -189,7 +191,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         
         NSSize minimumSize = [[self window] minSize];
         frame = [[[self window] contentView] frame];
-        frame.size.height = NSHeight([statusBar frame]) + 29.0;
+        frame.size.height = NSHeight([statusBar frame]) + DEFAULT_TEXT_HEIGHT;
         frame = [[self window] frameRectForContentRect:frame];
         minimumSize.height = NSHeight(frame);
         [[self window] setMinSize:minimumSize];

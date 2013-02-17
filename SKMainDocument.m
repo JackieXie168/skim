@@ -957,6 +957,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSBeep();
 }
 
+#define CHECK_BUTTON_OFFSET_X 16.0
+#define CHECK_BUTTON_OFFSET_Y 8.0
+
 - (IBAction)readNotes:(id)sender{
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     NSURL *fileURL = [self fileURL];
@@ -968,8 +971,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [replaceNotesCheckButton setButtonType:NSSwitchButton];
         [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Check button title")];
         [replaceNotesCheckButton sizeToFit];
-        [replaceNotesCheckButton setFrameOrigin:NSMakePoint(16.0, 8.0)];
-        readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -16.0, -8.0)];
+        [replaceNotesCheckButton setFrameOrigin:NSMakePoint(CHECK_BUTTON_OFFSET_X, CHECK_BUTTON_OFFSET_Y)];
+        readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -CHECK_BUTTON_OFFSET_X, -CHECK_BUTTON_OFFSET_Y)];
         [readNotesAccessoryView addSubview:replaceNotesCheckButton];
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];
