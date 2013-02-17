@@ -77,7 +77,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     scalePopUpButton = nil;
     autoFitPage = nil;
     autoFitRect = NSZeroRect;
-    pinchZoomFactor = 1.0;
+    didMagnify = NO;
     
     [self makeScalePopUpButton];
     
@@ -393,26 +393,22 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
     if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super beginGestureWithEvent:theEvent];
-    pinchZoomFactor = 1.0;
+    didMagnify = NO;
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if (fabs(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:fmax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
-    pinchZoomFactor = 1.0;
+    if (didMagnify)
+        [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
+    didMagnify = NO;
     if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
-        pinchZoomFactor *= 1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification]));
-        CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
-        NSUInteger i = [self indexForScaleFactor:fmax(scaleFactor, SKMinDefaultScaleMenuFactor)];
-        if (i != [self indexForScaleFactor:[self scaleFactor]]) {
-            [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
-            pinchZoomFactor = scaleFactor / [self scaleFactor];
-        }
+        CGFloat magnifyFactor = (1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification])));
+        [super setScaleFactor:magnifyFactor * [self scaleFactor]];
+        didMagnify = YES;
     }
 }
 

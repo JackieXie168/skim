@@ -45,7 +45,7 @@
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
-    CGFloat pinchZoomFactor;
+    BOOL didMagnify;
 }
 
 @property (nonatomic) BOOL autoFits;
