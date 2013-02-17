@@ -188,6 +188,8 @@
 									<string key="decimalSeparator">.</string>
 									<integer value="1000" key="formatterBehavior"/>
 									<string key="groupingSeparator">,</string>
+									<real value="1000" key="maximum"/>
+									<real value="10" key="minimum"/>
 									<string key="negativeFormat">-0%</string>
 									<string key="positiveFormat">0%</string>
 									<boolean value="NO" key="usesGroupingSeparator"/>
@@ -204,15 +206,8 @@
 									<string key="NSString">NaN</string>
 									<reference key="NSAttributes" ref="472379724"/>
 								</object>
-								<object class="NSDecimalNumberPlaceholder" key="NS.min" id="537441983">
-									<int key="NS.exponent">0</int>
-									<int key="NS.length">0</int>
-									<bool key="NS.negative">YES</bool>
-									<bool key="NS.compact">NO</bool>
-									<int key="NS.mantissa.bo">1</int>
-									<bytes key="NS.mantissa">AAAAAAAAAAAAAAAAAAAAAA</bytes>
-								</object>
-								<reference key="NS.max" ref="537441983"/>
+								<real value="10" key="NS.min"/>
+								<real value="1000" key="NS.max"/>
 								<nil key="NS.rounding"/>
 								<string key="NS.decimal">.</string>
 								<string key="NS.thousand">,</string>
@@ -2736,6 +2731,24 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">addNoteFromPanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKNotesPanelController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFDocument.h</string>
@@ -2746,6 +2759,8 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="PDFViewDidBeginEditing:">PDFView</string>
 						<string key="PDFViewDidEndEditing:">PDFView</string>
+						<string key="PDFViewExitFullscreen:">PDFView</string>
+						<string key="PDFViewToggleContents:">PDFView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="PDFViewDidBeginEditing:">
@@ -2754,6 +2769,14 @@
 						</object>
 						<object class="IBActionInfo" key="PDFViewDidEndEditing:">
 							<string key="name">PDFViewDidEndEditing:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewExitFullscreen:">
+							<string key="name">PDFViewExitFullscreen:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewToggleContents:">
+							<string key="name">PDFViewToggleContents:</string>
 							<string key="candidateClassName">PDFView</string>
 						</object>
 					</dictionary>
@@ -2766,21 +2789,14 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKSyncDot.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKTemplateParser.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKFileWatcher.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKKQueue.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2848,10 +2864,24 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFullScreenWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">PDFView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">PDFView_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTextNoteEditor.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2921,6 +2951,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKFindTableView</string>
+					<string key="superclassName">SKTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFindTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKGradientView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -2944,9 +2982,9 @@
 					<string key="superclassName">SKSideViewController</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="findArrayController">NSArrayController</string>
-						<string key="findTableView">NSTableView</string>
+						<string key="findTableView">SKFindTableView</string>
 						<string key="groupedFindArrayController">NSArrayController</string>
-						<string key="groupedFindTableView">NSTableView</string>
+						<string key="groupedFindTableView">SKFindTableView</string>
 						<string key="thumbnailArrayController">NSArrayController</string>
 						<string key="thumbnailTableView">SKThumbnailTableView</string>
 						<string key="tocOutlineView">SKTocOutlineView</string>
@@ -2958,7 +2996,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="findTableView">
 							<string key="name">findTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindArrayController">
 							<string key="name">groupedFindArrayController</string>
@@ -2966,7 +3004,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindTableView">
 							<string key="name">groupedFindTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="thumbnailArrayController">
 							<string key="name">thumbnailArrayController</string>
