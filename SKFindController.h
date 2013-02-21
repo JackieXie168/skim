@@ -51,7 +51,6 @@
     NSString *findString;
     NSInteger lastChangeCount;
     BOOL didChange;
-    NSTextView *fieldEditor;
     BOOL animating;
 }
 
@@ -62,7 +61,6 @@
 @property (nonatomic, retain) IBOutlet NSObjectController *ownerController;
 @property (nonatomic, assign) id <SKFindControllerDelegate> delegate;
 @property (nonatomic, retain) NSString *findString;
-@property (nonatomic, readonly) NSTextView *fieldEditor;
 
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate;
 

@@ -50,10 +50,7 @@
 
 - (id)initWithPDFView:(PDFView *)aPDFView annotation:(PDFAnnotationFreeText *)anAnnotation;
 
-- (void)updateFont;
-- (void)updateFrame;
-
-- (void)relayout;
+- (void)layout;
 
 - (void)discardEditing;
 - (BOOL)commitEditing;

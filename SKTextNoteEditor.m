@@ -41,6 +41,19 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
+static char SKPDFAnnotationPropertiesObservationContext;
+
+@interface SKTextNoteEditor (SKPrivate)
+
+- (void)updateFrame;
+- (void)updateFont;
+- (void)updateColor;
+- (void)updateTextColor;
+- (void)updateAlignment;
+
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
+
+@end
 
 @implementation SKTextNoteEditor
 
@@ -51,30 +64,42 @@
     if (self) {
         pdfView = aPDFView;
         annotation = [anAnnotation retain];
-        NSColor *color = [annotation color];
-        NSColor *fontColor = [annotation fontColor];
-        CGFloat alpha = [color alphaComponent];
-        if (alpha < 1.0)
-            color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
         textField = [[NSTextField alloc] init];
-        [textField setBackgroundColor:color];
-        [textField setTextColor:fontColor];
-        [textField setAlignment:[annotation alignment]];
         [textField setStringValue:[annotation string]];
         [textField setDelegate:self];
         [self updateFont];
-        [self updateFrame];
-        [[pdfView documentView] addSubview:textField];
-        [textField selectText:nil];
+        [self updateColor];
+        [self updateTextColor];
+        [self updateAlignment];
+        [annotation addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
+        [annotation addObserver:self forKeyPath:SKNPDFAnnotationFontKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
+        [annotation addObserver:self forKeyPath:SKNPDFAnnotationFontColorKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
+        [annotation addObserver:self forKeyPath:SKNPDFAnnotationAlignmentKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
+        [annotation addObserver:self forKeyPath:SKNPDFAnnotationColorKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
     }
     return self;
 }
 
 - (void)dealloc {
+    @try {
+        [annotation removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
+        [annotation removeObserver:self forKeyPath:SKNPDFAnnotationFontKey];
+        [annotation removeObserver:self forKeyPath:SKNPDFAnnotationFontColorKey];
+        [annotation removeObserver:self forKeyPath:SKNPDFAnnotationAlignmentKey];
+        [annotation removeObserver:self forKeyPath:SKNPDFAnnotationColorKey];
+    }
+    @catch(id e) {}
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     pdfView = nil;
     SKDESTROY(annotation);
     SKDESTROY(textField);
     [super dealloc];
+}
+
+- (void)updateFrame {
+    NSRect frame = [pdfView convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
+    [textField setFrame:frame];
 }
 
 - (void)updateFont {
@@ -83,20 +108,36 @@
     [textField setFont:font];
 }
 
-- (void)updateFrame {
-    NSRect frame = [pdfView convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
-    [textField setFrame:frame];
+- (void)updateColor {
+    NSColor *color = [annotation color];
+    CGFloat alpha = [color alphaComponent];
+    if (alpha < 1.0)
+        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
+    [textField setBackgroundColor:color];
+    // the field editor does not update the background color automatically, even as we set it explicitly, so we use this trick
+    [[textField currentEditor] setDrawsBackground:NO];
+    [[textField currentEditor] setDrawsBackground:YES];
 }
 
-- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
-    if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
-        [pdfView commitEditing];
-        return YES;
+- (void)updateTextColor {
+    [textField setTextColor:[annotation fontColor]];
+    // the text color is not synchronized automatically so we have to set it explicitly on the field editor
+    [[textField currentEditor] setTextColor:[annotation fontColor]];
+}
+
+- (void)updateAlignment {
+    // updating the alignment while editing does not work, alignment is not changed and the field editor is lost
+    NSArray *selection = [(NSTextView *)[textField currentEditor] selectedRanges];
+    if (selection)
+        [[pdfView window] makeFirstResponder:pdfView];
+    [textField setAlignment:[annotation alignment]];
+    if (selection) {
+        [[textField window] makeFirstResponder:textField];
+        [(NSTextView *)[textField currentEditor] setSelectedRanges:selection];
     }
-    return NO;
 }
 
-- (void)relayout {
+- (void)layout {
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self updateFrame];
         if ([textField superview] == nil) {
@@ -134,6 +175,36 @@
         [pdfView textNoteEditorDidEndEditing:self];
     
     return YES;
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
+    if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
+        [self commitEditing];
+        return YES;
+    }
+    return NO;
+}
+
+- (void)handleScaleChangedNotification:(NSNotification *)notification  {
+    [self updateFrame];
+    [self updateFont];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKPDFAnnotationPropertiesObservationContext) {
+        if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
+            [self updateFrame];
+        else if ([keyPath isEqualToString:SKNPDFAnnotationFontKey])
+            [self updateFont];
+        else if ([keyPath isEqualToString:SKNPDFAnnotationColorKey])
+            [self updateColor];
+        else if ([keyPath isEqualToString:SKNPDFAnnotationFontColorKey])
+            [self updateTextColor];
+        else if ([keyPath isEqualToString:SKNPDFAnnotationAlignmentKey])
+            [self updateAlignment];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

@@ -115,7 +115,7 @@
 		CE2DE4FD0B85DBD400D0DA12 /* SKImageToolTipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4FC0B85DBD400D0DA12 /* SKImageToolTipWindow.m */; };
 		CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */; };
 		CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */; };
-		CE2DED6C0B86334900D0DA12 /* SKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* SKFindFieldEditor.m */; };
+		CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */; };
 		CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.m */; };
@@ -731,8 +731,8 @@
 		CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage_SKExtensions.m; sourceTree = "<group>"; };
 		CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFindController.h; sourceTree = "<group>"; };
 		CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindController.m; sourceTree = "<group>"; };
-		CE2DED6A0B86334900D0DA12 /* SKFindFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFindFieldEditor.h; sourceTree = "<group>"; };
-		CE2DED6B0B86334900D0DA12 /* SKFindFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindFieldEditor.m; sourceTree = "<group>"; };
+		CE2DED6A0B86334900D0DA12 /* SKFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFieldEditor.h; sourceTree = "<group>"; };
+		CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFieldEditor.m; sourceTree = "<group>"; };
 		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE32531D0F4723EA0021BADD /* SKMainWindowController_Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_Actions.h; sourceTree = "<group>"; };
@@ -1705,8 +1705,8 @@
 				CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */,
 				CEA575FB0B9208B60003D2E7 /* SKTocOutlineView.h */,
 				CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */,
-				CE2DED6A0B86334900D0DA12 /* SKFindFieldEditor.h */,
-				CE2DED6B0B86334900D0DA12 /* SKFindFieldEditor.m */,
+				CE2DED6A0B86334900D0DA12 /* SKFieldEditor.h */,
+				CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */,
 			);
 			name = "Views and Cells";
 			sourceTree = "<group>";
@@ -2429,7 +2429,7 @@
 				CE2DE4FD0B85DBD400D0DA12 /* SKImageToolTipWindow.m in Sources */,
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
-				CE2DED6C0B86334900D0DA12 /* SKFindFieldEditor.m in Sources */,
+				CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */,
 				CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,

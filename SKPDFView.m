@@ -106,7 +106,6 @@ NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationN
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
-NSString *SKPDFViewDisplayAsBookChangedNotification = @"SKPDFViewDisplayAsBookChangedNotification";
 
 NSString *SKPDFViewAnnotationKey = @"annotation";
 NSString *SKPDFViewPageKey = @"page";
@@ -184,7 +183,6 @@ enum {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleViewChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
@@ -195,7 +193,7 @@ enum {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper;
 @synthesize currentMagnification=magnification, isZooming;
-@dynamic isEditing, hasReadingBar, currentSelectionPage, currentSelectionRect;
+@dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -255,12 +253,6 @@ enum {
                                                  name:PDFViewPageChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                  name:PDFViewScaleChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
-                                                 name:PDFViewDisplayModeChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
-                                                 name:PDFViewDisplayBoxChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
-                                                 name:SKPDFViewDisplayAsBookChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
         context:&SKPDFViewDefaultsObservationContext];
@@ -304,6 +296,7 @@ enum {
     SKDESTROY(navWindow);
     SKDESTROY(readingBar);
     SKDESTROY(accessibilityChildren);
+    SKDESTROY(editor);
     [super dealloc];
 }
 
@@ -388,7 +381,7 @@ enum {
     
     [self transformDocumentViewContextForPage:pdfPage];
     
-    if ([[activeAnnotation page] isEqual:pdfPage] && [self isEditing] == NO)
+    if ([[activeAnnotation page] isEqual:pdfPage] && editor == nil)
         [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
     
     if (readingBar)
@@ -468,7 +461,7 @@ enum {
 	// Will need to redraw old active anotation.
 	if (activeAnnotation != nil) {
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
-        if (changed && [self isEditing])
+        if (changed && editor)
             [self commitEditing];
 	}
     
@@ -488,8 +481,8 @@ enum {
     }
 }
 
-- (BOOL)isEditing {
-    return editor != nil;
+- (NSTextField *)editTextField {
+    return [editor textField];
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
@@ -498,7 +491,8 @@ enum {
         [super setDisplayMode:mode];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
-        [editor relayout];
+        [self resetPDFToolTipRects];
+        [editor layout];
         SKDESTROY(accessibilityChildren);
     }
 }
@@ -509,15 +503,16 @@ enum {
         [super setDisplayBox:box];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
-        [editor relayout];
+        [self resetPDFToolTipRects];
+        [editor layout];
     }
 }
 
 - (void)setDisplaysAsBook:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
         [super setDisplaysAsBook:asBook];
-        [editor relayout];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self];
+        [self resetPDFToolTipRects];
+        [editor layout];
     }
 }
 
@@ -989,7 +984,7 @@ enum {
         if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) &&
             (modifiers == 0)) {
             [self delete:self];
-        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && activeAnnotation && [self isEditing] == NO && 
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && activeAnnotation && editor == nil && 
                    (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) &&
                    (modifiers == 0)) {
             [self editActiveAnnotation:self];
@@ -1327,7 +1322,7 @@ enum {
                 [item setTarget:self];
             }
             
-            if ((annotation != activeAnnotation || [self isEditing] == NO) && [annotation isEditable]) {
+            if ((annotation != activeAnnotation || editor == nil) && [annotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
@@ -1354,7 +1349,7 @@ enum {
                 [item setTarget:self];
             }
             
-            if ([self isEditing] == NO && [activeAnnotation isEditable]) {
+            if (editor == nil && [activeAnnotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setTarget:self];
             }
@@ -1539,7 +1534,7 @@ enum {
 #pragma mark Tracking mousemoved fix
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self isEditing] && [self commitEditing] == NO)
+    if (editor && [self commitEditing] == NO)
         [self discardEditing];
     [super viewWillMoveToWindow:newWindow];
 }
@@ -1872,7 +1867,7 @@ enum {
     PDFPage *page = [[wasAnnotation page] retain];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
-    if ([self isEditing] && activeAnnotation == annotation)
+    if (editor && activeAnnotation == annotation)
         [self commitEditing];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
@@ -1903,6 +1898,8 @@ enum {
     [self annotationsChangedOnPage:page];
     if ([[annotation type] isEqualToString:SKNNoteString])
         [self resetPDFToolTipRects];
+    if (editor && annotation == activeAnnotation)
+        [editor layout];
     SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
     [oldPage release];
@@ -1911,11 +1908,10 @@ enum {
 - (void)editThisAnnotation:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     
-    if (annotation == nil || ([self isEditing] && activeAnnotation == annotation))
+    if (annotation == nil || (editor && activeAnnotation == annotation))
         return;
     
-    if ([self isEditing])
-        [self commitEditing];
+    [self commitEditing];
     if (activeAnnotation != annotation)
         [self setActiveAnnotation:annotation];
     [self editActiveAnnotation:sender];
@@ -1941,6 +1937,8 @@ enum {
     } else if (hideNotes == NO && [type isEqualToString:SKNFreeTextString]) {
         
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
+        [[self window] makeFirstResponder:self];
+        [editor layout];
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
@@ -1968,12 +1966,11 @@ enum {
 }
 
 - (void)discardEditing {
-    if ([self isEditing])
-        [editor discardEditing];
+    [editor discardEditing];
 }
 
 - (BOOL)commitEditing {
-    if ([self isEditing])
+    if (editor)
         return [editor commitEditing];
     return YES;
 }
@@ -1986,8 +1983,7 @@ enum {
     PDFAnnotation *annotation = nil;
     
     if (activeAnnotation) {
-        if ([self isEditing])
-            [self commitEditing];
+        [self commitEditing];
         pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
     } else {
@@ -2032,8 +2028,7 @@ enum {
     NSArray *annotations = nil;
     
     if (activeAnnotation) {
-        if ([self isEditing])
-            [self commitEditing];
+        [self commitEditing];
         pageIndex = [[activeAnnotation page] pageIndex];
         annotations = [[activeAnnotation page] annotations];
         i = [annotations indexOfObject:activeAnnotation];
@@ -2149,7 +2144,7 @@ enum {
         }
         accessibilityChildren = [children mutableCopy];
     }
-    if ([self isEditing])
+    if ([[editor textField] superview])
         return [accessibilityChildren arrayByAddingObject:[editor textField]];
     else
         return accessibilityChildren;
@@ -2158,7 +2153,7 @@ enum {
 - (id)accessibilityChildAtPoint:(NSPoint)point {
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
     id child = nil;
-    if ([self isEditing] && NSMouseInRect([self convertPoint:localPoint toView:[self documentView]], [[editor textField] frame], [[self documentView] isFlipped])) {
+    if ([[editor textField] superview] && NSMouseInRect([self convertPoint:localPoint toView:[self documentView]], [[editor textField] frame], [[self documentView] isFlipped])) {
         child = NSAccessibilityUnignoredDescendant([editor textField]);
     } else {
         PDFPage *page = [self pageForPoint:localPoint nearest:NO];
@@ -2175,7 +2170,7 @@ enum {
 
 - (id)accessibilityFocusedChild {
     id child = nil;
-    if ([self isEditing])
+    if ([[editor textField] superview])
         child = NSAccessibilityUnignoredDescendant([editor textField]);
     else if (activeAnnotation)
         child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyFauxUIElement elementWithObject:activeAnnotation parent:[self documentView]]);
@@ -2227,21 +2222,13 @@ enum {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
-        [editor relayout];
+        [editor layout];
         [self resetPDFToolTipRects];
         SKDESTROY(accessibilityChildren);
     }
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [self resetPDFToolTipRects];
-    if ([self isEditing]) {
-        [editor updateFrame];
-        [editor updateFont];
-    }
-}
-
-- (void)handleViewChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
 }
 
@@ -2337,7 +2324,7 @@ enum {
 #pragma mark FullScreen navigation and autohide
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    if ([self isEditing] && [self commitEditing] == NO)
+    if (editor && [self commitEditing] == NO)
         [self discardEditing];
     [navWindow remove];
 }
@@ -3064,7 +3051,7 @@ enum {
     // Get mouse in "page space".
     pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
     
-    if ([activeAnnotation page] == page && [self isEditing] == NO && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
+    if ([activeAnnotation page] == page && editor == nil && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
         mouseDownInAnnotation = YES;
         newActiveAnnotation = activeAnnotation;
     } else {
@@ -3079,7 +3066,7 @@ enum {
             
             // Hit test annotation.
             if ([annotation isSkimNote]) {
-                if ([annotation hitTest:pagePoint] && ([self isEditing] == NO || annotation != activeAnnotation)) {
+                if ([annotation hitTest:pagePoint] && (editor == nil || annotation != activeAnnotation)) {
                     mouseDownInAnnotation = YES;
                     newActiveAnnotation = annotation;
                     break;
@@ -3275,7 +3262,7 @@ enum {
         
         while (i-- > 0) {
             PDFAnnotation *annotation = [annotations objectAtIndex:i];
-            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && ([self isEditing] == NO || annotation != activeAnnotation)) {
+            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && (editor == nil || annotation != activeAnnotation)) {
                 [self removeAnnotation:annotation];
                 [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
                 break;
@@ -3935,7 +3922,7 @@ enum {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && [self isEditing] == NO;
+                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && editor == nil;
                 if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
                     area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;

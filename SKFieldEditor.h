@@ -1,5 +1,5 @@
 //
-//  SKFindFieldEditor.m
+//  SKFieldEditor.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/6/06.
@@ -36,13 +36,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKFindFieldEditor.h"
+#import <Cocoa/Cocoa.h>
 
 
-@implementation SKFindFieldEditor
-
-- (BOOL)respondsToSelector:(SEL)aSelector {
-    return aSelector != @selector(performFindPanelAction:) && [super respondsToSelector:aSelector];
+@interface SKFieldEditor : NSTextView {
+    NSHashTable *ignoredSelectors;
 }
+
+- (void)ignoreSelectors:(SEL)aSelector, ...;
 
 @end
