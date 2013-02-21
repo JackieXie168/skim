@@ -37,7 +37,6 @@
  */
 
 #import "SKFindController.h"
-#import "SKFindFieldEditor.h"
 #import "SKStringConstants.h"
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
@@ -48,12 +47,11 @@
 
 @implementation SKFindController
 
-@synthesize delegate, findField, messageField, doneButton, navigationButton, ownerController, findString, fieldEditor;
+@synthesize delegate, findField, messageField, doneButton, navigationButton, ownerController, findString;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(findString);
-    SKDESTROY(fieldEditor);
     SKDESTROY(findField);
     SKDESTROY(messageField);
     SKDESTROY(ownerController);
@@ -95,9 +93,6 @@
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
     [[findField cell] setSearchMenuTemplate:menu];
-    
-    fieldEditor = [[SKFindFieldEditor alloc] init];
-    [fieldEditor setFieldEditor:YES];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {

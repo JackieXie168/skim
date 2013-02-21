@@ -1,5 +1,5 @@
 //
-//  SKFindFieldEditor.h
+//  SKFieldEditor.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/6/06.
@@ -36,8 +36,38 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKFieldEditor.h"
 
 
-@interface SKFindFieldEditor : NSTextView {}
+@implementation SKFieldEditor
+
+- (void)dealloc {
+    SKDESTROY(ignoredSelectors);
+    [super dealloc];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    if (ignoredSelectors && NSHashGet(ignoredSelectors, aSelector) != NULL)
+        return NO;
+    return [super respondsToSelector:aSelector];
+}
+
+- (void)ignoreSelectors:(SEL)aSelector, ... {
+    if (aSelector) {
+        if (ignoredSelectors)
+            NSResetHashTable(ignoredSelectors);
+        else
+            ignoredSelectors = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 0);
+        NSHashInsert(ignoredSelectors, aSelector);
+        va_list selectorList;
+        SEL nextSelector;
+        va_start(selectorList, aSelector);
+        while ((nextSelector = va_arg(selectorList, SEL)))
+            NSHashInsert(ignoredSelectors, nextSelector);
+        va_end(selectorList);
+    } else {
+        SKDESTROY(ignoredSelectors);
+    }
+}
+
 @end

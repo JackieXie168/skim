@@ -315,6 +315,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     SKDESTROY(toolbarController);
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
+    SKDESTROY(fieldEditor);
     [super dealloc];
 }
 

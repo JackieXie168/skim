@@ -68,7 +68,7 @@ enum {
 };
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
-@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKFindController, SKSplitView, SKSideWindow;
+@class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKFindController, SKSplitView, SKFieldEditor, SKSideWindow;
 @class SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate, SKFindControllerDelegate> {
@@ -93,6 +93,8 @@ enum {
     SKStatusBar                         *statusBar;
     
     SKFindController                    *findController;
+    
+    SKFieldEditor                       *fieldEditor;
     
     NSMutableArray                      *thumbnails;
     CGFloat                             roundedThumbnailSize;

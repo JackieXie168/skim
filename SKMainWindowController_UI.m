@@ -64,6 +64,7 @@
 #import "SKApplication.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKLineInspector.h"
+#import "SKFieldEditor.h"
 #import "PDFOutline_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "SKFloatMapTable.h"
@@ -287,8 +288,17 @@
 }
 
 - (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
-    if ([anObject isEqual:[findController findField]])
-        return [findController fieldEditor];
+    if ([anObject isEqual:[findController findField]] || [anObject isEqual:[pdfView editTextField]]) {
+        if (fieldEditor == nil) {
+            fieldEditor = [[SKFieldEditor alloc] init];
+            [fieldEditor setFieldEditor:YES];
+        }
+        if ([anObject isEqual:[findController findField]])
+            [fieldEditor ignoreSelectors:@selector(performFindPanelAction:), NULL];
+        else
+            [fieldEditor ignoreSelectors:@selector(changeFont:), @selector(changeAttributes:), @selector(changeColor:), @selector(alignLeft:), @selector(alignRight:), @selector(alignCenter:), NULL];
+        return fieldEditor;
+    }
     return nil;
 }
 
@@ -1158,7 +1168,7 @@
 }
 
 - (BOOL)commitEditing {
-    if ([pdfView isEditing])
+    if ([pdfView editTextField])
         return [pdfView commitEditing];
     if ([rightSideController.noteOutlineView editedRow] != -1)
         return [[rightSideController.noteOutlineView window] makeFirstResponder:rightSideController.noteOutlineView];
