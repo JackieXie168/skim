@@ -179,8 +179,6 @@ enum {
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
 - (void)doUpdateCursor;
 
-- (void)transformDocumentViewContextForPage:(PDFPage *)page;
-
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
@@ -300,6 +298,12 @@ enum {
     [super dealloc];
 }
 
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if (editor && [self commitEditing] == NO)
+        [self discardEditing];
+    [super viewWillMoveToWindow:newWindow];
+}
+
 #pragma mark Tool Tips
 
 - (void)removePDFToolTipRects {
@@ -341,6 +345,15 @@ enum {
 }
 
 #pragma mark Drawing
+
+- (void)transformDocumentViewContextForPage:(PDFPage *)page {
+    NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
+    [transform scaleBy:[self scaleFactor]];
+    [transform concat];
+    [page transformContextForBox:[self displayBox]];
+}
 
 - (void)drawSelectionForPage:(PDFPage *)pdfPage {
     NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
@@ -946,6 +959,64 @@ enum {
     return [[self document] isLocked] == NO && [super canGoForward];
 }
 
+- (void)checkSpellingStartingAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
+    NSUInteger i, first = [page pageIndex];
+    NSUInteger count = [[self document] pageCount];
+    BOOL didWrap = NO;
+    i = first;
+    NSRange range = NSMakeRange(NSNotFound, 0);
+    
+    while (YES) {
+        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:anIndex language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
+        if (range.location != NSNotFound) break;
+        if (didWrap && i == first) break;
+        if (++i >= count) {
+            i = 0;
+            didWrap = YES;
+        }
+        page = [[self document] pageAtIndex:i];
+        anIndex = 0;
+    }
+    
+    if (range.location != NSNotFound) {
+        PDFSelection *selection = [page selectionForRange:range];
+        [self setCurrentSelection:selection];
+        [self goToRect:[selection boundsForPage:page] onPage:page];
+        [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
+    } else NSBeep();
+}
+
+- (void)checkSpelling:(id)sender {
+    PDFSelection *selection = [self currentSelection];
+    PDFPage *page = [self currentPage];
+    NSUInteger idx = 0;
+    if ([selection hasCharacters]) {
+        page = [selection safeLastPage];
+        idx = [selection safeIndexOfLastCharacterOnPage:page];
+        if (idx == NSNotFound)
+            idx = 0;
+    }
+    [self checkSpellingStartingAtIndex:idx onPage:page];
+}
+
+- (void)showGuessPanel:(id)sender {
+    PDFSelection *selection = [self currentSelection];
+    PDFPage *page = [self currentPage];
+    NSUInteger idx = 0;
+    if ([selection hasCharacters]) {
+        page = [selection safeFirstPage];
+        idx = [selection safeIndexOfFirstCharacterOnPage:page];
+        if (idx == NSNotFound)
+            idx = 0;
+    }
+    [self checkSpellingStartingAtIndex:idx onPage:page];
+    [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
+}
+
+- (void)ignoreSpelling:(id)sender {
+    [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
+}
+
 #pragma mark Event Handling
 
 // PDFView has duplicated key equivalents for Cmd-+/- as well as Opt-Cmd-+/-, which is totoally unnecessary and harmful
@@ -1471,72 +1542,6 @@ enum {
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super swipeWithEvent:theEvent];
     }
-}
-
-- (void)checkSpellingStartingAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
-    NSUInteger i, first = [page pageIndex];
-    NSUInteger count = [[self document] pageCount];
-    BOOL didWrap = NO;
-    i = first;
-    NSRange range = NSMakeRange(NSNotFound, 0);
-    
-    while (YES) {
-        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:anIndex language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
-        if (range.location != NSNotFound) break;
-        if (didWrap && i == first) break;
-        if (++i >= count) {
-            i = 0;
-            didWrap = YES;
-        }
-        page = [[self document] pageAtIndex:i];
-        anIndex = 0;
-    }
-    
-    if (range.location != NSNotFound) {
-        PDFSelection *selection = [page selectionForRange:range];
-        [self setCurrentSelection:selection];
-        [self goToRect:[selection boundsForPage:page] onPage:page];
-        [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
-    } else NSBeep();
-}
-
-- (void)checkSpelling:(id)sender {
-    PDFSelection *selection = [self currentSelection];
-    PDFPage *page = [self currentPage];
-    NSUInteger idx = 0;
-    if ([selection hasCharacters]) {
-        page = [selection safeLastPage];
-        idx = [selection safeIndexOfLastCharacterOnPage:page];
-        if (idx == NSNotFound)
-            idx = 0;
-    }
-    [self checkSpellingStartingAtIndex:idx onPage:page];
-}
-
-- (void)showGuessPanel:(id)sender {
-    PDFSelection *selection = [self currentSelection];
-    PDFPage *page = [self currentPage];
-    NSUInteger idx = 0;
-    if ([selection hasCharacters]) {
-        page = [selection safeFirstPage];
-        idx = [selection safeIndexOfFirstCharacterOnPage:page];
-        if (idx == NSNotFound)
-            idx = 0;
-    }
-    [self checkSpellingStartingAtIndex:idx onPage:page];
-    [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
-}
-
-- (void)ignoreSpelling:(id)sender {
-    [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
-}
-
-#pragma mark Tracking mousemoved fix
-
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if (editor && [self commitEditing] == NO)
-        [self discardEditing];
-    [super viewWillMoveToWindow:newWindow];
 }
 
 #pragma mark NSDraggingDestination protocol
@@ -2079,6 +2084,18 @@ enum {
     [self goToRect:[annotation bounds] onPage:[annotation page]];
 }
 
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
+    NSRect rect = [annotation displayRect];
+    if (annotation == activeAnnotation && [annotation isResizable]) {
+        CGFloat margin = HANDLE_SIZE / [self scaleFactor];
+        rect = NSInsetRect(rect, -margin, -margin);
+    }
+    [self setNeedsDisplayInRect:rect ofPage:page];
+    [self annotationsChangedOnPage:page];
+}
+
+#pragma mark Sync
+
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
@@ -2125,6 +2142,8 @@ enum {
     if (finished)
         SKDESTROY(syncDot);
 }
+
+#pragma mark Accessibility
 
 - (NSArray *)accessibilityChildren {
     if (accessibilityChildren == nil) {
@@ -3979,25 +3998,6 @@ enum {
                                       clickCount:1
                                         pressure:0.0];
     [[self getCursorForEvent:event] set];
-}
-
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    NSRect rect = [annotation displayRect];
-    if (annotation == activeAnnotation && [annotation isResizable]) {
-        CGFloat margin = HANDLE_SIZE / [self scaleFactor];
-        rect = NSInsetRect(rect, -margin, -margin);
-    }
-    [self setNeedsDisplayInRect:rect ofPage:page];
-    [self annotationsChangedOnPage:page];
-}
-
-- (void)transformDocumentViewContextForPage:(PDFPage *)page {
-    NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
-    [transform scaleBy:[self scaleFactor]];
-    [transform concat];
-    [page transformContextForBox:[self displayBox]];
 }
 
 @end
