@@ -1000,16 +1000,7 @@ enum {
 }
 
 - (void)showGuessPanel:(id)sender {
-    PDFSelection *selection = [self currentSelection];
-    PDFPage *page = [self currentPage];
-    NSUInteger idx = 0;
-    if ([selection hasCharacters]) {
-        page = [selection safeFirstPage];
-        idx = [selection safeIndexOfFirstCharacterOnPage:page];
-        if (idx == NSNotFound)
-            idx = 0;
-    }
-    [self checkSpellingStartingAtIndex:idx onPage:page];
+    [self checkSpelling:sender];
     [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
 }
 
