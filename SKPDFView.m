@@ -959,23 +959,34 @@ enum {
     return [[self document] isLocked] == NO && [super canGoForward];
 }
 
-- (void)checkSpellingStartingAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
-    NSUInteger i, first = [page pageIndex];
-    NSUInteger count = [[self document] pageCount];
+- (void)checkSpelling:(id)sender {
+    PDFSelection *selection = [self currentSelection];
+    PDFPage *page;
+    NSUInteger idx, i, first, iMax = [[self document] pageCount];
     BOOL didWrap = NO;
-    i = first;
     NSRange range = NSMakeRange(NSNotFound, 0);
     
+    if ([selection hasCharacters]) {
+        page = [selection safeLastPage];
+        idx = [selection safeIndexOfLastCharacterOnPage:page];
+        if (idx == NSNotFound)
+            idx = 0;
+    } else {
+        page = [self currentPage];
+        idx = 0;
+    }
+    
+    i = first = [page pageIndex];
     while (YES) {
-        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:anIndex language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
+        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:idx language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
         if (range.location != NSNotFound) break;
         if (didWrap && i == first) break;
-        if (++i >= count) {
+        if (++i >= iMax) {
             i = 0;
             didWrap = YES;
         }
         page = [[self document] pageAtIndex:i];
-        anIndex = 0;
+        idx = 0;
     }
     
     if (range.location != NSNotFound) {
@@ -984,19 +995,6 @@ enum {
         [self goToRect:[selection boundsForPage:page] onPage:page];
         [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
     } else NSBeep();
-}
-
-- (void)checkSpelling:(id)sender {
-    PDFSelection *selection = [self currentSelection];
-    PDFPage *page = [self currentPage];
-    NSUInteger idx = 0;
-    if ([selection hasCharacters]) {
-        page = [selection safeLastPage];
-        idx = [selection safeIndexOfLastCharacterOnPage:page];
-        if (idx == NSNotFound)
-            idx = 0;
-    }
-    [self checkSpellingStartingAtIndex:idx onPage:page];
 }
 
 - (void)showGuessPanel:(id)sender {
