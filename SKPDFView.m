@@ -149,6 +149,8 @@ enum {
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 
+- (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
+
 - (void)enableNavigation;
 - (void)disableNavigation;
 
@@ -1381,7 +1383,7 @@ enum {
                 [item setTarget:self];
             }
             
-            if ((annotation != activeAnnotation || editor == nil) && [annotation isEditable]) {
+            if ([self isEditingAnnotation:annotation] == NO && [annotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
@@ -1860,7 +1862,7 @@ enum {
     PDFPage *page = [[wasAnnotation page] retain];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
-    if (editor && activeAnnotation == annotation)
+    if ([self isEditingAnnotation:annotation])
         [self commitEditing];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
@@ -1891,7 +1893,7 @@ enum {
     [self annotationsChangedOnPage:page];
     if ([[annotation type] isEqualToString:SKNNoteString])
         [self resetPDFToolTipRects];
-    if (editor && annotation == activeAnnotation)
+    if ([self isEditingAnnotation:annotation])
         [editor layout];
     SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
@@ -1901,7 +1903,7 @@ enum {
 - (void)editThisAnnotation:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     
-    if (annotation == nil || (editor && activeAnnotation == annotation))
+    if (annotation == nil || [self isEditingAnnotation:annotation])
         return;
     
     [self commitEditing];
@@ -2058,6 +2060,10 @@ enum {
             [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
         }
     }
+}
+
+- (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation {
+    return editor && activeAnnotation == annotation;
 }
 
 - (void)scrollPageToVisible:(PDFPage *)page {
@@ -3055,7 +3061,7 @@ enum {
             
             // Hit test annotation.
             if ([annotation isSkimNote]) {
-                if ([annotation hitTest:pagePoint] && (editor == nil || annotation != activeAnnotation)) {
+                if ([annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
                     mouseDownInAnnotation = YES;
                     newActiveAnnotation = annotation;
                     break;
@@ -3251,7 +3257,7 @@ enum {
         
         while (i-- > 0) {
             PDFAnnotation *annotation = [annotations objectAtIndex:i];
-            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && (editor == nil || annotation != activeAnnotation)) {
+            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
                 [self removeAnnotation:annotation];
                 [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
                 break;
