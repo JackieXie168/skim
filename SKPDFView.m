@@ -149,9 +149,6 @@ enum {
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 
-- (NSRange)visiblePageIndexRange;
-- (NSRect)visibleContentRect;
-
 - (void)enableNavigation;
 - (void)disableNavigation;
 
@@ -304,6 +301,11 @@ enum {
     [super viewWillMoveToWindow:newWindow];
 }
 
+- (NSRect)visibleContentRect {
+    NSView *clipView = [[self scrollView] contentView];
+    return [clipView convertRect:[clipView visibleRect] toView:self];
+}
+
 #pragma mark Tool Tips
 
 - (void)removePDFToolTipRects {
@@ -319,14 +321,11 @@ enum {
     [self removePDFToolTipRects];
     
     if ([self document] && [self window] && interactionMode != SKPresentationMode) {
-        NSRange range = [self visiblePageIndexRange];
-        NSUInteger i, iMax = NSMaxRange(range);
         NSRect visibleRect = [self visibleContentRect];
         NSView *docView = [self documentView];
         BOOL hasLinkToolTips = (toolMode == SKTextToolMode || toolMode == SKMoveToolMode || toolMode == SKNoteToolMode);
         
-        for (i = range.location; i < iMax; i++) {
-            PDFPage *page = [[self document] pageAtIndex:i];
+        for (PDFPage *page in [self visiblePages]) {
             for (PDFAnnotation *annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNNoteString] || (hasLinkToolTips && [annotation isLink])) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
@@ -2311,24 +2310,6 @@ enum {
     }
 }
 
-- (NSRect)visibleContentRect {
-    NSView *clipView = [[self scrollView] contentView];
-    return [clipView convertRect:[clipView visibleRect] toView:self];
-}
-
-- (NSRange)visiblePageIndexRange {
-    NSRange range = NSMakeRange(NSNotFound, 0);
-    NSRect rect = [self convertRect:[[self documentView] visibleRect] fromView:[self documentView]];
-    PDFPage *firstPage = [self pageForPoint:SKTopLeftPoint(rect) nearest:YES];
-    PDFPage *lastPage = [self pageForPoint:SKBottomRightPoint(rect) nearest:YES];
-    if (firstPage && lastPage) {
-        NSUInteger first = [firstPage pageIndex];
-        NSUInteger last = [lastPage pageIndex];
-        range = NSMakeRange(first, last - first + 1);
-    }
-    return range;
-}
-
 #pragma mark FullScreen navigation and autohide
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
@@ -3455,10 +3436,8 @@ enum {
         newRect = SKIntersectionRect(newRect, pageBounds);
         if (didSelect) {
             NSRect dirtyRect = NSUnionRect(NSInsetRect(selectionRect, -margin, -margin), NSInsetRect(newRect, -margin, -margin));
-            NSRange r = [self visiblePageIndexRange];
-            NSUInteger i;
-            for (i = r.location; i < NSMaxRange(r); i++)
-                [self setNeedsDisplayInRect:dirtyRect ofPage:[[self document] pageAtIndex:i]];
+            for (PDFPage *p in [self visiblePages])
+                [self setNeedsDisplayInRect:dirtyRect ofPage:p];
         } else {
             [self setNeedsDisplay:YES];
             didSelect = YES;
