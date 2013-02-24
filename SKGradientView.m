@@ -156,32 +156,27 @@
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    NSWindow *window = [self window];
-    if (window) {
+    NSWindow *oldWindow = [self window];
+    if (oldWindow) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
-        [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
-        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:window];
-        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:window];
+        [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:oldWindow];
+        [nc removeObserver:self name:NSWindowDidResignMainNotification object:oldWindow];
+        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
+        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
     }
-    [super viewWillMoveToWindow:newWindow];
-}
-
-- (void)viewDidMoveToWindow {
-    NSWindow *window = [self window];
-    if (window) {
-        BOOL hasBorder = [window styleMask] != NSBorderlessWindowMask;
+    if (newWindow) {
+        BOOL hasBorder = [newWindow styleMask] != NSBorderlessWindowMask;
         if (hasBorder) {
             NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:newWindow];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:newWindow];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
+            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
         }
         if (autoTransparent)
             [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
     }
-    [super viewDidMoveToWindow];
+    [super viewWillMoveToWindow:newWindow];
 }
 
 // required in order for redisplay to work properly with the controls
