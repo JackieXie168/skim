@@ -133,13 +133,13 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         return 0;
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor {
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
     CGFloat delta = 4.0 / scaleFactor;
-    SKDrawResizeHandle(point, delta);
+    SKDrawResizeHandle(point, delta, active);
     point = SKAddPoints(origin, [self endPoint]);
-    SKDrawResizeHandle(point, delta);
+    SKDrawResizeHandle(point, delta, active);
 }
 
 - (NSSet *)keysForValuesToObserveForUndo {
