@@ -83,6 +83,34 @@
     }
 }
 
++ (NSColor *)selectionHighlightColor {
+    static NSColor *color = nil;
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] retain];
+    return color;
+}
+
++ (NSColor *)selectionHighlightInteriorColor {
+    static NSColor *color = nil;
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:0.8] retain];
+    return color;
+}
+
++ (NSColor *)disabledSelectionHighlightColor {
+    static NSColor *color = nil;
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedWhite:0.466820 alpha:1.0] retain];
+    return color;
+}
+
++ (NSColor *)disabledSelectionHighlightInteriorColor {
+    static NSColor *color = nil;
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedWhite:0.827376 alpha:0.8] retain];
+    return color;
+}
+
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     if (rgbColor) {

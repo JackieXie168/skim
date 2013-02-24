@@ -297,12 +297,6 @@ enum {
     [super dealloc];
 }
 
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if (editor && [self commitEditing] == NO)
-        [self discardEditing];
-    [super viewWillMoveToWindow:newWindow];
-}
-
 - (NSRect)visibleContentRect {
     NSView *clipView = [[self scrollView] contentView];
     return [clipView convertRect:[clipView visibleRect] toView:self];
@@ -359,6 +353,7 @@ enum {
 - (void)drawSelectionForPage:(PDFPage *)pdfPage {
     NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
     CGFloat radius = HANDLE_SIZE / [self scaleFactor];
+    BOOL active = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
     [path appendBezierPathWithRect:selectionRect];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
@@ -368,7 +363,7 @@ enum {
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
         [NSBezierPath fillRect:selectionRect];
     }
-    SKDrawResizeHandles(selectionRect, radius);
+    SKDrawResizeHandles(selectionRect, radius, active);
 }
 
 - (void)drawPage:(PDFPage *)pdfPage {
@@ -396,7 +391,7 @@ enum {
     [self transformDocumentViewContextForPage:pdfPage];
     
     if ([[activeAnnotation page] isEqual:pdfPage] && editor == nil)
-        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor]];
+        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor] active:[[self window] isKeyWindow] && [[self window] firstResponder] == self];
     
     if (readingBar)
         [readingBar drawForPage:pdfPage withBox:[self displayBox]];
@@ -2243,6 +2238,52 @@ enum {
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
+}
+
+- (void)handleKeyStateChangedNotification:(NSNotification *)notification {
+    if (selectionPageIndex != NSNotFound) {
+        CGFloat margin = HANDLE_SIZE / [self scaleFactor];
+        for (PDFPage *page in [self visiblePages])
+            [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
+    }
+    if (activeAnnotation)
+        [self setNeedsDisplayForAnnotation:activeAnnotation];
+}
+
+#pragma mark Key and window changes
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if (editor && [self commitEditing] == NO)
+        [self discardEditing];
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    NSWindow *oldWindow = [self window];
+    if (oldWindow) {
+        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
+        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
+    }
+    if (newWindow) {
+        [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
+        [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
+    }
+    
+    [super viewWillMoveToWindow:newWindow];
+}
+
+- (BOOL)becomeFirstResponder {
+    if ([super becomeFirstResponder]) {
+        [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)resignFirstResponder {
+    if ([super resignFirstResponder]) {
+        [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark Menu validation

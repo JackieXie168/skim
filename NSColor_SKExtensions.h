@@ -75,6 +75,11 @@ enum {
 + (NSColor *)mainSourceListHighlightColor;
 + (NSColor *)disabledSourceListHighlightColor;
 
++ (NSColor *)selectionHighlightColor;
++ (NSColor *)selectionHighlightInteriorColor;
++ (NSColor *)disabledSelectionHighlightColor;
++ (NSColor *)disabledSelectionHighlightInteriorColor;
+
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;

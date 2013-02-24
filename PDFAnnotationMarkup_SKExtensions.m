@@ -49,6 +49,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "SKRuntime.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -278,7 +279,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor {
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
     // archived annotations (or annotations we didn't create) won't have these
     if ([self hasLineRects] == NO)
         [self regenerateLineRects];
@@ -288,7 +289,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     CGFloat lineWidth = 1.0 / scaleFactor;
     
     [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setFill];
+    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setStroke];
     for (i = 0; i < iMax; i++)
         NSFrameRectWithWidth(NSIntegralRect(*(NSRectPointer)[lines pointerAtIndex:i]), lineWidth);
     [NSGraphicsContext restoreGraphicsState];

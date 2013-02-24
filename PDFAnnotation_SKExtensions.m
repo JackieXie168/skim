@@ -56,6 +56,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "SKVersionNumber.h"
+#import "NSColor_SKExtensions.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -278,12 +279,12 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self isResizable] ? SKResizeHandleForPointFromRect(point, [self bounds], 4.0 / scaleFactor) : 0;
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor {
+- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
     [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setFill];
+    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
     NSFrameRectWithWidth(NSIntegralRect([self bounds]), 1.0 / scaleFactor);
     if ([self isResizable])
-        SKDrawResizeHandles([self bounds], 4.0 / scaleFactor);
+        SKDrawResizeHandles([self bounds], 4.0 / scaleFactor, active);
     [NSGraphicsContext restoreGraphicsState];
 }
 

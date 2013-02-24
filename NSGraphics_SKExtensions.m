@@ -38,28 +38,29 @@
 
 #import "NSGraphics_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 
-void SKDrawResizeHandle(NSPoint point, CGFloat radius)
+void SKDrawResizeHandle(NSPoint point, CGFloat radius, BOOL active)
 {
     NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
     [path setLineWidth:0.25 * radius];
-    [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:0.8] setFill];
-    [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] setStroke];
+    [(active ? [NSColor selectionHighlightInteriorColor] : [NSColor disabledSelectionHighlightInteriorColor]) setFill];
+    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setStroke];
     [path fill];
     [path stroke];
 }
 
-void SKDrawResizeHandles(NSRect rect, CGFloat radius)
+void SKDrawResizeHandles(NSRect rect, CGFloat radius, BOOL active)
 {
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius);
+    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, active);
 }
 
 #pragma mark -
