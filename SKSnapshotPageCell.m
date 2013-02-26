@@ -43,7 +43,7 @@
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
-#define MIN_CELL_WIDTH 32.0
+#define MIN_CELL_WIDTH 16.0
 
 @implementation SKSnapshotPageCell
 
