@@ -986,7 +986,7 @@ enum {
     }
     
     if (range.location != NSNotFound) {
-        PDFSelection *selection = [page selectionForRange:range];
+        selection = [page selectionForRange:range];
         [self setCurrentSelection:selection];
         [self goToRect:[selection boundsForPage:page] onPage:page];
         [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
