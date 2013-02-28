@@ -39,7 +39,6 @@
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
 #import "SKMainDocument.h"
-#import "SKBorderlessImageWindow.h"
 #import <Quartz/Quartz.h>
 #import "SKSnapshotPDFView.h"
 #import <SkimNotes/SkimNotes.h>
@@ -57,6 +56,7 @@
 #define EM_DASH_CHARACTER (unichar)0x2014
 
 #define SMALL_DELAY 0.1
+#define RESIZE_TIME_FACTOR 0.6
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
@@ -463,56 +463,95 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Miniaturize / Deminiaturize
 
-- (void)getMiniRect:(NSRectPointer)miniRect maxiRect:(NSRectPointer)maxiRect forDockingRect:(NSRect)dockRect {
+- (NSRect)miniaturizedRectForDockingRect:(NSRect)dockRect {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-    NSRect clipRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
-    CGFloat thumbRatio = NSHeight(clipRect) / NSWidth(clipRect);
+    NSRect sourceRect = [clipView convertRect:[clipView bounds] toView:nil];
+    NSRect targetRect;
+    NSSize windowSize = [[self window] frame].size;
+    NSSize thumbSize = [thumbnail size];
+    CGFloat thumbRatio = thumbSize.height / thumbSize.width;
     CGFloat dockRatio = NSHeight(dockRect) / NSWidth(dockRect);
+    CGFloat scaleFactor;
+    CGFloat shadowRadius = round(fmax(thumbSize.width, thumbSize.height) / 32.0);
+    CGFloat shadowOffset = ceil(0.75 * shadowRadius);
     
-    clipRect = [pdfView convertRect:clipRect toView:nil];
-    clipRect.origin = [[self window] convertBaseToScreen:clipRect.origin];
-    *maxiRect = clipRect;
+    if (thumbRatio > dockRatio) {
+        targetRect = NSInsetRect(dockRect, 0.5 * NSWidth(dockRect) * (1.0 - dockRatio / thumbRatio), 0.0);
+        scaleFactor = NSHeight(targetRect) / thumbSize.height;
+    } else {
+        targetRect = NSInsetRect(dockRect, 0.0, 0.5 * NSHeight(dockRect) * (1.0 - thumbRatio / dockRatio));
+        scaleFactor = NSWidth(targetRect) / thumbSize.width;
+    }
+    shadowRadius *= scaleFactor;
+    shadowOffset *= scaleFactor;
+    targetRect = NSOffsetRect(NSInsetRect(targetRect, shadowRadius, shadowRadius), 0.0, shadowOffset);
+    scaleFactor = thumbRatio > dockRatio ? NSHeight(targetRect) / NSHeight(sourceRect) : NSWidth(targetRect) / NSWidth(sourceRect);
     
-    if (thumbRatio > dockRatio)
-        *miniRect = NSInsetRect(dockRect, 0.5 * NSWidth(dockRect) * (1.0 - dockRatio / thumbRatio), 0.0);
-    else
-        *miniRect = NSInsetRect(dockRect, 0.0, 0.5 * NSHeight(dockRect) * (1.0 - thumbRatio / dockRatio));
+    return NSMakeRect(NSMinX(targetRect) - scaleFactor * NSMinX(sourceRect), NSMinY(targetRect) - scaleFactor * NSMinY(sourceRect), scaleFactor * windowSize.width, scaleFactor * windowSize.height);
+}
+
+- (void)endMiniaturize:(NSWindow *)miniaturizeWindow {
+    if ([self hasWindow])
+        [[self window] orderFront:nil];
+    [miniaturizeWindow orderOut:nil];
+    animating = NO;
+}
+
+- (void)miniaturizeWindowFromRect:(NSRect)startRect toRect:(NSRect)endRect {
+    NSWindow *miniaturizeWindow = [[NSWindow alloc] initWithContentRect:startRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+    [miniaturizeWindow setIgnoresMouseEvents:YES];
+    [miniaturizeWindow setLevel:NSFloatingWindowLevel];
+    [miniaturizeWindow setBackgroundColor:[NSColor clearColor]];
+    [miniaturizeWindow setOpaque:NO];
+    [miniaturizeWindow setHasShadow:YES];
+    if ([miniaturizeWindow respondsToSelector:@selector(setAnimationBehavior:)])
+        [miniaturizeWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+    
+    NSImageView *imageView = [[NSImageView alloc] init];
+    [imageView setImageFrameStyle:NSImageFrameNone];
+    [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+    [imageView setImage:[(SKSnapshotWindow *)[self window] windowImage]];
+    [miniaturizeWindow setContentView:imageView];
+    [imageView release];
+    
+    NSTimeInterval duration = RESIZE_TIME_FACTOR * [miniaturizeWindow animationResizeTime:endRect];
+    
+    [miniaturizeWindow orderFront:nil];
+    
+    animating = YES;
+    
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:duration];
+    [[miniaturizeWindow animator] setFrame:endRect display:YES];
+    [NSAnimationContext endGrouping];
+    
+    [self performSelector:@selector(endMiniaturize:) withObject:miniaturizeWindow afterDelay:duration];
+    [miniaturizeWindow release];
 }
 
 - (void)miniaturize {
+    if (animating)
+        return;
     if ([[self delegate] respondsToSelector:@selector(snapshotController:miniaturizedRect:)]) {
-        NSRect startRect, endRect, dockRect = [[self delegate] snapshotController:self miniaturizedRect:YES];
+        NSRect dockRect = [[self delegate] snapshotController:self miniaturizedRect:YES];
+        NSRect startRect = [[self window] frame];
+        NSRect endRect = [self miniaturizedRectForDockingRect:dockRect];
         
-        [self getMiniRect:&endRect maxiRect:&startRect forDockingRect:dockRect];
-        
-        NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        SKBorderlessImageWindow *miniaturizeWindow = [[SKBorderlessImageWindow alloc] initWithContentRect:startRect image:image];
-        
-        [miniaturizeWindow orderFront:self];
-        [[self window] orderOut:self];
-        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
-        [miniaturizeWindow orderOut:self];
-        [miniaturizeWindow release];
-    } else {
-        [[self window] orderOut:self];
+        [self miniaturizeWindowFromRect:startRect toRect:endRect];
     }
+    [[self window] orderOut:nil];
     [self setHasWindow:NO];
 }
 
 - (void)deminiaturize {
+    if (animating)
+        return;
     if ([[self delegate] respondsToSelector:@selector(snapshotController:miniaturizedRect:)]) {
-        NSRect startRect, endRect, dockRect = [[self delegate] snapshotController:self miniaturizedRect:NO];
+        NSRect dockRect = [[self delegate] snapshotController:self miniaturizedRect:NO];
+        NSRect endRect = [[self window] frame];
+        NSRect startRect = [self miniaturizedRectForDockingRect:dockRect];
         
-        [self getMiniRect:&startRect maxiRect:&endRect forDockingRect:dockRect];
-        
-        NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        SKBorderlessImageWindow *miniaturizeWindow = [[SKBorderlessImageWindow alloc] initWithContentRect:startRect image:image];
-        
-        [miniaturizeWindow orderFront:self];
-        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
-        [[self window] orderFront:self];
-        [miniaturizeWindow orderOut:self];
-        [miniaturizeWindow release];
+        [self miniaturizeWindowFromRect:startRect toRect:endRect];
     } else {
         [self showWindow:self];
     }
@@ -546,11 +585,15 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark -
 
+#define MIN_WINDOW_COORDINATE -160000
+
 @interface NSWindow (SKPrivate)
 - (id)_updateButtonsForModeChanged;
 @end
 
 @implementation SKSnapshotWindow
+
+@dynamic windowImage;
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
     self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation];
@@ -568,6 +611,34 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)miniaturize:(id)sender {
     [[self windowController] miniaturize];
+}
+
+- (NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen *)screen {
+    if (disableConstrainToScreen)
+        return frameRect;
+    return [super constrainFrameRect:frameRect toScreen:screen];
+}
+
+- (NSImage *)windowImage {
+    NSRect frame = [self frame];
+    BOOL visible = [self isVisible];
+    if (visible == NO) {
+        disableConstrainToScreen = YES;
+        [self setFrameOrigin:NSMakePoint(MIN_WINDOW_COORDINATE, MIN_WINDOW_COORDINATE)];
+        [self orderBack:nil];
+        [self displayIfNeeded];
+        disableConstrainToScreen = NO;
+    }
+    CGImageRef cgImage = CGWindowListCreateImage(CGRectNull, kCGWindowListOptionIncludingWindow, (CGWindowID)[self windowNumber], kCGWindowImageBoundsIgnoreFraming);
+    if (visible == NO) {
+        [self orderOut:nil];
+        [self setFrameOrigin:frame.origin];
+    }
+    NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
+    [image setDataRetained:YES];
+    [image setCacheMode:NSImageCacheNever];
+    CGImageRelease(cgImage);
+    return [image autorelease];
 }
 
 - (void)awakeFromNib {
