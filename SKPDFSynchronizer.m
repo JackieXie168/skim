@@ -196,8 +196,7 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
 }
 
 - (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep isTeX:(BOOL)isTeX {
-    NSString *file = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
-    return [self sourceFileForFileName:[file autorelease] isTeX:isTeX removeQuotes:NO];
+    return [self sourceFileForFileName:[NSString stringWithUTF8String:fileRep] isTeX:isTeX removeQuotes:NO];
 }
 
 #pragma mark PDFSync
@@ -451,7 +450,7 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
     BOOL rv = NO;
     if (scanner)
         synctex_scanner_free(scanner);
-    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation], NULL, 1);
+    scanner = synctex_scanner_new_with_output_file([theFileName UTF8String], NULL, 1);
     if (scanner) {
         [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) isTeX:NO]];
         if (filenames)
@@ -463,9 +462,8 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
-                filename = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
+                filename = [NSString stringWithUTF8String:fileRep];
                 [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
-                [filename release];
             }
         } while ((node = synctex_node_next(node)));
         isPdfsync = NO;
@@ -505,7 +503,7 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
         if (filename == nil)
             filename = [file lastPathComponent];
     }
-    if (synctex_display_query(scanner, [filename fileSystemRepresentation], (int)line + 1, 0) > 0) {
+    if (synctex_display_query(scanner, [filename UTF8String], (int)line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             NSUInteger page = synctex_node_page(node);
