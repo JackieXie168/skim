@@ -50,6 +50,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
     NSString *pageLabel;
     BOOL hasWindow;
     BOOL forceOnTop;
+    BOOL animating;
 }
 
 @property (nonatomic, retain) IBOutlet SKSnapshotPDFView *pdfView;
@@ -105,5 +106,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 @interface SKSnapshotWindow : NSWindow {
 	IBOutlet SKSnapshotPDFView *pdfView;
+    BOOL disableConstrainToScreen;
 }
+@property (nonatomic, readonly) NSImage *windowImage;
 @end
