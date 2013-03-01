@@ -195,10 +195,6 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
     return [[file stringByResolvingSymlinksInPath] stringByStandardizingPath];
 }
 
-- (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep isTeX:(BOOL)isTeX {
-    return [self sourceFileForFileName:[NSString stringWithUTF8String:fileRep] isTeX:isTeX removeQuotes:NO];
-}
-
 #pragma mark PDFSync
 
 - (BOOL)loadPdfsyncFile:(NSString *)theFileName {
@@ -452,13 +448,13 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
         synctex_scanner_free(scanner);
     scanner = synctex_scanner_new_with_output_file([theFileName UTF8String], NULL, 1);
     if (scanner) {
-        [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) isTeX:NO]];
+        const char *fileRep = synctex_scanner_get_synctex(scanner);
+        NSString *filename = [NSString stringWithUTF8String:fileRep];
+        [self setSyncFileName:[self sourceFileForFileName:filename isTeX:NO removeQuotes:NO]];
         if (filenames)
             [filenames removeAllObjects];
         else
             filenames = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
-        const char *fileRep;
-        NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
@@ -477,10 +473,12 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node;
         const char *file;
+        NSString *filename;
         while (rv == NO && (node = synctex_next_result(scanner))) {
             if ((file = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
+                filename = [NSString stringWithUTF8String:file];
                 *linePtr = MAX(synctex_node_line(node), 1) - 1;
-                *filePtr = [self sourceFileForFileSystemRepresentation:file isTeX:YES];
+                *filePtr = [self sourceFileForFileName:fileName isTeX:YES removeQuotes:NO];
                 rv = YES;
             }
         }
