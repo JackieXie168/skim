@@ -471,7 +471,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
                 filename = [NSString stringWithUTF8String:fileRep];
-                [filenames setObject:filename forKey:[self sourceFileForFileName:filename isTeX:YES removeQuotes:NO]];
+                NSMapInsert(filenames, [self sourceFileForFileName:filename isTeX:YES removeQuotes:NO], fileRep);
             }
         } while ((node = synctex_node_next(node)));
         isPdfsync = NO;
