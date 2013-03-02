@@ -43,7 +43,6 @@
 #import "NSScanner_SKExtensions.h"
 #import <CoreFoundation/CoreFoundation.h>
 #import "NSFileManager_SKExtensions.h"
-#import "NSMapTable_SKExtensions.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
 
@@ -52,6 +51,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #define SKPDFSynchronizerPdfsyncExtension @"pdfsync"
 static NSArray *SKPDFSynchronizerTexExtensions = nil;
+
+static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item));
+static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item));
 
 #pragma mark -
 
@@ -203,10 +205,15 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
         [pages removeAllObjects];
     else
         pages = [[NSMutableArray alloc] init];
-    if (lines)
+    if (lines) {
         [lines removeAllObjects];
-    else
-        lines = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
+    } else {
+        NSPointerFunctions *keyPointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        [keyPointerFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
+        [keyPointerFunctions setHashFunction:&caseInsensitiveStringHash];
+        NSPointerFunctions *valuePointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        lines = [[NSMapTable alloc] initWithKeyPointerFunctions:keyPointerFunctions valuePointerFunctions:valuePointerFunctions capacity:0];
+    }
     
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
@@ -451,10 +458,15 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
         const char *fileRep = synctex_scanner_get_synctex(scanner);
         NSString *filename = [NSString stringWithUTF8String:fileRep];
         [self setSyncFileName:[self sourceFileForFileName:filename isTeX:NO removeQuotes:NO]];
-        if (filenames)
-            [filenames removeAllObjects];
-        else
-            filenames = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
+        if (filenames) {
+            NSResetMapTable(filenames);
+        } else {
+            NSPointerFunctions *keyPointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+            [keyPointerFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
+            [keyPointerFunctions setHashFunction:&caseInsensitiveStringHash];
+            NSPointerFunctions *valuePointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCStringPersonality | NSPointerFunctionsCopyIn];
+            filenames = [[NSMapTable alloc] initWithKeyPointerFunctions:keyPointerFunctions valuePointerFunctions:valuePointerFunctions capacity:0];
+        }
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
@@ -490,18 +502,18 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
 
 - (BOOL)synctexFindPage:(NSUInteger *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(NSInteger)line inFile:(NSString *)file {
     BOOL rv = NO;
-    NSString *filename = [filenames objectForKey:file] ?: [filenames objectForKey:[[file stringByResolvingSymlinksInPath] stringByStandardizingPath]];
-    if (filename == nil) {
+    char *filename = NSMapGet(filenames, file) ?: NSMapGet(filenames, [[file stringByResolvingSymlinksInPath] stringByStandardizingPath]);
+    if (filename == NULL) {
         for (NSString *fn in filenames) {
             if ([[fn lastPathComponent] caseInsensitiveCompare:[file lastPathComponent]] == NSOrderedSame) {
-                filename = [filenames objectForKey:file];
+                filename = NSMapGet(filenames, file);
                 break;
             }
         }
-        if (filename == nil)
-            filename = [file lastPathComponent];
+        if (filename == NULL)
+            filename = (char *)[[file lastPathComponent] UTF8String];
     }
-    if (synctex_display_query(scanner, [filename UTF8String], (int)line + 1, 0) > 0) {
+    if (synctex_display_query(scanner, filename, (int)line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             NSUInteger page = synctex_node_page(node);
@@ -607,3 +619,35 @@ static NSArray *SKPDFSynchronizerTexExtensions = nil;
 }
 
 @end
+
+#pragma mark -
+
+#define STACK_BUFFER_SIZE 256
+
+static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item)) {
+    return CFStringCompare(item1, item2, kCFCompareCaseInsensitive | kCFCompareNonliteral) == kCFCompareEqualTo;
+}
+
+static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item)) {
+    if(item == NULL) return 0;
+    
+    NSUInteger hash = 0;
+    CFAllocatorRef allocator = CFGetAllocator(item);
+    CFIndex len = CFStringGetLength(item);
+    
+    // use a generous length, in case the lowercase changes the number of characters
+    UniChar *buffer, stackBuffer[STACK_BUFFER_SIZE];
+    if (len + 10 >= STACK_BUFFER_SIZE)
+        buffer = (UniChar *)CFAllocatorAllocate(allocator, (len + 10) * sizeof(UniChar), 0);
+    else
+        buffer = stackBuffer;
+    CFStringGetCharacters(item, CFRangeMake(0, len), buffer);
+    
+    // If we create the string with external characters, CFStringGetCharactersPtr is guaranteed to succeed; since we're going to call CFStringGetCharacters anyway in fastHash if CFStringGetCharactsPtr fails, let's do it now when we lowercase the string
+    CFMutableStringRef mutableString = CFStringCreateMutableWithExternalCharactersNoCopy(allocator, buffer, len, len + 10, (buffer != stackBuffer ? allocator : kCFAllocatorNull));
+    CFStringLowercase(mutableString, NULL);
+    hash = [(id)mutableString hash];
+    // if we used the allocator, this should free the buffer for us
+    CFRelease(mutableString);
+    return hash;
+}
