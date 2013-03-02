@@ -456,8 +456,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     scanner = synctex_scanner_new_with_output_file([theFileName UTF8String], NULL, 1);
     if (scanner) {
         const char *fileRep = synctex_scanner_get_synctex(scanner);
-        NSString *filename = [NSString stringWithUTF8String:fileRep];
-        [self setSyncFileName:[self sourceFileForFileName:filename isTeX:NO removeQuotes:NO]];
+        [self setSyncFileName:[self sourceFileForFileName:[NSString stringWithUTF8String:fileRep] isTeX:NO removeQuotes:NO]];
         if (filenames) {
             NSResetMapTable(filenames);
         } else {
@@ -470,8 +469,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
-                filename = [NSString stringWithUTF8String:fileRep];
-                NSMapInsert(filenames, [self sourceFileForFileName:filename isTeX:YES removeQuotes:NO], fileRep);
+                NSMapInsert(filenames, [self sourceFileForFileName:[NSString stringWithUTF8String:fileRep] isTeX:YES removeQuotes:NO], fileRep);
             }
         } while ((node = synctex_node_next(node)));
         isPdfsync = NO;
@@ -485,12 +483,10 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node;
         const char *file;
-        NSString *filename;
         while (rv == NO && (node = synctex_next_result(scanner))) {
             if ((file = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
-                filename = [NSString stringWithUTF8String:file];
                 *linePtr = MAX(synctex_node_line(node), 1) - 1;
-                *filePtr = [self sourceFileForFileName:fileName isTeX:YES removeQuotes:NO];
+                *filePtr = [self sourceFileForFileName:[NSString stringWithUTF8String:file] isTeX:YES removeQuotes:NO];
                 rv = YES;
             }
         }
