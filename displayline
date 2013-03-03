@@ -36,21 +36,21 @@ shopt -s extglob
 [ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
 [ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
 
-# pass file arguments as NULL-separated string to osascript
-# pass through cat to get them as raw bytes to preserve non-ASCII characters
-/usr/bin/osascript \
-  -e "set theLine to $line as integer" \
-  -e "set theFile to POSIX file \"$file\"" \
-  -e "set theSource to POSIX file \"$source\"" \
-  -e "set thePath to POSIX path of (theFile as alias)" \
-  -e "tell application \"Skim\"" \
-  -e "  if $activate then activate" \
-  -e "  if $revert then" \
-  -e "    try" \
-  -e "      set theDocs to get documents whose path is thePath" \
-  -e "      if (count of theDocs) > 0 then revert theDocs" \
-  -e "    end try" \
-  -e "  end if" \
-  -e "  open theFile" \
-  -e "  tell front document to go to TeX line theLine from theSource showing reading bar $bar" \
-  -e "end tell"
+# run AppleScript
+/usr/bin/osascript << EOF
+  set theLine to $line as integer
+  set theFile to POSIX file "$file"
+  set theSource to POSIX file "$source"
+  set thePath to POSIX path of (theFile as alias)
+  tell application "Skim"
+    if $activate then activate
+    if $revert then
+      try
+        set theDocs to get documents whose path is thePath
+        if (count of theDocs) > 0 then revert theDocs
+      end try
+    end if
+    open theFile
+    tell front document to go to TeX line theLine from theSource showing reading bar $bar
+  end tell
+EOF
