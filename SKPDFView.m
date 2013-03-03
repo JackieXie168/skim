@@ -3220,7 +3220,8 @@ enum {
         }
     }
     
-    [NSEvent setMouseCoalescingEnabled:NO];
+    if ([NSEvent currentPointingDeviceType] != NSPenPointingDevice)
+        [NSEvent setMouseCoalescingEnabled:NO];
     
     [self displayIfNeeded];
     [window cacheImageInRect:[self convertRect:[self visibleContentRect] toView:nil]];
