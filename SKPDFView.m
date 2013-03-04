@@ -3220,7 +3220,9 @@ enum {
         }
     }
     
-    if ([NSEvent currentPointingDeviceType] != NSPenPointingDevice)
+    // don't coalesce mouse event from mouse while drawing, 
+    // but not from tablets because those fire very rapidly and lead to serious delays
+    if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
     
     [self displayIfNeeded];
