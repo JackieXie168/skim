@@ -49,12 +49,6 @@
 }
 
 @property (nonatomic) BOOL autoFits;
-- (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
-- (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
-- (void)scalePopUpAction:(id)sender;
-- (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
-- (void)resetAutoFitRectIfNeeded;
-- (void)makeScalePopUpButton;
 @property (nonatomic, readonly) NSPopUpButton *scalePopUpButton;
 
 @end

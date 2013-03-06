@@ -57,6 +57,9 @@
 - (void)makePopUpButtons;
 - (void)reloadPagePopUpButton;
 
+- (void)scalePopUpAction:(id)sender;
+- (void)pagePopUpAction:(id)sender;
+
 - (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag;
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;

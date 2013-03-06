@@ -52,7 +52,4 @@
 @property (nonatomic, retain) PDFView *synchronizedPDFView;
 @property (nonatomic) BOOL synchronizeZoom;
 
-- (void)scalePopUpAction:(id)sender;
-- (void)pagePopUpAction:(id)sender;
-
 @end
