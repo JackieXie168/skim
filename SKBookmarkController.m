@@ -756,6 +756,34 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return [items count] > 0;
 }
 
+static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
+    for (SKBookmark *bm in items) {
+        if ([bm bookmarkType] == SKBookmarkTypeBookmark) {
+            NSURL *url = [bm fileURL];
+            if (url)
+                [array addObject:url];
+        } else if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
+            addBookmarkURLsToArray([bm children], array);
+        }
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items {
+    NSMutableArray *urls = [NSMutableArray array];
+    addBookmarkURLsToArray(minimumCoverForBookmarks(items), urls);
+    if ([urls count] > 0) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:urls];
+    } else {
+        NSBeep();
+    }
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items {
+    return [items count] > 0;
+}
+
 - (void)outlineView:(NSOutlineView *)ov pasteFromPasteboard:(NSPasteboard *)pboard {
     NSArray *urls = [NSURL readFileURLsFromPasteboard:pboard];
     if ([urls count] > 0) {
