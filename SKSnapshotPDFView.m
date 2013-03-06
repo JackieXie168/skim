@@ -49,6 +49,21 @@
 #import "PDFView_SKExtensions.h"
 
 
+@interface SKSnapshotPDFView (SKPrivate)
+
+- (void)makeScalePopUpButton;
+
+- (void)resetAutoFitRectIfNeeded;
+
+- (void)scalePopUpAction:(id)sender;
+
+- (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
+- (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
+
+- (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
+
+@end
+
 @implementation SKSnapshotPDFView
 
 @synthesize autoFits, scalePopUpButton;
