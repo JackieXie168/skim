@@ -104,10 +104,14 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return @"SnapshotWindow";
 }
 
+- (void)updateWindowLevel {
+    BOOL onTop = forceOnTop || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    [[self window] setLevel:onTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:onTop];
+}
+
 - (void)windowDidLoad {
-    BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+    [self updateWindowLevel];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
     [self setHasWindow:YES];
@@ -309,9 +313,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)setForceOnTop:(BOOL)flag {
     forceOnTop = flag;
-    BOOL onTop = forceOnTop || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-    [[self window] setLevel:onTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-    [[self window] setHidesOnDeactivate:onTop];
+    if ([[self window] isVisible])
+        [self updateWindowLevel];
 }
 
 - (NSDictionary *)currentSetup {
@@ -493,8 +496,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)endMiniaturize:(NSWindow *)miniaturizeWindow {
-    if ([self hasWindow])
+    if ([self hasWindow]) {
         [[self window] orderFront:nil];
+        [self updateWindowLevel];
+    }
     [miniaturizeWindow orderOut:nil];
     animating = NO;
 }
@@ -571,9 +576,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
     if (context == &SKSnaphotWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKSnapshotsOnTopKey]) {
-            BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-            [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-            [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+            if ([[self window] isVisible])
+                [self updateWindowLevel];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
