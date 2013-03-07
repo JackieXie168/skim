@@ -91,8 +91,6 @@
         [self setFrameOrigin:frame.origin];
     }
     NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
-    [image setDataRetained:YES];
-    [image setCacheMode:NSImageCacheNever];
     CGImageRelease(cgImage);
     return [image autorelease];
 }
