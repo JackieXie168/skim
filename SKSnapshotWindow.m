@@ -77,12 +77,10 @@
 
 - (NSImage *)windowImage {
     NSRect frame = [self frame];
-    NSRect tmpFrame = frame;
     BOOL visible = [self isVisible];
     if (visible == NO) {
         disableConstrainToScreen = YES;
-        tmpFrame.origin = NSMakePoint(MIN_WINDOW_COORDINATE, MIN_WINDOW_COORDINATE);
-        [self setFrame:tmpFrame display:NO];
+        [self setFrameOrigin:NSMakePoint(MIN_WINDOW_COORDINATE, MIN_WINDOW_COORDINATE)];
         [self orderBack:nil];
         [self displayIfNeeded];
         disableConstrainToScreen = NO;
@@ -90,7 +88,7 @@
     CGImageRef cgImage = CGWindowListCreateImage(CGRectNull, kCGWindowListOptionIncludingWindow, (CGWindowID)[self windowNumber], kCGWindowImageBoundsIgnoreFraming);
     if (visible == NO) {
         [self orderOut:nil];
-        [self setFrame:frame display:NO];
+        [self setFrameOrigin:frame.origin];
     }
     NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
     [image setDataRetained:YES];
