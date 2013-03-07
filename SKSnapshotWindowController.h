@@ -74,7 +74,6 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (void)redisplay;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size;
-- (NSImage *)thumbnailWithSize:(CGFloat)size shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
 

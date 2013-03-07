@@ -366,17 +366,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size {
-    CGFloat shadowBlurRadius = round(size / 32.0);
-    CGFloat shadowOffset = - ceil(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-}
-
-- (NSImage *)thumbnailWithSize:(CGFloat)size shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
     BOOL isScaled = size > 0.0;
-    BOOL hasShadow = shadowBlurRadius > 0.0;
+    CGFloat shadowBlurRadius = round(size / 32.0);
+    NSSize shadowOffset = NSMakeSize(0.0, - ceil(shadowBlurRadius * 0.75));
     CGFloat scaleX, scaleY;
     NSSize thumbnailSize;
     NSImage *image;
@@ -399,7 +394,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    if (isScaled || hasShadow) {
+    if (isScaled) {
         NSAffineTransform *transform = [NSAffineTransform transform];
         if (isScaled)
             [transform scaleXBy:scaleX yBy:scaleY];
@@ -408,7 +403,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     }
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
-    if (hasShadow) {
+    if (isScaled) {
         NSShadow *aShadow = [[NSShadow alloc] init];
         [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         [aShadow setShadowBlurRadius:shadowBlurRadius];
