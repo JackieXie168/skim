@@ -89,6 +89,7 @@
 		CE19446710627483007E8770 /* ProgressSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446010627483007E8770 /* ProgressSheet.xib */; };
 		CE19446810627483007E8770 /* ReleaseNotes.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446110627483007E8770 /* ReleaseNotes.xib */; };
 		CE19446910627483007E8770 /* SnapshotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446210627483007E8770 /* SnapshotWindow.xib */; };
+		CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19641416E811D40027E2CF /* SKSnapshotWindow.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
 		CE1B651B16595C5200B74339 /* SKWatchedPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1B651A16595C5200B74339 /* SKWatchedPath.m */; };
@@ -677,6 +678,8 @@
 		CE19446010627483007E8770 /* ProgressSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressSheet.xib; sourceTree = "<group>"; };
 		CE19446110627483007E8770 /* ReleaseNotes.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReleaseNotes.xib; sourceTree = "<group>"; };
 		CE19446210627483007E8770 /* SnapshotWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SnapshotWindow.xib; sourceTree = "<group>"; };
+		CE19641316E811D40027E2CF /* SKSnapshotWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotWindow.h; sourceTree = "<group>"; };
+		CE19641416E811D40027E2CF /* SKSnapshotWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotWindow.m; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1618,12 +1621,14 @@
 		CE2DE4D00B85D8C400D0DA12 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */,
-				CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */,
-				CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */,
-				CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */,
 				CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */,
 				CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */,
+				CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */,
+				CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */,
+				CE2DE4FB0B85DBD400D0DA12 /* SKImageToolTipWindow.h */,
+				CE2DE4FC0B85DBD400D0DA12 /* SKImageToolTipWindow.m */,
+				CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */,
+				CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */,
 				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
 				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
 				CE0E864F114DBF7000E37F38 /* SKPreferenceWindow.h */,
@@ -1632,8 +1637,8 @@
 				CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */,
 				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
-				CE2DE4FB0B85DBD400D0DA12 /* SKImageToolTipWindow.h */,
-				CE2DE4FC0B85DBD400D0DA12 /* SKImageToolTipWindow.m */,
+				CE19641316E811D40027E2CF /* SKSnapshotWindow.h */,
+				CE19641416E811D40027E2CF /* SKSnapshotWindow.m */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -2566,6 +2571,7 @@
 				CE40D6161677A9DC00573882 /* SKTextNoteEditor.m in Sources */,
 				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,
+				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

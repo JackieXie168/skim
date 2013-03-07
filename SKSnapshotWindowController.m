@@ -43,6 +43,7 @@
 #import "SKSnapshotPDFView.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKPDFView.h"
+#import "SKSnapshotWindow.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -579,81 +580,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-@end
-
-#pragma mark -
-
-#define MIN_WINDOW_COORDINATE -160000
-
-@interface NSWindow (SKPrivate)
-- (id)_updateButtonsForModeChanged;
-@end
-
-@implementation SKSnapshotWindow
-
-@dynamic windowImage;
-
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
-    self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation];
-    if (self) {
-        [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
-    }
-    return self;
-}
-
-- (id)_updateButtonsForModeChanged {
-    id rv = [super _updateButtonsForModeChanged];
-    [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
-    return rv;
-}
-
-- (void)miniaturize:(id)sender {
-    [[self windowController] miniaturize];
-}
-
-- (NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen *)screen {
-    if (disableConstrainToScreen)
-        return frameRect;
-    return [super constrainFrameRect:frameRect toScreen:screen];
-}
-
-- (NSImage *)windowImage {
-    NSRect frame = [self frame];
-    BOOL visible = [self isVisible];
-    if (visible == NO) {
-        disableConstrainToScreen = YES;
-        [self setFrameOrigin:NSMakePoint(MIN_WINDOW_COORDINATE, MIN_WINDOW_COORDINATE)];
-        [self orderBack:nil];
-        [self displayIfNeeded];
-        disableConstrainToScreen = NO;
-    }
-    CGImageRef cgImage = CGWindowListCreateImage(CGRectNull, kCGWindowListOptionIncludingWindow, (CGWindowID)[self windowNumber], kCGWindowImageBoundsIgnoreFraming);
-    if (visible == NO) {
-        [self orderOut:nil];
-        [self setFrameOrigin:frame.origin];
-    }
-    NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
-    [image setDataRetained:YES];
-    [image setCacheMode:NSImageCacheNever];
-    CGImageRelease(cgImage);
-    return [image autorelease];
-}
-
-- (void)awakeFromNib {
-	// Overrides the parent attribute of the placard so that it belongs to the window.
-	NSView *popup = [pdfView scalePopUpButton];
-	[NSAccessibilityUnignoredDescendant(popup) accessibilitySetOverrideValue:NSAccessibilityUnignoredAncestor(self) forAttribute:NSAccessibilityParentAttribute];
-	[NSAccessibilityUnignoredDescendant(popup) accessibilitySetOverrideValue:NSLocalizedString(@"Zoom", @"Zoom pop-up menu description") forAttribute:NSAccessibilityDescriptionAttribute];
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-	// Overrides the children attribute to add the placard to the children of the window.
-	if([attribute isEqualToString:NSAccessibilityChildrenAttribute])
-		return [[super accessibilityAttributeValue:attribute] arrayByAddingObject:NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton])];
-	else
-		return [super accessibilityAttributeValue:attribute];
 }
 
 @end

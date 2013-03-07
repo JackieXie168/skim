@@ -102,11 +102,3 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;
 
 @end
-
-
-@interface SKSnapshotWindow : NSWindow {
-	IBOutlet SKSnapshotPDFView *pdfView;
-    BOOL disableConstrainToScreen;
-}
-@property (nonatomic, readonly) NSImage *windowImage;
-@end
