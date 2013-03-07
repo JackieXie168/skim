@@ -48,6 +48,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;
     NSString *pageLabel;
+    NSImage *windowImage;
     BOOL hasWindow;
     BOOL forceOnTop;
     BOOL animating;

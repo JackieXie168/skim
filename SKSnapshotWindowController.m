@@ -96,6 +96,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     SKDESTROY(thumbnail);
     SKDESTROY(pageLabel);
     SKDESTROY(pdfView);
+    SKDESTROY(windowImage);
     [super dealloc];
 }
 
@@ -508,10 +509,13 @@ static char SKSnaphotWindowDefaultsObservationContext;
     if ([miniaturizeWindow respondsToSelector:@selector(setAnimationBehavior:)])
         [miniaturizeWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
     
+    if (windowImage == nil)
+        windowImage = [[(SKSnapshotWindow *)[self window] windowImage] retain];
+    
     NSImageView *imageView = [[NSImageView alloc] init];
     [imageView setImageFrameStyle:NSImageFrameNone];
     [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
-    [imageView setImage:[(SKSnapshotWindow *)[self window] windowImage]];
+    [imageView setImage:windowImage];
     [miniaturizeWindow setContentView:imageView];
     [imageView release];
     
@@ -553,6 +557,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         NSRect startRect = [self miniaturizedRectForDockingRect:dockRect];
         
         [self miniaturizeWindowFromRect:startRect toRect:endRect];
+        
+        SKDESTROY(windowImage);
     } else {
         [self showWindow:self];
     }
