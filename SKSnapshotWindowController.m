@@ -117,6 +117,18 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [self setHasWindow:YES];
 }
 
+// these should never be reached, but just to be sure
+
+- (void)windowDidMiniaturize:(NSNotification *)notification {
+    [[self window] orderOut:nil];
+    [self setHasWindow:NO];
+}
+
+- (void)windowDidDeminiaturize:(NSNotification *)notification {
+    [self updateWindowLevel];
+    [self setHasWindow:YES];
+}
+
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
     return [NSString stringWithFormat:@"%@ %C %@", displayName, EM_DASH_CHARACTER, [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self pageLabel]]];
 }
