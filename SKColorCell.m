@@ -56,8 +56,7 @@
         rect.origin.y += [controlView isFlipped] ? floor(offset) - 1.0 : ceil(offset) + 1.0;
         rect.size.height = height;
         [NSGraphicsContext saveGraphicsState];
-        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] addClip];
-        [color drawSwatchInRect:rect];
+        [color drawSwatchInRoundedRect:rect];
         [NSGraphicsContext restoreGraphicsState];
     }
 }

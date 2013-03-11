@@ -145,6 +145,14 @@
         return NSOrderedSame;
 }
 
+- (void)drawSwatchInRoundedRect:(NSRect)rect {
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:3.0 yRadius:3.0] addClip];
+    [self drawSwatchInRect:rect];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setStroke];
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:2.5 yRadius:2.5] stroke];
+}
+
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
     if ([descriptor numberOfItems] > 0) {
         CGFloat red, green, blue, alpha;

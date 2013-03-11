@@ -82,6 +82,8 @@ enum {
 
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
+- (void)drawSwatchInRoundedRect:(NSRect)rect;
+
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
 
