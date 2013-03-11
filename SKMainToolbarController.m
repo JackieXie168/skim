@@ -55,6 +55,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 
@@ -833,8 +834,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
     
     NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
-    NSRect lineRect = NSInsetRect(rect, 0.5, 0.5);
-    NSRect swatchRect = NSInsetRect(rect, 1.0, 1.0);
     
     [menu removeAllItems];
     
@@ -843,10 +842,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) target:self];
         
         [image lockFocus];
-        [[NSColor lightGrayColor] setStroke];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:lineRect];
-        [color drawSwatchInRect:swatchRect];
+        [color drawSwatchInRoundedRect:rect];
         [image unlockFocus];
         [item setRepresentedObject:color];
         [item setImage:image];
