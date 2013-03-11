@@ -54,6 +54,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSEvent_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 
@@ -612,7 +613,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:) 
                                                          name:SKColorSwatchColorsChangedNotification object:colorSwatch];
             
-            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Colors", @"Toolbar item label")];
+            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
             [item setLabels:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Favorite Colors", @"Tool tip message")];
@@ -1018,11 +1019,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (IBAction)selectColor:(id)sender {
     PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
+    NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
+    BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+    BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
     if ([annotation isSkimNote]) {
-        BOOL isFill = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        BOOL isText = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setFontColor:)];
+        BOOL isFill = isAlt && [annotation respondsToSelector:@selector(setInteriorColor:)];
+        BOOL isText = isAlt && [annotation respondsToSelector:@selector(setFontColor:)];
         NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
-        NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO) {
             if (isFill)
                 [(id)annotation setInteriorColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
@@ -1031,6 +1034,22 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             else
                 [annotation setColor:newColor];
         }
+    }
+    if (isShift && [mainController.pdfView toolMode] == SKNoteToolMode) {
+        NSString *key = nil;
+        switch ([mainController.pdfView annotationMode]) {
+            case SKFreeTextNote:  key = isAlt ? SKFreeTextNoteFontColorKey : SKFreeTextNoteColorKey; break;
+            case SKAnchoredNote:  key = SKAnchoredNoteColorKey; break;
+            case SKCircleNote:    key = isAlt ? SKCircleNoteInteriorColorKey : SKCircleNoteColorKey; break;
+            case SKSquareNote:    key = isAlt ? SKSquareNoteInteriorColorKey : SKSquareNoteColorKey; break;
+            case SKHighlightNote: key = SKHighlightNoteColorKey; break;
+            case SKUnderlineNote: key = SKUnderlineNoteColorKey; break;
+            case SKStrikeOutNote: key = SKStrikeOutNoteColorKey; break;
+            case SKLineNote:      key = SKLineNoteColorKey; break;
+            case SKInkNote:       key = SKInkNoteColorKey; break;
+        }
+        if (key)
+            [[NSUserDefaults standardUserDefaults] setColor:newColor forKey:key];
     }
 }
 
