@@ -168,9 +168,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSRectFill(NSMakeRect(insertionIndex * (NSHeight(rect) - 1.0), 1.0, 3.0, NSHeight(rect)));
     }
     
-    NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.06667]] autorelease];
-    [gradient drawInRect:SKSliceRect(rect, 0.5 * NSHeight(rect), NSMinYEdge) angle:90.0];
-    
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
         r = NSInsetRect([self bounds], 1.0, 1.0);
         r.size.width = NSHeight(r);
