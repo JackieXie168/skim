@@ -582,6 +582,7 @@ static NSArray *allMainDocumentPDFViews() {
         if (count == 0)
             return;
         
+        [[self progressController] setIndeterminate:NO];
         [[self progressController] setMaxValue:(double)MIN(18, count)];
         [[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
         [[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
@@ -626,6 +627,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [[pdfView document] pageCount];
     
+    [[self progressController] setIndeterminate:NO];
 	[[self progressController] setMaxValue:(double)iMax];
 	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
 	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
@@ -648,6 +650,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
     
+    [[self progressController] setIndeterminate:NO];
 	[[self progressController] setMaxValue:1.1 * iMax];
 	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
 	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];

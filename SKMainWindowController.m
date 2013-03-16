@@ -1970,6 +1970,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
 	// Establish maximum and current value for progress bar.
+    [[self progressController] setIndeterminate:NO];
 	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
 	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
 	

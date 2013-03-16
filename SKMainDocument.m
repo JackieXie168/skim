@@ -150,8 +150,6 @@ enum {
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
-- (SKProgressController *)progressController;
-
 @end
 
 #pragma mark -
@@ -184,7 +182,6 @@ enum {
     SKDESTROY(fileUpdateChecker);
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
-    SKDESTROY(progressController);
     SKDESTROY(tmpData);
     [super dealloc];
 }
@@ -267,14 +264,6 @@ enum {
         SKDESTROY(mainWindowController);
     }
     [super removeWindowController:windowController];
-}
-
-- (SKProgressController *)progressController {
-    if (progressController == nil) {
-        progressController = [[SKProgressController alloc] init];
-        [progressController setIndeterminate:YES];
-    }
-    return progressController;
 }
 
 - (void)saveRecentDocumentInfo {
@@ -881,13 +870,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[self windowForSheet] attachedSheet];
+    NSWindow *window = [[self mainWindowController] window];
+    SKProgressController *progressController = nil;
     
-    if (disableAlert == NO) {
-        [[[self windowForSheet] attachedSheet] orderOut:self];
-        
-        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] == NO && [window attachedSheet] == nil) {
+        progressController = [[self mainWindowController] progressController];
+        [progressController setIndeterminate:YES];
+        [progressController setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [progressController beginSheetModalForWindow:window completionHandler:NULL];
     }
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
@@ -902,8 +892,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     SKDESTROY(tmpData);
     
-    if (disableAlert == NO)
-        [[self progressController] dismissSheet:nil];
+    [progressController dismissSheet:nil];
     
     return success;
 }
@@ -990,8 +979,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
-    [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
+    SKProgressController *progressController = [[self mainWindowController] progressController];
+    [progressController setIndeterminate:YES];
+    [progressController setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
+    [progressController beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
@@ -1046,7 +1037,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
     }
     
-    [[self progressController] dismissSheet:nil];
+    [progressController dismissSheet:nil];
 }
 
 - (void)beginConvertNotesPasswordSheetForPDFDocument:(PDFDocument *)pdfDoc {
