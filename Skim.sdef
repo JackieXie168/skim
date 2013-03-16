@@ -885,6 +885,11 @@
                 description="The default icon type used for new anchored notes.">
                 <cocoa key="defaultIconType"/>
             </property>
+            <property name="favorite colors" code="FavC"
+                description="List of favorite colors.">
+                <type type="RGBA color" list="yes"/>
+                <cocoa key="favoriteColors"/>
+            </property>
         </class-extension>
 
         <class-extension extends="document"
