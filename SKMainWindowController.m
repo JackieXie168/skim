@@ -214,7 +214,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 @implementation SKMainWindowController
 
-@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, progressController, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode;
 @dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
@@ -758,27 +758,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
 
     [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKOutlineSidePaneState];
-}
-
-- (SKProgressController *)progressController {
-    if (progressController == nil)
-        progressController = [[SKProgressController alloc] init];
-    return progressController;
-}
-
-- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue {
-    [[self progressController] setMessage:message];
-    if (maxValue > 0) {
-        [[self progressController] setIndeterminate:NO];
-        [[self progressController] setMaxValue:maxValue];
-    } else {
-        [[self progressController] setIndeterminate:YES];
-    }
-    [[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
-}
-
-- (void)dismissProgressSheet {
-    [[self progressController] dismissSheet:nil];
 }
 
 #pragma mark Accessors
@@ -1992,7 +1971,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[[self progressController] setDoubleValue:1.0 + [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
+    [self incrementProgressSheet];
 }
 
 - (void)registerForDocumentNotifications {
@@ -2590,6 +2569,31 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [snapshotTimer invalidate];
         SKDESTROY(snapshotTimer);
     }
+}
+
+#pragma mark Progress sheet
+
+- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue {
+    if (progressController == nil)
+        progressController = [[SKProgressController alloc] init];
+    
+    [progressController setMessage:message];
+    if (maxValue > 0) {
+        [progressController setIndeterminate:NO];
+        [progressController setMaxValue:maxValue];
+    } else {
+        [progressController setIndeterminate:YES];
+    }
+    [progressController beginSheetModalForWindow:[self window] completionHandler:NULL];
+}
+
+- (void)incrementProgressSheet {
+    [progressController incrementBy:1.0];
+}
+
+- (void)dismissProgressSheet {
+    [progressController dismissSheet:nil];
+    SKDESTROY(progressController);
 }
 
 #pragma mark Remote Control

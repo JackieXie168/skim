@@ -586,18 +586,18 @@ static NSArray *allMainDocumentPDFViews() {
         
         if (count == 1) {
             rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
-            [[self progressController] incrementBy:1.0];
+            [self incrementProgressSheet];
         } else if (count < 19) {
             for (i = 0; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
-                [[self progressController] incrementBy:1.0];
+                [self incrementProgressSheet];
             }
         } else {
             NSInteger start[3] = {1, count / 2 - 3, count - 6};
             for (j = 0; j < 3; j++) {
                 for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
-                    [[self progressController] setDoubleValue:(double)(3 * j + i)];
+                    [self incrementProgressSheet];
                 }
             }
         }
@@ -628,7 +628,7 @@ static NSArray *allMainDocumentPDFViews() {
     for (i = 0; i < iMax; i++) {
         NSRect rect = [[pdfDoc pageAtIndex:i] foregroundBox];
         [rectArray addPointer:&rect];
-        [[self progressController] incrementBy:1.0];
+        [self incrementProgressSheet];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     }
@@ -649,7 +649,7 @@ static NSArray *allMainDocumentPDFViews() {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
         size.width = fmax(size.width, NSWidth(bbox));
         size.height = fmax(size.height, NSHeight(bbox));
-        [[self progressController] incrementBy:1.0];
+        [self incrementProgressSheet];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     }
@@ -665,7 +665,7 @@ static NSArray *allMainDocumentPDFViews() {
         rect = SKConstrainRect(rect, bounds);
         [rectArray addPointer:&rect];
         if (i && i % 10 == 0) {
-            [[self progressController] incrementBy:1.0];
+            [self incrementProgressSheet];
             if (i && i % 100 == 0)
                 [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
         }

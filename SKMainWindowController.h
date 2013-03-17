@@ -214,8 +214,6 @@ enum {
 @property (nonatomic, readonly) SKPDFView *pdfView;
 @property (nonatomic, retain) PDFDocument *pdfDocument;
 
-@property (nonatomic, readonly) SKProgressController *progressController;
-
 - (NSArray *)notes;
 - (NSUInteger)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex;
@@ -315,6 +313,7 @@ enum {
 - (void)updateRightStatus;
 
 - (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue;
+- (void)incrementProgressSheet;
 - (void)dismissProgressSheet;
 
 @end
