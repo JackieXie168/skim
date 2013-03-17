@@ -52,7 +52,4 @@
 
 - (void)incrementBy:(double)delta;
 
-- (void)show;
-- (void)hide;
-
 @end

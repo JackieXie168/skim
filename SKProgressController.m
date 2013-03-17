@@ -119,14 +119,4 @@
     [super dismissSheet:sender];
 }
 
-- (void)show {
-    [[self progressBar] startAnimation:self];
-    [[self window] orderFront:self];
-}
-
-- (void)hide {
-    [[self progressBar] stopAnimation:self];
-    [[self window] orderOut:self];
-}
-
 @end
