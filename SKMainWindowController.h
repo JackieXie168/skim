@@ -314,4 +314,7 @@ enum {
 - (void)updateLeftStatus;
 - (void)updateRightStatus;
 
+- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue;
+- (void)dismissProgressSheet;
+
 @end

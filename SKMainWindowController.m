@@ -766,6 +766,21 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return progressController;
 }
 
+- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue {
+    [[self progressController] setMessage:message];
+    if (maxValue > 0) {
+        [[self progressController] setIndeterminate:NO];
+        [[self progressController] setMaxValue:maxValue];
+    } else {
+        [[self progressController] setIndeterminate:YES];
+    }
+    [[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
+}
+
+- (void)dismissProgressSheet {
+    [[self progressController] dismissSheet:nil];
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
@@ -1969,17 +1984,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
-	// Establish maximum and current value for progress bar.
-    [[self progressController] setIndeterminate:NO];
-	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
-	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
-	
-	// Bring up the save panel as a sheet.
-	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
+    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)[[pdfView document] pageCount]];
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {
-	[[self progressController] dismissSheet:nil];
+    [self dismissProgressSheet];
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {

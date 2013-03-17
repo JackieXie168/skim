@@ -870,15 +870,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    NSWindow *window = [[self mainWindowController] window];
-    SKProgressController *progressController = nil;
+    BOOL disableProgress = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[[self mainWindowController] window] attachedSheet];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] == NO && [window attachedSheet] == nil) {
-        progressController = [[self mainWindowController] progressController];
-        [progressController setIndeterminate:YES];
-        [progressController setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [progressController beginSheetModalForWindow:window completionHandler:NULL];
-    }
+    if (disableProgress == NO)
+        [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0.0];
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
@@ -892,7 +887,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     SKDESTROY(tmpData);
     
-    [progressController dismissSheet:nil];
+    if (disableProgress == NO)
+        [[self mainWindowController] dismissProgressSheet];
     
     return success;
 }
@@ -979,10 +975,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
-    SKProgressController *progressController = [[self mainWindowController] progressController];
-    [progressController setIndeterminate:YES];
-    [progressController setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [progressController beginSheetModalForWindow:[self windowForSheet] completionHandler:NULL];
+    [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0.0];
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
@@ -1037,7 +1030,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
     }
     
-    [progressController dismissSheet:nil];
+    [[self mainWindowController] dismissProgressSheet];
 }
 
 - (void)beginConvertNotesPasswordSheetForPDFDocument:(PDFDocument *)pdfDoc {
