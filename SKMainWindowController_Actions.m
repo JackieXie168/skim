@@ -582,10 +582,7 @@ static NSArray *allMainDocumentPDFViews() {
         if (count == 0)
             return;
         
-        [[self progressController] setIndeterminate:NO];
-        [[self progressController] setMaxValue:(double)MIN(18, count)];
-        [[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
+        [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)MIN(18, count)];
         
         if (count == 1) {
             rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
@@ -617,9 +614,8 @@ static NSArray *allMainDocumentPDFViews() {
     [self cropPagesToRects:rectArray];
     [pdfView setCurrentSelectionRect:NSZeroRect];
 	
-    if (emptySelection) {
-        [[self progressController] dismissSheet:nil];
-    }
+    if (emptySelection)
+        [self dismissProgressSheet];
 }
 
 - (IBAction)autoCropAll:(id)sender {
@@ -627,10 +623,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [[pdfView document] pageCount];
     
-    [[self progressController] setIndeterminate:NO];
-	[[self progressController] setMaxValue:(double)iMax];
-	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
+    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)iMax];
     
     for (i = 0; i < iMax; i++) {
         NSRect rect = [[pdfDoc pageAtIndex:i] foregroundBox];
@@ -641,7 +634,7 @@ static NSArray *allMainDocumentPDFViews() {
     }
     [self cropPagesToRects:rectArray];
 	
-    [[self progressController] dismissSheet:nil];
+    [self dismissProgressSheet];
 }
 
 - (IBAction)smartAutoCropAll:(id)sender {
@@ -650,10 +643,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
     
-    [[self progressController] setIndeterminate:NO];
-	[[self progressController] setMaxValue:1.1 * iMax];
-	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-	[[self progressController] beginSheetModalForWindow:[self window] completionHandler:NULL];
+	[self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:1.1 * iMax];
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
@@ -683,7 +673,7 @@ static NSArray *allMainDocumentPDFViews() {
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [self cropPagesToRects:rectArray];
 	
-    [[self progressController] dismissSheet:nil];
+    [self dismissProgressSheet];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
