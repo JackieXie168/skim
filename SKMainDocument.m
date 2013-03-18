@@ -873,7 +873,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     BOOL disableProgress = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[[self mainWindowController] window] attachedSheet];
     
     if (disableProgress == NO)
-        [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0.0];
+        [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0];
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
@@ -975,7 +975,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
-    [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0.0];
+    [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0];
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];

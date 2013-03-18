@@ -582,7 +582,7 @@ static NSArray *allMainDocumentPDFViews() {
         if (count == 0)
             return;
         
-        [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)MIN(18, count)];
+        [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:MIN(18, count)];
         
         if (count == 1) {
             rect[0] = [[[pdfView document] pageAtIndex:0] foregroundBox];
@@ -623,7 +623,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [[pdfView document] pageCount];
     
-    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)iMax];
+    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:iMax];
     
     for (i = 0; i < iMax; i++) {
         NSRect rect = [[pdfDoc pageAtIndex:i] foregroundBox];
