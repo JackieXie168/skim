@@ -1963,7 +1963,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
-    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:(double)[[pdfView document] pageCount]];
+    [self beginProgressSheetWithMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:[[pdfView document] pageCount]];
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {
@@ -2573,14 +2573,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 #pragma mark Progress sheet
 
-- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(double)maxValue {
+- (void)beginProgressSheetWithMessage:(NSString *)message maxValue:(NSUInteger)maxValue {
     if (progressController == nil)
         progressController = [[SKProgressController alloc] init];
     
     [progressController setMessage:message];
     if (maxValue > 0) {
         [progressController setIndeterminate:NO];
-        [progressController setMaxValue:maxValue];
+        [progressController setMaxValue:(double)maxValue];
     } else {
         [progressController setIndeterminate:YES];
     }
