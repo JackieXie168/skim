@@ -64,6 +64,9 @@ NSString *SKPDFPageActionCrop = @"crop";
 NSString *SKPDFPageActionResize = @"resize";
 NSString *SKPDFPageActionRotate = @"rotate";
 
+#define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
+#define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
+
 @implementation PDFPage (SKExtensions) 
 
 static BOOL usesSequentialPageNumbering = NO;
@@ -76,9 +79,59 @@ static BOOL usesSequentialPageNumbering = NO;
     usesSequentialPageNumbering = flag;
 }
 
-// this will be overridden in our custom subclass
+- (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
+    NSBitmapImageRep *imageRep;
+    imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                                                       pixelsWide:NSWidth(bounds) 
+                                                       pixelsHigh:NSHeight(bounds) 
+                                                    bitsPerSample:8 
+                                                  samplesPerPixel:4
+                                                         hasAlpha:YES 
+                                                         isPlanar:NO 
+                                                   colorSpaceName:NSCalibratedRGBColorSpace 
+                                                     bitmapFormat:0 
+                                                      bytesPerRow:0 
+                                                     bitsPerPixel:32];
+    if (imageRep) {
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
+        if ([self rotation]) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            switch ([self rotation]) {
+                case 90:  [transform translateXBy:NSWidth(bounds) yBy:0.0]; break;
+                case 180: [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)]; break;
+                case 270: [transform translateXBy:0.0 yBy:NSHeight(bounds)]; break;
+            }
+            [transform rotateByDegrees:[self rotation]];
+            [transform concat];
+        }
+        [self drawWithBox:box]; 
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    return imageRep;
+}
+
+// this will be cached in our custom subclass
 - (NSRect)foregroundBox {
-    return [self boundsForBox:kPDFDisplayBoxCropBox];
+    CGFloat marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
+    CGFloat marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
+    NSBitmapImageRep *imageRep = [self newBitmapImageRepForBox:kPDFDisplayBoxMediaBox];
+    NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    NSRect foregroundBox = [imageRep foregroundRect];
+    if (imageRep == nil) {
+        foregroundBox = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    } else if (NSIsEmptyRect(foregroundBox)) {
+        foregroundBox.origin = SKIntegralPoint(SKCenterPoint(bounds));
+        foregroundBox.size = NSZeroSize;
+    } else {
+        foregroundBox.origin = SKAddPoints(foregroundBox.origin, bounds.origin);
+    }
+    [imageRep release];
+    return NSIntersectionRect(NSInsetRect(foregroundBox, -marginWidth, -marginHeight), bounds);
 }
 
 - (NSImage *)pageImage {

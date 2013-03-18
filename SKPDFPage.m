@@ -42,69 +42,34 @@
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
-#define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
-#define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
 
 @implementation SKPDFPage
 
 - (BOOL)isEditable { return YES; }
 
-- (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
-    NSRect bounds = [self boundsForBox:box];
-    NSBitmapImageRep *imageRep;
-    imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-                                                       pixelsWide:NSWidth(bounds) 
-                                                       pixelsHigh:NSHeight(bounds) 
-                                                    bitsPerSample:8 
-                                                  samplesPerPixel:4
-                                                         hasAlpha:YES 
-                                                         isPlanar:NO 
-                                                   colorSpaceName:NSCalibratedRGBColorSpace 
-                                                     bitmapFormat:0 
-                                                      bytesPerRow:0 
-                                                     bitsPerPixel:32];
-    if (imageRep) {
-        [NSGraphicsContext saveGraphicsState];
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
-        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
-        if ([self rotation]) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            switch ([self rotation]) {
-                case 90:  [transform translateXBy:NSWidth(bounds) yBy:0.0]; break;
-                case 180: [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)]; break;
-                case 270: [transform translateXBy:0.0 yBy:NSHeight(bounds)]; break;
-            }
-            [transform rotateByDegrees:[self rotation]];
-            [transform concat];
-        }
-        [self drawWithBox:box]; 
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    return imageRep;
+// cache the value calculated in the superclass
+- (NSRect)foregroundBox {
+    if (NSEqualRects(NSZeroRect, foregroundBox))
+        foregroundBox = [super foregroundBox];
+    return foregroundBox;
 }
 
-- (NSRect)foregroundBox {
-    if (NSEqualRects(NSZeroRect, foregroundBox)) {
-        CGFloat marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
-        CGFloat marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
-        NSBitmapImageRep *imageRep = [self newBitmapImageRepForBox:kPDFDisplayBoxMediaBox];
-        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        foregroundBox = [imageRep foregroundRect];
-        if (imageRep == nil) {
-            foregroundBox = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        } else if (NSIsEmptyRect(foregroundBox)) {
-            foregroundBox.origin = SKIntegralPoint(SKCenterPoint(bounds));
-            foregroundBox.size = NSZeroSize;
-        } else {
-            foregroundBox.origin = SKAddPoints(foregroundBox.origin, bounds.origin);
-        }
-        [imageRep release];
-        foregroundBox = NSIntersectionRect(NSInsetRect(foregroundBox, -marginWidth, -marginHeight), bounds);
-    }
-    return foregroundBox;
+- (void)setBounds:(NSRect)bounds forBox:(PDFDisplayBox)box {
+    if (box == kPDFDisplayBoxCropBox)
+        foregroundBox = NSZeroRect;
+    [super setBounds:bounds forBox:box];
+}
+
+- (void)addAnnotation:(PDFAnnotation *)annotation {
+    foregroundBox = NSZeroRect;
+    [super addAnnotation:annotation];
+}
+
+- (void)removeAnnotation:(PDFAnnotation *)annotation {
+    foregroundBox = NSZeroRect;
+    [super removeAnnotation:annotation];
 }
 
 - (NSAttributedString *)attributedString {
