@@ -643,7 +643,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
     
-	[self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:1.1 * iMax];
+	[self beginProgressSheetWithMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:11 * iMax / 10];
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
