@@ -63,12 +63,14 @@
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation {
-    foregroundBox = NSZeroRect;
+    if (NSContainsRect(foregroundBox, [annotation bounds]) == NO)
+        foregroundBox = NSZeroRect;
     [super addAnnotation:annotation];
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
-    foregroundBox = NSZeroRect;
+    if (NSContainsRect(foregroundBox, [annotation bounds]) == NO)
+        foregroundBox = NSZeroRect;
     [super removeAnnotation:annotation];
 }
 
