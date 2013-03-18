@@ -593,7 +593,7 @@ static NSArray *allMainDocumentPDFViews() {
                 [self incrementProgressSheet];
             }
         } else {
-            NSInteger start[3] = {1, count / 2 - 3, count - 6};
+            NSInteger start[3] = {1, (count - 5) / 2, count - 6};
             for (j = 0; j < 3; j++) {
                 for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
