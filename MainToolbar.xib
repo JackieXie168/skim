@@ -188,7 +188,7 @@
 									<string key="decimalSeparator">.</string>
 									<integer value="1000" key="formatterBehavior"/>
 									<string key="groupingSeparator">,</string>
-									<real value="1000" key="maximum"/>
+									<real value="2000" key="maximum"/>
 									<real value="10" key="minimum"/>
 									<string key="negativeFormat">-0%</string>
 									<string key="positiveFormat">0%</string>
@@ -207,7 +207,7 @@
 									<reference key="NSAttributes" ref="472379724"/>
 								</object>
 								<real value="10" key="NS.min"/>
-								<real value="1000" key="NS.max"/>
+								<real value="2000" key="NS.max"/>
 								<nil key="NS.rounding"/>
 								<string key="NS.decimal">.</string>
 								<string key="NS.thousand">,</string>
