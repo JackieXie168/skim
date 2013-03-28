@@ -71,21 +71,21 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
     original_drawWithBox = (void (*)(id, SEL, PDFDisplayBox))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:), @selector(replacement_drawWithBox:));
 }
 
-- (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
-    if (self) { 	 
+    if (self) {
         // PDFAnnotationInk over-retains the initial PDFBorder ivar on 10.6.x
         if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
             [[self border] release];
-        [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]]; 	 
-        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init]; 	 
-        [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]]; 	 
-        [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]]; 	 
-        [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineStyleKey]]; 	 
-        [self setBorder:[border lineWidth] > 0.0 ? border : nil]; 	 
-        [border release]; 	 
-    } 	 
-    return self; 	 
+        [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]];
+        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
+        [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKInkNoteDashPatternKey]];	 
+        [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineStyleKey]];
+        [self setBorder:[border lineWidth] > 0.0 ? border : nil];
+        [border release];
+    }
+    return self;
 } 	 
 
 - (id)initSkimNoteWithPaths:(NSArray *)paths {
