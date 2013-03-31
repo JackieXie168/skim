@@ -81,6 +81,16 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
+- (BOOL)hitTest:(NSPoint)point {
+    if ([super hitTest:point] == NO)
+        return NO;
+    
+    NSRect bounds = [self bounds];
+    CGFloat dx = 2.0 * (point.x - NSMidX(bounds)) / NSWidth(bounds);
+    CGFloat dy = 2.0 * (point.y - NSMidY(bounds)) / NSHeight(bounds);
+    return dx * dx + dy * dy <= 1.0;
+}
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *circleKeys = nil;
     if (circleKeys == nil) {
