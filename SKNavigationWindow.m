@@ -42,6 +42,7 @@
 #import "SKPDFView.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -109,8 +110,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             [zoomSlider setTarget:pdfView];
             [zoomSlider setAction:@selector(zoomLog:)];
             [zoomSlider setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
-            [zoomSlider setMinValue:log(0.1)];
-            [zoomSlider setMaxValue:log(20.0)];
+            [zoomSlider setMaxValue:log([pdfView respondsToSelector:@selector(minScaleFactor)] ? [pdfView minScaleFactor] : 0.1)];
+            [zoomSlider setMaxValue:log([pdfView respondsToSelector:@selector(maxScaleFactor)] ? [pdfView maxScaleFactor] : 20.0)];
             [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
             [[self contentView] addSubview:zoomSlider];
         }
