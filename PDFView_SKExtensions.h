@@ -55,3 +55,9 @@
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 
 @end
+
+
+@interface PDFView (SKPrivateDeclarations)
+- (double)minScaleFactor;
+- (double)maxScaleFactor;
+@end
