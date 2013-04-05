@@ -305,9 +305,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [item setMenuFormRepresentation:menuItem];
             
             if ([mainController.pdfView respondsToSelector:@selector(minScaleFactor)])
-                [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:[mainController.pdfView minScaleFactor]]];
+                [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView minScaleFactor]]];
             if ([mainController.pdfView respondsToSelector:@selector(maxScaleFactor)])
-                [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:[mainController.pdfView maxScaleFactor]]];
+                [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView maxScaleFactor]]];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
             
