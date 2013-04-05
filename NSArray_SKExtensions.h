@@ -52,5 +52,6 @@
 - (NSArray *)arraySortedByTypeAndPageIndex;
 - (NSArray *)arraySortedByColor;
 - (NSArray *)arraySortedByColorAndPageIndex;
+- (NSArray *)arraySortedByModificationDate;
 
 @end
