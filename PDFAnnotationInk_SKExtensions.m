@@ -144,22 +144,64 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
+    if ([super hitTest:point] == NO)
+        return NO;
+    
     CGFloat delta = fmax(4.0, 0.5 * [self lineWidth]);
     
-    if ([super hitTest:point]) {
-        NSPoint prevPoint, nextPoint = NSZeroPoint;
-        NSInteger i, iMax;
-        for (NSBezierPath *path in [self paths]) {
-            iMax = [path elementCount];
+    point = SKSubstractPoints(point, [self bounds].origin);
+    
+    for (NSBezierPath *path in [self paths]) {
+        
+        if (NSPointInRect(point, NSInsetRect([path nonEmptyBounds], -delta, -delta))) {
+            
+            NSBezierPathElement elt;
+            NSPoint prevPoint, nextPoint = NSZeroPoint, points[3];
+            NSUInteger i, iMax = [path elementCount];
+            
             for (i = 0; i < iMax; i++) {
+                
                 prevPoint = nextPoint;
-                nextPoint = [path associatedPointForElementAtIndex:i];
-                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta))
-                    return YES;
+                elt = [path elementAtIndex:i associatedPoints:points];
+                
+                if (elt == NSCurveToBezierPathElement) {
+                    NSPoint min = prevPoint, max = prevPoint;
+                    NSBezierPath *flattenedPath;
+                    NSUInteger j, jMax;
+                    
+                    for (j = 0; j < 3; j++) {
+                        min.x = fmin(min.x, points[j].x);
+                        min.y = fmin(min.y, points[j].y);
+                        max.x = fmax(max.x, points[j].x);
+                        max.y = fmax(max.y, points[j].y);
+                    }
+                    if (point.x < min.x - delta || point.y < min.y - delta || point.x > max.x + delta || point.y > max.y + delta) {
+                        nextPoint = points[2];
+                    } else {
+                        flattenedPath = [NSBezierPath bezierPath];
+                        [flattenedPath moveToPoint:prevPoint];
+                        [flattenedPath curveToPoint:points[0] controlPoint1:points[1] controlPoint2:points[2]];
+                        flattenedPath = [flattenedPath bezierPathByFlatteningPath];
+                        jMax = [flattenedPath elementCount];
+                        for (j = 1; j < jMax; j++) {
+                            prevPoint = nextPoint;
+                            nextPoint = [flattenedPath associatedPointForElementAtIndex:j];
+                            if (SKPointNearLineFromPointToPoint(point, prevPoint, nextPoint, delta))
+                                return YES;
+                        }
+                    }
+                } else {
+                    nextPoint = points[0];
+                    if (elt != NSMoveToBezierPathElement && SKPointNearLineFromPointToPoint(point, prevPoint, nextPoint, delta))
+                        return YES;
+                }
+                
             }
+            
         }
+        
     }
+    
     return NO;
 }
 
