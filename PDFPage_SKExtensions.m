@@ -565,10 +565,7 @@ static BOOL usesSequentialPageNumbering = NO;
                                 qdPoint.h = [[pt objectAtIndex:1] intValue];
                                 point = SKNSPointFromQDPoint(qdPoint);
                             } else continue;
-                            if ([path elementCount])
-                                [path lineToPoint:point];
-                            else
-                                [path moveToPoint:point];
+                            [PDFAnnotationInk addPoint:point toSkimNotesPath:path];
                         }
                         if ([path elementCount] > 1)
                             [paths addObject:path];

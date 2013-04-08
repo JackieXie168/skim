@@ -3191,7 +3191,7 @@ enum {
     NSWindow *window = [self window];
     BOOL didDraw = NO;
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
-    NSBezierPath *bezierPath = [[[NSBezierPath alloc] init] autorelease];
+    NSBezierPath *bezierPath = [NSBezierPath bezierPath];
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
     
@@ -3233,7 +3233,7 @@ enum {
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
-        [bezierPath lineToPoint:[self convertPoint:[theEvent locationInView:self] toPage:page]];
+        [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
         
         [window restoreCachedImage];
         
