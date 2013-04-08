@@ -39,6 +39,7 @@
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
 #import <objc/objc-runtime.h>
+#import <tgmath.h>
 
 NSString *SKNFreeTextString = @"FreeText";
 NSString *SKNTextString = @"Text";
@@ -439,11 +440,66 @@ static void replacement_dealloc(id self, SEL _cmd) {
 
 @implementation PDFAnnotationInk (SKNExtensions)
 
++ (void)addPoint:(NSPoint)point toSkimNotesPath:(NSBezierPath *)path {
+    NSUInteger count = [path elementCount];
+    
+    if (count == 0) {
+        
+        [path moveToPoint:point];
+        
+    } else if (count == 1) {
+        
+        [path lineToPoint:point];
+        
+    } else {
+        
+        NSBezierPathElement elt;
+        NSPoint points[3];
+        NSPoint diff, controlPoint, point0, point1;
+        CGFloat t, dInv, d0, d1;
+        
+        elt = [path elementAtIndex:count - 2 associatedPoints:points];
+        point0 = elt == NSCurveToBezierPathElement ? points[2] : points[0];
+        
+        elt = [path elementAtIndex:count - 1 associatedPoints:points];
+        point1 = elt == NSCurveToBezierPathElement ? points[2] : points[0];
+        
+        diff.x = point.x - point0.x;
+        diff.y = point.y - point0.y;
+        
+        d0 = fabs((point1.x - point0.x) * diff.x + (point1.y - point0.y) * diff.y);
+        d1 = fabs((point.x - point1.x) * diff.x + (point.y - point1.y) * diff.y);
+        dInv = d0 + d1 > 0.0 ? 1.0 / (3.0 * (d0 + d1)) : 0.0;
+        
+        t = d0 * dInv;
+        controlPoint.x = point1.x - t * diff.x;
+        controlPoint.y = point1.y - t * diff.y;
+        
+        if (elt == NSCurveToBezierPathElement) {
+            points[1] = controlPoint;
+            [path setAssociatedPoints:points atIndex:count - 1];
+        } else if (count == 2) {
+            [path removeAllPoints];
+            [path moveToPoint:point0];
+            [path curveToPoint:point1 controlPoint1:point0 controlPoint2:controlPoint];
+        } 
+        
+        t = d1 * dInv;
+        controlPoint.x = point1.x + t * diff.x;
+        controlPoint.y = point1.y + t * diff.y;
+        
+        [path curveToPoint:point controlPoint1:controlPoint controlPoint2:point];
+        
+    }
+}
+
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
     if (self = [super initSkimNoteWithProperties:dict]) {
         Class arrayClass = [NSArray class];
+        Class stringClass = [NSString class];
         NSArray *pointLists = [dict objectForKey:SKNPDFAnnotationPointListsKey];
         if ([pointLists isKindOfClass:arrayClass]) {
+            Class selfClass = [self class];
             NSUInteger i, iMax = [pointLists count];
             for (i = 0; i < iMax; i++) {
                 NSArray *pointStrings = [pointLists objectAtIndex:i];
@@ -451,11 +507,9 @@ static void replacement_dealloc(id self, SEL _cmd) {
                     NSUInteger j, jMax = [pointStrings count];
                     NSBezierPath *path = [NSBezierPath bezierPath];
                     for (j = 0; j < jMax; j++) {
-                        NSPoint p = NSPointFromString([pointStrings objectAtIndex:j]);
-                        if (j == 0)
-                            [path moveToPoint:p];
-                        else
-                            [path lineToPoint:p];
+                        NSString *pointString = [pointStrings objectAtIndex:j];
+                        if ([pointString isKindOfClass:stringClass])
+                            [selfClass addPoint:NSPointFromString(pointString) toSkimNotesPath:path];
                     }
                     [self addBezierPath:path];
                 }

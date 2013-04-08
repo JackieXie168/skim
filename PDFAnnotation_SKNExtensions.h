@@ -338,4 +338,11 @@ extern NSString *SKNPDFAnnotationPointListsKey;
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a text annotation.
 */
 @interface PDFAnnotationInk (SKNExtensions)
+/*!
+    @abstract   Method to add a point to a path, to be used to build the path for a Skim note.
+    @param      point The point to add to the path.
+    @param      path The bezier path to add the point to.
+    @discussion This method adds a cubic curve element to path to point.  It is used to build up paths for the Skim note from the points.  This is used in <code>initSkimNoteWithProperties:</code>.
+*/
++ (void)addPoint:(NSPoint)point toSkimNotesPath:(NSBezierPath *)path;
 @end
