@@ -1712,10 +1712,13 @@ enum {
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [selection safeFirstPage];
 		bounds = [selection boundsForPage: page];
-        if (annotationType == SKCircleNote || annotationType == SKSquareNote)
+        if (annotationType == SKCircleNote)
+            bounds = NSInsetRect(bounds, -0.2 * NSWidth(bounds) - 5.0, -0.2 * NSHeight(bounds) - 5.0);
+        else if (annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         else if (annotationType == SKAnchoredNote)
             bounds.size = SKNPDFAnnotationNoteSize;
+        bounds = NSIntegralRect(bounds);
 	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
         
 		// First try the current mouse position
