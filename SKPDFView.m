@@ -1712,12 +1712,22 @@ enum {
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [selection safeFirstPage];
 		bounds = [selection boundsForPage: page];
-        if (annotationType == SKCircleNote)
-            bounds = NSInsetRect(bounds, -0.2 * NSWidth(bounds) - 5.0, -0.2 * NSHeight(bounds) - 5.0);
-        else if (annotationType == SKSquareNote)
+        if (annotationType == SKCircleNote) {
+            CGFloat t, w = NSWidth(bounds), h = NSHeight(bounds);
+            if (h < w) {
+                t = 1.0 + 0.41421 * h / w;
+                bounds = NSInsetRect(bounds, -0.20711 * h - 5.0, 0.5 * h * (1.0 - t / sqrt(t * t - 1.0)));
+            } else {
+                t = 1.0 + 0.41421 * w / h;
+                bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t / sqrt(t * t - 1.0)), -0.20711 * w - 5.0);
+            }
+        } else if (annotationType == SKSquareNote) {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
-        else if (annotationType == SKAnchoredNote)
+        } else if (annotationType == SKAnchoredNote) {
+            bounds.origin.x = round(NSMinX(bounds));
+            bounds.origin.y = round(NSMinY(bounds));
             bounds.size = SKNPDFAnnotationNoteSize;
+        }
         bounds = NSIntegralRect(bounds);
 	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
         
