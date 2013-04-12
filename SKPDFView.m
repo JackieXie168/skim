@@ -1724,8 +1724,8 @@ enum {
         } else if (annotationType == SKSquareNote) {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         } else if (annotationType == SKAnchoredNote) {
-            bounds.origin.x = round(NSMinX(bounds));
-            bounds.origin.y = round(NSMinY(bounds));
+            bounds.origin.x = floor(NSMinX(bounds)) - SKNPDFAnnotationNoteSize.width;
+            bounds.origin.y = floor(NSMaxY(bounds)) - SKNPDFAnnotationNoteSize.height;
             bounds.size = SKNPDFAnnotationNoteSize;
         }
         bounds = NSIntegralRect(bounds);
