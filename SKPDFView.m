@@ -1715,10 +1715,10 @@ enum {
         if (annotationType == SKCircleNote) {
             CGFloat t, w = NSWidth(bounds), h = NSHeight(bounds);
             if (h < w) {
-                t = 1.0 + 0.41421 * pow(h / w, 2.0/3.0);
+                t = 1.0 + (M_SQRT2 - 1.0) * pow(h / w, 2.0/3.0);
                 bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t) - 4.0, 0.5 * h * (1.0 - t / sqrt(t * t - 1.0)) - 4.0);
             } else {
-                t = 1.0 + 0.41421 * pow(w / h, 2.0/3.0);
+                t = 1.0 + (M_SQRT2 - 1.0) * pow(w / h, 2.0/3.0);
                 bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t / sqrt(t * t - 1.0)) - 4.0, 0.5 * h * (1.0 - t) - 4.0);
             }
         } else if (annotationType == SKSquareNote) {
