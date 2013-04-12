@@ -1724,8 +1724,26 @@ enum {
         } else if (annotationType == SKSquareNote) {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         } else if (annotationType == SKAnchoredNote) {
-            bounds.origin.x = floor(NSMinX(bounds)) - SKNPDFAnnotationNoteSize.width;
-            bounds.origin.y = floor(NSMaxY(bounds)) - SKNPDFAnnotationNoteSize.height;
+            switch ([page rotation]) {
+                case 0:
+                    bounds.origin.x = floor(NSMinX(bounds)) - SKNPDFAnnotationNoteSize.width;
+                    bounds.origin.y = floor(NSMaxY(bounds)) - SKNPDFAnnotationNoteSize.height;
+                    break;
+                case 90:
+                    bounds.origin.x = ceil(NSMinX(bounds));
+                    bounds.origin.y = floor(NSMinY(bounds)) - SKNPDFAnnotationNoteSize.height;
+                    break;
+                case 180:
+                    bounds.origin.x = ceil(NSMaxX(bounds));
+                    bounds.origin.y = ceil(NSMinY(bounds));
+                    break;
+                case 270:
+                    bounds.origin.x = floor(NSMaxX(bounds)) - SKNPDFAnnotationNoteSize.height;
+                    bounds.origin.y = ceil(NSMaxY(bounds));
+                    break;
+                default:
+                    break;
+            }
             bounds.size = SKNPDFAnnotationNoteSize;
         }
         bounds = NSIntegralRect(bounds);
