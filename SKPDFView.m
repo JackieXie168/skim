@@ -1714,11 +1714,14 @@ enum {
 		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote) {
             CGFloat t, w = NSWidth(bounds), h = NSHeight(bounds);
+            #define MAGIC 0.233414531781128 // 1/2-pow(sqrt(2)-1,3/2)
             if (h < w) {
-                t = 1.0 + (M_SQRT2 - 1.0) * pow(h / w, 2.0/3.0);
+                // t=1+pow(1/2*h/w,2/3) gives dw≈dh for h<<w, MAGIC makes t=sqrt(2) and dw=dh for h=w
+                t = 1.0 + pow(h / w * (0.5 - MAGIC * h / w), 2.0/3.0);
+                // an ellipse with radii 1/2*w*t and 1/2*h*t/sqrt(t^2-1) circumscribes bounds
                 bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t) - 4.0, 0.5 * h * (1.0 - t / sqrt(t * t - 1.0)) - 4.0);
             } else {
-                t = 1.0 + (M_SQRT2 - 1.0) * pow(w / h, 2.0/3.0);
+                t = 1.0 + pow(w / h * (0.5 - MAGIC * w / h), 2.0/3.0);
                 bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t / sqrt(t * t - 1.0)) - 4.0, 0.5 * h * (1.0 - t) - 4.0);
             }
         } else if (annotationType == SKSquareNote) {
