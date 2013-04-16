@@ -718,6 +718,14 @@ enum {
     }
 }
 
+- (void)setPageOffsets:(NSMapTable *)newPageOffsets {
+    if (newPageOffsets != pageOffsets) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setPageOffsets:pageOffsets];
+        [pageOffsets release];
+        pageOffsets = [newPageOffsets retain];
+    }
+}
+
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError {
     NSData *inData = data;
     PDFDocument *pdfDoc = nil;
@@ -905,6 +913,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (success) {
         [[self undoManager] disableUndoRegistration];
         [self setDataFromTmpData];
+        [self setPageOffsets:nil];
         [[self undoManager] enableUndoRegistration];
         [[self undoManager] removeAllActions];
         [fileUpdateChecker checkFileUpdatesIfNeeded];
@@ -1064,6 +1073,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
         
         [self setPDFDataUndoable:[pdfDocWithoutNotes dataRepresentation]];
+        [self setPageOffsets:offsets];
         
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
         
