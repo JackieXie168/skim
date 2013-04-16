@@ -250,6 +250,7 @@ int main (int argc, const char * argv[]) {
             
             for (i = 0; i < iMax; i++) {
                 PDFPage *page = [pdfDoc pageAtIndex:i];
+                NSPoint pageOrigin = [page boundsForBox:kPDFDisplayBoxMediaBox].origin;
                 NSEnumerator *e = [[[[page annotations] copy] autorelease] objectEnumerator];
                 PDFAnnotation *annotation;
                 
@@ -272,6 +273,14 @@ int main (int argc, const char * argv[]) {
                                     [mutableNote setObject:[contents substringToIndex:r.location] forKey:SKNPDFAnnotationContentsKey];
                                 }
                             }
+                            note = mutableNote;
+                        }
+                        if (NSEqualPoints(pageOrigin, NSZeroPoint) == NO) {
+                            NSMutableDictionary *mutableNote = [[note mutableCopy] autorelease];
+                            NSRect bounds = NSRectFromString([note objectForKey:SKNPDFAnnotationBoundsKey]);
+                            bounds.origin.x -= pageOrigin.x;
+                            bounds.origin.y -= pageOrigin.y;
+                            [mutableNote setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
                             note = mutableNote;
                         }
                         [notes addObject:note];
