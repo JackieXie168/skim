@@ -54,6 +54,8 @@ extern NSString *SKSkimFileDidSaveNotification;
     // temporary variables:
     SKTemporaryData *tmpData;
     
+    NSMapTable *pageOffsets;
+    
     SKPDFSynchronizer *synchronizer;
     
     SKFileUpdateChecker *fileUpdateChecker;

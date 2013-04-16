@@ -183,6 +183,7 @@ enum {
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
     SKDESTROY(tmpData);
+    SKDESTROY(pageOffsets);
     [super dealloc];
 }
 
@@ -382,6 +383,30 @@ enum {
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
+- (NSArray *)SkimNoteProperties {
+    NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
+    if (pageOffsets != nil) {
+        NSMutableArray *mutableArray = [NSMutableArray array];
+        for (NSDictionary *dict in array) {
+            NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
+            NSPointPointer offsetPtr = NSMapGet(pageOffsets, (const void *)pageIndex);
+            if (offsetPtr != NULL) {
+                NSMutableDictionary *mutableDict = [dict mutableCopy];
+                NSRect bounds = NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]);
+                bounds.origin.x -= offsetPtr->x;
+                bounds.origin.y -= offsetPtr->y;
+                [mutableDict setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
+                [mutableArray addObject:mutableDict];
+                [mutableDict release];
+            } else {
+                [mutableArray addObject:dict];
+            }
+        }
+        array = mutableArray;
+    }
+    return  array;
+}
+
 #ifdef __LP64__
 #define PERMISSIONS_MODE(catalogInfo) catalogInfo.permissions.mode
 #else
@@ -436,7 +461,7 @@ enum {
             (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
     }
     
-    if (NO == [fm writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
+    if (NO == [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
         NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                           NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
         NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog"), nil]
@@ -599,7 +624,7 @@ enum {
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
     } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
-        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] toSkimFileAtURL:absoluteURL error:&error];
+        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self SkimNoteProperties] toSkimFileAtURL:absoluteURL error:&error];
     } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
         NSData *data = [self notesRTFData];
         if (data)
@@ -980,9 +1005,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
     BOOL didConvert = NO;
+    NSMapTable *offsets = nil;
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
+        BOOL pageHasNote;
         
         for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
@@ -1005,8 +1032,19 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                             [newAnnotation setContents:text];
                     }
                     [newAnnotation release];
-                    didConvert = YES;
+                    pageHasNote = didConvert = YES;
                 }
+            }
+        }
+        
+        if (pageHasNote) {
+            NSPoint pageOrigin = [page boundsForBox:kPDFDisplayBoxMediaBox].origin;
+            if (NSEqualPoints(pageOrigin, NSZeroPoint) == NO) {
+                if (offsets == nil)
+                    offsets = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
+                NSPointPointer offsetPtr = NSZoneMalloc([self zone], sizeof(NSPoint));
+                *offsetPtr = pageOrigin;
+                NSMapInsert(offsets, (const void *)[page pageIndex], offsetPtr);
             }
         }
     }
@@ -1028,6 +1066,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [self setPDFDataUndoable:[pdfDocWithoutNotes dataRepresentation]];
         
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
+        
+        [offsets release];
     }
     
     [[self mainWindowController] dismissProgressSheet];
