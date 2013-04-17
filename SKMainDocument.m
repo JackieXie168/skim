@@ -1057,7 +1057,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (didConvert) {
         // if pdfDocWithoutNotes was nil, the document was not encrypted, so no need to try to unlock
         if (pdfDocWithoutNotes == nil)
-            pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
+            pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         count = [pdfDocWithoutNotes pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
