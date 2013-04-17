@@ -704,25 +704,13 @@ enum {
         [pdfData release];
         pdfData = [data retain];
     }
-}
-
-- (void)setPDFDataUndoable:(NSData *)data {
-    [[[self undoManager] prepareWithInvocationTarget:self] setPDFDataUndoable:pdfData];
-    [self setPDFData:data];
+    SKDESTROY(pageOffsets);
 }
 
 - (void)setOriginalData:(NSData *)data {
     if (originalData != data) {
         [originalData release];
         originalData = [data retain];
-    }
-}
-
-- (void)setPageOffsets:(NSMapTable *)newPageOffsets {
-    if (newPageOffsets != pageOffsets) {
-        [[[self undoManager] prepareWithInvocationTarget:self] setPageOffsets:pageOffsets];
-        [pageOffsets release];
-        pageOffsets = [newPageOffsets retain];
     }
 }
 
@@ -913,7 +901,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (success) {
         [[self undoManager] disableUndoRegistration];
         [self setDataFromTmpData];
-        [self setPageOffsets:nil];
         [[self undoManager] enableUndoRegistration];
         [[self undoManager] removeAllActions];
         [fileUpdateChecker checkFileUpdatesIfNeeded];
@@ -1008,6 +995,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }];
 }
 
+- (void)setPDFData:(NSData *)data pageOffsets:(NSMapTable *)newPageOffsets {
+    [[[self undoManager] prepareWithInvocationTarget:self] setPDFData:pdfData pageOffsets:pageOffsets];
+    [self setPDFData:data];
+    if (newPageOffsets != pageOffsets) {
+        [pageOffsets release];
+        pageOffsets = [newPageOffsets retain];
+    }
+}
+
 - (void)convertNotesUsingPDFDocument:(PDFDocument *)pdfDocWithoutNotes {
     [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0];
     
@@ -1072,8 +1068,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
         
-        [self setPDFDataUndoable:[pdfDocWithoutNotes dataRepresentation]];
-        [self setPageOffsets:offsets];
+        [self setPDFData:[pdfDocWithoutNotes dataRepresentation] pageOffsets:offsets];
         
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
         
