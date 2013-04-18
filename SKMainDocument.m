@@ -1014,7 +1014,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
-        BOOL pageHasNote;
+        NSPoint pageOrigin = [page boundsForBox:kPDFDisplayBoxMediaBox].origin;
         
         for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
@@ -1037,20 +1037,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                             [newAnnotation setContents:text];
                     }
                     [newAnnotation release];
-                    pageHasNote = didConvert = YES;
+                    didConvert = YES;
                 }
             }
         }
         
-        if (pageHasNote) {
-            NSPoint pageOrigin = [page boundsForBox:kPDFDisplayBoxMediaBox].origin;
-            if (NSEqualPoints(pageOrigin, NSZeroPoint) == NO) {
-                if (offsets == nil)
-                    offsets = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
-                NSPointPointer offsetPtr = NSZoneMalloc([self zone], sizeof(NSPoint));
-                *offsetPtr = pageOrigin;
-                NSMapInsert(offsets, (const void *)[page pageIndex], offsetPtr);
-            }
+        if (NSEqualPoints(pageOrigin, NSZeroPoint) == NO) {
+            if (offsets == nil)
+                offsets = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
+            NSPointPointer offsetPtr = NSZoneMalloc([self zone], sizeof(NSPoint));
+            *offsetPtr = pageOrigin;
+            NSMapInsert(offsets, (const void *)[page pageIndex], offsetPtr);
         }
     }
     
