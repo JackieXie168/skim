@@ -1868,6 +1868,7 @@ enum {
     if ([annotation isSkimNote])
         SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
+    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]], NSAccessibilityCreatedNotification);
 }
 
 - (void)removeActiveAnnotation:(id)sender{
@@ -1904,6 +1905,7 @@ enum {
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
+    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:wasAnnotation parent:[self documentView]], NSAccessibilityUIElementDestroyedNotification);
     [wasAnnotation release];
     [page release];
 }
