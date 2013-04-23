@@ -365,6 +365,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
             [self didChangeValueForKey:COLORS_KEY];
             [self notifyColorsChanged];
             [self setNeedsDisplay:YES];
+            NSAccessibilityPostNotification([SKAccessibilityIndexedFauxUIElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
         }
     }
 }
@@ -417,8 +418,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
             [colors insertObject:color atIndex:i];
             if (autoResizes)
                 [self sizeToFit];
+            NSAccessibilityPostNotification([SKAccessibilityIndexedFauxUIElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
         } else {
             [colors replaceObjectAtIndex:i withObject:color];
+            NSAccessibilityPostNotification([SKAccessibilityIndexedFauxUIElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
         }
         [self didChangeValueForKey:COLORS_KEY];
         [self notifyColorsChanged];
