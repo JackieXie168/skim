@@ -105,6 +105,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
+#import "SKAccessibilityFauxUIElement.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -2285,19 +2286,32 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                     [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
                     [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
                 }
-            }
-            if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey]) {
-                [pdfView annotationsChangedOnPage:[note page]];
-                [pdfView resetPDFToolTipRects];
+                
+                if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey]) {
+                    NSRect oldBounds = NSZeroRect, newBounds = NSZeroRect;
+                    if ([oldValue isEqual:[NSNull null]] == NO)
+                        oldBounds = [oldValue rectValue];
+                    if ([newValue isEqual:[NSNull null]] == NO)
+                        newBounds = [newValue rectValue];
+                    if (NSEqualSizes(oldBounds.size, newBounds.size) == NO)
+                        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityResizedNotification);
+                    if (NSEqualPoints(oldBounds.origin, newBounds.origin) == NO)
+                        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityMovedNotification);
+                    
+                    if ([[note type] isEqualToString:SKNNoteString]) {
+                        [pdfView annotationsChangedOnPage:[note page]];
+                        [pdfView resetPDFToolTipRects];
+                    }
+                    
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
+                        [self updateRightStatus];
+                    }
+                }
             }
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
-            }
-            
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
-                [self updateRightStatus];
             }
             
             // update the various panels if necessary
