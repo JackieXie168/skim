@@ -500,15 +500,20 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (id)valueForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
+    if ([element index] >= (NSInteger)[[self colors] count])
+        return nil;
     return [[[self colors] objectAtIndex:[element index]] accessibilityValue];
 }
 
 - (NSRect)screenRectForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    NSRect rect = NSInsetRect([self bounds], 1.0, 1.0);
-    rect.size.width = NSHeight(rect);
-    rect.origin.x += [element index] * (NSWidth(rect) - 1.0);
-    rect = [self convertRect:rect toView:nil];
-    rect.origin = [[self window] convertBaseToScreen:rect.origin];
+    NSRect rect = NSZeroRect;
+    if ([element index] < (NSInteger)[[self colors] count]) {
+        rect = NSInsetRect([self bounds], 1.0, 1.0);
+        rect.size.width = NSHeight(rect);
+        rect.origin.x += [element index] * (NSWidth(rect) - 1.0);
+        rect = [self convertRect:rect toView:nil];
+        rect.origin = [[self window] convertBaseToScreen:rect.origin];
+    }
     return rect;
 }
 
@@ -517,7 +522,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)fauxUIElement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused {
-    if (focused) {
+    if (focused && [element index] < (NSInteger)[[self colors] count]) {
         [[self window] makeFirstResponder:self];
         focusedIndex = [element index];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
@@ -525,7 +530,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    [self performClickAtIndex:[element index]];
+    if ([element index] < (NSInteger)[[self colors] count])
+        [self performClickAtIndex:[element index]];
 }
 
 @end
