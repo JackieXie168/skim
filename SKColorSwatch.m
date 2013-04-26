@@ -337,10 +337,19 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)setColors:(NSArray *)newColors {
-    BOOL shouldResize = autoResizes && [newColors count] != [colors count];
+    NSArray *oldColors = [self colors];
     [colors setArray:newColors];
-    if (shouldResize)
+    if (autoResizes && [newColors count] != [oldColors count])
         [self sizeToFit];
+    if ([self window]) {
+        NSUInteger i, iMax;
+        iMax = [oldColors count];
+        for (i = 0; i < iMax; i++)
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityUIElementDestroyedNotification);
+        iMax = [newColors count];
+        for (i = 0; i < iMax; i++)
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
 }
 
