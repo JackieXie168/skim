@@ -50,6 +50,7 @@
 #import "SKRuntime.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -300,6 +301,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (BOOL)hasBorder { return NO; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
+
+- (void)autoUpdateString {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
+        return;
+    NSString *selString = [[self selection] cleanedString];
+    if ([selString length])
+        [self setString:selString];
+}
 
 #pragma mark Scripting support
 

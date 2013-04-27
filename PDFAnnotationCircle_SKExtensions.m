@@ -41,6 +41,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
+#import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
@@ -89,6 +90,25 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     CGFloat dx = 2.0 * (point.x - NSMidX(bounds)) / NSWidth(bounds);
     CGFloat dy = 2.0 * (point.y - NSMidY(bounds)) / NSHeight(bounds);
     return dx * dx + dy * dy <= 1.0;
+}
+
+- (void)autoUpdateString {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
+        return;
+    // this calculation is roughly the inverse of -[PDFView addAnnotationWithType:defaultPoint:]
+    NSRect bounds = NSInsetRect([self bounds], 0.5 * [self lineWidth] - 1.0, 0.5 * [self lineWidth] - 1.0);
+    CGFloat t, w = NSWidth(bounds), h = NSWidth(bounds);
+    #define MAGIC 0.341487332218892 // 1/2-pow(1-sqrt(1/2),3/2)
+    if (h < w) {
+        t = 1.0 - pow(h / w * (0.5 - MAGIC * h / w), 2.0/3.0);
+        bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t), 0.5 * h * (1.0 - sqrt(1.0 - t * t)));
+    } else {
+        t = 1.0 - pow(w / h * (0.5 - MAGIC * w / h), 2.0/3.0);
+        bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - sqrt(1.0 - t * t)), 0.5 * h * (1.0 - t));
+    }
+    NSString *selString = [[[self page] selectionForRect:bounds] cleanedString];
+    if ([selString length])
+        [self setString:selString];
 }
 
 - (NSSet *)keysForValuesToObserveForUndo {

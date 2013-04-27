@@ -297,6 +297,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [self setModificationDate:[NSDate date]];
 }
 
+- (void)autoUpdateString {}
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *keys = nil;
     if (keys == nil)
