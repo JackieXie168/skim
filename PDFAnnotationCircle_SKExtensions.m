@@ -98,14 +98,10 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     // this calculation is roughly the inverse of -[PDFView addAnnotationWithType:defaultPoint:]
     NSRect bounds = NSInsetRect([self bounds], 0.5 * [self lineWidth] - 1.0, 0.5 * [self lineWidth] - 1.0);
     CGFloat t, w = NSWidth(bounds), h = NSWidth(bounds);
-    #define MAGIC 0.341487332218892 // 1/2-pow(1-sqrt(1/2),3/2)
-    if (h < w) {
-        t = 1.0 - pow(h / w * (0.5 - MAGIC * h / w), 2.0/3.0);
-        bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - t), 0.5 * h * (1.0 - sqrt(1.0 - t * t)));
-    } else {
-        t = 1.0 - pow(w / h * (0.5 - MAGIC * w / h), 2.0/3.0);
-        bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - sqrt(1.0 - t * t)), 0.5 * h * (1.0 - t));
-    }
+    if (w <= 0.0 || h <= 0.0)
+        return;
+    t = 0.5 * w * h * (w + h - sqrt(2.0 * w * h)) / (w * w + h * h);
+    bounds = NSInsetRect(bounds, t, t);
     NSString *selString = [[[self page] selectionForRect:bounds] cleanedString];
     if ([selString length])
         [self setString:selString];
