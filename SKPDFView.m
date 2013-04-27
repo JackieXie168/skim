@@ -2537,12 +2537,7 @@ enum {
     
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
-            ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-            NSString *selString = [[[activeAnnotation page] selectionForRect:newBounds] cleanedString];
-            if ([selString length])
-                [activeAnnotation setString:selString];
-        }
+        [activeAnnotation autoUpdateString];
     }
 }
 
@@ -2785,12 +2780,7 @@ enum {
         
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
-                ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-                NSString *selString = [[[activeAnnotation page] selectionForRect:newBounds] cleanedString];
-                if ([selString length])
-                    [activeAnnotation setString:selString];
-            }
+            [activeAnnotation autoUpdateString];
         }
     }
 }
@@ -3065,13 +3055,8 @@ enum {
     [NSEvent stopPeriodicEvents];
     if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
         [self editActiveAnnotation:self]; 	 
-    if (draggedAnnotation && 
-        [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
-        ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-        NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] cleanedString];
-        if ([selString length])
-            [activeAnnotation setString:selString];
-    }
+    if (draggedAnnotation)
+        [activeAnnotation autoUpdateString];
     
     [self setNeedsDisplayForAnnotation:activeAnnotation];
     

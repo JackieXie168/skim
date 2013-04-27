@@ -93,6 +93,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (void)registerUserName;
 
+- (void)autoUpdateString;
+
 - (NSSet *)keysForValuesToObserveForUndo;
 
 + (NSSet *)customScriptingKeys;

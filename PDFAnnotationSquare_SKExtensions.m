@@ -42,6 +42,7 @@
 #import "PDFAnnotationCircle_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
+#import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 
 
@@ -80,6 +81,15 @@
 - (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
+
+- (void)autoUpdateString {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
+        return;
+    NSRect bounds = NSInsetRect([self bounds], 0.5 * [self lineWidth] - 1.0, 0.5 * [self lineWidth] - 1.0);
+    NSString *selString = [[[self page] selectionForRect:bounds] cleanedString];
+    if ([selString length])
+        [self setString:selString];
+}
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *squareKeys = nil;
