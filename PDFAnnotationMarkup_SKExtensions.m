@@ -290,7 +290,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     CGFloat lineWidth = 1.0 / scaleFactor;
     
     [NSGraphicsContext saveGraphicsState];
-    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setStroke];
+    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
     for (i = 0; i < iMax; i++)
         NSFrameRectWithWidth(NSIntegralRect(*(NSRectPointer)[lines pointerAtIndex:i]), lineWidth);
     [NSGraphicsContext restoreGraphicsState];
