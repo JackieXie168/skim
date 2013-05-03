@@ -141,6 +141,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 }
 
 - (id)coerceValueForRichText:(id)value {
+    if ([value isKindOfClass:[NSScriptObjectSpecifier class]])
+        value = [(NSScriptObjectSpecifier *)value objectsByEvaluatingSpecifier];
     // We want to just get Strings unchanged.  We will detect this and do the right thing in setRichText.  We do this because, this way, we will do more reasonable things about attributes when we are receiving plain text.
     if ([value isKindOfClass:[NSString class]])
         return value;

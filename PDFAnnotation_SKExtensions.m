@@ -407,6 +407,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (id)coerceValueForTextContents:(id)value {
+    if ([value isKindOfClass:[NSScriptObjectSpecifier class]])
+        value = [(NSScriptObjectSpecifier *)value objectsByEvaluatingSpecifier];
     return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
 }
 
