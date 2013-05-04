@@ -224,40 +224,16 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     if (logicalSizePtr)
         *logicalSizePtr = logicalSize;
     
-    if (size >> (4 * BYTE_SHIFT) == 0) {
-        if (size == 0) {
-            [string appendFormat:@"0 %@", NSLocalizedString(@"bytes", @"size unit")];
-        } else if (size < BYTE_FACTOR) {
-            [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
-        } else {
-            UInt32 adjSize = size >> BYTE_SHIFT;
-            if (adjSize < BYTE_FACTOR) {
-                [string appendFormat:@"%.1f KB", size / BYTE_FACTOR_F, NSLocalizedString(@"KB", @"size unit")];
-            } else {
-                adjSize >>= BYTE_SHIFT;
-                size >>= BYTE_SHIFT;
-                if (adjSize < BYTE_FACTOR) {
-                    [string appendFormat:@"%.1f MB", size / BYTE_FACTOR_F, NSLocalizedString(@"MB", @"size unit")];
-                } else {
-                    //adjSize >>= 10;
-                    size >>= BYTE_SHIFT;
-                    [string appendFormat:@"%.1f GB", size / BYTE_FACTOR_F, NSLocalizedString(@"GB", @"size unit")];
-                }
-            }
-        }
+    if (size < BYTE_FACTOR) {
+        [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
     } else {
-        UInt32 adjSize = size >> (4 * BYTE_SHIFT); size >>= (3 * BYTE_SHIFT);
-        if (adjSize < BYTE_FACTOR) {
-            [string appendFormat:@"%.1f TB", size / BYTE_FACTOR_F, NSLocalizedString(@"TB", @"size unit")];
-        } else {
-            adjSize >>= BYTE_SHIFT;
-            size >>= BYTE_SHIFT;
-            if (adjSize < BYTE_FACTOR) {
-                [string appendFormat:@"%.1f PB", size / BYTE_FACTOR_F, NSLocalizedString(@"PB", @"size unit")];
-            } else {
-                //adjSize >>= BYTE_SHIFT;
-                size >>= BYTE_SHIFT;
-                [string appendFormat:@"%.1f EB", size / BYTE_FACTOR_F, NSLocalizedString(@"EB", @"size unit")];
+        #define numUnits 6
+        NSString *units[numUnits] = {NSLocalizedString(@"KB", @"size unit"), NSLocalizedString(@"MB", @"size unit"), NSLocalizedString(@"GB", @"size unit"), NSLocalizedString(@"TB", @"size unit"), NSLocalizedString(@"PB", @"size unit"), NSLocalizedString(@"EB", @"size unit")};
+        NSUInteger i;
+        for (i = 0; i < numUnits; i++, size >>= BYTE_SHIFT) {
+            if ((size >> BYTE_SHIFT) < BYTE_FACTOR || i == numUnits - 1) {
+                [string appendFormat:@"%.1f %@", size / BYTE_FACTOR_F, units[i]];
+                break;
             }
         }
     }
