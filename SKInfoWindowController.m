@@ -228,7 +228,7 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
         [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
     } else {
         #define numUnits 6
-        NSString *units[numUnits] = {NSLocalizedString(@"KB", @"size unit"), NSLocalizedString(@"MB", @"size unit"), NSLocalizedString(@"GB", @"size unit"), NSLocalizedString(@"TB", @"size unit"), NSLocalizedString(@"PB", @"size unit"), NSLocalizedString(@"EB", @"size unit")};
+        NSString *units[numUnits] = {NSLocalizedString(@"kB", @"size unit"), NSLocalizedString(@"MB", @"size unit"), NSLocalizedString(@"GB", @"size unit"), NSLocalizedString(@"TB", @"size unit"), NSLocalizedString(@"PB", @"size unit"), NSLocalizedString(@"EB", @"size unit")};
         NSUInteger i;
         for (i = 0; i < numUnits; i++, size >>= BYTE_SHIFT) {
             if ((size >> BYTE_SHIFT) < BYTE_FACTOR || i == numUnits - 1) {
