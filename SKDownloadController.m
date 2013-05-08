@@ -333,7 +333,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (download && [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
-        NSError *error;
+        NSError *error = nil;
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[download fileURL] display:YES error:&error] && [error isUserCancelledError] == NO)
             [NSApp presentError:error];
     }
