@@ -313,9 +313,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     id document = nil;
     NSError *error = nil;
     NSURL *fileURL = [[SKAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
-    if(fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
+    if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
-    if(fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
+    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
         if ((document = [self documentForURL:fileURL])) {
             // the document was already open, don't call makeWindowControllers because that adds new empty windows
             [document applySetup:setup];
@@ -327,6 +327,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         } else if (outError) {
             *outError = error;
         }
+    } else if (outError) {
+        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }
     return document;
 }

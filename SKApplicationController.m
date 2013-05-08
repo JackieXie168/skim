@@ -173,7 +173,7 @@
         }
         
         for (NSDictionary *dict in [[sud objectForKey:SKLastOpenFileNamesKey] reverseObjectEnumerator]) {
-            NSError *error;
+            NSError *error = nil;
             if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
                 [NSApp presentError:error];
         }
