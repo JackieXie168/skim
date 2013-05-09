@@ -186,6 +186,7 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
     static NSArray *attributes = nil;
     if (attributes == nil) {
         attributes = [[[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+            NSAccessibilityValueAttribute,
             NSAccessibilitySelectedTextAttribute,
             NSAccessibilitySelectedTextRangeAttribute,
             NSAccessibilityNumberOfCharactersAttribute,
@@ -197,6 +198,10 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
 
 - (id)accessibilityRoleAttribute {
     return NSAccessibilityStaticTextRole;
+}
+
+- (id)accessibilityValueAttribute {
+    return [self contents];
 }
 
 - (id)accessibilitySelectedTextAttribute {

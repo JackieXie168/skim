@@ -129,7 +129,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (NSArray *)accessibilityAttributeNames;
 - (id)accessibilityRoleAttribute;
 - (id)accessibilityRoleDescriptionAttribute;
+- (id)accessibilityDescriptionAttribute;
 - (id)accessibilityTitleAttribute;
-- (id)accessibilityValueAttribute;
 
 @end

@@ -155,7 +155,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityDescriptionAttribute] retain];
+        attributes = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityValueAttribute] retain];
     }
     return attributes;
 }
@@ -170,10 +170,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (id)accessibilityValueAttribute {
     return [self contents];
-}
-
-- (id)accessibilityDescriptionAttribute {
-    return [[self type] typeName];
 }
 
 - (id)accessibilityEnabledAttribute {

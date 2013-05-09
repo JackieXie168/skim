@@ -498,8 +498,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         attributes = [[NSArray alloc] initWithObjects:
             NSAccessibilityRoleAttribute,
             NSAccessibilityRoleDescriptionAttribute,
+            NSAccessibilityDescriptionAttribute,
             NSAccessibilityTitleAttribute,
-            NSAccessibilityValueAttribute,
             NSAccessibilityParentAttribute,
             NSAccessibilityWindowAttribute,
             NSAccessibilityTopLevelUIElementAttribute,
@@ -520,11 +520,11 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return NSAccessibilityRoleDescription([self accessibilityRoleAttribute], nil);
 }
 
-- (id)accessibilityTitleAttribute {
+- (id)accessibilityDescriptionAttribute {
     return [[self type] typeName];
 }
 
-- (id)accessibilityValueAttribute {
+- (id)accessibilityTitleAttribute {
     return [self contents];
 }
 
