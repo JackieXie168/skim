@@ -73,13 +73,24 @@ static id (*original_toolTip)(id, SEL) = NULL;
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityURLAttribute] retain];
+        attributes = [[[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+            NSAccessibilitySubroleAttribute,
+            NSAccessibilityValueAttribute,
+            NSAccessibilityURLAttribute, nil]] retain];
     }
     return attributes;
 }
 
 - (id)accessibilityRoleAttribute {
     return NSAccessibilityLinkRole;
+}
+
+- (id)accessibilitySubroleAttribute {
+    return NSAccessibilityTextLinkSubrole;
+}
+
+- (id)accessibilityRoleDescriptionAttribute {
+    return NSAccessibilityRoleDescription(NSAccessibilityLinkRole, NSAccessibilityTextLinkSubrole);
 }
 
 - (id)accessibilityTitleAttribute {
