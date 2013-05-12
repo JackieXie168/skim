@@ -265,10 +265,4 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
     return pointLists;
 }
 
-#pragma mark Accessibility
-
-- (id)accessibilityRoleAttribute {
-    return NSAccessibilityImageRole;
-}
-
 @end

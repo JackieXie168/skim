@@ -141,10 +141,4 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     }
 }
 
-#pragma mark Accessibility
-
-- (id)accessibilityRoleAttribute {
-    return NSAccessibilityImageRole;
-}
-
 @end

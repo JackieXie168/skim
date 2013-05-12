@@ -276,10 +276,4 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     }
 }
 
-#pragma mark Accessibility
-
-- (id)accessibilityRoleAttribute {
-    return NSAccessibilityImageRole;
-}
-
 @end
