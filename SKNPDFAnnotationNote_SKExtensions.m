@@ -164,10 +164,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     return NSAccessibilityButtonRole;
 }
 
-- (id)accessibilityTitleAttribute {
-    return [self string];
-}
-
 - (id)accessibilityValueAttribute {
     return [self contents];
 }

@@ -513,7 +513,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (id)accessibilityRoleAttribute {
-    return NSAccessibilityUnknownRole;
+    return NSAccessibilityImageRole;
 }
 
 - (id)accessibilityRoleDescriptionAttribute {
@@ -525,7 +525,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (id)accessibilityTitleAttribute {
-    return [self contents];
+    return [self string];
 }
 
 - (id)accessibilityEnabledAttribute {
