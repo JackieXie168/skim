@@ -2182,9 +2182,13 @@ enum {
         for (i = range.location; i < NSMaxRange(range); i++) {
             PDFPage *page = [pdfDoc pageAtIndex:i];
             for (PDFAnnotation *annotation in [page annotations]) {
-                if ([annotation isLink] || [annotation isSkimNote])
-                    [children addObject:[SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]]];
+                if ([annotation isLink] || [annotation isSkimNote]) {
+                    SKAccessibilityProxyFauxUIElement *element = [[SKAccessibilityProxyFauxUIElement alloc] initWithObject:annotation parent:[self documentView]];
+                    [children addObject:element];
+                    [element release];
+                }
             }
+        
         }
         accessibilityChildren = [children mutableCopy];
     }
