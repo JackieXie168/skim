@@ -178,7 +178,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         for (NSMenuItem *item in [iconTypePopUpButton itemArray])
             [item setImage:noteIcons[[item tag]]];
         
-        SKAutoSizeLabelFields([NSArray arrayWithObjects:iconLabelField, nil], [NSArray arrayWithObjects:iconTypePopUpButton, nil], YES);
+        SKAutoSizeLabelField(iconLabelField, iconTypePopUpButton, YES);
         
     } else {
         [gradientView setHidden:YES];

@@ -73,12 +73,12 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     
     SKAutoSizeLabelFields(thumbnailSizeLabels, thumbnailSizeControls, NO);
     [[thumbnailSizeControls lastObject] sizeToFit];
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:tableFontLabelField, nil], [NSArray arrayWithObjects:tableFontComboBox, nil], NO);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:greekingLabelField, nil], [NSArray arrayWithObjects:greekingTextField, nil], NO);
+    SKAutoSizeLabelField(tableFontLabelField, tableFontComboBox, NO);
+    SKAutoSizeLabelField(greekingLabelField, greekingTextField, NO);
     [antiAliasCheckButton sizeToFit];
     SKAutoSizeLabelFields(colorLabels, colorControls, NO);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:fullScreenBackgroundColorLabelField, nil], [NSArray arrayWithObjects:fullScreenBackgroundColorWell, nil], NO);
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:searchHighlightCheckButton, nil], [NSArray arrayWithObjects:searchHighlightColorWell, nil], NO);
+    SKAutoSizeLabelField(fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, NO);
+    SKAutoSizeLabelField(searchHighlightCheckButton, searchHighlightColorWell, NO);
     [[colorControls lastObject] sizeToFit];
     
     CGFloat w = 0.0;

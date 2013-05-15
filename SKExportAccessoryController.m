@@ -60,7 +60,7 @@
 - (void)loadView {
     [super loadView];
     [matrix sizeToFit];
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:matrix, nil], NO);
+    SKAutoSizeLabelField(labelField, matrix, NO);
 }
 
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {

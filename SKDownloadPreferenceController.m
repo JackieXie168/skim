@@ -78,7 +78,7 @@
     frame.size.width += 18.0;
     [[self window] setFrame:frame display:NO];
     
-    SKAutoSizeLabelFields([NSArray arrayWithObjects:downloadsFolderLabelField, nil], [NSArray arrayWithObjects:downloadsFolderPopUp, nil], YES);
+    SKAutoSizeLabelField(downloadsFolderLabelField, downloadsFolderPopUp, YES);
     [self updateDownloadsFolderPopUp];
 }
 
