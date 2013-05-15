@@ -199,12 +199,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerWillClose:)])
         [[self delegate] snapshotControllerWillClose:self];
     [self setDelegate:nil];
-    // this is necessary to break a retain loop between the popup and its parent
-	[NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton]) accessibilitySetOverrideValue:nil forAttribute:NSAccessibilityParentAttribute];
-    if ([[self window] isKeyWindow])
-        [[[[self document] mainWindowController] window] makeKeyWindow];
-    else if ([[self window] isMainWindow])
-        [[[[self document] mainWindowController] window] makeMainWindow];
 }
 
 - (void)notifiyDidFinishSetup {
@@ -276,8 +270,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
     
-    if (autoFits && [pdfView respondsToSelector:@selector(setAutoFits:)])
-        [(SKSnapshotPDFView *)pdfView setAutoFits:autoFits];
+    if (autoFits)
+        [pdfView setAutoFits:autoFits];
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
@@ -332,7 +326,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (NSDictionary *)currentSetup {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
-    BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(SKSnapshotPDFView *)pdfView autoFits];
+    BOOL autoFits = [pdfView autoFits];
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
 }
 

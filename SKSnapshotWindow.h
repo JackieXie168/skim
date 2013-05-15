@@ -38,10 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKSnapshotPDFView;
 
 @interface SKSnapshotWindow : NSWindow {
-	IBOutlet SKSnapshotPDFView *pdfView;
     BOOL disableConstrainToScreen;
 }
 
