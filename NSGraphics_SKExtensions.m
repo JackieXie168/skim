@@ -138,3 +138,6 @@ CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resi
     return dw;
 }
 
+extern CGFloat SKAutoSizeLabelField(NSControl *labelField, NSControl *control, BOOL resizeControls) {
+    return SKAutoSizeLabelFields([NSArray arrayWithObjects:labelField, nil], [NSArray arrayWithObjects:control, nil], resizeControls);
+}
