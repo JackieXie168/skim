@@ -2306,6 +2306,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
                         [self updateRightStatus];
                     }
+                } else if (([keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) &&
+                           [[note accessibilityAttributeNames] containsObject:NSAccessibilityValueAttribute]) {
+                    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityValueChangedNotification);
                 }
             }
             
