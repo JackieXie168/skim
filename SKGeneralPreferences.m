@@ -89,7 +89,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     CGFloat dw = SKAutoSizeLabelField(updateIntervalLabelField, updateIntervalPopUpButton, NO);
     [openFilesMatrix sizeToFit];
     [savePasswordsMatrix sizeToFit];
-    SKShiftAndResizeViews([NSArray arrayWithObjects:[self view], nil], 0.0, dw);
+    SKShiftAndResizeView([self view], 0.0, dw);
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];

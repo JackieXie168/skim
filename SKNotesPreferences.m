@@ -92,7 +92,7 @@
     
     SKShiftAndResizeViews([lineLabels2 arrayByAddingObjectsFromArray:lineWells2], dw - dw2, 0.0);
     
-    SKShiftAndResizeViews([NSArray arrayWithObjects:[self view], nil], 0.0, dw);
+    SKShiftAndResizeView([self view], 0.0, dw);
     
     NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
     
