@@ -77,9 +77,9 @@
     dx2 -= NSWidth([messageField frame]);
     size.width -= dx1 + dx2;
     [gradientView setFrameSize:size];
-    SKShiftAndResizeViews([NSArray arrayWithObjects:doneButton, nil], dx1, 0.0);
+    SKShiftAndResizeView(doneButton, dx1, 0.0);
     SKShiftAndResizeViews([NSArray arrayWithObjects:navigationButton, findField, nil], -dx2, 0.0);
-    SKShiftAndResizeViews([NSArray arrayWithObjects:findField, nil], 0.0, dx1 + dx2);
+    SKShiftAndResizeView(findField, 0.0, dx1 + dx2);
     
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];

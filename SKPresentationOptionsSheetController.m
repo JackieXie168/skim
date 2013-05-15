@@ -166,7 +166,7 @@ static char *SKTransitionPropertiesObservationContext;
         [[self window] setFrame:frame display:NO];
         
         SKShiftAndResizeViews(boxes, -dw, dw);
-        SKShiftAndResizeViews([NSArray arrayWithObjects:separateCheckButton, nil], -dw, 0.0);
+        SKShiftAndResizeView(separateCheckButton, -dw, 0.0);
     }
     
     // collapse the table

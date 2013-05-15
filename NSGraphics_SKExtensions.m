@@ -82,12 +82,15 @@ void SKDrawTextFieldBezel(NSRect rect, NSView *controlView) {
 #define EXTRA_BUTTON_WIDTH 12.0
 
 void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw) {
-    for (NSView *view in views) {
-        NSRect frame = [view frame];
-        frame.origin.x += dx;
-        frame.size.width += dw;
-        [view setFrame:frame];
-    }
+    for (NSView *view in views)
+       SKShiftAndResizeView(view, dx, dw);
+}
+
+void SKShiftAndResizeView(NSView *view, CGFloat dx, CGFloat dw) {
+    NSRect frame = [view frame];
+    frame.origin.x += dx;
+    frame.size.width += dw;
+    [view setFrame:frame];
 }
 
 void SKAutoSizeButtons(NSArray *buttons, BOOL rightAlign) {
