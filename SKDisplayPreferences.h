@@ -48,8 +48,6 @@
     NSButton *antiAliasCheckButton;
     NSTextField *fullScreenBackgroundColorLabelField;
     NSColorWell *fullScreenBackgroundColorWell;
-    NSButton *searchHighlightCheckButton;
-    NSColorWell *searchHighlightColorWell;
     NSArray *thumbnailSizeLabels;
     NSArray *thumbnailSizeControls;
     NSArray *colorLabels;
@@ -62,8 +60,6 @@
 @property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
 @property (nonatomic, retain) IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
 @property (nonatomic, retain) IBOutlet NSColorWell *fullScreenBackgroundColorWell;
-@property (nonatomic, retain) IBOutlet NSButton *searchHighlightCheckButton;
-@property (nonatomic, retain) IBOutlet NSColorWell *searchHighlightColorWell;
 @property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
