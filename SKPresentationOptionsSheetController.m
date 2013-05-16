@@ -161,10 +161,7 @@ static char *SKTransitionPropertiesObservationContext;
     CGFloat dw = SKAutoSizeLabelFields(transitionLabels, transitionControls, NO);
     
     if (fabs(dw) > 0.0) {
-        NSRect frame = [[self window] frame];
-        frame.size.width += dw;
-        [[self window] setFrame:frame display:NO];
-        
+        SKResizeWindow([self window], dw);
         SKShiftAndResizeViews(boxes, -dw, dw);
         SKShiftAndResizeView(separateCheckButton, -dw, 0.0);
     }
