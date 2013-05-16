@@ -46,8 +46,6 @@
     NSTextField *greekingLabelField;
     NSTextField *greekingTextField;
     NSButton *antiAliasCheckButton;
-    NSTextField *fullScreenBackgroundColorLabelField;
-    NSColorWell *fullScreenBackgroundColorWell;
     NSArray *thumbnailSizeLabels;
     NSArray *thumbnailSizeControls;
     NSArray *colorLabels;
@@ -58,8 +56,6 @@
 @property (nonatomic, retain) IBOutlet NSComboBox *tableFontComboBox;
 @property (nonatomic, retain) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
 @property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
-@property (nonatomic, retain) IBOutlet NSTextField *fullScreenBackgroundColorLabelField;
-@property (nonatomic, retain) IBOutlet NSColorWell *fullScreenBackgroundColorWell;
 @property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
