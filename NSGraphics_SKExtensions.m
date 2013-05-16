@@ -93,6 +93,12 @@ void SKShiftAndResizeView(NSView *view, CGFloat dx, CGFloat dw) {
     [view setFrame:frame];
 }
 
+void SKResizeWindow(NSWindow *window, CGFloat dw) {
+    NSRect frame = [window frame];
+    frame.size.width += dw;
+    [window setFrame:frame display:NO];
+}
+
 void SKAutoSizeButtons(NSArray *buttons, BOOL rightAlign) {
     if ([buttons count] == 0)
         return;

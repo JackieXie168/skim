@@ -54,14 +54,11 @@
 }
 
 - (void)windowDidLoad {
-    NSRect frame = [[self window] frame];
-    CGFloat buttonMargin = NSWidth(frame) - NSMaxX([[buttons objectAtIndex:0] frame]);
     NSButton *cancelButton = [buttons lastObject];
+    CGFloat buttonMargin = NSWidth([[cancelButton superview] bounds]) - NSMaxX([[buttons objectAtIndex:0] frame]);
     SKAutoSizeButtons(buttons, YES);
-    if (NSMinX([cancelButton frame]) < buttonMargin) {
-        frame.size.width += buttonMargin - NSMinX([cancelButton frame]);
-        [[self window] setFrame:frame display:NO];
-    }
+    if (NSMinX([cancelButton frame]) < buttonMargin)
+        SKResizeWindow([self window], buttonMargin - NSMinX([cancelButton frame]));
     SKAutoSizeLabelFields(labelFields, controls, YES);
 }
 
