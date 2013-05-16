@@ -45,7 +45,7 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 
 @implementation SKDisplayPreferences
 
-@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, searchHighlightCheckButton, searchHighlightColorWell, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
+@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
 - (void)dealloc {
     SKDESTROY(tableFontLabelField);
@@ -55,8 +55,6 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     SKDESTROY(antiAliasCheckButton);
     SKDESTROY(fullScreenBackgroundColorLabelField);
     SKDESTROY(fullScreenBackgroundColorWell);
-    SKDESTROY(searchHighlightCheckButton);
-    SKDESTROY(searchHighlightColorWell);
     SKDESTROY(thumbnailSizeLabels);
     SKDESTROY(thumbnailSizeControls);
     SKDESTROY(colorLabels);
@@ -78,7 +76,6 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     [antiAliasCheckButton sizeToFit];
     SKAutoSizeLabelFields(colorLabels, colorControls, NO);
     SKAutoSizeLabelField(fullScreenBackgroundColorLabelField, fullScreenBackgroundColorWell, NO);
-    SKAutoSizeLabelField(searchHighlightCheckButton, searchHighlightColorWell, NO);
     [[colorControls lastObject] sizeToFit];
     
     CGFloat w = 0.0;
