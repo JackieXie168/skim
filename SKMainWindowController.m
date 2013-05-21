@@ -186,6 +186,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)setupToolbar;
 
+- (void)updateTableFont;
+
 - (void)updatePageLabel;
 
 - (SKProgressController *)progressController;
@@ -356,11 +358,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [leftSideController.groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
     [leftSideController.groupedFindTableView setTarget:self];
     
-    NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-    [leftSideController.tocOutlineView setFont:font];
-    [rightSideController.noteOutlineView setFont:font];
-    [leftSideController.findTableView setFont:font];
-    [leftSideController.groupedFindTableView setFont:font];
+    [self updateTableFont];
     
     if (mwcFlags.usesDrawers) {
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
@@ -719,6 +717,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [self expandOutline:child forExpansionState:[infoEnum nextObject]];
         [children release];
     }
+}
+
+- (void)updateTableFont {
+    NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
+    [leftSideController.tocOutlineView setFont:font];
+    [rightSideController.noteOutlineView setFont:font];
+    [leftSideController.findTableView setFont:font];
+    [leftSideController.groupedFindTableView setFont:font];
 }
 
 - (void)updatePageLabelsAndOutlineForExpansionState:(NSDictionary *)info {
@@ -2200,11 +2206,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKTableFontSizeKey]) {
-            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-            [leftSideController.tocOutlineView setFont:font];
-            [rightSideController.noteOutlineView setFont:font];
-            [leftSideController.findTableView setFont:font];
-            [leftSideController.groupedFindTableView setFont:font];
+            [self updateTableFont];
             [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
             [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
             [self updatePageColumnWidthForTableView:leftSideController.findTableView];
