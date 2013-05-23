@@ -1810,7 +1810,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         SKTemplateManager *tm = [SKTemplateManager sharedManager];
         if ([fileType isEqualToString:@"PDF"]) {
             normalizedType = SKPDFDocumentType;
-        } else if ([fileType isEqualToString:@"PDF With Embeded Notes"]) {
+        } else if ([fileType isEqualToString:@"PDF With Embedded Notes"]) {
             normalizedType = SKPDFDocumentType;
             option = SKExportOptionWithEmbeddedNotes;
         } else if ([fileType isEqualToString:@"PDF Without Notes"]) {
