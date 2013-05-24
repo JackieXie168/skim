@@ -943,7 +943,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 #pragma mark Actions
 
-- (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {log_method();return;
+- (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSString *type = [ws typeOfFile:[notesURL path] error:NULL];
     NSArray *array = nil;
