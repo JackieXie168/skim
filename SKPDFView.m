@@ -2334,7 +2334,7 @@ enum {
         [menuItem setState:[self toolMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(changeAnnotationMode:)) {
-        if ([[menuItem menu] numberOfItems] > 8)
+        if ([[menuItem menu] numberOfItems] > ANNOTATION_MODE_COUNT)
             [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         else
             [menuItem setState:[self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
