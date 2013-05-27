@@ -50,6 +50,9 @@ NSString *SKWatchedPathDeleteNotification = @"SKWatchedPathDeleteNotification";
 
 @implementation SKWatchedPath
 
+@synthesize path;
+@dynamic fileDescriptor;
+
 // open() is documented to return -1 in case of an error and >=0 for success
 static const NSInteger UNOPENED_DESCRIPTOR = -2;
 
@@ -95,8 +98,6 @@ static NSCountedSet *watchedPaths = nil;
         fd = open([path fileSystemRepresentation], O_EVTONLY, 0);
     return fd; 
 }
-
-- (NSString *)path { return path; }
 
 + (void)addWatchedPath:(NSString *)path {
     SKWatchedPath *watchedPath = [[self alloc] initWithPath:path];

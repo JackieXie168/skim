@@ -52,8 +52,8 @@ extern NSString *SKWatchedPathDeleteNotification;
 
 - (id)initWithPath:(NSString *)path;
 
-- (int)fileDescriptor;
-- (NSString *)path;
+@property (nonatomic, readonly) NSString *path;
+@property (nonatomic, readonly) int fileDescriptor;
 
 + (void)watcherThread:(id)sender;
 
