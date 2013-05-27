@@ -101,7 +101,7 @@ static NSCountedSet *watchedPaths = nil;
 + (void)addWatchedPath:(NSString *)path {
     SKWatchedPath *watchedPath = [[self alloc] initWithPath:path];
     
-    // see if we're altready watching this path
+    // see if we're already watching this path
     SKWatchedPath *observedWatchedPath = [watchedPaths member:watchedPath];
     
     if (observedWatchedPath == nil || [observedWatchedPath fileDescriptor] < 0) {
