@@ -44,7 +44,6 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
-#import "SKWatchedPath.h"
 
 #define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
 
@@ -54,10 +53,8 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 
 @interface SKFileUpdateChecker (SKPrivate)
 - (void)fileUpdated;
-- (void)handleFileUpdateNotification:(NSNotification *)notification;
-- (void)handleFileMoveNotification:(NSNotification *)notification;
-- (void)handleFileDeleteNotification:(NSNotification *)notification;
-- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
+- (void)noteFileUpdated;
+- (void)noteFileRemoved;
 @end
 
 @implementation SKFileUpdateChecker
@@ -83,14 +80,10 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 }
 
 - (void)stopCheckingFileUpdates {
-    if (watchedFile) {
-        // remove from kqueue and invalidate timer; maybe we've changed filesystems
-        [SKWatchedPath removeWatchedPath:watchedFile];
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:SKWatchedPathWriteNotification object:nil];
-        [nc removeObserver:self name:SKWatchedPathRenameNotification object:nil];
-        [nc removeObserver:self name:SKWatchedPathDeleteNotification object:nil];
-        SKDESTROY(watchedFile);
+    // remove file monitor and invalidate timer; maybe we've changed filesystems
+    if (source) {
+        dispatch_source_cancel(source);
+        SKDISPATCHDESTROY(source);
     }
     if (fileUpdateTimer) {
         [fileUpdateTimer invalidate];
@@ -126,7 +119,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         // Always reset mod date to prevent repeating messages; note that the kqueue also notifies only once
         [lastModifiedDate release];
         lastModifiedDate = [currentFileModifiedDate copy];
-        [self handleFileUpdateNotification:nil];
+        [self noteFileUpdated];
     }
 }
 
@@ -138,13 +131,30 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
             if (isFileOnHFSVolume(fileName)) {
-                watchedFile = [fileName retain];
+                int fd = open([fileName fileSystemRepresentation], O_EVTONLY);
                 
-                [SKWatchedPath addWatchedPath:watchedFile];
-                NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:SKWatchedPathWriteNotification object:nil];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:SKWatchedPathRenameNotification object:nil];
-                [nc addObserver:self selector:@selector(handleFileDeleteNotification:) name:SKWatchedPathDeleteNotification object:nil];
+                if (fd >= 0) {
+                    dispatch_queue_t queue = dispatch_get_main_queue();
+                    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd, DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_WRITE, queue);
+                    
+                    if (source) {
+                        
+                        dispatch_source_set_event_handler(source, ^{
+                            unsigned long flags = dispatch_source_get_data(source);
+                            if ((flags & (DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME)))
+                                [self noteFileRemoved];
+                            else if ((flags & DISPATCH_VNODE_WRITE))
+                                [self noteFileUpdated];
+                        });
+                        
+                        dispatch_source_set_cancel_handler(source, ^{ close(fd); });
+                        
+                        dispatch_resume(source);
+                        
+                    } else {
+                        close(fd);
+                    }
+                }
             } else if (nil == fileUpdateTimer) {
                 // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
                 fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
@@ -170,15 +180,15 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[alert window] orderOut:nil];
         
         if ([self revertDocument])
-            fucFlags.receivedFileUpdateNotification = NO;
+            fucFlags.fileWasUpdated = NO;
         if (returnCode == NSAlertAlternateReturn)
             fucFlags.autoUpdate = YES;
         fucFlags.disableAutoReload = NO;
-        if (fucFlags.receivedFileUpdateNotification)
+        if (fucFlags.fileWasUpdated)
             [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
     }
     fucFlags.isUpdatingFile = NO;
-    fucFlags.receivedFileUpdateNotification = NO;
+    fucFlags.fileWasUpdated = NO;
 }
 
 - (BOOL)canUpdateFromURL:(NSURL *)fileURL {
@@ -215,6 +225,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return NSNotFound != [trailerData rangeOfData:pattern options:options range:range].location;
 }
 
+- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
+    // This is only called to delay a file update handling
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
+    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
+    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
+}
+
 - (void)fileUpdated {
     NSURL *fileURL = [document fileURL];
     
@@ -228,7 +245,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         fucFlags.fileChangedOnDisk = YES;
         
         fucFlags.isUpdatingFile = YES;
-        fucFlags.receivedFileUpdateNotification = NO;
+        fucFlags.fileWasUpdated = NO;
         
         NSWindow *docWindow = [document windowForSheet];
         
@@ -261,49 +278,26 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             }
         } else {
             fucFlags.isUpdatingFile = NO;
-            fucFlags.receivedFileUpdateNotification = NO;
+            fucFlags.fileWasUpdated = NO;
         }
     } else {
         fucFlags.isUpdatingFile = NO;
-        fucFlags.receivedFileUpdateNotification = NO;
+        fucFlags.fileWasUpdated = NO;
     }
 }
 
-- (void)handleFileUpdateNotification:(NSNotification *)notification {
-    NSString *path = [[notification userInfo] objectForKey:PATH_KEY];
-    
-    if ([watchedFile isEqualToString:path] || notification == nil) {
-        // should never happen
-        if (notification && [path isEqualToString:[[document fileURL] path]] == NO)
-            NSLog(@"*** received change notice for %@", path);
-        
-        if (fucFlags.isUpdatingFile)
-            fucFlags.receivedFileUpdateNotification = YES;
-        else
-            [self fileUpdated];
-    }
+- (void)noteFileUpdated {
+    if (fucFlags.isUpdatingFile)
+        fucFlags.fileWasUpdated = YES;
+    else
+        [self fileUpdated];
 }
 
-- (void)handleFileMoveNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
-        [self stopCheckingFileUpdates];
+- (void)noteFileRemoved {
+    [self stopCheckingFileUpdates];
     // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
     fucFlags.fileChangedOnDisk = YES;
 }
-
-- (void)handleFileDeleteNotification:(NSNotification *)notification {
-    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:PATH_KEY]])
-        [self stopCheckingFileUpdates];
-    fucFlags.fileChangedOnDisk = YES;
-}
-
-- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
-    // This is only called to delay a file update handling
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
-    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
-    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
-}
-
 
 - (BOOL)fileChangedOnDisk {
     return fucFlags.fileChangedOnDisk;

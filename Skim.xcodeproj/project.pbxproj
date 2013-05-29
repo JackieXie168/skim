@@ -92,7 +92,6 @@
 		CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19641416E811D40027E2CF /* SKSnapshotWindow.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
-		CE1B651B16595C5200B74339 /* SKWatchedPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1B651A16595C5200B74339 /* SKWatchedPath.m */; };
 		CE1C77B6123FB41E00C73F1A /* SKNoteTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1C77B5123FB41E00C73F1A /* SKNoteTextView.m */; };
 		CE1CC5BE1143C57300F6B208 /* NoteWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */; };
 		CE1CC6121143DDFD00F6B208 /* LineInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC6111143DDFD00F6B208 /* LineInspector.xib */; };
@@ -684,8 +683,6 @@
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		CE1ADEBE0C4C341100071840 /* SKTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTransitionController.m; sourceTree = "<group>"; };
-		CE1B651916595C5200B74339 /* SKWatchedPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKWatchedPath.h; sourceTree = "<group>"; };
-		CE1B651A16595C5200B74339 /* SKWatchedPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKWatchedPath.m; sourceTree = "<group>"; };
 		CE1C77B4123FB41E00C73F1A /* SKNoteTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteTextView.h; sourceTree = "<group>"; };
 		CE1C77B5123FB41E00C73F1A /* SKNoteTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteTextView.m; sourceTree = "<group>"; };
 		CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteWindow.xib; sourceTree = "<group>"; };
@@ -1747,8 +1744,6 @@
 				CE9B80491030642400EA8774 /* SKTransitionInfo.m */,
 				CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */,
 				CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */,
-				CE1B651916595C5200B74339 /* SKWatchedPath.h */,
-				CE1B651A16595C5200B74339 /* SKWatchedPath.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -2567,7 +2562,6 @@
 				CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */,
 				CE10979A161320CF00C4FA18 /* SKExportAccessoryController.m in Sources */,
 				CE5347141645DD3000737191 /* SKAttachmentEmailer.m in Sources */,
-				CE1B651B16595C5200B74339 /* SKWatchedPath.m in Sources */,
 				CE40D6161677A9DC00573882 /* SKTextNoteEditor.m in Sources */,
 				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,

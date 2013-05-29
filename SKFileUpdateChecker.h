@@ -42,15 +42,15 @@
 @interface SKFileUpdateChecker : NSObject {
     NSDocument *document;
     
-    NSString *watchedFile;
-    
     struct _fucFlags {
         unsigned int autoUpdate:1;
         unsigned int disableAutoReload:1;
         unsigned int isUpdatingFile:1;
-        unsigned int receivedFileUpdateNotification:1;
+        unsigned int fileWasUpdated:1;
         unsigned int fileChangedOnDisk:1;
     } fucFlags;
+    
+    dispatch_source_t source;
     
     // only used for network filesystems; fileUpdateTimer is not retained by us
     NSDate *lastModifiedDate;
