@@ -179,7 +179,6 @@ enum {
     [synchronizer terminate];
     [synchronizer setDelegate:nil];
     SKDESTROY(synchronizer);
-    SKDESTROY(fileUpdateChecker);
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
     SKDESTROY(tmpData);
