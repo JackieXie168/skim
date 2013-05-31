@@ -72,7 +72,6 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey]; }
     @catch (id) {}
     document = nil;
