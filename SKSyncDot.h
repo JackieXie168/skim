@@ -40,27 +40,24 @@
 #import <Quartz/Quartz.h>
 
 
+typedef void (^SKSyncDotUpdateBlock)(BOOL finished);
+
 @interface SKSyncDot : NSObject {
     NSPoint point;
     PDFPage *page;
     NSTimer *timer;
     CGFloat phase;
-    id delegate;
+    SKSyncDotUpdateBlock handler;
 }
 
 @property (nonatomic, readonly) NSPoint point;
 @property (nonatomic, readonly) PDFPage *page;
 @property (nonatomic, readonly) NSRect bounds;
 
-- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage delegate:(id)aDelegate;
+- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage updateHandler:(SKSyncDotUpdateBlock)aHandler;
 
 - (void)invalidate;
 
 - (void)draw;
 
-@end
-
-
-@interface NSObject (SKSyncDotDelegate)
-- (void)syncDotDidUpdate:(SKSyncDot *)aSyncDot finished:(BOOL)finished;
 @end
