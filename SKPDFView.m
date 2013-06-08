@@ -2158,14 +2158,12 @@ enum {
             [syncDot invalidate];
             SKDESTROY(syncDot);
         }
-        syncDot = [[SKSyncDot alloc] initWithPoint:point page:page delegate:self];
+        syncDot = [[SKSyncDot alloc] initWithPoint:point page:page updateHandler:^(BOOL finished){
+                [self setNeedsDisplayInRect:[syncDot bounds] ofPage:[syncDot page]];
+                if (finished)
+                    SKDESTROY(syncDot);
+            }];
     }
-}
-
-- (void)syncDotDidUpdate:(SKSyncDot *)aSyncDot finished:(BOOL)finished {
-    [self setNeedsDisplayInRect:[syncDot bounds] ofPage:[syncDot page]];
-    if (finished)
-        SKDESTROY(syncDot);
 }
 
 #pragma mark Accessibility

@@ -51,23 +51,22 @@
 @synthesize point, page;
 @dynamic bounds;
 
-- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage delegate:(id)aDelegate {
+- (id)initWithPoint:(NSPoint)aPoint page:(PDFPage *)aPage updateHandler:(SKSyncDotUpdateBlock)aHandler {
     self = [super init];
     if (self) {
         point = aPoint;
         page = [aPage retain];
         phase = 0.0;
         timer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(animate:) userInfo:NULL repeats:YES] retain];
-        delegate = aDelegate;
-        [delegate syncDotDidUpdate:self finished:NO];
+        handler = [aHandler copy];
     }
     return self;
 }
 
 - (void)dealloc {
-    delegate = nil;
     [timer invalidate];
     SKDESTROY(timer);
+    SKDESTROY(handler);
     SKDESTROY(page);
     [super dealloc];
 }
@@ -75,7 +74,7 @@
 - (void)finish:(NSTimer *)aTimer {
     [timer invalidate];
     SKDESTROY(timer);
-    [delegate syncDotDidUpdate:self finished:YES];
+    if (handler) handler(YES);
 }
 
 - (void)animate:(NSTimer *)aTimer {
@@ -85,13 +84,13 @@
         [timer release];
         timer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finish:) userInfo:NULL repeats:NO] retain];
     }
-    [delegate syncDotDidUpdate:self finished:NO];
+    if (handler) handler(NO);
 }
 
 - (void)invalidate {
     [timer invalidate];
     SKDESTROY(timer);
-    delegate = nil;
+    SKDESTROY(handler);
 }
 
 - (NSRect)bounds {
