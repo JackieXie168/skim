@@ -639,7 +639,7 @@ enum {
     } else if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
         NSString *string = [self notesString];
         if (string)
-            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
+            didWrite = [string writeToURL:absoluteURL atomically:NO encoding:NSUTF8StringEncoding error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
     } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
