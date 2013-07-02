@@ -37,6 +37,7 @@
  */
 
 #import "SKTableView.h"
+#import <Quartz/Quartz.h>
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"

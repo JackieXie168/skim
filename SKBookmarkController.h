@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 #import "SKWindowController.h"
 #import "SKOutlineView.h"
 

@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 // these are the keys used for the info
 extern NSString *SKDownloadFileNameKey;
