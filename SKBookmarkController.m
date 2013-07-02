@@ -49,6 +49,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 #define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
@@ -77,7 +78,6 @@
 #define LABEL_KEY    @"label"
 
 static char SKBookmarkPropertiesObservationContext;
-
 
 @interface SKBookmarkController (SKPrivate)
 - (void)setupToolbar;
@@ -200,6 +200,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, (NSString *)kUTTypeFileURL, NSFilenamesPboardType, nil]];
     
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
+    
+    [outlineView setSupportsQuickLook:YES];
 }
 
 - (void)updateStatus {
@@ -740,6 +742,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     [self updateStatus];
+    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
+        [[QLPreviewPanel sharedPreviewPanel] reloadData];
 }
 
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
@@ -921,6 +925,66 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         return YES;
     }
     return YES;
+}
+
+#pragma mark Quick Look Panel Support
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel {
+    return YES;
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
+    [panel setDelegate:self];
+    [panel setDataSource:self];
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel {
+}
+
+- (NSArray *)previewItems {
+    NSMutableArray *items = [NSMutableArray array];
+    
+    [[outlineView selectedRowIndexes] enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        SKBookmark *item = [outlineView itemAtRow:idx];
+        if ([item bookmarkType] == SKBookmarkTypeBookmark)
+            [items addObject:item];
+        else if ([item bookmarkType] == SKBookmarkTypeSession)
+            [items addObjectsFromArray:[item children]];
+    }];
+    return items;
+}
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel {
+    return [[self previewItems] count];
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)anIndex {
+    return [[self previewItems] objectAtIndex:anIndex];
+}
+
+- (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id <QLPreviewItem>)item {
+    if ([[(SKBookmark *)item parent] bookmarkType] == SKBookmarkTypeSession)
+        item = [(SKBookmark *)item parent];
+    NSInteger row = [outlineView rowForItem:item];
+    NSRect iconRect = NSZeroRect;
+    if (item != nil && row != -1) {
+        iconRect = [(SKTextWithIconCell *)[outlineView preparedCellAtColumn:0 row:row] iconRectForBounds:[outlineView frameOfCellAtColumn:0 row:row]];
+        if (NSIntersectsRect([outlineView visibleRect], iconRect)) {
+            iconRect = [outlineView convertRectToBase:iconRect];
+            iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
+        } else {
+            iconRect = NSZeroRect;
+        }
+    }
+    return iconRect;
+}
+
+- (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
+    if ([event type] == NSKeyDown) {
+        [outlineView keyDown:event];
+        return YES;
+    }
+    return NO;
 }
 
 @end

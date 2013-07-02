@@ -114,6 +114,8 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, NSPasteboardTypeString, nil]];
+    
+    [tableView setSupportsQuickLook:YES];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
@@ -434,6 +436,11 @@ static SKDownloadController *sharedDownloadController = nil;
     return toolTip;
 }
 
+- (void)tableViewSelectionDidChange:(NSNotification *)notification {
+    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
+        [[QLPreviewPanel sharedPreviewPanel] reloadData];
+}
+
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     NSUInteger row = [rowIndexes firstIndex];
     SKDownload *download = [self objectInDownloadsAtIndex:row];
@@ -516,12 +523,71 @@ static SKDownloadController *sharedDownloadController = nil;
             NSUInteger row = [downloads indexOfObject:object];
             if (row != NSNotFound)
                 [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
-            if ([object status] == SKDownloadStatusFinished)
+            if ([object status] == SKDownloadStatusFinished) {
                 [self openDownload:object];
+                if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
+                    [[QLPreviewPanel sharedPreviewPanel] reloadData];
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+#pragma mark Quick Look Panel Support
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel {
+    return YES;
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
+    [panel setDelegate:self];
+    [panel setDataSource:self];
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel {
+}
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel {
+    NSUInteger row = [[tableView selectedRowIndexes] lastIndex];
+    SKDownload *download = nil;
+    if (row != NSNotFound) {
+        download = [self objectInDownloadsAtIndex:row];
+        if ([download status] == SKDownloadStatusFinished && [[download fileURL] checkResourceIsReachableAndReturnError:NULL])
+            return 1;
+    }
+    return 0;
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)anIndex {
+    NSUInteger row = [[tableView selectedRowIndexes] lastIndex];
+    SKDownload *download = nil;
+    if (row != NSNotFound)
+        download = [self objectInDownloadsAtIndex:row];
+    return download;
+}
+
+- (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id <QLPreviewItem>)item {
+    NSUInteger row = [downloads indexOfObject:item];
+    NSRect iconRect = NSZeroRect;
+    if (row != NSNotFound) {
+        iconRect = [tableView frameOfCellAtColumn:0 row:row];
+        if (NSIntersectsRect([tableView visibleRect], iconRect)) {
+            iconRect = [tableView convertRectToBase:iconRect];
+            iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
+        } else {
+            iconRect = NSZeroRect;
+        }
+    }
+    return iconRect;
+}
+
+- (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
+    if ([event type] == NSKeyDown) {
+        [tableView keyDown:event];
+        return YES;
+    }
+    return NO;
 }
 
 @end

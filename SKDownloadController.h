@@ -43,7 +43,7 @@
 
 @class SKDownload;
 
-@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource> {
+@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, QLPreviewPanelDelegate, QLPreviewPanelDataSource> {
     NSArrayController *arrayController;
     SKTableView *tableView;
     NSButton *clearButton;

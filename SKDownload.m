@@ -380,4 +380,14 @@ static NSSet *infoKeys = nil;
     [self setStatus:SKDownloadStatusFailed];
 }
 
+#pragma mark Quick Look Panel Support
+
+- (NSURL *)previewItemURL {
+    return [self fileURL];
+}
+
+- (NSString *)previewItemTitle {
+    return [[self URL] absoluteString];
+}
+
 @end

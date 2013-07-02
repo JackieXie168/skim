@@ -221,6 +221,9 @@ static Class SKBookmarkClass = Nil;
 - (NSNumber *)pageNumber { return nil; }
 - (void)setPageNumber:(NSNumber *)newPageNumber {}
 
+- (NSURL *)previewItemURL { return [self fileURL]; }
+- (NSString *)previewItemTitle { return [self label]; }
+
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }

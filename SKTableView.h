@@ -45,10 +45,11 @@
 @interface SKTableView : NSTableView <SKTypeSelectDelegate> {
     NSMutableSet *trackingAreas;
     SKTypeSelectHelper *typeSelectHelper;
+    BOOL supportsQuickLook;
 }
 
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
-@property (nonatomic) BOOL hasImageToolTips;
+@property (nonatomic) BOOL hasImageToolTips, supportsQuickLook;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (void)delete:(id)sender;
