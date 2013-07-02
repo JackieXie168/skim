@@ -52,7 +52,7 @@
 
 @implementation SKTableView
 
-@synthesize typeSelectHelper;
+@synthesize typeSelectHelper, supportsQuickLook;
 @dynamic canDelete, canCopy, canPaste, hasImageToolTips;
 
 - (void)dealloc {
@@ -88,9 +88,15 @@
     } else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
     } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
-        [[self enclosingScrollView] pageDown:nil];
+        if (supportsQuickLook == NO)
+            [[self enclosingScrollView] pageDown:nil];
+        else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible])
+            [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+        else
+            [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
     } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
-        [[self enclosingScrollView] pageUp:nil];
+        if (supportsQuickLook == NO)
+            [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {

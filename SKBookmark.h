@@ -46,7 +46,7 @@ enum {
 };
 typedef NSInteger SKBookmarkType;
 
-@interface SKBookmark : NSObject <NSCopying> {
+@interface SKBookmark : NSObject <NSCopying, QLPreviewItem> {
     SKBookmark *parent;
 }
 

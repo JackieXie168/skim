@@ -43,10 +43,12 @@
 
 @interface SKOutlineView : NSOutlineView <SKTypeSelectDelegate> {
     SKTypeSelectHelper *typeSelectHelper;
+    BOOL supportsQuickLook;
 }
 
 @property (nonatomic, readonly) NSArray *selectedItems;
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
+@property (nonatomic) BOOL supportsQuickLook;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (void)delete:(id)sender;

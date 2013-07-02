@@ -46,7 +46,7 @@
 
 @implementation SKOutlineView
 
-@synthesize typeSelectHelper;
+@synthesize typeSelectHelper, supportsQuickLook;
 @dynamic selectedItems, canDelete, canCopy, canPaste;
 
 - (void)dealloc {
@@ -98,9 +98,15 @@
         if ([self doubleAction] == NULL || [self sendAction:[self doubleAction] to:[self target]] == NO)
             NSBeep();
     } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
-        [[self enclosingScrollView] pageDown:nil];
+        if (supportsQuickLook == NO)
+            [[self enclosingScrollView] pageDown:nil];
+        else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible])
+            [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+        else
+            [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
     } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
-        [[self enclosingScrollView] pageUp:nil];
+        if (supportsQuickLook == NO)
+            [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
