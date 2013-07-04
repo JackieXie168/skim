@@ -45,6 +45,10 @@
 #import "NSEvent_SKExtensions.h"
 
 
+@interface NSScreen (SKLionDeclarations)
+- (CGFloat)backingScaleFactor;
+@end
+
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange;
@@ -55,7 +59,8 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[[deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
     NSSize resolution = [[deviceDescription objectForKey:NSDeviceResolution] sizeValue];
-	return CGSizeEqualToSize(physicalSize, CGSizeZero) ? 1.0 : (physicalSize.width * resolution.width) / (CGDisplayPixelsWide(displayID) * 25.4f);
+    CGFloat backingScaleFactor = [NSScreen instancesRespondToSelector: @selector(backingScaleFactor)] ? [screen backingScaleFactor] : 1.0;
+	return CGSizeEqualToSize(physicalSize, CGSizeZero) ? 1.0 : (physicalSize.width * resolution.width * backingScaleFactor) / (CGDisplayPixelsWide(displayID) * 25.4f);
 }
 
 - (CGFloat)physicalScaleFactor {
