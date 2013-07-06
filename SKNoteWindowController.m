@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "SKDragImageView.h"
 #import <SkimNotes/SkimNotes.h>
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStatusBar.h"
 #import "SKMainDocument.h"
@@ -56,6 +57,7 @@
 #import "SKNoteTextView.h"
 #import "NSInvocation_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -147,6 +149,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     SKDESTROY(iconLabelField);
     SKDESTROY(checkButton);
     SKDESTROY(noteController);
+    SKDESTROY(previewURL);
     [super dealloc];
 }
 
@@ -342,17 +345,16 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     } else return NO;
 }
 
-- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
+- (NSURL *)dragImageView:(SKDragImageView *)view writeToDestination:(NSURL *)dropDestination {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
-        name = [name stringByAppendingPathExtension:@"tiff"];
         NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
         fileURL = [fileURL uniqueFileURL];
         if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
-            return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
+            return fileURL;
     }
     return nil;
 }
@@ -374,6 +376,64 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+#pragma mark Quick Look Panel Support
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel {
+    return [self isNoteType];
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
+    [self endPreviewPanelControl:nil];
+    previewURL = [[self dragImageView:nil writeToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]] retain];
+    [panel setDelegate:self];
+    [panel setDataSource:self];
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel {
+    if (previewURL) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *tmpDirURL = [previewURL URLByDeletingLastPathComponent];
+        [fm removeItemAtURL:previewURL error:NULL];
+        if ([[fm contentsOfDirectoryAtURL:tmpDirURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL] count] == 0)
+            [fm removeItemAtURL:tmpDirURL error:NULL];
+        SKDESTROY(previewURL);
+    }
+}
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel {
+    return [note image] == nil ? 0 : 1;
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)anIndex {
+    return self;
+}
+
+- (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id <QLPreviewItem>)item {
+    NSRect iconRect = NSInsetRect([imageView bounds], 8.0, 8.0);
+    iconRect = [imageView convertRectToBase:iconRect];
+    iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
+    return iconRect;
+}
+
+- (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
+    if ([event type] == NSKeyDown) {
+        [imageView keyDown:event];
+        return YES;
+    }
+    return NO;
+}
+
+- (NSURL *)previewItemURL {
+    return previewURL;
+}
+
+- (NSString *)previewItemTitle {
+    NSString *title = [note string];
+    if ([title length] == 0)
+        title = @"Skim Note";
+    return title;
 }
 
 @end

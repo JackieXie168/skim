@@ -47,6 +47,7 @@
 @property (nonatomic, assign) id <SKDragImageViewDelegate> delegate;
 
 - (IBAction)show:(id)sender;
+- (IBAction)togglePreviewPanel:(id)sender;
 
 @end
 
@@ -55,6 +56,6 @@
 @optional
 
 - (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
-- (NSArray *)dragImageView:(SKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
+- (NSURL *)dragImageView:(SKDragImageView *)view writeToDestination:(NSURL *)dropDestination;
 
 @end
