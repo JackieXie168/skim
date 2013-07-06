@@ -42,8 +42,6 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"
 
-#define SPACE_CHARACTER (unichar)0x20
-
 
 @implementation SKOutlineView
 
@@ -98,14 +96,14 @@
     if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifierFlags == 0) {
         if ([self doubleAction] == NULL || [self sendAction:[self doubleAction] to:[self target]] == NO)
             NSBeep();
-    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
+    } else if ((eventChar == SKSpaceCharacter) && modifierFlags == 0) {
         if (supportsQuickLook == NO)
             [[self enclosingScrollView] pageDown:nil];
         else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible])
             [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
         else
             [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
-    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
+    } else if ((eventChar == SKSpaceCharacter) && modifierFlags == NSShiftKeyMask) {
         if (supportsQuickLook == NO)
             [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {

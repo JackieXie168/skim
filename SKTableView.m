@@ -43,8 +43,6 @@
 #import "NSFont_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
 
-#define SPACE_CHARACTER (unichar)0x20
-
 
 @interface SKTableView (SKPrivate)
 - (void)rebuildTrackingAreas;
@@ -88,14 +86,14 @@
             NSBeep();
     } else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
-    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
+    } else if ((eventChar == SKSpaceCharacter) && modifierFlags == 0) {
         if (supportsQuickLook == NO)
             [[self enclosingScrollView] pageDown:nil];
         else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible])
             [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
         else
             [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
-    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
+    } else if ((eventChar == SKSpaceCharacter) && modifierFlags == NSShiftKeyMask) {
         if (supportsQuickLook == NO)
             [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {

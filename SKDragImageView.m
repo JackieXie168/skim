@@ -103,7 +103,7 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == 0x20 && [theEvent deviceIndependentModifierFlags] == 0) {
+    if ([theEvent firstCharacter] == SKSpaceCharacter && [theEvent deviceIndependentModifierFlags] == 0) {
         [self togglePreviewPanel:nil];
     } else {
         [super keyDown:theEvent];
