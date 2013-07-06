@@ -43,7 +43,7 @@
 
 @class PDFAnnotation, SKStatusBar, SKGradientView, SKNoteTextView;
 
-@interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate> {
+@interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, QLPreviewItem> {
     SKNoteTextView *textView;
     SKGradientView *gradientView;
     SKDragImageView *imageView;
@@ -60,6 +60,8 @@
     BOOL isEditing;
     
     NSUndoManager *textViewUndoManager;
+    
+    NSURL *previewURL;
 }
 
 @property (nonatomic, retain) IBOutlet SKNoteTextView *textView;

@@ -51,28 +51,26 @@
     
     if ([self isEditable] == NO) {
         return;
-    } else if (image == nil || [self isEditable] == NO) {
+    } else if (image == nil || [self isEditable] == NO || [delegate respondsToSelector:@selector(dragImageView:writeToDestination:)] == NO) {
         NSBeep();
         return;
     }
     
-    static NSURL *temporaryDirectoryURL = nil;
-    if (temporaryDirectoryURL == nil) {
-        char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"Skim.XXXXXX"] fileSystemRepresentation]);
-        const char *tempPath = mkdtemp(template);
-        temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:[[NSFileManager defaultManager] stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)] ];
-        free(template);
-    }
-    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
-    NSURL *fileURL = [[temporaryDirectoryURL URLByAppendingPathComponent:@"SkimNote.tiff"] uniqueFileURL];
-    [[image TIFFRepresentation] writeToURL:fileURL atomically:YES];
-    [[NSWorkspace sharedWorkspace] openURL:fileURL];
+    NSURL *fileURL = [delegate dragImageView:self writeToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]];
+    if (fileURL)
+        [[NSWorkspace sharedWorkspace] openURL:fileURL];
+}
+
+- (IBAction)togglePreviewPanel:(id)sender {
+    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible])
+        [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+    else
+        [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
-    if (action == @selector(cut:) || action == @selector(copy:) || action == @selector(delete:) || action == @selector(show:))
+    if (action == @selector(cut:) || action == @selector(copy:) || action == @selector(delete:) || action == @selector(show:) || action == @selector(togglePreviewPanel:))
         return [self image] != nil && [self isEditable];
     else if (action == @selector(paste:))
         return [self isEditable];
@@ -89,6 +87,7 @@
         [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) target:self];
         [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:self];
         [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(show:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(togglePreviewPanel:) target:self];
         [self setMenu:menu];
     }
     menu = [[menu copy] autorelease];
@@ -101,6 +100,14 @@
 	}
     
     return [menu numberOfItems] ? menu : nil;
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    if ([theEvent firstCharacter] == 0x20 && [theEvent deviceIndependentModifierFlags] == 0) {
+        [self togglePreviewPanel:nil];
+    } else {
+        [super keyDown:theEvent];
+    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -157,8 +164,8 @@
 }
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
-    if ([delegate respondsToSelector:@selector(dragImageView:namesOfPromisedFilesDroppedAtDestination:)])
-		return [delegate dragImageView:self namesOfPromisedFilesDroppedAtDestination:dropDestination];
+    if ([delegate respondsToSelector:@selector(dragImageView:writeToDestination:)])
+		return [NSArray arrayWithObjects:[[delegate dragImageView:self writeToDestination:dropDestination] lastPathComponent], nil];
 	return nil;
 }    
 
