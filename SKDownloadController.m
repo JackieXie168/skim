@@ -341,6 +341,21 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
+- (void)previewDownloadedFile:(id)sender {
+    SKDownload *download = [sender representedObject];
+    
+    if (download && [download status] != SKDownloadStatusFinished) {
+        NSBeep();
+    } else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+        [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+    } else {
+        NSUInteger row = [downloads indexOfObject:download];
+        if (row != NSNotFound)
+            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
+    }
+}
+
 - (void)revealDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
@@ -490,6 +505,9 @@ static SKDownloadController *sharedDownloadController = nil;
         }
         if ([download status] == SKDownloadStatusFinished && [[download fileURL] checkResourceIsReachableAndReturnError:NULL]) {
             menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
+            [menuItem setRepresentedObject:download];
+            
+            menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Quick Look", @"Menu item title") stringByAppendingEllipsis] action:@selector(previewDownloadedFile:) target:self];
             [menuItem setRepresentedObject:download];
             
             menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) target:self];
