@@ -443,9 +443,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
             [menu addItem:[NSMenuItem separatorItem]];
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Separator", @"Menu item title") action:@selector(insertBookmarkSeparator:) target:self];
         }
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Separator", @"Menu item title") action:@selector(insertBookmarkSeparator:) target:self];
     } else {
         NSMenu *supermenu = [menu supermenu];
         NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
