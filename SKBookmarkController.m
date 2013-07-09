@@ -79,6 +79,8 @@
 
 static char SKBookmarkPropertiesObservationContext;
 
+static NSArray *minimumCoverForBookmarks(NSArray *items);
+
 @interface SKBookmarkController (SKPrivate)
 - (void)setupToolbar;
 - (NSString *)bookmarksFilePath;
@@ -299,7 +301,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {
-    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
+    NSInteger rowIndex = [outlineView clickedRow];
+    NSIndexSet *indexes = [outlineView selectedRowIndexes];
+    if (rowIndex != -1 && [indexes containsIndex:rowIndex] == NO)
+        indexes = [NSIndexSet indexSetWithIndex:rowIndex];
+    rowIndex = [indexes lastIndex];
+    
     SKBookmark *item = bookmarkRoot;
     NSUInteger idx = [bookmarkRoot countOfChildren];
     
@@ -365,6 +372,47 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }
 
+- (NSArray *)clickedBookmarks {
+    NSMutableArray *items = [NSMutableArray array];
+    NSInteger row = [outlineView clickedRow];
+    if (row != -1) {
+        NSIndexSet *indexes = [outlineView selectedRowIndexes];
+        if ([indexes containsIndex:row] == NO)
+            indexes = [NSIndexSet indexSetWithIndex:row];
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            [items addObject:[outlineView itemAtRow:idx]];
+        }];
+    }
+    return items;
+}
+
+- (IBAction)deleteBookmarks:(id)sender {
+    NSArray *items = minimumCoverForBookmarks([self clickedBookmarks]);
+    [self endEditing];
+    for (SKBookmark *item in [items reverseObjectEnumerator]) {
+        SKBookmark *parent = [item parent];
+        NSUInteger itemIndex = [[parent children] indexOfObject:item];
+        if (itemIndex != NSNotFound)
+            [parent removeObjectFromChildrenAtIndex:itemIndex];
+    }
+}
+
+- (IBAction)openBookmarks:(id)sender {
+    NSArray *items = minimumCoverForBookmarks([self clickedBookmarks]);
+    for (SKBookmark *item in [minimumCoverForBookmarks(items) reverseObjectEnumerator])
+        [item open];
+}
+
+- (IBAction)previewBookmarks:(id)sender {
+    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+        [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+    } else {
+        NSInteger row = [outlineView clickedRow];
+        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
+    }
+}
+
 #pragma mark NSMenu delegate methods
 
 - (void)addItemForBookmark:(SKBookmark *)bookmark toMenu:(NSMenu *)menu isFolder:(BOOL)isFolder isAlternate:(BOOL)isAlternate {
@@ -386,43 +434,57 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenu *supermenu = [menu supermenu];
-    NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
-    SKBookmark *bm = nil;
-    
-    if (supermenu == [NSApp mainMenu])
-        bm = [self bookmarkRoot];
-    else if (idx >= 0)
-        bm = [[supermenu itemAtIndex:idx] representedObject];
-    
-    if ([bm isKindOfClass:[SKBookmark class]]) {
-        NSArray *bookmarks = [bm children];
-        NSInteger i = [menu numberOfItems];
-        while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
-            [menu removeItemAtIndex:i];
-        if (supermenu == [NSApp mainMenu] && previousSession) {
+    if (menu == [outlineView menu]) {
+        NSMenuItem *menuItem;
+        NSInteger row = [outlineView clickedRow];
+        [menu removeAllItems];
+        if (row != -1) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(deleteBookmarks:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
             [menu addItem:[NSMenuItem separatorItem]];
-            [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
-            [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Separator", @"Menu item title") action:@selector(insertBookmarkSeparator:) target:self];
         }
-        if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
-            [menu addItem:[NSMenuItem separatorItem]];
-        for (bm in bookmarks) {
-            switch ([bm bookmarkType]) {
-                case SKBookmarkTypeFolder:
-                    [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:NO];
-                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:YES];
-                    break;
-                case SKBookmarkTypeSession:
-                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
-                    [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:YES];
-                    break;
-                case SKBookmarkTypeSeparator:
-                    [menu addItem:[NSMenuItem separatorItem]];
-                    break;
-                default:
-                    [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
-                    break;
+    } else {
+        NSMenu *supermenu = [menu supermenu];
+        NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
+        SKBookmark *bm = nil;
+        
+        if (supermenu == [NSApp mainMenu])
+            bm = [self bookmarkRoot];
+        else if (idx >= 0)
+            bm = [[supermenu itemAtIndex:idx] representedObject];
+        
+        if ([bm isKindOfClass:[SKBookmark class]]) {
+            NSArray *bookmarks = [bm children];
+            NSInteger i = [menu numberOfItems];
+            while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
+                [menu removeItemAtIndex:i];
+            if (supermenu == [NSApp mainMenu] && previousSession) {
+                [menu addItem:[NSMenuItem separatorItem]];
+                [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
+                [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
+            }
+            if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
+                [menu addItem:[NSMenuItem separatorItem]];
+            for (bm in bookmarks) {
+                switch ([bm bookmarkType]) {
+                    case SKBookmarkTypeFolder:
+                        [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:NO];
+                        [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:YES];
+                        break;
+                    case SKBookmarkTypeSession:
+                        [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
+                        [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:YES];
+                        break;
+                    case SKBookmarkTypeSeparator:
+                        [menu addItem:[NSMenuItem separatorItem]];
+                        break;
+                    default:
+                        [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
+                        break;
+                }
             }
         }
     }
