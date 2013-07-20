@@ -2352,9 +2352,7 @@
 				"$(SRCROOT)/SkimHelp/applehelp.init",
 				"$(SRCROOT)/SkimHelp/postprocess-nontitle.py",
 				"$(SRCROOT)/Skim.help/Contents/Resources/English.lproj/skim.texi",
-				"$(SRCROOT)/Skim.help/Contents/Resources/English.lproj/version.texi",
 				"$(SRCROOT)/Skim.help/Contents/Resources/Dutch.lproj/skim.texi",
-				"$(SRCROOT)/Skim.help/Contents/Resources/Dutch.lproj/version.texi",
 			);
 			name = "Run Script: Build Help";
 			outputPaths = (
