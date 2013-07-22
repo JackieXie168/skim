@@ -273,13 +273,6 @@ enum {
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
-- (SKInteractionMode)systemInteractionMode {
-    // only return the real interaction mode when the fullscreen window is on the primary screen, otherwise no need to block main menu and dock
-    if ([[[[self mainWindowController] window] screen] isEqual:[NSScreen primaryScreen]])
-        return [[self mainWindowController] interactionMode];
-    return SKNormalMode;
-}
-
 #pragma mark Writing
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
@@ -1425,6 +1418,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 
 #pragma mark Accessors
+
+- (SKInteractionMode)systemInteractionMode {
+    // only return the real interaction mode when the fullscreen window is on the primary screen, otherwise no need to block main menu and dock
+    if ([[[[self mainWindowController] window] screen] isEqual:[NSScreen primaryScreen]])
+        return [[self mainWindowController] interactionMode];
+    return SKNormalMode;
+}
 
 - (PDFDocument *)pdfDocument{
     return [[self mainWindowController] pdfDocument];
