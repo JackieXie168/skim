@@ -332,6 +332,30 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Actions
 
+- (IBAction)doGoToNextPage:(id)sender {
+    [pdfView goToNextPage:sender];
+}
+
+- (IBAction)doGoToPreviousPage:(id)sender {
+    [pdfView goToPreviousPage:sender];
+}
+
+- (IBAction)doGoToFirstPage:(id)sender {
+    [pdfView goToFirstPage:sender];
+}
+
+- (IBAction)doGoToLastPage:(id)sender {
+    [pdfView goToLastPage:sender];
+}
+
+- (IBAction)doGoBack:(id)sender {
+    [pdfView goBack:sender];
+}
+
+- (IBAction)doGoForward:(id)sender {
+    [pdfView goForward:sender];
+}
+
 - (IBAction)doZoomIn:(id)sender {
     [pdfView zoomIn:sender];
 }
@@ -354,7 +378,19 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
-    if (action == @selector(doZoomIn:)) {
+    if (action == @selector(doGoToNextPage:)) {
+        return [pdfView canGoToNextPage];
+    } else if (action == @selector(doGoToPreviousPage:)) {
+        return [pdfView canGoToPreviousPage];
+    } else if (action == @selector(doGoToFirstPage:)) {
+        return [pdfView canGoToFirstPage];
+    } else if (action == @selector(doGoToLastPage:)) {
+        return [pdfView canGoToLastPage];
+    } else if (action == @selector(doGoBack:)) {
+        return [pdfView canGoBack];
+    } else if (action == @selector(doGoForward:)) {
+        return [pdfView canGoForward];
+    } else if (action == @selector(doZoomIn:)) {
         return [pdfView canZoomIn];
     } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
