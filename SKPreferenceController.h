@@ -45,8 +45,8 @@
     NSArray *resetButtons;
     NSArray *preferencePanes;
     SKPreferencePane *currentPane;
-    NSMutableArray *forwardHistory;
-    NSMutableArray *backwardHistory;
+    NSMutableArray *history;
+    NSUInteger historyIndex;
 }
 
 @property (nonatomic, retain) IBOutlet NSArray *resetButtons;

@@ -83,8 +83,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
                 [[[SKDisplayPreferences alloc] init] autorelease], 
                 [[[SKNotesPreferences alloc] init] autorelease], 
                 [[[SKSyncPreferences alloc] init] autorelease], nil];
-            forwardHistory = [[NSMutableArray alloc] init];
-            backwardHistory = [[NSMutableArray alloc] init];
+            history = [[NSMutableArray alloc] init];
+            historyIndex = 0;
         }
         sharedPrefenceController = [self retain];
     } else if (self != sharedPrefenceController) {
@@ -99,8 +99,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     currentPane = nil;
     SKDESTROY(preferencePanes);
     SKDESTROY(resetButtons);
-    SKDESTROY(forwardHistory);
-    SKDESTROY(backwardHistory);
+    SKDESTROY(history);
     [super dealloc];
 }
 
@@ -115,7 +114,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [[[self window] contentView] setWantsLayer:NO];
 }
 
-- (void)selectPane:(SKPreferencePane *)pane direction:(NSSelectionDirection)direction {
+- (void)selectPane:(SKPreferencePane *)pane updateHistory:(BOOL)updateHistory {
     if ([pane isEqual:currentPane] == NO) {
         // make sure edits are committed
         [currentPane commitEditing];
@@ -130,15 +129,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
         frame.origin.y += dh;
         frame.size.height -= dh;
         
-        if (direction == NSSelectingNext) {
-            [backwardHistory addObject:[currentPane identifier]];
-            [forwardHistory removeLastObject];
-        } else if (direction == NSSelectingPrevious) {
-            [forwardHistory addObject:[currentPane identifier]];
-            [backwardHistory removeLastObject];
-        } else {
-            [backwardHistory addObject:[currentPane identifier]];
-            [forwardHistory removeAllObjects];
+        if (updateHistory) {
+            historyIndex++;
+            if ([history count] > historyIndex)
+                [history removeObjectsInRange:NSMakeRange(historyIndex, [history count] - historyIndex)];
+            [history addObject:[pane identifier]];
         }
         
         currentPane = pane;
@@ -204,6 +199,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [toolbar setSelectedItemIdentifier:[currentPane identifier]];
     [window setTitle:[currentPane title]];
     [self setNextResponder:currentPane];
+    [history addObject:[currentPane identifier]];
     
     view = [currentPane view];
     CGFloat dh = NSHeight([[window contentView] frame]) - NSMaxY([view frame]);
@@ -229,7 +225,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 #pragma mark Actions
 
 - (void)selectPaneAction:(id)sender {
-    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]] direction:NSDirectSelection];
+    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]] updateHistory:YES];
 }
 
 - (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
@@ -278,23 +274,23 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (IBAction)doGoToNextPage:(id)sender {
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
     if (itemIndex != NSNotFound && ++itemIndex < [preferencePanes count])
-        [self selectPane:[preferencePanes objectAtIndex:itemIndex] direction:NSDirectSelection];
+        [self selectPane:[preferencePanes objectAtIndex:itemIndex] updateHistory:YES];
 }
 
 - (IBAction)doGoToPreviousPage:(id)sender {
     NSUInteger itemIndex = [preferencePanes indexOfObject:currentPane];
     if (itemIndex != NSNotFound && itemIndex-- > 0)
-        [self selectPane:[preferencePanes objectAtIndex:itemIndex] direction:NSDirectSelection];
+        [self selectPane:[preferencePanes objectAtIndex:itemIndex] updateHistory:YES];
 }
 
 - (IBAction)doGoBack:(id)sender {
-    if ([backwardHistory count] > 0)
-        [self selectPane:[self preferencePaneForItemIdentifier:[backwardHistory lastObject]] direction:NSSelectingPrevious];
+    if (historyIndex > 0)
+        [self selectPane:[self preferencePaneForItemIdentifier:[history objectAtIndex:--historyIndex]] updateHistory:NO];
 }
 
 - (IBAction)doGoForward:(id)sender {
-    if ([forwardHistory count] > 0)
-        [self selectPane:[self preferencePaneForItemIdentifier:[forwardHistory lastObject]] direction:NSSelectingNext];
+    if (historyIndex + 1 < [history count])
+        [self selectPane:[self preferencePaneForItemIdentifier:[history objectAtIndex:++historyIndex]] updateHistory:NO];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
@@ -303,9 +299,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
     else if ([menuItem action] == @selector(doGoToPreviousPage:))
         return [currentPane isEqual:[preferencePanes objectAtIndex:0]] == NO;
     else if ([menuItem action] == @selector(doGoBack:))
-        return [backwardHistory count] > 0;
+        return historyIndex > 0;
     else if ([menuItem action] == @selector(doGoForward:))
-        return [forwardHistory count] > 0;
+        return historyIndex + 1 < [history count];
     return YES;
 }
 
