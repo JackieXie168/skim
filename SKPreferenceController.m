@@ -47,6 +47,8 @@
 #import "SKStringConstants.h"
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
+
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
@@ -129,10 +131,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         NSView *contentView = [window contentView];
         NSView *oldView = [currentPane view];
         NSView *view = [pane view];
-        CGFloat dh = NSHeight([contentView frame]) - NSMaxY([view frame]);
-        NSRect frame = [window frame];
-        frame.origin.y += dh;
-        frame.size.height -= dh;
+        NSRect frame = SKShrinkRect([window frame],  NSHeight([contentView frame]) - NSMaxY([view frame]), NSMinYEdge);
         
         // make sure edits are committed
         [currentPane commitEditing];
@@ -204,11 +203,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [history addObject:currentPane];
     
     view = [currentPane view];
-    CGFloat dh = NSHeight([[window contentView] frame]) - NSMaxY([view frame]);
     frame = [window frame];
     frame.size.width = width;
-    frame.size.height -= dh;
-    frame.origin.y += dh;
+    frame = SKShrinkRect(frame, NSHeight([[window contentView] frame]) - NSMaxY([view frame]), NSMinYEdge);
     [window setFrame:frame display:NO];
     
     [[window contentView] addSubview:view];
