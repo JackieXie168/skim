@@ -120,9 +120,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
             historyIndex++;
             if ([history count] > historyIndex)
                 [history removeObjectsInRange:NSMakeRange(historyIndex, [history count] - historyIndex)];
-            [history addObject:[pane identifier]];
+            [history addObject:pane];
         } else {
-            pane = [self preferencePaneForItemIdentifier:[history objectAtIndex:historyIndex]];
+            pane = [history objectAtIndex:historyIndex];
         }
         
         NSWindow *window = [self window];
@@ -201,7 +201,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [toolbar setSelectedItemIdentifier:[currentPane identifier]];
     [window setTitle:[currentPane title]];
     [self setNextResponder:currentPane];
-    [history addObject:[currentPane identifier]];
+    [history addObject:currentPane];
     
     view = [currentPane view];
     CGFloat dh = NSHeight([[window contentView] frame]) - NSMaxY([view frame]);
