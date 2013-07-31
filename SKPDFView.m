@@ -300,6 +300,11 @@ enum {
     return [clipView convertRect:[clipView visibleRect] toView:self];
 }
 
+- (void)resetHistory {
+    if ([self respondsToSelector:@selector(currentHistoryIndex)])
+        minHistoryIndex = [self currentHistoryIndex];
+}
+
 #pragma mark Tool Tips
 
 - (void)removePDFToolTipRects {
@@ -946,7 +951,12 @@ enum {
 }
 
 - (BOOL)canGoBack {
-    return [[self document] isLocked] == NO && [super canGoBack];
+    if ([[self document] isLocked])
+        return NO;
+    else if ([self respondsToSelector:@selector(currentHistoryIndex)] && minHistoryIndex > 0)
+        return minHistoryIndex < [self currentHistoryIndex];
+    else
+        return [super canGoBack];
 }
 
 - (BOOL)canGoForward {

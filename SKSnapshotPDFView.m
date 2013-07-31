@@ -325,6 +325,18 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     return i > 1;
 }
 
+- (BOOL)canGoBack {
+    if ([self respondsToSelector:@selector(currentHistoryIndex)] && minHistoryIndex > 0)
+        return minHistoryIndex < [self currentHistoryIndex];
+    else
+        return [super canGoBack];
+}
+
+- (void)resetHistory {
+    if ([self respondsToSelector:@selector(currentHistoryIndex)])
+        minHistoryIndex = [self currentHistoryIndex];
+}
+
 - (void)goToPage:(PDFPage *)aPage {
     [super goToPage:aPage];
     [self resetAutoFitRectIfNeeded];

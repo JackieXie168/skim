@@ -207,6 +207,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)goToDestination:(PDFDestination *)destination {
     [pdfView goToDestination:destination];
+    [pdfView resetHistory];
     
     [[self window] makeFirstResponder:pdfView];
 	

@@ -60,4 +60,5 @@
 @interface PDFView (SKPrivateDeclarations)
 - (double)minScaleFactor;
 - (double)maxScaleFactor;
+- (NSInteger)currentHistoryIndex;
 @end
