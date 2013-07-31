@@ -46,8 +46,11 @@
     NSRect autoFitRect;
     BOOL autoFits;
     BOOL didMagnify;
+    NSInteger minHistoryIndex;
 }
 
 @property (nonatomic) BOOL autoFits;
+
+- (void)resetHistory;
 
 @end

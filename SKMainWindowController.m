@@ -459,6 +459,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         } else if ([[pdfView currentPage] pageIndex] != pageIndex) {
             [lastViewedPages setCount:0];
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+            [pdfView resetHistory];
         }
     }
     
@@ -848,6 +849,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 secondaryPage = [document pageAtIndex:MIN(secondaryPageIndex, [document pageCount] - 1)];
                 [secondaryPdfView goToPage:secondaryPage];
             }
+            [pdfView resetHistory];
             [[pdfView window] disableFlushWindow];
             if (page) {
                 [pdfView display];
@@ -1921,6 +1923,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if (pageIndex != NSNotFound) {
         [lastViewedPages setCount:0];
         [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        [pdfView resetHistory];
     }
     if ([snapshotSetups count]) {
         [self showSnapshotsWithSetups:snapshotSetups];

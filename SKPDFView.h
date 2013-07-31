@@ -115,6 +115,8 @@ typedef NSInteger SKNoteType;
     
     BOOL isZooming;
     
+    NSInteger minHistoryIndex;
+    
     NSTrackingArea *trackingArea;
     
     NSInteger spellingTag;
@@ -173,6 +175,8 @@ typedef NSInteger SKNoteType;
 
 - (void)resetPDFToolTipRects;
 - (void)removePDFToolTipRects;
+
+- (void)resetHistory;
 
 - (NSArray *)accessibilityChildren;
 - (id)accessibilityChildAtPoint:(NSPoint)point;
