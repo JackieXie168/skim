@@ -3232,6 +3232,7 @@ enum {
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
     CALayer *layer = nil;
+    NSRect clipRect = NSZeroRect;
     
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3259,9 +3260,16 @@ enum {
     }
     
     if ([self wantsLayer]) {
+        NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+        NSView *clipView = [[self scrollView] contentView];
+        clipRect = [clipView convertRect:[clipView visibleRect] toView:self];
+        if (NSContainsRect(clipRect, rect))
+            clipRect = NSZeroRect;
+        else
+            clipRect = [self convertRect:NSIntersectionRect(clipRect, rect) toPage:page];
         layer = [CALayer layer];
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
-        [layer setFrame:NSRectToCGRect([self convertRect:[page boundsForBox:[self displayBox]] fromPage:page])];
+        [layer setFrame:NSRectToCGRect(rect)];
         [[self layer] addSublayer:layer];
     }
     
@@ -3294,6 +3302,8 @@ enum {
                 [transform concat];
             }
             [page transformContextForBox:[self displayBox]];
+            if (NSIsEmptyRect(clipRect) == NO)
+                [[NSBezierPath bezierPathWithRect:clipRect] addClip];
             [pathColor setStroke];
             [pathShadow set];
             [bezierPath stroke];
