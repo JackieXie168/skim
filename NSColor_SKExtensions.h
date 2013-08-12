@@ -90,3 +90,7 @@ enum {
 - (NSString *)accessibilityValue;
 
 @end
+
+@interface NSColor (SKMountainLionExtensions)
+- (CGColorRef)CGColor;
+@end

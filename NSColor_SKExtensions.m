@@ -37,9 +37,22 @@
  */
 
 #import "NSColor_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation NSColor (SKExtensions)
+
+- (CGColorRef)CGColorLion {
+    const NSInteger numberOfComponents = [self numberOfComponents];
+    CGFloat components[numberOfComponents];
+    CGColorSpaceRef colorSpace = [[self colorSpace] CGColorSpace];
+    [self getComponents:(CGFloat *)&components];
+    return (CGColorRef)[(id)CGColorCreate(colorSpace, components) autorelease];
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(CGColorLion));
+}
 
 + (NSColor *)keySourceListHighlightColor {
     static NSColor *color = nil;
