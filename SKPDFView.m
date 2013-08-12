@@ -3261,8 +3261,7 @@ enum {
     
     if ([self wantsLayer]) {
         NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
-        NSView *clipView = [[self scrollView] contentView];
-        clipRect = [clipView convertRect:[clipView visibleRect] toView:self];
+        clipRect = [self visibleContentRect];
         if (NSContainsRect(clipRect, rect))
             clipRect = NSZeroRect;
         else
@@ -3723,6 +3722,7 @@ enum {
     NSRect selRect = {startPoint, NSZeroSize};
     BOOL dragged = NO;
     CALayer *layer = nil;
+    NSRect clipRect = NSZeroRect;
     
     [[NSCursor cameraCursor] set];
 	
@@ -3731,6 +3731,7 @@ enum {
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
         [layer setFrame:NSRectToCGRect([self bounds])];
         [[self layer] addSublayer:layer];
+        clipRect = [self visibleContentRect];
     } else {
         [[self window] discardCachedImage];
     }
@@ -3778,6 +3779,7 @@ enum {
             [image lockFocus];
             [[NSColor clearColor] setFill];
             NSRectFill([self bounds]);
+            [[NSBezierPath bezierPathWithRect:clipRect] addClip];
             [[NSColor blackColor] setStroke];
             [NSBezierPath setDefaultLineWidth:1.0];
             [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
