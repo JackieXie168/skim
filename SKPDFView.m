@@ -3231,6 +3231,7 @@ enum {
     NSBezierPath *bezierPath = [NSBezierPath bezierPath];
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
+    CALayer *layer = nil;
     
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3257,13 +3258,22 @@ enum {
         }
     }
     
+    if ([self wantsLayer]) {
+        layer = [CALayer layer];
+        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
+        [layer setFrame:NSRectToCGRect([self convertRect:[page boundsForBox:[self displayBox]] fromPage:page])];
+        [[self layer] addSublayer:layer];
+    }
+    
     // don't coalesce mouse event from mouse while drawing, 
     // but not from tablets because those fire very rapidly and lead to serious delays
     if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
     
-    [self displayIfNeeded];
-    [window cacheImageInRect:[self convertRect:[self visibleContentRect] toView:nil]];
+    if (layer == nil) {
+        [self displayIfNeeded];
+        [window cacheImageInRect:[self convertRect:[self visibleContentRect] toView:nil]];
+    }
     
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -3272,24 +3282,51 @@ enum {
         
         [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
         
-        [window restoreCachedImage];
+        if (layer) {
+            
+            NSImage *image = [[NSImage alloc] initWithSize:NSRectFromCGRect([layer bounds]).size];
+            
+            [image lockFocus];
+            [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
+            if (fabs([self scaleFactor] - 1.0) > 0.0) {
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                [transform scaleBy:[self scaleFactor]];
+                [transform concat];
+            }
+            [page transformContextForBox:[self displayBox]];
+            [pathColor setStroke];
+            [pathShadow set];
+            [bezierPath stroke];
+            [image unlockFocus];
+            
+            [layer setContents:image];
+            [image release];
+            
+        } else {
         
-        [[self documentView] lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-        [self transformDocumentViewContextForPage:page];
-        [pathColor setStroke];
-        [pathShadow set];
-        [bezierPath stroke];
-        [NSGraphicsContext restoreGraphicsState];
-        [[self documentView] unlockFocus];
-        
-        [window flushWindow];
+            [window restoreCachedImage];
+            
+            [[self documentView] lockFocus];
+            [NSGraphicsContext saveGraphicsState];
+            [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
+            [self transformDocumentViewContextForPage:page];
+            [pathColor setStroke];
+            [pathShadow set];
+            [bezierPath stroke];
+            [NSGraphicsContext restoreGraphicsState];
+            [[self documentView] unlockFocus];
+            
+            [window flushWindow];
+            
+        }
         
         didDraw = YES;
     }
     
-    [window discardCachedImage];
+    if (layer)
+        [layer removeFromSuperlayer];
+    else
+        [window discardCachedImage];
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
