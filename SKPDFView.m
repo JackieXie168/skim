@@ -3675,20 +3675,32 @@ enum {
 	NSPoint	currentPoint;
     NSRect selRect = {startPoint, NSZeroSize};
     BOOL dragged = NO;
-	
-    [[self window] discardCachedImage];
+    CALayer *layer = nil;
     
     [[NSCursor cameraCursor] set];
+	
+    if ([self wantsLayer]) {
+        layer = [CALayer layer];
+        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
+        [layer setFrame:NSRectToCGRect([self bounds])];
+        [[self layer] addSublayer:layer];
+    } else {
+        [[self window] discardCachedImage];
+    }
     
 	while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
-        [[self window] disableFlushWindow];
-        [[self window] restoreCachedImage];
-		
+        if (layer == nil) {
+            [[self window] disableFlushWindow];
+            [[self window] restoreCachedImage];
+		}
+        
         if ([theEvent type] == NSLeftMouseUp) {
-            [[self window] enableFlushWindow];
-            [[self window] flushWindow];
+            if (layer == nil) {
+                [[self window] enableFlushWindow];
+                [[self window] flushWindow];
+            }
             break;
         }
         
@@ -3712,19 +3724,41 @@ enum {
         // intersect with the bounds, project on the bounds if necessary and allow zero width or height
         selRect = SKIntersectionRect(selRect, [[self documentView] bounds]);
         
-        [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
-        
-        [[self documentView] lockFocus];
-        [[NSColor blackColor] set];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
-        [[self documentView] unlockFocus];
-        [[self window] enableFlushWindow];
-        [[self window] flushWindow];
-        
+        if (layer) {
+            
+            NSImage *image = [[NSImage alloc] initWithSize:[self bounds].size];
+            
+            [image lockFocus];
+            [[NSColor clearColor] setFill];
+            NSRectFill([self bounds]);
+            [[NSColor blackColor] setStroke];
+            [NSBezierPath setDefaultLineWidth:1.0];
+            [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
+            [image unlockFocus];
+            
+            [layer setContents:image];
+            [image release];
+            
+        } else {
+            
+            [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
+            
+            [[self documentView] lockFocus];
+            [[NSColor blackColor] set];
+            [NSBezierPath setDefaultLineWidth:1.0];
+            [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
+            [[self documentView] unlockFocus];
+            [[self window] enableFlushWindow];
+            [[self window] flushWindow];
+            
+        }
     }
     
-    [[self window] discardCachedImage];
+    if (layer)
+        [layer removeFromSuperlayer];
+    else
+        [[self window] discardCachedImage];
+    
 	[[self getCursorForEvent:theEvent] set];
     
     NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
