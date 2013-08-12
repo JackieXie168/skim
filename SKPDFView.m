@@ -372,6 +372,13 @@ enum {
     SKDrawResizeHandles(selectionRect, radius, active);
 }
 
+- (void)drawDragHighlight {
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor blackColor] setFill];
+    NSFrameRectWithWidth([highlightAnnotation bounds], 1.0 / [self scaleFactor]);
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (void)drawPage:(PDFPage *)pdfPage {
     NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
     // smooth graphics when anti-aliasing
@@ -404,6 +411,9 @@ enum {
     
     if (selectionPageIndex != NSNotFound)
         [self drawSelectionForPage:pdfPage];
+    
+    if ([[highlightAnnotation page] isEqual:pdfPage])
+        [self drawDragHighlight];
     
     if ([[syncDot page] isEqual:pdfPage])
         [syncDot draw];
@@ -1545,28 +1555,6 @@ enum {
 
 #pragma mark NSDraggingDestination protocol
 
-- (void)clearDragHighlight {
-    if (highlightAnnotation) {
-        highlightAnnotation = nil;
-        [[self window] restoreCachedImage];
-        [[self window] flushWindow];
-    }
-}
-
-- (void)drawDragHighlightForAnnotation:(PDFAnnotation *)annotation {
-    [self clearDragHighlight];
-    highlightAnnotation = annotation;
-    NSRect rect = [self convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
-    [[self window] cacheImageInRect:[[self documentView] convertRect:rect toView:nil]];
-    [[self documentView] lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor blackColor] setFill];
-    NSFrameRectWithWidth(rect, 1.0);
-    [NSGraphicsContext restoreGraphicsState];
-    [[self documentView] unlockFocus];
-    [[self window] flushWindow];
-}
-
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSDragOperation dragOp = NSDragOperationNone;
     NSPasteboard *pboard = [sender draggingPasteboard];
@@ -1594,15 +1582,23 @@ enum {
                 NSString *type = [annotation type];
                 if ([annotation isSkimNote] && [annotation hitTest:location] && 
                     ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-                    if ([annotation isEqual:highlightAnnotation] == NO)
-                        [self drawDragHighlightForAnnotation:annotation];
+                    if ([annotation isEqual:highlightAnnotation] == NO) {
+                        if (highlightAnnotation) {
+                            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+                            highlightAnnotation = nil;
+                        }
+                        highlightAnnotation = annotation;
+                        [self setNeedsDisplayForAnnotation:highlightAnnotation];
+                    }
                     dragOp = NSDragOperationGeneric;
                     break;
                 }
             }
         }
-        if (dragOp == NSDragOperationNone)
-            [self clearDragHighlight];
+        if (dragOp == NSDragOperationNone && highlightAnnotation) {
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
+        }
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingUpdated:sender];
     }
@@ -1612,7 +1608,10 @@ enum {
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
-        [self clearDragHighlight];
+        if (highlightAnnotation) {
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
+        }
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super draggingExited:sender];
     }
@@ -1649,7 +1648,8 @@ enum {
                 }
                 performedDrag = YES;
             }
-            [self clearDragHighlight];
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
         }
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         performedDrag = [super performDragOperation:sender];
