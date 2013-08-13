@@ -146,5 +146,42 @@
     return bounds;
 }
 
+- (CGPathRef)copyCGPathWithTransform:(const CGAffineTransform *)transform
+{
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    NSInteger numElements = [self elementCount];
+    NSPoint points[3];
+    NSInteger i;
+    
+    for (i = 0; i < numElements; i++) {
+        switch ([self elementAtIndex:i associatedPoints:points]) {
+            case NSMoveToBezierPathElement:
+                CGPathMoveToPoint(path, transform, points[0].x, points[0].y);
+                break;
+                
+            case NSLineToBezierPathElement:
+                CGPathAddLineToPoint(path, transform, points[0].x, points[0].y);
+                break;
+                
+            case NSCurveToBezierPathElement:
+                CGPathAddCurveToPoint(path, transform,
+                                      points[0].x, points[0].y,
+                                      points[1].x, points[1].y,
+                                      points[2].x, points[2].y);
+                break;
+                
+            case NSClosePathBezierPathElement:
+                CGPathCloseSubpath(path);
+                break;
+        }
+    }
+    
+    CGPathRef immutablePath = CGPathCreateCopy(path);
+    CGPathRelease(path);
+    
+    return immutablePath;
+}
+
 @end
 

@@ -3231,8 +3231,7 @@ enum {
     NSBezierPath *bezierPath = [NSBezierPath bezierPath];
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
-    CALayer *layer = nil;
-    NSRect clipRect = NSZeroRect;
+    CAShapeLayer *layer = nil;
     
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3261,12 +3260,19 @@ enum {
     
     if ([self wantsLayer]) {
         NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
-        clipRect = [self visibleContentRect];
-        if (NSContainsRect(clipRect, rect))
-            clipRect = NSZeroRect;
-        else
-            clipRect = [self convertRect:NSIntersectionRect(clipRect, rect) toPage:page];
-        layer = [CALayer layer];
+        layer = [CAShapeLayer layer];
+        [layer setStrokeColor:[pathColor CGColor]];
+        [layer setFillColor:NULL];
+        [layer setLineWidth:[bezierPath lineWidth]];
+        [layer setLineDashPattern:[bezierPath dashPattern]];
+        [layer setLineCap:[bezierPath lineCapStyle] == NSButtLineCapStyle ? kCALineCapButt : kCALineCapRound];
+        [layer setLineJoin:kCALineJoinRound];
+        if (pathShadow) {
+            [layer setShadowRadius:[pathShadow shadowBlurRadius]];
+            [layer setShadowOffset:NSSizeToCGSize([pathShadow shadowOffset])];
+            [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
+            [layer setShadowOpacity:1.0];
+        }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
         [layer setFrame:NSRectToCGRect(rect)];
         [[self layer] addSublayer:layer];
@@ -3291,25 +3297,20 @@ enum {
         
         if (layer) {
             
-            NSImage *image = [[NSImage alloc] initWithSize:NSRectFromCGRect([layer bounds]).size];
+            CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
+            [NSGraphicsContext saveGraphicsState];
             
-            [image lockFocus];
-            [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-            if (fabs([self scaleFactor] - 1.0) > 0.0) {
-                NSAffineTransform *transform = [NSAffineTransform transform];
-                [transform scaleBy:[self scaleFactor]];
-                [transform concat];
-            }
+            // reset transform matrix
+            CGContextConcatCTM(ctx, CGAffineTransformInvert(CGContextGetCTM(ctx)));
+            
+            CGContextScaleCTM(ctx, [self scaleFactor], [self scaleFactor]);
             [page transformContextForBox:[self displayBox]];
-            if (NSIsEmptyRect(clipRect) == NO)
-                [[NSBezierPath bezierPathWithRect:clipRect] addClip];
-            [pathColor setStroke];
-            [pathShadow set];
-            [bezierPath stroke];
-            [image unlockFocus];
+            CGAffineTransform currentTransform = CGContextGetCTM(ctx);
+            CGPathRef path = [bezierPath copyCGPathWithTransform:&currentTransform];
+            [layer setPath:path];
+            CGPathRelease(path);
             
-            [layer setContents:image];
-            [image release];
+            [NSGraphicsContext restoreGraphicsState];
             
         } else {
         
@@ -3721,17 +3722,18 @@ enum {
 	NSPoint	currentPoint;
     NSRect selRect = {startPoint, NSZeroSize};
     BOOL dragged = NO;
-    CALayer *layer = nil;
-    NSRect clipRect = NSZeroRect;
+    CAShapeLayer *layer = nil;
     
     [[NSCursor cameraCursor] set];
 	
     if ([self wantsLayer]) {
-        layer = [CALayer layer];
+        layer = [CAShapeLayer layer];
+        [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
+        [layer setFillColor:NULL];
+        [layer setLineWidth:1.0];
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
         [layer setFrame:NSRectToCGRect([self bounds])];
         [[self layer] addSublayer:layer];
-        clipRect = [self visibleContentRect];
     } else {
         [[self window] discardCachedImage];
     }
@@ -3774,19 +3776,10 @@ enum {
         
         if (layer) {
             
-            NSImage *image = [[NSImage alloc] initWithSize:[self bounds].size];
-            
-            [image lockFocus];
-            [[NSColor clearColor] setFill];
-            NSRectFill([self bounds]);
-            [[NSBezierPath bezierPathWithRect:clipRect] addClip];
-            [[NSColor blackColor] setStroke];
-            [NSBezierPath setDefaultLineWidth:1.0];
-            [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
-            [image unlockFocus];
-            
-            [layer setContents:image];
-            [image release];
+            CGMutablePathRef path = CGPathCreateMutable();
+            CGPathAddRect(path, NULL, NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)));
+            [layer setPath:path];
+            CGPathRelease(path);
             
         } else {
             
@@ -4104,18 +4097,19 @@ enum {
                 CGContextTranslateCTM(ctx, 0.5 * loupeRect.size.width, 0.5 * loupeRect.size.height);
             }
             
+            CGContextScaleCTM(ctx, magnification, magnification);
+            
+            CGContextTranslateCTM(ctx, -mouseLocSelf.x, -mouseLocSelf.y);
+            
             for (PDFPage *page in [self visiblePages]) {
                 [NSGraphicsContext saveGraphicsState];
                 
-                CGPDFPageRef pageRef = [page pageRef];
-                NSRect pageRect = NSRectFromCGRect(CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox));
+                NSRect boxBounds = [page boundsForBox:[self displayBox]];
+                NSPoint boxLoc = [self convertRect:boxBounds fromPage:page].origin;
                 
-                // position the page in loupe coordinates
-                NSPoint pageLoc = [self convertPoint:NSZeroPoint fromPage:page];
-                pageRect.origin.x += (pageLoc.x - mouseLocSelf.x)/scaleFactor;
-                pageRect.origin.y += (pageLoc.y - mouseLocSelf.y)/scaleFactor;
+                CGContextTranslateCTM(ctx, boxLoc.x, boxLoc.y);
                 
-                CGContextScaleCTM(ctx, scaleFactor * magnification, scaleFactor * magnification);
+                CGContextScaleCTM(ctx, scaleFactor, scaleFactor);
                 
                 // draw page background
                 [NSGraphicsContext saveGraphicsState];
@@ -4124,12 +4118,12 @@ enum {
                                             CGSizeMake(0, -2.0 * scaleFactor * magnification),
                                             4.0 * scaleFactor * magnification,
                                             shadowColor);
-                NSRectFill(pageRect);
+                [page transformContextForBox:[self displayBox]];
+                NSRectFill(boxBounds);
                 [NSGraphicsContext restoreGraphicsState];
                 
                 // draw page contents
-                CGContextConcatCTM(ctx, CGPDFPageGetDrawingTransform(pageRef, kCGPDFCropBox, NSRectToCGRect(pageRect), 0, false));
-                CGContextDrawPDFPage(ctx, pageRef);
+                [page drawWithBox:kPDFDisplayBoxCropBox];
                 
                 [NSGraphicsContext restoreGraphicsState];
             }

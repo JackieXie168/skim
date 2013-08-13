@@ -50,4 +50,6 @@
 
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex;
 
+- (CGPathRef)copyCGPathWithTransform:(const CGAffineTransform *)transform;
+
 @end
