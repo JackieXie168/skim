@@ -3276,6 +3276,16 @@ enum {
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
         [layer setFrame:NSRectToCGRect(rect)];
         [[self layer] addSublayer:layer];
+        // transform so that the path is in page coordinates, affineTransform is relative to center of layer
+        CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
+        [NSGraphicsContext saveGraphicsState];
+        CGContextConcatCTM(ctx, CGAffineTransformInvert(CGContextGetCTM(ctx)));
+        CGContextTranslateCTM(ctx, -0.5 * NSWidth(rect), -0.5 * NSHeight(rect));
+        CGContextScaleCTM(ctx, [self scaleFactor], [self scaleFactor]);
+        [page transformContextForBox:[self displayBox]];
+        CGContextTranslateCTM(ctx, 0.5 * NSWidth(rect), 0.5 * NSHeight(rect));
+        [layer setAffineTransform:CGContextGetCTM(ctx)];
+        [NSGraphicsContext restoreGraphicsState];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
@@ -3297,20 +3307,9 @@ enum {
         
         if (layer) {
             
-            CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-            [NSGraphicsContext saveGraphicsState];
-            
-            // reset transform matrix
-            CGContextConcatCTM(ctx, CGAffineTransformInvert(CGContextGetCTM(ctx)));
-            
-            CGContextScaleCTM(ctx, [self scaleFactor], [self scaleFactor]);
-            [page transformContextForBox:[self displayBox]];
-            CGAffineTransform currentTransform = CGContextGetCTM(ctx);
-            CGPathRef path = [bezierPath copyCGPathWithTransform:&currentTransform];
+            CGPathRef path = [bezierPath copyCGPathWithTransform:NULL];
             [layer setPath:path];
             CGPathRelease(path);
-            
-            [NSGraphicsContext restoreGraphicsState];
             
         } else {
         
