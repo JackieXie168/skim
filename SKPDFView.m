@@ -3292,7 +3292,6 @@ enum {
             default: break;
         }
         [layer setAffineTransform:t];
-        [NSGraphicsContext restoreGraphicsState];
         [[self layer] addSublayer:layer];
     }
     
