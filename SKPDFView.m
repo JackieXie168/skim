@@ -3261,7 +3261,8 @@ enum {
     }
     
     if ([self wantsLayer]) {
-        NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+        NSRect boxBounds = [page boundsForBox:[self displayBox]];
+        NSPoint boxLoc = [self convertRect:boxBounds fromPage:page].origin;
         layer = [CAShapeLayer layer];
         [layer setStrokeColor:[pathColor CGColor]];
         [layer setFillColor:NULL];
@@ -3269,6 +3270,7 @@ enum {
         [layer setLineDashPattern:[bezierPath dashPattern]];
         [layer setLineCap:[bezierPath lineCapStyle] == NSButtLineCapStyle ? kCALineCapButt : kCALineCapRound];
         [layer setLineJoin:kCALineJoinRound];
+        [layer setMasksToBounds:YES];
         if (pathShadow) {
             [layer setShadowRadius:[pathShadow shadowBlurRadius]];
             [layer setShadowOffset:NSSizeToCGSize([pathShadow shadowOffset])];
@@ -3276,15 +3278,16 @@ enum {
             [layer setShadowOpacity:1.0];
         }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
-        [layer setFrame:NSRectToCGRect(rect)];
-        // transform so that the path is in page coordinates, affineTransform is relative to center of layer
+        [layer setAnchorPoint:CGPointZero];
+        boxBounds.origin = NSZeroPoint;
+        [layer setBounds:boxBounds];
+        // transform so that the path is in page coordinates
         CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
         [NSGraphicsContext saveGraphicsState];
         CGContextConcatCTM(ctx, CGAffineTransformInvert(CGContextGetCTM(ctx)));
-        CGContextTranslateCTM(ctx, -0.5 * NSWidth(rect), -0.5 * NSHeight(rect));
+        CGContextTranslateCTM(ctx, boxLoc.x, boxLoc.y);
         CGContextScaleCTM(ctx, [self scaleFactor], [self scaleFactor]);
         [page transformContextForBox:[self displayBox]];
-        CGContextTranslateCTM(ctx, 0.5 * NSWidth(rect), 0.5 * NSHeight(rect));
         [layer setAffineTransform:CGContextGetCTM(ctx)];
         [NSGraphicsContext restoreGraphicsState];
         [[self layer] addSublayer:layer];
