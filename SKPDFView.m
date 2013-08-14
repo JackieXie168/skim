@@ -3281,13 +3281,17 @@ enum {
         [layer setAnchorPoint:CGPointMake(-boxBounds.origin.x / boxBounds.size.width, -boxBounds.origin.y / boxBounds.size.height)];
         [layer setBounds:boxBounds];
         // transform so that the path is in page coordinates
-        CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-        [NSGraphicsContext saveGraphicsState];
-        CGContextConcatCTM(ctx, CGAffineTransformInvert(CGContextGetCTM(ctx)));
-        CGContextTranslateCTM(ctx, boxLoc.x, boxLoc.y);
-        CGContextScaleCTM(ctx, [self scaleFactor], [self scaleFactor]);
-        [page transformContextForBox:[self displayBox]];
-        [layer setAffineTransform:CGContextGetCTM(ctx)];
+        CGAffineTransform t = CGAffineTransformMakeTranslation(boxLoc.x, boxLoc.y);
+        t = CGAffineTransformScale(t, [self scaleFactor], [self scaleFactor]);
+        t = CGAffineTransformRotate(t, -M_PI_2 * [page rotation] / 90.0);
+        switch ([page rotation]) {
+            case 0:   t = CGAffineTransformTranslate(t, -NSMinX(boxBounds), -NSMinY(boxBounds)); break;
+            case 90:  t = CGAffineTransformTranslate(t, -NSMaxX(boxBounds), -NSMinY(boxBounds)); break;
+            case 180: t = CGAffineTransformTranslate(t, -NSMaxX(boxBounds), -NSMaxY(boxBounds)); break;
+            case 270: t = CGAffineTransformTranslate(t, -NSMinX(boxBounds), -NSMaxY(boxBounds)); break;
+            default: break;
+        }
+        [layer setAffineTransform:t];
         [NSGraphicsContext restoreGraphicsState];
         [[self layer] addSublayer:layer];
     }
