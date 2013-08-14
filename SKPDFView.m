@@ -3278,7 +3278,7 @@ enum {
             [layer setShadowOpacity:1.0];
         }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
-        [layer setAnchorPoint:CGPointMake(-boxBounds.origin.x / boxBounds.size.width, -boxBounds.origin.y / boxBounds.size.height)];
+        [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSWidth(boxBounds))];
         [layer setBounds:boxBounds];
         // transform so that the path is in page coordinates
         CGAffineTransform t = CGAffineTransformMakeTranslation(boxLoc.x, boxLoc.y);
@@ -4093,14 +4093,14 @@ enum {
             [image lockFocusFlipped:NO];
             
             CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-            [[NSBezierPath bezierPathWithRoundedRect:NSMakeRect(0.0, 0.0, loupeRect.size.width, loupeRect.size.height)
+            [[NSBezierPath bezierPathWithRoundedRect:NSMakeRect(0.0, 0.0, NSWidth(loupeRect), NSHeight(loupeRect))
                                              xRadius:[loupeLayer cornerRadius]
                                              yRadius:[loupeLayer cornerRadius]] setClip];
             
             if (currentLevel > 2) {
                 CGContextTranslateCTM(ctx, mouseLocSelf.x, mouseLocSelf.y);
             } else {
-                CGContextTranslateCTM(ctx, 0.5 * loupeRect.size.width, 0.5 * loupeRect.size.height);
+                CGContextTranslateCTM(ctx, 0.5 * NSWidth(loupeRect), 0.5 * NSHeight(loupeRect));
             }
             
             CGContextScaleCTM(ctx, magnification, magnification);
