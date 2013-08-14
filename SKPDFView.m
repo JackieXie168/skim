@@ -3278,8 +3278,7 @@ enum {
             [layer setShadowOpacity:1.0];
         }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
-        [layer setAnchorPoint:CGPointZero];
-        boxBounds.origin = NSZeroPoint;
+        [layer setAnchorPoint:CGPointMake(-boxBounds.origin.x / boxBounds.size.width, -boxBounds.origin.y / boxBounds.size.height)];
         [layer setBounds:boxBounds];
         // transform so that the path is in page coordinates
         CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
