@@ -3275,7 +3275,6 @@ enum {
         }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
         [layer setFrame:NSRectToCGRect(rect)];
-        [[self layer] addSublayer:layer];
         // transform so that the path is in page coordinates, affineTransform is relative to center of layer
         CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
         [NSGraphicsContext saveGraphicsState];
@@ -3286,6 +3285,7 @@ enum {
         CGContextTranslateCTM(ctx, 0.5 * NSWidth(rect), 0.5 * NSHeight(rect));
         [layer setAffineTransform:CGContextGetCTM(ctx)];
         [NSGraphicsContext restoreGraphicsState];
+        [[self layer] addSublayer:layer];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
