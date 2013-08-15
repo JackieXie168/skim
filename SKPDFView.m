@@ -3277,7 +3277,7 @@ enum {
             [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
             [layer setShadowOpacity:1.0];
         }
-        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
+        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", [NSNull null], @"path", nil]];
         [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSWidth(boxBounds))];
         [layer setBounds:boxBounds];
         // transform so that the path is in page coordinates
@@ -3737,7 +3737,7 @@ enum {
         [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
         [layer setFillColor:NULL];
         [layer setLineWidth:1.0];
-        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", nil]];
+        [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", [NSNull null], @"path", nil]];
         [layer setFrame:NSRectToCGRect([self bounds])];
         [[self layer] addSublayer:layer];
     } else {
