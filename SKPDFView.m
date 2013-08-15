@@ -3261,7 +3261,7 @@ enum {
     }
     
     if ([self wantsLayer]) {
-        NSRect boxBounds = [page boundsForBox:[self displayBox]];
+        NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
         NSPoint boxLoc = [self convertRect:boxBounds fromPage:page].origin;
         layer = [CAShapeLayer layer];
         [layer setStrokeColor:[pathColor CGColor]];
