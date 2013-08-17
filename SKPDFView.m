@@ -3278,7 +3278,8 @@ enum {
             [layer setShadowOpacity:1.0];
         }
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", [NSNull null], @"path", nil]];
-        [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSWidth(boxBounds))];
+        [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSHeight(boxBounds))];
+        [layer setPosition:CGPointZero];
         [layer setBounds:boxBounds];
         // transform so that the path is in page coordinates
         CGAffineTransform t = CGAffineTransformMakeTranslation(boxLoc.x, boxLoc.y);
