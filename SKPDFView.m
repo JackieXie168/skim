@@ -4121,10 +4121,11 @@ enum {
                 // draw page background
                 [NSGraphicsContext saveGraphicsState];
                 [[NSColor whiteColor] set];
-                CGContextSetShadowWithColor(ctx,
-                                            CGSizeMake(0, -2.0 * scaleFactor * magnification),
-                                            4.0 * scaleFactor * magnification,
-                                            shadowColor);
+                if ([self displaysPageBreaks])
+                    CGContextSetShadowWithColor(ctx,
+                                                CGSizeMake(0, -2.0 * scaleFactor * magnification),
+                                                4.0 * scaleFactor * magnification,
+                                                shadowColor);
                 [page transformContextForBox:[self displayBox]];
                 NSRectFill(boxBounds);
                 [NSGraphicsContext restoreGraphicsState];
