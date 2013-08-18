@@ -4027,7 +4027,6 @@ enum {
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
     NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
     CGFloat scaleFactor = [self scaleFactor];
-    CGColorRef shadowColor = CGColorCreateGenericGray(0, 0.5);
     CALayer *loupeLayer = [CALayer layer];
     NSAutoreleasePool *pool = nil;
     
@@ -4123,9 +4122,9 @@ enum {
                 [[NSColor whiteColor] set];
                 if ([self displaysPageBreaks])
                     CGContextSetShadowWithColor(ctx,
-                                                CGSizeMake(0, -2.0 * scaleFactor * magnification),
-                                                4.0 * scaleFactor * magnification,
-                                                shadowColor);
+                                                CGSizeMake(0, -2.0 * magnification),
+                                                4.0 * magnification,
+                                                CGColorGetConstantColor(kCGColorBlack));
                 [page transformContextForBox:[self displayBox]];
                 NSRectFill(boxBounds);
                 [NSGraphicsContext restoreGraphicsState];
@@ -4161,7 +4160,6 @@ enum {
     [NSEvent stopPeriodicEvents];
     
     [loupeLayer removeFromSuperlayer];
-    CGColorRelease(shadowColor);
     
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
