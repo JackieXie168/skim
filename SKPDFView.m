@@ -4122,7 +4122,7 @@ enum {
                 [[NSColor whiteColor] set];
                 if ([self displaysPageBreaks])
                     CGContextSetShadowWithColor(ctx,
-                                                CGSizeMake(0, -2.0 * magnification),
+                                                CGSizeMake(0, -4.0 * magnification),
                                                 4.0 * magnification,
                                                 CGColorGetConstantColor(kCGColorBlack));
                 [page transformContextForBox:[self displayBox]];
