@@ -4117,9 +4117,9 @@ enum {
                 NSRect boxRect = [self convertRect:boxBounds fromPage:page];
                 NSPoint boxLoc = boxRect.origin;
                 
-                boxRect = NSOffsetRect(NSInsetRect(boxRect, -4.0, -4.0), 0.0, -4.0);
                 boxRect.origin = [transform transformPoint:boxRect.origin];
                 boxRect.size = [transform transformSize:boxRect.size];
+                boxRect = NSOffsetRect(NSInsetRect(boxRect, -[pageShadow shadowBlurRadius], -[pageShadow shadowBlurRadius]), [pageShadow shadowOffset].width, [pageShadow shadowOffset].height);
                 
                 // only draw the page when there is something to draw
                 if (NSIntersectsRect(imageRect, boxRect) == NO)
@@ -4142,7 +4142,14 @@ enum {
                 [NSGraphicsContext restoreGraphicsState];
                 
                 // draw page contents
-                [page drawWithBox:[self displayBox]];
+                [self drawPage:page];
+                
+                if (readingBar) {
+                    [NSGraphicsContext saveGraphicsState];
+                    [page transformContextForBox:[self displayBox]];
+                    [readingBar drawForPage:page withBox:[self displayBox]];
+                    [NSGraphicsContext saveGraphicsState];
+                }
                 
                 [NSGraphicsContext restoreGraphicsState];
             }
