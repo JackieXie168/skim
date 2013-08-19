@@ -4113,8 +4113,11 @@ enum {
             [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
             
             for (PDFPage *page in [self visiblePages]) {
-                NSRect boxBounds = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
-                NSRect boxRect = NSOffsetRect(NSInsetRect(boxBounds, -4.0, -4.0), 0.0, -4.0);
+                NSRect boxBounds = [page boundsForBox:[self displayBox]];
+                NSRect boxRect = [self convertRect:boxBounds fromPage:page];
+                NSPoint boxLoc = boxRect.origin;
+                
+                boxRect = NSOffsetRect(NSInsetRect(boxRect, -4.0, -4.0), 0.0, -4.0);
                 boxRect.origin = [transform transformPoint:boxRect.origin];
                 boxRect.size = [transform transformSize:boxRect.size];
                 
@@ -4125,7 +4128,7 @@ enum {
                 [NSGraphicsContext saveGraphicsState];
                 
                 NSAffineTransform *pageTransform = [transform copy];
-                [pageTransform translateXBy:NSMinX(boxBounds) yBy:NSMinY(boxBounds)];
+                [pageTransform translateXBy:boxLoc.x yBy:boxLoc.y];
                 [pageTransform scaleBy:scaleFactor];
                 [pageTransform concat];
                 [pageTransform release];
