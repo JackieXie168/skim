@@ -4148,7 +4148,7 @@ enum {
                     [NSGraphicsContext saveGraphicsState];
                     [page transformContextForBox:[self displayBox]];
                     [readingBar drawForPage:page withBox:[self displayBox]];
-                    [NSGraphicsContext saveGraphicsState];
+                    [NSGraphicsContext restoreGraphicsState];
                 }
                 
                 [NSGraphicsContext restoreGraphicsState];
