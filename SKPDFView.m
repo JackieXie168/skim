@@ -1166,10 +1166,14 @@ enum {
             [self doSelectWithEvent:theEvent];
         } else if (toolMode == SKMagnifyToolMode) {
             [self setCurrentSelection:nil];
+            [self setWantsLayer:YES];
+            [self display];
             if ([self wantsLayer])
                 [self doLayeredMagnifyWithEvent:theEvent];
             else
                 [self doMagnifyWithEvent:theEvent];
+            [self setWantsLayer:NO];
+            [self display];
         } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
             [self doEraseAnnotationsWithEvent:theEvent];
         } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
@@ -4027,8 +4031,11 @@ enum {
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
     NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
     CGFloat scaleFactor = [self scaleFactor];
+    NSShadow *pageShadow = [self displaysPageBreaks] ? [[[NSShadow alloc] init] autorelease] : nil;
     CALayer *loupeLayer = [CALayer layer];
     NSAutoreleasePool *pool = nil;
+    
+    [pageShadow setShadowColor:[NSColor blackColor]];
     
     [loupeLayer setBackgroundColor:[[self backgroundColor] CGColor]];
     [loupeLayer setBorderColor:[color CGColor]];
@@ -4063,6 +4070,8 @@ enum {
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
             [[self getCursorForEvent:theEvent] set];
+            [pageShadow setShadowBlurRadius:4.0 * magnification];
+            [pageShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
@@ -4089,42 +4098,46 @@ enum {
                 loupeRect = NSIntegralRect(loupeRect);
             }
             
-            NSImage *image = [[NSImage alloc] initWithSize:loupeRect.size];
-            [image lockFocusFlipped:NO];
+            NSRect imageRect = {NSZeroPoint, loupeRect.size};
+            NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
             
-            CGContextRef ctx = [[NSGraphicsContext currentContext] graphicsPort];
-            [[NSBezierPath bezierPathWithRoundedRect:NSMakeRect(0.0, 0.0, NSWidth(loupeRect), NSHeight(loupeRect))
+            [image lockFocus];
+            
+            [[NSBezierPath bezierPathWithRoundedRect:imageRect
                                              xRadius:[loupeLayer cornerRadius]
                                              yRadius:[loupeLayer cornerRadius]] setClip];
             
-            if (currentLevel > 2) {
-                CGContextTranslateCTM(ctx, mouseLocSelf.x, mouseLocSelf.y);
-            } else {
-                CGContextTranslateCTM(ctx, 0.5 * NSWidth(loupeRect), 0.5 * NSHeight(loupeRect));
-            }
+            NSAffineTransform *transform = [NSAffineTransform transform];
             
-            CGContextScaleCTM(ctx, magnification, magnification);
-            
-            CGContextTranslateCTM(ctx, -mouseLocSelf.x, -mouseLocSelf.y);
+            if (currentLevel > 2)
+                [transform translateXBy:mouseLoc.x yBy:mouseLoc.y];
+            else
+                [transform translateXBy:0.5 * NSWidth(loupeRect) yBy:0.5 * NSHeight(loupeRect)];
+            [transform scaleBy:magnification];
+            [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
             
             for (PDFPage *page in [self visiblePages]) {
+                NSRect boxBounds = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+                NSRect boxRect = NSOffsetRect(NSInsetRect(boxBounds, -4.0, -4.0), 0.0, -4.0);
+                boxRect.origin = [transform transformPoint:boxRect.origin];
+                boxRect.size = [transform transformSize:boxRect.size];
+                
+                // only draw the page when there is something to draw
+                if (NSIntersectsRect(imageRect, boxRect) == NO)
+                    continue;
+                
                 [NSGraphicsContext saveGraphicsState];
                 
-                NSRect boxBounds = [page boundsForBox:[self displayBox]];
-                NSPoint boxLoc = [self convertRect:boxBounds fromPage:page].origin;
-                
-                CGContextTranslateCTM(ctx, boxLoc.x, boxLoc.y);
-                
-                CGContextScaleCTM(ctx, scaleFactor, scaleFactor);
+                NSAffineTransform *pageTransform = [transform copy];
+                [pageTransform translateXBy:NSMinX(boxBounds) yBy:NSMinY(boxBounds)];
+                [pageTransform scaleBy:scaleFactor];
+                [pageTransform concat];
+                [pageTransform release];
                 
                 // draw page background
                 [NSGraphicsContext saveGraphicsState];
                 [[NSColor whiteColor] set];
-                if ([self displaysPageBreaks])
-                    CGContextSetShadowWithColor(ctx,
-                                                CGSizeMake(0, -4.0 * magnification),
-                                                4.0 * magnification,
-                                                CGColorGetConstantColor(kCGColorBlack));
+                [pageShadow set];
                 [page transformContextForBox:[self displayBox]];
                 NSRectFill(boxBounds);
                 [NSGraphicsContext restoreGraphicsState];
