@@ -1166,14 +1166,10 @@ enum {
             [self doSelectWithEvent:theEvent];
         } else if (toolMode == SKMagnifyToolMode) {
             [self setCurrentSelection:nil];
-            [self setWantsLayer:YES];
-            [self display];
             if ([self wantsLayer])
                 [self doLayeredMagnifyWithEvent:theEvent];
             else
                 [self doMagnifyWithEvent:theEvent];
-            [self setWantsLayer:NO];
-            [self display];
         } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
             [self doEraseAnnotationsWithEvent:theEvent];
         } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
