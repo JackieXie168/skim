@@ -4130,7 +4130,7 @@ enum {
                 [NSGraphicsContext restoreGraphicsState];
                 
                 // draw page contents
-                [page drawWithBox:kPDFDisplayBoxCropBox];
+                [page drawWithBox:[self displayBox]];
                 
                 [NSGraphicsContext restoreGraphicsState];
             }
