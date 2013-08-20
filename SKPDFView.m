@@ -3734,12 +3734,15 @@ enum {
     [[NSCursor cameraCursor] set];
 	
     if ([self wantsLayer]) {
+        CGRect rect = NSRectToCGRect([self visibleContentRect]);
         layer = [CAShapeLayer layer];
         [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
         [layer setFillColor:NULL];
         [layer setLineWidth:1.0];
         [layer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", [NSNull null], @"position", [NSNull null], @"bounds", [NSNull null], @"hidden", [NSNull null], @"path", nil]];
-        [layer setFrame:NSRectToCGRect([self bounds])];
+        [layer setFrame:rect];
+        [layer setBounds:rect];
+        [layer setMasksToBounds:YES];
         [[self layer] addSublayer:layer];
     } else {
         [[self window] discardCachedImage];
