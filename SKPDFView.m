@@ -3900,8 +3900,6 @@ enum {
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
     
-    [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
-    
     while ([theEvent type] != NSLeftMouseUp) {
         
         if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
@@ -3993,8 +3991,6 @@ enum {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask];
 	}
     
-    [NSEvent stopPeriodicEvents];
-    
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
@@ -4025,7 +4021,6 @@ enum {
     NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
     NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, smallSize);
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
-    NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
     CGFloat scaleFactor = [self scaleFactor];
     NSShadow *pageShadow = [self displaysPageBreaks] ? [[[NSShadow alloc] init] autorelease] : nil;
     CALayer *loupeLayer = [CALayer layer];
@@ -4034,9 +4029,9 @@ enum {
     [pageShadow setShadowColor:[NSColor blackColor]];
     
     [loupeLayer setBackgroundColor:[[self backgroundColor] CGColor]];
-    [loupeLayer setBorderColor:[color CGColor]];
+    [loupeLayer setBorderColor:(CGColorRef)[(id)CGColorCreateGenericGray(0.2, 1.0) autorelease]];
     [loupeLayer setBorderWidth:3.0];
-    [loupeLayer setCornerRadius:8.0];
+    [loupeLayer setCornerRadius:16.0];
     [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
                             [NSNull null], @"contents",
                             [NSNull null], @"position",
@@ -4047,8 +4042,6 @@ enum {
     [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
     [loupeLayer setShadowOpacity:0.5];
     [[self layer] addSublayer:loupeLayer];
-    
-    [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     
     [theEvent retain];
     while ([theEvent type] != NSLeftMouseUp) {
@@ -4175,8 +4168,6 @@ enum {
         [pool drain];
         pool = nil;
     }
-    
-    [NSEvent stopPeriodicEvents];
     
     [loupeLayer removeFromSuperlayer];
     
