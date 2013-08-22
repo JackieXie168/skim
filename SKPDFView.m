@@ -4170,7 +4170,7 @@ enum {
                 mouseInside = 0;
                 [NSCursor unhide];
                 loupeLayer.hidden = YES;
-                // stop periodic events for auto scrolling
+                // start periodic events for auto scrolling
                 [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
