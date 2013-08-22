@@ -169,7 +169,6 @@ enum {
 - (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
-- (void)doLayeredMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent;
 - (void)doEraseAnnotationsWithEvent:(NSEvent *)theEvent;
@@ -1166,10 +1165,7 @@ enum {
             [self doSelectWithEvent:theEvent];
         } else if (toolMode == SKMagnifyToolMode) {
             [self setCurrentSelection:nil];
-            if ([self wantsLayer])
-                [self doLayeredMagnifyWithEvent:theEvent];
-            else
-                [self doMagnifyWithEvent:theEvent];
+            [self doMagnifyWithEvent:theEvent];
         } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
             [self doEraseAnnotationsWithEvent:theEvent];
         } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
@@ -3876,13 +3872,13 @@ enum {
 
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
-	NSEvent *lastMouseEvent = theEvent;
+	NSEvent *lastMouseEvent = [theEvent retain];
     NSScrollView *scrollView = [self scrollView];
     NSView *documentView = [scrollView documentView];
     NSView *clipView = [scrollView contentView];
 	NSRect originalBounds = [documentView bounds];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
-    NSRect magBounds, magRect, outlineRect;
+    NSRect magRect;
     NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
     NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
@@ -3892,49 +3888,94 @@ enum {
     NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
     NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, smallSize);
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
-    NSBezierPath *path;
+    CALayer *loupeLayer = nil;
+    NSAutoreleasePool *pool = nil;
     NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
-    NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
-    [aShadow setShadowBlurRadius:4.0];
-    [aShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
-    [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+    NSShadow *aShadow = nil;
     
-	[[self window] discardCachedImage]; // make sure not to use the cached image
+    if ([self wantsLayer]) {
+        
+        loupeLayer = [CALayer layer];
+        [loupeLayer setBackgroundColor:[[self backgroundColor] CGColor]];
+        [loupeLayer setBorderColor:[color CGColor]];
+        [loupeLayer setBorderWidth:3.0];
+        [loupeLayer setCornerRadius:16.0];
+        [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
+                                [NSNull null], @"contents",
+                                [NSNull null], @"position",
+                                [NSNull null], @"bounds",
+                                [NSNull null], @"hidden",
+                                nil]];
+        [loupeLayer setShadowRadius:4.0];
+        [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
+        [loupeLayer setShadowOpacity:0.5];
+        [[self layer] addSublayer:loupeLayer];
+        
+        if ([self displaysPageBreaks]) {
+            aShadow = [[[NSShadow alloc] init] autorelease];
+            [aShadow setShadowColor:[NSColor blackColor]];
+        }
+        
+    } else {
+        
+        [documentView setPostsBoundsChangedNotifications:NO];
+        
+        [[self window] discardCachedImage]; // make sure not to use the cached image
+        
+        aShadow = [[[NSShadow alloc] init] autorelease];
+        [aShadow setShadowBlurRadius:4.0];
+        [aShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
+        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        
+    }
     
+    [theEvent retain];
     while ([theEvent type] != NSLeftMouseUp) {
+        
+        pool = [[NSAutoreleasePool alloc] init];
         
         if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
             // set up the currentLevel and magnification
             NSUInteger modifierFlags = [theEvent modifierFlags];
             currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
-            if (currentLevel > 2) {
-                [[self window] restoreCachedImage];
-                [[self window] cacheImageInRect:visibleRect];
-            }
             magnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
             if (modifierFlags & NSShiftKeyMask) {
                 magnification = 1.0 / magnification;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
             [[self getCursorForEvent:theEvent] set];
+            if (loupeLayer) {
+                [aShadow setShadowBlurRadius:4.0 * magnification];
+                [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
+            } else if (currentLevel > 2) {
+                [[self window] restoreCachedImage];
+                [[self window] cacheImageInRect:visibleRect];
+            }
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
-            lastMouseEvent = theEvent;
+            [lastMouseEvent release];
+            lastMouseEvent = [theEvent retain];
         }
         
         if ([self mouse:mouseLoc inRect:visibleRect]) {
+            
             if (mouseInside != 1) {
                 mouseInside = 1;
                 [NSCursor hide];
-                // make sure we flush the complete drawing to avoid flickering
-                [[self window] disableFlushWindow];
                 // stop periodic events for auto scrolling
                 [NSEvent stopPeriodicEvents];
+                if (loupeLayer) {
+                    [loupeLayer setHidden:NO];
+                } else {
+                    // make sure we flush the complete drawing to avoid flickering
+                    [[self window] disableFlushWindow];
+                }
             }
+            
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
-                magRect = (visibleRect);
+                magRect = visibleRect;
             } else {
                 magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
                 magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
@@ -3944,56 +3985,144 @@ enum {
                 [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
             }
             
-            // resize bounds around mouseLoc
-            magBounds.origin = [documentView convertPoint:mouseLoc fromView:nil];
-            magBounds = NSMakeRect(NSMinX(magBounds) + (NSMinX(originalBounds) - NSMinX(magBounds)) / magnification, 
-                                   NSMinY(magBounds) + (NSMinY(originalBounds) - NSMinY(magBounds)) / magnification, 
-                                   NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
-            
-            [clipView lockFocus];
-            outlineRect = [clipView convertRect:magRect fromView:nil];
-            [aShadow set];
-            [color set];
-            path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
-            [path fill];
-            [clipView unlockFocus];
-            
-            [documentView setBounds:magBounds];
-            [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
-            [documentView setBounds:originalBounds];
-            
-            [clipView lockFocus];
-            outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
-            [color set];
-            path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
-            [path setLineWidth:3.0];
-            [path stroke];
-            [clipView unlockFocus];
-            
-            [[self window] enableFlushWindow];
-            [[self window] flushWindowIfNeeded];
-            [[self window] disableFlushWindow];
+            if (loupeLayer) {
+                
+                NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
+                NSRect imageRect = {NSZeroPoint, magRect.size};
+                NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
+                
+                [image lockFocus];
+                
+                [[NSBezierPath bezierPathWithRoundedRect:imageRect
+                                                 xRadius:[loupeLayer cornerRadius]
+                                                 yRadius:[loupeLayer cornerRadius]] setClip];
+                
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                
+                if (currentLevel > 2)
+                    [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
+                else
+                    [transform translateXBy:0.5 * NSWidth(magRect) yBy:0.5 * NSHeight(magRect)];
+                [transform scaleBy:magnification];
+                [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
+                
+                for (PDFPage *page in [self visiblePages]) {
+                    NSRect boxBounds = [page boundsForBox:[self displayBox]];
+                    NSRect boxRect = [self convertRect:boxBounds fromPage:page];
+                    NSPoint boxLoc = boxRect.origin;
+                    
+                    boxRect.origin = [transform transformPoint:boxRect.origin];
+                    boxRect.size = [transform transformSize:boxRect.size];
+                    boxRect = NSOffsetRect(NSInsetRect(boxRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), [aShadow shadowOffset].width, [aShadow shadowOffset].height);
+                    
+                    // only draw the page when there is something to draw
+                    if (NSIntersectsRect(imageRect, boxRect) == NO)
+                        continue;
+                    
+                    [NSGraphicsContext saveGraphicsState];
+                    
+                    NSAffineTransform *pageTransform = [transform copy];
+                    [pageTransform translateXBy:boxLoc.x yBy:boxLoc.y];
+                    [pageTransform scaleBy:[self scaleFactor]];
+                    [pageTransform concat];
+                    [pageTransform release];
+                    
+                    // draw page background
+                    [NSGraphicsContext saveGraphicsState];
+                    [[NSColor whiteColor] set];
+                    [aShadow set];
+                    [page transformContextForBox:[self displayBox]];
+                    NSRectFill(boxBounds);
+                    [NSGraphicsContext restoreGraphicsState];
+                    
+                    // draw page contents
+                    [self drawPage:page];
+                    
+                    if (readingBar) {
+                        [NSGraphicsContext saveGraphicsState];
+                        [page transformContextForBox:[self displayBox]];
+                        [readingBar drawForPage:page withBox:[self displayBox]];
+                        [NSGraphicsContext restoreGraphicsState];
+                    }
+                    
+                    [NSGraphicsContext restoreGraphicsState];
+                }
+                [image unlockFocus];
+                
+                [loupeLayer setContents:image];
+                [loupeLayer setFrame:NSRectToCGRect([self convertRect:magRect fromView:nil])];
+                [image release];
+                
+            } else {
+                
+                NSRect magBounds, outlineRect;
+                NSBezierPath *path;
+                
+                // resize bounds around mouseLoc
+                magBounds.origin = [documentView convertPoint:mouseLoc fromView:nil];
+                magBounds = NSMakeRect(NSMinX(magBounds) + (NSMinX(originalBounds) - NSMinX(magBounds)) / magnification, 
+                                       NSMinY(magBounds) + (NSMinY(originalBounds) - NSMinY(magBounds)) / magnification, 
+                                       NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
+                
+                [clipView lockFocus];
+                outlineRect = [clipView convertRect:magRect fromView:nil];
+                [aShadow set];
+                [color set];
+                path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
+                [path fill];
+                [clipView unlockFocus];
+                
+                [documentView setBounds:magBounds];
+                [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
+                [documentView setBounds:originalBounds];
+                
+                [clipView lockFocus];
+                outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
+                [color set];
+                path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
+                [path setLineWidth:3.0];
+                [path stroke];
+                [clipView unlockFocus];
+                
+                [[self window] enableFlushWindow];
+                [[self window] flushWindowIfNeeded];
+                [[self window] disableFlushWindow];
+                
+            }
             
         } else { // mouse is not in the rect
+            
             // show cursor 
             if (mouseInside == 1) {
                 mouseInside = 0;
                 [NSCursor unhide];
-                // restore the cached image in order to clear the rect
-                [[self window] restoreCachedImage];
-                [[self window] enableFlushWindow];
-                [[self window] flushWindowIfNeeded];
                 // start periodic events for auto scrolling
                 [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+                if (loupeLayer) {
+                    [loupeLayer setHidden:YES];
+                } else {
+                    // restore the cached image in order to clear the rect
+                    [[self window] restoreCachedImage];
+                    [[self window] enableFlushWindow];
+                    [[self window] flushWindowIfNeeded];
+                }
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
                 [documentView autoscroll:lastMouseEvent];
-            if (currentLevel > 2)
-                [[self window] cacheImageInRect:visibleRect];
-            else
-                [[self window] discardCachedImage];
+            if (loupeLayer == nil) {
+                if (currentLevel > 2)
+                    [[self window] cacheImageInRect:visibleRect];
+                else
+                    [[self window] discardCachedImage];
+            }
+            
         }
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask];
+        
+        [theEvent release];
+        theEvent = [[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask] retain];
+        
+        [pool drain];
+        pool = nil;
 	}
     
     if (mouseInside == 1)
@@ -4002,193 +4131,17 @@ enum {
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
+    if (loupeLayer) {
+        [loupeLayer removeFromSuperlayer];
+    } else {
+        [[self window] restoreCachedImage];
+        if (mouseInside == 1)
+            [[self window] enableFlushWindow];
+        [[self window] flushWindowIfNeeded];
+        [documentView setPostsBoundsChangedNotifications:postNotification];
+	}
     
-	[[self window] restoreCachedImage];
-    if (mouseInside == 1)
-        [[self window] enableFlushWindow];
-	[[self window] flushWindowIfNeeded];
-	[NSCursor unhide];
-	[documentView setPostsBoundsChangedNotifications:postNotification];
-    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
-}
-
-// unfortunately 10.9 apparently uses layers, so explicit drawing in the documentView will fail
-- (void)doLayeredMagnifyWithEvent:(NSEvent *)theEvent {
-	NSPoint mouseLoc = [theEvent locationInWindow];
-	NSEvent *lastMouseEvent = [theEvent retain];
-    NSScrollView *scrollView = [self scrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect boundsRect = [self bounds];
-    NSInteger mouseInside = -1;
-	NSInteger currentLevel = 0;
-    NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    NSSize smallSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
-    NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
-    NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, smallSize);
-    NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
-    CGFloat scaleFactor = [self scaleFactor];
-    NSShadow *pageShadow = [self displaysPageBreaks] ? [[[NSShadow alloc] init] autorelease] : nil;
-    CALayer *loupeLayer = [CALayer layer];
-    NSAutoreleasePool *pool = nil;
-    
-    [pageShadow setShadowColor:[NSColor blackColor]];
-    
-    [loupeLayer setBackgroundColor:[[self backgroundColor] CGColor]];
-    [loupeLayer setBorderColor:(CGColorRef)[(id)CGColorCreateGenericGray(0.2, 1.0) autorelease]];
-    [loupeLayer setBorderWidth:3.0];
-    [loupeLayer setCornerRadius:16.0];
-    [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
-                            [NSNull null], @"contents",
-                            [NSNull null], @"position",
-                            [NSNull null], @"bounds",
-                            [NSNull null], @"hidden",
-                            nil]];
-    [loupeLayer setShadowRadius:4.0];
-    [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
-    [loupeLayer setShadowOpacity:0.5];
-    [[self layer] addSublayer:loupeLayer];
-    
-    [theEvent retain];
-    while ([theEvent type] != NSLeftMouseUp) {
-        
-        pool = [[NSAutoreleasePool alloc] init];
-        
-        if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {
-            // set up the currentLevel and magnification
-            NSUInteger modifierFlags = [theEvent modifierFlags];
-            currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
-            
-            magnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
-            if (modifierFlags & NSShiftKeyMask) {
-                magnification = 1.0 / magnification;
-            }
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-            [[self getCursorForEvent:theEvent] set];
-            [pageShadow setShadowBlurRadius:4.0 * magnification];
-            [pageShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
-        } else if ([theEvent type] == NSLeftMouseDragged) {
-            // get Mouse location and check if it is with the view's rect
-            mouseLoc = [theEvent locationInWindow];
-            [lastMouseEvent release];
-            lastMouseEvent = [theEvent retain];
-        }
-        
-        if ([self mouse:[self convertPoint:mouseLoc fromView:nil] inRect:boundsRect]) {
-            if (mouseInside != 1) {
-                mouseInside = 1;
-                [NSCursor hide];
-                loupeLayer.hidden = NO;
-                // stop periodic events for auto scrolling
-                [NSEvent stopPeriodicEvents];
-            }
-            
-            NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
-            
-            // define rect for loupe in view coordinates
-            NSRect loupeRect;
-            if (currentLevel > 2) { 
-                loupeRect = boundsRect;
-            } else {
-                loupeRect = currentLevel == 2 ? largeMagRect : smallMagRect;
-                loupeRect.origin = SKAddPoints(loupeRect.origin, mouseLocSelf);
-                loupeRect = NSIntegralRect(loupeRect);
-            }
-            
-            NSRect imageRect = {NSZeroPoint, loupeRect.size};
-            NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
-            
-            [image lockFocus];
-            
-            [[NSBezierPath bezierPathWithRoundedRect:imageRect
-                                             xRadius:[loupeLayer cornerRadius]
-                                             yRadius:[loupeLayer cornerRadius]] setClip];
-            
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            
-            if (currentLevel > 2)
-                [transform translateXBy:mouseLoc.x yBy:mouseLoc.y];
-            else
-                [transform translateXBy:0.5 * NSWidth(loupeRect) yBy:0.5 * NSHeight(loupeRect)];
-            [transform scaleBy:magnification];
-            [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
-            
-            for (PDFPage *page in [self visiblePages]) {
-                NSRect boxBounds = [page boundsForBox:[self displayBox]];
-                NSRect boxRect = [self convertRect:boxBounds fromPage:page];
-                NSPoint boxLoc = boxRect.origin;
-                
-                boxRect.origin = [transform transformPoint:boxRect.origin];
-                boxRect.size = [transform transformSize:boxRect.size];
-                boxRect = NSOffsetRect(NSInsetRect(boxRect, -[pageShadow shadowBlurRadius], -[pageShadow shadowBlurRadius]), [pageShadow shadowOffset].width, [pageShadow shadowOffset].height);
-                
-                // only draw the page when there is something to draw
-                if (NSIntersectsRect(imageRect, boxRect) == NO)
-                    continue;
-                
-                [NSGraphicsContext saveGraphicsState];
-                
-                NSAffineTransform *pageTransform = [transform copy];
-                [pageTransform translateXBy:boxLoc.x yBy:boxLoc.y];
-                [pageTransform scaleBy:scaleFactor];
-                [pageTransform concat];
-                [pageTransform release];
-                
-                // draw page background
-                [NSGraphicsContext saveGraphicsState];
-                [[NSColor whiteColor] set];
-                [pageShadow set];
-                [page transformContextForBox:[self displayBox]];
-                NSRectFill(boxBounds);
-                [NSGraphicsContext restoreGraphicsState];
-                
-                // draw page contents
-                [self drawPage:page];
-                
-                if (readingBar) {
-                    [NSGraphicsContext saveGraphicsState];
-                    [page transformContextForBox:[self displayBox]];
-                    [readingBar drawForPage:page withBox:[self displayBox]];
-                    [NSGraphicsContext restoreGraphicsState];
-                }
-                
-                [NSGraphicsContext restoreGraphicsState];
-            }
-            [image unlockFocus];
-            
-            [loupeLayer setContents:image];
-            [loupeLayer setFrame:NSRectToCGRect(loupeRect)];
-            [image release];
-            
-        } else { // mouse is not in the rect
-            // show cursor 
-            if (mouseInside == 1) {
-                mouseInside = 0;
-                [NSCursor unhide];
-                loupeLayer.hidden = YES;
-                // start periodic events for auto scrolling
-                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
-            }
-            if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
-                [documentView autoscroll:lastMouseEvent];
-        }
-        [theEvent release];
-        theEvent = [[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask] retain];
-        
-        [pool drain];
-        pool = nil;
-    }
-    
-    if (mouseInside == 1)
-        [NSEvent stopPeriodicEvents];
-    
-    [loupeLayer removeFromSuperlayer];
-    
-    magnification = 0.0;
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-	
-	[NSCursor unhide];
+    [NSCursor unhide];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
     [theEvent release];
