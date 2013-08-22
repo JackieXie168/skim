@@ -4008,6 +4008,7 @@ enum {
         [[self window] enableFlushWindow];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
+	[documentView setPostsBoundsChangedNotifications:postNotification];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
@@ -4022,7 +4023,6 @@ enum {
     NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
     NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
-	BOOL postNotification = [documentView postsBoundsChangedNotifications];
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSSize smallSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
     NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
@@ -4189,7 +4189,6 @@ enum {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
 	[NSCursor unhide];
-	[documentView setPostsBoundsChangedNotifications:postNotification];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
     [theEvent release];
