@@ -3947,9 +3947,12 @@ enum {
             if (loupeLayer) {
                 [aShadow setShadowBlurRadius:4.0 * magnification];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
-            } else if (currentLevel > 2) {
-                [[self window] restoreCachedImage];
-                [[self window] cacheImageInRect:visibleRect];
+            } else {
+                [[self window] displayIfNeeded];
+                if (currentLevel > 2) {
+                    [[self window] restoreCachedImage];
+                    [[self window] cacheImageInRect:visibleRect];
+                }
             }
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
