@@ -3883,7 +3883,7 @@ enum {
 	NSRect originalBounds = [documentView bounds];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
     NSRect magBounds, magRect, outlineRect;
-    BOOL mouseInside = NO;
+    NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
     NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNotification = [documentView postsBoundsChangedNotifications];
@@ -3926,11 +3926,13 @@ enum {
         }
         
         if ([self mouse:mouseLoc inRect:visibleRect]) {
-            if (mouseInside == NO) {
-                mouseInside = YES;
+            if (mouseInside != 1) {
+                mouseInside = 1;
                 [NSCursor hide];
                 // make sure we flush the complete drawing to avoid flickering
                 [[self window] disableFlushWindow];
+                // stop periodic events for auto scrolling
+                [NSEvent stopPeriodicEvents];
             }
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
@@ -3976,13 +3978,15 @@ enum {
             
         } else { // mouse is not in the rect
             // show cursor 
-            if (mouseInside) {
-                mouseInside = NO;
+            if (mouseInside == 1) {
+                mouseInside = 0;
                 [NSCursor unhide];
                 // restore the cached image in order to clear the rect
                 [[self window] restoreCachedImage];
                 [[self window] enableFlushWindow];
                 [[self window] flushWindowIfNeeded];
+                // start periodic events for auto scrolling
+                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
                 [documentView autoscroll:lastMouseEvent];
@@ -3994,12 +3998,15 @@ enum {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask];
 	}
     
+    if (mouseInside == 1)
+        [NSEvent stopPeriodicEvents];
+    
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
     
 	[[self window] restoreCachedImage];
-    if (mouseInside)
+    if (mouseInside == 1)
         [[self window] enableFlushWindow];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
@@ -4015,7 +4022,7 @@ enum {
     NSScrollView *scrollView = [self scrollView];
     NSView *documentView = [scrollView documentView];
     NSRect boundsRect = [self bounds];
-    BOOL mouseInside = NO;
+    NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
     NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNotification = [documentView postsBoundsChangedNotifications];
@@ -4072,10 +4079,12 @@ enum {
         }
         
         if ([self mouse:[self convertPoint:mouseLoc fromView:nil] inRect:boundsRect]) {
-            if (mouseInside == NO) {
-                mouseInside = YES;
+            if (mouseInside != 1) {
+                mouseInside = 1;
                 [NSCursor hide];
                 loupeLayer.hidden = NO;
+                // stop periodic events for auto scrolling
+                [NSEvent stopPeriodicEvents];
             }
             
             NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
@@ -4157,10 +4166,12 @@ enum {
             
         } else { // mouse is not in the rect
             // show cursor 
-            if (mouseInside) {
-                mouseInside = NO;
+            if (mouseInside == 1) {
+                mouseInside = 0;
                 [NSCursor unhide];
                 loupeLayer.hidden = YES;
+                // stop periodic events for auto scrolling
+                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
                 [documentView autoscroll:lastMouseEvent];
@@ -4171,6 +4182,9 @@ enum {
         [pool drain];
         pool = nil;
     }
+    
+    if (mouseInside == 1)
+        [NSEvent stopPeriodicEvents];
     
     [loupeLayer removeFromSuperlayer];
     
