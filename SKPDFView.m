@@ -3899,8 +3899,6 @@ enum {
     [aShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
     [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
-    [documentView setPostsBoundsChangedNotifications: NO];
-	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
     
     while ([theEvent type] != NSLeftMouseUp) {
@@ -4010,7 +4008,6 @@ enum {
         [[self window] enableFlushWindow];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
-	[documentView setPostsBoundsChangedNotifications:postNotification];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
