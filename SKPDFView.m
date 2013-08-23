@@ -3268,8 +3268,14 @@ enum {
         [layer setLineJoin:kCALineJoinRound];
         [layer setMasksToBounds:YES];
         if (pathShadow) {
-            [layer setShadowRadius:[pathShadow shadowBlurRadius]];
-            [layer setShadowOffset:NSSizeToCGSize([pathShadow shadowOffset])];
+            CGFloat radius = [pathShadow shadowBlurRadius] / [self scaleFactor];
+            [layer setShadowRadius:radius];
+            switch ([page rotation]) {
+                case 0:   [layer setShadowOffset:CGSizeMake(0.0, -radius)]; break;
+                case 90:  [layer setShadowOffset:CGSizeMake(radius, 0.0)]; break;
+                case 180: [layer setShadowOffset:CGSizeMake(0.0, radius)]; break;
+                case 270: [layer setShadowOffset:CGSizeMake(-radius, 0.0)]; break;
+            }
             [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
             [layer setShadowOpacity:1.0];
         }
