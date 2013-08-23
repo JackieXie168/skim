@@ -3900,6 +3900,7 @@ enum {
         [loupeLayer setBorderColor:[color CGColor]];
         [loupeLayer setBorderWidth:3.0];
         [loupeLayer setCornerRadius:16.0];
+        [loupeLayer setMasksToBounds:YES];
         [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
                                 [NSNull null], @"contents",
                                 [NSNull null], @"position",
@@ -3993,14 +3994,9 @@ enum {
                 NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
                 NSRect imageRect = {NSZeroPoint, magRect.size};
                 NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
+                NSAffineTransform *transform = [NSAffineTransform transform];
                 
                 [image lockFocus];
-                
-                [[NSBezierPath bezierPathWithRoundedRect:imageRect
-                                                 xRadius:[loupeLayer cornerRadius]
-                                                 yRadius:[loupeLayer cornerRadius]] setClip];
-                
-                NSAffineTransform *transform = [NSAffineTransform transform];
                 
                 if (currentLevel > 2)
                     [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
