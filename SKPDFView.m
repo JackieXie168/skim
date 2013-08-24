@@ -4016,9 +4016,9 @@ enum {
                     NSRect boxRect = [self convertRect:boxBounds fromPage:page];
                     NSPoint boxLoc = boxRect.origin;
                     
-                    boxRect.origin = [transform transformPoint:boxRect.origin];
-                    boxRect.size = [transform transformSize:boxRect.size];
-                    boxRect = NSOffsetRect(NSInsetRect(boxRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), [aShadow shadowOffset].width, [aShadow shadowOffset].height);
+                    boxRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(boxRect)], [transform transformPoint:SKTopRightPoint(boxRect)]);
+                    if (aShadow)
+                        boxRect = NSOffsetRect(NSInsetRect(boxRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), [aShadow shadowOffset].width, [aShadow shadowOffset].height);
                     
                     // only draw the page when there is something to draw
                     if (NSIntersectsRect(imageRect, boxRect) == NO)
