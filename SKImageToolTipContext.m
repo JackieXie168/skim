@@ -109,23 +109,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect sourceRect = NSZeroRect;
     PDFSelection *selection = [page selectionForRect:bounds];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    
-    switch ([page rotation]) {
-        case 0:
-            [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-            break;
-        case 90:
-            [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)];
-            break;
-        case 180:
-            [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)];
-            break;
-        case 270:
-            [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)];
-            break;
-    }
-    [transform rotateByDegrees:-[page rotation]];
+    NSAffineTransform *transform = [page affineTransformForBox:kPDFDisplayBoxCropBox];
     
     sourceRect.size.width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
     sourceRect.size.height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey];

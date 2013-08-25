@@ -261,23 +261,11 @@ static BOOL usesSequentialPageNumbering = NO;
     if (NSIsEmptyRect(rect))
         return nil;
     
-    NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    
-    if ([self rotation] || NSEqualPoints(bounds.origin, NSZeroPoint) == NO) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        switch ([self rotation]) {
-            case 0:  [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
-            case 90:  [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)]; break;
-            case 180: [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)]; break;
-            case 270: [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)]; break;
-        }
-        [transform rotateByDegrees:-[self rotation]];
-        rect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
-    }
-    
     PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
     PDFPage *page = [pdfDoc pageAtIndex:0];
+    NSAffineTransform *transform = [self affineTransformForBox:kPDFDisplayBoxMediaBox];
     
+    rect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
@@ -299,15 +287,7 @@ static BOOL usesSequentialPageNumbering = NO;
     if (NSIsEmptyRect(rect))
         return nil;
     
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    switch ([self rotation]) {
-        case 0:   [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
-        case 90:  [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)]; break;
-        case 180: [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)]; break;
-        case 270: [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)]; break;
-    }
-    [transform rotateByDegrees:-[self rotation]];
-    
+    NSAffineTransform *transform = [self affineTransformForBox:box];
     NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     NSRect targetRect = {NSZeroPoint, sourceRect.size};
     
@@ -371,6 +351,19 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (BOOL)isEditable {
     return NO;
+}
+
+- (NSAffineTransform *)affineTransformForBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform rotateByDegrees:-[self rotation]];
+    switch ([self rotation]) {
+        case 0:   [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
+        case 90:  [transform translateXBy:-NSMaxX(bounds) yBy:-NSMinY(bounds)]; break;
+        case 180: [transform translateXBy:-NSMaxX(bounds) yBy:-NSMaxY(bounds)]; break;
+        case 270: [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)]; break;
+    }
+    return transform;
 }
 
 #pragma mark Scripting support
