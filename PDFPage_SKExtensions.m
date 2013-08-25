@@ -261,13 +261,15 @@ static BOOL usesSequentialPageNumbering = NO;
     if (NSIsEmptyRect(rect))
         return nil;
     
-    if ([self rotation]) {
+    NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    
+    if ([self rotation] || NSEqualPoints(bounds.origin, NSZeroPoint) == NO) {
         NSAffineTransform *transform = [NSAffineTransform transform];
-        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
         switch ([self rotation]) {
-            case 90:  [transform translateXBy:0.0 yBy:NSWidth(bounds)]; break;
-            case 180: [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)]; break;
-            case 270: [transform translateXBy:NSHeight(bounds) yBy:0.0]; break;
+            case 0:  [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
+            case 90:  [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)]; break;
+            case 180: [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)]; break;
+            case 270: [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)]; break;
         }
         [transform rotateByDegrees:-[self rotation]];
         rect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
