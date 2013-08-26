@@ -3996,6 +3996,7 @@ enum {
             }
             
             if (loupeLayer) {
+                magRect = [self convertRect:magRect fromView:nil];
                 
                 NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
                 NSRect imageRect = {NSZeroPoint, magRect.size};
@@ -4004,10 +4005,7 @@ enum {
                 
                 [image lockFocus];
                 
-                if (currentLevel > 2)
-                    [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
-                else
-                    [transform translateXBy:0.5 * NSWidth(magRect) yBy:0.5 * NSHeight(magRect)];
+                [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
                 [transform scaleBy:magnification];
                 [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
                 
@@ -4055,7 +4053,7 @@ enum {
                 [image unlockFocus];
                 
                 [loupeLayer setContents:image];
-                [loupeLayer setFrame:NSRectToCGRect([self convertRect:magRect fromView:nil])];
+                [loupeLayer setFrame:NSRectToCGRect(magRect)];
                 [image release];
                 
             } else {
