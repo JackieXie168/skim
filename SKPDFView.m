@@ -4009,15 +4009,17 @@ enum {
                 [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
                 [transform scaleBy:magnification];
                 [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
+                [transform concat];
+                
+                imageRect = NSInsetRect(imageRect, loupeLayer.borderWidth, loupeLayer.borderWidth);
+                if (aShadow)
+                    imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
+                [transform invert];
+                imageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(imageRect)], [transform transformPoint:SKTopRightPoint(imageRect)]);
                 
                 for (PDFPage *page in [self visiblePages]) {
                     NSRect boxBounds = [page boundsForBox:[self displayBox]];
                     NSRect boxRect = [self convertRect:boxBounds fromPage:page];
-                    NSPoint boxLoc = boxRect.origin;
-                    
-                    boxRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(boxRect)], [transform transformPoint:SKTopRightPoint(boxRect)]);
-                    if (aShadow)
-                        boxRect = NSOffsetRect(NSInsetRect(boxRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), [aShadow shadowOffset].width, [aShadow shadowOffset].height);
                     
                     // only draw the page when there is something to draw
                     if (NSIntersectsRect(imageRect, boxRect) == NO)
@@ -4025,11 +4027,10 @@ enum {
                     
                     [NSGraphicsContext saveGraphicsState];
                     
-                    NSAffineTransform *pageTransform = [transform copy];
-                    [pageTransform translateXBy:boxLoc.x yBy:boxLoc.y];
-                    [pageTransform scaleBy:[self scaleFactor]];
-                    [pageTransform concat];
-                    [pageTransform release];
+                    transform = [NSAffineTransform transform];
+                    [transform translateXBy:NSMinX(boxRect) yBy:NSMinY(boxRect)];
+                    [transform scaleBy:[self scaleFactor]];
+                    [transform concat];
                     
                     // draw page background
                     [NSGraphicsContext saveGraphicsState];
