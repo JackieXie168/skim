@@ -3882,6 +3882,7 @@ enum {
     NSScrollView *scrollView = [self scrollView];
     NSView *documentView = [scrollView documentView];
     NSView *clipView = [scrollView contentView];
+    NSWindow *window = [self window];
 	NSRect originalBounds = [documentView bounds];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
     NSRect magRect;
@@ -3927,7 +3928,7 @@ enum {
         
         [documentView setPostsBoundsChangedNotifications:NO];
         
-        [[self window] discardCachedImage]; // make sure not to use the cached image
+        [window discardCachedImage]; // make sure not to use the cached image
         
         aShadow = [[[NSShadow alloc] init] autorelease];
         [aShadow setShadowBlurRadius:4.0];
@@ -3955,10 +3956,10 @@ enum {
                 [aShadow setShadowBlurRadius:4.0 * magnification];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
             } else {
-                [[self window] displayIfNeeded];
+                [window displayIfNeeded];
                 if (currentLevel > 2) {
-                    [[self window] restoreCachedImage];
-                    [[self window] cacheImageInRect:visibleRect];
+                    [window restoreCachedImage];
+                    [window cacheImageInRect:visibleRect];
                 }
             }
         } else if ([theEvent type] == NSLeftMouseDragged) {
@@ -3979,7 +3980,7 @@ enum {
                     [loupeLayer setHidden:NO];
                 } else {
                     // make sure we flush the complete drawing to avoid flickering
-                    [[self window] disableFlushWindow];
+                    [window disableFlushWindow];
                 }
             }
             
@@ -3991,8 +3992,8 @@ enum {
                 magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
                 magRect = NSIntegralRect(magRect);
                 // restore the cached image in order to clear the rect
-                [[self window] restoreCachedImage];
-                [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
+                [window restoreCachedImage];
+                [window cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
             }
             
             if (loupeLayer) {
@@ -4087,9 +4088,9 @@ enum {
                 [path stroke];
                 [clipView unlockFocus];
                 
-                [[self window] enableFlushWindow];
-                [[self window] flushWindowIfNeeded];
-                [[self window] disableFlushWindow];
+                [window enableFlushWindow];
+                [window flushWindowIfNeeded];
+                [window disableFlushWindow];
                 
             }
             
@@ -4105,24 +4106,24 @@ enum {
                     [loupeLayer setHidden:YES];
                 } else {
                     // restore the cached image in order to clear the rect
-                    [[self window] restoreCachedImage];
-                    [[self window] enableFlushWindow];
-                    [[self window] flushWindowIfNeeded];
+                    [window restoreCachedImage];
+                    [window enableFlushWindow];
+                    [window flushWindowIfNeeded];
                 }
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
                 [documentView autoscroll:lastMouseEvent];
             if (loupeLayer == nil) {
                 if (currentLevel > 2)
-                    [[self window] cacheImageInRect:visibleRect];
+                    [window cacheImageInRect:visibleRect];
                 else
-                    [[self window] discardCachedImage];
+                    [window discardCachedImage];
             }
             
         }
         
         [theEvent release];
-        theEvent = [[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask] retain];
+        theEvent = [[window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask] retain];
         
         [pool drain];
         pool = nil;
@@ -4137,10 +4138,10 @@ enum {
     if (loupeLayer) {
         [loupeLayer removeFromSuperlayer];
     } else {
-        [[self window] restoreCachedImage];
+        [window restoreCachedImage];
         if (mouseInside == 1)
-            [[self window] enableFlushWindow];
-        [[self window] flushWindowIfNeeded];
+            [window enableFlushWindow];
+        [window flushWindowIfNeeded];
         [documentView setPostsBoundsChangedNotifications:postNotification];
 	}
     
