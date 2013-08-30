@@ -51,7 +51,7 @@
 
 @implementation PDFView (SKExtensions)
 
-@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange;
+@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages;
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {
     NSScreen *screen = [[view window] screen];
@@ -144,6 +144,16 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         }
     }
     return range;
+}
+
+- (NSArray *)displayedPages {
+    NSMutableArray *displayedPages = [NSMutableArray array];
+    PDFDocument *pdfDoc = [self document];
+    NSRange range = [self displayedPageIndexRange];
+    NSUInteger i;
+    for (i = range.location; i < NSMaxRange(range); i++)
+        [displayedPages addObject:[pdfDoc pageAtIndex:i]];
+    return displayedPages;
 }
 
 @end
