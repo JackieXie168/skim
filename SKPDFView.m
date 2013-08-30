@@ -4018,7 +4018,17 @@ enum {
                 [transform invert];
                 imageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(imageRect)], [transform transformPoint:SKTopRightPoint(imageRect)]);
                 
-                for (PDFPage *page in [self visiblePages]) {
+                NSArray *pages = [self visiblePages];
+                if (magnification < 1.0) {
+                    NSMutableArray *displayedPages = [NSMutableArray array];
+                    NSRange range = [self displayedPageIndexRange];
+                    NSUInteger i;
+                    for (i = range.location; i < NSMaxRange(range); i++)
+                        [displayedPages addObject:[[self document] pageAtIndex:i]];
+                    pages = displayedPages;
+                }
+                
+                for (PDFPage *page in pages) {
                     NSRect boxBounds = [page boundsForBox:[self displayBox]];
                     NSRect boxRect = [self convertRect:boxBounds fromPage:page];
                     
