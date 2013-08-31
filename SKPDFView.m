@@ -4042,7 +4042,10 @@ enum {
                     [NSGraphicsContext restoreGraphicsState];
                     
                     // draw page contents
+                    [NSGraphicsContext saveGraphicsState];
+                    [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
                     [self drawPage:page];
+                    [NSGraphicsContext restoreGraphicsState];
                     
                     if (readingBar) {
                         [NSGraphicsContext saveGraphicsState];
