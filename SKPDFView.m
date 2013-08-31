@@ -3971,10 +3971,11 @@ enum {
         if ([self mouse:mouseLoc inRect:visibleRect]) {
             
             if (mouseInside != 1) {
+                // stop periodic events for auto scrolling
+                if (mouseInside == 0)
+                    [NSEvent stopPeriodicEvents];
                 mouseInside = 1;
                 [NSCursor hide];
-                // stop periodic events for auto scrolling
-                [NSEvent stopPeriodicEvents];
                 if (loupeLayer) {
                     [loupeLayer setHidden:NO];
                 } else {
