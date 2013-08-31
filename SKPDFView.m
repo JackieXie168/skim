@@ -3881,10 +3881,9 @@ enum {
 	NSEvent *lastMouseEvent = [theEvent retain];
     NSScrollView *scrollView = [self scrollView];
     NSView *documentView = [scrollView documentView];
-    NSView *clipView = [scrollView contentView];
     NSWindow *window = [self window];
 	NSRect originalBounds = [documentView bounds];
-    NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
+    NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
     NSRect magRect;
     NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
@@ -4074,25 +4073,25 @@ enum {
                                        NSMinY(magBounds) + (NSMinY(originalBounds) - NSMinY(magBounds)) / magnification, 
                                        NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
                 
-                [clipView lockFocus];
-                outlineRect = [clipView convertRect:magRect fromView:nil];
+                [documentView lockFocus];
+                outlineRect = [documentView convertRect:magRect fromView:nil];
                 [aShadow set];
                 [color set];
                 path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
                 [path fill];
-                [clipView unlockFocus];
+                [documentView unlockFocus];
                 
                 [documentView setBounds:magBounds];
                 [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
                 [documentView setBounds:originalBounds];
                 
-                [clipView lockFocus];
+                [documentView lockFocus];
                 outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
                 [color set];
                 path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
                 [path setLineWidth:3.0];
                 [path stroke];
-                [clipView unlockFocus];
+                [documentView unlockFocus];
                 
                 [window enableFlushWindow];
                 [window flushWindowIfNeeded];
