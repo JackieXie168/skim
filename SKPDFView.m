@@ -3883,7 +3883,7 @@ enum {
     NSView *documentView = [scrollView documentView];
     NSWindow *window = [self window];
 	NSRect originalBounds = [documentView bounds];
-    NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
+    NSRect visibleRect = [self convertRect:[self visibleContentRect] toView: nil];
     NSRect magRect;
     NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
