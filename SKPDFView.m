@@ -3281,7 +3281,7 @@ enum {
         }
         [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSHeight(boxBounds))];
         [layer setPosition:CGPointZero];
-        [layer setBounds:boxBounds];
+        [layer setBounds:NSRectToCGRect(boxBounds)];
         // transform so that the path is in page coordinates
         CGAffineTransform t = CGAffineTransformMakeTranslation(boxLoc.x, boxLoc.y);
         t = CGAffineTransformScale(t, [self scaleFactor], [self scaleFactor]);
