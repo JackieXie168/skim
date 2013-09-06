@@ -3279,19 +3279,26 @@ enum {
             [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
             [layer setShadowOpacity:1.0];
         }
-        [layer setAnchorPoint:CGPointMake(-NSMinX(boxBounds) / NSWidth(boxBounds), -NSMinY(boxBounds) / NSHeight(boxBounds))];
-        [layer setPosition:CGPointZero];
+        [layer setAnchorPoint:CGPointZero];
+        [layer setPosition:NSPointToCGPoint(boxLoc)];
         [layer setBounds:NSRectToCGRect(boxBounds)];
         // transform so that the path is in page coordinates
-        CGAffineTransform t = CGAffineTransformMakeTranslation(boxLoc.x, boxLoc.y);
-        t = CGAffineTransformScale(t, [self scaleFactor], [self scaleFactor]);
-        t = CGAffineTransformRotate(t, -M_PI_2 * [page rotation] / 90.0);
+        CGAffineTransform t = CGAffineTransformScale(t, [self scaleFactor], [self scaleFactor]);
         switch ([page rotation]) {
-            case 0:   t = CGAffineTransformTranslate(t, -NSMinX(boxBounds), -NSMinY(boxBounds)); break;
-            case 90:  t = CGAffineTransformTranslate(t, -NSMaxX(boxBounds), -NSMinY(boxBounds)); break;
-            case 180: t = CGAffineTransformTranslate(t, -NSMaxX(boxBounds), -NSMaxY(boxBounds)); break;
-            case 270: t = CGAffineTransformTranslate(t, -NSMinX(boxBounds), -NSMaxY(boxBounds)); break;
-            default: break;
+            case 90:
+                t = CGAffineTransformRotate(t, -M_PI_2);
+                t = CGAffineTransformTranslate(t, -NSWidth(boxBounds), 0.0);
+                break;
+            case 180:
+                t = CGAffineTransformRotate(t, -M_PI);
+                t = CGAffineTransformTranslate(t, -NSWidth(boxBounds), -NSHeight(boxBounds));
+                break;
+            case 270:
+                t = CGAffineTransformRotate(t, -3.0 * M_PI_2);
+                t = CGAffineTransformTranslate(t, 0.0, -NSHeight(boxBounds));
+                break;
+            default:
+                break;
         }
         [layer setAffineTransform:t];
         [[self layer] addSublayer:layer];
