@@ -3258,7 +3258,6 @@ enum {
     
     if ([self wantsLayer]) {
         NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
-        NSPoint boxLoc = [self convertRect:boxBounds fromPage:page].origin;
         layer = [CAShapeLayer layer];
         [layer setStrokeColor:[pathColor CGColor]];
         [layer setFillColor:NULL];
@@ -3279,9 +3278,9 @@ enum {
             [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
             [layer setShadowOpacity:1.0];
         }
-        [layer setAnchorPoint:CGPointZero];
-        [layer setPosition:NSPointToCGPoint(boxLoc)];
         [layer setBounds:NSRectToCGRect(boxBounds)];
+        [layer setAnchorPoint:CGPointZero];
+        [layer setPosition:NSPointToCGPoint([self convertRect:boxBounds fromPage:page].origin)];
         // transform so that the path is in page coordinates
         CGAffineTransform t = CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]);
         switch ([page rotation]) {
