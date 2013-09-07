@@ -3320,16 +3320,16 @@ enum {
         
             [window restoreCachedImage];
             
-            [[self documentView] lockFocus];
-            [NSGraphicsContext saveGraphicsState];
-            [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-            [self transformDocumentViewContextForPage:page];
-            [pathColor setStroke];
-            [pathShadow set];
-            [bezierPath stroke];
-            [NSGraphicsContext restoreGraphicsState];
-            [[self documentView] unlockFocus];
-            
+            if ([[self documentView] lockFocusIfCanDraw]) {
+                [NSGraphicsContext saveGraphicsState];
+                [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
+                [self transformDocumentViewContextForPage:page];
+                [pathColor setStroke];
+                [pathShadow set];
+                [bezierPath stroke];
+                [NSGraphicsContext restoreGraphicsState];
+                [[self documentView] unlockFocus];
+            }
             [window flushWindow];
             
         }
@@ -3791,11 +3791,12 @@ enum {
             
             [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
             
-            [[self documentView] lockFocus];
-            [[NSColor blackColor] set];
-            [NSBezierPath setDefaultLineWidth:1.0];
-            [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
-            [[self documentView] unlockFocus];
+            if ([[self documentView] lockFocusIfCanDraw]) {;
+                [[NSColor blackColor] set];
+                [NSBezierPath setDefaultLineWidth:1.0];
+                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
+                [[self documentView] unlockFocus];
+            }
             [[self window] enableFlushWindow];
             [[self window] flushWindow];
             
@@ -4067,25 +4068,29 @@ enum {
                                        NSMinY(magBounds) + (NSMinY(originalBounds) - NSMinY(magBounds)) / magnification, 
                                        NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
                 
-                [documentView lockFocus];
                 outlineRect = [documentView convertRect:magRect fromView:nil];
-                [aShadow set];
-                [color set];
-                path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
-                [path fill];
-                [documentView unlockFocus];
+                if ([documentView lockFocusIfCanDraw]) {
+                    [aShadow set];
+                    [color set];
+                    path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
+                    [path fill];
+                    [documentView unlockFocus];
+                }
                 
-                [documentView setBounds:magBounds];
-                [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
-                [documentView setBounds:originalBounds];
+                if ([documentView canDraw]) {
+                    [documentView setBounds:magBounds];
+                    [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
+                    [documentView setBounds:originalBounds];
+                }
                 
-                [documentView lockFocus];
                 outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
-                [color set];
-                path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
-                [path setLineWidth:3.0];
-                [path stroke];
-                [documentView unlockFocus];
+                if ([documentView lockFocusIfCanDraw]) {
+                    [color set];
+                    path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
+                    [path setLineWidth:3.0];
+                    [path stroke];
+                    [documentView unlockFocus];
+                }
                 
                 [window enableFlushWindow];
                 [window flushWindowIfNeeded];
