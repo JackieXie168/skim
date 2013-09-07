@@ -3280,16 +3280,9 @@ enum {
         }
         [layer setBounds:NSRectToCGRect(boxBounds)];
         [layer setAnchorPoint:CGPointZero];
-        [layer setPosition:NSPointToCGPoint([self convertRect:boxBounds fromPage:page].origin)];
+        [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
         // transform so that the path is in page coordinates
-        CGAffineTransform t = CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]);
-        switch ([page rotation]) {
-            case 90:  t = CGAffineTransformTranslate(CGAffineTransformRotate(t, -M_PI_2), -NSWidth(boxBounds), 0.0); break;
-            case 180: t = CGAffineTransformTranslate(CGAffineTransformRotate(t, -M_PI), -NSWidth(boxBounds), -NSHeight(boxBounds)); break;
-            case 270: t = CGAffineTransformTranslate(CGAffineTransformRotate(t, -3.0 * M_PI_2), 0.0, -NSHeight(boxBounds)); break;
-            default: break;
-        }
-        [layer setAffineTransform:t];
+        [layer setAffineTransform:CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0)];
         [[self layer] addSublayer:layer];
     }
     
