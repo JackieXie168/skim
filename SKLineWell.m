@@ -575,10 +575,11 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)drawDragHighlight {
     [[self window] cacheImageInRect:[self convertRect:[self bounds] toView:nil]];
-    [self lockFocus];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
-    NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
-    [self unlockFocus];
+    if ([self lockFocusIfCanDraw]) {
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
+        [self unlockFocus];
+    }
     [[self window] flushWindow];
 }
 
