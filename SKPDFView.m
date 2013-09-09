@@ -3258,6 +3258,7 @@ enum {
     
     if ([self wantsLayer]) {
         NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
+        CGAffineTransform t = CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0);
         layer = [CAShapeLayer layer];
         [layer setStrokeColor:[pathColor CGColor]];
         [layer setFillColor:NULL];
@@ -3267,22 +3268,16 @@ enum {
         [layer setLineJoin:kCALineJoinRound];
         [layer setMasksToBounds:YES];
         if (pathShadow) {
-            CGFloat radius = [pathShadow shadowBlurRadius] / [self scaleFactor];
-            [layer setShadowRadius:radius];
-            switch ([page rotation]) {
-                case 0:   [layer setShadowOffset:CGSizeMake(0.0, -radius)]; break;
-                case 90:  [layer setShadowOffset:CGSizeMake(radius, 0.0)]; break;
-                case 180: [layer setShadowOffset:CGSizeMake(0.0, radius)]; break;
-                case 270: [layer setShadowOffset:CGSizeMake(-radius, 0.0)]; break;
-            }
+            [layer setShadowRadius:[pathShadow shadowBlurRadius] / [self scaleFactor]];
+            [layer setShadowOffset:CGSizeApplyAffineTransform(NSSizeToCGSize([pathShadow shadowOffset]), CGAffineTransformInvert(t))];
             [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
             [layer setShadowOpacity:1.0];
         }
+        // transform and place so that the path is in page coordinates
         [layer setBounds:NSRectToCGRect(boxBounds)];
         [layer setAnchorPoint:CGPointZero];
         [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
-        // transform so that the path is in page coordinates
-        [layer setAffineTransform:CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0)];
+        [layer setAffineTransform:t];
         [[self layer] addSublayer:layer];
     }
     
