@@ -3893,7 +3893,6 @@ enum {
                                 [NSNull null], @"contents",
                                 [NSNull null], @"position",
                                 [NSNull null], @"bounds",
-                                [NSNull null], @"hidden",
                                 nil]];
         [loupeLayer setShadowRadius:4.0];
         [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
