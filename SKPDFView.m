@@ -3893,10 +3893,12 @@ enum {
                                 [NSNull null], @"contents",
                                 [NSNull null], @"position",
                                 [NSNull null], @"bounds",
+                                [NSNull null], @"hidden",
                                 nil]];
         [loupeLayer setShadowRadius:4.0];
         [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
         [loupeLayer setShadowOpacity:0.5];
+        [loupeLayer setHidden:YES];
         [[self layer] addSublayer:loupeLayer];
         
         if ([self displaysPageBreaks]) {
