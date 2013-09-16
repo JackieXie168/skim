@@ -4005,6 +4005,7 @@ enum {
                 for (PDFPage *page in (magnification < 1.0 ? [self displayedPages] : [self visiblePages])) {
                     NSRect boxBounds = [page boundsForBox:[self displayBox]];
                     NSRect boxRect = [self convertRect:boxBounds fromPage:page];
+                    NSPoint documentViewOrigin = [self convertPoint:NSZeroPoint fromView:[self documentView]];
                     
                     // only draw the page when there is something to draw
                     if (NSIntersectsRect(imageRect, boxRect) == NO)
@@ -4017,7 +4018,7 @@ enum {
                     [transform scaleBy:[self scaleFactor]];
                     [transform concat];
                     
-                    // draw page background
+                    // draw page background, simulate the private method -drawPagePre:
                     [NSGraphicsContext saveGraphicsState];
                     [[NSColor whiteColor] set];
                     [aShadow set];
@@ -4031,13 +4032,14 @@ enum {
                     [self drawPage:page];
                     [NSGraphicsContext restoreGraphicsState];
                     
-                    if (readingBar) {
-                        [NSGraphicsContext saveGraphicsState];
-                        [page transformContextForBox:[self displayBox]];
-                        [readingBar drawForPage:page withBox:[self displayBox]];
-                        [NSGraphicsContext restoreGraphicsState];
-                    }
+                    [NSGraphicsContext restoreGraphicsState];
                     
+                    // draw page highlights
+                    [NSGraphicsContext saveGraphicsState];
+                    transform = [NSAffineTransform transform];
+                    [transform translateXBy:documentViewOrigin.x yBy:documentViewOrigin.y];
+                    [transform concat];
+                    [self drawPagePost:page];
                     [NSGraphicsContext restoreGraphicsState];
                 }
                 [image unlockFocus];
