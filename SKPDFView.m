@@ -3983,6 +3983,7 @@ enum {
                 magRect = [self convertRect:magRect fromView:nil];
                 
                 NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
+                NSPoint documentViewOrigin = [self convertPoint:NSZeroPoint fromView:[self documentView]];
                 NSRect imageRect = {NSZeroPoint, magRect.size};
                 NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
                 NSAffineTransform *transform = [NSAffineTransform transform];
@@ -4003,35 +4004,27 @@ enum {
                 imageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(imageRect)], [transform transformPoint:SKTopRightPoint(imageRect)]);
                 
                 for (PDFPage *page in (magnification < 1.0 ? [self displayedPages] : [self visiblePages])) {
-                    NSRect boxBounds = [page boundsForBox:[self displayBox]];
-                    NSRect boxRect = [self convertRect:boxBounds fromPage:page];
-                    NSPoint documentViewOrigin = [self convertPoint:NSZeroPoint fromView:[self documentView]];
+                    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
                     
                     // only draw the page when there is something to draw
-                    if (NSIntersectsRect(imageRect, boxRect) == NO)
+                    if (NSIntersectsRect(imageRect, pageRect) == NO)
                         continue;
-                    
-                    [NSGraphicsContext saveGraphicsState];
-                    
-                    transform = [NSAffineTransform transform];
-                    [transform translateXBy:NSMinX(boxRect) yBy:NSMinY(boxRect)];
-                    [transform scaleBy:[self scaleFactor]];
-                    [transform concat];
                     
                     // draw page background, simulate the private method -drawPagePre:
                     [NSGraphicsContext saveGraphicsState];
                     [[NSColor whiteColor] set];
                     [aShadow set];
-                    [page transformContextForBox:[self displayBox]];
-                    NSRectFill(boxBounds);
+                    NSRectFill(pageRect);
                     [NSGraphicsContext restoreGraphicsState];
                     
                     // draw page contents
                     [NSGraphicsContext saveGraphicsState];
+                    transform = [NSAffineTransform transform];
+                    [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
+                    [transform scaleBy:[self scaleFactor]];
+                    [transform concat];
                     [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
                     [self drawPage:page];
-                    [NSGraphicsContext restoreGraphicsState];
-                    
                     [NSGraphicsContext restoreGraphicsState];
                     
                     // draw page highlights
