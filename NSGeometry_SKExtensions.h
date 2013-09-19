@@ -140,6 +140,15 @@ static inline NSRect SKShrinkRect(NSRect rect, CGFloat amount, NSRectEdge edge) 
     return rect;
 }
 
+static inline NSRect SKIntegralRect(NSRect rect) {
+    NSRect r;
+    r.origin.x = ceil(NSMinX(rect));
+    r.origin.y = ceil(NSMinY(rect));
+    r.size.width = floor(NSMaxX(rect)) - NSMinX(r);
+    r.size.height = floor(NSMaxY(rect)) - NSMinY(r);
+    return NSWidth(r) > 0.0 && NSHeight(r) > 0.0 ? r : NSZeroRect;
+}
+
 #pragma mark -
 
 extern NSPoint SKConstrainPointInRect(NSPoint point, NSRect boundary);
