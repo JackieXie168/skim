@@ -3988,23 +3988,23 @@ enum {
                 NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
                 NSAffineTransform *transform = [NSAffineTransform transform];
                 
+                [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
+                [transform scaleBy:magnification];
+                [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
+                
                 [image lockFocus];
                 
                 [[NSBezierPath bezierPathWithRoundedRect:imageRect xRadius:loupeLayer.cornerRadius yRadius:loupeLayer.cornerRadius] setClip];
                 
-                [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
-                [transform scaleBy:magnification];
-                [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
-                [transform concat];
-                
-                imageRect = NSInsetRect(imageRect, loupeLayer.borderWidth, loupeLayer.borderWidth);
                 if (aShadow)
                     imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
-                [transform invert];
-                imageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(imageRect)], [transform transformPoint:SKTopRightPoint(imageRect)]);
                 
                 for (PDFPage *page in (magnification < 1.0 ? [self displayedPages] : [self visiblePages])) {
                     NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+                    NSPoint pageOrigin = pageRect.origin;
+                    NSAffineTransform *pageTransform;
+                    
+                    pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
                     
                     // only draw the page when there is something to draw
                     if (NSIntersectsRect(imageRect, pageRect) == NO)
@@ -4014,24 +4014,26 @@ enum {
                     [NSGraphicsContext saveGraphicsState];
                     [[NSColor whiteColor] set];
                     [aShadow set];
-                    NSRectFill(pageRect);
+                    NSRectFill(SKIntegralRect(pageRect));
                     [NSGraphicsContext restoreGraphicsState];
                     
                     // draw page contents
                     [NSGraphicsContext saveGraphicsState];
-                    transform = [NSAffineTransform transform];
-                    [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
-                    [transform scaleBy:[self scaleFactor]];
-                    [transform concat];
+                    pageTransform = [transform copy];
+                    [pageTransform translateXBy:pageOrigin.x yBy:pageOrigin.y];
+                    [pageTransform scaleBy:[self scaleFactor]];
+                    [pageTransform concat];
+                    [pageTransform release];
                     [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
                     [self drawPage:page];
                     [NSGraphicsContext restoreGraphicsState];
                     
                     // draw page highlights
                     [NSGraphicsContext saveGraphicsState];
-                    transform = [NSAffineTransform transform];
-                    [transform translateXBy:documentViewOrigin.x yBy:documentViewOrigin.y];
-                    [transform concat];
+                    pageTransform = [transform copy];
+                    [pageTransform translateXBy:documentViewOrigin.x yBy:documentViewOrigin.y];
+                    [pageTransform concat];
+                    [pageTransform release];
                     [self drawPagePost:page];
                     [NSGraphicsContext restoreGraphicsState];
                 }
