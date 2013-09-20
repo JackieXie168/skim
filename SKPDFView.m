@@ -3879,14 +3879,18 @@ enum {
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
     CALayer *loupeLayer = nil;
     NSAutoreleasePool *pool = nil;
-    NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
+    NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
+    NSColor *backgroundColor = [self backgroundColor];
     NSShadow *aShadow = nil;
+    
+    if ([backgroundColor alphaComponent] < 1.0)
+        backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
     
     if ([self wantsLayer]) {
         
         loupeLayer = [CALayer layer];
-        [loupeLayer setBackgroundColor:[[self backgroundColor] CGColor]];
-        [loupeLayer setBorderColor:[color CGColor]];
+        [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+        [loupeLayer setBorderColor:[borderColor CGColor]];
         [loupeLayer setBorderWidth:3.0];
         [loupeLayer setCornerRadius:16.0];
         [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -4057,7 +4061,7 @@ enum {
                 outlineRect = [documentView convertRect:magRect fromView:nil];
                 if ([documentView lockFocusIfCanDraw]) {
                     [aShadow set];
-                    [color set];
+                    [backgroundColor set];
                     path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
                     [path fill];
                     [documentView unlockFocus];
@@ -4071,7 +4075,7 @@ enum {
                 
                 outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
                 if ([documentView lockFocusIfCanDraw]) {
-                    [color set];
+                    [borderColor set];
                     path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
                     [path setLineWidth:3.0];
                     [path stroke];
