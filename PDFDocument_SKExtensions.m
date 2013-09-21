@@ -112,77 +112,12 @@
     return pageLabels;
 }
 
-static inline NSRange SKRangeBetweenRanges(NSRange startRange, NSRange endRange) {
-    NSRange r;
-    r.location = NSMaxRange(startRange);
-    r.length = endRange.location - r.location;
-    return r;
-}
-
-static inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
-    NSRange r;
-    if (end > length) {
-        r.location = end - length;
-        r.length = length;
-    } else {
-        r.location = 0;
-        r.length = end;
-    }
-    return r;
-}
-
-static NSArray *fileIDStringsFromData(NSData *pdfData) {
-    if (pdfData == nil)
-        return nil;
-    
-    NSData *firstIDData = nil;
-    NSData *secondIDData = nil;
-    NSRange EOFRange = [pdfData rangeOfData:[NSData dataWithBytes:"%%EOF" length:5] options:NSDataSearchBackwards range:SKMakeRangeFromEnd([pdfData length], 1024UL)];
-    
-    if (EOFRange.location != NSNotFound) {
-        NSRange trailerRange = [pdfData rangeOfData:[NSData dataWithBytes:"trailer" length:7] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(EOFRange.location, 2048UL)];
-        if (trailerRange.location != NSNotFound) {
-            NSRange IDRange = [pdfData rangeOfData:[NSData dataWithBytes:"/ID" length:3] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
-            if (IDRange.location != NSNotFound) {
-                NSRange startArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"[" length:1] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
-                if (startArrayRange.location != NSNotFound) {
-                    NSRange endArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"]" length:1] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
-                    if (endArrayRange.location != NSNotFound) {
-                        NSData *startStringPattern = [NSData dataWithBytes:"<" length:1];
-                        NSData *endStringPattern = [NSData dataWithBytes:">" length:1];
-                        NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(startArrayRange, endArrayRange)];
-                        if (startStringRange.location != NSNotFound) {
-                            NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
-                            if (endStringRange.location != NSNotFound) {
-                                if ((firstIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)])) {
-                                    startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(endStringRange, endArrayRange)];
-                                    if (startStringRange.location != NSNotFound) {
-                                        endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
-                                        if (endStringRange.location != NSNotFound) {
-                                            secondIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (secondIDData)
-        return [NSArray arrayWithObjects:
-                    [[[NSString alloc] initWithData:firstIDData encoding:NSISOLatin1StringEncoding] autorelease],
-                    [[[NSString alloc] initWithData:secondIDData encoding:NSISOLatin1StringEncoding] autorelease], nil];
-    return nil;
-}
-
 - (NSArray *)fileIDStrings:(NSData *)pdfData {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFArrayRef idArray = CGPDFDocumentGetID(doc);
     
     if (idArray == NULL)
-        return fileIDStringsFromData(pdfData);
+        return nil;
     
     NSMutableArray *fileIDStrings = [NSMutableArray array];
     size_t i, iMax = CGPDFArrayGetCount(idArray);
