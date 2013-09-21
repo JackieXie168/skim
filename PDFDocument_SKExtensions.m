@@ -50,7 +50,7 @@
     NSMutableArray *pageLabels = [NSMutableArray array];
     BOOL useSequential = [[self pageClass] usesSequentialPageNumbering];
     if (useSequential == NO) {
-        CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
+        CGPDFDocumentRef doc = [self documentRef];
         CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
         CGPDFDictionaryRef labelsDict = NULL;
         CGPDFArrayRef labelsArray = NULL;
@@ -178,10 +178,7 @@ static NSArray *fileIDStringsFromData(NSData *pdfData) {
 }
 
 - (NSArray *)fileIDStrings:(NSData *)pdfData {
-    if ([self respondsToSelector:@selector(documentRef)] == NO)
-        return fileIDStringsFromData(pdfData);
-    
-    CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
+    CGPDFDocumentRef doc = [self documentRef];
     CGPDFArrayRef idArray = CGPDFDocumentGetID(doc);
     
     if (idArray == NULL)
