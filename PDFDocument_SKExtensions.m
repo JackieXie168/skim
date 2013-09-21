@@ -43,18 +43,13 @@
 #import "NSData_SKExtensions.h"
 
 
-@interface PDFDocument (SKApplePrivateDeclarations)
-- (CGPDFDocumentRef)documentRef;
-@end
-
-
 @implementation PDFDocument (SKExtensions)
 
 - (NSArray *)pageLabels {
     NSUInteger pageCount = [self pageCount];
     NSMutableArray *pageLabels = [NSMutableArray array];
     BOOL useSequential = [[self pageClass] usesSequentialPageNumbering];
-    if (useSequential == NO && [self respondsToSelector:@selector(documentRef)]) {
+    if (useSequential == NO) {
         CGPDFDocumentRef doc = (CGPDFDocumentRef)[self documentRef];
         CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
         CGPDFDictionaryRef labelsDict = NULL;
