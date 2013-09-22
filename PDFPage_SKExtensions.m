@@ -167,7 +167,7 @@ static BOOL usesSequentialPageNumbering = NO;
             thumbnailSize = NSMakeSize(round((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
         else
             thumbnailSize = NSMakeSize(aSize, round((aSize - 2.0 * shadowBlurRadius) * pageSize.height / pageSize.width + 2.0 * shadowBlurRadius));
-        scale = fmin((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
+        scale = fmax((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
     } else {
         thumbnailSize = NSMakeSize(pageSize.width + 2.0 * shadowBlurRadius, pageSize.height + 2.0 * shadowBlurRadius);
     }
@@ -196,10 +196,10 @@ static BOOL usesSequentialPageNumbering = NO;
     
     if (isScaled || hasShadow) {
         NSAffineTransform *transform = [NSAffineTransform transform];
+        if (hasShadow)
+            [transform translateXBy:shadowBlurRadius - shadowOffset.width yBy:shadowBlurRadius - shadowOffset.height];
         if (isScaled)
             [transform scaleBy:scale];
-        if (hasShadow)
-            [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
         [transform concat];
     }
     
