@@ -43,4 +43,5 @@
 @interface PDFDocument (SKExtensions)
 - (NSArray *)pageLabels;
 - (NSArray *)fileIDStrings:(NSData *)pdfData;
+- (NSDictionary *)initialSettings;
 @end
