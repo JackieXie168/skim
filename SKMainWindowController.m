@@ -447,6 +447,18 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [pdfView setFrame:[pdfContentView bounds]];
     [pdfContentView addSubview:pdfView];
     
+    // get the initial display mode from the PDF if present and not overridden by an explicit setup
+    if (hasWindowSetup == NO) {
+        NSDictionary *initialSettings = [[self pdfDocument] initialSettings];
+        if (initialSettings) {
+            NSNumber *number;
+            if ((number = [initialSettings objectForKey:DISPLAYSASBOOK_KEY]))
+                [pdfView setDisplaysAsBook:[number boolValue]];
+            if ((number = [initialSettings objectForKey:DISPLAYMODE_KEY]))
+                [pdfView setDisplayMode:[number integerValue]];
+        }
+    }
+    
     // Go to page?
     NSUInteger pageIndex = NSNotFound;
     if (hasWindowSetup)

@@ -144,4 +144,27 @@
     return fileIDStrings;
 }
 
+- (NSDictionary *)initialSettings {
+    CGPDFDocumentRef doc = [self documentRef];
+    CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
+    const char *pageLayout = NULL;
+    NSMutableDictionary *settings = [NSMutableDictionary dictionary];
+    if (catalog) {
+        if (CGPDFDictionaryGetName(catalog, "PageLayout", &pageLayout)) {
+            if (0 == strcmp(pageLayout, "SinglePage")) {
+                [settings setObject:[NSNumber numberWithInteger:kPDFDisplaySinglePage] forKey:@"displayMode"];
+            } else if (0 == strcmp(pageLayout, "OneColumn")) {
+                [settings setObject:[NSNumber numberWithInteger:kPDFDisplaySinglePageContinuous] forKey:@"displayMode"];
+            } else if (0 == strcmp(pageLayout, "TwoColumnLeft")) {
+                [settings setObject:[NSNumber numberWithInteger:kPDFDisplayTwoUpContinuous] forKey:@"displayMode"];
+                [settings setObject:[NSNumber numberWithBool:NO] forKey:@"displaysAsBook"];
+            } else if (0 == strcmp(pageLayout, "TwoColumnRight")) {
+                [settings setObject:[NSNumber numberWithInteger:kPDFDisplayTwoUpContinuous] forKey:@"displayMode"];
+                [settings setObject:[NSNumber numberWithBool:YES] forKey:@"displaysAsBook"];
+            }
+        }
+    }
+    return [settings count] > 0 ? settings : nil;
+}
+
 @end
