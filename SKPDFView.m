@@ -1325,6 +1325,7 @@ enum {
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
     [item setTarget:self];
+    [item setRepresentedObject:theEvent];
     
     if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
         
@@ -1336,36 +1337,44 @@ enum {
         item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKFreeTextNote];
         [item setTarget:self];
+        [item setRepresentedObject:theEvent];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKAnchoredNote];
         [item setTarget:self];
+        [item setRepresentedObject:theEvent];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKCircleNote];
         [item setTarget:self];
+        [item setRepresentedObject:theEvent];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKSquareNote];
         [item setTarget:self];
+        [item setRepresentedObject:theEvent];
         
         if ([[self currentSelection] hasCharacters]) {
             item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKHighlightNote];
             [item setTarget:self];
+            [item setRepresentedObject:theEvent];
             
             item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKUnderlineNote];
             [item setTarget:self];
+            [item setRepresentedObject:theEvent];
             
             item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKStrikeOutNote];
             [item setTarget:self];
+            [item setRepresentedObject:theEvent];
         }
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKLineNote];
         [item setTarget:self];
+        [item setRepresentedObject:theEvent];
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1703,7 +1712,7 @@ enum {
 #pragma mark Annotation management
 
 - (void)addAnnotation:(id)sender {
-    NSEvent *event = [NSApp currentEvent];
+    NSEvent *event = [sender representedObject] ?: [NSApp currentEvent];
     NSPoint point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
     [self addAnnotationWithType:[sender tag] defaultPoint:point];
 }
@@ -2253,8 +2262,9 @@ enum {
 	}
     if (NSIsEmptyRect(rect)) {
         // First try the current mouse position
-        event = [NSApp currentEvent];
+        event = [sender representedObject] ?: [NSApp currentEvent];
         point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
+        point = [self convertPoint:point fromView:nil];
         page = [self pageForPoint:point nearest:NO];
         if (page == nil) {
             // Get the center
