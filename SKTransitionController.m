@@ -153,6 +153,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @implementation SKTransitionController
 
 @synthesize view, transitionStyle, duration, shouldRestrict, pageTransitions;
+@dynamic hasTransition;
 
 + (NSArray *)transitionFilterNames {
     static NSArray *transitionFilterNames = nil;
@@ -241,6 +242,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     SKDESTROY(filters);
     SKDESTROY(pageTransitions);
     [super dealloc];
+}
+
+- (BOOL)hasTransition {
+    return transitionStyle != SKNoTransition && pageTransitions != nil;
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {

@@ -653,16 +653,14 @@ enum {
 }
 
 - (IBAction)goToNextPage:(id)sender {
-    if (interactionMode == SKPresentationMode && [self canGoToNextPage] && transitionController &&
-        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions]))
+    if (interactionMode == SKPresentationMode && [transitionController hasTransition] && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
-    if (interactionMode == SKPresentationMode && [self canGoToPreviousPage] && transitionController &&
-        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions]))
+    if (interactionMode == SKPresentationMode && [transitionController hasTransition] && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
@@ -1493,8 +1491,7 @@ enum {
 }
 
 - (void)swipeWithEvent:(NSEvent *)theEvent {
-    if (interactionMode == SKPresentationMode && transitionController &&
-        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions])) {
+    if (interactionMode == SKPresentationMode && [transitionController hasTransition]) {
         if ([theEvent deltaX] < 0.0 || [theEvent deltaY] < 0.0) {
             if ([self canGoToNextPage])
                 [self goToNextPage:nil];
