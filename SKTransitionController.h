@@ -86,6 +86,7 @@ typedef NSUInteger SKAnimationTransitionStyle;
 @property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL shouldRestrict;
 @property (nonatomic, copy) NSArray *pageTransitions;
+@property (nonatomic) BOOL hasTransition;
 
 + (NSArray *)transitionFilterNames;
 + (NSArray *)transitionNames;
