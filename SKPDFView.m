@@ -1460,16 +1460,14 @@ enum {
 }
 
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
-    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
-        [super beginGestureWithEvent:theEvent];
+    [super beginGestureWithEvent:theEvent];
     PDFPage *page = [self pageForPoint:[theEvent locationInView:self] nearest:YES];
     gestureRotation = 0.0;
     gesturePageIndex = [(page ?: [self currentPage]) pageIndex];
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
-        [super endGestureWithEvent:theEvent];
+    [super endGestureWithEvent:theEvent];
     gestureRotation = 0.0;
     gesturePageIndex = NSNotFound;
 }
@@ -1486,7 +1484,7 @@ enum {
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && interactionMode != SKPresentationMode && [[SKPDFView superclass] instancesRespondToSelector:_cmd])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && interactionMode != SKPresentationMode)
         [super magnifyWithEvent:theEvent];
 }
 
@@ -1499,7 +1497,7 @@ enum {
             if ([self canGoToPreviousPage])
                 [self goToPreviousPage:nil];
         }
-    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+    } else {
         [super swipeWithEvent:theEvent];
     }
 }
