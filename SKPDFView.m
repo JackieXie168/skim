@@ -164,7 +164,7 @@ enum {
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
-- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent hitAnnotation:(BOOL *)hitAnnotation;
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
@@ -1143,7 +1143,6 @@ enum {
         NSPoint p = [theEvent locationInView:self];
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
-        BOOL hitAnnotation = NO;
         
         if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && area != kPDFLinkArea && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
             if (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT)
@@ -1166,7 +1165,7 @@ enum {
             [self doMagnifyWithEvent:theEvent];
         } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
             [self doEraseAnnotationsWithEvent:theEvent];
-        } else if ([self doSelectAnnotationWithEvent:theEvent hitAnnotation:&hitAnnotation]) {
+        } else if ([self doSelectAnnotationWithEvent:theEvent]) {
             if ([activeAnnotation isLink]) {
                 [self doSelectLinkAnnotationWithEvent:theEvent];
             } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
@@ -3056,7 +3055,7 @@ enum {
     [self editActiveAnnotation:nil];
 }
 
-- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent hitAnnotation:(BOOL *)hitAnnotation {
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = nil;
     NSArray *annotations;
     NSInteger i;
@@ -3065,7 +3064,6 @@ enum {
     
     // Mouse in display view coordinates.
     NSPoint mouseDownOnPage = [theEvent locationInView:self];
-    BOOL mouseDownInAnnotation = NO;
     BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
     
     // Page we're on.
@@ -3075,9 +3073,10 @@ enum {
     pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
     
     if ([activeAnnotation page] == page && editor == nil && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
-        mouseDownInAnnotation = YES;
         newActiveAnnotation = activeAnnotation;
     } else {
+        
+        BOOL mouseDownInAnnotation = NO;
         
         // Hit test for annotation.
         annotations = [page annotations];
@@ -3126,14 +3125,12 @@ enum {
                 NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
                 newActiveAnnotation = activeAnnotation;
-                mouseDownInAnnotation = YES;
             }
         } else if (([newActiveAnnotation isMarkup] || 
                     (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
                    NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
-            mouseDownInAnnotation = YES;
         } else if ((modifiers & NSShiftKeyMask) && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
             PDFAnnotation *newAnnotation = nil;
             if ([activeAnnotation isMarkup]) {
@@ -3168,7 +3165,6 @@ enum {
     if (newActiveAnnotation && newActiveAnnotation != activeAnnotation)
         [self setActiveAnnotation:newActiveAnnotation];
     
-    if (hitAnnotation) *hitAnnotation = mouseDownInAnnotation;
     return newActiveAnnotation != nil;
 }
 
