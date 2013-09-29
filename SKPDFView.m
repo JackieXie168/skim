@@ -1127,7 +1127,7 @@ enum {
         if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSPenPointingDevice) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
-        } else if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
+        } else if (([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)) {
             [super mouseDown:theEvent];
         } else {
             [self goToNextPage:self];
@@ -1153,7 +1153,7 @@ enum {
             [self doDragWithEvent:theEvent];
         } else if (toolMode == SKMoveToolMode) {
             [self setCurrentSelection:nil];                
-            if (area & kPDFLinkArea)
+            if ((area & kPDFLinkArea))
                 [super mouseDown:theEvent];
             else
                 [self doDragWithEvent:theEvent];	
@@ -2830,7 +2830,7 @@ enum {
     draggedPoint->x = floor(draggedPoint->x);
     draggedPoint->y = floor(draggedPoint->y);
     
-    if ([theEvent modifierFlags] & NSShiftKeyMask) {
+    if (([theEvent modifierFlags] & NSShiftKeyMask)) {
         NSPoint *fixedPoint = (resizeHandle & SKMinXEdgeMask) ? &endPoint : &startPoint;
         NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
         CGFloat dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
@@ -2880,21 +2880,21 @@ enum {
             resizeHandle &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
     }
     
-    if ([theEvent modifierFlags] & NSShiftKeyMask) {
+    if (([theEvent modifierFlags] & NSShiftKeyMask)) {
         CGFloat width = NSWidth(newBounds);
         CGFloat height = NSHeight(newBounds);
         
-        if (resizeHandle & SKMaxXEdgeMask)
+        if ((resizeHandle & SKMaxXEdgeMask))
             width = fmax(MIN_NOTE_SIZE, width + relPoint.x);
-        else if (resizeHandle & SKMinXEdgeMask)
+        else if ((resizeHandle & SKMinXEdgeMask))
             width = fmax(MIN_NOTE_SIZE, width - relPoint.x);
-        if (resizeHandle & SKMaxYEdgeMask)
+        if ((resizeHandle & SKMaxYEdgeMask))
             height = fmax(MIN_NOTE_SIZE, height + relPoint.y);
-        else if (resizeHandle & SKMinYEdgeMask)
+        else if ((resizeHandle & SKMinYEdgeMask))
             height = fmax(MIN_NOTE_SIZE, height - relPoint.y);
         
-        if (resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)) {
-            if (resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask))
+        if ((resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask))) {
+            if ((resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask)))
                 width = height = fmax(width, height);
             else
                 height = width;
@@ -2902,14 +2902,14 @@ enum {
             width = height;
         }
         
-        if (resizeHandle & SKMinXEdgeMask) {
+        if ((resizeHandle & SKMinXEdgeMask)) {
             if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
                 width = height = fmax(MIN_NOTE_SIZE, NSMaxX(newBounds) - NSMinX(pageBounds));
         } else {
             if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
                 width = height = fmax(MIN_NOTE_SIZE, NSMaxX(pageBounds) - NSMinX(newBounds));
         }
-        if (resizeHandle & SKMinYEdgeMask) {
+        if ((resizeHandle & SKMinYEdgeMask)) {
             if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
                 width = height = fmax(MIN_NOTE_SIZE, NSMaxY(newBounds) - NSMinY(pageBounds));
         } else {
@@ -2917,22 +2917,22 @@ enum {
                 width = height = fmax(MIN_NOTE_SIZE, NSMaxY(pageBounds) - NSMinY(newBounds));
         }
         
-        if (resizeHandle & SKMinXEdgeMask)
+        if ((resizeHandle & SKMinXEdgeMask))
             newBounds.origin.x = NSMaxX(newBounds) - width;
-        if (resizeHandle & SKMinYEdgeMask)
+        if ((resizeHandle & SKMinYEdgeMask))
             newBounds.origin.y = NSMaxY(newBounds) - height;
         newBounds.size.width = width;
         newBounds.size.height = height;
        
     } else {
-        if (resizeHandle & SKMaxXEdgeMask) {
+        if ((resizeHandle & SKMaxXEdgeMask)) {
             newBounds.size.width += relPoint.x;
             if (NSMaxX(newBounds) > NSMaxX(pageBounds))
                 newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
             if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
                 newBounds.size.width = MIN_NOTE_SIZE;
             }
-        } else if (resizeHandle & SKMinXEdgeMask) {
+        } else if ((resizeHandle & SKMinXEdgeMask)) {
             newBounds.origin.x += relPoint.x;
             newBounds.size.width -= relPoint.x;
             if (NSMinX(newBounds) < NSMinX(pageBounds)) {
@@ -2944,7 +2944,7 @@ enum {
                 newBounds.size.width = MIN_NOTE_SIZE;
             }
         }
-        if (resizeHandle & SKMaxYEdgeMask) {
+        if ((resizeHandle & SKMaxYEdgeMask)) {
             newBounds.size.height += relPoint.y;
             if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
                 newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
@@ -2952,7 +2952,7 @@ enum {
             if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
                 newBounds.size.height = MIN_NOTE_SIZE;
             }
-        } else if (resizeHandle & SKMinYEdgeMask) {
+        } else if ((resizeHandle & SKMinYEdgeMask)) {
             newBounds.origin.y += relPoint.y;
             newBounds.size.height -= relPoint.y;
             if (NSMinY(newBounds) < NSMinY(pageBounds)) {
@@ -3302,10 +3302,10 @@ enum {
         if (activeAnnotation) {
             [self removeActiveAnnotation:nil];
             [self setActiveAnnotation:annotation];
-        } else if ([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) {
+        } else if (([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask))) {
             [self setActiveAnnotation:annotation];
         }
-    } else if ([theEvent modifierFlags] & NSAlphaShiftKeyMask) {
+    } else if (([theEvent modifierFlags] & NSAlphaShiftKeyMask)) {
         [self setActiveAnnotation:nil];
     }
     
@@ -3421,18 +3421,18 @@ enum {
         
         if (resizeHandle == 0) {
             newRect.origin = SKAddPoints(newRect.origin, delta);
-        } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
+        } else if (([theEvent modifierFlags] & NSShiftKeyMask)) {
             CGFloat width = NSWidth(newRect);
             CGFloat height = NSHeight(newRect);
             CGFloat square;
             
-            if (resizeHandle & SKMaxXEdgeMask)
+            if ((resizeHandle & SKMaxXEdgeMask))
                 width += delta.x;
             else if (resizeHandle & SKMinXEdgeMask)
                 width -= delta.x;
-            if (resizeHandle & SKMaxYEdgeMask)
+            if ((resizeHandle & SKMaxYEdgeMask))
                 height += delta.y;
-            else if (resizeHandle & SKMinYEdgeMask)
+            else if ((resizeHandle & SKMinYEdgeMask))
                 height -= delta.y;
             
             if (0 == (resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)))
@@ -3442,7 +3442,7 @@ enum {
             else
                 square = fmax(fabs(width), fabs(height));
             
-            if (resizeHandle & SKMinXEdgeMask) {
+            if ((resizeHandle & SKMinXEdgeMask)) {
                 if (width >= 0.0 && NSMaxX(newRect) - square < NSMinX(pageBounds))
                     square = NSMaxX(newRect) - NSMinX(pageBounds);
                 else if (width < 0.0 && NSMaxX(newRect) + square > NSMaxX(pageBounds))
@@ -3453,7 +3453,7 @@ enum {
                 else if (width < 0.0 && NSMinX(newRect) - square < NSMinX(pageBounds))
                     square = NSMinX(newRect) - NSMinX(pageBounds);
             }
-            if (resizeHandle & SKMinYEdgeMask) {
+            if ((resizeHandle & SKMinYEdgeMask)) {
                 if (height >= 0.0 && NSMaxY(newRect) - square < NSMinY(pageBounds))
                     square = NSMaxY(newRect) - NSMinY(pageBounds);
                 else if (height < 0.0 && NSMaxY(newRect) + square > NSMaxY(pageBounds))
@@ -3465,23 +3465,23 @@ enum {
                     square = NSMinY(newRect) - NSMinY(pageBounds);
             }
             
-            if (resizeHandle & SKMinXEdgeMask)
+            if ((resizeHandle & SKMinXEdgeMask))
                 newRect.origin.x = width < 0.0 ? NSMaxX(newRect) : NSMaxX(newRect) - square;
             else if (width < 0.0 && (resizeHandle & SKMaxXEdgeMask))
                 newRect.origin.x = NSMinX(newRect) - square;
-            if (resizeHandle & SKMinYEdgeMask)
+            if ((resizeHandle & SKMinYEdgeMask))
                 newRect.origin.y = height < 0.0 ? NSMaxY(newRect) : NSMaxY(newRect) - square;
             else if (height < 0.0 && (resizeHandle & SKMaxYEdgeMask))
                 newRect.origin.y = NSMinY(newRect) - square;
             newRect.size.width = newRect.size.height = square;
         } else {
-            if (resizeHandle & SKMaxXEdgeMask) {
+            if ((resizeHandle & SKMaxXEdgeMask)) {
                 newRect.size.width += delta.x;
                 if (NSWidth(newRect) < 0.0) {
                     newRect.size.width *= -1.0;
                     newRect.origin.x -= NSWidth(newRect);
                 }
-            } else if (resizeHandle & SKMinXEdgeMask) {
+            } else if ((resizeHandle & SKMinXEdgeMask)) {
                 newRect.origin.x += delta.x;
                 newRect.size.width -= delta.x;
                 if (NSWidth(newRect) < 0.0) {
@@ -3490,13 +3490,13 @@ enum {
                 }
             }
             
-            if (resizeHandle & SKMaxYEdgeMask) {
+            if ((resizeHandle & SKMaxYEdgeMask)) {
                 newRect.size.height += delta.y;
                 if (NSHeight(newRect) < 0.0) {
                     newRect.size.height *= -1.0;
                     newRect.origin.y -= NSHeight(newRect);
                 }
-            } else if (resizeHandle & SKMinYEdgeMask) {
+            } else if ((resizeHandle & SKMinYEdgeMask)) {
                 newRect.origin.y += delta.y;
                 newRect.size.height -= delta.y;
                 if (NSHeight(newRect) < 0.0) {
@@ -3708,7 +3708,7 @@ enum {
         currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
         
         // center around startPoint when holding down the Shift key
-        if ([theEvent modifierFlags] & NSShiftKeyMask)
+        if (([theEvent modifierFlags] & NSShiftKeyMask))
             selRect = SKRectFromCenterAndPoint(startPoint, currentPoint);
         else
             selRect = SKRectFromPoints(startPoint, currentPoint);
@@ -3881,7 +3881,7 @@ enum {
             NSUInteger modifierFlags = [theEvent modifierFlags];
             currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
             magnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
-            if (modifierFlags & NSShiftKeyMask) {
+            if ((modifierFlags & NSShiftKeyMask)) {
                 magnification = 1.0 / magnification;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
@@ -4146,13 +4146,13 @@ enum {
     
     if ([[self document] isLocked]) {
     } else if (interactionMode == SKPresentationMode) {
-        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+        if (([self areaOfInterestForMouse:theEvent] & kPDFLinkArea))
             cursor = [NSCursor pointingHandCursor];
         else
             cursor = [NSCursor arrowCursor];
     } else if (NSMouseInRect(p, [self visibleContentRect], [self isFlipped]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
-    } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
+    } else if (([theEvent modifierFlags] & NSCommandKeyMask)) {
         cursor = [NSCursor arrowCursor];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
@@ -4182,7 +4182,7 @@ enum {
                 break;
             }
             case SKMoveToolMode:
-                if (area & kPDFLinkArea)
+                if ((area & kPDFLinkArea))
                     cursor = [NSCursor pointingHandCursor];
                 else
                     cursor = [NSCursor openHandCursor];
@@ -4200,7 +4200,7 @@ enum {
             case SKMagnifyToolMode:
                 if (area == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
-                else if ([theEvent modifierFlags] & NSShiftKeyMask)
+                else if (([theEvent modifierFlags] & NSShiftKeyMask))
                     cursor = [NSCursor zoomOutCursor];
                 else
                     cursor = [NSCursor zoomInCursor];
