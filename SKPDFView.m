@@ -2893,14 +2893,12 @@ enum {
         else if ((resizeHandle & SKMinYEdgeMask))
             height = fmax(MIN_NOTE_SIZE, height - relPoint.y);
         
-        if ((resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask))) {
-            if ((resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask)))
-                width = height = fmax(width, height);
-            else
-                height = width;
-        } else {
+        if ((resizeHandle & (SKMinXEdgeMask | SKMaxXEdgeMask)) == 0)
             width = height;
-        }
+        else if ((resizeHandle & (SKMinYEdgeMask | SKMaxYEdgeMask)) == 0)
+            height = width;
+        else
+            width = height = fmax(width, height);
         
         if ((resizeHandle & SKMinXEdgeMask)) {
             if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
