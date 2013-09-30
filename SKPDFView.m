@@ -3937,6 +3937,7 @@ enum {
                 NSRect imageRect = {NSZeroPoint, magRect.size};
                 NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
                 NSAffineTransform *transform = [NSAffineTransform transform];
+                NSArray *pages = magnification < 1.0 ? [self displayedPages] : [self visiblePages];
                 
                 [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
                 [transform scaleBy:magnification];
@@ -3949,7 +3950,7 @@ enum {
                 if (aShadow)
                     imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
                 
-                for (PDFPage *page in (magnification < 1.0 ? [self displayedPages] : [self visiblePages])) {
+                for (PDFPage *page in pages) {
                     NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
                     NSPoint pageOrigin = pageRect.origin;
                     NSAffineTransform *pageTransform;
