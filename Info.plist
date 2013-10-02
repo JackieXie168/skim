@@ -380,7 +380,7 @@
 				<string>Show Skim Notes</string>
 			</dict>
 			<key>NSMessage</key>
-			<string>openDocumentFromURLOnPboard</string>
+			<string>openNotesDocumentFromURLOnPboard</string>
 			<key>NSPortName</key>
 			<string>Skim</string>
 			<key>NSRequiredContext</key>
@@ -404,8 +404,6 @@
 				<string>public.file-url</string>
 				<string>public.plain-text</string>
 			</array>
-			<key>NSUserData</key>
-			<string>1</string>
 		</dict>
 	</array>
 	<key>OSAScriptingDefinition</key>

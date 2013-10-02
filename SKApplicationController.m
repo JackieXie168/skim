@@ -251,7 +251,7 @@
 
 - (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
     NSError *error;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:[userData boolValue] error:&error];
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:NO error:&error];
     
     if (document == nil && errorString)
         *errorString = [error localizedDescription];
@@ -260,6 +260,14 @@
 - (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
     NSError *error;
     id document = [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard error:&error];
+    
+    if (document == nil && errorString)
+        *errorString = [error localizedDescription];
+}
+
+- (void)openNotesDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    NSError *error;
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:YES error:&error];
     
     if (document == nil && errorString)
         *errorString = [error localizedDescription];
