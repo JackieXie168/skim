@@ -456,7 +456,7 @@
                 url = [NSURL URLByResolvingBookmarkData:data options:NSURLBookmarkResolutionWithoutUI relativeToURL:nil bookmarkDataIsStale:NULL error:NULL] ?: url;
         }
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error] && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
+            [self presentError:error];
     } else NSBeep();
 }
 

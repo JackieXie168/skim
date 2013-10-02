@@ -161,7 +161,7 @@ static SKDownloadController *sharedDownloadController = nil;
         NSError *error = nil;
         id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
         if (document == nil && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
+            [self presentError:error];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
             [[download retain] autorelease];
@@ -337,7 +337,7 @@ static SKDownloadController *sharedDownloadController = nil;
     } else {
         NSError *error = nil;
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[download fileURL] display:YES error:&error] && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
+            [self presentError:error];
     }
 }
 

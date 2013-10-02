@@ -1216,7 +1216,7 @@
                 }
             }
         } else if (error && [error isUserCancelledError] == NO) {
-            [NSApp presentError:error];
+            [self presentError:error];
         }
     } else if (fileURL) {
         // fall back to just opening the file and ignore the destination
@@ -1231,7 +1231,7 @@
     if ([url isFileURL] && [sdc documentClassForContentsOfURL:url]) {
         document = [sdc openDocumentWithContentsOfURL:url display:YES error:&error];
         if (document == nil && error && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
+            [self presentError:error];
     } else {
         [[NSWorkspace sharedWorkspace] openURL:url];
     }
