@@ -170,6 +170,8 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
+#define SKIgnoreSettingsFromPDFKey @"SKIgnoreSettingsFromPDF"
+
 static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) {
     NSRect rect = [contentView bounds];
     if (usesDrawers == 0) {
@@ -448,7 +450,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [pdfContentView addSubview:pdfView];
     
     // get the initial display mode from the PDF if present and not overridden by an explicit setup
-    if (hasWindowSetup == NO) {
+    if (hasWindowSetup == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKIgnoreSettingsFromPDFKey] == NO) {
         NSDictionary *initialSettings = [[self pdfDocument] initialSettings];
         if (initialSettings)
             [self applyPDFSettings:initialSettings];
