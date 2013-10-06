@@ -1662,16 +1662,17 @@ enum {
     [self addAnnotationWithType:annotationType defaultPoint:[[self window] mouseLocationOutsideOfEventStream]];
 }
 
-// 0.233414531781128 = 1/2-pow(sqrt(2)-1,3/2)
-// sw=primaryRadius(h/w) gives dw≈dh for h<<w, MAGIC makes rw=sqrt(2) and dw=dh for h=w
-// approximates solving x*(1-secondaryRadius(y))=1-y
-static inline CGFloat primaryRadius(CGFloat x) {
-    return 1.0 + pow(x * (0.5 - 0.233414531781128 * x), 2.0/3.0);
+// y=primaryOutset(x) approximately solves x*secondaryOutset(y)=y
+// y=cubrt(1/2x^2)+..., x->0; y=sqrt(2)-1+1/2(sqrt(2)-1)(x-1)+..., x->1
+// 0.436947024419157 = 4/3cubrt(1/2)-3/2(sqrt(2)-1)
+// 0.057460060808152 = 1/3cubrt(1/2)-1/2(sqrt(2)-1)
+static inline CGFloat primaryOutset(CGFloat x) {
+    return pow(M_SQRT1_2 * x, 2.0/3.0) - 0.436947024419157 * x + 0.057460060808152 * x * x;
 }
 
-// an ellipse with radii 1/2*w*x and 1/2*h*secondaryRadius(x) circumscribes bounds for any x
-static inline CGFloat secondaryRadius(CGFloat x) {
-    return x / sqrt(x * x - 1.0);
+// an ellipse outset by 1/2*w*x and 1/2*h*secondaryOutset(x) circumscribes a rect with size {w,h} for any x
+static inline CGFloat secondaryOutset(CGFloat x) {
+    return (x + 1.0) / sqrt(x * (x + 2.0)) - 1.0;
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point {
@@ -1687,15 +1688,15 @@ static inline CGFloat secondaryRadius(CGFloat x) {
 		page = [selection safeFirstPage];
 		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote) {
-            CGFloat sw, sh, w = NSWidth(bounds), h = NSHeight(bounds);
+            CGFloat dw, dh, w = NSWidth(bounds), h = NSHeight(bounds);
             if (h < w) {
-                sw = primaryRadius(h / w);
-                sh = secondaryRadius(sw);
+                dw = primaryOutset(h / w);
+                dh = secondaryOutset(dw);
             } else {
-                sh = primaryRadius(w / h);
-                sw = secondaryRadius(sh);
+                dh = primaryOutset(w / h);
+                dw = secondaryOutset(dh);
             }
-            bounds = NSInsetRect(bounds, 0.5 * w * (1.0 - sw) - 4.0, 0.5 * h * (1.0 - sh) - 4.0);
+            bounds = NSInsetRect(bounds, -0.5 * w * dw - 4.0, -0.5 * h * dh - 4.0);
         } else if (annotationType == SKSquareNote) {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         } else if (annotationType == SKAnchoredNote) {
