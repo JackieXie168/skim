@@ -452,8 +452,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     // get the initial display mode from the PDF if present and not overridden by an explicit setup
     if (hasWindowSetup == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseSettingsFromPDFKey]) {
         NSDictionary *initialSettings = [[self pdfDocument] initialSettings];
-        if (initialSettings)
+        if (initialSettings) {
             [self applyPDFSettings:initialSettings];
+            if ([initialSettings objectForKey:@"fitWindow"])
+                windowSizeOption = [[initialSettings objectForKey:@"fitWindow"] boolValue] ? SKFitWindowOption : SKDefaultWindowOption;
+        }
     }
     
     // Go to page?
