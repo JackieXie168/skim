@@ -106,6 +106,9 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SAVEOPERATION_KEY   @"saveOperation"
 #define CALLBACK_KEY        @"callback"
 #define TMPURL_KEY          @"tmpURL"
+#define SKIMNOTES_KEY       @"skimNotes"
+#define SKIMTEXTNOTES_KEY   @"skimTextNotes"
+#define SKIMRTFNOTES_KEY    @"skimRTFNotes"
 
 #define SOURCEURL_KEY   @"sourceURL"
 #define TARGETURL_KEY   @"targetURL"
@@ -500,6 +503,12 @@ enum {
     
         if ([[self class] isNativeType:typeName])
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
+    } else if (saveOperation == NSSaveOperation) {
+        NSArray *skimNotes = [info objectForKey:SKIMNOTES_KEY];
+        NSString *textNotes = [info objectForKey:SKIMTEXTNOTES_KEY];
+        NSData *rtfNotes = [info objectForKey:SKIMRTFNOTES_KEY];
+        if (skimNotes)
+            [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
     }
     
     if (tmpURL)
@@ -561,6 +570,22 @@ enum {
         }
         if (tmpURL)
             [info setObject:tmpURL forKey:TMPURL_KEY];
+    }
+    
+    // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *fileURL = [self fileURL];
+        NSArray *skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        NSData *rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
+        if (skimNotes)
+            [info setObject:skimNotes forKey:SKIMNOTES_KEY];
+        if (textNotes)
+            [info setObject:textNotes forKey:SKIMTEXTNOTES_KEY];
+        if (rtfNotes)
+            [info setObject:rtfNotes forKey:SKIMRTFNOTES_KEY];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
