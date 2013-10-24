@@ -769,7 +769,7 @@ enum {
             NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
             
             // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-            page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
+            page = NSMouseInRect(center, [self visibleContentRect], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
             
             if (page == nil) {
                 // Get center of the PDFView.
@@ -1725,7 +1725,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSPoint center = [self convertPoint:point fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-        page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
+        page = NSMouseInRect(center, [self visibleContentRect], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
         
         if (page == nil) {
             // Get center of the PDFView.
@@ -2111,7 +2111,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         }
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
-            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:page];
+            NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
             if (NSWidth(rect) > NSWidth(visibleRect)) {
                 if (NSMaxX(rect) < point.x + 0.5 * NSWidth(visibleRect))
@@ -2771,7 +2771,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (moved) {
         NSRect rect = NSInsetRect([readingBar currentBounds], 0.0, -20.0) ;
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
-            NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromDocumentViewToPage:[readingBar page]];
+            NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:[readingBar page]];
             rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:[readingBar page]];
@@ -2802,7 +2802,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSRect currentBounds = [activeAnnotation bounds];
     
     // Move annotation.
-    [[self documentView] autoscroll:theEvent];
+    [[[self scrollView] contentView] autoscroll:theEvent];
     
     NSPoint mouseLoc = [theEvent locationInView:self];
     PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
@@ -3341,7 +3341,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)doDragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
-	NSRect visibleRect = [[self documentView] visibleRect];
+    NSView *documentView = [[self scrollView] documentView];
+	NSRect visibleRect = [documentView visibleRect];
 	
     [[NSCursor closedHandCursor] push];
     
@@ -3360,7 +3361,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             delta.y = -delta.y;
         
         newVisibleRect = NSOffsetRect (visibleRect, delta.x, delta.y);
-        [[self documentView] scrollRectToVisible: newVisibleRect];
+        [documentView scrollRectToVisible: newVisibleRect];
 	}
     
     [NSCursor pop];
@@ -3568,7 +3569,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         // dragging
         NSPoint mouseLocInWindow = [lastMouseEvent locationInWindow];
         NSPoint mouseLoc = [self convertPoint:mouseLocInWindow fromView:nil];
-        if ([[self documentView] autoscroll:lastMouseEvent] == NO &&
+        if ([[[self scrollView] contentView] autoscroll:lastMouseEvent] == NO &&
             ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) &&
             [[NSDate date] timeIntervalSinceDate:lastPageChangeDate] > 0.7) {
             if (mouseLoc.y < NSMinY([self bounds])) {
@@ -3703,7 +3704,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if ([theEvent type] == NSLeftMouseDragged) {
             // change mouseLoc
-            [[self documentView] autoscroll:theEvent];
+            [[[self scrollView] contentView] autoscroll:theEvent];
             mouseLoc = [theEvent locationInWindow];
             dragged = YES;
         }
