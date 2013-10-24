@@ -67,6 +67,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
         textField = [[NSTextField alloc] init];
         [textField setStringValue:[annotation string]];
         [textField setDelegate:self];
+        // Mavericks messes up the location of the focus ring, so we don't show it
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
+            [[textField cell] setFocusRingType:NSFocusRingTypeNone];
         [self updateFont];
         [self updateColor];
         [self updateTextColor];
@@ -104,7 +107,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 - (void)updateFont {
     NSFont *font = [annotation font];
-    font = [[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [pdfView scaleFactor]];
+    // Mavericks scales the whole text field, including the font, which it really shouldn't do
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8)
+        font = [[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [pdfView scaleFactor]];
     [textField setFont:font];
 }
 
