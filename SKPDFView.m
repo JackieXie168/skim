@@ -395,14 +395,10 @@ enum {
     [PDFAnnotation setCurrentActiveAnnotation:nil];
 	
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-}
-
-- (void)drawPagePost:(PDFPage *)pdfPage {
-    [super drawPagePost:pdfPage];
     
     [NSGraphicsContext saveGraphicsState];
     
-    [self transformDocumentViewContextForPage:pdfPage];
+    [pdfPage transformContextForBox:[self displayBox]];
     
     if ([[activeAnnotation page] isEqual:pdfPage] && editor == nil)
         [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor] active:[[self window] isKeyWindow] && [[self window] firstResponder] == self];
@@ -3944,7 +3940,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 magRect = [self convertRect:magRect fromView:nil];
                 
                 NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
-                NSPoint documentViewOrigin = [self convertPoint:NSZeroPoint fromView:[self documentView]];
                 NSRect imageRect = {NSZeroPoint, magRect.size};
                 NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
                 NSAffineTransform *transform = [NSAffineTransform transform];
@@ -3988,15 +3983,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     [pageTransform release];
                     [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
                     [self drawPage:page];
-                    [NSGraphicsContext restoreGraphicsState];
-                    
-                    // draw page highlights
-                    [NSGraphicsContext saveGraphicsState];
-                    pageTransform = [transform copy];
-                    [pageTransform translateXBy:documentViewOrigin.x yBy:documentViewOrigin.y];
-                    [pageTransform concat];
-                    [pageTransform release];
-                    [self drawPagePost:page];
                     [NSGraphicsContext restoreGraphicsState];
                 }
                 [image unlockFocus];
