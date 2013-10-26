@@ -46,9 +46,6 @@
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
-@interface SKTextNoteField : NSTextField
-@end
-
 @interface SKTextNoteFieldCell : NSTextFieldCell {
     CGFloat borderWidth;
 }
@@ -79,13 +76,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (self) {
         pdfView = aPDFView;
         annotation = [anAnnotation retain];
-        textField = [[SKTextNoteField alloc] init];
-        [textField setStringValue:[annotation string]];
+        textField = [[NSTextField alloc] init];
+        [textField setCell:[[[SKTextNoteFieldCell alloc] initTextCell:[annotation string]] autorelease]];
         [textField setDelegate:self];
-        [textField setBezeled:NO];
-        [textField setBordered:NO];
-        [textField setDrawsBackground:NO];
-        [[textField cell] setFocusRingType:NSFocusRingTypeNone];
         [self updateFont];
         [self updateColor];
         [self updateTextColor];
@@ -232,12 +225,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 #pragma mark -
 
-@implementation SKTextNoteField
-
-+ (Class)cellClass { return [SKTextNoteFieldCell class]; }
-
-@end
-
 @implementation SKTextNoteFieldCell
 
 @synthesize borderWidth;
@@ -246,6 +233,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     self = [super initTextCell:aString];
     if (self) {
         borderWidth = 1.0;
+        [self setEditable:YES];
+        [self setFocusRingType:NSFocusRingTypeNone];
     }
     return self;
 }
