@@ -40,8 +40,22 @@
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
+#import "NSColor_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
+#import "SKStringConstants.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
+
+@interface SKTextNoteField : NSTextField
+@end
+
+@interface SKTextNoteFieldCell : NSTextFieldCell {
+    CGFloat borderWidth;
+}
+@property (nonatomic) CGFloat borderWidth;
+@end
+
+#pragma mark -
 
 @interface SKTextNoteEditor (SKPrivate)
 
@@ -50,6 +64,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)updateColor;
 - (void)updateTextColor;
 - (void)updateAlignment;
+- (void)updateBorder;
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 
@@ -64,16 +79,18 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (self) {
         pdfView = aPDFView;
         annotation = [anAnnotation retain];
-        textField = [[NSTextField alloc] init];
+        textField = [[SKTextNoteField alloc] init];
         [textField setStringValue:[annotation string]];
         [textField setDelegate:self];
-        // Mavericks messes up the location of the focus ring, so we don't show it
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
-            [[textField cell] setFocusRingType:NSFocusRingTypeNone];
+        [textField setBezeled:NO];
+        [textField setBordered:NO];
+        [textField setDrawsBackground:NO];
+        [[textField cell] setFocusRingType:NSFocusRingTypeNone];
         [self updateFont];
         [self updateColor];
         [self updateTextColor];
         [self updateAlignment];
+        [self updateBorder];
         [annotation addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [annotation addObserver:self forKeyPath:SKNPDFAnnotationFontKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [annotation addObserver:self forKeyPath:SKNPDFAnnotationFontColorKey options:0 context:&SKPDFAnnotationPropertiesObservationContext];
@@ -114,14 +131,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateColor {
-    NSColor *color = [annotation color];
-    CGFloat alpha = [color alphaComponent];
-    if (alpha < 1.0)
-        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
-    [textField setBackgroundColor:color];
-    // the field editor does not update the background color automatically, even as we set it explicitly, so we use this trick
-    [[textField currentEditor] setDrawsBackground:NO];
-    [[textField currentEditor] setDrawsBackground:YES];
+    [textField setBackgroundColor:[annotation color]];
 }
 
 - (void)updateTextColor {
@@ -140,6 +150,11 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [[textField window] makeFirstResponder:textField];
         [(NSTextView *)[textField currentEditor] setSelectedRanges:selection];
     }
+}
+
+- (void)updateBorder {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
+        [[textField cell] setBorderWidth:1.0 / [pdfView scaleFactor]];
 }
 
 - (void)layout {
@@ -193,6 +208,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)handleScaleChangedNotification:(NSNotification *)notification  {
     [self updateFrame];
     [self updateFont];
+    [self updateBorder];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -210,6 +226,48 @@ static char SKPDFAnnotationPropertiesObservationContext;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKTextNoteField
+
++ (Class)cellClass { return [SKTextNoteFieldCell class]; }
+
+@end
+
+@implementation SKTextNoteFieldCell
+
+@synthesize borderWidth;
+
+- (id)initTextCell:(NSString *)aString {
+    self = [super initTextCell:aString];
+    if (self) {
+        borderWidth = 1.0;
+    }
+    return self;
+}
+
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    [NSGraphicsContext saveGraphicsState];
+    
+    NSColor *color = [self backgroundColor];
+    if ([color alphaComponent] < 1.0) {
+        [[[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor] setFill];
+        NSRectFill(cellFrame);
+    }
+    [color setFill];
+    NSRectFill(cellFrame);
+    
+    color = [self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor];
+    [color setFill];
+    NSFrameRectWithWidth(cellFrame, [self borderWidth]);
+    
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [super drawWithFrame:cellFrame inView:controlView];
 }
 
 @end
