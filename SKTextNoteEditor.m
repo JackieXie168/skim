@@ -241,7 +241,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         NSRectFill(cellFrame);
     }
     [color setFill];
-    NSRectFill(cellFrame);
+    [NSBezierPath fillRect:cellFrame];
     
     color = [self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor];
     [color setFill];
