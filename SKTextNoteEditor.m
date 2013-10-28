@@ -41,8 +41,6 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSColor_SKExtensions.h"
-#import "NSUserDefaults_SKExtensions.h"
-#import "SKStringConstants.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
@@ -147,6 +145,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self updateFrame];
         if ([textField superview] == nil) {
+            [annotation setShouldDisplay:NO];
             [[pdfView documentView] addSubview:textField];
             if ([[[pdfView window] firstResponder] isEqual:pdfView])
                 [textField selectText:nil];
@@ -163,6 +162,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textField abortEditing];
     [textField removeFromSuperview];
     
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
 }
@@ -176,6 +177,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [annotation setString:newValue];
     
     [textField removeFromSuperview];
+    
+    [annotation setShouldDisplay:[annotation shouldPrint]];
     
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
@@ -235,16 +238,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     
-    NSColor *color = [self backgroundColor];
-    if ([color alphaComponent] < 1.0) {
-        [[[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor] setFill];
-        NSRectFill(cellFrame);
-    }
-    [color setFill];
+    [[self backgroundColor] setFill];
     [NSBezierPath fillRect:cellFrame];
     
-    color = [self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor];
-    [color setFill];
+    [[self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor] setFill];
     NSFrameRectWithWidth(cellFrame, [self borderWidth]);
     
     [NSGraphicsContext restoreGraphicsState];
