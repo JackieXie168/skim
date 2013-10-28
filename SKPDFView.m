@@ -348,15 +348,6 @@ enum {
 
 #pragma mark Drawing
 
-- (void)transformDocumentViewContextForPage:(PDFPage *)page {
-    NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
-    [transform scaleBy:[self scaleFactor]];
-    [transform concat];
-    [page transformContextForBox:[self displayBox]];
-}
-
 - (void)drawSelectionForPage:(PDFPage *)pdfPage {
     NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
     CGFloat radius = HANDLE_SIZE / [self scaleFactor];
@@ -3183,6 +3174,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
     CAShapeLayer *layer = nil;
+    NSAffineTransform *transform = nil;
     
     [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3232,6 +3224,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
         [layer setAffineTransform:t];
         [[self layer] addSublayer:layer];
+    } else {
+        NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
+        transform = [NSAffineTransform transform];
+        [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
+        [transform scaleBy:[self scaleFactor]];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
@@ -3264,7 +3261,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if ([[self documentView] lockFocusIfCanDraw]) {
                 [NSGraphicsContext saveGraphicsState];
                 [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-                [self transformDocumentViewContextForPage:page];
+                [transform concat];
+                [page transformContextForBox:[self displayBox]];
                 [pathColor setStroke];
                 [pathShadow set];
                 [bezierPath stroke];
