@@ -47,6 +47,7 @@
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @interface SKSnapshotPDFView (SKPrivate)
@@ -429,65 +430,36 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)mouseDown:(NSEvent *)theEvent{
     [[self window] makeFirstResponder:self];
 	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
+        
         [self doPdfsyncWithEvent:theEvent];
+        
     } else {
+        
+        NSPoint initialLocation = [theEvent locationInWindow];
+        NSView *documentView = [[self scrollView] documentView];
+        NSRect visibleRect = [documentView visibleRect];
+        
         [[NSCursor closedHandCursor] push];
+        
+        while (YES) {
+            
+            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+            if ([theEvent type] == NSLeftMouseUp)
+                break;
+            
+            // convert takes flipping and scaling into account
+            NSPoint	startLocation = [documentView convertPoint:initialLocation fromView:nil];
+            NSPoint	newLocation = [documentView convertPoint:[theEvent locationInWindow] fromView:nil];
+            NSPoint	delta = SKSubstractPoints(startLocation, newLocation);
+            
+            [documentView scrollRectToVisible:NSOffsetRect(visibleRect, delta.x, delta.y)];
+        }
+        
+        [NSCursor pop];
+        // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+        [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+        
     }
-}
-
-- (void)mouseUp:(NSEvent *)theEvent{
-    [NSCursor pop];
-    NSView *view = [self documentView];
-	NSPoint mouseLoc = [theEvent locationInView:view];
-    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]))
-        [[NSCursor openHandCursor] set];
-    else
-        [[NSCursor arrowCursor] set];
-}
-
-- (void)mouseDragged:(NSEvent *)theEvent {
-	NSPoint initialLocation = [theEvent locationInWindow];
-	NSRect visibleRect = [[self documentView] visibleRect];
-	BOOL keepGoing = YES;
-	
-	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-				NSPoint	newLocation;
-				NSRect	newVisibleRect;
-				CGFloat	xDelta, yDelta;
-				
-				newLocation = [theEvent locationInWindow];
-				xDelta = initialLocation.x - newLocation.x;
-				yDelta = initialLocation.y - newLocation.y;
-				if ([self isFlipped])
-					yDelta = -yDelta;
-				
-				newVisibleRect = NSOffsetRect (visibleRect, xDelta, yDelta);
-				[[self documentView] scrollRectToVisible: newVisibleRect];
-			}
-				break;
-				
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
-    
-    if ([self autoFits]) {
-        NSView *clipView = [[self scrollView] contentView];
-        autoFitPage = [self currentPage];
-        autoFitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:autoFitPage];
-    }
-    
-    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
 }
 
 @end

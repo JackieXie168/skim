@@ -3352,16 +3352,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
-        // dragging
-        NSPoint	newLocation = [theEvent locationInWindow];
-        NSPoint	delta = SKSubstractPoints(initialLocation, newLocation);
-        NSRect	newVisibleRect;
+        // convert takes flipping and scaling into account
+        NSPoint	startLocation = [documentView convertPoint:initialLocation fromView:nil];
+        NSPoint	newLocation = [documentView convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint	delta = SKSubstractPoints(startLocation, newLocation);
         
-        if ([self isFlipped])
-            delta.y = -delta.y;
-        
-        newVisibleRect = NSOffsetRect (visibleRect, delta.x, delta.y);
-        [documentView scrollRectToVisible: newVisibleRect];
+        [documentView scrollRectToVisible:NSOffsetRect(visibleRect, delta.x, delta.y)];
 	}
     
     [NSCursor pop];
