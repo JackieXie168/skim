@@ -46,6 +46,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSData_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
@@ -133,10 +134,11 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         return 0;
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+    BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
-    CGFloat delta = 4.0 / scaleFactor;
+    CGFloat delta = 4.0 / [pdfView scaleFactor];
     SKDrawResizeHandle(point, delta, active);
     point = SKAddPoints(origin, [self endPoint]);
     SKDrawResizeHandle(point, delta, active);

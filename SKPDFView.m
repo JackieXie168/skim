@@ -392,7 +392,7 @@ enum {
     [pdfPage transformContextForBox:[self displayBox]];
     
     if ([[activeAnnotation page] isEqual:pdfPage] && editor == nil)
-        [activeAnnotation drawSelectionHighlightWithScaleFactor:[self scaleFactor] active:[[self window] isKeyWindow] && [[self window] firstResponder] == self];
+        [activeAnnotation drawSelectionHighlightForView:self];
     
     if (readingBar)
         [readingBar drawForPage:pdfPage withBox:[self displayBox]];
