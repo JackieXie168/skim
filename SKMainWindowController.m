@@ -514,6 +514,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
+    // currently PDFView on 10.8 initially doesn't display the PDF, messing around like this is a workaround for this bug
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+        [self toggleStatusBar:nil];
+        [self toggleStatusBar:nil];
+    }
+    
     [[self window] recalculateKeyViewLoop];
     [[self window] makeFirstResponder:pdfView];
     
