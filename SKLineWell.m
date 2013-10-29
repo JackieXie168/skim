@@ -39,6 +39,7 @@
 #import "SKLineWell.h"
 #import "SKLineInspector.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 NSString *SKPasteboardTypeLineStyle = @"net.sourceforge.skim-app.pasteboard.line-style";
 
@@ -241,15 +242,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     
     [path setLineWidth:lineWidth];
     
-    if (style == kPDFBorderStyleDashed) {
-        NSInteger i, count = [dashPattern count];
-        if (count) {
-            CGFloat pattern[count];
-            for (i = 0; i < count; i++)
-                pattern[i] = [[dashPattern objectAtIndex:i] doubleValue];
-            [path setLineDash:pattern count:count phase:0.0];
-        }
-    }
+    if (style == kPDFBorderStyleDashed)
+        [path setDashPattern:dashPattern];
     
     return path;
 }
