@@ -282,7 +282,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
     [NSGraphicsContext saveGraphicsState];
     [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
-    NSFrameRectWithWidth(NSIntegralRect([self bounds]), 1.0 / scaleFactor);
+    NSFrameRectWithWidth([self bounds], 1.0 / scaleFactor);
     if ([self isResizable])
         SKDrawResizeHandles([self bounds], 4.0 / scaleFactor, active);
     [NSGraphicsContext restoreGraphicsState];
