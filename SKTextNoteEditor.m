@@ -217,10 +217,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification  {
-    [self updateBorder];
-    [self updateHighlight];
     [self updateFrame];
     [self updateFont];
+    [self updateBorder];
+    [self updateHighlight];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -260,6 +260,24 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self setFocusRingType:NSFocusRingTypeNone];
     }
     return self;
+}
+
+- (void)setHighlightWidth:(CGFloat)newHighlightWidth {
+    highlightWidth = newHighlightWidth;
+    [(NSControl *)[self controlView] updateCell:self];
+}
+
+- (void)setLineWidth:(CGFloat)newLineWidth {
+    lineWidth = newLineWidth;
+    [(NSControl *)[self controlView] updateCell:self];
+}
+
+- (void)setDashPattern:(NSArray *)newDashPattern {
+    if (dashPattern != newDashPattern) {
+        [dashPattern release];
+        dashPattern = [newDashPattern copy];
+        [(NSControl *)[self controlView] updateCell:self];
+    }
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
