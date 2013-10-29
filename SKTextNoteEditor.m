@@ -108,7 +108,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateFrame {
-    NSRect frame = [pdfView convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
+    NSRect frame = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[annotation bounds] fromPage:[annotation page]]) toView:[pdfView documentView]];
     [textField setFrame:frame];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
         frame.origin = NSZeroPoint;
@@ -146,7 +146,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 - (void)updateBorder {
     [[textField cell] setLineWidth:[annotation lineWidth]];
-    [[textField cell] setDashPattern:[annotation dashPattern]];
+    [[textField cell] setDashPattern:[annotation borderStyle] == kPDFBorderStyleDashed ? [annotation dashPattern] : nil];
 }
 
 - (void)updateScaleFactor {

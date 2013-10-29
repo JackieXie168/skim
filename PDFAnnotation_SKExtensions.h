@@ -89,7 +89,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (SKRectEdges)resizeHandleForPoint:(NSPoint)point scaleFactor:(CGFloat)scaleFactor;
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active;
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView;
 
 - (void)registerUserName;
 

@@ -54,7 +54,7 @@ static id (*original_toolTip)(id, SEL) = NULL;
     original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
     NSRect rect = NSInsetRect(NSIntegralRect([self bounds]), 1.0, 1.0);
     CGFloat radius = floor(0.3 * NSHeight(rect));
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];

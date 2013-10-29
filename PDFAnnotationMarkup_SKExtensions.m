@@ -51,6 +51,7 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -280,19 +281,21 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightWithScaleFactor:(CGFloat)scaleFactor active:(BOOL)active {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
     // archived annotations (or annotations we didn't create) won't have these
     if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     
+    BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
-    CGFloat lineWidth = 1.0 / scaleFactor;
+    CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
+    PDFPage *page = [self page];
     
     [NSGraphicsContext saveGraphicsState];
     [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
     for (i = 0; i < iMax; i++)
-        NSFrameRectWithWidth(NSIntegralRect(*(NSRectPointer)[lines pointerAtIndex:i]), lineWidth);
+        NSFrameRectWithWidth([pdfView convertRect:NSIntegralRect([pdfView convertRect:*(NSRectPointer)[lines pointerAtIndex:i] fromPage:page]) toPage:page], lineWidth);
     [NSGraphicsContext restoreGraphicsState];
 }
 
