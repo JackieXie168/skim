@@ -41,13 +41,18 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSColor_SKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
 @interface SKTextNoteFieldCell : NSTextFieldCell {
-    CGFloat borderWidth;
+    CGFloat highlightWidth;
+    CGFloat lineWidth;
+    NSArray *dashPattern;
 }
-@property (nonatomic) CGFloat borderWidth;
+@property (nonatomic) CGFloat highlightWidth;
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic, copy) NSArray *dashPattern;
 @end
 
 #pragma mark -
@@ -60,6 +65,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)updateTextColor;
 - (void)updateAlignment;
 - (void)updateBorder;
+- (void)updateHighlight;
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 
@@ -82,7 +88,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self updateTextColor];
         [self updateAlignment];
         [self updateBorder];
-        for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, nil])
+        [self updateHighlight];
+        for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
     }
@@ -90,7 +97,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)dealloc {
-    for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, nil]) {
+    for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil]) {
         @try { [annotation removeObserver:self forKeyPath:key]; }
         @catch(id e) {}
     }
@@ -137,8 +144,23 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateBorder {
+    CGFloat lineWidth = [annotation lineWidth];
+    NSArray *dashPattern = [annotation dashPattern];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+        lineWidth /= [pdfView scaleFactor];
+        if ([dashPattern count] > 0) {
+            NSMutableArray *tmpPattern = [NSMutableArray array];
+            for (NSNumber *number in dashPattern)
+                [tmpPattern addObject:[NSNumber numberWithDouble:[number doubleValue] / [pdfView scaleFactor]]];
+        }
+    }
+    [[textField cell] setLineWidth:lineWidth];
+    [[textField cell] setDashPattern:dashPattern];
+}
+
+- (void)updateHighlight {
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
-        [[textField cell] setBorderWidth:1.0 / [pdfView scaleFactor]];
+        [[textField cell] setHighlightWidth:1.0 / [pdfView scaleFactor]];
 }
 
 - (void)layout {
@@ -195,9 +217,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification  {
+    [self updateBorder];
+    [self updateHighlight];
     [self updateFrame];
     [self updateFont];
-    [self updateBorder];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -212,6 +235,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
             [self updateTextColor];
         else if ([keyPath isEqualToString:SKNPDFAnnotationAlignmentKey])
             [self updateAlignment];
+        else if ([keyPath isEqualToString:SKNPDFAnnotationBorderKey])
+            [self updateBorder];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -223,12 +248,14 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 @implementation SKTextNoteFieldCell
 
-@synthesize borderWidth;
+@synthesize highlightWidth, lineWidth, dashPattern;
 
 - (id)initTextCell:(NSString *)aString {
     self = [super initTextCell:aString];
     if (self) {
-        borderWidth = 1.0;
+        highlightWidth = 1.0;
+        lineWidth = 0.0;
+        dashPattern = nil;
         [self setEditable:YES];
         [self setFocusRingType:NSFocusRingTypeNone];
     }
@@ -241,8 +268,16 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [[self backgroundColor] setFill];
     [NSBezierPath fillRect:cellFrame];
     
+    if ([self lineWidth] > 0.0) {
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * [self lineWidth], 0.5 * [self lineWidth])];
+        [path setLineWidth:[self lineWidth]];
+        [path setDashPattern:[self dashPattern]];
+        [[NSColor blackColor] setStroke];
+        [path stroke];
+    }
+    
     [[self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor] setFill];
-    NSFrameRectWithWidth(cellFrame, [self borderWidth]);
+    NSFrameRectWithWidth(cellFrame, [self highlightWidth]);
     
     [NSGraphicsContext restoreGraphicsState];
     
