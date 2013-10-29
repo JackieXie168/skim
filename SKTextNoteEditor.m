@@ -41,16 +41,15 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSColor_SKExtensions.h"
-#import "NSBezierPath_SKExtensions.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
 @interface SKTextNoteFieldCell : NSTextFieldCell {
-    CGFloat highlightWidth;
+    CGFloat scaleFactor;
     CGFloat lineWidth;
     NSArray *dashPattern;
 }
-@property (nonatomic) CGFloat highlightWidth;
+@property (nonatomic) CGFloat scaleFactor;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic, copy) NSArray *dashPattern;
 @end
@@ -65,7 +64,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)updateTextColor;
 - (void)updateAlignment;
 - (void)updateBorder;
-- (void)updateHighlight;
+- (void)updateScaleFactor;
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 
@@ -88,7 +87,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self updateTextColor];
         [self updateAlignment];
         [self updateBorder];
-        [self updateHighlight];
+        [self updateScaleFactor];
         for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
@@ -111,14 +110,16 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)updateFrame {
     NSRect frame = [pdfView convertRect:[annotation bounds] toDocumentViewFromPage:[annotation page]];
     [textField setFrame:frame];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
+        frame.origin = NSZeroPoint;
+        frame.size.width /= [pdfView scaleFactor];
+        frame.size.height /= [pdfView scaleFactor];
+        [textField setBounds:frame];
+    }
 }
 
 - (void)updateFont {
-    NSFont *font = [annotation font];
-    // Mavericks scales the whole text field, including the font, which it really shouldn't do
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8)
-        font = [[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [pdfView scaleFactor]];
-    [textField setFont:font];
+    [textField setFont:[annotation font]];
 }
 
 - (void)updateColor {
@@ -144,23 +145,12 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateBorder {
-    CGFloat lineWidth = [annotation lineWidth];
-    NSArray *dashPattern = [annotation dashPattern];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
-        lineWidth /= [pdfView scaleFactor];
-        if ([dashPattern count] > 0) {
-            NSMutableArray *tmpPattern = [NSMutableArray array];
-            for (NSNumber *number in dashPattern)
-                [tmpPattern addObject:[NSNumber numberWithDouble:[number doubleValue] / [pdfView scaleFactor]]];
-        }
-    }
-    [[textField cell] setLineWidth:lineWidth];
-    [[textField cell] setDashPattern:dashPattern];
+    [[textField cell] setLineWidth:[annotation lineWidth]];
+    [[textField cell] setDashPattern:[annotation dashPattern]];
 }
 
-- (void)updateHighlight {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
-        [[textField cell] setHighlightWidth:1.0 / [pdfView scaleFactor]];
+- (void)updateScaleFactor {
+    [[textField cell] setScaleFactor:[pdfView scaleFactor]];
 }
 
 - (void)layout {
@@ -218,9 +208,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification  {
     [self updateFrame];
-    [self updateFont];
-    [self updateBorder];
-    [self updateHighlight];
+    [self updateScaleFactor];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -248,12 +236,12 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 @implementation SKTextNoteFieldCell
 
-@synthesize highlightWidth, lineWidth, dashPattern;
+@synthesize scaleFactor, lineWidth, dashPattern;
 
 - (id)initTextCell:(NSString *)aString {
     self = [super initTextCell:aString];
     if (self) {
-        highlightWidth = 1.0;
+        scaleFactor = 1.0;
         lineWidth = 0.0;
         dashPattern = nil;
         [self setEditable:YES];
@@ -262,8 +250,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     return self;
 }
 
-- (void)setHighlightWidth:(CGFloat)newHighlightWidth {
-    highlightWidth = newHighlightWidth;
+- (void)setScaleFactor:(CGFloat)newScaleFactor {
+    scaleFactor = newScaleFactor;
     [(NSControl *)[self controlView] updateCell:self];
 }
 
@@ -286,16 +274,24 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [[self backgroundColor] setFill];
     [NSBezierPath fillRect:cellFrame];
     
-    if ([self lineWidth] > 0.0) {
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * [self lineWidth], 0.5 * [self lineWidth])];
-        [path setLineWidth:[self lineWidth]];
-        [path setDashPattern:[self dashPattern]];
+    CGFloat width = [self lineWidth] / [self scaleFactor];
+    if (width > 0.0) {
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * width, 0.5 * width)];
+        NSUInteger count = [[self dashPattern] count];
+        [path setLineWidth:width];
+        if (count > 0) {
+            NSUInteger i;
+            CGFloat pattern[count];
+            for (i = 0; i < count; i++)
+                pattern[i] = [[[self dashPattern] objectAtIndex:i] doubleValue] / [self scaleFactor];
+            [path setLineDash:pattern count:count phase:0.0];
+        }
         [[NSColor blackColor] setStroke];
         [path stroke];
     }
     
     [[self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor] setFill];
-    NSFrameRectWithWidth(cellFrame, [self highlightWidth]);
+    NSFrameRectWithWidth(cellFrame, 1.0 / [self scaleFactor]);
     
     [NSGraphicsContext restoreGraphicsState];
     
