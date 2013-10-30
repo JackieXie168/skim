@@ -4162,6 +4162,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 
                 if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
+                else if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds]))
+                    cursor = [NSCursor IBeamCursor];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
