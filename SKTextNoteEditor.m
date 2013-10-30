@@ -276,31 +276,24 @@ static char SKPDFAnnotationPropertiesObservationContext;
     
     CGFloat width = [self lineWidth] / [self scaleFactor];
     if (width > 0.0) {
-        CGFloat minX, maxX, minY, maxY;
-        minX = NSMinX(cellFrame) + 0.5 * width;
-        maxX = NSMaxX(cellFrame) - 0.5 * width;
-        if ([controlView isFlipped]) {
-            minY = NSMaxY(cellFrame) - 0.5 * width;
-            maxY = NSMinY(cellFrame) + 0.5 * width;
-        } else {
-            minY = NSMinY(cellFrame) + 0.5 * width;
-            maxY = NSMaxY(cellFrame) - 0.5 * width;
-        }
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(minX, minY)];
-        [path lineToPoint:NSMakePoint(maxX, minY)];
-        [path lineToPoint:NSMakePoint(maxX, maxY)];
-        [path lineToPoint:NSMakePoint(minX, maxY)];
-        [path closePath];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * width, 0.5 * width)];
         NSUInteger count = [[self dashPattern] count];
-        [path setLineWidth:width];
         if (count > 0) {
+            if ([controlView isFlipped]) {
+                path = [NSBezierPath bezierPath];
+                [path moveToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
+                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
+                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
+                [path lineToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
+                [path closePath];
+            }
             NSUInteger i;
             CGFloat pattern[count];
             for (i = 0; i < count; i++)
                 pattern[i] = [[[self dashPattern] objectAtIndex:i] doubleValue] / [self scaleFactor];
             [path setLineDash:pattern count:count phase:0.0];
         }
+        [path setLineWidth:width];
         [[NSColor blackColor] setStroke];
         [path stroke];
     }
