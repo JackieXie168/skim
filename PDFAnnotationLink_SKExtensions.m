@@ -59,12 +59,11 @@ static id (*original_toolTip)(id, SEL) = NULL;
     CGFloat radius = floor(0.3 * NSHeight(rect));
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
     [NSGraphicsContext saveGraphicsState];
-    [NSBezierPath setDefaultLineWidth:2.0];
+    [path setLineWidth:2.0];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
     [path fill];
     [path stroke];
-    [NSBezierPath setDefaultLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
 }
 
