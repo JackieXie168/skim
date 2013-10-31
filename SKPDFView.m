@@ -3229,6 +3229,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         transform = [NSAffineTransform transform];
         [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
         [transform scaleBy:[self scaleFactor]];
+        [transform prependTransform:[page affineTransformForBox:[self displayBox]]];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
@@ -3262,7 +3263,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [NSGraphicsContext saveGraphicsState];
                 [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
                 [transform concat];
-                [page transformContextForBox:[self displayBox]];
                 [pathColor setStroke];
                 [pathShadow set];
                 [bezierPath stroke];
