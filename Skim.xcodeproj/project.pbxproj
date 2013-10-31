@@ -180,6 +180,7 @@
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7611630EA49D1400301E45 /* SKPrintableView.m */; };
+		CE7A30481822B950007E3D25 /* SKTextNoteFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteFieldCell.m */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
@@ -865,6 +866,8 @@
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Skim.icns; sourceTree = "<group>"; };
 		CE7611620EA49D1400301E45 /* SKPrintableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintableView.h; sourceTree = "<group>"; };
 		CE7611630EA49D1400301E45 /* SKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintableView.m; sourceTree = "<group>"; };
+		CE7A30461822B950007E3D25 /* SKTextNoteFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteFieldCell.h; sourceTree = "<group>"; };
+		CE7A30471822B950007E3D25 /* SKTextNoteFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextNoteFieldCell.m; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimNotes.xcodeproj; path = SkimNotes/SkimNotes.xcodeproj; sourceTree = "<group>"; };
@@ -1653,6 +1656,8 @@
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE3A41560B790C56006B64D3 /* SKDragImageView.h */,
 				CE3A41570B790C56006B64D3 /* SKDragImageView.m */,
+				CE2DED6A0B86334900D0DA12 /* SKFieldEditor.h */,
+				CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */,
 				CECDDBAB0C5BB95F0026AAEC /* SKFindTableView.h */,
 				CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
@@ -1693,12 +1698,12 @@
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
 				CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */,
 				CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */,
+				CE7A30461822B950007E3D25 /* SKTextNoteFieldCell.h */,
+				CE7A30471822B950007E3D25 /* SKTextNoteFieldCell.m */,
 				CEA1D6E70C9984400061A6D4 /* SKTextWithIconCell.h */,
 				CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */,
 				CEA575FB0B9208B60003D2E7 /* SKTocOutlineView.h */,
 				CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */,
-				CE2DED6A0B86334900D0DA12 /* SKFieldEditor.h */,
-				CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */,
 			);
 			name = "Views and Cells";
 			sourceTree = "<group>";
@@ -2564,6 +2569,7 @@
 				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,
 				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
+				CE7A30481822B950007E3D25 /* SKTextNoteFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

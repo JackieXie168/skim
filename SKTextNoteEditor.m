@@ -40,21 +40,9 @@
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
-#import "NSColor_SKExtensions.h"
+#import "SKTextNoteFieldCell.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
-
-@interface SKTextNoteFieldCell : NSTextFieldCell {
-    CGFloat scaleFactor;
-    CGFloat lineWidth;
-    NSArray *dashPattern;
-}
-@property (nonatomic) CGFloat scaleFactor;
-@property (nonatomic) CGFloat lineWidth;
-@property (nonatomic, copy) NSArray *dashPattern;
-@end
-
-#pragma mark -
 
 @interface SKTextNoteEditor (SKPrivate)
 
@@ -228,82 +216,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKTextNoteFieldCell
-
-@synthesize scaleFactor, lineWidth, dashPattern;
-
-- (id)initTextCell:(NSString *)aString {
-    self = [super initTextCell:aString];
-    if (self) {
-        scaleFactor = 1.0;
-        lineWidth = 0.0;
-        dashPattern = nil;
-        [self setEditable:YES];
-        [self setFocusRingType:NSFocusRingTypeNone];
-    }
-    return self;
-}
-
-- (void)setScaleFactor:(CGFloat)newScaleFactor {
-    scaleFactor = newScaleFactor;
-    [(NSControl *)[self controlView] updateCell:self];
-}
-
-- (void)setLineWidth:(CGFloat)newLineWidth {
-    lineWidth = newLineWidth;
-    [(NSControl *)[self controlView] updateCell:self];
-}
-
-- (void)setDashPattern:(NSArray *)newDashPattern {
-    if (dashPattern != newDashPattern) {
-        [dashPattern release];
-        dashPattern = [newDashPattern copy];
-        [(NSControl *)[self controlView] updateCell:self];
-    }
-}
-
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [NSGraphicsContext saveGraphicsState];
-    
-    [[self backgroundColor] setFill];
-    [NSBezierPath fillRect:cellFrame];
-    
-    CGFloat width = [self lineWidth] / [self scaleFactor];
-    if (width > 0.0) {
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * width, 0.5 * width)];
-        NSUInteger count = [[self dashPattern] count];
-        if (count > 0) {
-            if ([controlView isFlipped]) {
-                path = [NSBezierPath bezierPath];
-                [path moveToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
-                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
-                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
-                [path lineToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
-                [path closePath];
-            }
-            NSUInteger i;
-            CGFloat pattern[count];
-            for (i = 0; i < count; i++)
-                pattern[i] = [[[self dashPattern] objectAtIndex:i] doubleValue] / [self scaleFactor];
-            [path setLineDash:pattern count:count phase:0.0];
-        }
-        [path setLineWidth:width];
-        [[NSColor blackColor] setStroke];
-        [path stroke];
-    }
-    
-    [[self showsFirstResponder] ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor] setFill];
-    NSFrameRectWithWidth(cellFrame, 1.0 / [self scaleFactor]);
-    
-    [NSGraphicsContext restoreGraphicsState];
-    
-    [super drawWithFrame:cellFrame inView:controlView];
 }
 
 @end
