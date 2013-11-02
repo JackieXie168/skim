@@ -39,10 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SKPreferencePane.h"
 
-typedef struct _SKTeXEditor {
-    NSString *name, *command, *arguments;
-} SKTeXEditor;
-
 
 @interface SKSyncPreferences : SKPreferencePane {
     NSArray *texEditorLabels;
