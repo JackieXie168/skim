@@ -55,8 +55,8 @@
 }
 
 - (NSArray *)resettableKeys {
-    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
-    return [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[self nibName]];
+    NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
+    return [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[self nibName]];
 }
 
 - (void)defaultsDidRevert {}

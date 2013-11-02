@@ -56,8 +56,8 @@ static NSArray *TeXEditors = nil;
 + (void)initialize {
     SKINITIALIZE;
     
-    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
-    TeXEditors = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:TEXEDITORS_KEY] copy];
+    NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
+    TeXEditors = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:TEXEDITORS_KEY] copy];
 }
 
 - (void)dealloc {
