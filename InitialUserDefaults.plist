@@ -327,5 +327,96 @@
 			<string>SKAppleRemoteSwitchIndicationTimeout</string>
 		</array>
 	</dict>
+	<key>TeXEditors</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>TextMate</string>
+			<key>command</key>
+			<string>mate</string>
+			<key>arguments</key>
+			<string>-l %line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>BBEdit</string>
+			<key>command</key>
+			<string>bbedit</string>
+			<key>arguments</key>
+			<string>+%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>TextWrangler</string>
+			<key>command</key>
+			<string>edit</string>
+			<key>arguments</key>
+			<string>+%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Emacs</string>
+			<key>command</key>
+			<string>emacsclient</string>
+			<key>arguments</key>
+			<string>--no-wait +%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Aquamacs Emacs</string>
+			<key>command</key>
+			<string>emacsclient</string>
+			<key>arguments</key>
+			<string>--no-wait +%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Aquamacs</string>
+			<key>command</key>
+			<string>emacsclient</string>
+			<key>arguments</key>
+			<string>--no-wait +%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>LyX</string>
+			<key>command</key>
+			<string>lyxeditor</string>
+			<key>arguments</key>
+			<string>&quot;%file&quot; %line</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>TeXMaker</string>
+			<key>command</key>
+			<string>texmaker</string>
+			<key>arguments</key>
+			<string>&quot;%file&quot; -line %line</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>AlphaX</string>
+			<key>command</key>
+			<string>alphac</string>
+			<key>arguments</key>
+			<string>+%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>MacVim</string>
+			<key>command</key>
+			<string>mvim</string>
+			<key>arguments</key>
+			<string>--remote-silent +&quot;:%line&quot; &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Sublime Text 2</string>
+			<key>command</key>
+			<string>subl</string>
+			<key>arguments</key>
+			<string>&quot;%file&quot;:%line</string>
+		</dict>
+	</array>
 </dict>
 </plist>
