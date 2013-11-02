@@ -64,7 +64,7 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 - (void)windowDidLoad {
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
-                               withRTF:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ReleaseNotes" ofType:@"rtf"]]];
+                               withRTF:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ReleaseNotes" withExtension:@"rtf"]]];
 }
 
 @end
