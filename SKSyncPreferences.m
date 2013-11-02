@@ -41,23 +41,24 @@
 #import "SKStringConstants.h"
 #import "NSGraphics_SKExtensions.h"
 
-static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %line \"%file\""}, 
-                                     {@"BBEdit",         @"bbedit",      @"+%line \"%file\""}, 
-                                     {@"TextWrangler",   @"edit",        @"+%line \"%file\""}, 
-                                     {@"Emacs",          @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"Aquamacs Emacs", @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"Aquamacs",       @"emacsclient", @"--no-wait +%line \"%file\""}, 
-                                     {@"LyX",            @"lyxeditor",   @"\"%file\" %line"}, 
-                                     {@"TeXMaker",       @"texmaker",    @"\"%file\" -line %line"}, 
-                                     {@"AlphaX",         @"alphac",      @"+%line \"%file\""}, 
-                                     {@"MacVim",         @"mvim",        @"--remote-silent +\":%line\" \"%file\""}, 
-                                     {@"Sublime Text 2", @"subl",        @"\"%file\":%line"}};
-#define SKTeXEditorCount (sizeof(SKTeXEditors) / sizeof(SKTeXEditor))
-#define SKNullTeXEditor ((SKTeXEditor){nil, nil, nil})
+#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
+#define TEXEDITORS_KEY @"TeXEditors"
+#define NAME_KEY @"name"
+#define COMMAND_KEY @"command"
+#define ARGUMENTS_KEY @"arguments"
 
 @implementation SKSyncPreferences
 
 @synthesize texEditorLabels, texEditorControls, customTeXEditor;
+
+static NSArray *TeXEditors = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    
+    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
+    TeXEditors = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] objectForKey:TEXEDITORS_KEY] copy];
+}
 
 - (void)dealloc {
     SKDESTROY(texEditorLabels);
@@ -75,12 +76,12 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
     SKAutoSizeLabelFields(texEditorLabels, texEditorControls, YES);
     
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
-    NSInteger i = SKTeXEditorCount;
+    NSInteger i = [TeXEditors count];
     NSInteger idx = -1;
     NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
     
     while (i--) {
-        NSString *name = SKTeXEditors[i].name;
+        NSString *name = [[TeXEditors objectAtIndex:i] objectForKey:NAME_KEY];
         [texEditorPopUpButton insertItemWithTitle:name atIndex:0];
         if ([name isEqualToString:editorPreset])
             idx = i;
@@ -98,14 +99,15 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
 
 - (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
 
-+ (SKTeXEditor)TeXEditorForPreset:(NSString *)name {
-    NSInteger i = SKTeXEditorCount;
-    while (i--) {
-        SKTeXEditor editor = SKTeXEditors[i];
-        if ([editor.name isEqualToString:name])
-            return editor;
++ (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name {
+    for (NSDictionary *editor in TeXEditors) {
+        if ([[editor objectForKey:NAME_KEY] isEqualToString:name]) {
+            if (command) *command = [editor objectForKey:COMMAND_KEY];
+            if (arguments) *arguments = [editor objectForKey:ARGUMENTS_KEY];
+            return YES;
+        }
     }
-    return SKNullTeXEditor;
+    return NO;
 }
 
 #pragma mark Actions
@@ -114,9 +116,10 @@ static SKTeXEditor SKTeXEditors[] = {{@"TextMate",       @"mate",        @"-l %l
     NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
     NSInteger idx = [sender indexOfSelectedItem];
     if (idx < [sender numberOfItems] - 1) {
+        NSDictionary *editor = [TeXEditors objectAtIndex:idx];
         [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [[sudc values] setValue:SKTeXEditors[idx].command forKey:SKTeXEditorCommandKey];
-        [[sudc values] setValue:SKTeXEditors[idx].arguments forKey:SKTeXEditorArgumentsKey];
+        [[sudc values] setValue:[editor objectForKey:COMMAND_KEY] forKey:SKTeXEditorCommandKey];
+        [[sudc values] setValue:[editor objectForKey:ARGUMENTS_KEY] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
         [[sudc values] setValue:@"" forKey:SKTeXEditorPresetKey];

@@ -1335,12 +1335,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSString *editorCmd = nil;
         NSString *editorArgs = nil;
         NSMutableString *cmdString = nil;
-        SKTeXEditor editor = [SKSyncPreferences TeXEditorForPreset:editorPreset];
         
-        if (editor.name) {
-            editorCmd = editor.command;
-            editorArgs = editor.arguments;
-        } else {
+        if (NO == [SKSyncPreferences getTeXEditorCommand:&editorCmd arguments:&editorArgs forPreset:editorPreset]) {
             editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
             editorArgs = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey];
         }

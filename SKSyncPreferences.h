@@ -53,7 +53,7 @@ typedef struct _SKTeXEditor {
 @property (nonatomic, retain) IBOutlet NSArray *texEditorLabels, *texEditorControls;
 @property (nonatomic, getter=isCustomTeXEditor) BOOL customTeXEditor;
 
-+ (SKTeXEditor)TeXEditorForPreset:(NSString *)name;
++ (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name;
 
 - (IBAction)changeTeXEditorPreset:(id)sender;
 
