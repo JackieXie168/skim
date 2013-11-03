@@ -1183,11 +1183,8 @@ enum {
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    NSCursor *cursor = [self getCursorForEvent:theEvent];
-    if (cursor)
-        [cursor set];
-    else
-        [super mouseMoved:theEvent];
+    [super mouseMoved:theEvent];
+    [[self getCursorForEvent:theEvent] set];
     
     if ([activeAnnotation isLink]) {
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
