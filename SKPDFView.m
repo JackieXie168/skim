@@ -3222,7 +3222,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [layer setAffineTransform:t];
         [[self layer] addSublayer:layer];
     } else {
-        NSRect rect = [self convertRect:[page boundsForBox:[self displayBox]] toDocumentViewFromPage:page];
+        NSRect rect = [self convertRect:[self convertRect:[page boundsForBox:[self displayBox]] fromPage:page] toView:[self documentView]];
         transform = [NSAffineTransform transform];
         [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
         [transform scaleBy:[self scaleFactor]];
