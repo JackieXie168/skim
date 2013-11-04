@@ -99,7 +99,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKLastExportedOptionKey @"SKLastExportedOption"
-#define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
 #define URL_KEY             @"URL"
 #define TYPE_KEY            @"type"
@@ -914,10 +913,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    BOOL disableProgress = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[[self mainWindowController] window] attachedSheet];
+    NSWindow *mainWindow = [[self mainWindowController] window];
+    NSWindow *sheet = nil;
     
-    if (disableProgress == NO)
-        [[self mainWindowController] beginProgressSheetWithMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis] maxValue:0];
+    if ([mainWindow attachedSheet] == nil) {
+        sheet = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [(SKApplication *)NSApp setUserAttentionDisabled:YES];
+        [NSApp beginSheet:sheet modalForWindow:mainWindow modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        [(SKApplication *)NSApp setUserAttentionDisabled:NO];
+    }
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
@@ -931,8 +935,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     SKDESTROY(tmpData);
     
-    if (disableProgress == NO)
-        [[self mainWindowController] dismissProgressSheet];
+    if (sheet) {
+        [NSApp endSheet:sheet];
+        [sheet orderOut:nil];
+        [sheet release];
+    }
     
     return success;
 }
