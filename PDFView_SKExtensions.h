@@ -50,9 +50,6 @@
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 
-- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page;
-- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page;
-
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 
 @end

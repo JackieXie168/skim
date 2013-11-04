@@ -97,14 +97,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     [self setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
 }
 
-- (NSRect)convertRect:(NSRect)rect toDocumentViewFromPage:(PDFPage *)page {
-    return [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
-}
-
-- (NSRect)convertRect:(NSRect)rect fromDocumentViewToPage:(PDFPage *)page {
-    return [self convertRect:[self convertRect:rect fromView:[self documentView]] toPage:page];
-}
-
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
     // eat up mouseDragged/mouseUp events, so we won't get their event handlers
     while (YES) {
