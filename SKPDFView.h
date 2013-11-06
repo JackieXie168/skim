@@ -49,7 +49,6 @@ extern NSString *SKPDFViewDidMoveAnnotationNotification;
 extern NSString *SKPDFViewReadingBarDidChangeNotification;
 extern NSString *SKPDFViewSelectionChangedNotification;
 extern NSString *SKPDFViewMagnificationChangedNotification;
-extern NSString *SKPDFViewDisplayAsBookChangedNotification;
 
 extern NSString *SKPDFViewAnnotationKey;
 extern NSString *SKPDFViewPageKey;
