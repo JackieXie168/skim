@@ -367,7 +367,8 @@ enum {
 - (void)drawDragHighlight {
     [NSGraphicsContext saveGraphicsState];
     [[NSColor blackColor] setFill];
-    NSFrameRectWithWidth([highlightAnnotation bounds], 1.0 / [self scaleFactor]);
+    NSRect rect = [self convertRect:NSIntegralRect([self convertRect:[highlightAnnotation bounds] fromPage:[highlightAnnotation page]]) toPage:[highlightAnnotation page]];
+    NSFrameRectWithWidth(rect, 1.0 / [self scaleFactor]);
     [NSGraphicsContext restoreGraphicsState];
 }
 
