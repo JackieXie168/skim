@@ -3012,10 +3012,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:resizeHandle];
     }
     [NSEvent stopPeriodicEvents];
-    if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
-        [self editActiveAnnotation:self]; 	 
     if (draggedAnnotation)
         [activeAnnotation autoUpdateString];
+    if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
+        [self editActiveAnnotation:self]; 	 
     
     [self setNeedsDisplayForAnnotation:activeAnnotation];
     
