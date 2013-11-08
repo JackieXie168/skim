@@ -281,6 +281,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+    if ([self shouldDisplay] == NO || NSIsEmptyRect([self bounds]))
+        return;
     [NSGraphicsContext saveGraphicsState];
     BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];

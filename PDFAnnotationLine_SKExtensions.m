@@ -135,6 +135,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+    if ([self shouldDisplay] == NO || NSIsEmptyRect([self bounds]))
+        return;
     BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
