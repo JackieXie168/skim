@@ -2975,8 +2975,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     // Hit-test for resize box.
     SKRectEdges resizeHandle = [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]];
-    if (resizeHandle)
-        [self setNeedsDisplayForAnnotation:activeAnnotation];
     
     // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
     BOOL draggedAnnotation = NO;
