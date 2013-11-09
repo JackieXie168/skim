@@ -1164,8 +1164,13 @@ enum {
             } else if (activeAnnotation) {
                 [self doNothingWithEvent:theEvent];
             }
-        } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page) {
-            [self doDrawFreehandNoteWithEvent:theEvent];
+        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO && page) {
+            if (annotationMode == SKInkNote) {
+                [self doDrawFreehandNoteWithEvent:theEvent];
+            } else {
+                [self setActiveAnnotation:nil];
+                [self doDragAnnotationWithEvent:theEvent];
+            }
         } else {
             [self setActiveAnnotation:nil];
             if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
@@ -2972,33 +2977,51 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];
+    BOOL shouldAddAnnotation = activeAnnotation == nil;
+    NSPoint originalStartPoint = NSZeroPoint;
+    NSPoint originalEndPoint = NSZeroPoint;
     
     // Hit-test for resize box.
     SKRectEdges resizeHandle = [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]];
+    
+    if (shouldAddAnnotation) {
+        if (annotationMode == SKAnchoredNote) {
+            originalBounds = SKRectFromCenterAndSize(SKIntegralPoint(pagePoint), SKNPDFAnnotationNoteSize);
+            [self addAnnotationWithType:SKAnchoredNote contents:nil page:page bounds:originalBounds];
+        } else {
+            originalBounds = SKRectFromCenterAndSize(SKIntegralPoint(pagePoint), NSZeroSize);
+            if (annotationMode == SKLineNote) {
+                isLine = YES;
+                resizeHandle = SKMinXEdgeMask;
+                originalStartPoint = originalEndPoint = originalBounds.origin;
+            } else {
+                resizeHandle = SKMaxXEdgeMask | SKMinYEdgeMask;
+            }
+        }
+    } else if (isLine) {
+        originalStartPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation startPoint], originalBounds.origin));
+        originalEndPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation endPoint], originalBounds.origin));
+    }
     
     // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
     BOOL draggedAnnotation = NO;
     NSEvent *lastMouseEvent = theEvent;
     NSPoint offset = SKSubstractPoints(pagePoint, originalBounds.origin);
-    NSPoint originalStartPoint = NSZeroPoint;
-    NSPoint originalEndPoint = NSZeroPoint;
     
-    if (isLine) {
-        originalStartPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation startPoint], originalBounds.origin));
-        originalEndPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation endPoint], originalBounds.origin));
+    if (resizeHandle == 0) {
+        [[NSCursor closedHandCursor] push];
+        [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+    } else {
+        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
     }
     
-    if (resizeHandle == 0)
-        [[NSCursor closedHandCursor] push];
-    else
-        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
-    
-    [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-        if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSLeftMouseUp) {
             break;
-        if ([theEvent type] == NSLeftMouseDragged) {
+        } else if ([theEvent type] == NSLeftMouseDragged) {
+            if (activeAnnotation == nil)
+                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:SKRectFromCenterAndSize(originalBounds.origin, SKMakeSquareSize(MIN_NOTE_SIZE))];
             lastMouseEvent = theEvent;
             draggedAnnotation = YES;
         }
@@ -3009,10 +3032,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         else
             [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:resizeHandle];
     }
-    [NSEvent stopPeriodicEvents];
+    
+    if (resizeHandle == 0)
+        [NSEvent stopPeriodicEvents];
+    
     if (draggedAnnotation)
         [activeAnnotation autoUpdateString];
-    if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
+    
+    if (shouldAddAnnotation && toolMode == SKNoteToolMode && annotationMode == SKFreeTextNote && activeAnnotation)
         [self editActiveAnnotation:self]; 	 
     
     [self setNeedsDisplayForAnnotation:activeAnnotation];
@@ -3108,7 +3135,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
-        } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+        }/* else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
                    ANNOTATION_MODE_IS_MARKUP == NO && annotationMode != SKInkNote &&
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
@@ -3118,7 +3145,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
                 newActiveAnnotation = activeAnnotation;
             }
-        } else if (([newActiveAnnotation isMarkup] || 
+        }*/ else if (([newActiveAnnotation isMarkup] || 
                     (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
                    [NSApp willDragMouse]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
