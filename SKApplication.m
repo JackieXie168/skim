@@ -85,6 +85,10 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         [self setPresentationOptions:options[mode]];
 }
 
+- (BOOL)willDragMouse {
+    return NSLeftMouseDragged == [[self nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type];
+}
+
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
