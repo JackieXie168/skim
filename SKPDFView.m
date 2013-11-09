@@ -3114,7 +3114,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || [NSApp willDragMouse]) {
                 NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
-                NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
+                NSRect bounds = SKRectFromCenterAndSize(SKIntegralPoint(pagePoint), size);
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
                 newActiveAnnotation = activeAnnotation;
             }
