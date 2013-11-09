@@ -50,6 +50,8 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow;
 
+- (BOOL)willDragMouse;
+
 - (id <SKApplicationDelegate>)delegate;
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate;
 

@@ -72,7 +72,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
-
+#import "SKApplication.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -3112,7 +3112,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                    ANNOTATION_MODE_IS_MARKUP == NO && annotationMode != SKInkNote &&
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
-            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+            if (annotationMode == SKAnchoredNote || [NSApp willDragMouse]) {
                 NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
                 NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
@@ -3120,7 +3120,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         } else if (([newActiveAnnotation isMarkup] || 
                     (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
-                   NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+                   [NSApp willDragMouse]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
         } else if ((modifiers & NSShiftKeyMask) && activeAnnotation != newActiveAnnotation && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
