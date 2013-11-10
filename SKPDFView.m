@@ -2871,15 +2871,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSPoint currentPagePoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
     NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
     
-    if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
-        resizeHandle = relPoint.x < 0.0 ? ((resizeHandle & ~SKMaxXEdgeMask) | SKMinXEdgeMask) : ((resizeHandle & ~SKMinXEdgeMask) | SKMaxXEdgeMask);
-        resizeHandle = relPoint.y <= 0.0 ? ((resizeHandle & ~SKMaxYEdgeMask) | SKMinYEdgeMask) : ((resizeHandle & ~SKMinYEdgeMask) | SKMaxYEdgeMask);
-    } else {
-        if ((resizeHandle & SKMinXEdgeMask) && (resizeHandle & SKMaxXEdgeMask))
-            resizeHandle &= relPoint.x < 0.0 ? ~SKMaxXEdgeMask : ~SKMinXEdgeMask;
-        if ((resizeHandle & SKMinYEdgeMask) && (resizeHandle & SKMaxYEdgeMask))
-            resizeHandle &= relPoint.y <= 0.0 ? ~SKMaxYEdgeMask : ~SKMinYEdgeMask;
-    }
+    if (NSEqualSizes(originalBounds.size, NSZeroSize))
+        resizeHandle = (relPoint.x < 0.0 ? SKMinXEdgeMask : SKMaxXEdgeMask) | (relPoint.y <= 0.0 ? SKMinYEdgeMask : SKMaxYEdgeMask);
     
     if (([theEvent modifierFlags] & NSShiftKeyMask)) {
         CGFloat width = NSWidth(newBounds);
@@ -3125,7 +3118,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     }
     
-    if (hideNotes == NO && page != nil) {
+    if (hideNotes == NO && page != nil && newActiveAnnotation != nil) {
         NSUInteger modifiers = [theEvent modifierFlags];
         if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
@@ -3135,18 +3128,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
-        }/* else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-                   ANNOTATION_MODE_IS_MARKUP == NO && annotationMode != SKInkNote &&
-                   NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
-            // add a new annotation immediately, unless this is just a click
-            if (annotationMode == SKAnchoredNote || [NSApp willDragMouse]) {
-                NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
-                NSRect bounds = SKRectFromCenterAndSize(SKIntegralPoint(pagePoint), size);
-                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
-                newActiveAnnotation = activeAnnotation;
-            }
-        }*/ else if (([newActiveAnnotation isMarkup] || 
-                    (isInk && newActiveAnnotation && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
+        } else if (([newActiveAnnotation isMarkup] || 
+                    (isInk && (newActiveAnnotation != activeAnnotation || (modifiers & (NSShiftKeyMask | NSAlphaShiftKeyMask))))) && 
                    [NSApp willDragMouse]) {
             // don't drag markup notes or in freehand tool mode, unless the note was previously selected, so we can select text or draw freehand strokes
             newActiveAnnotation = nil;
