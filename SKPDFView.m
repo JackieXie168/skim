@@ -2864,15 +2864,22 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [activeAnnotation setBounds:newBounds];
 }
 
-- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds resizeHandle:(SKRectEdges)resizeHandle {
+- (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds resizeHandle:(SKRectEdges *)resizeHandlePtr {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds = originalBounds;
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
     NSPoint currentPagePoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
     NSPoint relPoint = SKSubstractPoints(currentPagePoint, originalPagePoint);
+    SKRectEdges resizeHandle = *resizeHandlePtr;
     
-    if (NSEqualSizes(originalBounds.size, NSZeroSize))
-        resizeHandle = (relPoint.x < 0.0 ? SKMinXEdgeMask : SKMaxXEdgeMask) | (relPoint.y <= 0.0 ? SKMinYEdgeMask : SKMaxYEdgeMask);
+    if (NSEqualSizes(originalBounds.size, NSZeroSize)) {
+        SKRectEdges currentResizeHandle = (relPoint.x < 0.0 ? SKMinXEdgeMask : SKMaxXEdgeMask) | (relPoint.y <= 0.0 ? SKMinYEdgeMask : SKMaxYEdgeMask);
+        if (currentResizeHandle != resizeHandle) {
+            *resizeHandlePtr = resizeHandle = currentResizeHandle;
+            [NSCursor pop];
+            [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
+        }
+    }
     
     if (([theEvent modifierFlags] & NSShiftKeyMask)) {
         CGFloat width = NSWidth(newBounds);
@@ -3025,7 +3032,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         else if (isLine)
             [self doResizeLineAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint resizeHandle:resizeHandle];
         else
-            [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:resizeHandle];
+            [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:&resizeHandle];
     }
     
     if (resizeHandle == 0)
