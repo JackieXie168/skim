@@ -16,7 +16,7 @@
 		C88FB7E40674480E006EBB30 /* schema.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7E30674480E006EBB30 /* schema.strings */; };
 		CEE23DEB0ECFA8370013CDF7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23DEA0ECFA8370013CDF7 /* Quartz.framework */; };
 		CEE23E5B0ECFA8F30013CDF7 /* SkimNotesBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
-		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
+		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
 		CEFD60CF0C01D0E40027B933 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60CE0C01D0E40027B933 /* Foundation.framework */; };
 		CEFD60D30C01D1040027B933 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60D20C01D1040027B933 /* ApplicationServices.framework */; };
 		F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F915705F0C020DDF008B68E9 /* AppKit.framework */; };
@@ -68,14 +68,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CEE23E410ECFA88E0013CDF7 /* CopyFiles */ = {
+		CEE23E410ECFA88E0013CDF7 /* Copy Files: Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in CopyFiles */,
+				CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in Copy Files: Frameworks */,
 			);
+			name = "Copy Files: Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -234,9 +235,10 @@
 				8D576311048677EA00EA77CD /* Sources */,
 				8D576313048677EA00EA77CD /* Frameworks */,
 				8D576315048677EA00EA77CD /* Rez */,
-				CEE23E410ECFA88E0013CDF7 /* CopyFiles */,
-				CEE23EA20ED02CBD0013CDF7 /* ShellScript */,
-				CEE23E980ECFB3A30013CDF7 /* ShellScript */,
+				CEE23E410ECFA88E0013CDF7 /* Copy Files: Frameworks */,
+				CEE23EA20ED02CBD0013CDF7 /* Run Script: install_name_tool */,
+				CEE23E980ECFB3A30013CDF7 /* Run Script: Strip headers */,
+				CE0E702B182F06420043AAC3 /* Run Script: Codesign */,
 			);
 			buildRules = (
 			);
@@ -349,26 +351,42 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		CEE23E980ECFB3A30013CDF7 /* ShellScript */ = {
+		CE0E702B182F06420043AAC3 /* Run Script: Codesign */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Codesign";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n";
+			shellScript = "IDENTITY=\"Skim Signing Certificate\"\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${EXECUTABLE_PATH}\"\n\nif ! /usr/bin/codesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}\"\nthen\n\t# lie about exit status so developers aren't forced to have a cert\n\techo \"warning: codesign failed\" >&2\n\techo \"warning: you need a certificate named \\\"${IDENTITY}\\\"\" >&2\n\texit 0\nfi\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\ncodesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}/SkimNotesBase.framework/Versions/A\"\n";
 		};
-		CEE23EA20ED02CBD0013CDF7 /* ShellScript */ = {
+		CEE23E980ECFB3A30013CDF7 /* Run Script: Strip headers */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Strip headers";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${BUILD_STYLE}\" = \"Debug\" -o \"${CONFIGURATION}\" = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n";
+		};
+		CEE23EA20ED02CBD0013CDF7 /* Run Script: install_name_tool */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script: install_name_tool";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
