@@ -2962,7 +2962,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
-    // activeAnnotation should be movable
+    // activeAnnotation should be movable, or nil to be added in an appropriate note tool mode
     
     // Old (current) annotation location and click point relative to it
     NSRect originalBounds = [activeAnnotation bounds];
@@ -3014,7 +3014,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
         } else if ([theEvent type] == NSLeftMouseDragged) {
             if (activeAnnotation == nil)
-                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:SKRectFromCenterAndSize(originalBounds.origin, SKMakeSquareSize(MIN_NOTE_SIZE))];
+                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:SKRectFromCenterAndSquareSize(originalBounds.origin, MIN_NOTE_SIZE)];
             lastMouseEvent = theEvent;
             draggedAnnotation = YES;
         }
@@ -3029,13 +3029,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (resizeHandle == 0)
         [NSEvent stopPeriodicEvents];
     
-    if (draggedAnnotation)
-        [activeAnnotation autoUpdateString];
-    
-    if (shouldAddAnnotation && toolMode == SKNoteToolMode && annotationMode == SKFreeTextNote && activeAnnotation)
-        [self editActiveAnnotation:self]; 	 
-    
-    [self setNeedsDisplayForAnnotation:activeAnnotation];
+    if (activeAnnotation) {
+        if (draggedAnnotation)
+            [activeAnnotation autoUpdateString];
+        
+        if (shouldAddAnnotation && toolMode == SKNoteToolMode && annotationMode == SKFreeTextNote)
+            [self editActiveAnnotation:self]; 	 
+        
+        [self setNeedsDisplayForAnnotation:activeAnnotation];
+    }
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
