@@ -3000,16 +3000,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     BOOL draggedAnnotation = NO;
     NSEvent *lastMouseEvent = theEvent;
     NSPoint offset = SKSubstractPoints(pagePoint, originalBounds.origin);
+    NSUInteger eventMask = NSLeftMouseUpMask | NSLeftMouseDraggedMask;
     
     if (resizeHandle == 0) {
         [[NSCursor closedHandCursor] push];
         [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+        eventMask |= NSPeriodicMask;
     } else {
         [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
     }
     
     while (YES) {
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
+        theEvent = [[self window] nextEventMatchingMask:eventMask];
         if ([theEvent type] == NSLeftMouseUp) {
             break;
         } else if ([theEvent type] == NSLeftMouseDragged) {
