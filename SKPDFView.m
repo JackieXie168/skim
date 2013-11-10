@@ -3415,12 +3415,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	NSRect initialRect = selectionRect;
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
-    if (resizeHandle == 0) {
+    if (resizeHandle == 0)
         [[NSCursor closedHandCursor] push];
-    } else {
+    else
         [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
-        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
-    }
     
 	while (YES) {
         
