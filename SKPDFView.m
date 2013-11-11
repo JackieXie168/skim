@@ -3461,7 +3461,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
             if ((resizeHandle & SKMaxXEdgeMask))
                 width += delta.x;
-            else if (resizeHandle & SKMinXEdgeMask)
+            else if ((resizeHandle & SKMinXEdgeMask))
                 width -= delta.x;
             if ((resizeHandle & SKMaxYEdgeMask))
                 height += delta.y;
