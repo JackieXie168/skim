@@ -3414,6 +3414,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
 	NSRect initialRect = selectionRect;
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
+    SKRectEdges newEffectiveResizeHandle, effectiveResizeHandle = resizeHandle;
     
     if (resizeHandle == 0)
         [[NSCursor closedHandCursor] push];
@@ -3433,6 +3434,23 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         newPoint = [self convertPoint:[theEvent locationInView:self] toPage:page];
         delta = SKSubstractPoints(newPoint, initialPoint);
+        
+        if (resizeHandle) {
+            newEffectiveResizeHandle = 0;
+            if ((resizeHandle & SKMaxXEdgeMask))
+                newEffectiveResizeHandle |= newPoint.x < NSMinX(initialRect) ? SKMinXEdgeMask : SKMaxXEdgeMask;
+            else if ((resizeHandle & SKMinXEdgeMask))
+                newEffectiveResizeHandle |= newPoint.x > NSMaxX(initialRect) ? SKMaxXEdgeMask : SKMinXEdgeMask;
+            if ((resizeHandle & SKMaxYEdgeMask))
+                newEffectiveResizeHandle |= newPoint.y < NSMinY(initialRect) ? SKMinYEdgeMask : SKMaxYEdgeMask;
+            else if ((resizeHandle & SKMinYEdgeMask))
+                newEffectiveResizeHandle |= newPoint.y > NSMaxY(initialRect) ? SKMaxYEdgeMask : SKMinYEdgeMask;
+            if (newEffectiveResizeHandle != effectiveResizeHandle) {
+                effectiveResizeHandle = newEffectiveResizeHandle;
+                [NSCursor pop];
+                [[self cursorForResizeHandle:effectiveResizeHandle rotation:[page rotation]] push];
+            }
+        }
         
         if (resizeHandle == 0) {
             newRect.origin = SKAddPoints(newRect.origin, delta);
