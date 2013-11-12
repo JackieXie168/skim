@@ -155,11 +155,12 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
     return success;
 }
 
-static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSURL *outURL, NSArray *notes, NSError **error) {
+static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSArray *notes, NSError **error) {
     BOOL success = NO;
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *tmpDirPath = nil;
     NSString *tmpPath = nil;
+    NSURL *outURL = [NSURL fileURLWithPath:outPath];
     
     if ([fm fileExistsAtPath:outPath]) {
         tmpDirPath = SKNTemporaryFolderPath();
@@ -255,7 +256,6 @@ int main (int argc, const char * argv[]) {
         NSURL *inURL2 = nil;
         PDFDocument *pdfDoc2 = nil;
         NSString *outPath = argc < offset + 4 ? inPath : SKNNormalizedPath([args objectAtIndex:offset + 3]);
-        NSURL *outURL = [NSURL fileURLWithPath:outPath];
         
         if (action == SKNActionMerge) {
             inPath2 = SKNNormalizedPath([args objectAtIndex:3]);
@@ -282,7 +282,7 @@ int main (int argc, const char * argv[]) {
                 
                 [pdfDoc addSkimNotesWithProperties:notes];
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, nil, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, nil, &error);
                 
             } else {
                 
@@ -340,7 +340,7 @@ int main (int argc, const char * argv[]) {
             
             if ([notes count] > [inNotes count]) {
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
                 
             } else {
                 
@@ -368,14 +368,13 @@ int main (int argc, const char * argv[]) {
                 [mutableNote release];
             }
             
-            success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
+            success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
             
         } else if (action == SKNActionExtract) {
             
             if (argc < 4 || [[args objectAtIndex:3] hasPrefix:@"-"]) {
                 offset = 0;
                 outPath = inPath;
-                outURL = inURL;
             } else {
                 offset = 1;
             }
@@ -447,7 +446,7 @@ int main (int argc, const char * argv[]) {
                     }
                 }
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
                 
             } else {
                 
