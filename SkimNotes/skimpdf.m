@@ -44,7 +44,7 @@
 #import "SKNPDFAnnotationNote.h"
 
 static char *usageStr = "Usage:\n skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n skimpdf merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n skimpdf extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n skimpdf help [VERB]\n skimpdf version";
-static char *versionStr = "SkimPDF command-line client, version 1.1.1";
+static char *versionStr = "SkimPDF command-line client, version 1.1.2";
 
 static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\nUsage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\nWrites PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
 static char *unembedHelpStr = "skimpdf unembed: converts annotations embedded in a PDF to Skim notes\nUsage: skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n\nConverts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\nWrites to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
@@ -68,6 +68,10 @@ static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\
 #define WRITE_OUT(msg)         fprintf(stdout, "%s\n", msg)
 #define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
 #define WRITE_ERROR            fprintf(stderr, "%s\n%s\n", usageStr, versionStr)
+
+#ifndef NSAppKitVersionNumber10_8
+    #define NSAppKitVersionNumber10_8 1187
+#endif
 
 enum {
     SKNActionUnknown,
@@ -124,6 +128,27 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
             *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
         }
         
+    }
+    return success;
+}
+
+static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSURL *outURL, NSArray *notes, NSError **error) {
+    BOOL success = NO;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL didExist = [fm fileExistsAtPath:outPath];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 && didExist)
+        [fm writeSkimNotes:nil toExtendedAttributesAtURL:outURL error:NULL];
+    
+    success = [pdfDoc writeToURL:outURL];
+    
+    if (success == NO) {
+        if (error)
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
+    } else if ([notes count]) {
+        success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:error];
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8 && didExist) {
+        [fm writeSkimNotes:nil toExtendedAttributesAtURL:outURL error:NULL];
     }
     return success;
 }
@@ -224,16 +249,9 @@ int main (int argc, const char * argv[]) {
             
             if ([notes count]) {
                 
-                BOOL didExist = [fm fileExistsAtPath:outPath];
-                
                 [pdfDoc addSkimNotesWithProperties:notes];
-                success = [pdfDoc writeToURL:outURL];
                 
-                if (success == NO) {
-                    error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-                } else if (didExist) {
-                    [fm writeSkimNotes:nil toExtendedAttributesAtURL:outURL error:NULL];
-                }
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, nil, &error);
                 
             } else {
                 
@@ -291,13 +309,7 @@ int main (int argc, const char * argv[]) {
             
             if ([notes count] > [inNotes count]) {
                 
-                success = [pdfDoc writeToURL:outURL];
-                
-                if (success == NO) {
-                    error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-                } else {
-                    success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
-                }
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
                 
             } else {
                 
@@ -325,13 +337,7 @@ int main (int argc, const char * argv[]) {
                 [mutableNote release];
             }
             
-            success = [pdfDoc writeToURL:outURL];
-            
-            if (success == NO) {
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-            } else {
-                success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
-            }
+            success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
             
         } else if (action == SKNActionExtract) {
             
@@ -410,13 +416,7 @@ int main (int argc, const char * argv[]) {
                     }
                 }
                 
-                success = [pdfDoc writeToURL:outURL];
-                
-                if (success == NO) {
-                    error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-                } else {
-                    success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:&error];
-                }
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, outURL, notes, &error);
                 
             } else {
                 
