@@ -131,27 +131,14 @@ static inline NSString *SKNNormalizedPath(NSString *path) {
     return path;
 }
 
-static inline NSString *SKNTemporaryFolderPath() {
-    char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"skimpdf.XXXXXX"] fileSystemRepresentation]);
-    const char *tempPath = mkdtemp(template);
-    NSString *tempFolderPath = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)];
-    free(template);
-    return tempFolderPath;
-}
-
 static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSArray *notes, NSError **error) {
     BOOL success = YES;
     
     if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSString *tmpDirPath = nil;
-        NSString *tmpPath = nil;
         
-        if ([fm fileExistsAtPath:outPath]) {
-            tmpDirPath = SKNTemporaryFolderPath();
-            tmpPath = [tmpDirPath stringByAppendingPathComponent:[outPath lastPathComponent]];
-            [fm moveItemAtPath:outPath toPath:tmpPath error:NULL];
-        }
+        if ([fm fileExistsAtPath:outPath])
+            [fm removeItemAtPath:outPath error:NULL];
         
         success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
         
@@ -162,14 +149,9 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
             NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
             success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL error:error];
         } else {
-            if (tmpPath)
-                [fm moveItemAtPath:tmpPath toPath:outPath error:NULL];
             if (error)
                 *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
         }
-        
-        if (tmpDirPath)
-            [fm removeItemAtPath:tmpDirPath error:NULL];
         
     }
     
@@ -179,29 +161,33 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
 static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSArray *notes, NSError **error) {
     BOOL success = NO;
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *tmpDirPath = nil;
-    NSString *tmpPath = nil;
-    NSURL *outURL = [NSURL fileURLWithPath:outPath];
+    char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"skimpdf.XXXXXX"] fileSystemRepresentation]);
+    const char *tempPath = mkdtemp(template);
+    NSString *tmpDirPath = [fm stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)];
+    NSString *tmpPath = [tmpDirPath stringByAppendingPathComponent:[outPath lastPathComponent]];
+    free(template);
     
-    if ([fm fileExistsAtPath:outPath]) {
-        tmpDirPath = SKNTemporaryFolderPath();
-        tmpPath = [tmpDirPath stringByAppendingPathComponent:[outPath lastPathComponent]];
-        [fm moveItemAtPath:outPath toPath:tmpPath error:NULL];
-    }
+    success = [pdfDoc writeToFile:tmpPath];
     
-    success = [pdfDoc writeToURL:outURL];
-    
-    if (success == NO) {
-        if (tmpPath)
-            [fm moveItemAtPath:tmpPath toPath:outPath error:NULL];
-        if (error)
+    if (success) {
+        if ([fm fileExistsAtPath:outPath])
+            [fm removeItemAtPath:outPath error:NULL];
+        
+        success = [fm moveItemAtPath:tmpPath toPath:outPath error:NULL];
+        
+        if (success) {
+            if ([notes count]) {
+                NSURL *outURL = [NSURL fileURLWithPath:outPath];
+                success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:error];
+            }
+        } else if (error) {
             *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
-    } else if ([notes count]) {
-        success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:error];
+        }
+    } else if (error) {
+        *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
     }
     
-    if (tmpDirPath)
-        [fm removeItemAtPath:tmpDirPath error:NULL];
+    [fm removeItemAtPath:tmpDirPath error:NULL];
     
     return success;
 }
