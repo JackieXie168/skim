@@ -4192,6 +4192,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         cursor = [NSCursor arrowCursor];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+        NSInteger readingBarArea = (area & kPDFLinkArea) == 0 ? [self readingBarAreaForMouse:theEvent] : SKReadingBarNoArea;
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         SKRectEdges resizeHandle;
@@ -4200,7 +4201,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                NSInteger readingBarArea = (area & kPDFLinkArea) == 0 ? [self readingBarAreaForMouse:theEvent] : SKReadingBarNoArea;
                 BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && editor == nil;
                 if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
                     area = kPDFAnnotationArea;
@@ -4225,12 +4225,21 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             case SKMoveToolMode:
                 if ((area & kPDFLinkArea))
                     cursor = [NSCursor pointingHandCursor];
+                else if (readingBarArea == SKReadingBarDragArea)
+                    cursor = [NSCursor openHandBarCursor];
+                else if (readingBarArea == SKReadingBarResizeArea)
+                    cursor = [NSCursor resizeUpDownCursor];
                 else
                     cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
                 if (area == kPDFNoArea) {
-                    cursor = [NSCursor openHandCursor];
+                    if (readingBarArea == SKReadingBarDragArea)
+                        cursor = [NSCursor openHandBarCursor];
+                    else if (readingBarArea == SKReadingBarResizeArea)
+                        cursor = [NSCursor resizeUpDownCursor];
+                    else
+                        cursor = [NSCursor openHandCursor];
                 } else {
                     resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor]);
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
@@ -4239,12 +4248,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 }
                 break;
             case SKMagnifyToolMode:
-                if (area == kPDFNoArea)
-                    cursor = [NSCursor openHandCursor];
-                else if (([theEvent modifierFlags] & NSShiftKeyMask))
+                if (area == kPDFNoArea) {
+                    if (readingBarArea == SKReadingBarDragArea)
+                        cursor = [NSCursor openHandBarCursor];
+                    else if (readingBarArea == SKReadingBarResizeArea)
+                        cursor = [NSCursor resizeUpDownCursor];
+                    else
+                        cursor = [NSCursor openHandCursor];
+                } else if (([theEvent modifierFlags] & NSShiftKeyMask)) {
                     cursor = [NSCursor zoomOutCursor];
-                else
+                } else {
                     cursor = [NSCursor zoomInCursor];
+                }
                 break;
         }
     }
@@ -4269,11 +4284,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return SKReadingBarNoArea;
     NSPoint p = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:p nearest:YES];
-    if (page == nil || [[readingBar page] isEqual:page] == NO)
+    if ([[readingBar page] isEqual:page] == NO)
         return SKReadingBarNoArea;
     p = [self convertPoint:p toPage:page];
     NSRect bounds = [readingBar currentBounds];
-    if (p.y < NSMinY(bounds) && p.y > NSMaxY(bounds))
+    if (p.y < NSMinY(bounds) || p.y > NSMaxY(bounds))
         return SKReadingBarNoArea;
     return (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT) ? SKReadingBarResizeArea : SKReadingBarDragArea;
 }
