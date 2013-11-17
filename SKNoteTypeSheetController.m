@@ -41,7 +41,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import <SKimNotes/SkimNotes.h>
+#import <SkimNotes/SkimNotes.h>
 
 #define NOTETYPES_COUNT 9
 
