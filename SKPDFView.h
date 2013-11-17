@@ -77,6 +77,11 @@ enum {
 };
 typedef NSInteger SKNoteType;
 
+enum {
+    SKReadingBarArea = 1 << 16,
+    SKReadingBarResizeArea = 1 << 17
+};
+
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
 
 @interface SKPDFView : PDFView {
@@ -176,6 +181,8 @@ typedef NSInteger SKNoteType;
 - (void)removePDFToolTipRects;
 
 - (void)resetHistory;
+
+- (PDFAreaOfInterest)extendedAreaOfInterestForMouse:(NSEvent *)theEvent;
 
 - (NSArray *)accessibilityChildren;
 - (id)accessibilityChildAtPoint:(NSPoint)point;
