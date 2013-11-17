@@ -4193,20 +4193,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
-                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && editor == nil;
-                if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
-                    area |= kPDFAnnotationArea;
-                BOOL canSelectOrDrag = (area & kPDFNoArea) == 0 || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
+                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page];
                 
                 if ((area & kPDFLinkArea) == 0 & (area & SKReadingBarArea))
                     cursor = (area & SKReadingBarResizeArea) ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
-                else if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds]))
+                else if (editor && isOnActiveAnnotationPage && NSPointInRect(p, [activeAnnotation bounds]))
                     cursor = [NSCursor IBeamCursor];
-                else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                else if (editor == nil && isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
-                else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
+                else if (editor == nil && isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     cursor = [NSCursor openHandCursor];
-                else if ((area & kPDFPageArea) == 0 || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [self hasTextNearMouse:theEvent] == NO))
+                else if ((area & kPDFPageArea) == 0 || ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [self hasTextNearMouse:theEvent] == NO))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode)
                     cursor = [self cursorForNoteToolMode];
