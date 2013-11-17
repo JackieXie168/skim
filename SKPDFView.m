@@ -144,6 +144,12 @@ enum {
     SKNavigationEverywhere,
 };
 
+enum {
+    SKReadingBarNoArea,
+    SKReadingBarDragArea,
+    SKReadingBarResizeArea
+};
+
 #pragma mark -
 
 @interface SKPDFView (Private)
@@ -179,6 +185,7 @@ enum {
 - (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
 - (void)doUpdateCursor;
+- (NSInteger)readingBarAreaForMouse:(NSEvent *)theEvent;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
@@ -1100,6 +1107,13 @@ enum {
     }
 }
 
+- (BOOL)hasTextNearMouse:(NSEvent *)theEvent {
+    NSPoint p = [theEvent locationInView:self];
+    PDFPage *page = [self pageForPoint:p nearest:YES];
+    p = [self convertPoint:p toPage:page];
+    return [[page selectionForRect:NSMakeRect(p.x - TEXT_SELECT_MARGIN_X, p.y - TEXT_SELECT_MARGIN_Y, 2.0 * TEXT_SELECT_MARGIN_X, 2.0 * TEXT_SELECT_MARGIN_Y)] hasCharacters];
+}
+
 - (void)mouseDown:(NSEvent *)theEvent{
     if ([activeAnnotation isLink])
         [self setActiveAnnotation:nil];
@@ -1128,12 +1142,10 @@ enum {
         [self doPdfsyncWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-        NSPoint p = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:p nearest:YES];
-        p = [self convertPoint:p toPage:page];
+        NSInteger readingBarArea = [self readingBarAreaForMouse:theEvent];
         
-        if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && area != kPDFLinkArea && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
-            if (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT)
+        if ((area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && readingBarArea != SKReadingBarNoArea) {
+            if (readingBarArea == SKReadingBarResizeArea)
                 [self doResizeReadingBarWithEvent:theEvent];
             else
                 [self doDragReadingBarWithEvent:theEvent];
@@ -1164,7 +1176,7 @@ enum {
             } else if (activeAnnotation) {
                 [self doNothingWithEvent:theEvent];
             }
-        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO && page) {
+        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO && (area & kPDFPageArea) != 0) {
             if (annotationMode == SKInkNote) {
                 [self doDrawFreehandNoteWithEvent:theEvent];
             } else {
@@ -1175,7 +1187,7 @@ enum {
             [self setActiveAnnotation:nil];
             if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
                 [self doNothingWithEvent:theEvent];
-            } else if (area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:NSMakeRect(p.x - TEXT_SELECT_MARGIN_X, p.y - TEXT_SELECT_MARGIN_Y, 2.0 * TEXT_SELECT_MARGIN_X, 2.0 * TEXT_SELECT_MARGIN_Y)] hasCharacters] == NO) {
+            } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
                 [self doDragWithEvent:theEvent];
             } else {
                 [super mouseDown:theEvent];
@@ -4188,20 +4200,23 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             case SKTextToolMode:
             case SKNoteToolMode:
             {
+                NSInteger readingBarArea = (area & kPDFLinkArea) == 0 ? [self readingBarAreaForMouse:theEvent] : SKReadingBarNoArea;
                 BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page] && editor == nil;
                 if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]] != 0)
                     area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP;
                 
-                if (readingBar && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds]))
-                    cursor = p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
+                if (readingBarArea == SKReadingBarDragArea)
+                    cursor = [NSCursor openHandBarCursor];
+                else if (readingBarArea == SKReadingBarResizeArea)
+                    cursor = [NSCursor resizeUpDownCursor];
                 else if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds]))
                     cursor = [NSCursor IBeamCursor];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     cursor = [NSCursor openHandCursor];
-                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
+                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [self hasTextNearMouse:theEvent] == NO))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode)
                     cursor = [self cursorForNoteToolMode];
@@ -4247,6 +4262,20 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                                       clickCount:1
                                         pressure:0.0];
     [[self getCursorForEvent:event] set];
+}
+
+- (NSInteger)readingBarAreaForMouse:(NSEvent *)theEvent {
+    if (readingBar == nil)
+        return SKReadingBarNoArea;
+    NSPoint p = [theEvent locationInView:self];
+    PDFPage *page = [self pageForPoint:p nearest:YES];
+    if (page == nil || [[readingBar page] isEqual:page] == NO)
+        return SKReadingBarNoArea;
+    p = [self convertPoint:p toPage:page];
+    NSRect bounds = [readingBar currentBounds];
+    if (p.y < NSMinY(bounds) && p.y > NSMaxY(bounds))
+        return SKReadingBarNoArea;
+    return (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT) ? SKReadingBarResizeArea : SKReadingBarDragArea;
 }
 
 @end
