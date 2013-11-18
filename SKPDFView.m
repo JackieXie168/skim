@@ -1169,25 +1169,22 @@ enum {
             } else if (activeAnnotation) {
                 [self doNothingWithEvent:theEvent];
             }
-        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO && (area & kPDFPageArea) != 0) {
+        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
             if (annotationMode == SKInkNote) {
                 [self doDrawFreehandNoteWithEvent:theEvent];
             } else {
                 [self setActiveAnnotation:nil];
                 [self doDragAnnotationWithEvent:theEvent];
             }
+        } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
+            [self setActiveAnnotation:nil];
+            [self doDragWithEvent:theEvent];
         } else {
             [self setActiveAnnotation:nil];
-            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
-                [self doNothingWithEvent:theEvent];
-            } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
-                [self doDragWithEvent:theEvent];
-            } else {
-                [super mouseDown:theEvent];
-                if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
-                    [self addAnnotationWithType:annotationMode];
-                    [self setCurrentSelection:nil];
-                }
+            [super mouseDown:theEvent];
+            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
+                [self addAnnotationWithType:annotationMode];
+                [self setCurrentSelection:nil];
             }
         }
     }
