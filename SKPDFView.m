@@ -1142,7 +1142,7 @@ enum {
                 [self doResizeReadingBarWithEvent:theEvent];
             else
                 [self doDragReadingBarWithEvent:theEvent];
-        } else if ((area & kPDFPageArea)) {
+        } else if ((area & kPDFPageArea) == 0) {
             [self doDragWithEvent:theEvent];
         } else if (toolMode == SKMoveToolMode) {
             [self setCurrentSelection:nil];                
