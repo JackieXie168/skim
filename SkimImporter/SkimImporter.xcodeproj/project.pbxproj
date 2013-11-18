@@ -363,7 +363,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "IDENTITY=\"Skim Signing Certificate\"\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${EXECUTABLE_PATH}\"\n\nif ! /usr/bin/codesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}\"\nthen\n\t# lie about exit status so developers aren't forced to have a cert\n\techo \"warning: codesign failed\" >&2\n\techo \"warning: you need a certificate named \\\"${IDENTITY}\\\"\" >&2\n\texit 0\nfi\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\ncodesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}/SkimNotesBase.framework/Versions/A\"\n";
+			shellScript = "IDENTITY=\"Skim Signing Certificate\"\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\ncodesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}/SkimNotesBase.framework/Versions/A\"\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${EXECUTABLE_PATH}\"\n\nif ! /usr/bin/codesign --verbose --force --sign \"${IDENTITY}\" \"${LOCATION}\"\nthen\n\t# lie about exit status so developers aren't forced to have a cert\n\techo \"warning: codesign failed\" >&2\n\techo \"warning: you need a certificate named \\\"${IDENTITY}\\\"\" >&2\n\texit 0\nfi\n";
 		};
 		CEE23E980ECFB3A30013CDF7 /* Run Script: Strip headers */ = {
 			isa = PBXShellScriptBuildPhase;
