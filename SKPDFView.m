@@ -4269,7 +4269,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             NSRect bounds = [readingBar currentBounds];
             if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
                 area |= SKReadingBarArea;
-                if (p.y < NSMinY([readingBar currentBounds]) + READINGBAR_RESIZE_EDGE_HEIGHT)
+                if (p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT)
                     area |= SKReadingBarResizeArea;
             }
         }
