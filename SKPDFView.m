@@ -1116,6 +1116,7 @@ enum {
     [[self window] makeFirstResponder:self];
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
+    PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
@@ -1123,7 +1124,7 @@ enum {
         if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSPenPointingDevice) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
-        } else if (([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)) {
+        } else if ((area & kPDFLinkArea)) {
             [super mouseDown:theEvent];
         } else {
             [self goToNextPage:self];
@@ -1134,58 +1135,54 @@ enum {
         [self doSelectSnapshotWithEvent:theEvent];
     } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         [self doPdfsyncWithEvent:theEvent];
-    } else {
-        PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
-        
-        if (((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && (area & SKReadingBarArea) != 0) {
-            if ((area & SKReadingBarResizeArea))
-                [self doResizeReadingBarWithEvent:theEvent];
-            else
-                [self doDragReadingBarWithEvent:theEvent];
-        } else if ((area & kPDFPageArea) == 0) {
-            [self doDragWithEvent:theEvent];
-        } else if (toolMode == SKMoveToolMode) {
-            [self setCurrentSelection:nil];                
-            if ((area & kPDFLinkArea))
-                [super mouseDown:theEvent];
-            else
-                [self doDragWithEvent:theEvent];	
-        } else if (toolMode == SKSelectToolMode) {
-            [self setCurrentSelection:nil];                
-            [self doSelectWithEvent:theEvent];
-        } else if (toolMode == SKMagnifyToolMode) {
-            [self setCurrentSelection:nil];
-            [self doMagnifyWithEvent:theEvent];
-        } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
-            [self doEraseAnnotationsWithEvent:theEvent];
-        } else if ([self doSelectAnnotationWithEvent:theEvent]) {
-            if ([activeAnnotation isLink]) {
-                [self doSelectLinkAnnotationWithEvent:theEvent];
-            } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
-                [self doNothingWithEvent:theEvent];
-                [self editActiveAnnotation:nil];
-            } else if ([activeAnnotation isMovable]) {
-                [self doDragAnnotationWithEvent:theEvent];
-            } else if (activeAnnotation) {
-                [self doNothingWithEvent:theEvent];
-            }
-        } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
-            if (annotationMode == SKInkNote) {
-                [self doDrawFreehandNoteWithEvent:theEvent];
-            } else {
-                [self setActiveAnnotation:nil];
-                [self doDragAnnotationWithEvent:theEvent];
-            }
-        } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
-            [self setActiveAnnotation:nil];
-            [self doDragWithEvent:theEvent];
+    } else if (((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && (area & SKReadingBarArea) != 0) {
+        if ((area & SKReadingBarResizeArea))
+            [self doResizeReadingBarWithEvent:theEvent];
+        else
+            [self doDragReadingBarWithEvent:theEvent];
+    } else if ((area & kPDFPageArea) == 0) {
+        [self doDragWithEvent:theEvent];
+    } else if (toolMode == SKMoveToolMode) {
+        [self setCurrentSelection:nil];                
+        if ((area & kPDFLinkArea))
+            [super mouseDown:theEvent];
+        else
+            [self doDragWithEvent:theEvent];	
+    } else if (toolMode == SKSelectToolMode) {
+        [self setCurrentSelection:nil];                
+        [self doSelectWithEvent:theEvent];
+    } else if (toolMode == SKMagnifyToolMode) {
+        [self setCurrentSelection:nil];
+        [self doMagnifyWithEvent:theEvent];
+    } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
+        [self doEraseAnnotationsWithEvent:theEvent];
+    } else if ([self doSelectAnnotationWithEvent:theEvent]) {
+        if ([activeAnnotation isLink]) {
+            [self doSelectLinkAnnotationWithEvent:theEvent];
+        } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
+            [self doNothingWithEvent:theEvent];
+            [self editActiveAnnotation:nil];
+        } else if ([activeAnnotation isMovable]) {
+            [self doDragAnnotationWithEvent:theEvent];
+        } else if (activeAnnotation) {
+            [self doNothingWithEvent:theEvent];
+        }
+    } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
+        if (annotationMode == SKInkNote) {
+            [self doDrawFreehandNoteWithEvent:theEvent];
         } else {
             [self setActiveAnnotation:nil];
-            [super mouseDown:theEvent];
-            if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
-                [self addAnnotationWithType:annotationMode];
-                [self setCurrentSelection:nil];
-            }
+            [self doDragAnnotationWithEvent:theEvent];
+        }
+    } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
+        [self setActiveAnnotation:nil];
+        [self doDragWithEvent:theEvent];
+    } else {
+        [self setActiveAnnotation:nil];
+        [super mouseDown:theEvent];
+        if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
+            [self addAnnotationWithType:annotationMode];
+            [self setCurrentSelection:nil];
         }
     }
 }
