@@ -82,8 +82,7 @@
 #define READINGBAR_RESIZE_EDGE_HEIGHT 3.0
 #define NAVIGATION_BOTTOM_EDGE_HEIGHT 3.0
 
-#define TEXT_SELECT_MARGIN_X 40.0
-#define TEXT_SELECT_MARGIN_Y 50.0
+#define TEXT_SELECT_MARGIN_SIZE ((NSSize){80.0, 100.0})
 
 #define TOOLTIP_OFFSET_FRACTION 0.3
 
@@ -1105,7 +1104,7 @@ enum {
     NSPoint p = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:p nearest:YES];
     p = [self convertPoint:p toPage:page];
-    return [[page selectionForRect:NSMakeRect(p.x - TEXT_SELECT_MARGIN_X, p.y - TEXT_SELECT_MARGIN_Y, 2.0 * TEXT_SELECT_MARGIN_X, 2.0 * TEXT_SELECT_MARGIN_Y)] hasCharacters];
+    return [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
