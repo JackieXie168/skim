@@ -1107,6 +1107,8 @@ enum {
     return [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters];
 }
 
+#define IS_TABLET_EVENT(theEvent, deviceType) (([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == deviceType)
+
 - (void)mouseDown:(NSEvent *)theEvent{
     if ([activeAnnotation isLink])
         [self setActiveAnnotation:nil];
@@ -1120,7 +1122,7 @@ enum {
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
     } else if (interactionMode == SKPresentationMode) {
-        if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSPenPointingDevice) {
+        if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSPenPointingDevice)) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
         } else if ((area & kPDFLinkArea)) {
@@ -1153,7 +1155,7 @@ enum {
     } else if (toolMode == SKMagnifyToolMode) {
         [self setCurrentSelection:nil];
         [self doMagnifyWithEvent:theEvent];
-    } else if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == NSEraserPointingDevice) {
+    } else if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSEraserPointingDevice)) {
         [self doEraseAnnotationsWithEvent:theEvent];
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink]) {
