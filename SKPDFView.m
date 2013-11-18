@@ -1137,7 +1137,7 @@ enum {
     } else {
         PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
         
-        if (((area & kPDFNoArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && (area & SKReadingBarArea) != 0) {
+        if (((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && (area & SKReadingBarArea) != 0) {
             if ((area & SKReadingBarResizeArea))
                 [self doResizeReadingBarWithEvent:theEvent];
             else
