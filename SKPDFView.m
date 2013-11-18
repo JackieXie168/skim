@@ -1135,7 +1135,7 @@ enum {
         [self doSelectSnapshotWithEvent:theEvent];
     } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         [self doPdfsyncWithEvent:theEvent];
-    } else if (((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode && (area & kPDFLinkArea) == 0)) && (area & SKReadingBarArea) != 0) {
+    } else if ((area & SKReadingBarArea) && (area & kPDFLinkArea) == 0 && ((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode))) {
         if ((area & SKReadingBarResizeArea))
             [self doResizeReadingBarWithEvent:theEvent];
         else
