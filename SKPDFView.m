@@ -2992,7 +2992,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             originalBounds = SKRectFromCenterAndSize(SKIntegralPoint(pagePoint), NSZeroSize);
             if (annotationMode == SKLineNote) {
                 isLine = YES;
-                resizeHandle = SKMinXEdgeMask;
+                resizeHandle = SKMaxXEdgeMask;
                 originalStartPoint = originalEndPoint = originalBounds.origin;
             } else {
                 resizeHandle = SKMaxXEdgeMask | SKMinYEdgeMask;
