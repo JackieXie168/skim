@@ -126,10 +126,10 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         return 0;
     NSSize size = SKMakeSquareSize(8.0 / scaleFactor);
     point = SKSubstractPoints(point, [self bounds].origin);
-    if (NSPointInRect(point, SKRectFromCenterAndSize([self startPoint], size)))
-        return SKMinXEdgeMask;
-    else if (NSPointInRect(point, SKRectFromCenterAndSize([self endPoint], size)))
+    if (NSPointInRect(point, SKRectFromCenterAndSize([self endPoint], size)))
         return SKMaxXEdgeMask;
+    else if (NSPointInRect(point, SKRectFromCenterAndSize([self startPoint], size)))
+        return SKMinXEdgeMask;
     else
         return 0;
 }
