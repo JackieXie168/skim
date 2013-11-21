@@ -4190,7 +4190,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             {
                 BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page];
                 
-                if ((area & kPDFLinkArea) == 0 & (area & SKReadingBarArea))
+                if ((area & kPDFLinkArea) == 0 && (area & SKReadingBarArea))
                     cursor = (area & SKReadingBarResizeArea) ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
                 else if (editor && isOnActiveAnnotationPage && NSPointInRect(p, [activeAnnotation bounds]))
                     cursor = [NSCursor IBeamCursor];
