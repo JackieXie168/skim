@@ -57,15 +57,9 @@ static id (*original_toolTip)(id, SEL) = NULL;
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
     if ([self shouldDisplay] == NO || NSIsEmptyRect([self bounds]))
         return;
-    NSRect rect = NSInsetRect(NSIntegralRect([self bounds]), 1.0, 1.0);
-    CGFloat radius = floor(0.3 * NSHeight(rect));
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
     [NSGraphicsContext saveGraphicsState];
-    [path setLineWidth:2.0];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
-    [path fill];
-    [path stroke];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] setFill];
+    [NSBezierPath fillRect:NSIntegralRect([self bounds])];
     [NSGraphicsContext restoreGraphicsState];
 }
 
