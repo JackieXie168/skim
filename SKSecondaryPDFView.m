@@ -584,10 +584,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)mouseMoved:(NSEvent *)theEvent {
 	NSView *view = [self documentView];
     NSPoint mouseLoc = [theEvent locationInView:view];
-    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]))
-        [[NSCursor openHandCursor] set];
-    else
+    NSUInteger modifiers = [theEvent standardModifierFlags];
+    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]) == NO || modifiers == NSCommandKeyMask || modifiers == (NSCommandKeyMask | NSShiftKeyMask))
         [[NSCursor arrowCursor] set];
+    else
+        [[NSCursor openHandCursor] set];
 }
 
 #pragma mark Notification handling
