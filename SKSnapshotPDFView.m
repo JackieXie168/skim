@@ -429,7 +429,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)mouseDown:(NSEvent *)theEvent{
     [[self window] makeFirstResponder:self];
-	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
+	if ([theEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask)) {
         
         [self doPdfsyncWithEvent:theEvent];
         
@@ -460,6 +460,15 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
         
     }
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent {
+	NSView *view = [self documentView];
+    NSPoint mouseLoc = [theEvent locationInView:view];
+    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]) == NO || [theEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask))
+        [[NSCursor arrowCursor] set];
+    else
+        [[NSCursor openHandCursor] set];
 }
 
 @end
