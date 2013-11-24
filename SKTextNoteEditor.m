@@ -37,10 +37,11 @@
  */
 
 #import "SKTextNoteEditor.h"
+#import "SKTextNoteFieldCell.h"
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
-#import "SKTextNoteFieldCell.h"
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
@@ -55,6 +56,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)updateScaleFactor;
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handlePageBoundsChangedNotification:(NSNotification *)notification;
 
 @end
 
@@ -79,6 +81,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageBoundsChangedNotification:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
     }
     return self;
 }
@@ -197,6 +200,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)handleScaleChangedNotification:(NSNotification *)notification  {
     [self updateFrame];
     [self updateScaleFactor];
+}
+
+- (void)handlePageBoundsChangedNotification:(NSNotification *)notification  {
+    [self updateFrame];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
