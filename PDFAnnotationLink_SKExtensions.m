@@ -55,7 +55,7 @@ static id (*original_toolTip)(id, SEL) = NULL;
 }
 
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
-    if ([self shouldDisplay] == NO || NSIsEmptyRect([self bounds]))
+    if (NSIsEmptyRect([self bounds]))
         return;
     [NSGraphicsContext saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] setFill];
