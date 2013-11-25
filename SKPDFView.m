@@ -392,7 +392,7 @@ enum {
     
     [pdfPage transformContextForBox:[self displayBox]];
     
-    if ([[activeAnnotation page] isEqual:pdfPage] && editor == nil)
+    if ([[activeAnnotation page] isEqual:pdfPage])
         [activeAnnotation drawSelectionHighlightForView:self];
     
     if (readingBar)
@@ -1114,7 +1114,12 @@ enum {
         [self setActiveAnnotation:nil];
     
     // 10.6 does not automatically make us firstResponder, that's annoying
-    [[self window] makeFirstResponder:self];
+    // but we don't want an edited text note to stop editing when we're resizing it
+    NSTextField *editTextField = [self editTextField];
+    if ([editTextField superview] == nil)
+        [[self window] makeFirstResponder:self];
+    else if (editTextField && [editTextField currentEditor] == nil)
+        [editTextField selectText:nil];
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
@@ -3095,7 +3100,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     // Get mouse in "page space".
     pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
     
-    if ([activeAnnotation page] == page && editor == nil && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
+    if ([activeAnnotation page] == page && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
         newActiveAnnotation = activeAnnotation;
     } else {
         
@@ -4194,9 +4199,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     cursor = (area & SKReadingBarResizeArea) ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
                 else if (editor && isOnActiveAnnotationPage && NSPointInRect(p, [activeAnnotation bounds]))
                     cursor = [NSCursor IBeamCursor];
-                else if (editor == nil && isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
                     cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
-                else if (editor == nil && isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
+                else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     cursor = [NSCursor openHandCursor];
                 else if ((area & kPDFPageArea) == 0 || ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [self hasTextNearMouse:theEvent] == NO))
                     cursor = [NSCursor openHandCursor];

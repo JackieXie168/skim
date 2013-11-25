@@ -282,7 +282,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
-    if ([self shouldDisplay] == NO || NSIsEmptyRect([self bounds]))
+    if (NSIsEmptyRect([self bounds]))
         return;
     // archived annotations (or annotations we didn't create) won't have these
     if ([self hasLineRects] == NO)
