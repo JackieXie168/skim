@@ -2278,6 +2278,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (BOOL)becomeFirstResponder {
+    if ([[self editTextField] superview] && [[self window] keyViewSelectionDirection] != NSDirectSelection) {
+        [[self editTextField] selectText:nil];
+        [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    
     if ([super becomeFirstResponder]) {
         [self handleKeyStateChangedNotification:nil];
         return YES;
