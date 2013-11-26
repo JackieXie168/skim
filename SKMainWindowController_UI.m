@@ -1444,14 +1444,10 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
         return YES;
     } else if (action == @selector(changeDisplaySinglePages:)) {
-        BOOL displaySinglePages1 = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
-        BOOL displaySinglePages2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePage;
-        [menuItem setState:displaySinglePages1 == displaySinglePages2 ? NSOnState : NSOffState];
+        [menuItem setState:([pdfView displayMode] | kPDFDisplayTwoUp) == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayContinuous:)) {
-        BOOL displayContinuous1 = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        BOOL displayContinuous2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePageContinuous;
-        [menuItem setState:displayContinuous1 == displayContinuous2 ? NSOnState : NSOffState];
+        [menuItem setState:([pdfView displayMode] | kPDFDisplaySinglePageContinuous) == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayMode:)) {
         [menuItem setState:[pdfView displayMode] == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];

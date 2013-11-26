@@ -231,33 +231,11 @@
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    if ([sender tag] == kPDFDisplaySinglePage) {
-        if (displayMode == kPDFDisplayTwoUp)
-            [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        else if (displayMode == kPDFDisplayTwoUpContinuous)
-            [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-    } else {
-        if (displayMode == kPDFDisplaySinglePage) 
-            [pdfView setDisplayMode:kPDFDisplayTwoUp];
-        else if (displayMode == kPDFDisplaySinglePageContinuous)
-            [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    }
+    [pdfView setDisplayMode:([pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender tag]];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    if ([sender tag] == kPDFDisplaySinglePage) {
-        if (displayMode == kPDFDisplaySinglePageContinuous)
-            [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        else if (displayMode == kPDFDisplayTwoUpContinuous)
-            [pdfView setDisplayMode:kPDFDisplayTwoUp];
-    } else {
-        if (displayMode == kPDFDisplaySinglePage)
-            [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-        else if (displayMode == kPDFDisplayTwoUp)
-            [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    }
+    [pdfView setDisplayMode:([pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender tag]];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {

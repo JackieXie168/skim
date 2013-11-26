@@ -950,33 +950,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
-    PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    if ([sender selectedTag] == kPDFDisplaySinglePage) {
-        if (displayMode == kPDFDisplayTwoUp)
-            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
-        else if (displayMode == kPDFDisplayTwoUpContinuous)
-            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-    } else {
-        if (displayMode == kPDFDisplaySinglePage) 
-            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
-        else if (displayMode == kPDFDisplaySinglePageContinuous)
-            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    }
+    PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender selectedTag];
+    [mainController.pdfView setDisplayMode:displayMode];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
-    PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    if ([sender selectedTag] == kPDFDisplaySinglePage) {
-        if (displayMode == kPDFDisplaySinglePageContinuous)
-            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePage];
-        else if (displayMode == kPDFDisplayTwoUpContinuous)
-            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUp];
-    } else {
-        if (displayMode == kPDFDisplaySinglePage)
-            [mainController.pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-        else if (displayMode == kPDFDisplayTwoUp)
-            [mainController.pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-    }
+    PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender selectedTag];
+    [mainController.pdfView setDisplayMode:displayMode];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
@@ -1096,8 +1076,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
     [displayModeButton selectSegmentWithTag:displayMode];
-    [singleTwoUpButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplaySinglePageContinuous) ? kPDFDisplaySinglePage : kPDFDisplayTwoUp];
-    [continuousButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) ? kPDFDisplaySinglePage : kPDFDisplaySinglePageContinuous];
+    [singleTwoUpButton selectSegmentWithTag:displayMode | kPDFDisplayTwoUp];
+    [continuousButton selectSegmentWithTag:displayMode | kPDFDisplaySinglePageContinuous];
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
