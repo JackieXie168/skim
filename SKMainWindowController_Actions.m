@@ -230,22 +230,6 @@
     [pdfView takeSnapshot:sender];
 }
 
-- (IBAction)displaySinglePages:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    if (displayMode == kPDFDisplayTwoUp)
-        [pdfView setDisplayMode:kPDFDisplaySinglePage];
-    else if (displayMode == kPDFDisplayTwoUpContinuous)
-        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
-}
-
-- (IBAction)displayFacingPages:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    if (displayMode == kPDFDisplaySinglePage) 
-        [pdfView setDisplayMode:kPDFDisplayTwoUp];
-    else if (displayMode == kPDFDisplaySinglePageContinuous)
-        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
-}
-
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     if ([sender tag] == kPDFDisplaySinglePage) {
