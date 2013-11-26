@@ -1443,14 +1443,6 @@ static NSArray *allMainDocumentPDFViews() {
         else
             [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
         return YES;
-    } else if (action == @selector(displaySinglePages:)) {
-        BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
-        [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(displayFacingPages:)) {
-        BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplaySinglePages:)) {
         BOOL displaySinglePages1 = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         BOOL displaySinglePages2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePage;

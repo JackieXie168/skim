@@ -52,8 +52,6 @@
 - (IBAction)editNote:(id)sender;
 - (IBAction)toggleHideNotes:(id)sender;
 - (IBAction)takeSnapshot:(id)sender;
-- (IBAction)displaySinglePages:(id)sender;
-- (IBAction)displayFacingPages:(id)sender;
 - (IBAction)changeDisplaySinglePages:(id)sender;
 - (IBAction)changeDisplayContinuous:(id)sender;
 - (IBAction)changeDisplayMode:(id)sender;
