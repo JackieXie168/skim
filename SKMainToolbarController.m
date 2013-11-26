@@ -1076,8 +1076,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
     [displayModeButton selectSegmentWithTag:displayMode];
-    [singleTwoUpButton selectSegmentWithTag:displayMode | kPDFDisplayTwoUp];
-    [continuousButton selectSegmentWithTag:displayMode | kPDFDisplaySinglePageContinuous];
+    [singleTwoUpButton selectSegmentWithTag:displayMode & kPDFDisplayTwoUp];
+    [continuousButton selectSegmentWithTag:displayMode & kPDFDisplaySinglePageContinuous];
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
