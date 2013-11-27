@@ -1115,11 +1115,8 @@ enum {
     
     // 10.6 does not automatically make us firstResponder, that's annoying
     // but we don't want an edited text note to stop editing when we're resizing it
-    NSTextField *editTextField = [self editTextField];
-    if ([editTextField superview] == nil)
+    if ([[[self window] firstResponder] isDescendantOf:self] == NO)
         [[self window] makeFirstResponder:self];
-    else if (editTextField && [editTextField currentEditor] == nil)
-        [editTextField selectText:nil];
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
@@ -2278,7 +2275,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (BOOL)becomeFirstResponder {
-    if ([[self editTextField] superview] && [[self window] keyViewSelectionDirection] != NSDirectSelection) {
+    if ([[self editTextField] superview]) {
         [[self editTextField] selectText:nil];
         [self handleKeyStateChangedNotification:nil];
         return YES;
