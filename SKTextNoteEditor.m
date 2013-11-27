@@ -127,7 +127,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     // updating the alignment while editing does not work, alignment is not changed and the field editor is lost
     NSArray *selection = [(NSTextView *)[textField currentEditor] selectedRanges];
     if (selection)
-        [[pdfView window] makeFirstResponder:pdfView];
+        [[pdfView window] makeFirstResponder:nil];
     [textField setAlignment:[annotation alignment]];
     if (selection) {
         [[textField window] makeFirstResponder:textField];
@@ -172,7 +172,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (BOOL)commitEditing {
-    if ([textField currentEditor] && [[pdfView window] makeFirstResponder:pdfView] == NO)
+    BOOL wasFirstResponder = ([textField currentEditor] != nil);
+    if (wasFirstResponder && [[textField window] makeFirstResponder:nil] == NO)
         return NO;
     
     NSString *newValue = [textField stringValue];
@@ -180,6 +181,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [annotation setString:newValue];
     
     [textField removeFromSuperview];
+    
+    if (wasFirstResponder)
+        [[pdfView window] makeFirstResponder:pdfView];
     
     [annotation setShouldDisplay:[annotation shouldPrint]];
     
