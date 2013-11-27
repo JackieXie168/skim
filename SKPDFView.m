@@ -452,7 +452,7 @@ enum {
         [[NSUserDefaults standardUserDefaults] setInteger:annotationMode forKey:SKLastAnnotationModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationModeChangedNotification object:self];
         // hack to make sure we update the cursor
-        [[self window] makeFirstResponder:self];
+        [self doUpdateCursor];
     }
 }
 
