@@ -72,6 +72,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 #import "SKApplication.h"
 
 #define ANNOTATION_MODE_COUNT 9
@@ -2275,8 +2276,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (BOOL)becomeFirstResponder {
-    if ([[self editTextField] superview]) {
-        [[self editTextField] selectText:nil];
+    NSTextField *textField = [self subviewOfClass:[NSTextField class]];
+    if ([textField acceptsFirstResponder]) {
+        [textField selectText:nil];
         [self handleKeyStateChangedNotification:nil];
         return YES;
     }
