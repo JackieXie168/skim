@@ -2277,7 +2277,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)becomeFirstResponder {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
-    if ([textField acceptsFirstResponder]) {
+    if ([textField isEditable]) {
         [textField selectText:nil];
         [self handleKeyStateChangedNotification:nil];
         return YES;
