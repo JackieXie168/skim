@@ -102,7 +102,7 @@ static id (*original_toolTip)(id, SEL) = NULL;
 }
 
 - (id)accessibilityValueAttribute {
-    return [[[self page] selectionForRect:NSInsetRect([self bounds], -3.0, -3.0)] string];
+    return [[[self page] selectionForRect:[self bounds]] string];
 }
 
 - (id)accessibilityEnabledAttribute {
