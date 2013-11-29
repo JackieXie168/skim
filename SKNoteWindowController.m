@@ -255,7 +255,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [NSString stringWithFormat:@"%@ %C %@", [[[self note] type] typeName], EM_DASH_CHARACTER, [[self note] string]];
+    return [NSString stringWithFormat:@"%@ %C %@", [[[self note] type] typeName], EM_DASH_CHARACTER, [[self note] string] ?: @""];
 }
 
 - (BOOL)isNoteWindowController { return YES; }
