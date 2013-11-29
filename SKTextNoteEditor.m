@@ -150,12 +150,14 @@ static char SKPDFAnnotationPropertiesObservationContext;
         if ([textField superview] == nil) {
             [annotation setShouldDisplay:NO];
             [[pdfView documentView] addSubview:textField];
+            [[pdfView window] recalculateKeyViewLoop];
             if ([[[pdfView window] firstResponder] isEqual:pdfView])
                 [textField selectText:nil];
         }
     } else if ([textField superview]) {
         BOOL wasFirstResponder = ([textField currentEditor] != nil);
         [textField removeFromSuperview];
+        [[pdfView window] recalculateKeyViewLoop];
         if (wasFirstResponder)
             [[pdfView window] makeFirstResponder:pdfView];
     }
@@ -164,6 +166,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)discardEditing {
     [textField abortEditing];
     [textField removeFromSuperview];
+    [[pdfView window] recalculateKeyViewLoop];
     
     [annotation setShouldDisplay:[annotation shouldPrint]];
     
@@ -181,6 +184,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [annotation setString:newValue];
     
     [textField removeFromSuperview];
+    [[pdfView window] recalculateKeyViewLoop];
     
     if (wasFirstResponder)
         [[pdfView window] makeFirstResponder:pdfView];
