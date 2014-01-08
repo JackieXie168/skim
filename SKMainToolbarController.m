@@ -872,7 +872,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)goBackOrForward:(id)sender {
-    if ([sender selectedSegment] == 1)
+    if ([sender selectedTag] == 1)
         [mainController.pdfView goForward:sender];
     else
         [mainController.pdfView goBack:sender];
@@ -918,7 +918,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)rotateAllLeftRight:(id)sender {
-    if ([sender selectedSegment] == 1)
+    if ([sender selectedTag] == 1)
         [mainController rotateAllRight:sender];
     else
         [mainController rotateAllLeft:sender];
@@ -945,7 +945,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)changeDisplayBox:(id)sender {
-    PDFDisplayBox displayBox = [sender selectedSegment];
+    PDFDisplayBox displayBox = [sender selectedTag];
     [mainController.pdfView setDisplayBox:displayBox];
 }
 
@@ -988,13 +988,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (IBAction)createNewNote:(id)sender {
     if ([mainController.pdfView hideNotes] == NO) {
-        NSInteger type = [sender selectedSegment];
+        NSInteger type = [sender selectedTag];
         [mainController.pdfView addAnnotationWithType:type];
     } else NSBeep();
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    NSInteger newToolMode = [sender selectedSegment];
+    NSInteger newToolMode = [sender selectedTag];
     [mainController.pdfView setToolMode:newToolMode];
 }
 
