@@ -2154,7 +2154,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         
         }
-        accessibilityChildren = [children mutableCopy];
+        accessibilityChildren = [children copy];
     }
     if ([[editor textField] superview])
         return [accessibilityChildren arrayByAddingObject:[editor textField]];

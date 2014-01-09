@@ -100,7 +100,7 @@ enum {
     
     SKTypeSelectHelper *typeSelectHelper;
     
-    NSMutableArray *accessibilityChildren;
+    NSArray *accessibilityChildren;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
