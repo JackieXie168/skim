@@ -2172,7 +2172,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
             if ([annotation isLink] || [annotation isSkimNote])
-                child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]]);
+                child = NSAccessibilityUnignoredDescendant([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]]);
         }
     }
     //if (child == nil)
@@ -2185,9 +2185,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([[editor textField] superview])
         child = NSAccessibilityUnignoredDescendant([editor textField]);
     else if (activeAnnotation)
-        child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyFauxUIElement elementWithObject:activeAnnotation parent:[self documentView]]);
+        child = NSAccessibilityUnignoredDescendant([SKAccessibilityProxyFauxUIElement elementWithObject:activeAnnotation parent:[self documentView]]);
     //else
-    //    child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    //    child = NSAccessibilityUnignoredDescendant([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityFocusedUIElement];
 }
 
