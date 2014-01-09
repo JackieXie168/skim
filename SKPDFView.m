@@ -2176,7 +2176,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     }
     //if (child == nil)
-    //    child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    //    child = NSAccessibilityUnignoredDescendant([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityHitTest:point];
 }
 
