@@ -539,8 +539,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (BOOL)accessibilityIsIgnored {
-    // we set shouldDisplay to NO when editing a free text note, but we don't want to ignore that
-    return [self shouldPrint] == NO;
+    return [self shouldDisplay] == NO;
 }
 
 @end
