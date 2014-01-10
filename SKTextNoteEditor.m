@@ -148,11 +148,11 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self updateFrame];
         if ([textField superview] == nil) {
-            [annotation setShouldDisplay:NO];
             [[pdfView documentView] addSubview:textField];
             [[pdfView window] recalculateKeyViewLoop];
             if ([[[pdfView window] firstResponder] isEqual:pdfView])
                 [textField selectText:nil];
+            [annotation setShouldDisplay:NO];
         }
     } else if ([textField superview]) {
         BOOL wasFirstResponder = ([textField currentEditor] != nil);
@@ -164,17 +164,19 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)discardEditing {
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
     [textField abortEditing];
     [textField removeFromSuperview];
     [[pdfView window] recalculateKeyViewLoop];
-    
-    [annotation setShouldDisplay:[annotation shouldPrint]];
     
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
 }
 
 - (BOOL)commitEditing {
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
     BOOL wasFirstResponder = ([textField currentEditor] != nil);
     if (wasFirstResponder && [[textField window] makeFirstResponder:nil] == NO)
         return NO;
@@ -188,8 +190,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
     
     if (wasFirstResponder)
         [[pdfView window] makeFirstResponder:pdfView];
-    
-    [annotation setShouldDisplay:[annotation shouldPrint]];
     
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
