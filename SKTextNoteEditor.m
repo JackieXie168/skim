@@ -156,6 +156,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         }
     } else if ([textField superview]) {
         BOOL wasFirstResponder = ([textField currentEditor] != nil);
+        [annotation setShouldDisplay:[annotation shouldPrint]];
         [textField removeFromSuperview];
         [[pdfView window] recalculateKeyViewLoop];
         if (wasFirstResponder)
