@@ -213,7 +213,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)handlePDFViewScrolledNotification:(NSNotification *)notification {
-    if ([self inLiveResize] == NO)
+    if ([self inLiveResize] == NO && [[self window] isZoomed] == NO)
         [self resetAutoFitRectIfNeeded];
 }
 
