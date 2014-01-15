@@ -62,6 +62,7 @@
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
+- (void)handlePDFViewScrolledNotification:(NSNotification *)notification;
 
 @end
 
@@ -101,6 +102,8 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
                                                  name:NSViewFrameDidChangeNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewScrolledNotification:) 
+                                                 name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -207,6 +210,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         viewRect = [self convertRect:[self convertRect:viewRect fromPage:autoFitPage] toView:[self documentView]];
         [[self documentView] scrollRectToVisible:viewRect];
     }
+}
+
+- (void)handlePDFViewScrolledNotification:(NSNotification *)notification {
+    [self resetAutoFitRectIfNeeded];
 }
 
 - (void)resetAutoFitRectIfNeeded {
