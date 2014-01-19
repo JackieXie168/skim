@@ -118,14 +118,8 @@
     NSArray *types = [self noteTypes];
     if ([types count] < NOTETYPES_COUNT) {
         NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-        NSMutableArray *predicateArray = [NSMutableArray array];
-        
-        for (NSString *type in types) {
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        }
-        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+        NSExpression *rhs = [NSExpression expressionForConstantValue:types];
+        typePredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:0];
     }
     if (searchString && [searchString isEqualToString:@""] == NO) {
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
