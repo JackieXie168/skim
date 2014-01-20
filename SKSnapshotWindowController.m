@@ -156,10 +156,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [self setPageLabel:[[pdfView currentPage] displayLabel]];
+    [self handlePDFViewFrameChangedNotification:nil];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [self setPageLabel:[[pdfView currentPage] displayLabel]];
+    [self handlePDFViewFrameChangedNotification:nil];
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
