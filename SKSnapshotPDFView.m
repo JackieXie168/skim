@@ -62,13 +62,16 @@
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
-- (void)handlePDFViewScrolledNotification:(NSNotification *)notification;
+- (void)handlePDFViewContentFrameChangedNotification:(NSNotification *)notification;
+- (void)handlePDFViewContentFrameChangedDelayedNotification:(NSNotification *)notification;
 
 @end
 
 @implementation SKSnapshotPDFView
 
 @synthesize autoFits;
+
+#define SKPDFContentViewChangedNotification @"SKPDFContentViewChangedNotification"
 
 static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%", @"1000%", @"1200%", @"1400%", @"1700%", @"2000%"};
 static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 17.0, 20.0};
@@ -102,8 +105,10 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
                                                  name:NSViewFrameDidChangeNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewScrolledNotification:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFContentViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFContentViewFrameChangedDelayedNotification:) 
+                                                 name:SKPDFContentViewChangedNotification object:self];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -212,9 +217,16 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
 }
 
-- (void)handlePDFViewScrolledNotification:(NSNotification *)notification {
+- (void)handlePDFContentViewFrameChangedDelayedNotification:(NSNotification *)notification {
     if ([self inLiveResize] == NO && [[self window] isZoomed] == NO)
         [self resetAutoFitRectIfNeeded];
+}
+
+- (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
+    if ([self inLiveResize] == NO && [[self window] isZoomed] == NO) {
+        NSNotification *note = [NSNotification notificationWithName:SKPDFContentViewChangedNotification object:self];
+        [[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnName forModes:nil];
+    }
 }
 
 - (void)resetAutoFitRectIfNeeded {
