@@ -202,6 +202,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)toggleSelectedSnapshots:(id)sender;
 
 - (void)updateNoteFilterPredicate;
+- (void)updateSnapshotFilterPredicate;
 
 - (void)registerForDocumentNotifications;
 - (void)unregisterForDocumentNotifications;
@@ -992,6 +993,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState {
     if (mwcFlags.rightSidePaneState != newRightSidePaneState) {
+        
+        if ([[rightSideController.searchField stringValue] length] > 0) {
+            [rightSideController.searchField setStringValue:@""];
+            [self searchNotes:rightSideController.searchField];
+        }
+        
         mwcFlags.rightSidePaneState = newRightSidePaneState;
         
         if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
@@ -1835,9 +1842,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (IBAction)searchNotes:(id)sender {
-    if ([[sender stringValue] length] && mwcFlags.rightSidePaneState != SKNoteSidePaneState)
-        [self setRightSidePaneState:SKNoteSidePaneState];
-    [self updateNoteFilterPredicate];
+    if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
+        [self updateNoteFilterPredicate];
+    else
+        [self updateSnapshotFilterPredicate];
     if ([[sender stringValue] length]) {
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard clearContents];
@@ -2075,6 +2083,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller {
     [self snapshotNeedsUpdate:controller];
+    if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState && [[rightSideController.searchField stringValue] length] > 0)
+        [rightSideController.snapshotArrayController rearrangeObjects];
 }
 
 - (void)hideRightSideWindow:(NSTimer *)timer {
@@ -2082,7 +2092,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
-    NSInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
     if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
         if ([self interactionMode] == SKNormalMode && [self rightSidePaneIsOpen] == NO) {
             [self toggleRightSidePane:self];
@@ -2091,9 +2101,16 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
         }
         [self setRightSidePaneState:SKSnapshotSidePaneState];
-        [rightSideController.snapshotTableView scrollRowToVisible:row];
+        if (row != NSNotFound)
+            [rightSideController.snapshotTableView scrollRowToVisible:row];
     }
-    NSRect rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
+    NSRect rect = NSZeroRect;
+    if (row != NSNotFound) {
+        rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
+    } else {
+        rect.origin = SKBottomLeftPoint([rightSideController.snapshotTableView visibleRect]);
+        rect.size.width = rect.size.height = 1.0;
+    }
     rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
     rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
     return rect;
@@ -2596,13 +2613,28 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         newSize = [image size];
         if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
             NSUInteger idx = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
+            if (idx != NSNotFound)
+                [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
         }
     }
     if ([dirtySnapshots count] == 0) {
         [snapshotTimer invalidate];
         SKDESTROY(snapshotTimer);
     }
+}
+
+- (void)updateSnapshotFilterPredicate {
+    NSString *searchString = [rightSideController.searchField stringValue];
+    NSPredicate *filterPredicate = nil;
+    if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState && [searchString length] > 0) {
+        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
+        NSUInteger options = NSDiacriticInsensitivePredicateOption;
+        if (mwcFlags.caseInsensitiveNoteSearch)
+            options |= NSCaseInsensitivePredicateOption;
+        filterPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
+    }
+    [rightSideController.snapshotArrayController setFilterPredicate:filterPredicate];
 }
 
 #pragma mark Progress sheet
