@@ -53,6 +53,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -82,7 +83,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 @implementation SKSnapshotWindowController
 
-@synthesize pdfView, delegate, thumbnail, pageLabel, hasWindow, forceOnTop;
+@synthesize pdfView, delegate, thumbnail, pageLabel, string, hasWindow, forceOnTop;
 @dynamic pageIndex, pageAndWindow, currentSetup, thumbnailAttachment, thumbnail512Attachment, thumbnail256Attachment, thumbnail128Attachment, thumbnail64Attachment, thumbnail32Attachment;
 
 + (NSSet *)keyPathsForValuesAffectingPageAndWindow {
@@ -97,6 +98,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     SKDESTROY(pageLabel);
     SKDESTROY(pdfView);
     SKDESTROY(windowImage);
+    SKDESTROY(string);
     [super dealloc];
 }
 
@@ -154,6 +156,22 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setNeedsDisplay:YES];
 }
 
+- (void)updateString {
+    NSMutableString *mutableString = [NSMutableString string];
+    NSView *clipView = [[pdfView scrollView] contentView];
+    NSRect rect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
+    
+    for (PDFPage *page in [pdfView displayedPages]) {
+        PDFSelection *sel = [page selectionForRect:[pdfView convertRect:rect toPage:page]];
+        if ([sel hasCharacters]) {
+            if ([mutableString length] > 0)
+                [mutableString appendString:@"\n"];
+            [mutableString appendString:[sel string]];
+        }
+    }
+    [self setString:mutableString];
+}
+
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [self setPageLabel:[[pdfView currentPage] displayLabel]];
     [self handlePDFViewFrameChangedNotification:nil];
@@ -172,6 +190,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)handleViewChangedNotification:(NSNotification *)notification {
+    [self updateString];
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidChange:)])
         [[self delegate] snapshotControllerDidChange:self];
 }
@@ -210,6 +229,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)goToDestination:(PDFDestination *)destination {
     [pdfView goToDestination:destination];
     [pdfView resetHistory];
+    
+    [self updateString];
     
     [[self window] makeFirstResponder:pdfView];
 	
