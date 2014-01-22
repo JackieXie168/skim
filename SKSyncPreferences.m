@@ -40,6 +40,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define TEXEDITORS_KEY @"TeXEditors"
@@ -79,10 +80,14 @@ static NSArray *TeXEditors = nil;
     NSInteger i = [TeXEditors count];
     NSInteger idx = -1;
     NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     while (i--) {
         NSString *name = [[TeXEditors objectAtIndex:i] objectForKey:NAME_KEY];
+        NSString *path = [ws fullPathForApplication:name];
+        NSImage *image = path ? [ws iconForFile:path] : [ws iconForFileType:NSFileTypeForHFSTypeCode(kGenericApplicationIcon)];
         [texEditorPopUpButton insertItemWithTitle:name atIndex:0];
+        [[texEditorPopUpButton itemAtIndex:0] setImageAndSize:image];
         if ([name isEqualToString:editorPreset])
             idx = i;
     }
