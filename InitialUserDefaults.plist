@@ -355,7 +355,7 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Emacs</string>
+			<string>Aquamacs</string>
 			<key>command</key>
 			<string>emacsclient</string>
 			<key>arguments</key>
@@ -371,7 +371,7 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>Aquamacs</string>
+			<string>Emacs</string>
 			<key>command</key>
 			<string>emacsclient</string>
 			<key>arguments</key>
