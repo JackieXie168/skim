@@ -3109,7 +3109,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         newActiveAnnotation = activeAnnotation;
     } else {
         
-        BOOL mouseDownInAnnotation = NO;
+        PDFAnnotation *link = nil;
+        BOOL foundCoveringAnnotation = NO;
         
         // Hit test for annotation.
         annotations = [page annotations];
@@ -3120,23 +3121,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             NSRect bounds = [annotation bounds];
             
             // Hit test annotation.
-            if ([annotation isSkimNote]) {
-                if ([annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
-                    mouseDownInAnnotation = YES;
-                    newActiveAnnotation = annotation;
-                    break;
-                } else if (NSPointInRect(pagePoint, bounds)) {
-                    // register this, so we can do our own selection later
-                    mouseDownInAnnotation = YES;
-                }
-            } else if (NSPointInRect(pagePoint, bounds)) {
-                if ([annotation isLink]) {
-                    if (mouseDownInAnnotation && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP))
-                        newActiveAnnotation = annotation;
-                    break;
-                }
+            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
+                newActiveAnnotation = annotation;
+                break;
+            } else if (NSPointInRect(pagePoint, bounds) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
+                if ([annotation isLink])
+                    link = annotation;
+                else
+                    foundCoveringAnnotation = YES;
             }
         }
+        
+        if (newActiveAnnotation == nil && link && foundCoveringAnnotation)
+            newActiveAnnotation = link;
     }
     
     if (hideNotes == NO && page != nil && newActiveAnnotation != nil) {
