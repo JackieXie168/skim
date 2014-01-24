@@ -54,14 +54,7 @@ static id (*original_toolTip)(id, SEL) = NULL;
     original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
-    if (NSIsEmptyRect([self bounds]))
-        return;
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] setFill];
-    [NSBezierPath fillRect:NSIntegralRect([self bounds])];
-    [NSGraphicsContext restoreGraphicsState];
-}
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView {}
 
 - (BOOL)isLink { return YES; }
 
