@@ -471,22 +471,25 @@ enum {
 }
 
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation {
-	BOOL changed = newAnnotation != activeAnnotation;
+	if (newAnnotation != activeAnnotation) {
 	
-	// Will need to redraw old active anotation.
-	if (activeAnnotation != nil) {
-		[self setNeedsDisplayForAnnotation:activeAnnotation];
-        if (changed && editor)
-            [self commitEditing];
-	}
-    
-	if (changed) {
+        // Will need to redraw old active anotation.
+        if (activeAnnotation != nil) {
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
+            if ([activeAnnotation isLink])
+                [(PDFAnnotationLink *)activeAnnotation setHighlighted:NO];
+            if (editor)
+                [self commitEditing];
+        }
+        
         // Assign.
         [activeAnnotation release];
         if (newAnnotation) {
             activeAnnotation = [newAnnotation retain];
             // Force redisplay.
             [self setNeedsDisplayForAnnotation:activeAnnotation];
+            if ([activeAnnotation isLink])
+                [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         } else {
             activeAnnotation = nil;
         }
