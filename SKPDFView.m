@@ -3111,7 +3111,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 newActiveAnnotation = annotation;
                 break;
-            } else if (NSPointInRect(point, [annotation bounds]) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
+            } else if ([annotation shouldDisplay] && NSPointInRect(point, [annotation bounds]) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
                 if ([annotation isLink])
                     link = annotation;
                 else
