@@ -3093,22 +3093,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = nil;
-    NSArray *annotations;
-    NSInteger i;
-    NSPoint pagePoint;
-    PDFPage *page;
-    
-    // Mouse in display view coordinates.
-    NSPoint mouseDownOnPage = [theEvent locationInView:self];
-    BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
-    
-    // Page we're on.
-    page = [self pageForPoint:mouseDownOnPage nearest:YES];
+    NSPoint point = [theEvent locationInView:self];
+    PDFPage *page = [self pageForPoint:point nearest:YES];
     
     // Get mouse in "page space".
-    pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+    point = [self convertPoint:point toPage:page];
     
-    if ([activeAnnotation page] == page && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:pagePoint scaleFactor:[self scaleFactor]] != 0) {
+    if ([activeAnnotation page] == page && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:point scaleFactor:[self scaleFactor]] != 0) {
         newActiveAnnotation = activeAnnotation;
     } else {
         
@@ -3116,18 +3107,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         BOOL foundCoveringAnnotation = NO;
         
         // Hit test for annotation.
-        annotations = [page annotations];
-        i = [annotations count];
-        
-        while (i-- > 0) {
-            PDFAnnotation *annotation = [annotations objectAtIndex:i];
-            NSRect bounds = [annotation bounds];
-            
-            // Hit test annotation.
-            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
+        for (PDFAnnotation *annotation in [[page annotations] reverseObjectEnumerator]) {
+            if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 newActiveAnnotation = annotation;
                 break;
-            } else if (NSPointInRect(pagePoint, bounds) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
+            } else if (NSPointInRect(point, [annotation bounds]) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
                 if ([annotation isLink])
                     link = annotation;
                 else
@@ -3135,11 +3119,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         }
         
+        // if we did not find a Skim note, get the first link covered by another annotation to click
         if (newActiveAnnotation == nil && link && foundCoveringAnnotation)
             newActiveAnnotation = link;
     }
     
     if (hideNotes == NO && page != nil && newActiveAnnotation != nil) {
+        BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
         NSUInteger modifiers = [theEvent modifierFlags];
         if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
