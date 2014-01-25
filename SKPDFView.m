@@ -166,7 +166,7 @@ enum {
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)doEditActiveAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
@@ -1164,16 +1164,12 @@ enum {
     } else if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSEraserPointingDevice)) {
         [self doEraseAnnotationsWithEvent:theEvent];
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
-        if ([activeAnnotation isLink]) {
-            [self doSelectLinkAnnotationWithEvent:theEvent];
-        } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
-            [self doNothingWithEvent:theEvent];
-            [self editActiveAnnotation:nil];
-        } else if ([activeAnnotation isMovable]) {
+        if ([activeAnnotation isLink] || ([theEvent clickCount] == 2 && [activeAnnotation isEditable]))
+            [self doEditActiveAnnotationWithEvent:theEvent];
+        else if ([activeAnnotation isMovable])
             [self doDragAnnotationWithEvent:theEvent];
-        } else if (activeAnnotation) {
+        else
             [self doNothingWithEvent:theEvent];
-        }
     } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
         if (annotationMode == SKInkNote) {
             [self doDrawFreehandNoteWithEvent:theEvent];
@@ -3066,10 +3062,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)doSelectLinkAnnotationWithEvent:(NSEvent *)theEvent {
-	PDFAnnotation *linkAnnotation = activeAnnotation;
-    PDFPage *annotationPage = [linkAnnotation page];
-    NSRect bounds = [linkAnnotation bounds];
+- (void)doEditActiveAnnotationWithEvent:(NSEvent *)theEvent {
+	PDFAnnotation *annotation = activeAnnotation;
+    PDFPage *annotationPage = [annotation page];
+    NSRect bounds = [annotation bounds];
     NSPoint p = NSZeroPoint;
     PDFPage *page = nil;
     
@@ -3080,7 +3076,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         page = [self pageForPoint:p nearest:NO];
         
         if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
-            [self setActiveAnnotation:linkAnnotation];
+            [self setActiveAnnotation:annotation];
         else
             [self setActiveAnnotation:nil];
         
