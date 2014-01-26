@@ -331,7 +331,7 @@ enum {
         
         for (PDFPage *page in [self visiblePages]) {
             for (PDFAnnotation *annotation in [page annotations]) {
-                if ([[annotation type] isEqualToString:SKNNoteString] || (hasLinkToolTips && [annotation isLink])) {
+                if ([annotation isNote] || (hasLinkToolTips && [annotation isLink])) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:docView];
@@ -1342,7 +1342,7 @@ enum {
             }
             
             if ((annotation != activeAnnotation || [SKLineInspector sharedLineInspectorExists] == NO || [[[SKLineInspector sharedLineInspector] window] isVisible] == NO) &&
-                [annotation isMarkup] == NO && [[annotation type] isEqualToString:SKNNoteString] == NO) {
+                [annotation isMarkup] == NO && [annotation isNote] == NO) {
                 item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Line", @"Menu item title") stringByAppendingEllipsis] action:@selector(showLinesForThisAnnotation:) target:self atIndex:0];
                 [item setRepresentedObject:annotation];
             }
@@ -1366,7 +1366,7 @@ enum {
             }
             
             if (([SKLineInspector sharedLineInspectorExists] == NO || [[[SKLineInspector sharedLineInspector] window] isVisible] == NO) &&
-                [activeAnnotation isMarkup] == NO && [[activeAnnotation type] isEqualToString:SKNNoteString] == NO) {
+                [activeAnnotation isMarkup] == NO && [activeAnnotation isNote] == NO) {
                 item = [menu insertItemWithTitle:[NSLocalizedString(@"Current Note Line", @"Menu item title") stringByAppendingEllipsis] action:@selector(showLinesForThisAnnotation:) target:self atIndex:0];
             }
             
@@ -1866,7 +1866,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([wasAnnotation isSkimNote])
         SKDESTROY(accessibilityChildren);
     [self annotationsChangedOnPage:page];
-    if ([[wasAnnotation type] isEqualToString:SKNNoteString])
+    if ([wasAnnotation isNote])
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
@@ -1887,7 +1887,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self setNeedsDisplayForAnnotation:annotation];
     [self annotationsChangedOnPage:oldPage];
     [self annotationsChangedOnPage:page];
-    if ([[annotation type] isEqualToString:SKNNoteString])
+    if ([annotation isNote])
         [self resetPDFToolTipRects];
     if ([self isEditingAnnotation:annotation])
         [editor layout];
@@ -2522,7 +2522,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = [activeAnnotation page];
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
-    if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
+    if ([activeAnnotation isLine]) {
         
         PDFAnnotationLine *annotation = (PDFAnnotationLine *)activeAnnotation;
         NSPoint startPoint = SKIntegralPoint(SKAddPoints([annotation startPoint], bounds.origin));
@@ -2982,7 +2982,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     // Old (current) annotation location and click point relative to it
     NSRect originalBounds = [activeAnnotation bounds];
-    BOOL isLine = [[activeAnnotation type] isEqualToString:SKNLineString];
+    BOOL isLine = [activeAnnotation isLine];
     NSPoint mouseDownLoc = [theEvent locationInView:self];
     PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
     NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];

@@ -261,7 +261,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (BOOL)isNoteWindowController { return YES; }
 
 - (BOOL)isNoteType {
-    return [[note type] isEqualToString:SKNNoteString];
+    return [note isNote];
 }
 
 - (void)setKeepOnTop:(BOOL)flag {

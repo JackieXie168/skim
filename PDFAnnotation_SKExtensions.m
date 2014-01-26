@@ -127,7 +127,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     [fdfString appendFDFName:SKFDFTypeKey];
     [fdfString appendFDFName:SKFDFAnnotation];
     [fdfString appendFDFName:SKFDFAnnotationTypeKey];
-    [fdfString appendFormat:@"/%@", [[self type] isEqualToString:SKNNoteString] ? SKNTextString : [self type]];
+    [fdfString appendFormat:@"/%@", [self isNote] ? SKNTextString : [self type]];
     [fdfString appendFDFName:SKFDFAnnotationBoundsKey];
     [fdfString appendFormat:@"[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [fdfString appendFDFName:SKFDFAnnotationPageIndexKey];
@@ -251,6 +251,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (NSColor *)interiorColor { return nil; }
 
 - (BOOL)isMarkup { return NO; }
+
+- (BOOL)isNote { return NO; }
+
+- (BOOL)isLine { return NO; }
 
 - (BOOL)isLink { return NO; }
 

@@ -2332,7 +2332,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                     if (NSEqualPoints(oldBounds.origin, newBounds.origin) == NO)
                         NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityMovedNotification);
                     
-                    if ([[note type] isEqualToString:SKNNoteString]) {
+                    if ([note isNote]) {
                         [pdfView annotationsChangedOnPage:[note page]];
                         [pdfView resetPDFToolTipRects];
                     }

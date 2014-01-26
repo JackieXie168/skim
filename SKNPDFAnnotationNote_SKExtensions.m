@@ -90,6 +90,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     return self;
 }
 
+- (BOOL)isNote { return YES; }
+
 - (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)hasBorder { return NO; }
