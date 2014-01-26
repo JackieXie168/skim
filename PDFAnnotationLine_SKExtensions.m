@@ -98,6 +98,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return fdfString;
 }
 
+- (BOOL)isLine { return YES; }
+
 - (BOOL)isResizable { return [self isSkimNote]; }
 
 - (BOOL)isMovable { return [self isSkimNote]; }

@@ -162,11 +162,11 @@
                 [annotation setDashPattern:[sender dashPattern]];
                 break;
             case SKStartLineStyleLineChangeAction:
-                if ([[annotation type] isEqualToString:SKNLineString])
+                if ([annotation isLine])
                     [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
                 break;
             case SKEndLineStyleLineChangeAction:
-                if ([[annotation type] isEqualToString:SKNLineString])
+                if ([annotation isLine])
                     [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
                 break;
         }

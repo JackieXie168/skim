@@ -659,8 +659,7 @@
         if ([item type] == nil)
             item = [(SKNoteText *)item note];
         
-        if ([copiedItems containsObject:item] == NO && 
-            ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO))
+        if ([copiedItems containsObject:item] == NO && [item isMarkup] == NO)
             [copiedItems addObject:item];
     }
     for (item in items) {
