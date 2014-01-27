@@ -62,8 +62,8 @@
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
-- (void)handlePDFViewContentFrameChangedNotification:(NSNotification *)notification;
-- (void)handlePDFViewContentFrameChangedDelayedNotification:(NSNotification *)notification;
+- (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification;
+- (void)handlePDFContentViewFrameChangedDelayedNotification:(NSNotification *)notification;
 
 @end
 

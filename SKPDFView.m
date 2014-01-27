@@ -3099,7 +3099,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         newActiveAnnotation = activeAnnotation;
     } else {
         
-        PDFAnnotation *link = nil;
+        PDFAnnotation *linkAnnotation = nil;
         BOOL foundCoveringAnnotation = NO;
         
         // Hit test for annotation.
@@ -3107,17 +3107,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 newActiveAnnotation = annotation;
                 break;
-            } else if ([annotation shouldDisplay] && NSPointInRect(point, [annotation bounds]) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && link == nil) {
+            } else if ([annotation shouldDisplay] && NSPointInRect(point, [annotation bounds]) && (toolMode == SKTextToolMode || ANNOTATION_MODE_IS_MARKUP) && linkAnnotation == nil) {
                 if ([annotation isLink])
-                    link = annotation;
+                    linkAnnotation = annotation;
                 else
                     foundCoveringAnnotation = YES;
             }
         }
         
         // if we did not find a Skim note, get the first link covered by another annotation to click
-        if (newActiveAnnotation == nil && link && foundCoveringAnnotation)
-            newActiveAnnotation = link;
+        if (newActiveAnnotation == nil && linkAnnotation && foundCoveringAnnotation)
+            newActiveAnnotation = linkAnnotation;
     }
     
     if (hideNotes == NO && page != nil && newActiveAnnotation != nil) {
