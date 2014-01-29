@@ -67,6 +67,7 @@
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;
 - (IBAction)insertBookmarkSeparator:(id)sender;
+- (IBAction)addBookmark:(id)sender;
 - (IBAction)deleteBookmark:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 

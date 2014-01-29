@@ -363,6 +363,33 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
+- (IBAction)addBookmark:(id)sender {
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSMutableArray *types = [NSMutableArray array];
+    for (NSString *docClass in [[NSDocumentController sharedDocumentController] documentClassNames])
+        [types addObjectsFromArray:[NSClassFromString(docClass) readableTypes]];
+    [openPanel setAllowsMultipleSelection:YES];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setAllowedFileTypes:types];
+    [openPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result){
+            if (result == NSFileHandlingPanelOKButton) {
+                NSArray *newBookmarks = [SKBookmark bookmarksForURLs:[openPanel URLs]];
+                if ([newBookmarks count] > 0) {
+                    SKBookmark *item = nil;
+                    NSUInteger anIndex = 0;
+                    [self getInsertionFolder:&item childIndex:&anIndex];
+                    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
+                    [[item mutableArrayValueForKey:@"children"] insertObjects:newBookmarks atIndexes:indexes];
+                    if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
+                        if (item != bookmarkRoot)
+                            [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
+                        [outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+                    }
+                }
+            }
+        }];
+}
+
 - (IBAction)deleteBookmark:(id)sender {
     [outlineView delete:sender];
 }
@@ -985,6 +1012,8 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         else
             [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
         return YES;
+    } else if ([menuItem action] == @selector(addBookmark:)) {
+        return [menuItem tag] == 0;
     }
     return YES;
 }
