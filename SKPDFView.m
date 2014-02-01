@@ -1104,10 +1104,17 @@ enum {
     }
 }
 
+- (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest {
+    NSPoint p = [event locationInView:self];
+    PDFPage *page = [self pageForPoint:p nearest:nearest];
+    if (page && point)
+        *point = [self convertPoint:p toPage:page];
+    return page;
+}
+
 - (BOOL)hasTextNearMouse:(NSEvent *)theEvent {
-    NSPoint p = [theEvent locationInView:self];
-    PDFPage *page = [self pageForPoint:p nearest:YES];
-    p = [self convertPoint:p toPage:page];
+    NSPoint p = NSZeroPoint;
+    PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
     return [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters];
 }
 
@@ -1324,8 +1331,8 @@ enum {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
-        NSPoint point = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:point nearest:YES];
+        NSPoint point = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
         PDFAnnotation *annotation = nil;
         
         if (page) {
@@ -1452,7 +1459,7 @@ enum {
 
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
     [super beginGestureWithEvent:theEvent];
-    PDFPage *page = [self pageForPoint:[theEvent locationInView:self] nearest:YES];
+    PDFPage *page = [self pageAndPoint:NULL forEvent:theEvent nearest:YES];
     gestureRotation = 0.0;
     gesturePageIndex = [(page ?: [self currentPage]) pageIndex];
 }
@@ -2807,8 +2814,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     // Move annotation.
     [[[self scrollView] contentView] autoscroll:theEvent];
     
-    NSPoint mouseLoc = [theEvent locationInView:self];
-    PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
+    NSPoint point = NSZeroPoint;
+    PDFPage *newActivePage = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     
     if (newActivePage) { // newActivePage should never be nil, but just to be sure
         if (newActivePage != page) {
@@ -2818,7 +2825,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         
         NSRect newBounds = currentBounds;
-        newBounds.origin = SKIntegralPoint(SKSubstractPoints([self convertPoint:mouseLoc toPage:page], offset));
+        newBounds.origin = SKIntegralPoint(SKSubstractPoints(point, offset));
         // constrain bounds inside page bounds
         newBounds = SKConstrainRect(newBounds, [newActivePage  boundsForBox:[self displayBox]]);
         
@@ -2983,9 +2990,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     // Old (current) annotation location and click point relative to it
     NSRect originalBounds = [activeAnnotation bounds];
     BOOL isLine = [activeAnnotation isLine];
-    NSPoint mouseDownLoc = [theEvent locationInView:self];
-    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
-    NSPoint pagePoint = [self convertPoint:mouseDownLoc toPage:page];
+    NSPoint pagePoint = NSZeroPoint;
+    PDFPage *page = [self pageAndPoint:&pagePoint forEvent:theEvent nearest:YES];
     BOOL shouldAddAnnotation = activeAnnotation == nil;
     NSPoint originalStartPoint = NSZeroPoint;
     NSPoint originalEndPoint = NSZeroPoint;
@@ -3077,9 +3083,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         didDrag = YES;
         
         if (isLink) {
-            NSPoint p = [theEvent locationInView:self];
-            PDFPage *page = [self pageForPoint:p nearest:NO];
-            if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
+            NSPoint point = NSZeroPoint;
+            PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:NO];
+            if (page == annotationPage && NSPointInRect(point, bounds))
                 [self setActiveAnnotation:annotation];
             else
                 [self setActiveAnnotation:nil];
@@ -3092,11 +3098,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = nil;
-    NSPoint point = [theEvent locationInView:self];
-    PDFPage *page = [self pageForPoint:point nearest:YES];
-    
-    // Get mouse in "page space".
-    point = [self convertPoint:point toPage:page];
+    NSPoint point = NSZeroPoint;
+    PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     
     if ([activeAnnotation page] == page && [activeAnnotation isResizable] && [activeAnnotation resizeHandleForPoint:point scaleFactor:[self scaleFactor]] != 0) {
         newActiveAnnotation = activeAnnotation;
@@ -3177,8 +3180,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseDownLoc = [theEvent locationInView:self];
-    PDFPage *page = [self pageForPoint:mouseDownLoc nearest:YES];
+    NSPoint point = NSZeroPoint;
+    PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     NSWindow *window = [self window];
     BOOL didDraw = NO;
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
@@ -3188,7 +3191,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     CAShapeLayer *layer = nil;
     NSAffineTransform *transform = nil;
     
-    [bezierPath moveToPoint:[self convertPoint:mouseDownLoc toPage:page]];
+    [bezierPath moveToPoint:point];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
     [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
     
@@ -3332,15 +3335,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
-        NSPoint mouseDownOnPage = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
-        NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+        NSPoint point = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
         NSArray *annotations = [page annotations];
         NSInteger i = [annotations count];
         
         while (i-- > 0) {
             PDFAnnotation *annotation = [annotations objectAtIndex:i];
-            if ([annotation isSkimNote] && [annotation hitTest:pagePoint] && [self isEditingAnnotation:annotation] == NO) {
+            if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 [self removeAnnotation:annotation];
                 [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
                 break;
@@ -3376,9 +3378,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doSelectWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseLoc = [theEvent locationInView:self];
-    
-    PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
+    NSPoint initialPoint = NSZeroPoint;
+    PDFPage *page = [self pageAndPoint:&initialPoint forEvent:theEvent nearest:NO];
     if (page == nil) {
         // should never get here, see mouseDown:
         [self doNothingWithEvent:theEvent];
@@ -3394,7 +3395,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     selectionPageIndex = [page pageIndex];
     
-	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
     BOOL didSelect = (NO == NSIsEmptyRect(selectionRect));
     
     SKRectEdges resizeHandle = didSelect ? SKResizeHandleForPointFromRect(initialPoint, selectionRect, margin) : 0;
@@ -3662,12 +3662,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
         
         // dragging
-        NSPoint mouseLoc = [theEvent locationInView:self];
-        if ([[self pageForPoint:mouseLoc nearest:YES] isEqual:page] == NO)
+        NSPoint point = NSZeroPoint;
+        if ([[self pageAndPoint:&point forEvent:theEvent nearest:YES] isEqual:page] == NO)
             continue;
         
-        mouseLoc = [self convertPoint:mouseLoc toPage:page];
-        NSInteger numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(mouseLoc.y, lineRects, YES)) - firstLine + 1;
+        NSInteger numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(point.y, lineRects, YES)) - firstLine + 1;
         
         if (numberOfLines > 0 && numberOfLines != (NSInteger)[readingBar numberOfLines]) {
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
@@ -4259,10 +4258,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (PDFAreaOfInterest)extendedAreaOfInterestForMouse:(NSEvent *)theEvent {
     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
     if (readingBar) {
-        NSPoint p = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:p nearest:YES];
+        NSPoint p = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
         if ([[readingBar page] isEqual:page]) {
-            p = [self convertPoint:p toPage:page];
             NSRect bounds = [readingBar currentBounds];
             if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
                 area |= SKReadingBarArea;
