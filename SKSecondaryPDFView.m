@@ -538,9 +538,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [NSCursor pop];
         [self performSelector:@selector(mouseMoved:) withObject:lastEvent afterDelay:0];
         
-        NSPoint mouseLoc = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
-        NSPoint location = [self convertPoint:mouseLoc toPage:page];
+        NSPoint location = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&location forEvent:theEvent nearest:YES];
         [synchronizedPDFView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:location] autorelease]];
         
     } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
