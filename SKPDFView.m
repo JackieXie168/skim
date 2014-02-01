@@ -3066,8 +3066,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	PDFAnnotation *annotation = activeAnnotation;
     PDFPage *annotationPage = [annotation page];
     NSRect bounds = [annotation bounds];
-    NSPoint p = NSZeroPoint;
-    PDFPage *page = nil;
+    BOOL didDrag = NO, isLink = [annotation isLink];
     
     while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -3075,19 +3074,20 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
-        if ([annotation isLink] == NO)
-            return;
+        didDrag = YES;
         
-        p = [theEvent locationInView:self];
-        page = [self pageForPoint:p nearest:NO];
-        
-        if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
-            [self setActiveAnnotation:annotation];
-        else
-            [self setActiveAnnotation:nil];
+        if (isLink) {
+            NSPoint p = [theEvent locationInView:self];
+            PDFPage *page = [self pageForPoint:p nearest:NO];
+            if (page == annotationPage && NSPointInRect([self convertPoint:p toPage:page], bounds))
+                [self setActiveAnnotation:annotation];
+            else
+                [self setActiveAnnotation:nil];
+        }
 	}
     
-    [self editActiveAnnotation:nil];
+    if ((didDrag == NO || isLink) && activeAnnotation)
+        [self editActiveAnnotation:nil];
 }
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
