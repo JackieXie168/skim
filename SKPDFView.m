@@ -3072,6 +3072,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        
+        if ([annotation isLink] == NO)
+            return;
+        
         p = [theEvent locationInView:self];
         page = [self pageForPoint:p nearest:NO];
         
@@ -3079,9 +3085,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [self setActiveAnnotation:annotation];
         else
             [self setActiveAnnotation:nil];
-        
-        if ([theEvent type] == NSLeftMouseUp)
-            break;
 	}
     
     [self editActiveAnnotation:nil];
