@@ -1104,14 +1104,6 @@ enum {
     }
 }
 
-- (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest {
-    NSPoint p = [event locationInView:self];
-    PDFPage *page = [self pageForPoint:p nearest:nearest];
-    if (page && point)
-        *point = [self convertPoint:p toPage:page];
-    return page;
-}
-
 - (BOOL)hasTextNearMouse:(NSEvent *)theEvent {
     NSPoint p = NSZeroPoint;
     PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];

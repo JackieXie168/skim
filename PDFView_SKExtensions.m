@@ -108,15 +108,22 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
         
-        NSPoint mouseLoc = [theEvent locationInView:self];
-        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
-        NSPoint location = [self convertPoint:mouseLoc toPage:page];
+        NSPoint location = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&location forEvent:theEvent nearest:YES];
         NSUInteger pageIndex = [page pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:location];
         NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         
         [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }
+}
+
+- (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest {
+    NSPoint p = [event locationInView:self];
+    PDFPage *page = [self pageForPoint:p nearest:nearest];
+    if (page && point)
+        *point = [self convertPoint:p toPage:page];
+    return page;
 }
 
 - (NSRange)displayedPageIndexRange {
