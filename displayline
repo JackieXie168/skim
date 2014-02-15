@@ -4,7 +4,7 @@
 #
 # Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
 
-if [ $# == 0 -o "$1" == "-h" -o "$1" == "-help" ]; then
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "-help" ]]; then
   echo "Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
 Options:
 -r, -revert      Revert the file from disk if it was open
@@ -17,12 +17,12 @@ fi
 revert=false
 bar=false
 activate=true
-while [ "${1:0:1}" == "-" ]; do
-  if [ "$1" == "-r" -o "$1" == "-revert" ]; then
+while [[ "${1:0:1}" == "-" ]]; do
+  if [[ "$1" == "-r" || "$1" == "-revert" ]]; then
     revert=true
-  elif [ "$1" == "-b" -o "$1" == "-readingbar" ]; then
+  elif [[ "$1" == "-b" || "$1" == "-readingbar" ]]; then
     bar=true
-  elif [ "$1" == "-g" -o "$1" == "-background" ]; then
+  elif [[ "$1" == "-g" || "$1" == "-background" ]]; then
     activate=false
   fi
   shift
@@ -30,11 +30,11 @@ done
 line=$1
 file="$2"
 shopt -s extglob
-[ $# -gt 2 ] && source="$3" || source="${file%.@(pdf|dvi|xdv)}.tex"
+[[ $# -gt 2 ]] && source="$3" || source="${file%.@(pdf|dvi|xdv)}.tex"
 
 # expand relative paths
-[ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
-[ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
+[[ "${file:0:1}" == "/" ]] || file="${PWD}/${file}"
+[[ "${source:0:1}" == "/" ]] || source="${PWD}/${source}"
 
 # run AppleScript
 /usr/bin/osascript << EOF
