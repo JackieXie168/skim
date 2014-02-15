@@ -37,7 +37,7 @@
  */
 
 #import "SKTextNoteEditor.h"
-#import "SKTextNoteFieldCell.h"
+#import "SKTextNoteField.h"
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
@@ -69,9 +69,13 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (self) {
         pdfView = aPDFView;
         annotation = [anAnnotation retain];
-        textField = [[NSTextField alloc] init];
-        [textField setCell:[[[SKTextNoteFieldCell alloc] initTextCell:[annotation string]] autorelease]];
+        textField = [[SKTextNoteField alloc] init];
+        [textField setBezeled:NO];
+        [textField setBordered:NO];
+        [textField setDrawsBackground:NO];
+        [[textField cell] setFocusRingType:NSFocusRingTypeNone];
         [textField setDelegate:self];
+        [textField setStringValue:[annotation string]];
         [self updateFont];
         [self updateColor];
         [self updateTextColor];
@@ -114,7 +118,11 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateColor {
-    [textField setBackgroundColor:[annotation color]];
+    NSColor *color = [annotation color];
+    CGFloat alpha = [color alphaComponent];
+    if (alpha < 1.0)
+        color = [[NSColor whiteColor] blendedColorWithFraction:alpha ofColor:color]; 
+    [textField setBackgroundColor:color];
 }
 
 - (void)updateTextColor {
