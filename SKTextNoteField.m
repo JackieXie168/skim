@@ -1,5 +1,5 @@
 //
-//  SKTextNoteFieldCell.m
+//  SKTextNoteField.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 10/31/13.
@@ -36,8 +36,23 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKTextNoteFieldCell.h"
+#import "SKTextNoteField.h"
 #import "NSColor_SKExtensions.h"
+
+
+@implementation SKTextNoteField
+
++ (Class)cellClass { return [SKTextNoteFieldCell class]; }
+
+- (BOOL)isOpaque { return YES; }
+
+- (void)drawRect:(NSRect)rect {
+    [[self backgroundColor] setFill];
+    NSRectFill([self bounds]);
+    [super drawRect:rect];
+}
+
+@end
 
 
 @implementation SKTextNoteFieldCell
@@ -50,8 +65,6 @@
         scaleFactor = 1.0;
         lineWidth = 0.0;
         dashPattern = nil;
-        [self setEditable:YES];
-        [self setFocusRingType:NSFocusRingTypeNone];
     }
     return self;
 }
@@ -76,9 +89,6 @@
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
-    
-    [[self backgroundColor] setFill];
-    [NSBezierPath fillRect:cellFrame];
     
     CGFloat width = [self lineWidth] / [self scaleFactor];
     if (width > 0.0) {
@@ -109,7 +119,7 @@
     
     [NSGraphicsContext restoreGraphicsState];
     
-    [super drawWithFrame:cellFrame inView:controlView];
+    [super drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
 @end

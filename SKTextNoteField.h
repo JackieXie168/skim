@@ -1,5 +1,5 @@
 //
-//  SKTextNoteFieldCell.h
+//  SKTextNoteField.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 10/31/13.
@@ -37,6 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+
+
+@interface SKTextNoteField : NSTextField
+@end
 
 
 @interface SKTextNoteFieldCell : NSTextFieldCell {
