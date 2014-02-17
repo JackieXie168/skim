@@ -38,6 +38,8 @@
 
 #import "SKTextNoteField.h"
 #import "NSColor_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKTextNoteField
@@ -47,7 +49,7 @@
 - (BOOL)isOpaque { return YES; }
 
 - (void)drawRect:(NSRect)rect {
-    [[self backgroundColor] setFill];
+    [([[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor]) setFill];
     NSRectFill([self bounds]);
     [super drawRect:rect];
 }
@@ -90,6 +92,9 @@
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     
+    [[self backgroundColor] setFill];
+    [NSBezierPath fillRect:cellFrame];
+    
     CGFloat width = [self lineWidth] / [self scaleFactor];
     if (width > 0.0) {
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * width, 0.5 * width)];
@@ -119,7 +124,7 @@
     
     [NSGraphicsContext restoreGraphicsState];
     
-    [super drawInteriorWithFrame:cellFrame inView:controlView];
+    [self drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
 @end

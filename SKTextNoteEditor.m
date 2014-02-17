@@ -41,8 +41,6 @@
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
-#import "NSUserDefaults_SKExtensions.h"
-#import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>
 
 static char SKPDFAnnotationPropertiesObservationContext;
@@ -120,11 +118,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateColor {
-    NSColor *color = [annotation color];
-    CGFloat alpha = [color alphaComponent];
-    if (alpha < 1.0)
-        color = [([[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor]) blendedColorWithFraction:alpha ofColor:color]; 
-    [textField setBackgroundColor:color];
+    [textField setBackgroundColor:[annotation color]];
 }
 
 - (void)updateTextColor {
