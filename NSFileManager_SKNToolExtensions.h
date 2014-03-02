@@ -49,4 +49,6 @@
 
 - (BOOL)removeSkimNotesAtPath:(NSString *)path error:(NSError **)outError;
 
+- (BOOL)hasSkimNotesAtPath:(NSString *)path;
+
 @end
