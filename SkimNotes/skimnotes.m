@@ -45,6 +45,7 @@ static char *usageStr = "Usage:\n"
                         " skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n"
                         " skimnotes set PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n"
                         " skimnotes remove PDF_FILE\n"
+                        " skimnotes test PDF_FILE\n"
                         " skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n"
                         " skimnotes agent [SERVER_NAME]\n"
                         " skimnotes protocol\n"
@@ -64,6 +65,9 @@ static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\n"
 static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
                              "Usage: skimnotes remove PDF_FILE\n\n"
                              "Removes the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
+static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
+                           "Usage: skimnotes test PDF_FILE\n\n"
+                           "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
@@ -97,6 +101,7 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n"
 #define ACTION_GET_STRING       @"get"
 #define ACTION_SET_STRING       @"set"
 #define ACTION_REMOVE_STRING    @"remove"
+#define ACTION_TEST_STRING      @"test"
 #define ACTION_CONVERT_STRING   @"convert"
 #define ACTION_AGENT_STRING     @"agent"
 #define ACTION_PROTOCOL_STRING  @"protocol"
@@ -121,6 +126,7 @@ enum {
     SKNActionGet,
     SKNActionSet,
     SKNActionRemove,
+    SKNActionTest,
     SKNActionConvert,
     SKNActionAgent,
     SKNActionProtocol,
@@ -144,6 +150,8 @@ static NSInteger SKNActionForName(NSString *actionString) {
         return SKNActionRemove;
     else if ([actionString caseInsensitiveCompare:ACTION_CONVERT_STRING] == NSOrderedSame)
         return SKNActionConvert;
+    else if ([actionString caseInsensitiveCompare:ACTION_TEST_STRING] == NSOrderedSame)
+        return SKNActionTest;
     else if ([actionString caseInsensitiveCompare:ACTION_AGENT_STRING] == NSOrderedSame)
         return SKNActionAgent;
     else if ([actionString caseInsensitiveCompare:ACTION_PROTOCOL_STRING] == NSOrderedSame)
@@ -227,6 +235,9 @@ int main (int argc, const char * argv[]) {
                 break;
             case SKNActionRemove:
                 WRITE_OUT(removeHelpStr);
+                break;
+            case SKNActionTest:
+                WRITE_OUT(testHelpStr);
                 break;
             case SKNActionConvert:
                 WRITE_OUT(convertHelpStr);
@@ -371,6 +382,10 @@ int main (int argc, const char * argv[]) {
         } else if (action == SKNActionRemove) {
             
             success = [fm removeSkimNotesAtPath:pdfPath error:&error];
+            
+        } else if (action == SKNActionTest) {
+            
+            success = [fm hasSkimNotesAtPath:pdfPath];
             
         } else if (action == SKNActionConvert) {
             

@@ -228,4 +228,12 @@
     return success1 && success2 && success3;
 }
 
+- (BOOL)hasSkimNotesAtPath:(NSString *)path {
+    path = [path stringByStandardizingPath];
+    if ([[path pathExtension] caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame)
+        return nil != [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL];
+    else
+        return [[[SKNExtendedAttributeManager sharedManager] extendedAttributeNamesAtPath:path traverseLink:YES error:NULL] containsObject:SKIM_NOTES_KEY];
+}
+
 @end
