@@ -40,7 +40,7 @@
 #import <bzlib.h>
 
 #define MAX_XATTR_LENGTH        2048
-#define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
+#define MIN_EXTRA_NAME_LENGTH   34
 #define PREFIX                  @"net_sourceforge_skim-app"
 
 #define FRAGMENT_NAME_SEPARATOR @"-"
@@ -52,6 +52,8 @@
 NSString *SKNSkimNotesErrorDomain = @"SKNSkimNotesErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
+// private methods to get a unique attractor name for fragments
+- (NSString *)uniqueName;
 // private methods to (un)compress data
 - (NSData *)bzipData:(NSData *)data;
 - (NSData *)bunzipData:(NSData *)data;
@@ -155,14 +157,16 @@ static id sharedNoSplitManager = nil;
     
     // the names are separated by NULL characters
     for(idx = 0; idx < bufSize; idx++){
-        if(namebuf[idx] == '\0'){
-            attribute = [[NSString alloc] initWithBytes:&namebuf[start] length:(idx - start) encoding:NSUTF8StringEncoding];
+        if(namebuf[idx] != '\0') continue;
+        attribute = [[NSString alloc] initWithBytes:&namebuf[start] length:(idx - start) encoding:NSUTF8StringEncoding];
+        if(attribute != nil){
             // ignore fragments
-            if(attribute && (fragments || namePrefix == nil || [attribute hasPrefix:namePrefix] == NO)) [attrs addObject:attribute];
+            if(fragments || namePrefix == nil || [attribute hasPrefix:namePrefix] == NO || [attribute length] < [namePrefix length] + MIN_EXTRA_NAME_LENGTH)
+                [attrs addObject:attribute];
             [attribute release];
             attribute = nil;
-            start = idx + 1;
         }
+        start = idx + 1;
     }
     
     NSZoneFree(zone, namebuf);
@@ -200,7 +204,7 @@ static id sharedNoSplitManager = nil;
     return attributes;
 }
 
-- (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (NSData *)copyRawExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
     const char *fsPath = [path fileSystemRepresentation];
     const char *attrName = [attr UTF8String];
@@ -233,46 +237,50 @@ static id sharedNoSplitManager = nil;
     }
     
     // let NSData worry about freeing the buffer
-    NSData *attribute = [[NSData alloc] initWithBytesNoCopy:namebuf length:bufSize];
-    
-    NSPropertyListFormat format;
-    NSString *errorString;
-    id plist = nil;
-    
-    if (namePrefix && [self isPlistData:attribute])
-        plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
-    
-    // even if it's a plist, it may not be a dictionary or have the key we're looking for
-    if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
-        
-        NSString *uniqueValue = [plist objectForKey:uniqueKey];
-        NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntegerValue];
-        NSString *name;
+    return [[NSData alloc] initWithBytesNoCopy:namebuf length:bufSize];
+}
 
-        NSMutableData *buffer = [NSMutableData data];
-        NSData *subdata;
-        BOOL success = (nil != uniqueValue && numberOfFragments > 0);
+- (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+{
+    NSData *attribute = [self copyRawExtendedAttributeNamed:attr atPath:path traverseLink:follow error:error];
+    
+    if (namePrefix && [self isPlistData:attribute]) {
+        NSPropertyListFormat format;
+        NSString *errorString;
+        id plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
         
-        if (success == NO)
-            NSLog(@"failed to read unique key %@ for %lu fragments from property list.", uniqueKey, (long)numberOfFragments);
-        
-        // reassemble the original data object
-        for (i = 0; success && i < numberOfFragments; i++) {
-            NSError *tmpError = nil;
-            name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
-            subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
-            if (nil == subdata) {
-                NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
-                success = NO;
-            } else {
-                [buffer appendData:subdata];
+        // even if it's a plist, it may not be a dictionary or have the key we're looking for
+        if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
+            
+            NSString *uniqueValue = [plist objectForKey:uniqueKey];
+            NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntegerValue];
+
+            NSMutableData *buffer = [NSMutableData data];
+            BOOL success = (nil != uniqueValue && numberOfFragments > 0);
+            
+            if (success == NO)
+                NSLog(@"failed to read unique key %@ for %lu fragments from property list.", uniqueKey, (long)numberOfFragments);
+            
+            // reassemble the original data object
+            for (i = 0; success && i < numberOfFragments; i++) {
+                NSError *tmpError = nil;
+                NSString *name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
+                NSData *subdata = [self copyRawExtendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
+                if (nil == subdata) {
+                    NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
+                    success = NO;
+                } else {
+                    [buffer appendData:subdata];
+                    [subdata release];
+                }
+                [name release];
             }
+            
+            [attribute release];
+            attribute = success ? [[self bunzipData:buffer] retain] : nil;
+            
+            if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNReassembleAttributeFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
         }
-        
-        [attribute release];
-        attribute = success ? [[self bunzipData:buffer] retain] : nil;
-        
-        if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNReassembleAttributeFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     return [attribute autorelease];
 }
@@ -327,7 +335,7 @@ static id sharedNoSplitManager = nil;
         value = [self bzipData:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
-        NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
+        NSString *uniqueValue = [self uniqueName];
         NSUInteger numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, uniqueValue, uniqueKey, [NSNumber numberWithUnsignedInteger:numberOfFragments], fragmentsKey, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
@@ -484,6 +492,16 @@ static id sharedNoSplitManager = nil;
         }
     }
     return YES;
+}
+
+- (NSString *)uniqueName;
+{
+    CFUUIDRef uuid = CFUUIDCreate(NULL);
+    CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
+    NSString *uniqueName = [namePrefix stringByAppendingString:(NSString *)uuidString];
+    CFRelease(uuid);
+    CFRelease(uuidString);
+    return uniqueName;
 }
 
 // guaranteed to return non-nil
