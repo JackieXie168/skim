@@ -70,9 +70,6 @@ extern NSString *SKSkimFileDidSaveNotification;
 - (IBAction)readNotes:(id)sender;
 - (IBAction)convertNotes:(id)sender;
 - (IBAction)saveArchive:(id)sender;
-- (IBAction)saveDiskImage:(id)sender;
-- (IBAction)emailArchive:(id)sender;
-- (IBAction)emailDiskImage:(id)sender;
 - (IBAction)moveToTrash:(id)sender;
 
 @property (nonatomic, readonly) SKMainWindowController *mainWindowController;
