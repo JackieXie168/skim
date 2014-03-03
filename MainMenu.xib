@@ -321,6 +321,7 @@
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="1022008517"/>
 									<reference key="NSMixedImage" ref="290280874"/>
+									<int key="NSTag">1</int>
 								</object>
 								<object class="NSMenuItem" id="568392804">
 									<reference key="NSMenu" ref="812152972"/>
@@ -330,6 +331,7 @@
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="1022008517"/>
 									<reference key="NSMixedImage" ref="290280874"/>
+									<int key="NSTag">2</int>
 								</object>
 								<object class="NSMenuItem" id="746700930">
 									<reference key="NSMenu" ref="812152972"/>
@@ -339,6 +341,7 @@
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="1022008517"/>
 									<reference key="NSMixedImage" ref="290280874"/>
+									<int key="NSTag">3</int>
 								</object>
 								<object class="NSMenuItem" id="831386359">
 									<reference key="NSMenu" ref="812152972"/>
@@ -3123,14 +3126,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">saveDiskImage:</string>
-						<reference key="source" ref="660174102"/>
-						<reference key="destination" ref="6852618"/>
-					</object>
-					<int key="connectionID">859</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">showDownloads:</string>
 						<reference key="source" ref="115281690"/>
 						<reference key="destination" ref="131480980"/>
@@ -3320,22 +3315,6 @@
 						<reference key="destination" ref="77339117"/>
 					</object>
 					<int key="connectionID">933</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">emailArchive:</string>
-						<reference key="source" ref="660174102"/>
-						<reference key="destination" ref="568392804"/>
-					</object>
-					<int key="connectionID">951</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">emailDiskImage:</string>
-						<reference key="source" ref="660174102"/>
-						<reference key="destination" ref="746700930"/>
-					</object>
-					<int key="connectionID">952</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -3616,6 +3595,30 @@
 						<reference key="destination" ref="731361689"/>
 					</object>
 					<int key="connectionID">1093</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">saveArchive:</string>
+						<reference key="source" ref="660174102"/>
+						<reference key="destination" ref="6852618"/>
+					</object>
+					<int key="connectionID">1094</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">saveArchive:</string>
+						<reference key="source" ref="660174102"/>
+						<reference key="destination" ref="568392804"/>
+					</object>
+					<int key="connectionID">1095</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">saveArchive:</string>
+						<reference key="source" ref="660174102"/>
+						<reference key="destination" ref="746700930"/>
+					</object>
+					<int key="connectionID">1096</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5381,7 +5384,7 @@
 				<boolean value="YES" key="285.ImportedFromIB2"/>
 				<string key="287.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="287.ImportedFromIB2"/>
-				<string key="29.IBEditorWindowLastContentRect">{{38, 775}, {622, 20}}</string>
+				<string key="29.IBEditorWindowLastContentRect">{{184, 803}, {622, 20}}</string>
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="29.ImportedFromIB2"/>
 				<string key="292.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5591,7 +5594,7 @@
 				<boolean value="YES" key="798.ImportedFromIB2"/>
 				<string key="800.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="800.ImportedFromIB2"/>
-				<string key="81.IBEditorWindowLastContentRect">{{103, 372}, {230, 403}}</string>
+				<string key="81.IBEditorWindowLastContentRect">{{249, 400}, {230, 403}}</string>
 				<string key="81.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="81.ImportedFromIB2"/>
 				<string key="83.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5733,7 +5736,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1093</int>
+			<int key="maxID">1096</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -6471,6 +6474,13 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">PDFView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTextNoteEditor.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKApplicationController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
@@ -6543,6 +6553,7 @@
 					<string key="className">SKBookmarkController</string>
 					<string key="superclassName">SKWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="addBookmark:">id</string>
 						<string key="deleteBookmark:">id</string>
 						<string key="doubleClickBookmark:">id</string>
 						<string key="insertBookmarkFolder:">id</string>
@@ -6551,6 +6562,10 @@
 						<string key="toggleStatusBar:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="addBookmark:">
+							<string key="name">addBookmark:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="deleteBookmark:">
 							<string key="name">deleteBookmark:</string>
 							<string key="candidateClassName">id</string>
@@ -6658,6 +6673,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKFindTableView</string>
+					<string key="superclassName">SKTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFindTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKGradientView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -6681,9 +6704,9 @@
 					<string key="superclassName">SKSideViewController</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="findArrayController">NSArrayController</string>
-						<string key="findTableView">NSTableView</string>
+						<string key="findTableView">SKFindTableView</string>
 						<string key="groupedFindArrayController">NSArrayController</string>
-						<string key="groupedFindTableView">NSTableView</string>
+						<string key="groupedFindTableView">SKFindTableView</string>
 						<string key="thumbnailArrayController">NSArrayController</string>
 						<string key="thumbnailTableView">SKThumbnailTableView</string>
 						<string key="tocOutlineView">SKTocOutlineView</string>
@@ -6695,7 +6718,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="findTableView">
 							<string key="name">findTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindArrayController">
 							<string key="name">groupedFindArrayController</string>
@@ -6703,7 +6726,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindTableView">
 							<string key="name">groupedFindTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="thumbnailArrayController">
 							<string key="name">thumbnailArrayController</string>
@@ -6728,24 +6751,13 @@
 					<string key="superclassName">NSDocument</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="convertNotes:">id</string>
-						<string key="emailArchive:">id</string>
-						<string key="emailDiskImage:">id</string>
 						<string key="moveToTrash:">id</string>
 						<string key="readNotes:">id</string>
 						<string key="saveArchive:">id</string>
-						<string key="saveDiskImage:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="convertNotes:">
 							<string key="name">convertNotes:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="emailArchive:">
-							<string key="name">emailArchive:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="emailDiskImage:">
-							<string key="name">emailDiskImage:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="moveToTrash:">
@@ -6758,10 +6770,6 @@
 						</object>
 						<object class="IBActionInfo" key="saveArchive:">
 							<string key="name">saveArchive:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saveDiskImage:">
-							<string key="name">saveDiskImage:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -7218,8 +7226,6 @@
 						<string key="cut:">id</string>
 						<string key="delete:">id</string>
 						<string key="deselectAll:">id</string>
-						<string key="displayFacingPages:">id</string>
-						<string key="displaySinglePages:">id</string>
 						<string key="doAutoScale:">id</string>
 						<string key="doGoBack:">id</string>
 						<string key="doGoForward:">id</string>
@@ -7389,14 +7395,6 @@
 						</object>
 						<object class="IBActionInfo" key="deselectAll:">
 							<string key="name">deselectAll:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="displayFacingPages:">
-							<string key="name">displayFacingPages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="displaySinglePages:">
-							<string key="name">displaySinglePages:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="doAutoScale:">

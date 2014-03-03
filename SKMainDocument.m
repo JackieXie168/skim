@@ -125,6 +125,11 @@ enum {
     SKExportOptionWithEmbeddedNotes,
 };
 
+enum {
+   SKArchiveDiskImageMask = 1,
+   SKArchiveEmailMask = 2,
+};
+
 
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
@@ -1184,10 +1189,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
 }
 
-- (void)saveArchiveWithExtension:(NSString *)ext email:(BOOL)email {
+- (IBAction)saveArchive:(id)sender {
+    NSString *ext = ([sender tag] | SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
     NSURL *fileURL = [self fileURL];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        if (email) {
+        if (([sender tag] | SKArchiveEmailMask)) {
             NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
             NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
             [self saveArchiveToURL:tmpFileURL email:YES];
@@ -1205,22 +1211,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
-}
-
-- (IBAction)saveArchive:(id)sender {
-    [self saveArchiveWithExtension:@"tgz" email:NO];
-}
-
-- (IBAction)emailArchive:(id)sender {
-    [self saveArchiveWithExtension:@"tgz" email:YES];
-}
-
-- (IBAction)saveDiskImage:(id)sender {
-    [self saveArchiveWithExtension:@"dmg" email:NO];
-}
-
-- (IBAction)emailDiskImage:(id)sender {
-    [self saveArchiveWithExtension:@"dmg" email:YES];
 }
 
 - (IBAction)moveToTrash:(id)sender {
