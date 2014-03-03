@@ -314,8 +314,6 @@ static id sharedNoSplitManager = nil;
 {
 
     const char *fsPath = [path fileSystemRepresentation];
-    const void *data = [value bytes];
-    size_t dataSize = [value length];
     const char *attrName = [attr UTF8String];
         
     // options passed to xattr functions
@@ -366,7 +364,7 @@ static id sharedNoSplitManager = nil;
         }
         
     } else {
-        int status = setxattr(fsPath, attrName, data, dataSize, 0, xopts);
+        int status = setxattr(fsPath, attrName, [value bytes], [value length], 0, xopts);
         if(status == -1){
             if(error) *error = [self xattrError:errno forPath:path];
             success = NO;
