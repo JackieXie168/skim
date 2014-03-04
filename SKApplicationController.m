@@ -151,7 +151,7 @@
 }
 
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] setObject:[[(SKApplication *)NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
