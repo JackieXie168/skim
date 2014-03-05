@@ -58,7 +58,7 @@ enum {
 
 @property (nonatomic, readonly) NSString *originalVersionString, *cleanVersionString;
 @property (nonatomic, readonly) NSUInteger componentCount;
-@property (nonatomic) NSInteger releaseType;
+@property (nonatomic, readonly) NSInteger releaseType;
 
 + (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
 
