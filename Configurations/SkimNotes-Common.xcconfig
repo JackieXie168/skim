@@ -15,7 +15,8 @@ ZERO_LINK = NO
 
 ALWAYS_SEARCH_USER_PATHS = NO
 
-GCC_ENABLE_OBJC_GC = supported
+// GC is not supported in Xcode 5, and we never need it
+//GCC_ENABLE_OBJC_GC = supported
 
 GCC_C_LANGUAGE_STANDARD = c99
 
