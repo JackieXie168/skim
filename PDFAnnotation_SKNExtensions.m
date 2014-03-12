@@ -101,8 +101,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
 + (void)load {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
-    if ([NSGarbageCollector defaultCollector] == nil)
-        original_dealloc = method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
+    original_dealloc = method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
     [pool release];
 }
 
