@@ -51,7 +51,7 @@ static char *usageStr = "Usage:\n"
                         " skimnotes protocol\n"
                         " skimnotes help [VERB]\n"
                         " skimnotes version";
-static char *versionStr = "SkimNotes command-line client, version 2.5";
+static char *versionStr = "SkimNotes command-line client, version 2.6";
 
 static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\n"
                           "Usage: skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n\n"
