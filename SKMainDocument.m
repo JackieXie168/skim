@@ -1355,6 +1355,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             if ([editorPreset isEqualToString:@""] == NO) {
                 if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
                     (appBundle = [NSBundle bundleWithPath:path])) {
+                    [searchPaths insertObject:[[[appBundle bundlePath] stringByAppendingPathComponent:@"Contents"] stringByAppendingPathComponent:@"Helpers"] atIndex:0];
                     if ([editorPreset isEqualToString:@"BBEdit"] == NO)
                         [searchPaths insertObject:[[appBundle executablePath] stringByDeletingLastPathComponent] atIndex:0];
                     [searchPaths insertObject:[appBundle resourcePath] atIndex:0];
