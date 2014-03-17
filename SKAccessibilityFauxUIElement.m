@@ -222,7 +222,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSUInteger)hash {
-    return [super hash] + index;
+    return [super hash] + index + 1;
 }
 
 - (NSInteger)index {
