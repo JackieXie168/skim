@@ -183,7 +183,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSUInteger)hash {
-    return [super hash] + [object hash];
+    return [super hash] + (((NSUInteger)object >> 4) | ((NSUInteger)object << (32 - 4)));
 }
 
 - (id)representedObject {
