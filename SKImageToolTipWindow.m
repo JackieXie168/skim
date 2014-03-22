@@ -101,8 +101,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     NSRect contentRect = NSZeroRect;
     NSImage *image = [context toolTipImage];
     
-    [self stopAnimation];
-    
     if (image) {
         [(NSImageView *)[self contentView] setImage:image];
         
@@ -112,7 +110,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         contentRect = [self constrainFrameRect:contentRect toScreen:[NSScreen screenForPoint:thePoint]];
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
-        [self stopAnimation];
         if ([self isVisible] && [self alphaValue] > CRITICAL_ALPHA_VALUE)
             [self orderFront:self];
         else
