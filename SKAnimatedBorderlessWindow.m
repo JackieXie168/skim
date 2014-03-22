@@ -85,10 +85,6 @@
 - (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)stopAnimation {
-    [self cancelDelayedAnimations];
-}
-
-- (void)cancelDelayedAnimations {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(remove) object:nil];
 }

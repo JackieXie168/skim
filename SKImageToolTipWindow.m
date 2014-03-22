@@ -101,7 +101,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     NSRect contentRect = NSZeroRect;
     NSImage *image = [context toolTipImage];
     
-    [self cancelDelayedAnimations];
+    [self stopAnimation];
     
     if (image) {
         [(NSImageView *)[self contentView] setImage:image];
@@ -125,8 +125,8 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     }
 }
 
-- (void)cancelDelayedAnimations {
-    [super cancelDelayedAnimations];
+- (void)stopAnimation {
+    [super stopAnimation];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
