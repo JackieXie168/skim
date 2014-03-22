@@ -58,6 +58,5 @@
 - (void)orderFrontRegardless;
 
 - (void)stopAnimation;
-- (void)cancelDelayedAnimations;
 
 @end
