@@ -90,7 +90,7 @@
 #define SKLastVersionLaunchedKey            @"SKLastVersionLaunched"
 #define SKSpotlightVersionInfoKey           @"SKSpotlightVersionInfo"
 #define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
-#define SKSpotlightLastSystemVersionKey     @"lastSystemVersion"
+#define SKSpotlightLastSysVersionKey        @"lastSysVersion"
 
 #define SUScheduledCheckIntervalKey         @"SUScheduledCheckInterval"
 
@@ -361,29 +361,28 @@
     NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     if (importerVersion) {
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
-        NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
-        NSString *lastSystemVersion = [versionInfo objectForKey:SKSpotlightLastSystemVersionKey];
         
-        SInt32 sysVersionMajor, sysVersionMinor, sysVersionBugFix;
-        NSString *systemVersion = nil;
-        
-        if (noErr == Gestalt(gestaltSystemVersionMajor, &sysVersionMajor) &&
-            noErr == Gestalt(gestaltSystemVersionMinor, &sysVersionMinor) &&
-            noErr == Gestalt(gestaltSystemVersionBugFix, &sysVersionBugFix))
-            systemVersion = [NSString stringWithFormat:@"%i.%i.%i", sysVersionMajor, sysVersionMinor, sysVersionBugFix];
+        // getting gestaltSystemVersion breaks on 10.10, so we simulate it using the minor and bugfix version component
+        SInt32 sysVersionMinor, sysVersionBugFix, sysVersion = 0;
+        if (noErr == Gestalt(gestaltSystemVersionMinor, &sysVersionMinor) && noErr == Gestalt(gestaltSystemVersionBugFix, &sysVersionBugFix))
+            sysVersion = 0x1000 + sysVersionMinor * 0x10 + sysVersionBugFix;
         
         BOOL runImporter = NO;
-        if (lastImporterVersion == nil || lastSystemVersion || systemVersion == nil) {
+        if ([versionInfo count] == 0) {
             runImporter = YES;
         } else {
-            runImporter = ([SKVersionNumber compareVersionString:lastImporterVersion toVersionString:importerVersion] == NSOrderedAscending || [SKVersionNumber compareVersionString:lastSystemVersion toVersionString:systemVersion] == NSOrderedAscending);
+            NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
+            
+            long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
+            
+            runImporter = sysVersion > 0 ? ([SKVersionNumber compareVersionString:lastImporterVersion toVersionString:importerVersion] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
         if (runImporter) {
             NSString *mdimportPath = @"/usr/bin/mdimport";
             if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
                 @try { [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]]; }
                 @catch(id exception) {}
-                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:systemVersion, SKSpotlightLastSystemVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
+                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
                 [[NSUserDefaults standardUserDefaults] setObject:info forKey:SKSpotlightVersionInfoKey];
                 
             } else NSLog(@"%@ not found!", mdimportPath);
