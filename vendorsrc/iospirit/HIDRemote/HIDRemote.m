@@ -187,32 +187,31 @@ static HIDRemote *sHIDRemote = nil;
 
 + (BOOL)isCandelairInstallationRequiredForRemoteMode:(HIDRemoteMode)remoteMode
 {
-	SInt32 systemVersion = 0;
+	SInt32 systemVersionMajor = 0, systemVersionMinor = 0, systemVersionBugFix;
 	
-	// Determine OS version
-	if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr)
+	// Determine OS version, use components as gestaltSystemVersion breaks on 10.10
+	if (Gestalt(gestaltSystemVersionMajor, &systemVersionMajor) == noErr &&
+		Gestalt(gestaltSystemVersionMinor, &systemVersionMinor) == noErr &&
+		Gestalt(gestaltSystemVersionBugFix, &systemVersionBugFix) == noErr)
 	{
-		switch (systemVersion)
+		if (systemVersionMajor == 10 && systemVersionMinor == 6 && systemVersionBugFix <= 1)
 		{
-			case 0x1060: // OS 10.6
-			case 0x1061: // OS 10.6.1
-				// OS X 10.6(.0) and OS X 10.6.1 require the Candelair driver for to be installed,
-				// so that third party apps can acquire an exclusive lock on the receiver HID Device
-				// via IOKit.
+			// OS X 10.6(.0) and OS X 10.6.1 require the Candelair driver for to be installed,
+			// so that third party apps can acquire an exclusive lock on the receiver HID Device
+			// via IOKit.
 
-				switch (remoteMode)
-				{
-					case kHIDRemoteModeExclusive:
-					case kHIDRemoteModeExclusiveAuto:
-						if (![self isCandelairInstalled])
-						{
-							return (YES);
-						}
-					break;
-					default:
-					break;
-				}
-			break;
+			switch (remoteMode)
+			{
+				case kHIDRemoteModeExclusive:
+				case kHIDRemoteModeExclusiveAuto:
+					if (![self isCandelairInstalled])
+					{
+						return (YES);
+					}
+				break;
+				default:
+				break;
+			}
 		}
 	}
 	
