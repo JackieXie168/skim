@@ -1268,7 +1268,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
         return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] isLocked] == NO;
-    } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
+    } else if ([anItem action] == @selector(saveArchive:)) {
         return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO;
     } else if ([anItem action] == @selector(moveToTrash:)) {
         return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL];
