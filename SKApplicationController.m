@@ -373,7 +373,7 @@
         } else {
             NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
             
-            long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
+            int lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] intValue];
             
             runImporter = sysVersion > 0 ? ([SKVersionNumber compareVersionString:lastImporterVersion toVersionString:importerVersion] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
