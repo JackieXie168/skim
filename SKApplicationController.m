@@ -213,7 +213,9 @@
     [self registerCurrentDocuments:nil];
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
-    if ([sud boolForKey:SKEnableAppleRemoteKey]) {
+    SInt32 sysVersionMinor = 0;
+    Gestalt(gestaltSystemVersionMinor, &sysVersionMinor);
+    if (sysVersionMinor < 10 && [sud boolForKey:SKEnableAppleRemoteKey]) {
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
