@@ -288,7 +288,16 @@ enum {
 
 #pragma mark Writing
 
+- (NSString *)fileType {
+    gettingFileType = YES;
+    NSString *fileType = [super fileType];
+    gettingFileType = NO;
+    return fileType;
+}
+
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
+    if (gettingFileType)
+        return [super writableTypesForSaveOperation:saveOperation];
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
     NSString *type = [self fileType];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];

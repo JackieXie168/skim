@@ -65,6 +65,8 @@ extern NSString *SKSkimFileDidSaveNotification;
     BOOL isSaving;
     BOOL exportUsingPanel;
     NSInteger exportOption;
+    
+    BOOL gettingFileType;
 }
 
 - (IBAction)readNotes:(id)sender;
