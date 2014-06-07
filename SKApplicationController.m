@@ -213,9 +213,8 @@
     [self registerCurrentDocuments:nil];
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
-    SInt32 sysVersionMinor = 0;
-    Gestalt(gestaltSystemVersionMinor, &sysVersionMinor);
-    if (sysVersionMinor < 10 && [sud boolForKey:SKEnableAppleRemoteKey]) {
+    // IOKit breaks due to invalid use of Gestalt on 10.10
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9 && [sud boolForKey:SKEnableAppleRemoteKey]) {
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }

@@ -47,6 +47,9 @@
 #ifndef NSAppKitVersionNumber10_8
     #define NSAppKitVersionNumber10_8 1187
 #endif
+#ifndef NSAppKitVersionNumber10_9
+    #define NSAppKitVersionNumber10_9 1265
+#endif
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 
