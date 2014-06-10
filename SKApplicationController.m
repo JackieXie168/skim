@@ -117,6 +117,13 @@
     NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
     NSArray *resettableUserDefaultsKeys;
     
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
+        // IOKit breaks due to invalid use of Gestalt on 10.10
+        NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
+        [tmpDict setObject:[NSNumber numberWithBool:NO] forKey:SKEnableAppleRemoteKey];
+        initialValuesDict = tmpDict;
+    }
+    
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
@@ -213,8 +220,7 @@
     [self registerCurrentDocuments:nil];
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
-    // IOKit breaks due to invalid use of Gestalt on 10.10
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9 && [sud boolForKey:SKEnableAppleRemoteKey]) {
+    if ([sud boolForKey:SKEnableAppleRemoteKey]) {
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
