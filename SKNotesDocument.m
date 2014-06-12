@@ -384,7 +384,7 @@
     return setup;
 }
 
-- (void)showWithSetup:(NSDictionary *)setup {
+- (void)applySetup:(NSDictionary *)setup {
     NSString *rectString = [setup objectForKey:SKWindowFrameKey];
     NSWindowController *wc = [[self windowControllers] lastObject];
     if (wc == nil) {
@@ -398,7 +398,6 @@
             [[wc window] setFrame:NSRectFromString(rectString) display:YES];
         }
     }
-    [self showWindows];
 }
 
 - (void)setFileURL:(NSURL *)absoluteURL {

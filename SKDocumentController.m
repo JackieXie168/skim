@@ -315,8 +315,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-        document = [self openDocumentWithContentsOfURL:fileURL display:NO error:outError];
-        [document showWithSetup:setup];
+        if ((document = [self openDocumentWithContentsOfURL:fileURL display:NO error:outError])) {
+            [document applySetup:setup];
+            [document showWindows];
+        }
     } else if (outError) {
         *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }

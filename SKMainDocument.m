@@ -1471,11 +1471,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     return setup;
 }
 
-- (void)showWithSetup:(NSDictionary *)setup {
+- (void)applySetup:(NSDictionary *)setup {
     if ([self mainWindowController] == nil)
         [self makeWindowControllers];
     [[self mainWindowController] applySetup:setup];
-    [self showWindows];
 }
 
 - (SKPDFView *)pdfView {
