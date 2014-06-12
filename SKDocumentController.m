@@ -316,19 +316,18 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-        if ((document = [self documentForURL:fileURL])) {
-            // the document was already open, don't call makeWindowControllers because that adds new empty windows
-            [document applySetup:setup];
-            [document showWindows];
-        } else if ((document = [self openDocumentWithContentsOfURL:fileURL display:NO error:&error])) {
+        // first check for existing document, because we then should not call makeWindowControllers
+        document = [self documentForURL:fileURL];
+        if (document == nil) {
+            document = [self openDocumentWithContentsOfURL:fileURL display:NO error:&error];
             [document makeWindowControllers];
-            [document applySetup:setup];
-            [document showWindows];
-        } else if (outError) {
-            *outError = error;
         }
+    }
+    if (document) {
+        [document applySetup:setup];
+        [document showWindows];
     } else if (outError) {
-        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+        *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }
     return document;
 }
