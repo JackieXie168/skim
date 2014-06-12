@@ -74,4 +74,6 @@
 
 - (void)setupToolbarForWindow:(NSWindow *)aWindow;
 
+- (void)showWithSetup:(NSDictionary *)setup;
+
 @end
