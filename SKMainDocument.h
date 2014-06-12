@@ -81,7 +81,7 @@ extern NSString *SKSkimFileDidSaveNotification;
 
 - (void)savePasswordInKeychain:(NSString *)password;
 
-- (void)applySetup:(NSDictionary *)setup;
+- (void)showWithSetup:(NSDictionary *)setup;
 
 @property (nonatomic, readonly) SKPDFSynchronizer *synchronizer;
 

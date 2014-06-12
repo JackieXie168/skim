@@ -323,12 +323,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             [document makeWindowControllers];
         }
     }
-    if (document) {
-        [document applySetup:setup];
-        [document showWindows];
-    } else if (outError) {
+    if (document)
+        [document showWithSetup:setup];
+    else if (outError)
         *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
-    }
     return document;
 }
 
