@@ -384,16 +384,21 @@
     return setup;
 }
 
-- (void)applySetup:(NSDictionary *)setup {
+- (void)showWithSetup:(NSDictionary *)setup {
     NSString *rectString = [setup objectForKey:SKWindowFrameKey];
+    NSWindowController *wc = [[self windowControllers] lastObject];
+    if (wc == nil) {
+        [self makeWindowControllers];
+        wc = [[self windowControllers] lastObject];
+    }
     if (rectString) {
-        NSWindowController *wc = [[self windowControllers] lastObject];
         if ([wc isWindowLoaded] == NO) {
             windowRect = NSRectFromString(rectString);
         } else {
             [[wc window] setFrame:NSRectFromString(rectString) display:YES];
         }
     }
+    [self showWindows];
 }
 
 - (void)setFileURL:(NSURL *)absoluteURL {
