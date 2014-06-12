@@ -1472,6 +1472,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)showWithSetup:(NSDictionary *)setup {
+    if (mainWindowController == nil)
+        [self makeWindowControllers];
     [[self mainWindowController] applySetup:setup];
     [self showWindows];
 }
