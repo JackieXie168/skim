@@ -1332,7 +1332,7 @@ U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald 
 
 @heading Open dit voor mij
 @multitable {}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=AppleScript, AppleScript pagina op de Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/AppleScript, AppleScript pagina op de Skim Wiki}
 @item @uref{help:runscript=SkimHelp/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim woordenboek in Scripteditor}
 @item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
 @item @uref{http://www.apple.com/nl/macosx/features/applescript/, AppleScript webpagina}
@@ -1358,7 +1358,7 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 
 @heading Open dit voor mij
 @multitable {}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=TeX_and_PDF_Synchronization, TeX-PDF Synchronisatie pagina op de Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/TeX_and_PDF_Synchronization, TeX-PDF Synchronisatie pagina op de Skim Wiki}
 @end multitable
 
 @c ======================================================================================
@@ -1370,8 +1370,8 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 @heading Weblocaties
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/, Skim Wiki}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=FAQ, Skim FAQ}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/, Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online kopie van deze handleiding}
 @end itemize
 

@@ -1324,7 +1324,7 @@ For example, you can change the colors of all notes or highlights of a certain t
 
 @heading Open this for me
 @multitable {}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=AppleScript, AppleScript page on the Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/AppleScript, AppleScript page on the Skim Wiki}
 @item @uref{help:runscript=SkimHelp/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim dictionary in Script Editor}
 @item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
 @item @uref{http://www.apple.com/macosx/features/applescript/, AppleScript website}
@@ -1350,7 +1350,7 @@ Check the Skim Wiki for more details, in particular about how to set up various 
 
 @heading Open this for me
 @multitable {}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=TeX_and_PDF_Synchronization, TeX-PDF Synchronization page on the Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/TeX_and_PDF_Synchronization, TeX-PDF Synchronization page on the Skim Wiki}
 @end multitable
 
 @c ======================================================================================
@@ -1362,8 +1362,8 @@ Check the Skim Wiki for more details, in particular about how to set up various 
 @heading Online Resources
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/, Skim Wiki}
-@item @uref{http://sourceforge.net/apps/mediawiki/skim-app/index.php?title=FAQ, Skim FAQ}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/, Skim Wiki}
+@item @uref{http://sourceforge.net/p/skim-app/wiki/FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online copy of this manual}
 @end itemize
 
