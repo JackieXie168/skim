@@ -180,4 +180,19 @@
     return [settings count] > 0 ? settings : nil;
 }
 
+- (BOOL)hasRightToLeftLanguage {
+    CGPDFDocumentRef doc = [self documentRef];
+    CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
+    BOOL isRTL = NO;
+    if (catalog) {
+        CGPDFStringRef lang = NULL;
+        if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
+            NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
+            isRTL = [NSLocale characterDirectionForLanguage:language] == kCFLocaleLanguageDirectionRightToLeft;
+            [language release];
+        }
+    }
+    return isRTL;
+}
+
 @end

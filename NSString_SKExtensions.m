@@ -41,6 +41,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -140,25 +141,11 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 }
 
 - (NSComparisonResult)boundsCompare:(NSString *)aString {
-    NSRect rect1 = NSRectFromString(self);
-    NSRect rect2 = NSRectFromString(aString);
-    CGFloat top1 = NSMaxY(rect1);
-    CGFloat top2 = NSMaxY(rect2);
-    
-    if (top1 > top2)
-        return NSOrderedAscending;
-    else if (top1 < top2)
-        return NSOrderedDescending;
-    
-    CGFloat left1 = NSMinX(rect1);
-    CGFloat left2 = NSMinX(rect2);
-    
-    if (left1 < left2)
-        return NSOrderedAscending;
-    else if (left1 > left2)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
+    return SKCompareRects(NSRectFromString(self), NSRectFromString(aString));
+}
+
+- (NSComparisonResult)mirroredBoundsCompare:(NSString *)aString {
+    return SKCompareMirroredRects(NSRectFromString(self), NSRectFromString(aString));
 }
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;

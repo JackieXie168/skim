@@ -44,4 +44,5 @@
 - (NSArray *)pageLabels;
 - (NSArray *)fileIDStrings:(NSData *)pdfData;
 - (NSDictionary *)initialSettings;
+- (BOOL)hasRightToLeftLanguage;
 @end

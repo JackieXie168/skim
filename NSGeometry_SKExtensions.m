@@ -160,3 +160,23 @@ NSComparisonResult SKCompareRects(NSRect rect1, NSRect rect2) {
     else
         return NSOrderedSame;
 }
+
+NSComparisonResult SKCompareMirroredRects(NSRect rect1, NSRect rect2) {
+    CGFloat top1 = NSMaxY(rect1);
+    CGFloat top2 = NSMaxY(rect2);
+    
+    if (top1 > top2)
+        return NSOrderedAscending;
+    else if (top1 < top2)
+        return NSOrderedDescending;
+    
+    CGFloat right1 = NSMaxX(rect1);
+    CGFloat right2 = NSMaxX(rect2);
+    
+    if (right1 > right2)
+        return NSOrderedAscending;
+    else if (right1 < right2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
+}
