@@ -67,6 +67,7 @@
 #import "NSError_SKExtensions.h"
 #import "SKTemplateManager.h"
 #import "SKCenteredTextFieldCell.h"
+#import "NSArray_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -614,33 +615,33 @@
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
-    NSArray *sortDescriptors = nil;
+    NSMutableArray *sortDescriptors = nil;
     BOOL ascending = YES;
     if ([NSEvent modifierFlags] & NSCommandKeyMask)
         tableColumn = nil;
     if ([oldTableColumn isEqual:tableColumn]) {
-        sortDescriptors = [[arrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
-        ascending = [[sortDescriptors lastObject] ascending];
+        sortDescriptors = [[[arrayController sortDescriptors] mutableCopy] autorelease];
+        [sortDescriptors replaceObjectAtIndex:0 withObject:[[sortDescriptors firstObject] reversedSortDescriptor]];
+        ascending = [[sortDescriptors firstObject] ascending];
     } else {
         NSString *tcID = [tableColumn identifier];
         NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
         NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
-        NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
+        sortDescriptors = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
         if ([tcID isEqualToString:TYPE_COLUMNID]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
+            [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:COLOR_COLUMNID]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease] atIndex:0];
+            [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:AUTHOR_COLUMNID]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationUserNameKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationUserNameKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:DATE_COLUMNID]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES] autorelease] atIndex:0];
+            [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationModificationDateKey ascending:YES] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
             if (oldTableColumn == nil)
                 ascending = NO;
         }
-        sortDescriptors = sds;
         if (oldTableColumn)
             [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
         [ov setHighlightedTableColumn:tableColumn]; 
