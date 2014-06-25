@@ -167,6 +167,7 @@ extern SKRectEdges SKResizeHandleForPointFromRect(NSPoint point, NSRect rect, CG
 #pragma mark -
 
 extern NSComparisonResult SKCompareRects(NSRect rect1, NSRect rect2);
+extern NSComparisonResult SKCompareMirroredRects(NSRect rect1, NSRect rect2);
 
 #pragma mark -
 

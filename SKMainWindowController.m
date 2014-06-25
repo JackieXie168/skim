@@ -437,6 +437,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
+    if ([[self pdfDocument] hasRightToLeftLanguage]) {
+        boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(mirorredBoundsCompare:)] autorelease];
+        [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
+        [rightSideController.noteOutlineView reloadData];
+    }
+    
     // Show/hide left side pane if necessary
     BOOL hasOutline = ([[pdfView document] outlineRoot] != nil);
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] != hasOutline)

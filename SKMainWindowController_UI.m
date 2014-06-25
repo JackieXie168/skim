@@ -77,6 +77,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -719,8 +720,9 @@
             ascending = [[sortDescriptors lastObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
+            SEL boundsSelector = [[self pdfDocument] hasRightToLeftLanguage] ? @selector(mirorredBoundsCompare:) : @selector(boundsCompare:);
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
-            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:boundsSelector] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:TYPE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
