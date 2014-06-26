@@ -117,13 +117,6 @@
     NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
     NSArray *resettableUserDefaultsKeys;
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
-        // IOKit breaks due to invalid use of Gestalt on 10.10
-        NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
-        [tmpDict setObject:[NSNumber numberWithBool:NO] forKey:SKEnableAppleRemoteKey];
-        initialValuesDict = tmpDict;
-    }
-    
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
