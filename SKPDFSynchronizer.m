@@ -111,7 +111,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     // make sure we're not calling our delegate
     delegate = nil;
     // set the stop flag immediately, so any running task may stop in its tracks
-    [self setShouldKeepRunning:NO];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&shouldKeepRunning);
 }
 
 #pragma mark Thread safe accessors
@@ -119,11 +119,6 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
 - (BOOL)shouldKeepRunning {
     OSMemoryBarrier();
     return shouldKeepRunning == 1;
-}
-
-- (void)setShouldKeepRunning:(BOOL)flag {
-    int32_t old = flag ? 0 : 1, new = flag ? 1 : 0;
-    OSAtomicCompareAndSwap32Barrier(old, new, (int32_t *)&shouldKeepRunning);
 }
 
 - (NSString *)fileName {

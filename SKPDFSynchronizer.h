@@ -71,7 +71,7 @@ enum {
 
 @property (nonatomic, assign) id <SKPDFSynchronizerDelegate> delegate;
 @property (copy) NSString *fileName;
-@property BOOL shouldKeepRunning;
+@property (readonly) BOOL shouldKeepRunning;
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
 - (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options;
