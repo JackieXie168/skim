@@ -565,7 +565,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    return [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+    return [NSImage imageNamed:NSImageNameFolder];
 }
 
 - (NSImage *)alternateIcon {
@@ -763,7 +763,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)alternateIcon {
-    return [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+    return [NSImage imageNamed:NSImageNameFolder];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
