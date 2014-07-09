@@ -407,7 +407,7 @@
 			<key>command</key>
 			<string>mvim</string>
 			<key>arguments</key>
-			<string>--remote-silent +&quot;:%line&quot; &quot;%file&quot;</string>
+			<string>--remote-silent +&quot;%line&quot; &quot;%file&quot;</string>
 		</dict>
 		<dict>
 			<key>name</key>
