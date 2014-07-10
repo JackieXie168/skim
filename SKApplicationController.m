@@ -371,7 +371,7 @@
         if ([versionInfo count] == 0) {
             runImporter = YES;
         } else {
-            NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
+            NSString *lastImporterVersion = [versionInfo stringForKey:SKSpotlightLastImporterVersionKey];
             
             int lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] intValue];
             
