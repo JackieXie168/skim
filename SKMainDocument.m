@@ -1343,14 +1343,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
-        NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
+        NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
         NSString *editorCmd = nil;
         NSString *editorArgs = nil;
         NSMutableString *cmdString = nil;
         
         if (NO == [SKSyncPreferences getTeXEditorCommand:&editorCmd arguments:&editorArgs forPreset:editorPreset]) {
-            editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
-            editorArgs = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey];
+            editorCmd = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey];
+            editorArgs = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey];
         }
         cmdString = [[editorArgs mutableCopy] autorelease];
         
