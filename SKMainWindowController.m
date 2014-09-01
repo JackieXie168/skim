@@ -438,7 +438,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [[self document] windowControllerDidLoadNib:self];
     
     if ([[self pdfDocument] hasRightToLeftLanguage]) {
-        boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(mirorredBoundsCompare:)] autorelease];
+        boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(mirroredBoundsCompare:)] autorelease];
         [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
         [rightSideController.noteOutlineView reloadData];
     }
