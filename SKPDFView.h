@@ -40,6 +40,9 @@
 #import <Quartz/Quartz.h>
 #import "NSDocument_SKExtensions.h"
 
+extern NSString *SKPDFViewDisplaysAsBookChangedNotification;
+extern NSString *SKPDFViewDisplaysPageBreaksChangedNotification;
+extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewAnnotationModeChangedNotification;
 extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
