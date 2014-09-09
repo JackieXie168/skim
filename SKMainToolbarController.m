@@ -87,6 +87,8 @@
 #define SKDocumentToolbarSingleTwoUpItemIdentifier @"SKDocumentToolbarSingleTwoUpItemIdentifier"
 #define SKDocumentToolbarContinuousItemIdentifier @"SKDocumentToolbarContinuousItemIdentifier"
 #define SKDocumentToolbarDisplayModeItemIdentifier @"SKDocumentToolbarDisplayModeItemIdentifier"
+#define SKDocumentToolbarBookModeItemIdentifier @"SKDocumentToolbarBookModeItemIdentifier"
+#define SKDocumentToolbarPageBreaksItemIdentifier @"SKDocumentToolbarPageBreaksItemIdentifier"
 #define SKDocumentToolbarDisplayBoxItemIdentifier @"SKDocumentToolbarDisplayBoxItemIdentifier"
 #define SKDocumentToolbarColorSwatchItemIdentifier @"SKDocumentToolbarColorSwatchItemIdentifier"
 #define SKDocumentToolbarColorsItemIdentifier @"SKDocumentToolbarColorsItemIdentifier"
@@ -119,7 +121,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 @implementation SKMainToolbarController
 
-@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch;
+@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -599,6 +601,24 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [item setViewWithSizes:displayModeButton];
             [item setMenuFormRepresentation:menuItem];
             
+        } else if ([identifier isEqualToString:SKDocumentToolbarBookModeItemIdentifier]) {
+            
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBook:) target:mainController];
+            
+            [item setLabels:NSLocalizedString(@"Book Mode", @"Toolbar item label")];
+            [item setToolTip:NSLocalizedString(@"Book Mode", @"Tool tip message")];
+            [item setViewWithSizes:bookModeButton];
+            [item setMenuFormRepresentation:menuItem];
+            
+        } else if ([identifier isEqualToString:SKDocumentToolbarPageBreaksItemIdentifier]) {
+            
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Page Breaks", @"Menu item title") action:@selector(toggleDisplayPageBreaks:) target:mainController];
+            
+            [item setLabels:NSLocalizedString(@"Page Breaks", @"Toolbar item label")];
+            [item setToolTip:NSLocalizedString(@"Page Breaks", @"Tool tip message")];
+            [item setViewWithSizes:pageBreaksButton];
+            [item setMenuFormRepresentation:menuItem];
+            
         } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier]) {
             
             menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Display Box", @"Toolbar item label")];
@@ -749,6 +769,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         SKDocumentToolbarSingleTwoUpItemIdentifier, 
         SKDocumentToolbarContinuousItemIdentifier, 
         SKDocumentToolbarDisplayModeItemIdentifier, 
+        SKDocumentToolbarBookModeItemIdentifier, 
+        SKDocumentToolbarPageBreaksItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
         SKDocumentToolbarPresentationItemIdentifier, 
@@ -791,8 +813,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarPageNumberItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
-    } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarDisplayModeItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarSingleTwoUpItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarContinuousItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarDisplayModeItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarSingleTwoUpItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarContinuousItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarPageBreaksItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarBookModeItemIdentifier]) {
+        return [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView displayMode] == kPDFDisplayTwoUp || [mainController.pdfView displayMode] == kPDFDisplayTwoUpContinuous);
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
         return ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
@@ -964,6 +988,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [mainController.pdfView setDisplayMode:displayMode];
 }
 
+- (IBAction)changeBookMode:(id)sender {
+    BOOL displaysAsBook = [sender isSelectedForSegment:0];
+    [mainController.pdfView setDisplaysAsBook:displaysAsBook];
+}
+
+- (IBAction)changePageBreaks:(id)sender {
+    BOOL displaysPageBreaks = [sender isSelectedForSegment:0];
+    [mainController.pdfView setDisplaysPageBreaks:displaysPageBreaks];
+}
+
 - (void)createNewNoteWithType:(NSInteger)type forButton:(NSSegmentedControl *)button {
     if ([mainController.pdfView hideNotes] == NO) {
         [mainController.pdfView addAnnotationWithType:type];
@@ -1080,6 +1114,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [continuousButton selectSegmentWithTag:displayMode & kPDFDisplaySinglePageContinuous];
 }
 
+- (void)handleBookModeChangedNotification:(NSNotification *)notification {
+    BOOL displaysAsBook = [mainController.pdfView displaysAsBook];
+    [bookModeButton setSelected:displaysAsBook forSegment:0];
+}
+
+- (void)handlePageBreaksChangedNotification:(NSNotification *)notification {
+    BOOL displaysPageBreaks = [mainController.pdfView displaysPageBreaks];
+    [pageBreaksButton setSelected:displaysPageBreaks forSegment:0];
+}
+
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
     [toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[mainController.pdfView annotationMode]]] forSegment:SKNoteToolMode];
 }
@@ -1091,6 +1135,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:PDFViewPageChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleScaleChangedNotification:) 
                              name:PDFViewScaleChangedNotification object:mainController.pdfView];
+    [nc addObserver:self selector:@selector(handleBookModeChangedNotification:) 
+                             name:SKPDFViewDisplaysAsBookChangedNotification object:mainController.pdfView];
+    [nc addObserver:self selector:@selector(handlePageBreaksChangedNotification:) 
+                             name:SKPDFViewDisplaysPageBreaksChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleToolModeChangedNotification:) 
                              name:SKPDFViewToolModeChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
@@ -1108,6 +1156,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [self handleToolModeChangedNotification:nil];
     [self handleDisplayBoxChangedNotification:nil];
     [self handleDisplayModeChangedNotification:nil];
+    [self handleBookModeChangedNotification:nil];
+    [self handlePageBreaksChangedNotification:nil];
     [self handleAnnotationModeChangedNotification:nil];
 }
 

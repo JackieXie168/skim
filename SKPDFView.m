@@ -97,6 +97,8 @@
 #define SMALL_MAGNIFICATION   1.5
 #define LARGE_MAGNIFICATION   4.0
 
+NSString *SKPDFViewDisplaysAsBookChangedNotification = @"SKPDFViewDisplaysAsBookChangedNotification";
+NSString *SKPDFViewDisplaysPageBreaksChangedNotification = @"SKPDFViewDisplaysPageBreaksChangedNotification";
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -531,6 +533,16 @@ enum {
         [super setDisplaysAsBook:asBook];
         [self resetPDFToolTipRects];
         [editor layout];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysAsBookChangedNotification object:self];
+    }
+}
+
+- (void)setDisplaysPageBreaks:(BOOL)pageBreaks {
+    if (pageBreaks != [self displaysPageBreaks]) {
+        [super setDisplaysPageBreaks:pageBreaks];
+        [self resetPDFToolTipRects];
+        [editor layout];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysPageBreaksChangedNotification object:self];
     }
 }
 

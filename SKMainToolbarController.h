@@ -71,6 +71,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSSegmentedControl *singleTwoUpButton;
     NSSegmentedControl *continuousButton;
     NSSegmentedControl *displayModeButton;
+    NSSegmentedControl *bookModeButton;
+    NSSegmentedControl *pageBreaksButton;
     NSSegmentedControl *displayBoxButton;
     NSSegmentedControl *infoButton;
     NSSegmentedControl *colorsButton;
@@ -85,7 +87,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 }
 
 @property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
-@property (nonatomic, retain) IBOutlet NSSegmentedControl *backForwardButton, *previousNextPageButton, *previousPageButton, *nextPageButton, *previousNextFirstLastPageButton, *zoomInOutButton, *zoomInActualOutButton, *zoomActualButton, *zoomFitButton, *zoomSelectionButton, *rotateLeftButton, *rotateRightButton, *rotateLeftRightButton, *cropButton, *fullScreenButton, *presentationButton, *leftPaneButton, *rightPaneButton, *toolModeButton, *textNoteButton, *circleNoteButton, *markupNoteButton, *lineNoteButton, *singleTwoUpButton, *continuousButton, *displayModeButton, *displayBoxButton, *infoButton, *colorsButton, *fontsButton, *linesButton, *printButton, *customizeButton, *noteButton;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *backForwardButton, *previousNextPageButton, *previousPageButton, *nextPageButton, *previousNextFirstLastPageButton, *zoomInOutButton, *zoomInActualOutButton, *zoomActualButton, *zoomFitButton, *zoomSelectionButton, *rotateLeftButton, *rotateRightButton, *rotateLeftRightButton, *cropButton, *fullScreenButton, *presentationButton, *leftPaneButton, *rightPaneButton, *toolModeButton, *textNoteButton, *circleNoteButton, *markupNoteButton, *lineNoteButton, *singleTwoUpButton, *continuousButton, *displayModeButton, *bookModeButton, *pageBreaksButton, *displayBoxButton, *infoButton, *colorsButton, *fontsButton, *linesButton, *printButton, *customizeButton, *noteButton;
 @property (nonatomic, retain) IBOutlet NSTextField *pageNumberField, *scaleField;
 @property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;
 
@@ -115,6 +117,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)changeDisplaySinglePages:(id)sender;
 - (IBAction)changeDisplayContinuous:(id)sender;
 - (IBAction)changeDisplayMode:(id)sender;
+- (IBAction)changeBookMode:(id)sender;
+- (IBAction)changePageBreaks:(id)sender;
 - (void)createNewTextNote:(id)sender;
 - (void)createNewCircleNote:(id)sender;
 - (void)createNewMarkupNote:(id)sender;
