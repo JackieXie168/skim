@@ -61,13 +61,12 @@
 
 #define SKDownloadsWindowFrameAutosaveName @"SKDownloadsWindow"
 
-#define DOWNLOADS_KEY @"downloads"
-
 static char SKDownloadPropertiesObservationContext;
 
 @interface SKDownloadController (SKPrivate)
 - (void)startObservingDownloads:(NSArray *)newDownloads;
 - (void)endObservingDownloads:(NSArray *)oldDownloads;
+- (void)removeObjectFromDownloads:(SKDownload *)download;
 @end
 
 @implementation SKDownloadController
@@ -123,7 +122,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (aURL) {
         download = [[[SKDownload alloc] initWithURL:aURL] autorelease];
         NSInteger row = [self countOfDownloads];
-        [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
+        [self insertObject:download inDownloadsAtIndex:row];
         if (flag)
             [self showWindow:nil];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -165,7 +164,7 @@ static SKDownloadController *sharedDownloadController = nil;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
             [[download retain] autorelease];
-            [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
+            [self removeObjectFromDownloads:download];
             // for the document to note that the file has been deleted
             [document setFileURL:[download fileURL]];
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
@@ -258,6 +257,12 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }
 
+- (void)removeObjectFromDownloads:(SKDownload *)download {
+    NSUInteger idx = [downloads indexOfObject:download];
+    if (idx != NSNotFound)
+        [self removeObjectFromDownloadsAtIndex:idx];
+}
+
 #pragma mark Actions
 
 - (IBAction)showDownloadPreferences:(id)sender {
@@ -283,7 +288,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if ([download canRemove]) {
         if ([download status] == SKDownloadStatusFinished)
             [download moveToTrash];
-        [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
+        [self removeObjectFromDownloads:download];
     } else {
         NSBeep();
     }
@@ -326,7 +331,7 @@ static SKDownloadController *sharedDownloadController = nil;
     }
     
     if (download)
-        [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
+        [self removeObjectFromDownloads:download];
 }
 
 - (void)openDownloadedFile:(id)sender {
