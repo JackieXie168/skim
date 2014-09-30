@@ -425,6 +425,14 @@
 			<key>arguments</key>
 			<string>&quot;%file&quot;:%line</string>
 		</dict>
+		<dict>
+			<key>name</key>
+			<string>Atom</string>
+			<key>command</key>
+			<string>atom</string>
+			<key>arguments</key>
+			<string>&quot;%file&quot;:%line</string>
+		</dict>
 	</array>
 </dict>
 </plist>
