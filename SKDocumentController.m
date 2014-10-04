@@ -80,6 +80,11 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
+@interface NSDocumentController (SKMountainLionDeclarations)
+// this is used in 10.8 and later from the openDocument: action
+- (void)beginOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)types completionHandler:(void (^)(NSInteger result))completionHandler;
+@end
+
 @interface NSDocumentController (SKDeprecated)
 // we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName;
@@ -103,10 +108,14 @@ NSString *SKDocumentControllerDocumentKey = @"document";
             object:self userInfo:nil];
 }
 
-
 - (NSInteger)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions {    
     [openPanel setCanChooseDirectories:YES];
     return [super runModalOpenPanel:openPanel forTypes:extensions];
+}
+
+- (void)beginOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)inTypes completionHandler:(void (^)(NSInteger result))completionHandler {
+    [openPanel setCanChooseDirectories:YES];
+    [super beginOpenPanel:openPanel forTypes:inTypes completionHandler:completionHandler];
 }
 
 static BOOL isPDFData(NSData *data) {
