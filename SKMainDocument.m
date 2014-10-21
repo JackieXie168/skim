@@ -633,7 +633,7 @@ enum {
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
         if ((data = [self notesRTFData]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
-        if ((data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[[self pdfDocument] fileIDStrings:pdfData]]))
+        if ((data = [self notesFDFDataForFile:[name stringByAppendingPathExtension:@"pdf"] fileIDStrings:[[self pdfDocument] fileIDStrings]]))
             [fileWrapper addRegularFileWithContents:data preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
     }
     return [fileWrapper autorelease];
@@ -683,7 +683,7 @@ enum {
         NSURL *fileURL = [self fileURL];
         if (fileURL && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType])
             fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
-        NSData *data = [self notesFDFDataForFile:[fileURL lastPathComponent] fileIDStrings:[[self pdfDocument] fileIDStrings:pdfData]];
+        NSData *data = [self notesFDFDataForFile:[fileURL lastPathComponent] fileIDStrings:[[self pdfDocument] fileIDStrings]];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else 
@@ -1586,7 +1586,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
-    return [[document fileIDStrings:originalData] lastObject] ?: [originalData md5String];
+    return [[document fileIDStrings] lastObject] ?: [originalData md5String];
 }
 
 - (void)doSavePasswordInKeychain:(NSString *)password {

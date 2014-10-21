@@ -42,7 +42,7 @@
 
 @interface PDFDocument (SKExtensions)
 - (NSArray *)pageLabels;
-- (NSArray *)fileIDStrings:(NSData *)pdfData;
+- (NSArray *)fileIDStrings;
 - (NSDictionary *)initialSettings;
 - (BOOL)hasRightToLeftLanguage;
 @end
