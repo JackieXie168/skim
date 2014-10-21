@@ -112,7 +112,7 @@
     return pageLabels;
 }
 
-- (NSArray *)fileIDStrings:(NSData *)pdfData {
+- (NSArray *)fileIDStrings {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFArrayRef idArray = CGPDFDocumentGetID(doc);
     
