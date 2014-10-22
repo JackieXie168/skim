@@ -58,7 +58,7 @@
 @protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
 @optional
 
-- (NSPointerArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
+- (NSUInteger)outlineView:(NSOutlineView *)anOutlineView highlightLevelForRow:(NSInteger)row;
 - (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForItem:(id)item;
 
 @end

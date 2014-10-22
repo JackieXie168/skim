@@ -55,53 +55,48 @@
     [super dealloc];
 }
 
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
-        NSColor *color = nil;
-        NSInteger row;
-        NSRect rect;
+- (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
+    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
+        [self isRowSelected:row] == NO) {
         
-        switch ([self selectionHighlightStyle]) {
-            case NSTableViewSelectionHighlightStyleSourceList:
-                if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                    color = [NSColor keySourceListHighlightColor];
-                else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-                    color = [NSColor mainSourceListHighlightColor];
-                else
-                    color = [NSColor disabledSourceListHighlightColor];
-                break;
-            case NSTableViewSelectionHighlightStyleRegular:
-                if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                    color = [NSColor alternateSelectedControlColor];
-                else
-                    color = [NSColor secondarySelectedControlColor];
-                break;
-            default:
-                break;
-        }
+        NSUInteger level = [[self delegate] tableView:self highlightLevelForRow:row];
         
-        if (color) {
-            [NSGraphicsContext saveGraphicsState];
+        if (level < MAX_HIGHLIGHTS) {
             
-            NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-            NSPointerArray *rows = [[self delegate] tableViewHighlightedRows:self];
-            NSInteger i, count = MIN((NSInteger)[rows count], MAX_HIGHLIGHTS);
+            NSColor *color = nil;
             
-            for (i = 0; i < count; i++) {
-                row = (NSInteger)[rows pointerAtIndex:i];
-                rect = [self rectOfRow:row];
-                if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
-                    [[color colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - i)] setFill];
-                    [NSBezierPath fillRect:rect];
-                }
-                [rowIndexes addIndex:row];
+            switch ([self selectionHighlightStyle]) {
+                case NSTableViewSelectionHighlightStyleSourceList:
+                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                        color = [NSColor keySourceListHighlightColor];
+                    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+                        color = [NSColor mainSourceListHighlightColor];
+                    else
+                        color = [NSColor disabledSourceListHighlightColor];
+                    break;
+                case NSTableViewSelectionHighlightStyleRegular:
+                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                        color = [NSColor alternateSelectedControlColor];
+                    else
+                        color = [NSColor secondarySelectedControlColor];
+                    break;
+                default:
+                    break;
             }
             
-            [NSGraphicsContext restoreGraphicsState];
+            if (color) {
+                NSRect rect = [self rectOfRow:row];
+                if (NSIntersectsRect(rect, clipRect)) {
+                    [NSGraphicsContext saveGraphicsState];
+                    [[color colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - level)] setFill];
+                    [NSBezierPath fillRect:rect];
+                    [NSGraphicsContext restoreGraphicsState];
+                }
+            }
         }
     }
     
-    [super highlightSelectionInClipRect:clipRect];
+    [super drawRow:row clipRect:clipRect];
 }
 
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
