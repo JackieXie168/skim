@@ -1034,7 +1034,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (IBAction)selectColor:(id)sender {
     PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
-    NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
+    NSColor *newColor = [sender respondsToSelector:@selector(color)] ? [sender color] : [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
     BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
     if ([annotation isSkimNote]) {
