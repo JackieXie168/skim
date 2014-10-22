@@ -516,13 +516,16 @@
     return NO;
 }
 
-- (NSPointerArray *)tableViewHighlightedRows:(NSTableView *)tv {
+- (NSUInteger)tableView:(NSTableView *)tv highlightLevelForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        return lastViewedPages;
+        NSUInteger i, iMax = [lastViewedPages count];
+        for (i = 0; i < iMax; i++) {
+            if (row == (NSInteger)[lastViewedPages pointerAtIndex:i])
+                return i;
+        }
     }
-    return nil;
+    return NSNotFound;
 }
-
 
 - (void)tableViewMoveLeft:(NSTableView *)tv {
     if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
@@ -868,20 +871,15 @@
     return NO;
 }
 
-- (NSPointerArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
+- (NSUInteger)outlineView:(NSOutlineView *)ov highlightLevelForRow:(NSInteger)row {
     if ([ov isEqual:leftSideController.tocOutlineView]) {
-        NSPointerArray *array = [[[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality] autorelease];
         NSUInteger i, iMax = [lastViewedPages count];
-        
         for (i = 0; i < iMax; i++) {
-            NSInteger row = [self outlineRowForPageIndex:(NSUInteger)[lastViewedPages pointerAtIndex:i]];
-            if (row != -1)
-                [array addPointer:(void *)row];
+            if (row == [self outlineRowForPageIndex:(NSUInteger)[lastViewedPages pointerAtIndex:i]])
+                return i;
         }
-        
-        return array;
     }
-    return nil;
+    return NSNotFound;
 }
 
 - (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForItem:(id)item {
