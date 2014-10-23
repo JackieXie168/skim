@@ -874,8 +874,8 @@
 - (NSUInteger)outlineView:(NSOutlineView *)ov highlightLevelForRow:(NSInteger)row {
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         NSInteger numRows = [ov numberOfRows];
-        NSUInteger firstPage = [[ov itemAtRow:row] pageIndex];
-        NSUInteger lastPage = row + 1 < numRows ? [[ov itemAtRow:row + 1] pageIndex] : [[self pdfDocument] pageCount];
+        NSUInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
+        NSUInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
         NSRange range = NSMakeRange(firstPage, lastPage - firstPage);
         NSUInteger i, iMax = [lastViewedPages count];
         for (i = 0; i < iMax; i++) {
