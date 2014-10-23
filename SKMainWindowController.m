@@ -2389,30 +2389,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 #pragma mark Outline
 
-- (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex {
-    if ([[pdfView document] outlineRoot] == nil)
-        return -1;
-    
-	NSInteger i, numRows = [leftSideController.tocOutlineView numberOfRows];
-	for (i = 0; i < numRows; i++) {
-		// Get the destination of the given row....
-		PDFOutline *outlineItem = [leftSideController.tocOutlineView itemAtRow:i];
-        PDFPage *page = [outlineItem page];
-		
-        if (page == nil) {
-            continue;
-		} else if ([page pageIndex] == pageIndex) {
-            break;
-        } else if ([page pageIndex] > pageIndex) {
-			if (i > 0) --i;
-            break;	
-		}
-	}
-    if (i == numRows)
-        i--;
-    return i;
-}
-
 - (void)updateOutlineSelection{
 
 	// Skip out if this PDF has no outline.
@@ -2424,8 +2400,23 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
 	// Test that the current selection is still valid.
 	NSInteger row = [leftSideController.tocOutlineView selectedRow];
-    if (row == -1 || [[[[leftSideController.tocOutlineView itemAtRow:row] destination] page] pageIndex] != pageIndex) {
-        row = [self outlineRowForPageIndex:pageIndex];
+    if (row == -1 || [[[leftSideController.tocOutlineView itemAtRow:row] page] pageIndex] != pageIndex) {
+        // Get the outline row that contains the current page
+        NSInteger numRows = [leftSideController.tocOutlineView numberOfRows];
+        for (row = 0; row < numRows; row++) {
+            // Get the page for the given row....
+            PDFPage *page = [[leftSideController.tocOutlineView itemAtRow:row] page];
+            if (page == nil) {
+                continue;
+            } else if ([page pageIndex] == pageIndex) {
+                break;
+            } else if ([page pageIndex] > pageIndex) {
+                if (row > 0) --row;
+                break;	
+            }
+        }
+        if (row == numRows)
+            row--;
         if (row != -1) {
             mwcFlags.updatingOutlineSelection = 1;
             [leftSideController.tocOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];

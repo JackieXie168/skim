@@ -285,7 +285,6 @@ enum {
 
 - (void)showFindBar;
 
-- (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex;
 - (void)updateOutlineSelection;
 
 - (void)updateNoteSelection;
