@@ -876,7 +876,7 @@
         NSInteger numRows = [ov numberOfRows];
         NSUInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
         NSUInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
-        NSRange range = NSMakeRange(firstPage, lastPage - firstPage);
+        NSRange range = NSMakeRange(firstPage, MAX(1LU, lastPage - firstPage));
         NSUInteger i, iMax = [lastViewedPages count];
         for (i = 0; i < iMax; i++) {
             if (NSLocationInRange((NSUInteger)[lastViewedPages pointerAtIndex:i], range))
