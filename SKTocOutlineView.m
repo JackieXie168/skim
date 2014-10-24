@@ -62,18 +62,19 @@
         if (level < MAX_HIGHLIGHTS) {
             
             NSColor *color = nil;
+            NSWindow *window = [self window];
             
             switch ([self selectionHighlightStyle]) {
                 case NSTableViewSelectionHighlightStyleSourceList:
-                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                    if ([window isKeyWindow] && [window firstResponder] == self)
                         color = [NSColor keySourceListHighlightColor];
-                    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+                    else if ([window isMainWindow] || [window isKeyWindow])
                         color = [NSColor mainSourceListHighlightColor];
                     else
                         color = [NSColor disabledSourceListHighlightColor];
                     break;
                 case NSTableViewSelectionHighlightStyleRegular:
-                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                    if ([window isKeyWindow] && [window firstResponder] == self)
                         color = [NSColor alternateSelectedControlColor];
                     else
                         color = [NSColor secondarySelectedControlColor];
