@@ -72,13 +72,13 @@ static NSAttributedString *imageAttachmentForPath(NSString *path)
 
 static NSString *hexStringWithColor(NSColor *color)
 {
-    static char hexChars[16] = "0123456789abcdef";
+    static unsigned char hexChars[16] = "0123456789abcdef";
     if ([color alphaComponent] < 1.0)
         color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
     NSInteger red = (NSInteger)round(255 * [color redComponent]);
     NSInteger green = (NSInteger)round(255 * [color greenComponent]);
     NSInteger blue = (NSInteger)round(255 * [color blueComponent]);
-    return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
+    return [NSString stringWithFormat:@"%c%c%c%c%c%c", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
 }
 
 // Stolen from OmniFoundation; modified to use malloc instead of alloca()
