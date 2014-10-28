@@ -66,7 +66,6 @@ typedef NSInteger SKLineWellDisplayStyle;
         unsigned int displayStyle:2;
         unsigned int active:1;
         unsigned int canActivate:1;
-        unsigned int highlighted:1;
         unsigned int existsActiveLineWell:1;
     } lwFlags;
     
@@ -78,7 +77,6 @@ typedef NSInteger SKLineWellDisplayStyle;
 @property (nonatomic, assign) id target;
 @property (nonatomic, readonly) BOOL isActive;
 @property (nonatomic) BOOL canActivate;
-@property (nonatomic, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic) SKLineWellDisplayStyle displayStyle;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) PDFBorderStyle style;
