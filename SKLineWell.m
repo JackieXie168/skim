@@ -60,7 +60,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 @implementation SKLineWell
 
 @synthesize action, target, lineWidth, style, dashPattern, startLineStyle, endLineStyle;
-@dynamic isActive, canActivate, highlighted, displayStyle;
+@dynamic isActive, canActivate, displayStyle;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -81,7 +81,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)commonInit {
     lwFlags.canActivate = 1;
-    lwFlags.highlighted = 0;
     lwFlags.existsActiveLineWell = 0;
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]];
@@ -318,7 +317,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self isEnabled]) {
-        [self setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
         NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
@@ -328,9 +326,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 			switch ([theEvent type]) {
 				case NSLeftMouseDragged:
                 {
-                    [self setHighlighted:NO];
-                    [self setNeedsDisplay:YES];
-                    
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                         [NSNumber numberWithDouble:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInteger:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
                     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
@@ -350,8 +345,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                     break;
 				}
                 case NSLeftMouseUp:
-                    [self setHighlighted:NO];
-                    [self setNeedsDisplay:YES];
                     if ([self isActive])
                         [self deactivate];
                     else
@@ -459,16 +452,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         lwFlags.canActivate = flag;
         if ([self isActive] && lwFlags.canActivate == 0)
             [self deactivate];
-    }
-}
-
-- (BOOL)isHighlighted {
-    return lwFlags.highlighted;
-}
-
-- (void)setHighlighted:(BOOL)flag {
-    if (lwFlags.highlighted != flag) {
-        lwFlags.highlighted = flag;
     }
 }
 
