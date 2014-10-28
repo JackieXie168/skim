@@ -307,7 +307,7 @@
 #pragma mark NSTableView datasource protocol
 
 - (NSString *)draggedFileNameForPage:(PDFPage *)page {
-    return [NSString stringWithFormat:@"%@ %C %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+    return [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
 }
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
