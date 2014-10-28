@@ -58,6 +58,7 @@
 #import "NSInvocation_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
+#import "SKMainWindowController.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
