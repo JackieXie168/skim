@@ -145,7 +145,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateScaleFactor {
-    [[textField cell] setScaleFactor:[pdfView scaleFactor]];
+    [(SKTextNoteFieldCell *)[textField cell] setScaleFactor:[pdfView scaleFactor]];
 }
 
 - (void)layout {
