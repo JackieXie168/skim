@@ -75,7 +75,7 @@ static NSCharacterSet *invertedKeyCharacterSet = nil;
 static NSCharacterSet *nonWhitespaceCharacterSet = nil;
 
 + (void)initialize {
-    NSMutableCharacterSet *tmpSet = [NSCharacterSet characterSetWithRange:NSMakeRange('a', 26)];
+    NSMutableCharacterSet *tmpSet = [NSMutableCharacterSet characterSetWithRange:NSMakeRange('a', 26)];
     [tmpSet addCharactersInRange:NSMakeRange('A', 26)];
     [tmpSet addCharactersInRange:NSMakeRange('0', 10)];
     [tmpSet addCharactersInString:@".-_@#"];
