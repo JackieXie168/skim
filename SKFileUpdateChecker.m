@@ -269,7 +269,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                                                  defaultButton:NSLocalizedString(@"Yes", @"Button title")
                                                alternateButton:NSLocalizedString(@"Auto", @"Button title")
                                                    otherButton:NSLocalizedString(@"No", @"Button title")
-                                     informativeTextWithFormat:message];
+                                     informativeTextWithFormat:@"%@", message];
                 [alert beginSheetModalForWindow:docWindow
                                   modalDelegate:self
                                  didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
