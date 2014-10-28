@@ -38,7 +38,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SKQLConverter.h"
 
-static const CGFloat _fontSize = 12.0;
 
 static NSDictionary *imageAttachments(NSSet *imageNames, QLPreviewRequestRef preview)
 {
