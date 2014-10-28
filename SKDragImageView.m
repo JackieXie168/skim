@@ -169,7 +169,7 @@
 	return nil;
 }    
 
-- (NSUInteger)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
 }
 
