@@ -127,10 +127,10 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
     [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
-- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
     NSRect textRect = [self textRectForBounds:cellFrame];
     NSPoint mouseLoc = [event locationInView:controlView];
-    NSUInteger hit = NSCellHitNone;
+    NSCellHitResult hit = NSCellHitNone;
     if (NSMouseInRect(mouseLoc, textRect, [controlView isFlipped]))
         hit = [super hitTestForEvent:event inRect:textRect ofView:controlView];
     else if (NSMouseInRect(mouseLoc, [self iconRectForBounds:cellFrame], [controlView isFlipped]))
