@@ -45,8 +45,6 @@
     NSMutableDictionary *bindingInfo;
 }
 
-@property (nonatomic) SEL action;
-@property (nonatomic, assign) id target;
 @property (nonatomic) BOOL isActive;
 @property (nonatomic, copy) NSString *fontName;
 @property (nonatomic) CGFloat fontSize;

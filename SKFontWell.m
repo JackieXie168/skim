@@ -66,7 +66,6 @@ static char SKFontWellFontSizeObservationContext;
 
 @implementation SKFontWell
 
-@synthesize action, target;
 @dynamic isActive, fontName, fontSize, textColor, hasTextColor;
 
 + (void)initialize {
@@ -248,6 +247,14 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 #pragma mark Accessors
+
+- (SEL)action { return action; }
+
+- (void)setAction:(SEL)newAction { action = newAction; }
+
+- (id)target { return target; }
+
+- (void)setTarget:(id)newTarget { target = newTarget; }
 
 - (BOOL)isActive {
     return [self state] == NSOnState;

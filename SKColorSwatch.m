@@ -57,7 +57,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 @implementation SKColorSwatch
 
-@synthesize action, target, colors, autoResizes;
+@synthesize colors, autoResizes;
 @synthesize clickedColorIndex=clickedIndex;
 @dynamic color;
 
@@ -331,6 +331,14 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 #pragma mark Accessors
+
+- (SEL)action { return action; }
+
+- (void)setAction:(SEL)newAction { action = newAction; }
+
+- (id)target { return target; }
+
+- (void)setTarget:(id)newTarget { target = newTarget; }
 
 - (NSArray *)colors {
     return [[colors copy] autorelease];

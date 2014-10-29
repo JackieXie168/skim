@@ -54,8 +54,6 @@ extern NSString *SKColorSwatchColorsChangedNotification;
     BOOL autoResizes;
 }
 
-@property (nonatomic) SEL action;
-@property (nonatomic, assign) id target;
 @property (nonatomic, copy) NSArray *colors;
 @property (nonatomic, readonly) NSInteger clickedColorIndex;
 @property (nonatomic, readonly) NSColor *color;
