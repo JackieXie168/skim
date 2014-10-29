@@ -59,7 +59,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 @implementation SKLineWell
 
-@synthesize action, target, lineWidth, style, dashPattern, startLineStyle, endLineStyle;
+@synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle;
 @dynamic isActive, canActivate, displayStyle;
 
 + (void)initialize {
@@ -438,6 +438,14 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 #pragma mark Accessors
+
+- (SEL)action { return action; }
+
+- (void)setAction:(SEL)newAction { action = newAction; }
+
+- (id)target { return target; }
+
+- (void)setTarget:(id)newTarget { target = newTarget; }
 
 - (BOOL)isActive {
     return lwFlags.active;

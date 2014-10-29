@@ -73,8 +73,6 @@ typedef NSInteger SKLineWellDisplayStyle;
     SEL action;
 }
 
-@property (nonatomic) SEL action;
-@property (nonatomic, assign) id target;
 @property (nonatomic, readonly) BOOL isActive;
 @property (nonatomic) BOOL canActivate;
 @property (nonatomic) SKLineWellDisplayStyle displayStyle;
