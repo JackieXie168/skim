@@ -81,3 +81,7 @@ enum {
 @end
 
 #endif
+
+#ifndef MAC_OS_X_VERSION_10_10
+typedef NSUInteger NSCellHitResult;
+#endif
