@@ -50,7 +50,6 @@
     SKBookmark *previousSession;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
-    NSArray *draggedBookmarks;
     NSDictionary *toolbarItems;
 }
 
