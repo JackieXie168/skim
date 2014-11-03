@@ -118,6 +118,35 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     }
 }
 
+- (void)doScrollForKey:(unichar)key {
+    NSScrollView *scrollView = [self scrollView];
+    NSView *documentView = [scrollView documentView];
+    NSRect bounds = [documentView bounds];
+    NSRect visibleRect = [scrollView documentVisibleRect];
+    BOOL flipped = [documentView isFlipped];
+    if (key == NSDownArrowFunctionKey || key == NSPageDownFunctionKey) {
+        if (flipped ? NSMaxY(visibleRect) < NSMaxY(bounds) : NSMinY(visibleRect) > NSMinY(bounds)) {
+            CGFloat scroll = key == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
+            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) + scroll : NSMaxY(visibleRect) - scroll)];
+        } else if ([self canGoToNextPage] && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0)) {
+            [self goToNextPage:nil];
+            bounds = [documentView bounds];
+            visibleRect = [scrollView documentVisibleRect];
+            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? 0.0 : NSMaxY(bounds) - NSHeight(visibleRect))];
+        }
+    } else if (key == NSUpArrowFunctionKey || key == NSPageUpFunctionKey) {
+        if (flipped ? NSMinY(visibleRect) > NSMinY(bounds) : NSMaxY(visibleRect) < NSMaxY(bounds)) {
+            CGFloat scroll = key == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
+            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) - scroll : NSMaxY(visibleRect) + scroll)];
+        } else if ([self canGoToPreviousPage] && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0)) {
+            [self goToPreviousPage:nil];
+            bounds = [documentView bounds];
+            visibleRect = [scrollView documentVisibleRect];
+            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMaxY(bounds) - NSHeight(visibleRect) : 0.0)];
+        }
+    }
+}
+
 - (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest {
     NSPoint p = [event locationInView:self];
     PDFPage *page = [self pageForPoint:p nearest:nearest];
