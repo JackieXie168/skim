@@ -728,14 +728,12 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
         [info draggingSource] == ov) {
-        NSIndexSet *sourceIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:SKPasteboardTypeBookmarkRows]];
-        NSUInteger i = [sourceIndexes firstIndex];
+        NSMutableIndexSet *indexes = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:SKPasteboardTypeBookmarkRows]];
         NSMutableArray *bookmarks = [NSMutableArray array];
         
-        while (i != NSNotFound) {
-            [bookmarks addObject:[ov itemAtRow:i]];
-            i = [sourceIndexes indexGreaterThanIndex:i];
-        }
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            [bookmarks addObject:[outlineView itemAtRow:idx]];
+        }];
         
         if (item == nil) item = bookmarkRoot;
         
@@ -755,7 +753,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
 		}
         
-        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+        indexes = [NSMutableIndexSet indexSet];
         for (SKBookmark *bookmark in bookmarks) {
             NSInteger row = [outlineView rowForItem:bookmark];
             if (row != -1)
