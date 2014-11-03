@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKTypeSelectHelper.h"
 
-@protocol SKOutlineViewDelegate;
+@protocol SKOutlineViewDelegate, SKOutlineViewDataSource;
 
 @interface SKOutlineView : NSOutlineView <SKTypeSelectDelegate> {
     SKTypeSelectHelper *typeSelectHelper;
@@ -62,6 +62,8 @@
 
 - (id <SKOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate;
+- (id <SKOutlineViewDataSource>)dataSource;
+- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource;
 
 @end
 
@@ -81,5 +83,12 @@
 - (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+
+@end
+
+@protocol SKOutlineViewDataSource <NSOutlineViewDataSource>
+@optional
+
+- (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)items;
 
 @end
