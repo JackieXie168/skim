@@ -177,7 +177,6 @@ enum {
 - (void)doSelectWithEvent:(NSEvent *)theEvent;
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
-- (void)doScrollForKey:(unichar)eventChar;
 - (void)doNothingWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
@@ -4119,35 +4118,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
     [theEvent release];
     [lastMouseEvent release];
-}
-
-- (void)doScrollForKey:(unichar)eventChar {
-    NSScrollView *scrollView = [self scrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect bounds = [documentView bounds];
-    NSRect visibleRect = [scrollView documentVisibleRect];
-    BOOL flipped = [documentView isFlipped];
-    if (eventChar == NSDownArrowFunctionKey || eventChar == NSPageDownFunctionKey) {
-        if (flipped ? NSMaxY(visibleRect) < NSMaxY(bounds) : NSMinY(visibleRect) > NSMinY(bounds)) {
-            CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
-            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) + scroll : NSMaxY(visibleRect) - scroll)];
-        } else if ([self canGoToNextPage]) {
-            [self goToNextPage:nil];
-            bounds = [documentView bounds];
-            visibleRect = [scrollView documentVisibleRect];
-            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? 0.0 : NSMaxY(bounds) - NSHeight(visibleRect))];
-        }
-    } else if (eventChar == NSUpArrowFunctionKey || eventChar == NSPageUpFunctionKey) {
-        if (flipped ? NSMinY(visibleRect) > NSMinY(bounds) : NSMaxY(visibleRect) < NSMaxY(bounds)) {
-            CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
-            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) - scroll : NSMaxY(visibleRect) + scroll)];
-        } else if ([self canGoToPreviousPage]) {
-            [self goToPreviousPage:nil];
-            bounds = [documentView bounds];
-            visibleRect = [scrollView documentVisibleRect];
-            [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMaxY(bounds) - NSHeight(visibleRect) : 0.0)];
-        }
-    }
 }
 
 - (void)doNothingWithEvent:(NSEvent *)theEvent {
