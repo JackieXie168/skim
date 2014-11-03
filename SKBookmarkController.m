@@ -395,15 +395,13 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (NSArray *)clickedBookmarks {
-    NSMutableArray *items = [NSMutableArray array];
+    NSArray *items = nil;
     NSInteger row = [outlineView clickedRow];
     if (row != -1) {
         NSIndexSet *indexes = [outlineView selectedRowIndexes];
         if ([indexes containsIndex:row] == NO)
             indexes = [NSIndexSet indexSetWithIndex:row];
-        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            [items addObject:[outlineView itemAtRow:idx]];
-        }];
+        items = [outlineView itemsAtRowIndexes:indexes];
     }
     return items;
 }
@@ -728,33 +726,28 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
         [info draggingSource] == ov) {
-        NSMutableIndexSet *indexes = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:SKPasteboardTypeBookmarkRows]];
-        NSMutableArray *bookmarks = [NSMutableArray array];
-        
-        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            [bookmarks addObject:[outlineView itemAtRow:idx]];
-        }];
+        NSArray *bookmarks = [outlineView itemsAtRowIndexes:[NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:SKPasteboardTypeBookmarkRows]]];
+        NSMutableArray *movedBookmarks = [NSMutableArray array];
+        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
-		for (SKBookmark *bookmark in [[bookmarks copy] autorelease]) {
+		for (SKBookmark *bookmark in bookmarks) {
             SKBookmark *parent = [bookmark parent];
             NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {
                 if (anIndex > bookmarkIndex)
                     anIndex--;
-                if (anIndex == bookmarkIndex) {
-                    [bookmarks removeObject:bookmark];
+                if (anIndex == bookmarkIndex)
                     continue;
-                }
             }
             [parent removeObjectFromChildrenAtIndex:bookmarkIndex];
             [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
+            [movedBookmarks addObject:bookmark];
 		}
         
-        indexes = [NSMutableIndexSet indexSet];
-        for (SKBookmark *bookmark in bookmarks) {
+        for (SKBookmark *bookmark in movedBookmarks) {
             NSInteger row = [outlineView rowForItem:bookmark];
             if (row != -1)
                 [indexes addIndex:row];

@@ -1076,15 +1076,13 @@
             }
         }
     } else if ([menu isEqual:[rightSideController.noteOutlineView menu]]) {
-        NSMutableArray *items = [NSMutableArray array];
+        NSArray *items;
         NSIndexSet *rowIndexes = [rightSideController.noteOutlineView selectedRowIndexes];
         NSInteger row = [rightSideController.noteOutlineView clickedRow];
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
-            [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger rowIdx, BOOL *stop) {
-                [items addObject:[rightSideController.noteOutlineView itemAtRow:rowIdx]];
-            }];
+            items = [rightSideController.noteOutlineView itemsAtRowIndexes:rowIndexes];
             
             if ([self outlineView:rightSideController.noteOutlineView canDeleteItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) target:self];
