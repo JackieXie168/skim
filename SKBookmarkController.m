@@ -90,9 +90,13 @@ static NSArray *minimumCoverForBookmarks(NSArray *items);
 - (void)stopObservingBookmarks:(NSArray *)oldBookmarks;
 @end
 
+@interface SKBookmarkController ()
+@property (nonatomic, retain) NSArray *draggedBookmarks;
+@end
+
 @implementation SKBookmarkController
 
-@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager;
+@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager, draggedBookmarks;
 
 static SKBookmarkController *sharedBookmarkController = nil;
 
@@ -175,6 +179,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     SKDESTROY(bookmarkRoot);
     SKDESTROY(previousSession);
     SKDESTROY(recentDocuments);
+    SKDESTROY(draggedBookmarks);
     SKDESTROY(toolbarItems);
     SKDESTROY(outlineView);
     SKDESTROY(statusBar);
@@ -700,11 +705,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-    for (id item in minimumCoverForBookmarks(items))
-        [indexes addIndex:[ov rowForItem:item]];
+    [self setDraggedBookmarks:minimumCoverForBookmarks(items)];
     [pboard clearContents];
-    [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:indexes] forType:SKPasteboardTypeBookmarkRows];
+    [pboard setData:[NSData data] forType:SKPasteboardTypeBookmarkRows];
     return YES;
 }
 
@@ -726,14 +729,13 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, nil]] &&
         [info draggingSource] == ov) {
-        NSArray *bookmarks = [outlineView itemsAtRowIndexes:[NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:SKPasteboardTypeBookmarkRows]]];
         NSMutableArray *movedBookmarks = [NSMutableArray array];
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
-		for (SKBookmark *bookmark in bookmarks) {
+		for (SKBookmark *bookmark in [self draggedBookmarks]) {
             SKBookmark *parent = [bookmark parent];
             NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {
@@ -774,6 +776,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         return NO;
     }
     return NO;
+}
+
+- (void)outlineView:(NSOutlineView *)ov dragEndedWithOperation:(NSDragOperation)operation {
+    [self setDraggedBookmarks:nil];
 }
 
 #pragma mark NSOutlineView delegate methods

@@ -198,6 +198,13 @@
     return YES;
 }
 
+- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation {
+    if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
+        [super draggedImage:anImage endedAt:aPoint operation:operation];
+    if ([[self dataSource] respondsToSelector:@selector(outlineView:dragEndedWithOperation:)])
+        [[self dataSource] outlineView:self dragEndedWithOperation:operation];
+}
+
 - (NSFont *)font {
     for (NSTableColumn *tc in [self tableColumns]) {
         NSCell *cell = [tc dataCell];
@@ -250,5 +257,7 @@
 
 - (id <SKOutlineViewDelegate>)delegate { return (id <SKOutlineViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+- (id <SKOutlineViewDataSource>)dataSource { return (id <SKOutlineViewDataSource>)[super dataSource]; }
+- (void)setDataSource:(id <SKOutlineViewDataSource>)newDataSource { [super setDataSource:newDataSource]; }
 
 @end

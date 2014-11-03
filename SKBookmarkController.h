@@ -43,13 +43,14 @@
 
 @class SKBookmark, SKStatusBar;
 
-@interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, NSMenuDelegate, SKOutlineViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate> {
+@interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, NSMenuDelegate, SKOutlineViewDelegate, SKOutlineViewDataSource, QLPreviewPanelDataSource, QLPreviewPanelDelegate> {
     SKOutlineView *outlineView;
     SKStatusBar *statusBar;
     SKBookmark *bookmarkRoot;
     SKBookmark *previousSession;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
+    NSArray *draggedBookmarks;
     NSDictionary *toolbarItems;
 }
 
