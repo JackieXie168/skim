@@ -740,14 +740,16 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
-		for (SKBookmark *bookmark in bookmarks) {
+		for (SKBookmark *bookmark in [[bookmarks copy] autorelease]) {
             SKBookmark *parent = [bookmark parent];
             NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {
                 if (anIndex > bookmarkIndex)
                     anIndex--;
-                if (anIndex == bookmarkIndex)
+                if (anIndex == bookmarkIndex) {
+                    [bookmarks removeObject:bookmark];
                     continue;
+                }
             }
             [parent removeObjectFromChildrenAtIndex:bookmarkIndex];
             [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
