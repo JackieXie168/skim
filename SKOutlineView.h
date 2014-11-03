@@ -51,6 +51,8 @@
 @property (nonatomic) BOOL supportsQuickLook;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
+- (NSArray *)itemsAtRowIndexes:(NSIndexSet *)indexes;
+
 - (void)delete:(id)sender;
 - (void)copy:(id)sender;
 - (void)paste:(id)sender;

@@ -735,16 +735,14 @@
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     if ([menu isEqual:[outlineView menu]]) {
         NSMenuItem *item;
-        NSMutableArray *items = [NSMutableArray array];
+        NSArray *items;
         NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
         NSInteger row = [outlineView clickedRow];
         [menu removeAllItems];
         if (row != -1) {
             if ([rowIndexes containsIndex:row] == NO)
                 rowIndexes = [NSIndexSet indexSetWithIndex:row];
-            [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger rowIdx, BOOL *stop) {
-                [items addObject:[outlineView itemAtRow:rowIdx]];
-            }];
+            items = [outlineView itemsAtRowIndexes:rowIndexes];
             
             if ([self outlineView:outlineView canCopyItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];

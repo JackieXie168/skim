@@ -54,14 +54,16 @@
     [super dealloc];
 }
 
-- (NSArray *)selectedItems {
+- (NSArray *)itemsAtRowIndexes:(NSIndexSet *)indexes {
     NSMutableArray *items = [NSMutableArray array];
-    NSIndexSet *indexes = [self selectedRowIndexes];
-    
     [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [items addObject:[self itemAtRow:idx]];
     }];
     return items;
+}
+
+- (NSArray *)selectedItems {
+    return [self itemsAtRowIndexes:[self selectedRowIndexes]];
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
