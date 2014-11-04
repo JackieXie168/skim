@@ -567,11 +567,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
 }
 
-- (void)mouseUp:(NSEvent *)theEvent{
-    [NSCursor pop];
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
-}
-
 - (void)mouseMoved:(NSEvent *)theEvent {
 	NSView *view = [self documentView];
     NSPoint mouseLoc = [theEvent locationInView:view];
