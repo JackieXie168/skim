@@ -78,7 +78,7 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
         
         if (eventChar == NSDownArrowFunctionKey || eventChar == NSPageDownFunctionKey) {
             if (flipped ? NSMaxY(visibleRect) < NSMaxY(bounds) : NSMinY(visibleRect) > NSMinY(bounds)) {
-                CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
+                CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalPageScroll];
                 [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) + scroll : NSMaxY(visibleRect) - scroll)];
             } else if ([self canGoToNextPage]) {
                 [self goToNextPage:nil];
@@ -88,7 +88,7 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
             }
         } else if (eventChar == NSUpArrowFunctionKey || eventChar == NSPageUpFunctionKey) {
             if (flipped ? NSMinY(visibleRect) > NSMinY(bounds) : NSMaxY(visibleRect) < NSMaxY(bounds)) {
-                CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalLineScroll];
+                CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(visibleRect) - [scrollView verticalPageScroll];
                 [documentView scrollPoint:NSMakePoint(NSMinX(visibleRect), flipped ? NSMinY(visibleRect) - scroll : NSMaxY(visibleRect) + scroll)];
             } else if ([self canGoToPreviousPage]) {
                 [self goToPreviousPage:nil];
