@@ -562,29 +562,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
     } else {
         
-        NSPoint initialLocation = [theEvent locationInWindow];
-        NSView *documentView = [[self scrollView] documentView];
-        NSRect visibleRect = [documentView visibleRect];
-        
-        [[NSCursor closedHandCursor] push];
-        
-        while (YES) {
-            
-            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-            if ([theEvent type] == NSLeftMouseUp)
-                break;
-            
-            // convert takes flipping and scaling into account
-            NSPoint	startLocation = [documentView convertPoint:initialLocation fromView:nil];
-            NSPoint	newLocation = [documentView convertPoint:[theEvent locationInWindow] fromView:nil];
-            NSPoint	delta = SKSubstractPoints(startLocation, newLocation);
-            
-            [documentView scrollRectToVisible:NSOffsetRect(visibleRect, delta.x, delta.y)];
-        }
-        
-        [NSCursor pop];
-        // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-        [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+        [self doDragWithEvent:theEvent];
         
     }
 }
