@@ -492,20 +492,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     return YES;
 }
 
-#pragma mark Keys
-
-- (void)keyDown:(NSEvent *)theEvent {
-    unichar eventChar = [theEvent firstCharacter];
-	NSUInteger modifiers = [theEvent standardModifierFlags];
-    
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && (eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSPageDownFunctionKey || eventChar == NSPageUpFunctionKey) && (modifiers == 0))
-        [self doScrollForKey:eventChar];
-    else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && (eventChar == SKSpaceCharacter) && ((modifiers & ~NSShiftKeyMask) == 0))
-        [self doScrollForKey:modifiers == NSShiftKeyMask ? NSPageUpFunctionKey : NSPageDownFunctionKey];
-    else
-        [super keyDown:theEvent];
-}
-
 #pragma mark Gestures
 
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {

@@ -1035,11 +1035,7 @@ enum {
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && (eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSPageDownFunctionKey || eventChar == NSPageUpFunctionKey) && (modifiers == 0)) {
-        [self doScrollForKey:eventChar];
-    } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && (([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && (eventChar == SKSpaceCharacter) && ((modifiers & ~NSShiftKeyMask) == 0)) {
-        [self doScrollForKey:modifiers == NSShiftKeyMask ? NSPageUpFunctionKey : NSPageDownFunctionKey];
-    } else if (interactionMode == SKPresentationMode) {
+    if (interactionMode == SKPresentationMode) {
         // Presentation mode
         if ([[self scrollView] hasHorizontalScroller] == NO && 
             (eventChar == NSRightArrowFunctionKey) &&  (modifiers == 0)) {
