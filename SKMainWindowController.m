@@ -2670,7 +2670,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([self interactionMode] == SKPresentationMode)
                 [self doAutoScale:nil];
             else if (remoteScrolling)
-                [[[self pdfView] documentView] scrollLineUp];
+                [self scrollUp:nil];
             else
                 [self doZoomIn:nil];
             break;
@@ -2678,21 +2678,21 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             if ([self interactionMode] == SKPresentationMode)
                 [self doZoomToActualSize:nil];
             else if (remoteScrolling)
-                [[[self pdfView] documentView] scrollLineDown];
+                [self scrollDown:nil];
             else
                 [self doZoomOut:nil];
             break;
         case kHIDRemoteButtonCodeRightHold:
         case kHIDRemoteButtonCodeRight:
             if (remoteScrolling && [self interactionMode] != SKPresentationMode)
-                [[[self pdfView] documentView] scrollLineRight];
+                [self scrollRight:nil];
             else 
                 [self doGoToNextPage:nil];
             break;
         case kHIDRemoteButtonCodeLeftHold:
         case kHIDRemoteButtonCodeLeft:
             if (remoteScrolling && [self interactionMode] != SKPresentationMode)
-                [[[self pdfView] documentView] scrollLineLeft];
+                [self scrollLeft:nil];
             else 
                 [self doGoToPreviousPage:nil];
             break;
