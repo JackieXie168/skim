@@ -1047,4 +1047,36 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+- (void)scrollUp:(id)sender {
+    NSScrollView *scrollView = [[self pdfView] scrollView];
+    NSView *documentView = [scrollView documentView];
+    NSRect rect = [documentView visibleRect];
+    NSPoint point = NSMakePoint(NSMinX(rect), [documentView isFlipped] ? NSMinY(rect) - 4.0 * [scrollView horizontalLineScroll] : NSMaxY(rect) + 4.0 * [scrollView horizontalLineScroll]);
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollDown:(id)sender {
+    NSScrollView *scrollView = [[self pdfView] scrollView];
+    NSView *documentView = [scrollView documentView];
+    NSRect rect = [documentView visibleRect];
+    NSPoint point = NSMakePoint(NSMinX(rect), [documentView isFlipped] ? NSMinY(rect) + 4.0 * [scrollView horizontalLineScroll] : NSMaxY(rect) - 4.0 * [scrollView horizontalLineScroll]);
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollRight:(id)sender {
+    NSScrollView *scrollView = [[self pdfView] scrollView];
+    NSView *documentView = [scrollView documentView];
+    NSRect rect = [documentView visibleRect];
+    NSPoint point = NSMakePoint(NSMinX(rect) + 4.0 * [scrollView verticalLineScroll], [documentView isFlipped] ? NSMinY(rect) : NSMaxY(rect));
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLeft:(id)sender {
+    NSScrollView *scrollView = [[self pdfView] scrollView];
+    NSView *documentView = [scrollView documentView];
+    NSRect rect = [documentView visibleRect];
+    NSPoint point = NSMakePoint(NSMinX(rect) - 4.0 * [scrollView verticalLineScroll], [documentView isFlipped] ? NSMinY(rect) : NSMaxY(rect));
+    [documentView scrollPoint:point];
+}
+
 @end

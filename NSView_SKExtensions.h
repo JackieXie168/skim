@@ -43,11 +43,6 @@
 
 - (id)subviewOfClass:(Class)aClass;
 
-- (void)scrollLineUp;
-- (void)scrollLineDown;
-- (void)scrollLineRight;
-- (void)scrollLineLeft;
-
 - (void)deactivateWellSubcontrols;
 
 @end

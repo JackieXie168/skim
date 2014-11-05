@@ -56,38 +56,6 @@
 	return nil;
 }
 
-- (void)scrollLineUp {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect rect = [documentView visibleRect];
-    NSPoint point = NSMakePoint(NSMinX(rect), [documentView isFlipped] ? NSMinY(rect) - 4.0 * [scrollView horizontalLineScroll] : NSMaxY(rect) + 4.0 * [scrollView horizontalLineScroll]);
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineDown {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect rect = [documentView visibleRect];
-    NSPoint point = NSMakePoint(NSMinX(rect), [documentView isFlipped] ? NSMinY(rect) + 4.0 * [scrollView horizontalLineScroll] : NSMaxY(rect) - 4.0 * [scrollView horizontalLineScroll]);
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineRight {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect rect = [documentView visibleRect];
-    NSPoint point = NSMakePoint(NSMinX(rect) + 4.0 * [scrollView verticalLineScroll], [documentView isFlipped] ? NSMinY(rect) : NSMaxY(rect));
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineLeft {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSRect rect = [documentView visibleRect];
-    NSPoint point = NSMakePoint(NSMinX(rect) - 4.0 * [scrollView verticalLineScroll], [documentView isFlipped] ? NSMinY(rect) : NSMaxY(rect));
-    [documentView scrollPoint:point];
-}
-
 - (void)deactivateWellSubcontrols {
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }

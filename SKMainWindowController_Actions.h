@@ -118,5 +118,9 @@
 - (IBAction)toggleWholeWordSearch:(id)sender;
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender;
 - (IBAction)performFindPanelAction:(id)sender;
+- (void)scrollUp:(id)sender;
+- (void)scrollDown:(id)sender;
+- (void)scrollRight:(id)sender;
+- (void)scrollLeft:(id)sender;
 
 @end
