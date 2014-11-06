@@ -100,6 +100,8 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
         if (itemIndex > 0 && [folders count]) {
             
             NSMenuItem *menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:SCRIPTS_MENU_TITLE];
+            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
+                [[NSImage imageNamed:@"ScriptMenu"] setTemplate:YES];
             [menuItem setImage:[NSImage imageNamed:@"ScriptMenu"]];
             [[NSApp mainMenu] insertItem:menuItem atIndex:itemIndex];
             
