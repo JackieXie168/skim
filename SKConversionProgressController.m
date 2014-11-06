@@ -315,7 +315,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     if (success)
         outData = [NSData dataWithContentsOfURL:outputFileURL];
     
-    if (sucess && [[outputFileURL pathExtension] isCaseInsensitiveEqual:@"ps"]) {
+    if (success && [[outputFileURL pathExtension] isCaseInsensitiveEqual:@"ps"]) {
         [self convertPostScriptData:outData];
     } else {
         if (success)
