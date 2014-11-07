@@ -51,6 +51,9 @@
 
 static char SKFileUpdateCheckerDefaultsObservationContext;
 
+static BOOL isURLOnHFSVolume(NSURL *fileURL);
+static BOOL canUpdateFromURL(NSURL *fileURL);
+
 @interface SKFileUpdateChecker (SKPrivate)
 - (void)fileUpdated;
 - (void)noteFileUpdated;
@@ -90,26 +93,6 @@ static char SKFileUpdateCheckerDefaultsObservationContext;
     }
 }
 
-static BOOL isFileOnHFSVolume(NSString *fileName)
-{
-    FSRef fileRef;
-    OSStatus err;
-    err = FSPathMakeRef((const UInt8 *)[fileName fileSystemRepresentation], &fileRef, NULL);
-    
-    FSCatalogInfo fileInfo;
-    if (noErr == err)
-        err = FSGetCatalogInfo(&fileRef, kFSCatInfoVolume, &fileInfo, NULL, NULL, NULL);
-    
-    FSVolumeInfo volInfo;
-    if (noErr == err)
-        err = FSGetVolumeInfo(fileInfo.volume, 0, NULL, kFSVolInfoFSInfo, &volInfo, NULL, NULL);
-    
-    // HFS and HFS+ are documented to have zero for filesystemID; AFP at least is non-zero
-    BOOL isHFSVolume = (noErr == err) ? (0 == volInfo.filesystemID) : NO;
-    
-    return isHFSVolume;
-}
-
 - (void)checkForFileModification:(NSTimer *)timer {
     NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[document fileURL] path] error:NULL] fileModificationDate];
     if (nil == lastModifiedDate) {
@@ -123,14 +106,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)checkFileUpdatesIfNeeded {
-    NSString *fileName = [[document fileURL] path];
-    if (fileName) {
+    NSURL *fileURL = [document fileURL];
+    if (fileURL) {
         [self stopCheckingFileUpdates];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isFileOnHFSVolume(fileName)) {
-                int fd = open([fileName fileSystemRepresentation], O_EVTONLY);
+            if (isURLOnHFSVolume(fileURL)) {
+                int fd = open([[fileURL path] fileSystemRepresentation], O_EVTONLY);
                 
                 if (fd >= 0) {
                     dispatch_queue_t queue = dispatch_get_main_queue();
@@ -190,40 +173,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     fucFlags.fileWasUpdated = NO;
 }
 
-- (BOOL)canUpdateFromURL:(NSURL *)fileURL {
-    NSString *extension = [fileURL pathExtension];
-    BOOL isDVI = NO;
-    if (extension) {
-        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
-        if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
-            fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
-            if (fileURL == nil)
-                return NO;
-        } else if ([extension isCaseInsensitiveEqual:@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
-            isDVI = YES;
-        }
-    }
-    
-    NSFileHandle *fh = [NSFileHandle fileHandleForReadingFromURL:fileURL error:NULL];
-    
-    // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
-    unsigned long long fileEnd = [fh seekToEndOfFile];
-    unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
-    [fh seekToFileOffset:startPos];
-    NSData *trailerData = [fh readDataToEndOfFile];
-    NSRange range = NSMakeRange(0, [trailerData length]);
-    NSData *pattern = [NSData dataWithBytes:"%%EOF" length:5];
-    NSDataSearchOptions options = NSDataSearchBackwards;
-    
-    if (isDVI) {
-        const char bytes[4] = {0xDF, 0xDF, 0xDF, 0xDF};
-        pattern = [NSData dataWithBytes:bytes length:4];
-        options |= NSDataSearchAnchored;
-    }
-    return NSNotFound != [trailerData rangeOfData:pattern options:options range:range].location;
-}
-
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
     // This is only called to delay a file update handling
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
@@ -252,7 +201,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([docWindow attachedSheet]) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:docWindow];
-        } else if ([self canUpdateFromURL:fileURL]) {
+        } else if (canUpdateFromURL(fileURL)) {
             BOOL shouldAutoUpdate = fucFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
             if (fucFlags.disableAutoReload == NO && shouldAutoUpdate && documentHasEdits == NO) {
@@ -320,3 +269,59 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 @end
+
+
+static BOOL isURLOnHFSVolume(NSURL *fileURL) {
+    BOOL isHFSVolume = NO;
+    FSRef fileRef;
+    
+    if (CFURLGetFSRef((CFURLRef)fileURL, &fileRef)) {
+        OSStatus err;
+        FSCatalogInfo fileInfo;
+        err = FSGetCatalogInfo(&fileRef, kFSCatInfoVolume, &fileInfo, NULL, NULL, NULL);
+    
+        FSVolumeInfo volInfo;
+        if (noErr == err) {
+            err = FSGetVolumeInfo(fileInfo.volume, 0, NULL, kFSVolInfoFSInfo, &volInfo, NULL, NULL);
+            
+            if (noErr == err)
+                // HFS and HFS+ are documented to have zero for filesystemID; AFP at least is non-zero
+                isHFSVolume = (0 == volInfo.filesystemID);
+        }
+    }
+    return isHFSVolume;
+}
+
+static BOOL canUpdateFromURL(NSURL *fileURL) {
+    NSString *extension = [fileURL pathExtension];
+    BOOL isDVI = NO;
+    if (extension) {
+        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+        NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
+        if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
+            fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
+            if (fileURL == nil)
+                return NO;
+        } else if ([extension isCaseInsensitiveEqual:@"dvi"] || [extension isCaseInsensitiveEqual:@"xdv"]) {
+            isDVI = YES;
+        }
+    }
+    
+    NSFileHandle *fh = [NSFileHandle fileHandleForReadingFromURL:fileURL error:NULL];
+    
+    // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
+    unsigned long long fileEnd = [fh seekToEndOfFile];
+    unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
+    [fh seekToFileOffset:startPos];
+    NSData *trailerData = [fh readDataToEndOfFile];
+    NSRange range = NSMakeRange(0, [trailerData length]);
+    NSData *pattern = [NSData dataWithBytes:"%%EOF" length:5];
+    NSDataSearchOptions options = NSDataSearchBackwards;
+    
+    if (isDVI) {
+        const char bytes[4] = {0xDF, 0xDF, 0xDF, 0xDF};
+        pattern = [NSData dataWithBytes:bytes length:4];
+        options |= NSDataSearchAnchored;
+    }
+    return NSNotFound != [trailerData rangeOfData:pattern options:options range:range].location;
+}
