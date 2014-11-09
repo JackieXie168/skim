@@ -62,7 +62,6 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     SKExportAccessoryController *exportAccessoryController;
     
-    BOOL isSaving;
     BOOL exportUsingPanel;
     NSInteger exportOption;
     

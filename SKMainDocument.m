@@ -179,8 +179,7 @@ enum {
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // shouldn't need this here, but better be safe
-    [fileUpdateChecker stopCheckingFileUpdates];
-    [fileUpdateChecker setDocument:nil];
+    [fileUpdateChecker terminate];
     SKDESTROY(fileUpdateChecker);
     SKDESTROY(mainWindowController);
     [synchronizer terminate];
@@ -225,8 +224,7 @@ enum {
     
     [[self undoManager] enableUndoRegistration];
     
-    if ([self fileURL])
-        [fileUpdateChecker checkFileUpdatesIfNeeded];
+    [fileUpdateChecker setEnabled:YES];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
@@ -534,8 +532,7 @@ enum {
         [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [fileUpdateChecker checkFileUpdatesIfNeeded];
-        isSaving = NO;
+        [fileUpdateChecker setEnabled:YES];
     }
     
     // in case we saved using the panel we should reset this for the next save
@@ -555,8 +552,7 @@ enum {
 // Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDoucment needs to ask the user for permission, for instance to override a file lock
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [fileUpdateChecker stopCheckingFileUpdates];
-        isSaving = YES;
+        [fileUpdateChecker setEnabled:NO];
     } else if (saveOperation == NSSaveToOperation && exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
         [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
@@ -1303,8 +1299,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
-        [fileUpdateChecker stopCheckingFileUpdates];
-        [fileUpdateChecker setDocument:nil];
+        [fileUpdateChecker terminate];
         SKDESTROY(fileUpdateChecker);
         [self saveRecentDocumentInfo];
     }
@@ -1313,15 +1308,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 #pragma mark Pdfsync support
 
 - (void)setFileURL:(NSURL *)absoluteURL {
-    // this shouldn't be necessary, but better be sure
-    if ([self fileURL] && [[self fileURL] isEqual:absoluteURL] == NO)
-        [fileUpdateChecker stopCheckingFileUpdates];
-    
     [super setFileURL:absoluteURL];
     
-    // if we're saving this will be called when saving has finished
-    if (isSaving == NO && [mainWindowController isWindowLoaded])
-        [fileUpdateChecker checkFileUpdatesIfNeeded];
+    [fileUpdateChecker checkFileUpdatesIfNeeded];
     
     if ([absoluteURL isFileURL])
         [synchronizer setFileName:[absoluteURL path]];
