@@ -44,7 +44,6 @@
     
     struct _fucFlags {
         unsigned int autoUpdate:1;
-        unsigned int disableAutoReload:1;
         unsigned int isUpdatingFile:1;
         unsigned int fileWasUpdated:1;
         unsigned int fileWasMoved:1;

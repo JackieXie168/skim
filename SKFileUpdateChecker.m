@@ -70,6 +70,8 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     self = [super init];
     if (self) {
         document = aDocument;
+        // hidden pref to always auto update without first asking the user
+        fucFlags.autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKFileUpdateCheckerDefaultsObservationContext];
     }
     return self;
@@ -173,17 +175,14 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     
     if (returnCode == NSAlertOtherReturn) {
+        // if we don't reload now, we should not do it automatically next
         fucFlags.autoUpdate = NO;
-        fucFlags.disableAutoReload = YES;
     } else {
-        [[alert window] orderOut:nil];
-        
-        if ([self revertDocument])
-            fucFlags.fileWasUpdated = NO;
+        // should we reset autoUpdate to YES on NSAlertDefaultReturn when SKAutoReloadFileUpdateKey is set?
         if (returnCode == NSAlertAlternateReturn)
             fucFlags.autoUpdate = YES;
-        fucFlags.disableAutoReload = NO;
-        if (fucFlags.fileWasUpdated)
+        [[alert window] orderOut:nil];
+        if ([self revertDocument] == NO && fucFlags.fileWasUpdated)
             [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
     }
     fucFlags.isUpdatingFile = NO;
@@ -219,21 +218,22 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:docWindow];
         } else if (canUpdateFromURL(fileURL)) {
-            BOOL shouldAutoUpdate = fucFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
-            if (fucFlags.disableAutoReload == NO && shouldAutoUpdate && documentHasEdits == NO) {
+            if (fucFlags.autoUpdate && documentHasEdits == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
             } else {
                 NSString *message;
                 if (documentHasEdits)
                     message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                else 
+                else if (fucFlags.autoUpdate)
+                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now?", @"Informative text in alert dialog");
+                else
                     message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
                 
                 NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
                                                  defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                               alternateButton:fucFlags.autoUpdate ? nil : NSLocalizedString(@"Auto", @"Button title")
                                                    otherButton:NSLocalizedString(@"No", @"Button title")
                                      informativeTextWithFormat:@"%@", message];
                 [alert beginSheetModalForWindow:docWindow
