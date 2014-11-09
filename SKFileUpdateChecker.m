@@ -164,14 +164,6 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     }
 }
 
-- (BOOL)revertDocument {
-    NSError *error = nil;
-    BOOL didRevert = [document revertToContentsOfURL:[document fileURL] ofType:[document fileType] error:&error];
-    if (didRevert == NO && error != nil && [error isUserCancelledError] == NO)
-        [document presentError:error modalForWindow:[document windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
-    return didRevert;
-}
-
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     
     if (returnCode == NSAlertOtherReturn) {
@@ -181,8 +173,14 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
         // should we reset autoUpdate to YES on NSAlertDefaultReturn when SKAutoReloadFileUpdateKey is set?
         if (returnCode == NSAlertAlternateReturn)
             fucFlags.autoUpdate = YES;
+        
         [[alert window] orderOut:nil];
-        if ([self revertDocument] == NO && fucFlags.fileWasUpdated)
+        NSError *error = nil;
+        BOOL didRevert = [document revertToContentsOfURL:[document fileURL] ofType:[document fileType] error:&error];
+        if (didRevert == NO && error != nil && [error isUserCancelledError] == NO)
+            [document presentError:error modalForWindow:[document windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+        
+        if (didRevert == NO && fucFlags.fileWasUpdated)
             [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
     }
     fucFlags.isUpdatingFile = NO;
