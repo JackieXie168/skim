@@ -85,13 +85,13 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)terminate {
-    [self stopCheckingFileUpdates];
+    [self stop];
     @try { [document removeObserver:self forKeyPath:@"fileURL"]; }
     @catch (id) {}
     document = nil;
 }
 
-- (void)stopCheckingFileUpdates {
+- (void)stop {
     // remove file monitor and invalidate timer; maybe we've changed filesystems
     if (source) {
         dispatch_source_cancel(source);
@@ -119,7 +119,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 - (void)checkForFileReplacement:(NSTimer *)timer {
     if ([[document fileURL] checkResourceIsReachableAndReturnError:NULL]) {
         // the deleted file was replaced at the old path, restart the file updating for the replacement file and note the update
-        [self checkFileUpdatesIfNeeded];
+        [self reset];
         [self noteFileUpdated];
     }
 }
@@ -129,10 +129,10 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
 }
 
-- (void)checkFileUpdatesIfNeeded {
+- (void)reset {
     NSURL *fileURL = [document fileURL];
     if (fileURL) {
-        [self stopCheckingFileUpdates];
+        [self stop];
         if (fucFlags.enabled && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
@@ -275,7 +275,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)noteFileRemoved {
-    [self stopCheckingFileUpdates];
+    [self stop];
     fucFlags.fileChangedOnDisk = YES;
     // poll the (old) path to see whether the deleted file will be replaced
     [self startTimerWithSelector:@selector(checkForFileReplacement:)];
@@ -284,7 +284,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 - (void)setEnabled:(BOOL)flag {
     if (fucFlags.enabled != flag) {
         fucFlags.enabled = flag;
-        [self checkFileUpdatesIfNeeded];
+        [self reset];
     }
 }
 
@@ -308,7 +308,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKFileUpdateCheckerObservationContext)
-        [self checkFileUpdatesIfNeeded];
+        [self reset];
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }

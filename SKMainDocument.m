@@ -940,7 +940,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [self setDataFromTmpData];
         [[self undoManager] enableUndoRegistration];
         [[self undoManager] removeAllActions];
-        [fileUpdateChecker checkFileUpdatesIfNeeded];
+        [fileUpdateChecker reset];
     }
     
     SKDESTROY(tmpData);
