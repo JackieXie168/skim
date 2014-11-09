@@ -43,6 +43,7 @@
     NSDocument *document;
     
     struct _fucFlags {
+        unsigned int enabled:1;
         unsigned int autoUpdate:1;
         unsigned int isUpdatingFile:1;
         unsigned int fileWasUpdated:1;
@@ -57,10 +58,12 @@
     NSTimer *fileUpdateTimer;
 }
 
-@property (nonatomic, assign) NSDocument *document;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic, readonly) BOOL fileChangedOnDisk, isUpdatingFile;
 
 - (id)initForDocument:(NSDocument *)aDocument;
+
+- (void)terminate;
 
 - (void)didUpdateFromURL:(NSURL *)fileURL;
 

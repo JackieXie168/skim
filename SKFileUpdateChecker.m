@@ -49,7 +49,7 @@
 
 #define PATH_KEY @"path"
 
-static char SKFileUpdateCheckerDefaultsObservationContext;
+static char SKFileUpdateCheckerObservationContext;
 
 static BOOL isURLOnHFSVolume(NSURL *fileURL);
 static BOOL canUpdateFromURL(NSURL *fileURL);
@@ -63,8 +63,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 
 @implementation SKFileUpdateChecker
 
-@synthesize document;
-@dynamic fileChangedOnDisk, isUpdatingFile;
+@dynamic enabled, fileChangedOnDisk, isUpdatingFile;
 
 - (id)initForDocument:(NSDocument *)aDocument {
     self = [super init];
@@ -72,7 +71,8 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
         document = aDocument;
         // hidden pref to always auto update without first asking the user
         fucFlags.autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKFileUpdateCheckerDefaultsObservationContext];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKFileUpdateCheckerObservationContext];
+        [document addObserver:self forKeyPath:@"fileURL" options:0 context:&SKFileUpdateCheckerObservationContext];
     }
     return self;
 }
@@ -82,6 +82,13 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     @catch (id) {}
     document = nil;
     [super dealloc];
+}
+
+- (void)terminate {
+    [self stopCheckingFileUpdates];
+    @try { [document removeObserver:self forKeyPath:@"fileURL"]; }
+    @catch (id) {}
+    document = nil;
 }
 
 - (void)stopCheckingFileUpdates {
@@ -126,7 +133,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     NSURL *fileURL = [document fileURL];
     if (fileURL) {
         [self stopCheckingFileUpdates];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
+        if (fucFlags.enabled && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
             if (isURLOnHFSVolume(fileURL)) {
@@ -201,7 +208,8 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     if (fucFlags.isUpdatingFile)
         NSLog(@"*** already busy updating file %@", [fileURL path]);
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
+    if (fucFlags.enabled &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fileURL checkResourceIsReachableAndReturnError:NULL]) {
         
         fucFlags.fileChangedOnDisk = YES;
@@ -273,6 +281,17 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     [self startTimerWithSelector:@selector(checkForFileReplacement:)];
 }
 
+- (void)setEnabled:(BOOL)flag {
+    if (fucFlags.enabled != flag) {
+        fucFlags.enabled = flag;
+        [self checkFileUpdatesIfNeeded];
+    }
+}
+
+- (BOOL)isEnabled {
+    return fucFlags.enabled;
+}
+
 - (BOOL)fileChangedOnDisk {
     return fucFlags.fileChangedOnDisk;
 }
@@ -288,7 +307,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKFileUpdateCheckerDefaultsObservationContext)
+    if (context == &SKFileUpdateCheckerObservationContext)
         [self checkFileUpdatesIfNeeded];
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
