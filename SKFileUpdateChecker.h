@@ -47,6 +47,7 @@
         unsigned int disableAutoReload:1;
         unsigned int isUpdatingFile:1;
         unsigned int fileWasUpdated:1;
+        unsigned int fileWasMoved:1;
         unsigned int fileChangedOnDisk:1;
     } fucFlags;
     

@@ -57,6 +57,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 @interface SKFileUpdateChecker (SKPrivate)
 - (void)fileUpdated;
 - (void)noteFileUpdated;
+- (void)noteFileMoved;
 - (void)noteFileRemoved;
 @end
 
@@ -89,8 +90,9 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     }
     if (fileUpdateTimer) {
         [fileUpdateTimer invalidate];
-        fileUpdateTimer = nil;
+        SKDESTROY(fileUpdateTimer);
     }
+    fucFlags.fileWasMoved = NO;
 }
 
 - (void)checkForFileModification:(NSTimer *)timer {
@@ -103,6 +105,19 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
         lastModifiedDate = [currentFileModifiedDate copy];
         [self noteFileUpdated];
     }
+}
+
+- (void)checkForFileReplacement:(NSTimer *)timer {
+    if ([[document fileURL] checkResourceIsReachableAndReturnError:NULL]) {
+        // the deleted file was replaced at the old path, restart the file updating for the replacement file and note the update
+        [self checkFileUpdatesIfNeeded];
+        [self noteFileUpdated];
+    }
+}
+
+- (void)startTimerWithSelector:(SEL)aSelector {
+    fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1] interval:2.0 target:self selector:aSelector userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)checkFileUpdatesIfNeeded {
@@ -123,8 +138,10 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                         
                         dispatch_source_set_event_handler(source, ^{
                             unsigned long flags = dispatch_source_get_data(source);
-                            if ((flags & (DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME)))
+                            if ((flags & DISPATCH_VNODE_DELETE))
                                 [self noteFileRemoved];
+                            else if ((flags & DISPATCH_VNODE_RENAME))
+                                [self noteFileMoved];
                             else if ((flags & DISPATCH_VNODE_WRITE))
                                 [self noteFileUpdated];
                         });
@@ -138,8 +155,8 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                     }
                 }
             } else if (nil == fileUpdateTimer) {
-                // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
-                fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
+                // Use a fairly long delay since this is likely a network volume.
+                [self startTimerWithSelector:@selector(checkForFileModification:)];
             }
         }
     }
@@ -235,16 +252,27 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)noteFileUpdated {
-    if (fucFlags.isUpdatingFile)
-        fucFlags.fileWasUpdated = YES;
-    else
-        [self fileUpdated];
+    if (fucFlags.fileWasMoved == NO) {
+        if (fucFlags.isUpdatingFile)
+            fucFlags.fileWasUpdated = YES;
+        else
+            [self fileUpdated];
+    }
+}
+
+- (void)noteFileMoved {
+    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
+    // unless the file is deleted before NSDocument notices, in which case we can treat this as just deleting the file
+    // but as long as neither happens we will ignore updates, as we cannot know which file NSDocument will think it has
+    fucFlags.fileChangedOnDisk = YES;
+    fucFlags.fileWasMoved = YES;
 }
 
 - (void)noteFileRemoved {
     [self stopCheckingFileUpdates];
-    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
     fucFlags.fileChangedOnDisk = YES;
+    // poll the (old) path to see whether the deleted file will be replaced
+    [self startTimerWithSelector:@selector(checkForFileReplacement:)];
 }
 
 - (BOOL)fileChangedOnDisk {
