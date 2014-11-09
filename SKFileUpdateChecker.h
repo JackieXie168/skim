@@ -65,9 +65,9 @@
 
 - (void)terminate;
 
-- (void)didUpdateFromURL:(NSURL *)fileURL;
+- (void)reset;
+- (void)stop;
 
-- (void)checkFileUpdatesIfNeeded;
-- (void)stopCheckingFileUpdates;
+- (void)didUpdateFromURL:(NSURL *)fileURL;
 
 @end
