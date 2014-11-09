@@ -1310,8 +1310,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (void)setFileURL:(NSURL *)absoluteURL {
     [super setFileURL:absoluteURL];
     
-    [fileUpdateChecker checkFileUpdatesIfNeeded];
-    
     if ([absoluteURL isFileURL])
         [synchronizer setFileName:[absoluteURL path]];
     else
