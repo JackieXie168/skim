@@ -130,9 +130,9 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)reset {
+    [self stop];
     NSURL *fileURL = [document fileURL];
     if (fileURL) {
-        [self stop];
         if (fucFlags.enabled && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
