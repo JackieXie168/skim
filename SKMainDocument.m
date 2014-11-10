@@ -209,7 +209,7 @@ enum {
     [[self undoManager] disableUndoRegistration];
     
     // set a copy, because we change the printInfo, and we don't want to change the shared instance
-    [self setPrintInfo:[[[self printInfo] copy] autorelease]];
+    [self setPrintInfo:[[[super printInfo] copy] autorelease]];
     
     [self setDataFromTmpData];
     SKDESTROY(tmpData);
