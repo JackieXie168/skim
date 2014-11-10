@@ -168,14 +168,6 @@ enum {
 
 + (BOOL)isPDFDocument { return YES; }
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        fileUpdateChecker = [[SKFileUpdateChecker alloc] initForDocument:self];
-    }
-    return self;
-}
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // shouldn't need this here, but better be safe
@@ -224,6 +216,8 @@ enum {
     
     [[self undoManager] enableUndoRegistration];
     
+    fileUpdateChecker = [[SKFileUpdateChecker alloc] initForDocument:self];
+    // the file update checker starts disabled, setting enables will start checking if it should
     [fileUpdateChecker setEnabled:YES];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
