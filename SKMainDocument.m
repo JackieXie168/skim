@@ -217,7 +217,7 @@ enum {
     [[self undoManager] enableUndoRegistration];
     
     fileUpdateChecker = [[SKFileUpdateChecker alloc] initForDocument:self];
-    // the file update checker starts disabled, setting enables will start checking if it should
+    // the file update checker starts disabled, setting enabled will start checking if it should
     [fileUpdateChecker setEnabled:YES];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
