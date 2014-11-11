@@ -141,7 +141,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                 
                 if (fd >= 0) {
                     dispatch_queue_t queue = dispatch_get_main_queue();
-                    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd, DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_WRITE, queue);
+                    __block source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd, DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_WRITE, queue);
                     
                     if (source) {
                         
