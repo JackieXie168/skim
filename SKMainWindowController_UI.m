@@ -1012,7 +1012,7 @@
 }
 
 - (void)autoSizeNoteRows:(id)sender {
-    CGFloat height, rowHeight = [rightSideController.noteOutlineView rowHeight];
+    CGFloat height = 0.0, rowHeight = [rightSideController.noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
     CGFloat indentation = COLUMN_INDENTATION;
@@ -1029,12 +1029,12 @@
     }
     
     for (id item in items) {
-        if ([(PDFAnnotation *)item type]) {
-            [cell setObjectValue:[item string]];
-            height = [cell cellSizeForBounds:rect].height;
-        } else {
+        if ([(PDFAnnotation *)item type] == nil) {
             [cell setObjectValue:[item text]];
             height = [cell cellSizeForBounds:fullRect].height;
+        } else if ([tableColumn isHidden] == NO) {
+            [cell setObjectValue:[item string]];
+            height = [cell cellSizeForBounds:rect].height;
         }
         [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
     }
