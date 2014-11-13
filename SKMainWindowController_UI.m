@@ -1088,7 +1088,7 @@
                 item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) target:self];
                 [item setRepresentedObject:items];
             }
-            if ([self outlineView:rightSideController.noteOutlineView canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+            if ([self outlineView:rightSideController.noteOutlineView canCopyItems:items]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
                 [item setRepresentedObject:items];
             }
