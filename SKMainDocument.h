@@ -62,10 +62,11 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     SKExportAccessoryController *exportAccessoryController;
     
-    BOOL exportUsingPanel;
-    NSInteger exportOption;
-    
-    BOOL gettingFileType;
+    struct _mdFlags {
+        unsigned int exportOption:2;
+        unsigned int exportUsingPanel:1;
+        unsigned int gettingFileType:1;
+    } mdFlags;
 }
 
 - (IBAction)readNotes:(id)sender;

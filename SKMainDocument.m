@@ -281,14 +281,14 @@ enum {
 #pragma mark Writing
 
 - (NSString *)fileType {
-    gettingFileType = YES;
+    mdFlags.gettingFileType = YES;
     NSString *fileType = [super fileType];
-    gettingFileType = NO;
+    mdFlags.gettingFileType = NO;
     return fileType;
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
-    if (gettingFileType)
+    if (mdFlags.gettingFileType)
         return [super writableTypesForSaveOperation:saveOperation];
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
     NSString *type = [self fileType];
@@ -325,15 +325,15 @@ enum {
 - (void)updateExportAccessoryView {
     NSString *typeName = [self fileTypeFromLastRunSavePanel];
     NSMatrix *matrix = [exportAccessoryController matrix];
-    [matrix selectCellWithTag:exportOption];
+    [matrix selectCellWithTag:mdFlags.exportOption];
     if ([self canAttachNotesForType:typeName]) {
         [matrix setHidden:NO];
         if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
         } else {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:NO];
-            if (exportOption == SKExportOptionWithEmbeddedNotes) {
-                exportOption = SKExportOptionDefault;
+            if (mdFlags.exportOption == SKExportOptionWithEmbeddedNotes) {
+                mdFlags.exportOption = SKExportOptionDefault;
                 [matrix selectCellWithTag:SKExportOptionDefault];
             }
         }
@@ -345,17 +345,17 @@ enum {
 - (void)changeSaveType:(id)sender {
     if ([NSDocument instancesRespondToSelector:_cmd])
         [super changeSaveType:sender];
-    if (exportUsingPanel && exportAccessoryController)
+    if (mdFlags.exportUsingPanel && exportAccessoryController)
         [self updateExportAccessoryView];
 }
 
 - (void)changeExportOption:(id)sender {
-    exportOption = [[sender selectedCell] tag];
+    mdFlags.exportOption = [[sender selectedCell] tag];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
-    if (success && exportUsingPanel) {
+    if (success && mdFlags.exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
@@ -368,7 +368,7 @@ enum {
                     [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
                 }
             }
-            exportOption = lastExportedOption;
+            mdFlags.exportOption = lastExportedOption;
             
             exportAccessoryController = [[SKExportAccessoryController alloc] init];
             [exportAccessoryController addFormatPopUpButton:formatPopup];
@@ -383,9 +383,9 @@ enum {
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
-    exportUsingPanel = (saveOperation == NSSaveToOperation);
+    mdFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
     // Should already be reset long ago, just to be sure
-    exportOption = SKExportOptionDefault;
+    mdFlags.exportOption = SKExportOptionDefault;
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
@@ -496,7 +496,7 @@ enum {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if ([self canAttachNotesForType:typeName] && exportOption == SKExportOptionDefault) {
+        if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
         } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpURL) {
@@ -530,8 +530,8 @@ enum {
     }
     
     // in case we saved using the panel we should reset this for the next save
-    exportUsingPanel = NO;
-    exportOption = SKExportOptionDefault;
+    mdFlags.exportUsingPanel = NO;
+    mdFlags.exportOption = SKExportOptionDefault;
     
     SKDESTROY(exportAccessoryController);
     
@@ -547,13 +547,13 @@ enum {
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [fileUpdateChecker setEnabled:NO];
-    } else if (saveOperation == NSSaveToOperation && exportUsingPanel) {
+    } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
-        [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
+        [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
     }
     // just to make sure
     if (saveOperation != NSSaveToOperation)
-        exportOption = SKExportOptionDefault;
+        mdFlags.exportOption = SKExportOptionDefault;
     
     NSURL *destURL = [absoluteURL filePathURL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
@@ -634,7 +634,7 @@ enum {
     NSError *error = nil;
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     if ([ws type:SKPDFDocumentType conformsToType:typeName]) {
-        if (exportOption == SKExportOptionWithEmbeddedNotes)
+        if (mdFlags.exportOption == SKExportOptionWithEmbeddedNotes)
             didWrite = [[self pdfDocument] writeToURL:absoluteURL];
         else
             didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
@@ -1868,7 +1868,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
             normalizedType = [tm templateTypeForDisplayName:fileType];
         }
         if ([writableTypes containsObject:normalizedType] || [[tm customTemplateTypes] containsObject:fileType]) {
-            exportOption = option;
+            mdFlags.exportOption = option;
             NSMutableDictionary *arguments = [[command arguments] mutableCopy];
             if (normalizedType) {
                 fileType = normalizedType;
