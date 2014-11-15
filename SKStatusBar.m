@@ -40,6 +40,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSAnimationContext_SKExtensions.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -167,18 +168,6 @@
 	return [self superview] && [self isHidden] == NO;
 }
 
-- (void)endAnimation:(NSNumber *)visible {
-    if ([visible boolValue] == NO) {
-        [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
-		[self removeFromSuperview];
-    } else {
-        // this fixes an AppKit bug, the window does not notice that its draggable areas change
-        [[self window] setMovableByWindowBackground:YES];
-        [[self window] setMovableByWindowBackground:NO];
-    }
-    animating = NO;
-}
-
 - (void)toggleBelowView:(NSView *)view animate:(BOOL)animate {
     if (animating)
         return;
@@ -217,13 +206,22 @@
     }
     if (animate) {
         animating = YES;
-        [NSAnimationContext beginGrouping];
-        duration = 0.5 * [[NSAnimationContext currentContext] duration];
-        [[NSAnimationContext currentContext] setDuration:duration];
-        [[view animator] setFrame:viewFrame];
-        [[self animator] setFrame:statusRect];
-        [NSAnimationContext endGrouping];
-        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:duration];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [context setDuration:0.5 * [context duration]];
+                [[view animator] setFrame:viewFrame];
+                [[self animator] setFrame:statusRect];
+            }
+            completionHandler:^{
+                if (visible == NO) {
+                    [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+                    [self removeFromSuperview];
+                } else {
+                    // this fixes an AppKit bug, the window does not notice that its draggable areas change
+                    [[self window] setMovableByWindowBackground:YES];
+                    [[self window] setMovableByWindowBackground:NO];
+                }
+                animating = NO;
+         }];
     } else {
         [view setFrame:viewFrame];
         if (visible) {

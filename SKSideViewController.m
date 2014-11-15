@@ -42,10 +42,7 @@
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
-
-#define CONTENTVIEW_KEY @"contentView"
-#define BUTTONVIEW_KEY @"buttonView"
-#define FIRSTRESPONDER_KEY @"firstResponder"
+#import "NSAnimationContext_SKExtensions.h"
 
 #define GRADIENT_MIN_WIDTH 111.0
 
@@ -76,17 +73,6 @@
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
     return NO;
-}
-
-- (void)finishTableAnimation:(NSDictionary *)info {
-    NSView *contentView = [info valueForKey:CONTENTVIEW_KEY];
-    NSView *buttonView = [info valueForKey:BUTTONVIEW_KEY];
-    NSView *firstResponder = [info valueForKey:FIRSTRESPONDER_KEY];
-    [contentView setWantsLayer:NO];
-    [buttonView setWantsLayer:NO];
-    [[firstResponder window] makeFirstResponder:firstResponder];
-    [[contentView window] recalculateKeyViewLoop];
-    isAnimating = NO;
 }
 
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
@@ -137,20 +123,20 @@
             [buttonView displayIfNeeded];
         }
         
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:DURATION]; 
-        [[contentView animator] replaceSubview:oldView with:newView];
-        if (changeButton)
-            [[buttonView animator] replaceSubview:oldButton with:newButton];
-        [NSAnimationContext endGrouping];
-        
-        NSMutableDictionary *info = [NSMutableDictionary dictionary];
-        if (changeButton)
-            [info setValue:buttonView forKey:BUTTONVIEW_KEY];
-        [info setValue:contentView forKey:CONTENTVIEW_KEY];
-        [info setValue:firstResponder forKey:FIRSTRESPONDER_KEY];
-        
-        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:DURATION];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [context setDuration:DURATION]; 
+                [[contentView animator] replaceSubview:oldView with:newView];
+                if (changeButton)
+                    [[buttonView animator] replaceSubview:oldButton with:newButton];
+            }
+            completionHandler:^{
+                [contentView setWantsLayer:NO];
+                if (changeButton)
+                    [buttonView setWantsLayer:NO];
+                [[firstResponder window] makeFirstResponder:firstResponder];
+                [[contentView window] recalculateKeyViewLoop];
+                isAnimating = NO;
+        }];
     }
 }
 
