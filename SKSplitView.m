@@ -38,19 +38,13 @@
 
 #import "SKSplitView.h"
 #import "SKStringConstants.h"
+#import "NSAnimationContext_SKExtensions.h"
 
-#define POSITION_KEY @"position"
-#define DIVIDERINDEX_KEY @"dividerIndex"
 
 @implementation SKSplitView
 
 - (BOOL)isAnimating {
     return animating;
-}
-
-- (void)endAnimation:(NSDictionary *)info {
-    [self setPosition:[[info objectForKey:POSITION_KEY] doubleValue] ofDividerAtIndex:[[info objectForKey:DIVIDERINDEX_KEY] integerValue]];
-    animating = NO;
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
@@ -168,16 +162,15 @@
         }
     }
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:position], POSITION_KEY, [NSNumber numberWithInteger:dividerIndex], DIVIDERINDEX_KEY, nil];
-    NSTimeInterval duration = [[NSAnimationContext currentContext] duration];
-    
     animating = YES;
-    [NSAnimationContext beginGrouping];
-    [[view1 animator] setFrameSize:size1];
-    [[view2 animator] setFrameSize:size2];
-    [NSAnimationContext endGrouping];
-    
-    [self performSelector:@selector(endAnimation:) withObject:info afterDelay:duration]; 
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[view1 animator] setFrameSize:size1];
+            [[view2 animator] setFrameSize:size2];
+        }
+        completionHandler:^{
+            [self setPosition:position ofDividerAtIndex:dividerIndex];
+            animating = NO;
+    }];
 }
 
 @end

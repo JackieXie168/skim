@@ -43,6 +43,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSAnimationContext_SKExtensions.h"
 
 
 @implementation SKFindController
@@ -153,7 +154,6 @@
 	NSRect barRect = [view frame];
 	CGFloat barHeight = NSHeight([findBar frame]);
     BOOL visible = (nil == [findBar superview]);
-    NSTimeInterval duration;
     
 	barRect.size.height = barHeight;
 	
@@ -188,13 +188,18 @@
     [messageField setHidden:YES];
     if (animate) {
         animating = YES;
-        [NSAnimationContext beginGrouping];
-        duration = 0.5 * [[NSAnimationContext currentContext] duration];
-        [[NSAnimationContext currentContext] setDuration:duration];
-        [[view animator] setFrame:viewFrame];
-        [[findBar animator] setFrame:barRect];
-        [NSAnimationContext endGrouping];
-        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:duration];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [context setDuration:0.5 * [context duration]];
+                [[view animator] setFrame:viewFrame];
+                [[findBar animator] setFrame:barRect];
+            } 
+            completionHandler:^{
+                NSWindow *window = [[self view] window];
+                if (visible == NO)
+                    [[self view] removeFromSuperview];
+                [window recalculateKeyViewLoop];
+                animating = NO;
+        }];
     } else {
         [view setFrame:viewFrame];
         if (visible)

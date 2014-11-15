@@ -48,6 +48,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSAnimationContext_SKExtensions.h"
 
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
@@ -112,10 +113,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     return nil;
 }
 
-- (void)endAnimation {
-    [[[self window] contentView] setWantsLayer:NO];
-}
-
 - (void)selectPane:(SKPreferencePane *)pane {
     if ([pane isEqual:currentPane] == NO) {
         if (pane) {
@@ -152,12 +149,14 @@ static SKPreferenceController *sharedPrefenceController = nil;
             NSTimeInterval duration = [window animationResizeTime:frame];
             [contentView setWantsLayer:YES];
             [contentView displayIfNeeded];
-            [NSAnimationContext beginGrouping];
-            [[NSAnimationContext currentContext] setDuration:duration];
-            [[contentView animator] replaceSubview:oldView with:view];
-            [[window animator] setFrame:frame display:YES];
-            [NSAnimationContext endGrouping];
-            [self performSelector:@selector(endAnimation) withObject:nil afterDelay:duration];
+            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                    [context setDuration:duration];
+                    [[contentView animator] replaceSubview:oldView with:view];
+                    [[window animator] setFrame:frame display:YES];
+                }
+                completionHandler:^{
+                    [[[self window] contentView] setWantsLayer:NO];
+            }];
         }
     }
 }

@@ -54,6 +54,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSAnimationContext_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -556,15 +557,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return NSMakeRect(NSMinX(targetRect) - scaleFactor * NSMinX(sourceRect), NSMinY(targetRect) - scaleFactor * NSMinY(sourceRect), scaleFactor * windowSize.width, scaleFactor * windowSize.height);
 }
 
-- (void)endMiniaturize:(NSWindow *)miniaturizeWindow {
-    if ([self hasWindow]) {
-        [[self window] orderFront:nil];
-        [self updateWindowLevel];
-    }
-    [miniaturizeWindow orderOut:nil];
-    animating = NO;
-}
-
 - (void)miniaturizeWindowFromRect:(NSRect)startRect toRect:(NSRect)endRect {
     NSWindow *miniaturizeWindow = [[NSWindow alloc] initWithContentRect:startRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     [miniaturizeWindow setIgnoresMouseEvents:YES];
@@ -585,18 +577,23 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [miniaturizeWindow setContentView:imageView];
     [imageView release];
     
-    NSTimeInterval duration = RESIZE_TIME_FACTOR * [miniaturizeWindow animationResizeTime:endRect];
-    
     [miniaturizeWindow orderFront:nil];
     
     animating = YES;
     
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:duration];
-    [[miniaturizeWindow animator] setFrame:endRect display:YES];
-    [NSAnimationContext endGrouping];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [context setDuration:RESIZE_TIME_FACTOR * [miniaturizeWindow animationResizeTime:endRect]];
+            [[miniaturizeWindow animator] setFrame:endRect display:YES];
+        }
+        completionHandler:^{
+            if ([self hasWindow]) {
+                [[self window] orderFront:nil];
+                [self updateWindowLevel];
+            }
+            [miniaturizeWindow orderOut:nil];
+            animating = NO;
+    }];
     
-    [self performSelector:@selector(endMiniaturize:) withObject:miniaturizeWindow afterDelay:duration];
     [miniaturizeWindow release];
 }
 
