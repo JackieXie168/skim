@@ -2353,6 +2353,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             }
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
+                if (mwcFlags.autoResizeNoteRows) {
+                    if ([keyPath isEqualToString:SKNPDFAnnotationStringKey])
+                        [rowHeights removeFloatForKey:note];
+                    if ([keyPath isEqualToString:SKNPDFAnnotationTextKey])
+                        [rowHeights removeFloatForKey:[[note texts] lastObject]];
+                }
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
             }

@@ -106,7 +106,7 @@
         pdfDocument = nil;
         rowHeights = [[SKFloatMapTable alloc] init];
         windowRect = NSZeroRect;
-        caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
+        ndFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
     }
     return self;
 }
@@ -166,7 +166,7 @@
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
-    settingUpWindow = YES;
+    ndFlags.settingUpWindow = YES;
     
     [aController setShouldCloseDocument:YES];
     
@@ -204,7 +204,14 @@
     [menu addItem:[NSMenuItem separatorItem]];
     [[menu addItemWithTitle:NSLocalizedString(@"Note Type", @"Menu item title") action:NULL keyEquivalent:@""] setSubmenu:[noteTypeSheetController noteTypeMenu]];
     
-    settingUpWindow = NO;
+    ndFlags.settingUpWindow = NO;
+}
+
+- (void)windowDidResize:(NSNotification *)notification {
+    if (ndFlags.autoResizeRows) {
+        [rowHeights removeAllFloats];
+        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
@@ -224,7 +231,7 @@
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
-    if (success && exportUsingPanel) {
+    if (success && ndFlags.exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedNotesTypeKey];
@@ -242,17 +249,17 @@
 }
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo { 
-    exportUsingPanel = NO;
+    ndFlags.exportUsingPanel = NO;
 }
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
-    exportUsingPanel = (saveOperation == NSSaveToOperation);
+    ndFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:NULL];
 }
 
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    if (saveOperation == NSSaveToOperation && exportUsingPanel)
+    if (saveOperation == NSSaveToOperation && ndFlags.exportUsingPanel)
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedNotesTypeKey];
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
@@ -373,7 +380,7 @@
 }
 
 - (void)updateNoteFilterPredicate {
-    [arrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[searchField stringValue] caseInsensitive:caseInsensitiveSearch]];
+    [arrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[searchField stringValue] caseInsensitive:ndFlags.caseInsensitiveSearch]];
     [outlineView reloadData];
 }
 
@@ -486,32 +493,35 @@
     CGFloat height,rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = COLUMN_INDENTATION;
-    NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
-    indentation += [outlineView indentationPerLevel];
-    NSRect fullRect = NSMakeRect(0.0, 0.0, NSWidth([outlineView frame]) - indentation, CGFLOAT_MAX);
-    
+    NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX);
+    NSRect fullRect = NSMakeRect(0.0, 0.0, NSWidth([outlineView frame]) - COLUMN_INDENTATION - [outlineView indentationPerLevel], CGFLOAT_MAX);
+    NSMutableIndexSet *rowIndexes = nil;
     NSArray *items = [sender representedObject];
+    NSInteger row;
     
-    if (items == nil) {
-        items = [NSMutableArray array];
-        [(NSMutableArray *)items addObjectsFromArray:[self notes]];
-        [(NSMutableArray *)items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
-        [(NSMutableArray *)items removeObject:[NSNull null]];
-    }
+    if (items == nil)
+        items = [[self notes] arrayByAddingObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
+    else
+        rowIndexes = [NSMutableIndexSet indexSet];
     
     for (id item in items) {
         if ([(PDFAnnotation *)item type]) {
             [cell setObjectValue:[item string]];
             height = [cell cellSizeForBounds:rect].height;
-        } else {
+        } else if ([tableColumn isHidden] == NO) {
             [cell setObjectValue:[item text]];
             height = [cell cellSizeForBounds:fullRect].height;
+        } else {
+            height = 0.0;
         }
         [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
+        if (rowIndexes) {
+            row = [outlineView rowForItem:item];
+            if (row != -1)
+                [rowIndexes addIndex:row];
+        }
     }
-    // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
-    [outlineView reloadData];
+    [outlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
 }
 
 - (void)resetHeightOfNoteRows:(id)sender {
@@ -522,14 +532,24 @@
         for (id item in items)
             [rowHeights removeFloatForKey:item];
     }
-    [outlineView reloadData];
+    [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+}
+
+- (void)toggleAutoResizeNoteRows:(id)sender {
+    ndFlags.autoResizeRows = (0 == ndFlags.autoResizeRows);
+    if (ndFlags.autoResizeRows) {
+        [rowHeights removeAllFloats];
+        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+    } else {
+        [self autoSizeNoteRows:nil];
+    }
 }
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
-    caseInsensitiveSearch = NO == caseInsensitiveSearch;
+    ndFlags.caseInsensitiveSearch = NO == ndFlags.caseInsensitiveSearch;
     if ([[searchField stringValue] length])
         [self searchNotes:searchField];
-    [[NSUserDefaults standardUserDefaults] setBool:caseInsensitiveSearch forKey:SKCaseInsensitiveNoteSearchKey];
+    [[NSUserDefaults standardUserDefaults] setBool:ndFlags.caseInsensitiveSearch forKey:SKCaseInsensitiveNoteSearchKey];
 }
 
 - (void)performFindPanelAction:(id)sender {
@@ -555,7 +575,10 @@
             [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
         return YES;
     } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
-        [menuItem setState:caseInsensitiveSearch ? NSOnState : NSOffState];
+        [menuItem setState:ndFlags.caseInsensitiveSearch ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleAutoResizeNoteRows:)) {
+        [menuItem setState:ndFlags.autoResizeRows ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(performFindPanelAction:)) {
         switch ([menuItem tag]) {
@@ -653,6 +676,22 @@
     [ov reloadData];
 }
 
+- (void)outlineViewColumnDidResize:(NSNotification *)notification{
+    if (ndFlags.autoResizeRows &&
+        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID]) {
+        [rowHeights removeAllFloats];
+        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)ov didChangeHiddenOfTableColumn:(NSTableColumn *)tableColumn {
+    if (ndFlags.autoResizeRows &&
+        [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
+        [rowHeights removeAllFloats];
+        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSMutableArray *copiedItems = [NSMutableArray array];
@@ -693,7 +732,24 @@
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = [rowHeights floatForKey:item];
-    return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT));
+    if (rowHeight <= 0.0) {
+        if (ndFlags.autoResizeRows) {
+            NSTableColumn *tableColumn = [ov tableColumnWithIdentifier:NOTE_COLUMNID];
+            id cell = [tableColumn dataCell];
+            if ([(PDFAnnotation *)item type] == nil) {
+                [cell setObjectValue:[item text]];
+                rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, fmax(10.0, NSWidth([ov frame]) - COLUMN_INDENTATION - [ov indentationPerLevel]), CGFLOAT_MAX)].height;
+            } else if ([tableColumn isHidden] == NO) {
+                [cell setObjectValue:[item string]];
+                rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX)].height;
+            }
+            rowHeight = fmax(rowHeight, [ov rowHeight]) + EXTRA_ROW_HEIGHT;
+            [rowHeights setFloat:rowHeight forKey:item];
+        } else {
+            rowHeight = [(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT;
+        }
+    }
+    return rowHeight;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
@@ -751,7 +807,15 @@
             }
             item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
             [item setRepresentedObject:items];
+            item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(resetHeightOfNoteRows:) target:self];
+            [item setRepresentedObject:items];
+            [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+            [item setAlternate:YES];
             [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(resetHeightOfNoteRows:) target:self];
+            [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+            [item setAlternate:YES];
+            [menu addItemWithTitle:NSLocalizedString(@"Automatically Resize", @"Menu item title") action:@selector(toggleAutoResizeNoteRows:) target:self];
         }
     }
 }

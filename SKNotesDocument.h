@@ -55,9 +55,12 @@
     SKFloatMapTable *rowHeights;
     SKNoteTypeSheetController *noteTypeSheetController;
     NSRect windowRect;
-    BOOL exportUsingPanel;
-    BOOL caseInsensitiveSearch;
-    BOOL settingUpWindow;
+    struct _ndFlags {
+        unsigned int exportUsingPanel:1;
+        unsigned int caseInsensitiveSearch:1;
+        unsigned int autoResizeRows:1;
+        unsigned int settingUpWindow:1;
+    } ndFlags;
 }
 
 @property (nonatomic, retain) IBOutlet SKNoteOutlineView *outlineView;
