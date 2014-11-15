@@ -201,7 +201,11 @@
     }
     
     [self setRowHeight:[font defaultViewLineHeight]];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    [self noteHeightOfRowsWithIndexesChanged:nil];
+}
+
+- (void)noteHeightOfRowsWithIndexesChanged:(NSIndexSet *)indexSet {
+    [super noteHeightOfRowsWithIndexesChanged:indexSet ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 #pragma mark Tracking

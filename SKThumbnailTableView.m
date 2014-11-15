@@ -148,14 +148,14 @@
     BOOL changed = fabs(NSWidth([self frame]) - NSWidth(frameRect)) > 0.0;
     [super setFrame:frameRect];
     if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
-        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+        [self noteHeightOfRowsWithIndexesChanged:nil];
 }
 
 - (void)setFrameSize:(NSSize)frameSize {
     BOOL changed = fabs(NSWidth([self frame]) - frameSize.width) > 0.0;
     [super setFrameSize:frameSize];
     if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
-        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+        [self noteHeightOfRowsWithIndexesChanged:nil];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {

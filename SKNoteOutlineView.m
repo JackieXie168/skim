@@ -218,6 +218,8 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     [tc setHidden:[tc isHidden] == NO];
     if ([self outlineTableColumn] == tc && [tc isHidden])
         [self collapseItem:nil collapseChildren:YES];
+    if ([[self delegate] respondsToSelector:@selector(outlineView:didChangeHiddenOfTableColumn:)])
+        [[self delegate] outlineView:self didChangeHiddenOfTableColumn:tc];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

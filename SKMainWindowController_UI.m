@@ -777,17 +777,51 @@
     }
 }
 
-
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
         [self updateOutlineSelection];
     }
 }
 
+- (void)outlineViewColumnDidResize:(NSNotification *)notification{
+    if (mwcFlags.autoResizeNoteRows &&
+        [[notification object] isEqual:rightSideController.noteOutlineView] &&
+        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID]) {
+        [rowHeights removeAllFloats];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)ov didChangeHiddenOfTableColumn:(NSTableColumn *)tableColumn {
+    if (mwcFlags.autoResizeNoteRows &&
+        [ov isEqual:rightSideController.noteOutlineView] &&
+        [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
+        [rowHeights removeAllFloats];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         CGFloat rowHeight = [rowHeights floatForKey:item];
-        return (rowHeight > 0.0 ? rowHeight : ([(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT));
+        if (rowHeight <= 0.0) {
+            if (mwcFlags.autoResizeNoteRows) {
+                NSTableColumn *tableColumn = [ov tableColumnWithIdentifier:NOTE_COLUMNID];
+                id cell = [tableColumn dataCell];
+                if ([(PDFAnnotation *)item type] == nil) {
+                    [cell setObjectValue:[item text]];
+                    rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, fmax(10.0, NSWidth([ov frame]) - COLUMN_INDENTATION - [ov indentationPerLevel]), CGFLOAT_MAX)].height;
+                } else if ([tableColumn isHidden] == NO) {
+                    [cell setObjectValue:[item string]];
+                    rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX)].height;
+                }
+                rowHeight = fmax(rowHeight, [ov rowHeight]) + EXTRA_ROW_HEIGHT;
+                [rowHeights setFloat:rowHeight forKey:item];
+            } else {
+                rowHeight = [(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT;
+            }
+        }
+        return rowHeight;
     }
     return [ov rowHeight];
 }
@@ -1015,18 +1049,16 @@
     CGFloat height = 0.0, rowHeight = [rightSideController.noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat indentation = COLUMN_INDENTATION;
-    NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, CGFLOAT_MAX);
-    indentation += [rightSideController.noteOutlineView indentationPerLevel];
-    NSRect fullRect = NSMakeRect(0.0, 0.0,  NSWidth([rightSideController.noteOutlineView frame]) - indentation, CGFLOAT_MAX);
-    
+    NSRect rect = NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX);
+    NSRect fullRect = NSMakeRect(0.0, 0.0,  NSWidth([rightSideController.noteOutlineView frame]) - COLUMN_INDENTATION - [rightSideController.noteOutlineView indentationPerLevel], CGFLOAT_MAX);
+    NSMutableIndexSet *rowIndexes = nil;
     NSArray *items = [sender representedObject];
+    NSInteger row;
     
-    if (items == nil) {
-        items = [NSMutableArray array];
-        [(NSMutableArray *)items addObjectsFromArray:[self notes]];
-        [(NSMutableArray *)items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
-    }
+    if (items == nil)
+        items = [[self notes] arrayByAddingObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
+    else
+        rowIndexes = [NSMutableIndexSet indexSet];
     
     for (id item in items) {
         if ([(PDFAnnotation *)item type] == nil) {
@@ -1035,11 +1067,17 @@
         } else if ([tableColumn isHidden] == NO) {
             [cell setObjectValue:[item string]];
             height = [cell cellSizeForBounds:rect].height;
+        } else {
+            height = 0.0;
         }
         [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
+        if (rowIndexes) {
+            row = [rightSideController.noteOutlineView rowForItem:item];
+            if (row != -1)
+                [rowIndexes addIndex:row];
+        }
     }
-    // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
-    [rightSideController.noteOutlineView reloadData];
+    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
 }
 
 - (void)resetHeightOfNoteRows:(id)sender {
@@ -1050,7 +1088,17 @@
         for (id item in items)
             [rowHeights removeFloatForKey:item];
     }
-    [rightSideController.noteOutlineView reloadData];
+    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+}
+
+- (void)toggleAutoResizeNoteRows:(id)sender {
+    mwcFlags.autoResizeNoteRows = (0 == mwcFlags.autoResizeNoteRows);
+    if (mwcFlags.autoResizeNoteRows) {
+        [rowHeights removeAllFloats];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+    } else {
+        [self autoSizeNoteRows:nil];
+    }
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
@@ -1124,7 +1172,15 @@
                 [menu addItem:[NSMenuItem separatorItem]];
             item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
             [item setRepresentedObject:items];
+            item = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Undo Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(resetHeightOfNoteRows:) target:self];
+            [item setRepresentedObject:items];
+            [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+            [item setAlternate:YES];
             item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Undo Auto Size All", @"Menu item title") action:@selector(resetHeightOfNoteRows:) target:self];
+            [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+            [item setAlternate:YES];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Automatically Resize", @"Menu item title") action:@selector(toggleAutoResizeNoteRows:) target:self];
         }
     }
 }
@@ -1606,6 +1662,9 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
         [menuItem setState:mwcFlags.caseInsensitiveNoteSearch ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(toggleAutoResizeNoteRows:)) {
+        [menuItem setState:mwcFlags.autoResizeNoteRows ? NSOnState : NSOffState];
+        return YES;
     } else if (action == @selector(performFindPanelAction:)) {
         if (interactionMode == SKPresentationMode)
             return NO;
@@ -1789,6 +1848,13 @@ static NSArray *allMainDocumentPDFViews() {
         [self setPresentationNotesDocument:nil];
 }
 
+- (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
+    if (mwcFlags.autoResizeNoteRows) {
+        [rowHeights removeAllFloats];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
 #pragma mark Observer registration
 
 - (void)registerForNotifications {
@@ -1819,6 +1885,9 @@ static NSArray *allMainDocumentPDFViews() {
                              name:SKPDFViewDidMoveAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleReadingBarDidChangeNotification:) 
                              name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
+    // View
+    [nc addObserver:self selector:@selector(handleNoteViewFrameDidChangeNotification:) 
+                             name:NSViewFrameDidChangeNotification object:[rightSideController.noteOutlineView enclosingScrollView]];
     //  UndoManager
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
                              name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];

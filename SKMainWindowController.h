@@ -163,13 +163,14 @@ enum {
         unsigned int rightSidePaneState:1;
         unsigned int savedLeftSidePaneState:1;
         unsigned int findPaneState:1;
+        unsigned int caseInsensitiveSearch:1;
+        unsigned int wholeWordSearch:1;
+        unsigned int caseInsensitiveNoteSearch:1;
+        unsigned int autoResizeNoteRows:1;
         unsigned int updatingOutlineSelection:1;
         unsigned int updatingThumbnailSelection:1;
         unsigned int isAnimating:1;
-        unsigned int caseInsensitiveSearch:1;
-        unsigned int wholeWordSearch:1;
         unsigned int updatingNoteSelection:1;
-        unsigned int caseInsensitiveNoteSearch:1;
         unsigned int updatingColor:1;
         unsigned int updatingFont:1;
         unsigned int updatingFontAttributes:1;
