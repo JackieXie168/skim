@@ -69,10 +69,8 @@
 
 #define DEFAULT_TEXT_HEIGHT 29.0
 
-static char SKNoteWindowPageObservationContext;
-static char SKNoteWindowBoundsObservationContext;
 static char SKNoteWindowDefaultsObservationContext;
-static char SKNoteWindowStringObservationContext;
+static char SKNoteWindowNoteObservationContext;
 
 @implementation SKNoteWindowController
 
@@ -119,9 +117,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
         
-        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:&SKNoteWindowPageObservationContext];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKNoteWindowBoundsObservationContext];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:&SKNoteWindowStringObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:&SKNoteWindowNoteObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKNoteWindowNoteObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:&SKNoteWindowNoteObservationContext];
         if ([self isNoteType])
             [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:&SKNoteWindowDefaultsObservationContext];
     }
@@ -370,10 +368,11 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             if (font)
                 [textView setFont:font];
         }
-    } else if (context == &SKNoteWindowBoundsObservationContext || context == &SKNoteWindowPageObservationContext) {
-        [self updateStatusMessage];
-    } else if (context == &SKNoteWindowStringObservationContext) {
-        [self synchronizeWindowTitleWithDocumentName];
+    } else if (context == &SKNoteWindowNoteObservationContext) {
+        if ([keyPath isEqualToString:SKNPDFAnnotationStringKey])
+            [self synchronizeWindowTitleWithDocumentName];
+        else
+            [self updateStatusMessage];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
