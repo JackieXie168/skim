@@ -41,6 +41,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSAnimationContext_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -143,15 +144,20 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [self orderOut:nil];
 }
 
-- (void)animateToWidth:(CGFloat)width {
+- (void)animateToWidth:(CGFloat)width completionHandler:(void(^)(void))completionHandler {
     NSRect screenFrame = [[[controller window] screen] frame];
     NSRect frame = [self frame];
     frame.size.width = width;
     frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self setFrame:frame display:YES];
-    else
-        [[self animator] setFrame:frame display:YES];
+        if (completionHandler) completionHandler();
+    } else {
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [[self animator] setFrame:frame display:YES];
+            }
+            completionHandler:completionHandler];
+    }
 }
 
 - (void)makeTransparent {
@@ -161,14 +167,14 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
-        [self animateToWidth:WINDOW_OFFSET];
-        if ([self isKeyWindow])
-            [[controller window] makeKeyAndOrderFront:self];
-        state = NSDrawerClosedState;
-        if (hideWhenClosed != SKClosedSidePanelCollapse) {
-            NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
-            [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:delay];
-        }
+        [self animateToWidth:WINDOW_OFFSET
+            completionHandler:^{
+                if ([self isKeyWindow])
+                    [[controller window] makeKeyAndOrderFront:self];
+                state = NSDrawerClosedState;
+                if (hideWhenClosed != SKClosedSidePanelCollapse)
+                    [self makeTransparent];
+            }];
     }
 }
 
@@ -177,12 +183,14 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         if ([self alphaValue] < 0.1)
             [self setAlphaValue:1.0];
         state = NSDrawerOpeningState;
-        [self animateToWidth:NSWidth([mainContentView frame]) + CONTENT_INSET];
-        if ([[controller window] isKeyWindow])
-            [self makeKeyAndOrderFront:nil];
-        else
-            [self orderFront:nil];
-        state = NSDrawerOpenState;
+        [self animateToWidth:NSWidth([mainContentView frame]) + CONTENT_INSET 
+            completionHandler:^{
+                if ([[controller window] isKeyWindow])
+                    [self makeKeyAndOrderFront:nil];
+                else
+                    [self orderFront:nil];
+                state = NSDrawerOpenState;
+            }];
     }
 }
 
