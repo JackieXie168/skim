@@ -233,6 +233,7 @@
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CED76D671A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */; };
+		CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76F001A1825DE00D1ACA4 /* SKScrollView.m */; };
 		CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
@@ -979,6 +980,8 @@
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
 		CED76D651A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAnimationContext_SKExtensions.h; sourceTree = "<group>"; };
 		CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSAnimationContext_SKExtensions.m; sourceTree = "<group>"; };
+		CED76EFF1A1825DE00D1ACA4 /* SKScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScrollView.h; sourceTree = "<group>"; };
+		CED76F001A1825DE00D1ACA4 /* SKScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKScrollView.m; sourceTree = "<group>"; };
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
@@ -1685,6 +1688,8 @@
 				CE7611630EA49D1400301E45 /* SKPrintableView.m */,
 				CEAA55B40C6DE452006BD633 /* SKProgressCell.h */,
 				CEAA55B50C6DE452006BD633 /* SKProgressCell.m */,
+				CED76EFF1A1825DE00D1ACA4 /* SKScrollView.h */,
+				CED76F001A1825DE00D1ACA4 /* SKScrollView.m */,
 				CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */,
 				CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */,
 				CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */,
@@ -2576,6 +2581,7 @@
 				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
 				CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */,
 				CED76D671A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m in Sources */,
+				CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

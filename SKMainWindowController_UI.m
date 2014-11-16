@@ -71,6 +71,7 @@
 #import "SKFindController.h"
 #import "NSColor_SKExtensions.h"
 #import "SKSplitView.h"
+#import "SKScrollView.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "NSError_SKExtensions.h"
@@ -786,7 +787,8 @@
 - (void)outlineViewColumnDidResize:(NSNotification *)notification{
     if (mwcFlags.autoResizeNoteRows &&
         [[notification object] isEqual:rightSideController.noteOutlineView] &&
-        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID]) {
+        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
+        [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
         [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
     }

@@ -62,6 +62,7 @@
 #import "SKPDFView.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
+#import "SKScrollView.h"
 #import "NSColor_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
@@ -678,7 +679,8 @@
 
 - (void)outlineViewColumnDidResize:(NSNotification *)notification{
     if (ndFlags.autoResizeRows &&
-        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID]) {
+        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
+        [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
         [outlineView noteHeightOfRowsWithIndexesChanged:nil];
     }
