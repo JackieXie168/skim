@@ -40,6 +40,7 @@
 #import "SKStringConstants.h"
 #import "NSAnimationContext_SKExtensions.h"
 
+NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndNotification";
 
 @implementation SKSplitView
 
@@ -170,6 +171,7 @@
         completionHandler:^{
             [self setPosition:position ofDividerAtIndex:dividerIndex];
             animating = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
     }];
 }
 

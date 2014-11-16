@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKSplitViewAnimationDidEndNotification;
 
 @interface SKSplitView : NSSplitView {
     BOOL animating;
