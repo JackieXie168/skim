@@ -701,16 +701,10 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)searchPDF:(id)sender {
-    BOOL selectImmediate = YES;
-    if ([self interactionMode] == SKFullScreenMode) {
-        if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
-            [leftSideWindow expand];
-    } else if ([self leftSidePaneIsOpen] == NO) {
-        selectImmediate = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey];
+    if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:sender];
-    }
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
-    if (selectImmediate)
+    if ([self interactionMode] != SKNormalMode || mwcFlags.usesDrawers || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
         [leftSideController.searchField selectText:self];
     else
         [leftSideController.searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
