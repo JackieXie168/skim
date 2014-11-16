@@ -154,10 +154,9 @@
                 [context setDuration:[self fadeInDuration]];
                 [[self animator] setAlphaValue:[self defaultAlphaValue]];
             }
-            completionHandler:^{
-        }];
-        [self fadeOutAfterTimeout];
+            completionHandler:nil];
     }
+    [self fadeOutAfterTimeout];
 }
 
 @end
