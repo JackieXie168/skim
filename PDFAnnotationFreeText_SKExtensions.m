@@ -53,8 +53,7 @@ NSString *SKPDFAnnotationScriptingAlignmentKey = @"scriptingAlignment";
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKFreeTextNoteFontNameKey]
-                                       size:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteFontSizeKey]];
+        NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKFreeTextNoteFontNameKey sizeKey:SKFreeTextNoteFontSizeKey];
         if (font)
             [self setFont:font];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]];

@@ -70,4 +70,10 @@
     [self setObject:data forKey:key];
 }
 
+- (NSFont *)fontForNameKey:(NSString *)nameKey sizeKey:(NSString *)sizeKey {
+    NSString *fontName = [self stringForKey:nameKey];
+    CGFloat fontSize = [self doubleForKey:sizeKey];
+    return fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
+}
+
 @end
