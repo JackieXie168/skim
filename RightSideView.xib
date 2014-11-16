@@ -1176,6 +1176,7 @@
 				<boolean value="YES" key="25.ImportedFromIB2"/>
 				<string key="26.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="26.ImportedFromIB2"/>
+				<string key="27.CustomClassName">SKScrollView</string>
 				<string key="27.IBEditorWindowLastContentRect">{{0, 446}, {200, 400}}</string>
 				<string key="27.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="27.ImportedFromIB2"/>
@@ -1292,6 +1293,24 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">addNoteFromPanel:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">addNoteFromPanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKNotesPanelController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKPDFDocument.h</string>
@@ -1302,6 +1321,8 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="PDFViewDidBeginEditing:">PDFView</string>
 						<string key="PDFViewDidEndEditing:">PDFView</string>
+						<string key="PDFViewExitFullscreen:">PDFView</string>
+						<string key="PDFViewToggleContents:">PDFView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="PDFViewDidBeginEditing:">
@@ -1310,6 +1331,14 @@
 						</object>
 						<object class="IBActionInfo" key="PDFViewDidEndEditing:">
 							<string key="name">PDFViewDidEndEditing:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewExitFullscreen:">
+							<string key="name">PDFViewExitFullscreen:</string>
+							<string key="candidateClassName">PDFView</string>
+						</object>
+						<object class="IBActionInfo" key="PDFViewToggleContents:">
+							<string key="name">PDFViewToggleContents:</string>
 							<string key="candidateClassName">PDFView</string>
 						</object>
 					</dictionary>
@@ -1323,20 +1352,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKTemplateParser.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKFileWatcher.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">vendorsrc/ulikusterer/UKKQueue.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1411,10 +1426,24 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSWindowController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFullScreenWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">PDFView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">PDFView_SKExtensions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PDFView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKTextNoteEditor.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1453,6 +1482,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKFindTableView</string>
+					<string key="superclassName">SKTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKFindTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKGradientView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -1476,9 +1513,9 @@
 					<string key="superclassName">SKSideViewController</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="findArrayController">NSArrayController</string>
-						<string key="findTableView">NSTableView</string>
+						<string key="findTableView">SKFindTableView</string>
 						<string key="groupedFindArrayController">NSArrayController</string>
-						<string key="groupedFindTableView">NSTableView</string>
+						<string key="groupedFindTableView">SKFindTableView</string>
 						<string key="thumbnailArrayController">NSArrayController</string>
 						<string key="thumbnailTableView">SKThumbnailTableView</string>
 						<string key="tocOutlineView">SKTocOutlineView</string>
@@ -1490,7 +1527,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="findTableView">
 							<string key="name">findTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindArrayController">
 							<string key="name">groupedFindArrayController</string>
@@ -1498,7 +1535,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindTableView">
 							<string key="name">groupedFindTableView</string>
-							<string key="candidateClassName">NSTableView</string>
+							<string key="candidateClassName">SKFindTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="thumbnailArrayController">
 							<string key="name">thumbnailArrayController</string>
@@ -1522,10 +1559,12 @@
 					<string key="className">SKMainToolbarController</string>
 					<string key="superclassName">NSViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="changeBookMode:">id</string>
 						<string key="changeDisplayBox:">id</string>
 						<string key="changeDisplayContinuous:">id</string>
 						<string key="changeDisplayMode:">id</string>
 						<string key="changeDisplaySinglePages:">id</string>
+						<string key="changePageBreaks:">id</string>
 						<string key="changeScaleFactor:">id</string>
 						<string key="changeToolMode:">id</string>
 						<string key="chooseScale:">id</string>
@@ -1548,6 +1587,10 @@
 						<string key="zoomToSelection:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="changeBookMode:">
+							<string key="name">changeBookMode:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="changeDisplayBox:">
 							<string key="name">changeDisplayBox:</string>
 							<string key="candidateClassName">id</string>
@@ -1562,6 +1605,10 @@
 						</object>
 						<object class="IBActionInfo" key="changeDisplaySinglePages:">
 							<string key="name">changeDisplaySinglePages:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="changePageBreaks:">
+							<string key="name">changePageBreaks:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="changeScaleFactor:">
@@ -1647,6 +1694,7 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="backForwardButton">NSSegmentedControl</string>
+						<string key="bookModeButton">NSSegmentedControl</string>
 						<string key="circleNoteButton">NSSegmentedControl</string>
 						<string key="colorSwatch">SKColorSwatch</string>
 						<string key="colorsButton">NSSegmentedControl</string>
@@ -1665,6 +1713,7 @@
 						<string key="markupNoteButton">NSSegmentedControl</string>
 						<string key="nextPageButton">NSSegmentedControl</string>
 						<string key="noteButton">NSSegmentedControl</string>
+						<string key="pageBreaksButton">NSSegmentedControl</string>
 						<string key="pageNumberField">NSTextField</string>
 						<string key="presentationButton">NSSegmentedControl</string>
 						<string key="previousNextFirstLastPageButton">NSSegmentedControl</string>
@@ -1688,6 +1737,10 @@
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="backForwardButton">
 							<string key="name">backForwardButton</string>
+							<string key="candidateClassName">NSSegmentedControl</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bookModeButton">
+							<string key="name">bookModeButton</string>
 							<string key="candidateClassName">NSSegmentedControl</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="circleNoteButton">
@@ -1760,6 +1813,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="noteButton">
 							<string key="name">noteButton</string>
+							<string key="candidateClassName">NSSegmentedControl</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pageBreaksButton">
+							<string key="name">pageBreaksButton</string>
 							<string key="candidateClassName">NSSegmentedControl</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="pageNumberField">
@@ -1969,8 +2026,6 @@
 						<string key="cut:">id</string>
 						<string key="delete:">id</string>
 						<string key="deselectAll:">id</string>
-						<string key="displayFacingPages:">id</string>
-						<string key="displaySinglePages:">id</string>
 						<string key="doAutoScale:">id</string>
 						<string key="doGoBack:">id</string>
 						<string key="doGoForward:">id</string>
@@ -1999,6 +2054,10 @@
 						<string key="rotateLeft:">id</string>
 						<string key="rotateRight:">id</string>
 						<string key="savePDFSettingToDefaults:">id</string>
+						<string key="scrollDown:">id</string>
+						<string key="scrollLeft:">id</string>
+						<string key="scrollRight:">id</string>
+						<string key="scrollUp:">id</string>
 						<string key="searchPDF:">id</string>
 						<string key="smartAutoCropAll:">id</string>
 						<string key="takeSnapshot:">id</string>
@@ -2142,14 +2201,6 @@
 							<string key="name">deselectAll:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="displayFacingPages:">
-							<string key="name">displayFacingPages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="displaySinglePages:">
-							<string key="name">displaySinglePages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="doAutoScale:">
 							<string key="name">doAutoScale:</string>
 							<string key="candidateClassName">id</string>
@@ -2260,6 +2311,22 @@
 						</object>
 						<object class="IBActionInfo" key="savePDFSettingToDefaults:">
 							<string key="name">savePDFSettingToDefaults:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scrollDown:">
+							<string key="name">scrollDown:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scrollLeft:">
+							<string key="name">scrollLeft:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scrollRight:">
+							<string key="name">scrollRight:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scrollUp:">
+							<string key="name">scrollUp:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="searchPDF:">
@@ -2429,6 +2496,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKRightSideViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKScrollView</string>
+					<string key="superclassName">NSScrollView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKScrollView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
