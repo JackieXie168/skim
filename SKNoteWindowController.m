@@ -59,6 +59,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "SKMainWindowController.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -170,9 +171,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [gradientView setEdges:SKMinYEdgeMask];
         [gradientView setAlternateGradient:nil];
         
-        NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-        CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-        NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
+        NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
         if (font)
             [textView setFont:font];
         [textView bind:@"attributedString" toObject:noteController withKeyPath:@"selection.text" options:nil];
@@ -362,9 +361,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if (context == &SKNoteWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
-            NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-            NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
+            NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
             if (font)
                 [textView setFont:font];
         }

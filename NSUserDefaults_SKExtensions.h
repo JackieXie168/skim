@@ -44,4 +44,6 @@
 - (NSColor *)colorForKey:(NSString *)key;
 - (void)setColor:(NSColor *)color forKey:(NSString *)key;
 
+- (NSFont *)fontForNameKey:(NSString *)nameKey sizeKey:(NSString *)sizeKey;
+
 @end

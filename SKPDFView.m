@@ -805,9 +805,7 @@ enum {
                 else if ([str isKindOfClass:[NSAttributedString class]])
                     attrString = [[[NSMutableAttributedString alloc] initWithAttributedString:str] autorelease];
                 if (isPlainText || [str isKindOfClass:[NSString class]]) {
-                    NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-                    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-                    NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : [NSFont userFontOfSize:fontSize];
+                    NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
                     [attrString setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil] range:NSMakeRange(0, [attrString length])];
                 }
                 [(SKNPDFAnnotationNote *)newAnnotation setText:attrString];
