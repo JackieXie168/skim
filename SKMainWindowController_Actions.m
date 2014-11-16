@@ -700,14 +700,20 @@ static NSArray *allMainDocumentPDFViews() {
     [statusBar toggleBelowView:splitView animate:sender != nil];
 }
 
+- (void)selectLeftSideSearchField:(NSNotification *)note {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:splitView];
+    [leftSideController.searchField selectText:self];
+}
+
 - (IBAction)searchPDF:(id)sender {
-    if ([self leftSidePaneIsOpen] == NO)
+    BOOL wasOpen = [self leftSidePaneIsOpen];
+    if (wasOpen == NO)
         [self toggleLeftSidePane:sender];
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
-    if ([self interactionMode] != SKNormalMode || mwcFlags.usesDrawers || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-        [leftSideController.searchField selectText:self];
+    if ([splitView isAnimating])
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectLeftSideSearchField:) name:SKSplitViewAnimationDidEndNotification object:splitView];
     else
-        [leftSideController.searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+        [leftSideController.searchField selectText:self];
 }
 
 - (IBAction)performFit:(id)sender {
@@ -896,7 +902,9 @@ static NSArray *allMainDocumentPDFViews() {
     [self setFindPaneState:[sender tag]];
 }
 
-- (void)removeSecondaryPdfContentView {
+- (void)removeSecondaryPdfContentView:(NSNotification *)note {
+    if (note)
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
     [secondaryPdfContentView removeFromSuperview];
     [pdfSplitView adjustSubviews];
 }
@@ -909,9 +917,11 @@ static NSArray *allMainDocumentPDFViews() {
         
         lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
         
-        NSTimeInterval delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : [[NSAnimationContext currentContext] duration];
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
-        [self performSelector:@selector(removeSecondaryPdfContentView) withObject:nil afterDelay:delay];
+        if ([pdfSplitView isAnimating])
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeSecondaryPdfContentView:) name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
+        else
+            [self removeSecondaryPdfContentView:nil];
         
     } else {
         
