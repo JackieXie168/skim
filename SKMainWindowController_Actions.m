@@ -706,8 +706,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)searchPDF:(id)sender {
-    BOOL wasOpen = [self leftSidePaneIsOpen];
-    if (wasOpen == NO)
+    if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:sender];
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
     if ([splitView isAnimating])
