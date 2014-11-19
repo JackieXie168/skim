@@ -180,7 +180,6 @@
 	NSRect statusRect = [contentView bounds];
 	CGFloat statusHeight = NSHeight([self frame]);
     BOOL visible = (nil == [self superview]);
-    NSTimeInterval duration;
     
 	statusRect.size.height = statusHeight;
 	
