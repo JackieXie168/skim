@@ -139,8 +139,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [window setTitle:[currentPane title]];
         [[NSUserDefaults standardUserDefaults] setObject:[currentPane identifier] forKey:SKLastSelectedPreferencePaneKey];
         [[window toolbar] setSelectedItemIdentifier:[currentPane identifier]];
-        // insert the pane into the responder chain so it can respond to changeFont: and changeAttributes:
-        [self setNextResponder:currentPane];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
@@ -198,7 +196,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
     [toolbar setSelectedItemIdentifier:[currentPane identifier]];
     [window setTitle:[currentPane title]];
-    [self setNextResponder:currentPane];
     [history addObject:currentPane];
     
     view = [currentPane view];
@@ -293,6 +290,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
         historyIndex++;
         [self selectPane:nil];
     }
+}
+
+- (IBAction)changeFont:(id)sender {
+    if ([currentPane respondsToSelector:@selector(changeFont:)])
+        [(id)currentPane changeFont:sender];
+}
+
+- (IBAction)changeAttributes:(id)sender {
+    if ([currentPane respondsToSelector:@selector(changeAttributes:)])
+        [(id)currentPane changeAttributes:sender];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

@@ -61,4 +61,7 @@
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
 
+- (IBAction)changeFont:(id)sender;
+- (IBAction)changeAttributes:(id)sender;
+
 @end
