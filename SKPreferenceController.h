@@ -58,6 +58,8 @@
 
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
+- (IBAction)doGoToFirstPage:(id)sender;
+- (IBAction)doGoToLastPage:(id)sender;
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
 

@@ -278,6 +278,14 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [self selectPane:[preferencePanes objectAtIndex:itemIndex]];
 }
 
+- (IBAction)doGoToFirstPage:(id)sender {
+    [self selectPane:[preferencePanes objectAtIndex:0]];
+}
+
+- (IBAction)doGoToLastPage:(id)sender {
+    [self selectPane:[preferencePanes lastObject]];
+}
+
 - (IBAction)doGoBack:(id)sender {
     if (historyIndex > 0) {
         historyIndex--;
@@ -301,9 +309,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(doGoToNextPage:))
+    if ([menuItem action] == @selector(doGoToNextPage:) || [menuItem action] == @selector(doGoToLastPage:))
         return [currentPane isEqual:[preferencePanes lastObject]] == NO;
-    else if ([menuItem action] == @selector(doGoToPreviousPage:))
+    else if ([menuItem action] == @selector(doGoToPreviousPage:) || [menuItem action] == @selector(doGoToFirstPage:))
         return [currentPane isEqual:[preferencePanes objectAtIndex:0]] == NO;
     else if ([menuItem action] == @selector(doGoBack:))
         return historyIndex > 0;
