@@ -293,13 +293,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)changeFont:(id)sender {
-    if ([currentPane respondsToSelector:@selector(changeFont:)])
-        [(id)currentPane changeFont:sender];
+    [[currentPane activeFontWell] changeFontFromFontManager:sender];
 }
 
 - (IBAction)changeAttributes:(id)sender {
-    if ([currentPane respondsToSelector:@selector(changeAttributes:)])
-        [(id)currentPane changeAttributes:sender];
+    [[currentPane activeFontWell] changeAttributesFromFontManager:sender];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

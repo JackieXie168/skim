@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SKPreferencePane.h"
 
-@class SKLineWell, SKFontWell;
 
 @interface SKNotesPreferences : SKPreferencePane {
     NSArray *labels1;
@@ -55,8 +54,5 @@
 }
 
 @property (nonatomic, retain) IBOutlet NSArray *labels1, *colorLabels2, *colorLabels3, *lineLabels2, *colorWells1, *colorWells2, *colorWells3, *fontWells, *lineWells1, *lineWells2;
-
-- (IBAction)changeFont:(id)sender;
-- (IBAction)changeAttributes:(id)sender;
 
 @end

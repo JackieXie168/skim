@@ -44,7 +44,7 @@
 
 @implementation SKPreferencePane
 
-@dynamic identifier, icon, resettableKeys;
+@dynamic identifier, icon, resettableKeys, activeFontWell;
 
 - (NSString *)identifier {
     return [self nibName];
@@ -52,6 +52,10 @@
 
 - (NSImage *)icon {
     return [NSImage imageNamed:[self nibName]];
+}
+
+- (SKFontWell *)activeFontWell {
+    return nil;
 }
 
 - (NSArray *)resettableKeys {
