@@ -73,7 +73,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKApplication.h"
 #import "NSResponder_SKExtensions.h"
-#import "SKRuntime.h"
 #import "SKTextFieldSheetController.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
