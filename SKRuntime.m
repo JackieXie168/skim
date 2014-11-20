@@ -41,54 +41,54 @@
 
 
 // this is essentially class_replaceMethod, but returns any inherited implementation, and can get the types from an inherited implementation
-IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options) {
+IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, NSInteger options) {
     IMP imp = NULL;
     if (anImp) {
-        Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
+        Method method = class_getInstanceMethod(aClass, aSelector);
         if (method) {
             imp = method_getImplementation(method);
             if (types == NULL)
                 types = method_getTypeEncoding(method);
         }
         if (types != NULL && (options != SKAddOnly || imp == NULL) && (options != SKReplaceOnly || imp != NULL))
-            class_replaceMethod(isInstance ? aClass : object_getClass(aClass), aSelector, anImp, types);
+            class_replaceMethod(aClass, aSelector, anImp, types);
     }
     return imp;
 }
 
-IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, NSInteger options) {
-    Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
-    return method ? SKSetMethodImplementation(aClass, aSelector, method_getImplementation(method), method_getTypeEncoding(method), isInstance, options) : NULL;
+IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, NSInteger options) {
+    Method method = class_getInstanceMethod(aClass, impSelector);
+    return method ? SKSetMethodImplementation(aClass, aSelector, method_getImplementation(method), method_getTypeEncoding(method), options) : NULL;
 }
 
 IMP SKReplaceInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
-    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, YES, SKReplaceOnly);
+    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, SKReplaceOnly);
 }
 
 void SKAddInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
-    SKSetMethodImplementation(aClass, aSelector, anImp, types, YES, SKAddOnly);
+    SKSetMethodImplementation(aClass, aSelector, anImp, types, SKAddOnly);
 }
 
 IMP SKReplaceInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, YES, SKReplaceOnly);
+    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, SKReplaceOnly);
 }
 
 void SKAddInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, YES, SKAddOnly);
+    SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, SKAddOnly);
 }
 
 IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
-    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, NO, SKReplaceOnly);
+    return SKSetMethodImplementation(object_getClass(aClass), aSelector, anImp, NULL, SKReplaceOnly);
 }
 
 void SKAddClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
-    SKSetMethodImplementation(aClass, aSelector, anImp, types, NO, SKAddOnly);
+    SKSetMethodImplementation(object_getClass(aClass), aSelector, anImp, types, SKAddOnly);
 }
 
 IMP SKReplaceClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, NO, SKReplaceOnly);
+    return SKSetMethodImplementationFromSelector(object_getClass(aClass), aSelector, impSelector, SKReplaceOnly);
 }
 
 void SKAddClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
-    SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, NO, SKAddOnly);
+    SKSetMethodImplementationFromSelector(object_getClass(aClass), aSelector, impSelector, SKAddOnly);
 }
