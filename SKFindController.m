@@ -122,14 +122,6 @@
     }
 }
 
-- (void)endAnimation:(NSNumber *)visible {
-    NSWindow *window = [[self view] window];
-    if ([visible boolValue] == NO)
-		[[self view] removeFromSuperview];
-    [window recalculateKeyViewLoop];
-    animating = NO;
-}
-
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate {
     if (animating)
         return;
