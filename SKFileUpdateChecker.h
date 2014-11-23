@@ -53,7 +53,6 @@
     
     dispatch_source_t source;
     
-    // only used for network filesystems; fileUpdateTimer is not retained by us
     NSDate *lastModifiedDate;
     NSTimer *fileUpdateTimer;
 }
