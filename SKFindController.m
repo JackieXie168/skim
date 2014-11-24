@@ -123,7 +123,7 @@
 }
 
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate {
-    if (animating)
+    if (animating && animate)
         return;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
