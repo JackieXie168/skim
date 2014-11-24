@@ -43,6 +43,7 @@
 @class SKBookmark, SKDownload;
 
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
+    BOOL didCheckReopen;
     BOOL remoteScrolling;
 }
 

@@ -163,22 +163,25 @@
 #pragma mark NSApplication delegate
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    
-    if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
-        // just remove this in case opening the last open files crashes the app after a relaunch
-        if ([sud objectForKey:SKIsRelaunchKey]) {
-            [sud removeObjectForKey:SKIsRelaunchKey];
-            [sud synchronize];
+    if (didCheckReopen == NO) {
+        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        
+        if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
+            // just remove this in case opening the last open files crashes the app after a relaunch
+            if ([sud objectForKey:SKIsRelaunchKey]) {
+                [sud removeObjectForKey:SKIsRelaunchKey];
+                [sud synchronize];
+            }
+            
+            for (NSDictionary *dict in [[sud objectForKey:SKLastOpenFileNamesKey] reverseObjectEnumerator]) {
+                NSError *error = nil;
+                if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
+                    [NSApp presentError:error];
+            }
         }
         
-        for (NSDictionary *dict in [[sud objectForKey:SKLastOpenFileNamesKey] reverseObjectEnumerator]) {
-            NSError *error = nil;
-            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
-                [NSApp presentError:error];
-        }
+        didCheckReopen = YES;
     }
-    
     return NO;
 }    
 
@@ -190,6 +193,8 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
+    if (didCheckReopen == NO)
+        [self applicationShouldOpenUntitledFile:NSApp];
     [sud removeObjectForKey:SKIsRelaunchKey];
     
     [NSApp setServicesProvider:self];
