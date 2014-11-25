@@ -959,8 +959,10 @@ static NSArray *allMainDocumentPDFViews() {
         [pdfSplitView setPosition:position ofDividerAtIndex:0 animate:YES];
         
         if (page) {
-            point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
             [secondaryPdfView goToPage:page];
+            point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
+            if ([[[secondaryPdfView scrollView] contentView] isFlipped] == NO)
+                point.y -= NSHeight([[secondaryPdfView documentView] visibleRect]);
             [[secondaryPdfView documentView] scrollPoint:point];
             [secondaryPdfView layoutDocumentView];
         }
