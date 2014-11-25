@@ -962,7 +962,7 @@ static NSArray *allMainDocumentPDFViews() {
             [secondaryPdfView goToPage:page];
             point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
             if ([[[secondaryPdfView scrollView] contentView] isFlipped] == NO)
-                point.y -= NSHeight([[secondaryPdfView documentView] visibleRect]);
+                point.y -= [[secondaryPdfView documentView] isFlipped] ? -NSHeight([[secondaryPdfView documentView] visibleRect]) : NSHeight([[secondaryPdfView documentView] visibleRect]);
             [[secondaryPdfView documentView] scrollPoint:point];
             [secondaryPdfView layoutDocumentView];
         }
