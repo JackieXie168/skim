@@ -414,7 +414,10 @@ static NSArray *allMainDocumentPDFViews() {
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
-    [pdfView scrollPageToVisible:page];
+    pageRect = [page boundsForBox:[pdfView displayBox]];
+    if ([[pdfView currentPage] isEqual:page] == NO)
+        [pdfView goToPage:page];
+    [pdfView goToRect:[pdfView convertRect:SKSliceRect([pdfView convertRect:pageRect fromPage:page], 1.0, NSMaxYEdge) toPage:page] onPage:page];
 }
 
 - (IBAction)doAutoScale:(id)sender {

@@ -2070,14 +2070,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return editor && activeAnnotation == annotation;
 }
 
-- (void)scrollPageToVisible:(PDFPage *)page {
-    NSRect rect = [page boundsForBox:[self displayBox]];
-    if ([[self currentPage] isEqual:page] == NO)
-        [self goToPage:page];
-    rect = SKSliceRect([self convertRect:rect fromPage:page], 1.0, NSMaxYEdge);
-    [self goToRect:[self convertRect:rect toPage:page] onPage:page];
-}
-
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
     [self goToRect:[annotation bounds] onPage:[annotation page]];
 }
