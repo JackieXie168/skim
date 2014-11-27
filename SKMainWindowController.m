@@ -872,12 +872,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [[pdfView window] disableFlushWindow];
             if (page) {
                 [pdfView display];
-                [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:page] toView:[pdfView documentView]]];
+                [pdfView goToRect:visibleRect onPage:page];
             }
             if (secondaryPage) {
                 if ([secondaryPdfView window])
                     [secondaryPdfView display];
-                [[secondaryPdfView documentView] scrollRectToVisible:[secondaryPdfView convertRect:[secondaryPdfView convertRect:secondaryVisibleRect fromPage:secondaryPage] toView:[secondaryPdfView documentView]]];
+                [secondaryPdfView goToRect:secondaryVisibleRect onPage:secondaryPage];
             }
             [[pdfView window] enableFlushWindow];
             [[pdfView window] flushWindowIfNeeded];
