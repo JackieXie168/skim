@@ -175,7 +175,6 @@ enum {
 - (void)selectPreviousActiveAnnotation:(id)sender;
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
-- (void)scrollPageToVisible:(PDFPage *)page;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar;
 
 - (void)takeSnapshot:(id)sender;
