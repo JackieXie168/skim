@@ -179,8 +179,8 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (void)doDragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
-    NSView *documentView = [[self scrollView] documentView];
-	NSRect visibleRect = [documentView visibleRect];
+    NSView *contentView = [[self scrollView] contentView];
+    NSPoint initalPoint = [contentView bounds].origin;
 	
     [[NSCursor closedHandCursor] push];
     
@@ -191,11 +191,11 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
             break;
         
         // convert takes flipping and scaling into account
-        NSPoint	startLocation = [documentView convertPoint:initialLocation fromView:nil];
-        NSPoint	newLocation = [documentView convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSPoint	delta = SKSubstractPoints(startLocation, newLocation);
+        NSPoint	startLocation = [contentView convertPoint:initialLocation fromView:nil];
+        NSPoint	newLocation = [contentView convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint	point = SKAddPoints(initalPoint, SKSubstractPoints(startLocation, newLocation));
         
-        [documentView scrollRectToVisible:NSOffsetRect(visibleRect, delta.x, delta.y)];
+        [contentView scrollPoint:point];
 	}
     
     [NSCursor pop];

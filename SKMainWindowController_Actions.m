@@ -532,7 +532,7 @@ static NSArray *allMainDocumentPDFViews() {
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
     // layout after cropping when you're in the middle of a document can lose the current page
     [pdfView goToPage:currentPage];
-    [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:currentPage] toView:[pdfView documentView]]];
+    [pdfView goToRect:visibleRect onPage:currentPage];
 }
 
 - (IBAction)cropAll:(id)sender {
