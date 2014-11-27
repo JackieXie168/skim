@@ -78,7 +78,7 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
         BOOL flipped = [clipView isFlipped];
         
         if (eventChar == NSDownArrowFunctionKey || eventChar == NSPageDownFunctionKey) {
-            if (flipped ? NSMaxY(clipRect) < NSMaxY(docRect) : NSMinY(clipRect) > NSMinY(docRect)) {
+            if (flipped ? NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0 : NSMinY(clipRect) >= NSMinY(docRect) + 1.0) {
                 CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
                 clipRect.origin.y += flipped ? scroll : -scroll;
                 [clipView scrollPoint:clipRect.origin];
@@ -90,7 +90,7 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
                 [clipView scrollPoint:clipRect.origin];
             }
         } else if (eventChar == NSUpArrowFunctionKey || eventChar == NSPageUpFunctionKey) {
-            if (flipped ? NSMinY(clipRect) > NSMinY(docRect) : NSMaxY(clipRect) < NSMaxY(docRect)) {
+            if (flipped ? NSMinY(clipRect) >= NSMinY(docRect) + 1.0 : NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0) {
                 CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
                 clipRect.origin.y += flipped ? -scroll : scroll;
                 [clipView scrollPoint:clipRect.origin];
