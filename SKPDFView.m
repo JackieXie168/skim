@@ -1782,6 +1782,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
         case SKHighlightNote:
             if ([[activeAnnotation type] isEqualToString:SKNHighlightString] && [[activeAnnotation page] isEqual:page]) {
+                sel = [[sel copy] autorelease];
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
                 text = [sel cleanedString];
@@ -1790,6 +1791,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
         case SKUnderlineNote:
             if ([[activeAnnotation type] isEqualToString:SKNUnderlineString] && [[activeAnnotation page] isEqual:page]) {
+                sel = [[sel copy] autorelease];
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
                 text = [sel cleanedString];
@@ -1798,6 +1800,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
         case SKStrikeOutNote:
             if ([[activeAnnotation type] isEqualToString:SKNStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
+                sel = [[sel copy] autorelease];
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
                 text = [sel cleanedString];
