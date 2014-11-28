@@ -96,6 +96,8 @@
     [groupedFindTableView setDelegate:mainController];
     [groupedFindTableView setDataSource:mainController];
     [[thumbnailTableView menu] setDelegate:mainController];
+    [[findTableView menu] setDelegate:mainController];
+    [[groupedFindTableView menu] setDelegate:mainController];
     
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
