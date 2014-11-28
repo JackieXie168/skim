@@ -989,13 +989,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (IBAction)changeBookMode:(id)sender {
-    BOOL displaysAsBook = [sender isSelectedForSegment:0];
-    [mainController.pdfView setDisplaysAsBook:displaysAsBook];
+    [mainController.pdfView setDisplaysAsBook:NO == [mainController.pdfView displaysAsBook]];
 }
 
 - (IBAction)changePageBreaks:(id)sender {
-    BOOL displaysPageBreaks = [sender isSelectedForSegment:0];
-    [mainController.pdfView setDisplaysPageBreaks:displaysPageBreaks];
+    [mainController.pdfView setDisplaysPageBreaks:NO == [mainController.pdfView displaysPageBreaks]];
 }
 
 - (void)createNewNoteWithType:(NSInteger)type forButton:(NSSegmentedControl *)button {
