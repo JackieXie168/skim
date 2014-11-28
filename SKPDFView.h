@@ -163,6 +163,7 @@ enum {
 
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
+- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;

@@ -989,6 +989,22 @@
     [self tableView:leftSideController.thumbnailTableView copyRowsWithIndexes:[sender representedObject]];
 }
 
+- (void)selectSelections:(id)sender {
+    PDFSelection *selection = nil;
+    for (PDFSelection *sel in [sender representedObject]) {
+        if (selection == nil)
+            selection = [[sel copy] autorelease];
+        else
+            [selection addSelection:sel];
+    }
+    [pdfView setCurrentSelection:selection];
+}
+
+- (void)addAnnotationsForSelections:(id)sender {
+    for (PDFSelection *selection in [sender representedObject])
+        [pdfView addAnnotationWithType:[sender tag] selection:selection];
+}
+
 - (void)deleteSnapshot:(id)sender {
     [[sender representedObject] close];
 }
@@ -1111,6 +1127,46 @@
         if (row != -1) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) target:self];
             [item setRepresentedObject:[NSIndexSet indexSetWithIndex:row]];
+        }
+    } else if ([menu isEqual:[leftSideController.findTableView menu]]) {
+        NSIndexSet *rowIndexes = [leftSideController.findTableView selectedRowIndexes];
+        NSInteger row = [leftSideController.findTableView clickedRow];
+        if (row != -1) {
+            if ([rowIndexes containsIndex:row] == NO)
+                rowIndexes = [NSIndexSet indexSetWithIndex:row];
+            NSArray *selections = [[leftSideController.findArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectSelections:) target:self];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
+            [item setRepresentedObject:selections];
+        }
+    } else if ([menu isEqual:[leftSideController.groupedFindTableView menu]]) {
+        NSIndexSet *rowIndexes = [leftSideController.groupedFindTableView selectedRowIndexes];
+        NSInteger row = [leftSideController.groupedFindTableView clickedRow];
+        if (row != -1) {
+            if ([rowIndexes containsIndex:row] == NO)
+                rowIndexes = [NSIndexSet indexSetWithIndex:row];
+            NSArray *selections = [[[leftSideController.groupedFindArrayController arrangedObjects] objectsAtIndexes:rowIndexes] valueForKeyPath:@"@unionOfArrays.matches"];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectSelections:) target:self];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
+            [item setRepresentedObject:selections];
+            item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
+            [item setRepresentedObject:selections];
         }
     } else if ([menu isEqual:[rightSideController.snapshotTableView menu]]) {
         NSInteger row = [rightSideController.snapshotTableView clickedRow];
