@@ -150,7 +150,7 @@ enum {
 
 @interface SKPDFView (Private)
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection defaultPoint:(NSPoint)point;
+- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection event:(NSEvent *)event;
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
@@ -1653,17 +1653,15 @@ enum {
 #pragma mark Annotation management
 
 - (void)addAnnotation:(id)sender {
-    NSEvent *event = [sender representedObject] ?: [NSApp currentEvent];
-    NSPoint point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
-    [self addAnnotationWithType:[sender tag] selection:nil defaultPoint:point];
+    [self addAnnotationWithType:[sender tag] selection:nil event:[sender representedObject]];
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType {
-    [self addAnnotationWithType:annotationType selection:nil];
+    [self addAnnotationWithType:annotationType selection:nil event:nil];
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection {
-    [self addAnnotationWithType:annotationType selection:selection defaultPoint:[[self window] mouseLocationOutsideOfEventStream]];
+    [self addAnnotationWithType:annotationType selection:selection event:nil];
 }
 
 // y=primaryOutset(x) approximately solves x*secondaryOutset(y)=y
@@ -1679,15 +1677,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return (x + 1.0) / sqrt(x * (x + 2.0)) - 1.0;
 }
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection defaultPoint:(NSPoint)point {
+- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection event:(NSEvent *)event {
 	PDFPage *page = nil;
 	NSRect bounds = NSZeroRect;
-    PDFSelection *sel = selection ?: [self currentSelection];
+    BOOL noSelection = selection == nil;
+    
+    if (noSelection)
+        selection = [self currentSelection];
 	
-    if ([sel hasCharacters]) {
+    if ([selection hasCharacters]) {
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
-		page = [sel safeFirstPage];
-		bounds = [sel boundsForPage: page];
+		page = [selection safeFirstPage];
+		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote) {
             CGFloat dw, dh, w = NSWidth(bounds), h = NSHeight(bounds);
             if (h < w) {
@@ -1724,10 +1725,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             bounds.size = SKNPDFAnnotationNoteSize;
         }
         bounds = NSIntegralRect(bounds);
+        
+        // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
+        if (noSelection && [[activeAnnotation page] isEqual:page] &&
+            [[activeAnnotation type] isEqualToString:(annotationType == SKHighlightNote ? SKNHighlightString : annotationType == SKUnderlineNote ? SKNUnderlineString : annotationType == SKStrikeOutNote ? SKNStrikeOutString : nil)]) {
+            selection = [[selection copy] autorelease];
+            [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
+            [self removeActiveAnnotation:nil];
+        }
 	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
         
 		// First try the current mouse position
-        NSPoint center = [self convertPoint:point fromView:nil];
+        NSPoint center = event ? [event locationInView:self] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
         page = NSMouseInRect(center, [self visibleContentRect], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
@@ -1762,16 +1771,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
     PDFAnnotation *newAnnotation = nil;
-    NSString *text = nil;
+    NSString *text = [selection cleanedString];
     BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize);
     
-    if (isInitial) {
-        // new note added by note tool mode, don't add actual zero sized notes
+    // new note added by note tool mode, don't add actual zero sized notes
+    if (isInitial)
         bounds = annotationType == SKAnchoredNote ? SKRectFromCenterAndSize(bounds.origin, SKNPDFAnnotationNoteSize) : SKRectFromCenterAndSquareSize(bounds.origin, MIN_NOTE_SIZE);
-    } else {
-        // use selection for default text
-        text = [(selection ?: [self currentSelection]) cleanedString];
-    }
     
 	// Create annotation and add to page.
     switch (annotationType) {
@@ -1792,42 +1797,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             newAnnotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
             break;
         case SKHighlightNote:
-            if (selection == nil) {
-                if ([[activeAnnotation type] isEqualToString:SKNHighlightString] && [[activeAnnotation page] isEqual:page]) {
-                    selection = [[[self currentSelection] copy] autorelease];
-                    [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
-                    [self removeActiveAnnotation:nil];
-                    text = [selection cleanedString];
-                } else {
-                    selection = [self currentSelection];
-                }
-            }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
-            if (selection == nil) {
-                if ([[activeAnnotation type] isEqualToString:SKNUnderlineString] && [[activeAnnotation page] isEqual:page]) {
-                    selection = [[[self currentSelection] copy] autorelease];
-                    [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
-                    [self removeActiveAnnotation:nil];
-                    text = [selection cleanedString];
-                } else {
-                    selection = [self currentSelection];
-                }
-            }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
-            if (selection == nil) {
-                if ([[activeAnnotation type] isEqualToString:SKNStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
-                    selection = [[[self currentSelection] copy] autorelease];
-                    [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
-                    [self removeActiveAnnotation:nil];
-                    text = [selection cleanedString];
-                } else {
-                    selection = [self currentSelection];
-                }
-            }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKLineNote:
