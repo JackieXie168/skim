@@ -64,6 +64,17 @@
 
 @implementation PDFSelection (SKExtensions)
 
++ (PDFSelection *)selectionByAddingSelections:(NSArray *)selections {
+    PDFSelection *selection = nil;
+    NSUInteger count = [selections count];
+    if (count > 0) {
+        selection = [[[selections objectAtIndex:0] copy] autorelease];
+        if (count > 1)
+            [selection addSelections:[selections subarrayWithRange:NSMakeRange(1, count - 1)]];
+    }
+    return selection;
+}
+
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
     return [[self safeFirstPage] displayLabel];
