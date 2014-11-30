@@ -1684,26 +1684,22 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if (noSelection)
         selection = [self currentSelection];
-	
+	page = [selection safeFirstPage];
+    
 	if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
         
-        if ([selection hasCharacters]) {
-            // Get page for selection (first page in case selection spans multiple pages), bounds won't be needed
-            page = [selection safeFirstPage];
-            // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
-            if (noSelection && [[activeAnnotation page] isEqual:page] &&
-                [[activeAnnotation type] isEqualToString:(annotationType == SKHighlightNote ? SKNHighlightString : annotationType == SKUnderlineNote ? SKNUnderlineString : annotationType == SKStrikeOutNote ? SKNStrikeOutString : nil)]) {
-                selection = [[selection copy] autorelease];
-                [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
-                [self removeActiveAnnotation:nil];
-            }
+        // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
+        if (noSelection && page && [[activeAnnotation page] isEqual:page] &&
+            [[activeAnnotation type] isEqualToString:(annotationType == SKHighlightNote ? SKNHighlightString : annotationType == SKUnderlineNote ? SKNUnderlineString : annotationType == SKStrikeOutNote ? SKNStrikeOutString : nil)]) {
+            selection = [[selection copy] autorelease];
+            [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
+            [self removeActiveAnnotation:nil];
         }
         
-    } else if ([selection hasCharacters]) {
+    } else if (page) {
         
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages)
-		page = [selection safeFirstPage];
-		bounds = [selection boundsForPage: page];
+		bounds = [selection boundsForPage:page];
         if (annotationType == SKCircleNote) {
             CGFloat dw, dh, w = NSWidth(bounds), h = NSHeight(bounds);
             if (h < w) {
