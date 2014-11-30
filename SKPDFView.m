@@ -1685,8 +1685,23 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (noSelection)
         selection = [self currentSelection];
 	
-    if ([selection hasCharacters]) {
-		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
+	if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
+        
+        if ([selection hasCharacters]) {
+            // Get page for selection (first page in case selection spans multiple pages), bounds won't be needed
+            page = [selection safeFirstPage];
+            // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
+            if (noSelection && [[activeAnnotation page] isEqual:page] &&
+                [[activeAnnotation type] isEqualToString:(annotationType == SKHighlightNote ? SKNHighlightString : annotationType == SKUnderlineNote ? SKNUnderlineString : annotationType == SKStrikeOutNote ? SKNStrikeOutString : nil)]) {
+                selection = [[selection copy] autorelease];
+                [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
+                [self removeActiveAnnotation:nil];
+            }
+        }
+        
+    } else if ([selection hasCharacters]) {
+        
+		// Get bounds (page space) for selection (first page in case selection spans multiple pages)
 		page = [selection safeFirstPage];
 		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote) {
@@ -1726,14 +1741,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         bounds = NSIntegralRect(bounds);
         
-        // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
-        if (noSelection && [[activeAnnotation page] isEqual:page] &&
-            [[activeAnnotation type] isEqualToString:(annotationType == SKHighlightNote ? SKNHighlightString : annotationType == SKUnderlineNote ? SKNUnderlineString : annotationType == SKStrikeOutNote ? SKNStrikeOutString : nil)]) {
-            selection = [[selection copy] autorelease];
-            [selection addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
-            [self removeActiveAnnotation:nil];
-        }
-	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
+	} else {
         
 		// First try the current mouse position
         NSPoint center = event ? [event locationInView:self] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
@@ -1763,7 +1771,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         // Make sure it fits in the page
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
+        
 	}
+    
     if (page != nil)
         [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds];
     else NSBeep();
