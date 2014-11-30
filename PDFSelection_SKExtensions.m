@@ -186,14 +186,18 @@
 }
 
 - (PDFPage *)safeFirstPage {
-    for (PDFPage *page in [self pages])
-        return [self safePage:page];
+    for (PDFPage *page in [self pages]) {
+        if ((page = [self safePage:page]))
+            return page;
+    }
     return nil;
 }
 
 - (PDFPage *)safeLastPage {
-    for (PDFPage *page in [[self pages] reverseObjectEnumerator])
-        return [self safePage:page];
+    for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
+        if ((page = [self safePage:page]))
+            return page;
+    }
     return nil;
 }
 
