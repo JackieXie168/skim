@@ -990,14 +990,7 @@
 }
 
 - (void)selectSelections:(id)sender {
-    PDFSelection *selection = nil;
-    for (PDFSelection *sel in [sender representedObject]) {
-        if (selection == nil)
-            selection = [[sel copy] autorelease];
-        else
-            [selection addSelection:sel];
-    }
-    [pdfView setCurrentSelection:selection];
+    [pdfView setCurrentSelection:[PDFSelection selectionByAddingSelections:[sender representedObject]]];
 }
 
 - (void)addAnnotationsForSelections:(id)sender {

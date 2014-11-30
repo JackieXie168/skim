@@ -236,21 +236,17 @@ static void (*original_dealloc)(id, SEL) = NULL;
     if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     
-    PDFSelection *sel, *selection = nil;
+    NSMutableArray *selections = [NSMutableArray array];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict in some OS versions, but unfortunately not in others
-        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRectPointer)[lines pointerAtIndex:i], -1.0, -1.0)]) && [sel hasCharacters]) {
-            if (selection == nil)
-                selection = sel;
-            else
-                [selection addSelection:sel];
-        }
+        PDFSelection *selection = [[self page] selectionForRect:NSInsetRect(*(NSRectPointer)[lines pointerAtIndex:i], -1.0, -1.0)];
+        if ([selection hasCharacters])
+            [selections addObject:selection];
     }
-    
-    return selection;
+    return [PDFSelection selectionByAddingSelections:selections];
 }
 
 - (BOOL)hitTest:(NSPoint)point {
