@@ -1778,7 +1778,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
     PDFAnnotation *newAnnotation = nil;
     NSString *text = [selection cleanedString];
-    BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize);
+    BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize) && selection == nil;
     
     // new note added by note tool mode, don't add actual zero sized notes
     if (isInitial)
