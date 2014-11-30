@@ -1814,15 +1814,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	}
     
     if (newAnnotation) {
-        if (annotationType != SKLineNote && annotationType != SKInkNote) {
-            if ([text length] == 0 && isInitial == NO)
-                text = [[page selectionForRect:[newAnnotation bounds]] cleanedString];
-            if ([text length])
-                [newAnnotation setString:text];
-        }
-        
+        if (annotationType != SKLineNote && annotationType != SKInkNote && [text length] > 0)
+            [newAnnotation setString:text];
         [newAnnotation registerUserName];
         [self addAnnotation:newAnnotation toPage:page];
+        if ([text length] == 0 && isInitial == NO)
+            [newAnnotation autoUpdateString];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
         [self setActiveAnnotation:newAnnotation];
