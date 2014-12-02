@@ -55,6 +55,7 @@
 #import "PDFAnnotationInk_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -349,6 +350,10 @@ static BOOL usesSequentialPageNumbering = NO;
     return label ?: [self sequentialLabel];
 }
 
+- (NSInteger)intrinsicRotation {
+    return CGPDFPageGetRotationAngle([self pageRef]);
+}
+
 - (BOOL)isEditable {
     return NO;
 }
@@ -364,6 +369,26 @@ static BOOL usesSequentialPageNumbering = NO;
         case 270: [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)]; break;
     }
     return transform;
+}
+
+- (NSPoint)sortPointForBounds:(NSRect)bounds {
+    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    if ([[self document] hasRightToLeftLanguage]) {
+        switch ([self intrinsicRotation]) {
+            case 0:   return NSMakePoint(NSMaxX(pageBounds) - NSMaxX(bounds), NSMaxY(bounds));
+            case 90:  return NSMakePoint(NSMaxY(pageBounds) - NSMaxY(bounds), NSMaxX(pageBounds) - NSMinX(bounds));
+            case 180: return NSMakePoint(NSMinX(bounds), NSMinY(bounds));
+            case 270: return NSMakePoint(NSMinY(bounds), NSMaxX(bounds));
+        }
+    } else {
+        switch ([self intrinsicRotation]) {
+            case 0:   return NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
+            case 90:  return NSMakePoint(NSMinY(bounds), NSMaxX(pageBounds) - NSMinX(bounds));
+            case 180: return NSMakePoint(NSMaxX(pageBounds) - NSMaxX(bounds), NSMaxY(pageBounds) - NSMinY(bounds));
+            case 270: return NSMakePoint(NSMaxY(pageBounds) - NSMaxY(bounds), NSMaxX(bounds));
+        }
+    }
+    return NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
 }
 
 #pragma mark Scripting support

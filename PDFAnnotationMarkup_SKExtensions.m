@@ -52,6 +52,7 @@
 #import "NSColor_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -265,6 +266,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
         isContained = NSPointInRect(point, *(NSRectPointer)[lines pointerAtIndex:i]);
     
     return isContained;
+}
+
+- (NSPoint)sortPoint {
+    if ([self hasLineRects] == NO)
+        [self regenerateLineRects];
+    NSPointerArray *lines = [self lineRects];
+    NSRect bounds = [lines count] > 0 ? *(NSRectPointer)[lines pointerAtIndex:0] : [self bounds];
+    return [[self page] sortPointForBounds:bounds];
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {

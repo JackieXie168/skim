@@ -43,7 +43,7 @@
 
 - (NSComparisonResult)noteTypeCompare:(id)other;
 - (NSComparisonResult)boundsCompare:(NSString *)aString;
-- (NSComparisonResult)mirroredBoundsCompare:(NSString *)aString;
+- (NSComparisonResult)pointCompare:(NSString *)aString;
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 - (NSString *)stringByRemovingAliens;

@@ -74,6 +74,12 @@
     [super removeAnnotation:annotation];
 }
 
+- (NSInteger)intrinsicRotation {
+    if (intrinsicRotation == 0)
+        intrinsicRotation = [super intrinsicRotation] + 360;
+    return intrinsicRotation - 360;
+}
+
 - (NSAttributedString *)attributedString {
     // on 10.6 the attributedstring is over-released by one
     if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)

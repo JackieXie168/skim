@@ -726,9 +726,8 @@
             ascending = [[sortDescriptors firstObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
-            SEL boundsSelector = [[self pdfDocument] hasRightToLeftLanguage] ? @selector(mirroredBoundsCompare:) : @selector(boundsCompare:);
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
-            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:boundsSelector] autorelease];
+            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:ascending selector:@selector(pointCompare:)] autorelease];
             sortDescriptors = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:TYPE_COLUMNID]) {
                 [sortDescriptors insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];

@@ -38,12 +38,19 @@
 
 #import "SKPDFDocument.h"
 #import "SKPDFPage.h"
+#import "PDFDocument_SKExtensions.h"
 
 
 @implementation SKPDFDocument
 
 - (Class)pageClass {
     return [SKPDFPage class];
+}
+
+- (BOOL)hasRightToLeftLanguage {
+    if (languageDirection == kCFLocaleLanguageDirectionUnknown)
+        languageDirection = [super hasRightToLeftLanguage] ? kCFLocaleLanguageDirectionRightToLeft : kCFLocaleLanguageDirectionLeftToRight;
+    return languageDirection == kCFLocaleLanguageDirectionRightToLeft;
 }
 
 - (BOOL)unlockWithPassword:(NSString *)password {

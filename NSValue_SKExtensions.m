@@ -46,8 +46,8 @@
     return SKCompareRects([self rectValue], [aValue rectValue]);
 }
 
-- (NSComparisonResult)mirroredBoundsCompare:(NSValue *)aValue {
-    return SKCompareMirroredRects([self rectValue], [aValue rectValue]);
+- (NSComparisonResult)pointCompare:(NSValue *)aValue {
+    return SKComparePoints([self pointValue], [aValue pointValue]);
 }
 
 - (NSString *)rectString {

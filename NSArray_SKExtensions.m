@@ -40,6 +40,7 @@
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 @implementation NSArray (SKExtensions)
@@ -55,11 +56,11 @@
 }
 
 - (NSArray *)arraySortedByBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByPageIndexAndBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease], nil]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease], nil]];
 }
 
 - (NSArray *)arraySortedByType {
