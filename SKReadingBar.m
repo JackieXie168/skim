@@ -98,8 +98,13 @@
         return NSZeroRect;
     NSRect rect = [self currentBounds];
     NSRect bounds = [page boundsForBox:box];
-    rect.origin.x = NSMinX(bounds);
-    rect.size.width = NSWidth(bounds);
+    if (([page intrinsicRotation] % 180)) {
+        rect.origin.y = NSMinY(bounds);
+        rect.size.height = NSHeight(bounds);
+    } else {
+        rect.origin.x = NSMinX(bounds);
+        rect.size.width = NSWidth(bounds);
+    }
     return rect;
 }
 
@@ -191,6 +196,9 @@
         NSRect bounds = [pdfPage boundsForBox:box];
         if (NSEqualRects(rect, NSZeroRect) || [page isEqual:pdfPage] == NO) {
             [NSBezierPath fillRect:bounds];
+        } else if (([pdfPage intrinsicRotation] % 180)) {
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)];
+            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)];
         } else {
             [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)];
             [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)];

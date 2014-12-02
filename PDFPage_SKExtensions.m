@@ -303,6 +303,13 @@ static BOOL usesSequentialPageNumbering = NO;
     return data;
 }
 
+static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
+    if (rotated)
+        return (NSMaxX(r1) > NSMidX(r2) && NSMidX(r1) < NSMaxX(r2)) || (NSMidX(r1) > NSMinX(r2) && NSMinX(r1) < NSMidX(r2));
+    else
+        return (NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2));
+}
+
 - (NSPointerArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
@@ -313,16 +320,19 @@ static BOOL usesSequentialPageNumbering = NO;
             [lines addObject:[NSValue valueWithRect:r]];
     } 
     
-    [lines sortUsingSelector:@selector(boundsCompare:)];
+    [lines sortUsingComparator:^NSComparisonResult(id obj1, id obj2){
+            return SKComparePoints([self sortPointForBounds:[obj1 rectValue]], [self sortPointForBounds:[obj2 rectValue]]);
+        }];
     
     NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
     NSRect r1 = NSZeroRect;
+    BOOL rotated = ([self intrinsicRotation] % 180) != 0;
     
     for (NSValue *line in lines) {
         NSRect r2 = [line rectValue];
         if (NSEqualRects(r1, NSZeroRect)) {
             r1 = r2;
-        } else if ((NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2))) {
+        } else if (lineRectsOverlap(r1, r2, rotated)) {
             r1 = NSUnionRect(r1, r2);
         } else if (NSEqualRects(r1, NSZeroRect) == NO) {
             [fullLines addPointer:&r1];
