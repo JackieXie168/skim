@@ -42,5 +42,6 @@
 
 @interface SKPDFPage : PDFPage {
     NSRect foregroundBox;
+    NSInteger intrinsicRotation;
 }
 @end

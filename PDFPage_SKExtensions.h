@@ -79,9 +79,13 @@ extern NSString *SKPDFPageActionRotate;
 - (NSString *)sequentialLabel;
 - (NSString *)displayLabel;
 
+- (NSInteger)intrinsicRotation;
+
 - (BOOL)isEditable;
 
 - (NSAffineTransform *)affineTransformForBox:(PDFDisplayBox)box;
+
+- (NSPoint)sortPointForBounds:(NSRect)bounds;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (NSDocument *)containingDocument;

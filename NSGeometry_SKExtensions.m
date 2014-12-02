@@ -142,40 +142,17 @@ SKRectEdges SKResizeHandleForPointFromRect(NSPoint point, NSRect rect, CGFloat d
 }
 
 NSComparisonResult SKCompareRects(NSRect rect1, NSRect rect2) {
-    CGFloat top1 = NSMaxY(rect1);
-    CGFloat top2 = NSMaxY(rect2);
-    
-    if (top1 > top2)
-        return NSOrderedAscending;
-    else if (top1 < top2)
-        return NSOrderedDescending;
-    
-    CGFloat left1 = NSMinX(rect1);
-    CGFloat left2 = NSMinX(rect2);
-    
-    if (left1 < left2)
-        return NSOrderedAscending;
-    else if (left1 > left2)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
+    return SKComparePoints(SKTopLeftPoint(rect1), SKTopLeftPoint(rect2));
 }
 
-NSComparisonResult SKCompareMirroredRects(NSRect rect1, NSRect rect2) {
-    CGFloat top1 = NSMaxY(rect1);
-    CGFloat top2 = NSMaxY(rect2);
-    
-    if (top1 > top2)
+extern NSComparisonResult SKComparePoints(NSPoint point1, NSPoint point2) {
+    if (point1.y > point2.y)
         return NSOrderedAscending;
-    else if (top1 < top2)
+    else if (point1.y < point2.y)
         return NSOrderedDescending;
-    
-    CGFloat right1 = NSMaxX(rect1);
-    CGFloat right2 = NSMaxX(rect2);
-    
-    if (right1 > right2)
+    else if (point1.x < point2.x)
         return NSOrderedAscending;
-    else if (right1 < right2)
+    else if (point1.x > point2.x)
         return NSOrderedDescending;
     else
         return NSOrderedSame;

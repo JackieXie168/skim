@@ -216,6 +216,10 @@
     return [self safeFirstPage] != nil;
 }
 
+- (NSPoint)sortPointForPage:(PDFPage *)page {
+    return [page sortPointForBounds:[self boundsForPage:page]];
+}
+
 static NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
     if (anIndex >= [substrings count])
         return NSMakeRange(NSNotFound, 0);

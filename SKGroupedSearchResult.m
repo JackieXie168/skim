@@ -38,6 +38,7 @@
 
 #import "SKGroupedSearchResult.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
 NSString *SKGroupedSearchResultCountKey = @"count";
@@ -77,11 +78,11 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 
 - (void)addMatch:(PDFSelection *)match {
     [self willChangeValueForKey:SKGroupedSearchResultCountKey];
-    NSRect bounds = [match boundsForPage:page];
+    NSPoint point = [match sortPointForPage:page];
     NSInteger i = [matches count];
     while (i-- > 0) {
         PDFSelection *prevResult = [matches objectAtIndex:i];
-        if (SKCompareRects(bounds, [prevResult boundsForPage:page]) != NSOrderedAscending)
+        if (SKComparePoints(point, [prevResult sortPointForPage:page]) != NSOrderedAscending)
             break;
     }
     [matches insertObject:match atIndex:i + 1];

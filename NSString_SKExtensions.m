@@ -144,8 +144,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return SKCompareRects(NSRectFromString(self), NSRectFromString(aString));
 }
 
-- (NSComparisonResult)mirroredBoundsCompare:(NSString *)aString {
-    return SKCompareMirroredRects(NSRectFromString(self), NSRectFromString(aString));
+- (NSComparisonResult)pointCompare:(NSString *)aString {
+    return SKComparePoints(NSPointFromString(self), NSPointFromString(aString));
 }
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;

@@ -425,7 +425,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     // this needs to be done before loading the PDFDocument
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease];
     [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
     [rightSideController.snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     
@@ -436,12 +436,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
-    
-    if ([[self pdfDocument] hasRightToLeftLanguage]) {
-        boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(mirroredBoundsCompare:)] autorelease];
-        [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
-        [rightSideController.noteOutlineView reloadData];
-    }
     
     // Show/hide left side pane if necessary
     BOOL hasOutline = ([[pdfView document] outlineRoot] != nil);
@@ -1878,12 +1872,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
     
     PDFPage *page = [instance safeFirstPage];
-    NSRect bounds = [instance boundsForPage:page];
+    NSPoint point = [instance sortPointForPage:page];
     NSInteger i = [searchResults count];
     while (i-- > 0) {
         PDFSelection *prevResult = [searchResults objectAtIndex:i];
         PDFPage *prevPage = [prevResult safeFirstPage];
-        if ([page isEqual:prevPage] == NO || SKCompareRects(bounds, [prevResult boundsForPage:prevPage]) != NSOrderedAscending)
+        if ([page isEqual:prevPage] == NO || SKComparePoints(point, [prevResult sortPointForPage:prevPage]) != NSOrderedAscending)
             break;
     }
     [searchResults insertObject:instance atIndex:i + 1];

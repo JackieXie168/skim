@@ -40,7 +40,9 @@
 #import <Quartz/Quartz.h>
 
 
-@interface SKPDFDocument : PDFDocument
+@interface SKPDFDocument : PDFDocument {
+    CFLocaleLanguageDirection languageDirection;
+}
 @end
 
 @interface NSObject (SKPDFDocumentDelegate)
