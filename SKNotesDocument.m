@@ -46,6 +46,7 @@
 #import "SKTypeSelectHelper.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNotesPage.h"
+#import "SKPDFDocument.h"
 #import "SKNoteText.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -328,7 +329,7 @@
         
         [self willChangeValueForKey:PAGES_KEY];
         [pdfDocument autorelease];
-        pdfDocument = [[PDFDocument alloc] init];
+        pdfDocument = [[SKPDFDocument alloc] init];
         
         for (NSDictionary *dict in array) {
             PDFAnnotation *note = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict];
