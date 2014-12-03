@@ -41,7 +41,6 @@
 
 @interface NSValue (SKExtensions)
 
-- (NSComparisonResult)boundsCompare:(NSValue *)aValue;
 - (NSComparisonResult)pointCompare:(NSValue *)aValue;
 
 - (NSString *)rectString;
