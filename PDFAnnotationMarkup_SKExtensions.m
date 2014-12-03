@@ -95,7 +95,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     lineRectsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
-- (NSPointerArray *)lineRects {
+- (NSPointerArray *)lineRectsArray {
     NSPointerArray *lineRects = [lineRectsTable objectForKey:self];
     if (lineRects == NULL) {
         lineRects = [[NSPointerArray alloc] initForRectPointers];
@@ -157,7 +157,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                 for (PDFSelection *sel in [selection selectionsByLine]) {
                     lineRect = [sel boundsForPage:page];
                     if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                         [[self lineRects] addPointer:&lineRect];
+                         [[self lineRectsArray] addPointer:&lineRect];
                          newBounds = NSUnionRect(lineRect, newBounds);
                     }
                 } 
@@ -167,7 +167,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                 } else {
                     [self setBounds:newBounds];
                     if ([self hasLineRects]) {
-                        NSPointerArray *lines = [self lineRects];
+                        NSPointerArray *lines = [self lineRectsArray];
                         iMax = [lines count];
                         for (i = 0; i < iMax; i++) {
                             NSArray *quadLine = createQuadPointsWithBounds(*(NSRectPointer)[lines pointerAtIndex:i], [self bounds].origin, rotation);
@@ -198,12 +198,15 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return fdfString;
 }
 
-- (void)regenerateLineRects {
+- (NSPointerArray *)lineRects {
+    if ([self hasLineRects])
+        return [self lineRectsArray];
     
+    // archived annotations (or annotations we didn't create) won't have these
     NSArray *quadPoints = [self quadrilateralPoints];
     NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
 
-    NSPointerArray *lines = [self lineRects];
+    NSPointerArray *lines = [self lineRectsArray];
     NSUInteger j = [lines count], jMax = [quadPoints count] / 4;
     NSPoint origin = [self bounds].origin;
     
@@ -231,12 +234,11 @@ static void (*original_dealloc)(id, SEL) = NULL;
         NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);
         [lines addPointer:&lineRect];
     }
+    
+    return lines;
 }
 
 - (PDFSelection *)selection {
-    if ([self hasLineRects] == NO)
-        [self regenerateLineRects];
-    
     NSMutableArray *selections = [NSMutableArray array];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
@@ -254,10 +256,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
     if ([super hitTest:point] == NO)
         return NO;
     
-    // archived annotations (or annotations we didn't create) won't have these
-    if ([self hasLineRects] == NO)
-        [self regenerateLineRects];
-    
     NSPointerArray *lines = [self lineRects];
     NSUInteger i = [lines count];
     BOOL isContained = NO;
@@ -269,8 +267,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (CGFloat)boundsOrder {
-    if ([self hasLineRects] == NO)
-        [self regenerateLineRects];
     NSPointerArray *lines = [self lineRects];
     NSRect bounds = [lines count] > 0 ? *(NSRectPointer)[lines pointerAtIndex:0] : [self bounds];
     return [[self page] sortOrderForBounds:bounds];
@@ -289,9 +285,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView {
     if (NSIsEmptyRect([self bounds]))
         return;
-    // archived annotations (or annotations we didn't create) won't have these
-    if ([self hasLineRects] == NO)
-        [self regenerateLineRects];
     
     BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPointerArray *lines = [self lineRects];
