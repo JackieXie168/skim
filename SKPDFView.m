@@ -4281,11 +4281,8 @@ static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPoi
             case 270: pos = point.x < NSMinX(rect) ? -1 : point.x < NSMaxX(rect) ? 0 : 1; break;
             default:  pos = point.y < NSMinY(rect) ? -1 : point.y < NSMaxY(rect) ? 0 : 1; break;
         }
-        if (pos == 1) {
-            if (lower && i > 0)
-                i--;
-            break;
-        } else if (pos == 0) {
+        if (pos != -1) {
+            if (pos == 1 && lower && i > 0) i--;
             break;
         }
     }
