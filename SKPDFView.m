@@ -2778,17 +2778,32 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         moved = [readingBar goToPreviousPage];
     if (moved) {
         NSRect rect = [readingBar currentBounds];
-        if (([[readingBar page] intrinsicRotation] % 180)) {
+        NSInteger rotation = [[readingBar page] intrinsicRotation];
+        if ((rotation % 180)) {
             rect = NSInsetRect(rect, -20.0, 0.0) ;
-            if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
+            if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
                 NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:[readingBar page]];
                 rect = NSInsetRect(rect, - floor( ( NSWidth(visibleRect) - NSWidth(rect) ) / 2.0 ), 0.0 );
+                if (NSHeight(rect) <= NSHeight(visibleRect)) {
+                    if (NSMinY(rect) > NSMinY(visibleRect))
+                        rect.origin.y = fmax(NSMinY(visibleRect), NSMaxY(rect) - NSHeight(visibleRect));
+                } else if (rotation == 270) {
+                    rect.origin.y = NSMaxY(rect) - NSHeight(visibleRect);
+                }
+                rect.size.height = NSHeight(visibleRect);
             }
         } else {
             rect = NSInsetRect(rect, 0.0, -20.0) ;
-            if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
+            if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
                 NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:[readingBar page]];
                 rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+                if (NSWidth(rect) <= NSWidth(visibleRect)) {
+                    if (NSMinX(rect) > NSMinX(visibleRect))
+                        rect.origin.x = fmax(NSMinX(visibleRect), NSMaxX(rect) - NSWidth(visibleRect));
+                } else if (rotation == 180) {
+                    rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
+                }
+                rect.size.width = NSWidth(visibleRect);
             }
         }
         [self goToRect:rect onPage:[readingBar page]];
