@@ -425,7 +425,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     // this needs to be done before loading the PDFDocument
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease];
     [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
     [rightSideController.snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     
@@ -1872,12 +1872,12 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
     
     PDFPage *page = [instance safeFirstPage];
-    NSPoint point = [instance sortPointForPage:page];
+    CGFloat order = [instance boundsOrderForPage:page];
     NSInteger i = [searchResults count];
     while (i-- > 0) {
         PDFSelection *prevResult = [searchResults objectAtIndex:i];
         PDFPage *prevPage = [prevResult safeFirstPage];
-        if ([page isEqual:prevPage] == NO || SKComparePoints(point, [prevResult sortPointForPage:prevPage]) != NSOrderedAscending)
+        if ([page isEqual:prevPage] == NO || order >= [prevResult boundsOrderForPage:prevPage])
             break;
     }
     [searchResults insertObject:instance atIndex:i + 1];

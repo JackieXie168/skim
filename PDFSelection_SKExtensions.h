@@ -58,7 +58,7 @@
 
 - (BOOL)hasCharacters;
 
-- (NSPoint)sortPointForPage:(PDFPage *)page;
+- (CGFloat)boundsOrderForPage:(PDFPage *)page;
 
 + (id)selectionWithSpecifier:(id)specifier;
 + (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;

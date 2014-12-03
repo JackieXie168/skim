@@ -46,7 +46,7 @@ extern NSString *SKPDFAnnotationScriptingColorKey;
 extern NSString *SKPDFAnnotationScriptingModificationDateKey;
 extern NSString *SKPDFAnnotationScriptingUserNameKey;
 
-extern NSString *SKPDFAnnotationSortPointKey;
+extern NSString *SKPDFAnnotationBoundsOrderKey;
 
 extern NSString *SKPasteboardTypeSkimNote;
 
@@ -88,7 +88,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (BOOL)hitTest:(NSPoint)point;
 
-- (NSPoint)sortPoint;
+- (CGFloat)boundsOrder;
 
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth;
 - (NSRect)displayRect;

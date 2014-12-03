@@ -56,11 +56,11 @@
 }
 
 - (NSArray *)arraySortedByBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByPageIndexAndBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationSortPointKey ascending:YES selector:@selector(pointCompare:)] autorelease], nil]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease], nil]];
 }
 
 - (NSArray *)arraySortedByType {

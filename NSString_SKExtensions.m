@@ -140,10 +140,6 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[self noteTypeOrder] compare:[other noteTypeOrder]];
 }
 
-- (NSComparisonResult)pointCompare:(NSString *)aString {
-    return SKComparePoints(NSPointFromString(self), NSPointFromString(aString));
-}
-
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 {
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];

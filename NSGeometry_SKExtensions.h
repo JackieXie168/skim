@@ -166,10 +166,6 @@ extern SKRectEdges SKResizeHandleForPointFromRect(NSPoint point, NSRect rect, CG
 
 #pragma mark -
 
-extern NSComparisonResult SKComparePoints(NSPoint point1, NSPoint point2);
-
-#pragma mark -
-
 static inline
 Rect SKQDRectFromNSRect(NSRect nsRect) {
     Rect qdRect;

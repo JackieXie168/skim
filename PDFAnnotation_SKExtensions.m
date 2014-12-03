@@ -68,7 +68,7 @@ NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
 NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
 NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
 
-NSString *SKPDFAnnotationSortPointKey = @"sortPoint";
+NSString *SKPDFAnnotationBoundsOrderKey = @"boundsOrder";
 
 NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimnote";
 
@@ -274,8 +274,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
 }
 
-- (NSPoint)sortPoint {
-    return [[self page] sortPointForBounds:[self bounds]];
+- (CGFloat)boundsOrder {
+    return [[self page] sortOrderForBounds:[self bounds]];
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {

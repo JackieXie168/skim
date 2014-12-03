@@ -42,7 +42,6 @@
 @interface NSString (SKExtensions)
 
 - (NSComparisonResult)noteTypeCompare:(id)other;
-- (NSComparisonResult)pointCompare:(NSString *)aString;
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 - (NSString *)stringByRemovingAliens;
