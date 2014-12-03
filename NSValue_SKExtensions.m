@@ -42,10 +42,6 @@
 
 @implementation NSValue (SKExtensions)
 
-- (NSComparisonResult)pointCompare:(NSValue *)aValue {
-    return SKComparePoints([self pointValue], [aValue pointValue]);
-}
-
 - (NSString *)rectString {
     return NSStringFromRect([self rectValue]);
 }

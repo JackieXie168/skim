@@ -268,12 +268,12 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return isContained;
 }
 
-- (NSPoint)sortPoint {
+- (CGFloat)boundsOrder {
     if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     NSPointerArray *lines = [self lineRects];
     NSRect bounds = [lines count] > 0 ? *(NSRectPointer)[lines pointerAtIndex:0] : [self bounds];
-    return [[self page] sortPointForBounds:bounds];
+    return [[self page] sortOrderForBounds:bounds];
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {

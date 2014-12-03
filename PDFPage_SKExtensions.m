@@ -321,7 +321,9 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     } 
     
     [lines sortUsingComparator:^NSComparisonResult(id obj1, id obj2){
-            return SKComparePoints([self sortPointForBounds:[obj1 rectValue]], [self sortPointForBounds:[obj2 rectValue]]);
+            CGFloat order1 = [self sortOrderForBounds:[obj1 rectValue]];
+            CGFloat order2 = [self sortOrderForBounds:[obj2 rectValue]];
+            return order1 < order2 ? NSOrderedAscending : order1 > order2 ? NSOrderedDescending : NSOrderedSame;
         }];
     
     NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
@@ -381,24 +383,26 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return transform;
 }
 
-- (NSPoint)sortPointForBounds:(NSRect)bounds {
+- (CGFloat)sortOrderForBounds:(NSRect)bounds {
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page
     if ([[self document] hasRightToLeftLanguage]) {
         switch ([self intrinsicRotation]) {
-            case 0:   return NSMakePoint(NSMaxX(pageBounds) - NSMaxX(bounds), NSMaxY(bounds));
-            case 90:  return NSMakePoint(NSMaxY(pageBounds) - NSMaxY(bounds), NSMaxX(pageBounds) - NSMinX(bounds));
-            case 180: return NSMakePoint(NSMinX(bounds), NSMinY(bounds));
-            case 270: return NSMakePoint(NSMinY(bounds), NSMaxX(bounds));
+            case 0:   return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMaxX(pageBounds) - NSMaxX(bounds);
+            case 90:  return NSHeight(pageBounds) * floor(NSMinX(bounds)) + (NSMaxY(pageBounds) - NSMaxY(bounds));
+            case 180: return NSWidth(pageBounds) * floor(NSMinY(bounds)) + NSMinX(bounds);
+            case 270: return NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds))) + NSMinY(bounds);
+            default:  return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMaxX(pageBounds) - NSMaxX(bounds);
         }
     } else {
         switch ([self intrinsicRotation]) {
-            case 0:   return NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
-            case 90:  return NSMakePoint(NSMinY(bounds), NSMaxX(pageBounds) - NSMinX(bounds));
-            case 180: return NSMakePoint(NSMaxX(pageBounds) - NSMaxX(bounds), NSMaxY(pageBounds) - NSMinY(bounds));
-            case 270: return NSMakePoint(NSMaxY(pageBounds) - NSMaxY(bounds), NSMaxX(bounds));
+            case 0:   return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMinX(bounds);
+            case 90:  return NSHeight(pageBounds) * floor(NSMinX(bounds)) + NSMinY(bounds);
+            case 180: return NSWidth(pageBounds) * floor(NSMinY(bounds)) + (NSMaxX(pageBounds) - NSMaxX(bounds));
+            case 270: return NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds))) + NSMaxY(pageBounds) - NSMaxY(bounds);
+            default:  return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMinX(bounds);
         }
     }
-    return NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
 }
 
 #pragma mark Scripting support

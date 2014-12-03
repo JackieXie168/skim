@@ -78,11 +78,11 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 
 - (void)addMatch:(PDFSelection *)match {
     [self willChangeValueForKey:SKGroupedSearchResultCountKey];
-    NSPoint point = [match sortPointForPage:page];
+    CGFloat order = [match boundsOrderForPage:page];
     NSInteger i = [matches count];
     while (i-- > 0) {
         PDFSelection *prevResult = [matches objectAtIndex:i];
-        if (SKComparePoints(point, [prevResult sortPointForPage:page]) != NSOrderedAscending)
+        if (order >= [prevResult boundsOrderForPage:page])
             break;
     }
     [matches insertObject:match atIndex:i + 1];

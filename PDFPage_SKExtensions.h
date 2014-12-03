@@ -85,7 +85,7 @@ extern NSString *SKPDFPageActionRotate;
 
 - (NSAffineTransform *)affineTransformForBox:(PDFDisplayBox)box;
 
-- (NSPoint)sortPointForBounds:(NSRect)bounds;
+- (CGFloat)sortOrderForBounds:(NSRect)bounds;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (NSDocument *)containingDocument;
