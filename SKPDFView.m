@@ -4169,7 +4169,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page];
                 
                 if ((area & kPDFLinkArea) == 0 && (area & SKReadingBarArea))
-                    cursor = (area & SKReadingBarResizeArea) ? [NSCursor resizeUpDownCursor] : [NSCursor openHandBarCursor];
+                    cursor = (area & SKReadingBarResizeArea) == 0 ? [NSCursor openHandBarCursor] : (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
                 else if (editor && isOnActiveAnnotationPage && NSPointInRect(p, [activeAnnotation bounds]))
                     cursor = [NSCursor IBeamCursor];
                 else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
@@ -4246,42 +4246,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
         if ([[readingBar page] isEqual:page]) {
             NSRect bounds = [readingBar currentBounds];
-            switch ([page intrinsicRotation]) {
-                case 0:
-                    if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
-                        area |= SKReadingBarArea;
-                        if (p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT)
-                            area |= SKReadingBarResizeArea;
-                    }
-                    break;
-                case 90:
-                    if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
-                        area |= SKReadingBarArea;
-                        if (p.x > NSMaxX(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT)
-                            area |= SKReadingBarResizeArea;
-                    }
-                    break;
-                case 180:
-                    if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
-                        area |= SKReadingBarArea;
-                        if (p.y > NSMaxY(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT)
-                            area |= SKReadingBarResizeArea;
-                    }
-                    break;
-                case 270:
-                    if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
-                        area |= SKReadingBarArea;
-                        if (p.x < NSMinX(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT)
-                            area |= SKReadingBarResizeArea;
-                    }
-                    break;
-                default:
-                    if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
-                        area |= SKReadingBarArea;
-                        if (p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT)
-                            area |= SKReadingBarResizeArea;
-                    }
-                    break;
+            NSInteger rotation = [page intrinsicRotation];
+            if ((rotation % 180)) {
+                if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
+                    area |= SKReadingBarArea;
+                    if ((rotation == 90 && p.x > NSMaxX(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 270 && p.x < NSMinX(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT))
+                        area |= SKReadingBarResizeArea;
+                }
+            } else {
+                if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
+                    area |= SKReadingBarArea;
+                    if ((rotation == 0 && p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 180 && p.y > NSMaxY(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT))
+                        area |= SKReadingBarResizeArea;
+                }
             }
         }
     }
