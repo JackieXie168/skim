@@ -148,7 +148,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         self = [self initSkimNoteWithBounds:bounds markupType:type];
         if (self) {
             PDFPage *page = [selection safeFirstPage];
-            NSInteger rotation = [page rotation];
+            NSInteger rotation = [page intrinsicRotation];
             NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
             NSRect newBounds = NSZeroRect;
             if (selection) {
