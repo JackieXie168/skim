@@ -40,5 +40,7 @@
 #import <Quartz/Quartz.h>
 
 
-@interface SKNotesPage : PDFPage
+@interface SKNotesPage : PDFPage {
+    NSInteger intrinsicRotation;
+}
 @end
