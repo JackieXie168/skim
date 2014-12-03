@@ -1713,7 +1713,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         } else if (annotationType == SKSquareNote) {
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         } else if (annotationType == SKAnchoredNote) {
-            switch ([page rotation]) {
+            switch ([page intrinsicRotation]) {
                 case 0:
                     bounds.origin.x = floor(NSMinX(bounds)) - SKNPDFAnnotationNoteSize.width;
                     bounds.origin.y = floor(NSMaxY(bounds)) - SKNPDFAnnotationNoteSize.height;
