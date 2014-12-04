@@ -389,7 +389,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     if ([[self document] hasRightToLeftLanguage]) {
         switch ([self intrinsicRotation]) {
             case 0:   return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMaxX(pageBounds) - NSMaxX(bounds);
-            case 90:  return NSHeight(pageBounds) * floor(NSMinX(bounds)) + (NSMaxY(pageBounds) - NSMaxY(bounds));
+            case 90:  return NSHeight(pageBounds) * floor(NSMinX(bounds)) + NSMaxY(pageBounds) - NSMaxY(bounds);
             case 180: return NSWidth(pageBounds) * floor(NSMinY(bounds)) + NSMinX(bounds);
             case 270: return NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds))) + NSMinY(bounds);
             default:  return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMaxX(pageBounds) - NSMaxX(bounds);
@@ -398,7 +398,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         switch ([self intrinsicRotation]) {
             case 0:   return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMinX(bounds);
             case 90:  return NSHeight(pageBounds) * floor(NSMinX(bounds)) + NSMinY(bounds);
-            case 180: return NSWidth(pageBounds) * floor(NSMinY(bounds)) + (NSMaxX(pageBounds) - NSMaxX(bounds));
+            case 180: return NSWidth(pageBounds) * floor(NSMinY(bounds)) + NSMaxX(pageBounds) - NSMaxX(bounds);
             case 270: return NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds))) + NSMaxY(pageBounds) - NSMaxY(bounds);
             default:  return NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds))) + NSMinX(bounds);
         }
