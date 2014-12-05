@@ -71,32 +71,3 @@
 }
 
 @end
-
-#pragma mark -
-
-@implementation SKPDFSyncRecords
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        records = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-    }
-    return self;
-}
-
-- (void)dealloc {
-    NSFreeMapTable(records);
-    [super dealloc];
-}
-
-- (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex {
-    SKPDFSyncRecord *record = NSMapGet(records, (const void *)recordIndex);
-    if (record == nil) {
-        record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
-        NSMapInsert(records, (const void *)recordIndex, record);
-        [record release];
-    }
-    return record;
-}
-
-@end

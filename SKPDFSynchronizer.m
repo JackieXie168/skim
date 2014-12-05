@@ -194,6 +194,16 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
 
 #pragma mark PDFSync
 
+static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger recordIndex) {
+    SKPDFSyncRecord *record = NSMapGet(records, (const void *)recordIndex);
+    if (record == nil) {
+        record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
+        NSMapInsert(records, (const void *)recordIndex, record);
+        [record release];
+    }
+    return record;
+}
+
 - (BOOL)loadPdfsyncFile:(NSString *)theFileName {
 
     if (pages)
@@ -218,7 +228,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     
     if ([pdfsyncString length]) {
         
-        SKPDFSyncRecords *records = [[SKPDFSyncRecords alloc] init];
+        NSMapTable *records = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
         NSMutableArray *files = [[NSMutableArray alloc] init];
         NSString *file;
         NSInteger recordIndex, line, pageIndex;
@@ -253,7 +263,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
                             if ([sc scanInteger:&recordIndex] && [sc scanInteger:&line]) {
                                 // we ignore the column
                                 [sc scanInteger:NULL];
-                                record = [records recordForIndex:recordIndex];
+                                record = recordForIndex(records, recordIndex);
                                 [record setFile:file];
                                 [record setLine:line];
                                 [[lines objectForKey:file] addObject:record];
@@ -264,7 +274,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
                             if ([sc scanString:@"*" intoString:NULL] == NO)
                                 [sc scanString:@"+" intoString:NULL];
                             if ([sc scanInteger:&recordIndex] && [sc scanDouble:&x] && [sc scanDouble:&y]) {
-                                record = [records recordForIndex:recordIndex];
+                                record = recordForIndex(records, recordIndex);
                                 [record setPageIndex:[pages count] - 1];
                                 [record setPoint:NSMakePoint(PDFSYNC_TO_PDF(x) + pdfOffset.x, PDFSYNC_TO_PDF(y) + pdfOffset.y)];
                                 [[pages lastObject] addObject:record];
@@ -321,7 +331,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
             }
         }
         
-        [records release];
+        NSFreeMapTable(records);
         [files release];
         [sc release];
     }
