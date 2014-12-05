@@ -47,6 +47,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
@@ -109,6 +110,15 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (BOOL)hitTest:(NSPoint)point {
     CGFloat delta = fmax(4.0, 0.5 * [self lineWidth]);
     return [self shouldDisplay] && SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], delta);
+}
+
+- (CGFloat)boundsOrder {
+    CGFloat delta = ceil(fmax(4.0 * [self lineWidth], 4.0));
+    NSPoint origin = [self bounds].origin;
+    NSRect startBounds = SKRectFromCenterAndSquareSize(SKAddPoints(origin, [self startPoint]), delta);
+    NSRect endBounds = SKRectFromCenterAndSquareSize(SKAddPoints(origin, [self endPoint]), delta);
+    PDFPage *page = [self page];
+    return fmin([page sortOrderForBounds:startBounds], [page sortOrderForBounds:endBounds]);
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
