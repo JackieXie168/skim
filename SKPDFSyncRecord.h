@@ -57,11 +57,3 @@
 - (id)initWithRecordIndex:(NSInteger)aRecordIndex;
 
 @end
-
-#pragma mark -
-
-@interface SKPDFSyncRecords : NSObject {
-    NSMapTable *records;
-}
-- (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex;
-@end
