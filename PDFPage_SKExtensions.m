@@ -344,7 +344,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             r1 = r2;
         } else if (lineRectsOverlap(r1, r2, rotated)) {
             r1 = NSUnionRect(r1, r2);
-        } else if (NSEqualRects(r1, NSZeroRect) == NO) {
+        } else {
             [fullLines addPointer:&r1];
             r1 = r2;
         }
