@@ -321,10 +321,9 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             NSInteger i = [lines count];
             while (i-- > 0) {
                 if ([self sortOrderForBounds:[[lines objectAtIndex:i] rectValue]] <= order)
-                    [lines insertObject:[NSValue valueWithRect:r] atIndex:i + 1];
+                    break;
             }
-            if (i < 0)
-                [lines insertObject:[NSValue valueWithRect:r] atIndex:0];
+            [lines insertObject:[NSValue valueWithRect:r] atIndex:i + 1];
         }
     }
     
