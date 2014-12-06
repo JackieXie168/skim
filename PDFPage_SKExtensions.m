@@ -322,6 +322,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             CGFloat order = [self sortOrderForBounds:r];
             if (lastOrder <= order) {
                 [lines addPointer:&r];
+                lastOrder = order;
             } else {
                 for (i = [lines count] - 1; i > 0; i--) {
                     if ([self sortOrderForBounds:*(NSRectPointer)[lines pointerAtIndex:i - 1]] <= order)
@@ -329,7 +330,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 }
                 [lines insertPointer:&r atIndex:i];
             }
-            lastOrder = order;
         }
     }
     
