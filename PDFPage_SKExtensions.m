@@ -311,28 +311,35 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (NSPointerArray *)lineRects {
-    NSMutableArray *lines = [NSMutableArray array];
+    NSPointerArray *lines = [NSPointerArray rectPointerArray];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+    CGFloat lastOrder = -CGFLOAT_MAX;
+    NSInteger i;
     
     for (PDFSelection *s in [sel selectionsByLine]) {
         NSRect r = [s boundsForPage:self];
         if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
             CGFloat order = [self sortOrderForBounds:r];
-            NSInteger i = [lines count];
-            while (i-- > 0) {
-                if ([self sortOrderForBounds:[[lines objectAtIndex:i] rectValue]] <= order)
-                    break;
+            if (lastOrder <= order) {
+                [lines addPointer:&r];
+            } else {
+                for (i = [lines count] - 1; i > 0; i--) {
+                    if ([self sortOrderForBounds:*(NSRectPointer)[lines pointerAtIndex:i - 1]] <= order)
+                        break;
+                }
+                [lines insertPointer:&r atIndex:i];
             }
-            [lines insertObject:[NSValue valueWithRect:r] atIndex:i + 1];
+            lastOrder = order;
         }
     }
     
     NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
     NSRect r1 = NSZeroRect;
     BOOL rotated = ([self intrinsicRotation] % 180) != 0;
+    NSInteger iMax = [lines count];
     
-    for (NSValue *line in lines) {
-        NSRect r2 = [line rectValue];
+    for (i = 0; i < iMax; i++) {
+        NSRect r2 = *(NSRectPointer)[lines pointerAtIndex:i];
         if (NSEqualRects(r1, NSZeroRect)) {
             r1 = r2;
         } else if (lineRectsOverlap(r1, r2, rotated)) {
