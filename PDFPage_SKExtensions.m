@@ -316,15 +316,17 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     
     for (PDFSelection *s in [sel selectionsByLine]) {
         NSRect r = [s boundsForPage:self];
-        if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
-            [lines addObject:[NSValue valueWithRect:r]];
-    } 
-    
-    [lines sortUsingComparator:^NSComparisonResult(id obj1, id obj2){
-            CGFloat order1 = [self sortOrderForBounds:[obj1 rectValue]];
-            CGFloat order2 = [self sortOrderForBounds:[obj2 rectValue]];
-            return order1 < order2 ? NSOrderedAscending : order1 > order2 ? NSOrderedDescending : NSOrderedSame;
-        }];
+        if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+            CGFloat order = [self sortOrderForBounds:r];
+            NSInteger i = [lines count];
+            while (i-- > 0) {
+                if ([self sortOrderForBounds:[[lines objectAtIndex:i] rectValue]] <= order)
+                    [lines insertObject:[NSValue valueWithRect:r] atIndex:i + 1];
+            }
+            if (i < 0)
+                [lines insertObject:[NSValue valueWithRect:r] atIndex:0];
+        }
+    }
     
     NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
     NSRect r1 = NSZeroRect;
