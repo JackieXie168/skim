@@ -315,36 +315,36 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     CGFloat lastOrder = -CGFLOAT_MAX;
     NSUInteger i;
-    NSRect r;
+    NSRect rect;
     
     for (PDFSelection *s in [sel selectionsByLine]) {
-        r = [s boundsForPage:self];
-        if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-            CGFloat order = [self sortOrderForBounds:r];
+        rect = [s boundsForPage:self];
+        if (NSIsEmptyRect(rect) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+            CGFloat order = [self sortOrderForBounds:rect];
             if (lastOrder <= order) {
-                [lines addPointer:&r];
+                [lines addPointer:&rect];
                 lastOrder = order;
             } else {
                 for (i = [lines count] - 1; i > 0; i--) {
                     if ([self sortOrderForBounds:*(NSRectPointer)[lines pointerAtIndex:i - 1]] <= order)
                         break;
                 }
-                [lines insertPointer:&r atIndex:i];
+                [lines insertPointer:&rect atIndex:i];
             }
         }
     }
     
-    NSRect prevR = NSZeroRect;
+    NSRect prevRect = NSZeroRect;
     BOOL rotated = ([self intrinsicRotation] % 180) != 0;
     
     for (i = 0; i < [lines count]; i++) {
-        r = *(NSRectPointer)[lines pointerAtIndex:i];
-        if (NSEqualRects(prevR, NSZeroRect) || NO == lineRectsOverlap(prevR, r, rotated)) {
-            prevR = r;
-        } else {
-            [lines removePointerAtIndex:i];
-            *(NSRectPointer)[lines pointerAtIndex:--i] = (prevR = NSUnionRect(prevR, r));
+        rect = *(NSRectPointer)[lines pointerAtIndex:i];
+        if (i > 0 && lineRectsOverlap(prevRect, rect, rotated)) {
+            rect = NSUnionRect(prevRect, rect);
+            [lines removePointerAtIndex:i--];
+            [lines replacePointerAtIndex:i withPointer:&rect];
         }
+        prevRect = rect;
     }
     
     return lines;
