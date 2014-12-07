@@ -514,7 +514,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSPointerArray *oldRects = [NSPointerArray rectPointerArray];
     for (i = 0; i < count; i++) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
-        NSRect rect = NSIntersectionRect(*(NSRectPointer)[rects pointerAtIndex:i % rectCount], [page boundsForBox:kPDFDisplayBoxMediaBox]);
+        NSRect rect = NSIntersectionRect([rects rectAtIndex:i % rectCount], [page boundsForBox:kPDFDisplayBoxMediaBox]);
         NSRect oldRect = [page boundsForBox:kPDFDisplayBoxCropBox];
         [oldRects addPointer:&oldRect];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];

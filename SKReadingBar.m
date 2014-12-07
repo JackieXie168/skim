@@ -41,6 +41,7 @@
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 
 @implementation SKReadingBar
@@ -89,7 +90,7 @@
     NSRect rect = NSZeroRect;
     NSInteger i, lastLine = [self currentLastLine];
     for (i = currentLine; i <= lastLine; i++)
-        rect = NSUnionRect(rect, *(NSRectPointer)[lineRects pointerAtIndex:i]);
+        rect = NSUnionRect(rect, [lineRects rectAtIndex:i]);
     return rect;
 }
 
@@ -180,7 +181,7 @@
         return NO;
     NSInteger i = [lineRects count] - numberOfLines;
     while (--i >= 0)
-        if (NSMaxY(*(NSRectPointer)[lineRects pointerAtIndex:i]) >= point.y) break;
+        if (NSMaxY([lineRects rectAtIndex:i]) >= point.y) break;
     currentLine = MAX(0, i);
     return YES;
 }

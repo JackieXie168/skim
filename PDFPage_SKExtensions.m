@@ -326,7 +326,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 lastOrder = order;
             } else {
                 for (i = [lines count] - 1; i > 0; i--) {
-                    if ([self sortOrderForBounds:*(NSRectPointer)[lines pointerAtIndex:i - 1]] <= order)
+                    if ([self sortOrderForBounds:[lines rectAtIndex:i - 1]] <= order)
                         break;
                 }
                 [lines insertPointer:&rect atIndex:i];
@@ -338,7 +338,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     BOOL rotated = ([self intrinsicRotation] % 180) != 0;
     
     for (i = 0; i < [lines count]; i++) {
-        rect = *(NSRectPointer)[lines pointerAtIndex:i];
+        rect = [lines rectAtIndex:i];
         if (i > 0 && lineRectsOverlap(prevRect, rect, rotated)) {
             rect = NSUnionRect(prevRect, rect);
             [lines removePointerAtIndex:i--];
@@ -513,7 +513,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     NSMutableArray *lineBounds = [NSMutableArray array];
     NSInteger i, count = [lineRects count];
     for (i = 0; i < count; i++)
-        [lineBounds addObject:[NSData dataWithRectAsQDRect:*(NSRectPointer)[lineRects pointerAtIndex:i]]];
+        [lineBounds addObject:[NSData dataWithRectAsQDRect:[lineRects rectAtIndex:i]]];
     return lineBounds;
 }
 

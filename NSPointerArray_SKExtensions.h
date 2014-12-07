@@ -47,4 +47,7 @@
 - (id)initForRectPointers;
 - (id)initForRangePointers;
 
+- (NSRect)rectAtIndex:(NSUInteger)anIndex;
+- (NSRange)rangeAtIndex:(NSUInteger)anIndex;
+
 @end
