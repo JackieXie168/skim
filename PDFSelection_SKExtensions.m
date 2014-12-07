@@ -274,7 +274,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSPointerArray *ranges = [[NSPointerArray alloc] initForRangePointers];
             
             for (ri = 0; ri < numRanges; ri++) {
-                NSRange textRange = *(NSRange *)[textRanges pointerAtIndex:ri];
+                NSRange textRange = [textRanges rangeAtIndex:ri];
                 NSTextStorage *textStorage = nil;
                 if (NSEqualRanges(textRange, NSMakeRange(0, [containerText length])))
                     textStorage = [containerText retain];
@@ -335,7 +335,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 if (count == 0) {
                 } else if ([key isEqualToString:@"characters"]) {
                     for (i = 0; i < count; i++) {
-                        NSRange range = *(NSRange *)[tmpRanges pointerAtIndex:i];
+                        NSRange range = [tmpRanges rangeAtIndex:i];
                         range.location += textRange.location;
                         range = NSIntersectionRange(range, textRange);
                         if (range.length) {
@@ -364,7 +364,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                             substrings = [subTextStorages valueForKey:@"string"];
                         }
                         for (i = 0; i < count; i++) {
-                            NSRange range = *(NSRange *)[tmpRanges pointerAtIndex:i];
+                            NSRange range = [tmpRanges rangeAtIndex:i];
                             startIndex = MIN(range.location, [subTextStorages count] - 1);
                             endIndex = MIN(NSMaxRange(range) - 1, [subTextStorages count] - 1);
                             if (endIndex == startIndex) endIndex = -1;
@@ -502,7 +502,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     pageLengths[page] = NSNotFound;
                 
                 for (i = 0; i < numRanges; i++) {
-                    NSRange range = *(NSRange *)[ranges pointerAtIndex:i];
+                    NSRange range = [ranges rangeAtIndex:i];
                     NSUInteger pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     
                     for (page = 0; (page < numPages) && (pageStart < NSMaxRange(range)); page++) {
@@ -536,7 +536,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 
                 for (i = 0; i < numRanges; i++) {
                     PDFSelection *sel;
-                    NSRange range = *(NSRange *)[ranges pointerAtIndex:i];
+                    NSRange range = [ranges rangeAtIndex:i];
                     if (range.length && (sel = [container selectionForRange:range]) && [sel hasCharacters]) {
                         [selections addObject:sel];
                         doc = [container document];

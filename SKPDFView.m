@@ -74,6 +74,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "SKApplication.h"
+#import "NSPointerArray_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -4287,7 +4288,7 @@ static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPoi
     NSInteger i = 0, iMax = [rectArray count];
     
     for (i = 0; i < iMax; i++) {
-        NSRect rect = *(NSRectPointer)[rectArray pointerAtIndex:i];
+        NSRect rect = [rectArray rectAtIndex:i];
         NSInteger pos;
         switch (rotation) {
             case 0:   pos = point.y < NSMinY(rect) ? -1 : point.y < NSMaxY(rect) ? 0 : 1; break;

@@ -68,4 +68,12 @@ static NSString *rangeDescriptionFunction(const void *item) { return [NSString s
     return [self initForStructPointersWithSizeFunction:&rangeSizeFunction descriptionFunction:&rangeDescriptionFunction];
 }
 
+- (NSRect)rectAtIndex:(NSUInteger)anIndex {
+    return *(NSRectPointer)[self pointerAtIndex:anIndex];
+}
+
+- (NSRange)rangeAtIndex:(NSUInteger)anIndex {
+    return *(NSRange *)[self pointerAtIndex:anIndex];
+}
+
 @end

@@ -170,7 +170,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                         NSPointerArray *lines = [self lineRectsArray];
                         iMax = [lines count];
                         for (i = 0; i < iMax; i++) {
-                            NSArray *quadLine = createQuadPointsWithBounds(*(NSRectPointer)[lines pointerAtIndex:i], [self bounds].origin, rotation);
+                            NSArray *quadLine = createQuadPointsWithBounds([lines rectAtIndex:i], [self bounds].origin, rotation);
                             [quadPoints addObjectsFromArray:quadLine];
                             [quadLine release];
                         }
@@ -245,7 +245,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict in some OS versions, but unfortunately not in others
-        PDFSelection *selection = [[self page] selectionForRect:NSInsetRect(*(NSRectPointer)[lines pointerAtIndex:i], -1.0, -1.0)];
+        PDFSelection *selection = [[self page] selectionForRect:NSInsetRect([lines rectAtIndex:i], -1.0, -1.0)];
         if ([selection hasCharacters])
             [selections addObject:selection];
     }
@@ -261,14 +261,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
-        isContained = NSPointInRect(point, *(NSRectPointer)[lines pointerAtIndex:i]);
+        isContained = NSPointInRect(point, [lines rectAtIndex:i]);
     
     return isContained;
 }
 
 - (CGFloat)boundsOrder {
     NSPointerArray *lines = [self lineRects];
-    NSRect bounds = [lines count] > 0 ? *(NSRectPointer)[lines pointerAtIndex:0] : [self bounds];
+    NSRect bounds = [lines count] > 0 ? [lines rectAtIndex:0] : [self bounds];
     return [[self page] sortOrderForBounds:bounds];
 }
 
@@ -295,7 +295,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     [NSGraphicsContext saveGraphicsState];
     [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
     for (i = 0; i < iMax; i++)
-        NSFrameRectWithWidth([pdfView convertRect:NSIntegralRect([pdfView convertRect:*(NSRectPointer)[lines pointerAtIndex:i] fromPage:page]) toPage:page], lineWidth);
+        NSFrameRectWithWidth([pdfView convertRect:NSIntegralRect([pdfView convertRect:[lines rectAtIndex:i] fromPage:page]) toPage:page], lineWidth);
     [NSGraphicsContext restoreGraphicsState];
 }
 
