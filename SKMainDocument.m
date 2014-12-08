@@ -1396,6 +1396,20 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
         
+        range = NSMakeRange(0, 0);
+        while (NSMaxRange(range) < [cmdString length]) {
+            range = [cmdString rangeOfString:@"%output" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
+            if (range.location == NSNotFound)
+                break;
+            prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
+            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
+            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
+                NSString *escapedFile = (prevChar == '\'' && nextChar == '\'') ? [[self fileURL] path] : [[[self fileURL] path] stringByEscapingShellChars];
+                [cmdString replaceCharactersInRange:range withString:escapedFile];
+                range.length = [escapedFile length];
+            }
+        }
+        
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
         [cmdString insertString:@"\"" atIndex:0];
