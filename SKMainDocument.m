@@ -1320,7 +1320,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     return synchronizer;
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
+- (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
@@ -1420,7 +1420,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
+- (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
     PDFDocument *pdfDoc = [self pdfDocument];
     if (pageIndex < [pdfDoc pageCount]) {
         PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
