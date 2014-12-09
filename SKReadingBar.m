@@ -176,7 +176,7 @@
     return didMove;
 }
 
-static inline BOOL topBovePoint(NSRect rect, NSPoint point, NSInteger rotation) {
+static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation) {
     switch (rotation) {
         case 0:   return NSMaxY(rect) >= point.y;
         case 90:  return NSMinX(rect) <= point.x;
@@ -192,7 +192,7 @@ static inline BOOL topBovePoint(NSRect rect, NSPoint point, NSInteger rotation) 
     NSInteger i = [lineRects count] - numberOfLines;
     NSInteger rotation = [page intrinsicRotation];
     while (--i >= 0)
-        if (topBovePoint([lineRects rectAtIndex:i], point, rotation)) break;
+        if (topAbovePoint([lineRects rectAtIndex:i], point, rotation)) break;
     currentLine = MAX(0, i);
     return YES;
 }
