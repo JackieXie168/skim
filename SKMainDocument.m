@@ -1320,6 +1320,24 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     return synchronizer;
 }
 
+static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NSString *replace) {
+    NSRange range = NSMakeRange(0, 0);
+    unichar prevChar, nextChar;
+    while (NSMaxRange(range) < [cmdString length]) {
+        range = [cmdString rangeOfString:find options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
+        if (range.location == NSNotFound)
+            break;
+        prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
+        nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
+        if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
+            if (prevChar != '\'' || nextChar != '\'')
+                replace = [replace stringByEscapingShellChars];
+            [cmdString replaceCharactersInRange:range withString:replace];
+            range.length = [replace length];
+        }
+    }
+}
+
 - (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
@@ -1368,47 +1386,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
         
-        NSRange range = NSMakeRange(0, 0);
-        unichar prevChar, nextChar;
-        while (NSMaxRange(range) < [cmdString length]) {
-            range = [cmdString rangeOfString:@"%line" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
-            if (range.location == NSNotFound)
-                break;
-            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
-                NSString *lineString = [NSString stringWithFormat:@"%ld", (long)(line + 1)];
-                [cmdString replaceCharactersInRange:range withString:lineString];
-                range.length = [lineString length];
-            }
-        }
-        
-        range = NSMakeRange(0, 0);
-        while (NSMaxRange(range) < [cmdString length]) {
-            range = [cmdString rangeOfString:@"%file" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
-            if (range.location == NSNotFound)
-                break;
-            prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
-            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
-                NSString *escapedFile = (prevChar == '\'' && nextChar == '\'') ? file : [file stringByEscapingShellChars];
-                [cmdString replaceCharactersInRange:range withString:escapedFile];
-                range.length = [escapedFile length];
-            }
-        }
-        
-        range = NSMakeRange(0, 0);
-        while (NSMaxRange(range) < [cmdString length]) {
-            range = [cmdString rangeOfString:@"%output" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
-            if (range.location == NSNotFound)
-                break;
-            prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
-            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
-                NSString *escapedFile = (prevChar == '\'' && nextChar == '\'') ? [[self fileURL] path] : [[[self fileURL] path] stringByEscapingShellChars];
-                [cmdString replaceCharactersInRange:range withString:escapedFile];
-                range.length = [escapedFile length];
-            }
-        }
+        replaceInShellCommand(cmdString, @"%line", [NSString stringWithFormat:@"%ld", (long)(line + 1)]);
+        replaceInShellCommand(cmdString, @"%file", file);
+        replaceInShellCommand(cmdString, @"%output", [[self fileURL] path]);
         
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
