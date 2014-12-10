@@ -4208,7 +4208,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 else if ((area & SKReadingBarArea) == 0)
                     cursor = [NSCursor openHandCursor];
                 else if ((area & SKReadingBarResizeArea))
-                    cursor = [NSCursor resizeUpDownCursor];
+                    cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
                 else
                     cursor = [NSCursor openHandBarCursor];
                 break;
@@ -4217,7 +4217,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     if ((area == SKReadingBarArea) == 0)
                         cursor = [NSCursor openHandCursor];
                     else if ((area & SKReadingBarResizeArea))
-                        cursor = [NSCursor resizeUpDownCursor];
+                        cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
                     else
                         cursor = [NSCursor openHandBarCursor];
                 } else {
@@ -4232,7 +4232,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     if ((area == SKReadingBarArea) == 0)
                         cursor = [NSCursor openHandCursor];
                     else if ((area & SKReadingBarResizeArea))
-                        cursor = [NSCursor resizeUpDownCursor];
+                        cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
                     else
                         cursor = [NSCursor openHandBarCursor];
                 } else if (([theEvent modifierFlags] & NSShiftKeyMask)) {
