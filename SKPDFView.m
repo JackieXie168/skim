@@ -607,6 +607,10 @@ enum {
     return transitionController;
 }
 
+- (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {log_method();
+    [super setCursorForAreaOfInterest:area];
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -4201,7 +4205,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             case SKMoveToolMode:
                 if ((area & kPDFLinkArea))
                     cursor = [NSCursor pointingHandCursor];
-                else if ((area == SKReadingBarArea) == 0)
+                else if ((area & SKReadingBarArea) == 0)
                     cursor = [NSCursor openHandCursor];
                 else if ((area & SKReadingBarResizeArea))
                     cursor = [NSCursor resizeUpDownCursor];
