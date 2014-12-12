@@ -460,10 +460,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
 }
 
-- (void)mouseMoved:(NSEvent *)theEvent {
-	NSView *view = [self documentView];
-    NSPoint mouseLoc = [theEvent locationInView:view];
-    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]) == NO || [theEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask))
+- (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {
+    if ([NSEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask))
         [[NSCursor arrowCursor] set];
     else
         [[NSCursor openHandCursor] set];
