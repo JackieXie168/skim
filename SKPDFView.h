@@ -81,8 +81,12 @@ enum {
 typedef NSInteger SKNoteType;
 
 enum {
-    SKReadingBarArea = 1 << 16,
-    SKReadingBarResizeArea = 1 << 17
+    SKDragArea = 1 << 16,
+    SKResizeUpDownArea = 1 << 17,
+    SKResizeLeftRightArea = 1 << 18,
+    SKResizeDiagonal45Area = 1 << 19,
+    SKResizeDiagonal135Area = 1 << 20,
+    SKReadingBarArea = 1 << 21
 };
 
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
@@ -184,8 +188,6 @@ enum {
 - (void)removePDFToolTipRects;
 
 - (void)resetHistory;
-
-- (PDFAreaOfInterest)extendedAreaOfInterestForMouse:(NSEvent *)theEvent;
 
 - (NSArray *)accessibilityChildren;
 - (id)accessibilityChildAtPoint:(NSPoint)point;

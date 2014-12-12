@@ -137,6 +137,8 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 
 static BOOL useToolModeCursors = NO;
 
+static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page);
+
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower);
 
 static inline CGPathRef SKCopyCGPathFromBezierPath(NSBezierPath *bezierPath);
@@ -178,10 +180,7 @@ enum {
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doNothingWithEvent:(NSEvent *)theEvent;
-- (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation;
-- (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
-- (void)doUpdateCursor;
-- (NSInteger)readingBarAreaForMouse:(NSEvent *)theEvent;
+- (void)setCursorForMouse:(NSEvent *)theEvent;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
@@ -444,7 +443,7 @@ enum {
         toolMode = newToolMode;
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
-        [self doUpdateCursor];
+        [self setCursorForMouse:nil];
         [self resetPDFToolTipRects];
     }
 }
@@ -455,7 +454,7 @@ enum {
         [[NSUserDefaults standardUserDefaults] setInteger:annotationMode forKey:SKLastAnnotationModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationModeChangedNotification object:self];
         // hack to make sure we update the cursor
-        [self doUpdateCursor];
+        [self setCursorForMouse:nil];
     }
 }
 
@@ -605,10 +604,6 @@ enum {
         [transitionController addObserver:self forKeyPath:@"pageTransitions" options:options context:&SKPDFViewTransitionsObservationContext];
     }
     return transitionController;
-}
-
-- (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {log_method();
-    [super setCursorForAreaOfInterest:area];
 }
 
 #pragma mark Reading bar
@@ -1136,7 +1131,7 @@ enum {
         [[self window] makeFirstResponder:self];
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
-    PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
+    PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
@@ -1155,8 +1150,8 @@ enum {
         [self doSelectSnapshotWithEvent:theEvent];
     } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         [self doPdfsyncWithEvent:theEvent];
-    } else if ((area & SKReadingBarArea) && (area & kPDFLinkArea) == 0 && ((area & kPDFPageArea) == 0 || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode))) {
-        if ((area & SKReadingBarResizeArea))
+    } else if ((area & SKReadingBarArea) && (area & kPDFLinkArea) == 0) {
+        if ((area & (SKResizeUpDownArea | SKResizeLeftRightArea)))
             [self doResizeReadingBarWithEvent:theEvent];
         else
             [self doDragReadingBarWithEvent:theEvent];
@@ -1190,7 +1185,7 @@ enum {
             [self setActiveAnnotation:nil];
             [self doDragAnnotationWithEvent:theEvent];
         }
-    } else if (area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO) {
+    } else if ((area & SKDragArea)) {
         [self setActiveAnnotation:nil];
         [self doDragWithEvent:theEvent];
     } else {
@@ -1205,7 +1200,9 @@ enum {
 
 - (void)mouseMoved:(NSEvent *)theEvent {
     [super mouseMoved:theEvent];
-    [[self getCursorForEvent:theEvent] set];
+    
+    // make sure the cursor is set, at least outside the pages this does not happen
+    [self setCursorForMouse:theEvent];
     
     if ([activeAnnotation isLink]) {
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
@@ -1229,7 +1226,7 @@ enum {
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    [self doUpdateCursor];
+    [self setCursorForMouse:nil];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -2919,8 +2916,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         SKRectEdges currentResizeHandle = (relPoint.x < 0.0 ? SKMinXEdgeMask : SKMaxXEdgeMask) | (relPoint.y <= 0.0 ? SKMinYEdgeMask : SKMaxYEdgeMask);
         if (currentResizeHandle != resizeHandle) {
             *resizeHandlePtr = resizeHandle = currentResizeHandle;
-            [NSCursor pop];
-            [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
+            [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
         }
     }
     
@@ -3011,6 +3007,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [activeAnnotation setBounds:NSIntegralRect(newBounds)];
 }
 
+- (void)updateCursorForMouse:(NSEvent *)theEvent {
+    [self setCursorForAreaOfInterest:[self areaOfInterestForMouse:theEvent]];
+}
+
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
     // activeAnnotation should be movable, or nil to be added in an appropriate note tool mode
     
@@ -3052,11 +3052,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSUInteger eventMask = NSLeftMouseUpMask | NSLeftMouseDraggedMask;
     
     if (resizeHandle == 0) {
-        [[NSCursor closedHandCursor] push];
+        [[NSCursor closedHandCursor] set];
         [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
         eventMask |= NSPeriodicMask;
     } else {
-        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
+        [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     }
     
     while (YES) {
@@ -3090,9 +3090,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self setNeedsDisplayForAnnotation:activeAnnotation];
     }
     
-    [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [self performSelector:@selector(setCursorForMouse:) withObject:theEvent afterDelay:0];
 }
 
 - (void)doEditActiveAnnotationWithEvent:(NSEvent *)theEvent {
@@ -3413,9 +3412,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     SKRectEdges newEffectiveResizeHandle, effectiveResizeHandle = resizeHandle;
     
     if (resizeHandle == 0)
-        [[NSCursor closedHandCursor] push];
+        [[NSCursor closedHandCursor] set];
     else
-        [[self cursorForResizeHandle:resizeHandle rotation:[page rotation]] push];
+        [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     
 	while (YES) {
         
@@ -3443,8 +3442,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 newEffectiveResizeHandle |= newPoint.y > NSMaxY(initialRect) ? SKMaxYEdgeMask : SKMinYEdgeMask;
             if (newEffectiveResizeHandle != effectiveResizeHandle) {
                 effectiveResizeHandle = newEffectiveResizeHandle;
-                [NSCursor pop];
-                [[self cursorForResizeHandle:effectiveResizeHandle rotation:[page rotation]] push];
+                [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(effectiveResizeHandle, page)];
             }
         }
         
@@ -3558,9 +3556,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
     
-    [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [self performSelector:@selector(setCursorForMouse:) withObject:theEvent afterDelay:0];
 }
 
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
@@ -3647,7 +3644,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:lastMouseEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [self performSelector:@selector(setCursorForMouse:) withObject:lastMouseEvent afterDelay:0];
 }
 
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent {
@@ -3684,7 +3681,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [self performSelector:@selector(setCursorForMouse:) withObject:theEvent afterDelay:0];
 }
 
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent {
@@ -3775,7 +3772,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     else
         [[self window] discardCachedImage];
     
-	[[self getCursorForEvent:theEvent] set];
+	[self setCursorForMouse:theEvent];
     
     NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
@@ -3916,7 +3913,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 magnification = 1.0 / magnification;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-            [[self getCursorForEvent:theEvent] set];
+            [self setCursorForMouse:theEvent];
             if (loupeLayer) {
                 [aShadow setShadowBlurRadius:4.0 * magnification];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
@@ -4111,7 +4108,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [NSCursor unhide];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [self performSelector:@selector(setCursorForMouse:) withObject:lastMouseEvent afterDelay:0];
     [theEvent release];
     [lastMouseEvent release];
 }
@@ -4142,150 +4139,140 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return [NSCursor arrowCursor];
 }
 
-- (NSCursor *)cursorForResizeHandle:(SKRectEdges)mask rotation:(NSInteger)rotation {
-    BOOL rotated = (rotation % 180 != 0);
-    switch (mask) {
-        case SKMaxXEdgeMask:
-        case SKMinXEdgeMask:
-            return rotated ? [NSCursor resizeUpDownCursor] : [NSCursor resizeLeftRightCursor];
-        case SKMaxXEdgeMask | SKMaxYEdgeMask:
-        case SKMinXEdgeMask | SKMinYEdgeMask:
-            return rotated ? [NSCursor resizeDiagonal135Cursor] : [NSCursor resizeDiagonal45Cursor];
-        case SKMaxYEdgeMask:
-        case SKMinYEdgeMask:
-            return rotated ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
-        case SKMaxXEdgeMask | SKMinYEdgeMask:
-        case SKMinXEdgeMask | SKMaxYEdgeMask:
-            return rotated ? [NSCursor resizeDiagonal45Cursor] : [NSCursor resizeDiagonal135Cursor];
-        default:
-            return nil;
-    }
-}
-
-- (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
-    NSPoint p = [theEvent locationInView:self];
-    NSCursor *cursor = nil;
+- (PDFAreaOfInterest)areaOfInterestForMouse:(NSEvent *)theEvent {
+    PDFAreaOfInterest area = [super areaOfInterestForMouse:theEvent];
+    NSPoint p = [theEvent locationInWindow];
+    NSInteger modifiers = [theEvent standardModifierFlags];
     
     if ([[self document] isLocked]) {
+    } else if (NSPointInRect(p, [self convertRect:[self visibleContentRect] toView:nil]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:p], [navWindow frame]))) {
+        area = kPDFNoArea;
     } else if (interactionMode == SKPresentationMode) {
-        if (([self areaOfInterestForMouse:theEvent] & kPDFLinkArea))
-            cursor = [NSCursor pointingHandCursor];
-        else
-            cursor = [NSCursor arrowCursor];
-    } else if (NSMouseInRect(p, [self visibleContentRect], [self isFlipped]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
-        cursor = [NSCursor arrowCursor];
-    } else if (([theEvent modifierFlags] & NSCommandKeyMask)) {
-        cursor = [NSCursor arrowCursor];
+        area &= (kPDFPageArea | kPDFLinkArea);
+    } else if ((modifiers == NSCommandKeyMask || modifiers == (NSCommandKeyMask | NSShiftKeyMask))) {
+        area &= kPDFPageArea;
     } else {
-        PDFAreaOfInterest area = [self extendedAreaOfInterestForMouse:theEvent];
-        PDFPage *page = [self pageForPoint:p nearest:YES];
-        p = [self convertPoint:p toPage:page];
-        SKRectEdges resizeHandle;
         
-        switch (toolMode) {
-            case SKTextToolMode:
-            case SKNoteToolMode:
-            {
-                BOOL isOnActiveAnnotationPage = [[activeAnnotation page] isEqual:page];
-                
-                if ((area & kPDFLinkArea) == 0 && (area & SKReadingBarArea))
-                    cursor = (area & SKReadingBarResizeArea) == 0 ? [NSCursor openHandBarCursor] : (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
-                else if (editor && isOnActiveAnnotationPage && NSPointInRect(p, [activeAnnotation bounds]))
-                    cursor = [NSCursor IBeamCursor];
-                else if (isOnActiveAnnotationPage && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
-                    cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
-                else if (isOnActiveAnnotationPage && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
-                    cursor = [NSCursor openHandCursor];
-                else if ((area & kPDFPageArea) == 0 || ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [self hasTextNearMouse:theEvent] == NO))
-                    cursor = [NSCursor openHandCursor];
-                else if (toolMode == SKNoteToolMode)
-                    cursor = [self cursorForNoteToolMode];
-                break;
-            }
-            case SKMoveToolMode:
-                if ((area & kPDFLinkArea))
-                    cursor = [NSCursor pointingHandCursor];
-                else if ((area & SKReadingBarArea) == 0)
-                    cursor = [NSCursor openHandCursor];
-                else if ((area & SKReadingBarResizeArea))
-                    cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
-                else
-                    cursor = [NSCursor openHandBarCursor];
-                break;
-            case SKSelectToolMode:
-                if ((area & kPDFPageArea) == 0) {
-                    if ((area == SKReadingBarArea) == 0)
-                        cursor = [NSCursor openHandCursor];
-                    else if ((area & SKReadingBarResizeArea))
-                        cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
-                    else
-                        cursor = [NSCursor openHandBarCursor];
-                } else {
-                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor]);
-                    cursor = [self cursorForResizeHandle:resizeHandle rotation:[page rotation]];
-                    if (cursor == nil)
-                        cursor = NSPointInRect(p, selectionRect) ? [NSCursor openHandCursor] : [NSCursor crosshairCursor];
-                }
-                break;
-            case SKMagnifyToolMode:
-                if ((area & kPDFPageArea) == 0) {
-                    if ((area == SKReadingBarArea) == 0)
-                        cursor = [NSCursor openHandCursor];
-                    else if ((area & SKReadingBarResizeArea))
-                        cursor = (([page rotation] - [page intrinsicRotation]) % 180) ? [NSCursor resizeLeftRightCursor] : [NSCursor resizeUpDownCursor];
-                    else
-                        cursor = [NSCursor openHandBarCursor];
-                } else if (([theEvent modifierFlags] & NSShiftKeyMask)) {
-                    cursor = [NSCursor zoomOutCursor];
-                } else {
-                    cursor = [NSCursor zoomInCursor];
-                }
-                break;
-        }
-    }
-    return cursor;
-}
-
-- (void)doUpdateCursor {
-    NSEvent *event = [NSEvent mouseEventWithType:NSMouseMoved
-                                        location:[[self window] mouseLocationOutsideOfEventStream]
-                                   modifierFlags:[NSEvent standardModifierFlags]
-                                       timestamp:0
-                                    windowNumber:[[self window] windowNumber]
-                                         context:nil
-                                     eventNumber:0
-                                      clickCount:1
-                                        pressure:0.0];
-    [[self getCursorForEvent:event] set];
-}
-
-- (PDFAreaOfInterest)extendedAreaOfInterestForMouse:(NSEvent *)theEvent {
-    PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-    if (readingBar) {
-        NSPoint p = NSZeroPoint;
+        SKRectEdges resizeHandle;
         PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
-        if ([[readingBar page] isEqual:page]) {
+        
+        if (readingBar && [[readingBar page] isEqual:page]) {
             NSRect bounds = [readingBar currentBounds];
             NSInteger rotation = [page intrinsicRotation];
             if ((rotation % 180)) {
                 if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
                     area |= SKReadingBarArea;
                     if ((rotation == 90 && p.x > NSMaxX(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 270 && p.x < NSMinX(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT))
-                        area |= SKReadingBarResizeArea;
+                        area |= ([page rotation] % 180) ? SKResizeUpDownArea : SKResizeLeftRightArea;
                 }
             } else {
                 if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
                     area |= SKReadingBarArea;
                     if ((rotation == 0 && p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 180 && p.y > NSMaxY(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT))
-                        area |= SKReadingBarResizeArea;
+                        area |= ([page rotation] % 180) ? SKResizeLeftRightArea : SKResizeUpDownArea;
                 }
             }
         }
+        
+        if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+            if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds])) {
+                area = kPDFTextFieldArea;
+            } else if ((area & SKReadingBarArea) == 0) {
+                if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                    area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
+                else if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
+                    area |= SKDragArea;
+                else if ((area & kPDFPageArea) == 0 || ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO))
+                    area |= SKDragArea;
+            }
+        } else if (toolMode == SKMoveToolMode) {
+            if ((area & (kPDFLinkArea | SKReadingBarArea)))
+                area &= (kPDFPageArea | kPDFLinkArea | SKReadingBarArea | SKResizeUpDownArea | SKResizeLeftRightArea);
+            else
+                area = (area & kPDFPageArea) | SKDragArea;
+        } else {
+            if ((area & kPDFPageArea)) {
+                area = kPDFPageArea;
+                if (toolMode == SKSelectToolMode) {
+                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor]);
+                    if (resizeHandle)
+                        area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
+                    else if (NSPointInRect(p, selectionRect))
+                        area |= SKDragArea;
+                }
+            } else if ((area & SKReadingBarArea)) {
+                area &= (SKReadingBarArea | SKResizeUpDownArea | SKResizeLeftRightArea);
+            } else {
+                area = SKDragArea;
+            }
+        }
     }
+    
     return area;
 }
 
+- (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {
+    if ((area & kPDFLinkArea))
+        [[NSCursor pointingHandCursor] set];
+    else if ((area & SKDragArea))
+        [[NSCursor openHandCursor] set];
+    else if ((area & SKResizeUpDownArea))
+        [[NSCursor resizeUpDownCursor] set];
+    else if ((area & SKResizeLeftRightArea))
+        [[NSCursor resizeLeftRightCursor] set];
+    else if ((area & SKResizeDiagonal45Area))
+        [[NSCursor resizeDiagonal45Cursor] set];
+    else if ((area & SKResizeDiagonal135Area))
+        [[NSCursor resizeDiagonal135Cursor] set];
+    else if ((area & SKReadingBarArea))
+        [[NSCursor openHandBarCursor] set];
+    else if (area == kPDFTextFieldArea)
+        [[NSCursor IBeamCursor] set];
+    else if (toolMode == SKNoteToolMode && (area & kPDFPageArea))
+        [[self cursorForNoteToolMode] set];
+    else if (toolMode == SKSelectToolMode && (area & kPDFPageArea))
+        [[NSCursor crosshairCursor] set];
+    else if (toolMode == SKMagnifyToolMode && (area & kPDFPageArea))
+        [(([NSEvent standardModifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor]) set];
+    else
+        [super setCursorForAreaOfInterest:area];
+}
+
+- (void)setCursorForMouse:(NSEvent *)theEvent {
+    if (theEvent == nil)
+        theEvent = [NSEvent mouseEventWithType:NSMouseMoved
+                                      location:[[self window] mouseLocationOutsideOfEventStream]
+                                 modifierFlags:[NSEvent standardModifierFlags]
+                                     timestamp:0
+                                  windowNumber:[[self window] windowNumber]
+                                       context:nil
+                                   eventNumber:0
+                                    clickCount:1
+                                      pressure:0.0];
+    [self setCursorForAreaOfInterest:[self areaOfInterestForMouse:theEvent]];
+}
+
 @end
+
+static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page) {
+    BOOL rotated = ([page rotation] % 180 != 0);
+    switch (mask) {
+        case SKMaxXEdgeMask:
+        case SKMinXEdgeMask:
+            return rotated ? SKResizeUpDownArea : SKResizeLeftRightArea;
+        case SKMaxXEdgeMask | SKMaxYEdgeMask:
+        case SKMinXEdgeMask | SKMinYEdgeMask:
+            return rotated ? SKResizeDiagonal135Area : SKResizeDiagonal45Area;
+        case SKMaxYEdgeMask:
+        case SKMinYEdgeMask:
+            return rotated ? SKResizeLeftRightArea : SKResizeUpDownArea;
+        case SKMaxXEdgeMask | SKMinYEdgeMask:
+        case SKMinXEdgeMask | SKMaxYEdgeMask:
+            return rotated ? SKResizeDiagonal45Area : SKResizeDiagonal135Area;
+        default:
+            return kPDFNoArea;
+    }
+}
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower) 
 {
