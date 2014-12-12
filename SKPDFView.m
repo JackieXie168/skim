@@ -4174,7 +4174,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         }
         
-        if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+        if ((area & kPDFPageArea) == 0) {
+            if ((area & SKReadingBarArea) == 0)
+                area |= SKDragArea;
+        } else if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
             if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds])) {
                 area = kPDFTextFieldArea;
             } else if ((area & SKReadingBarArea) == 0) {
@@ -4182,28 +4185,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
                 else if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     area |= SKDragArea;
-                else if ((area & kPDFPageArea) == 0 || ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO))
+                else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO)
                     area |= SKDragArea;
             }
         } else if (toolMode == SKMoveToolMode) {
-            if ((area & (kPDFLinkArea | SKReadingBarArea)))
-                area &= (kPDFPageArea | kPDFLinkArea | SKReadingBarArea | SKResizeUpDownArea | SKResizeLeftRightArea);
-            else
-                area = (area & kPDFPageArea) | SKDragArea;
+            if ((area & (kPDFLinkArea | SKReadingBarArea)) == 0)
+                area |= SKDragArea;
         } else {
-            if ((area & kPDFPageArea)) {
-                area = kPDFPageArea;
-                if (toolMode == SKSelectToolMode) {
-                    resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor]);
-                    if (resizeHandle)
-                        area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
-                    else if (NSPointInRect(p, selectionRect))
-                        area |= SKDragArea;
-                }
-            } else if ((area & SKReadingBarArea)) {
-                area &= (SKReadingBarArea | SKResizeUpDownArea | SKResizeLeftRightArea);
-            } else {
-                area = SKDragArea;
+            area = kPDFPageArea;
+            if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+                if ((resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor])))
+                    area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
+                else if (NSPointInRect(p, selectionRect))
+                    area |= SKDragArea;
             }
         }
     }
