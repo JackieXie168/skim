@@ -3045,12 +3045,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSPoint offset = SKSubstractPoints(pagePoint, originalBounds.origin);
     NSUInteger eventMask = NSLeftMouseUpMask | NSLeftMouseDraggedMask;
     
+    [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     if (resizeHandle == 0) {
-        [[NSCursor closedHandCursor] set];
         [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
         eventMask |= NSPeriodicMask;
-    } else {
-        [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     }
     
     while (YES) {
@@ -3405,10 +3403,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     SKRectEdges newEffectiveResizeHandle, effectiveResizeHandle = resizeHandle;
     
-    if (resizeHandle == 0)
-        [[NSCursor closedHandCursor] set];
-    else
-        [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
+    [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     
 	while (YES) {
         
@@ -4175,21 +4170,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds])) {
                 area = kPDFTextFieldArea;
             } else if ((area & SKReadingBarArea) == 0) {
-                if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isResizable] && (resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) != 0)
+                if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isMovable] && 
+                    ((resizeHandle = [activeAnnotation resizeHandleForPoint:p scaleFactor:[self scaleFactor]]) || [activeAnnotation hitTest:p]))
                     area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
-                else if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
-                    area |= SKDragArea;
-                else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters] == NO)
+                else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && 
+                         [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters] == NO)
                     area |= SKDragArea;
             }
         } else {
             area = kPDFPageArea;
-            if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
-                if ((resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor])))
-                    area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
-                else if (NSPointInRect(p, selectionRect))
-                    area |= SKDragArea;
-            }
+            if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO &&
+                (resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor])) || NSPointInRect(p, selectionRect))
+                area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
         }
     }
     
@@ -4242,6 +4234,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page) {
     BOOL rotated = ([page rotation] % 180 != 0);
     switch (mask) {
+        case 0:
+            return SKDragArea;
         case SKMaxXEdgeMask:
         case SKMinXEdgeMask:
             return rotated ? SKResizeUpDownArea : SKResizeLeftRightArea;
