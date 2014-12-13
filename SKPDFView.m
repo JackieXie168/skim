@@ -1113,12 +1113,6 @@ enum {
     }
 }
 
-- (BOOL)hasTextNearMouse:(NSEvent *)theEvent {
-    NSPoint p = NSZeroPoint;
-    PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
-    return [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters];
-}
-
 #define IS_TABLET_EVENT(theEvent, deviceType) (([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype) && [NSEvent currentPointingDeviceType] == deviceType)
 
 - (void)mouseDown:(NSEvent *)theEvent{
@@ -4185,7 +4179,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
                 else if ([[activeAnnotation page] isEqual:page] && [activeAnnotation isMovable] && [activeAnnotation hitTest:p])
                     area |= SKDragArea;
-                else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [self hasTextNearMouse:theEvent] == NO)
+                else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters] == NO)
                     area |= SKDragArea;
             }
         } else if (toolMode == SKMoveToolMode) {
