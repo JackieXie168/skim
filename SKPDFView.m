@@ -4168,7 +4168,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         }
         
-        if ((area & kPDFPageArea) == 0) {
+        if ((area & kPDFPageArea) == 0 || toolMode == SKMoveToolMode) {
             if ((area & SKReadingBarArea) == 0)
                 area |= SKDragArea;
         } else if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
@@ -4182,9 +4182,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 else if ((toolMode == SKTextToolMode || hideNotes || ANNOTATION_MODE_IS_MARKUP) && area == kPDFPageArea && modifiers == 0 && [[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters] == NO)
                     area |= SKDragArea;
             }
-        } else if (toolMode == SKMoveToolMode) {
-            if ((area & (kPDFLinkArea | SKReadingBarArea)) == 0)
-                area |= SKDragArea;
         } else {
             area = kPDFPageArea;
             if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
