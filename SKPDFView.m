@@ -545,6 +545,12 @@ enum {
     }
 }
 
+- (void)setCurrentSelection:(PDFSelection *)selection {
+    if (isSelectingMarkup && annotationMode == SKHighlightNote)
+        [selection setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKHighlightNoteColorKey]];
+    [super setCurrentSelection:selection];
+}
+
 - (NSRect)currentSelectionRect {
     if (toolMode == SKSelectToolMode)
         return selectionRect;
@@ -1184,10 +1190,13 @@ enum {
         [self doDragWithEvent:theEvent];
     } else {
         [self setActiveAnnotation:nil];
+        isSelectingMarkup = (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP);
         [super mouseDown:theEvent];
-        if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP && [[self currentSelection] hasCharacters]) {
-            [self addAnnotationWithType:annotationMode];
+        if (isSelectingMarkup) {
+            if ([[self currentSelection] hasCharacters])
+                [self addAnnotationWithType:annotationMode];
             [self setCurrentSelection:nil];
+            isSelectingMarkup = NO;
         }
     }
 }
