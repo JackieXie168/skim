@@ -126,6 +126,8 @@ enum {
     
     BOOL isZooming;
     
+    BOOL isSelectingMarkup;
+    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;
