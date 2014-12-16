@@ -207,7 +207,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     return image;
 }
 
-+ (void)drawAddBadgeAtPoint:(NSPoint)point {
+static void drawAddBadgeAtPoint(NSPoint point) {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
     [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
@@ -237,6 +237,17 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [NSGraphicsContext restoreGraphicsState];
     
     [shadow1 release];
+}
+
+static void drawPageBackgroundInRect(NSRect rect) {
+    NSGradient *gradient1 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.337 blue:0.814 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
+    NSGradient *gradient2 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.431 blue:0.891 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
+    
+    [gradient1 drawInRect:rect angle:90.0];
+    [gradient2 drawInRect:NSInsetRect(rect, 1.0, 1.0) angle:90.0];
+    
+    [gradient1 release];
+    [gradient2 release];
 }
 
 + (void)makeToolbarImages {
@@ -318,9 +329,6 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
     NSColor *fgColor = [NSColor whiteColor];
-    
-    NSGradient *gradient1 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.337 blue:0.814 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
-    NSGradient *gradient2 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.431 blue:0.891 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     
     NSBezierPath *path;
     NSGradient *gradient;
@@ -512,8 +520,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(7.0, 6.0, 13.0, 9.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(8.0, 7.0, 11.0, 7.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 7.0)];
@@ -562,8 +569,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(7.0, 6.0, 13.0, 9.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(8.0, 7.0, 11.0, 7.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 7.0)];
@@ -630,8 +636,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(7.0, 6.0, 13.0, 9.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(8.0, 7.0, 11.0, 7.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     [shadow3 set];
     [[NSColor colorWithCalibratedRed:1.0 green:0.865 blue:0.296 alpha:1.0] setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 7.0, 21.0, 2.0)];
@@ -704,8 +709,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(10.0, 5.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, 6.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(10.0, 5.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSinglePageImage unlockFocus];
     [toolbarSinglePageImage setName:SKImageNameToolbarSinglePage];
@@ -721,10 +725,8 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(6.0, 5.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(14.0, 5.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(7.0, 6.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(15.0, 6.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(6.0, 5.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(14.0, 5.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTwoUpImage unlockFocus];
     [toolbarTwoUpImage setName:SKImageNameToolbarTwoUp];
@@ -742,10 +744,8 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [NSGraphicsContext saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(9.0, 4.0, 9.0 , 12.0)];
     [path addClip];
-    [gradient1 drawInRect:NSMakeRect(10.0, 11.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(10.0, 0.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, 12.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, 1.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(10.0, 11.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(10.0, 0.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSinglePageContinuousImage unlockFocus];
     [toolbarSinglePageContinuousImage setName:SKImageNameToolbarSinglePageContinuous];
@@ -763,14 +763,10 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [NSGraphicsContext saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 4.0, 19.0 , 12.0)];
     [path addClip];
-    [gradient1 drawInRect:NSMakeRect(6.0, 11.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(14.0, 11.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(6.0, 0.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(14.0, 0.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(7.0, 12.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(15.0, 12.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(7.0, 1.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(15.0, 1.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(6.0, 11.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(14.0, 11.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(6.0, 0.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(14.0, 0.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTwoUpContinuousImage unlockFocus];
     [toolbarTwoUpContinuousImage setName:SKImageNameToolbarTwoUpContinuous];
@@ -789,12 +785,9 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [NSGraphicsContext saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 4.0, 19.0 , 12.0)];
     [path addClip];
-    [gradient1 drawInRect:NSMakeRect(10.0, 10.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(6.0, -1.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(14.0, -1.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, 11.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(7.0, 0.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(15.0, 0.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(10.0, 10.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(6.0, -1.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(14.0, -1.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarBookModeImage unlockFocus];
     [toolbarBookModeImage setName:SKImageNameToolbarBookMode];
@@ -813,10 +806,8 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [NSGraphicsContext saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(9.0, 4.0, 9.0 , 12.0)];
     [path addClip];
-    [gradient1 drawInRect:NSMakeRect(10.0, 12.0, 7.0 , 10.0) angle:90.0];
-    [gradient1 drawInRect:NSMakeRect(10.0, -2.0, 7.0 , 10.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, 13.0, 5.0 , 8.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(11.0, -1.0, 5.0 , 8.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(10.0, 12.0, 7.0 , 10.0));
+    drawPageBackgroundInRect(NSMakeRect(10.0, -2.0, 7.0 , 10.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarPageBreaksImage unlockFocus];
     [toolbarPageBreaksImage setName:SKImageNameToolbarPageBreaks];
@@ -834,8 +825,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(7.0, 6.0, 13.0, 9.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(8.0, 7.0, 11.0, 7.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarMediaBoxImage unlockFocus];
     [toolbarMediaBoxImage setName:SKImageNameToolbarMediaBox];
@@ -853,8 +843,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [gradient1 drawInRect:NSMakeRect(7.0, 6.0, 13.0, 9.0) angle:90.0];
-    [gradient2 drawInRect:NSMakeRect(8.0, 7.0, 11.0, 7.0) angle:90.0];
+    drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     [shadow3 set];
     [[NSColor colorWithCalibratedRed:1.0 green:0.865 blue:0.296 alpha:1.0] setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 7.0, 21.0, 2.0)];
@@ -1106,7 +1095,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     toolbarNewFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
     [toolbarNewFolderImage lockFocus];
     [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-    [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 18.0)];
+    drawAddBadgeAtPoint(NSMakePoint(18.0, 18.0));
     [toolbarNewFolderImage unlockFocus];
     [toolbarNewFolderImage setName:SKImageNameToolbarNewFolder];
     
@@ -1130,7 +1119,7 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 17.0, 26.0, 1.0)];
     [path fill];
-    [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 14.0)];
+    drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
     [NSGraphicsContext restoreGraphicsState];
     [toolbarNewSeparatorImage unlockFocus];
     [toolbarNewSeparatorImage setName:SKImageNameToolbarNewSeparator];
@@ -1138,8 +1127,6 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     [shadow1 release];
     [shadow2 release];
     [shadow3 release];
-    [gradient1 release];
-    [gradient2 release];
 }
 
 + (void)makeNoteImages {
