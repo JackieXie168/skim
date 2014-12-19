@@ -1323,7 +1323,7 @@ static void drawPageBackgroundInRect(NSRect rect) {
     NSShadow *redShadow = [[NSShadow alloc] init];
     [redShadow setShadowBlurRadius:2.0];
     [redShadow setShadowOffset:NSZeroSize];
-    [redShadow setShadowColor:[NSColor colorWithCalibratedRed:0.7 green:0.0 blue:0.0 alpha:1.0]];
+    [redShadow setShadowColor:lineColor];
     [redShadow set];
     [redShadow release];
     [fgColor setFill];
@@ -1401,7 +1401,7 @@ static void drawPageBackgroundInRect(NSRect rect) {
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
+    [lineColor setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 7.0, 17.0, 2.0)];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
