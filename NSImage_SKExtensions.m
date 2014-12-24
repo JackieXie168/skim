@@ -663,8 +663,8 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(17.0, 2.0, 2.0, 17.0)];
         [path fill];
     );
-            
-        CGFloat outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
+    
+    CGFloat outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
     
     MAKE_IMAGE(SKImageNameToolbarLeftPane, NO, 27.0, 17.0, 
         [NSGraphicsContext saveGraphicsState];
