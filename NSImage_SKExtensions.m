@@ -307,7 +307,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarPageDown, NO, 27.0, 19.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -322,7 +322,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarFirstPage, NO, 27.0, 19.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -342,7 +342,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarLastPage, NO, 27.0, 19.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -362,7 +362,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarBack, NO, 27.0, 13.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -373,7 +373,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarForward, NO, 27.0, 13.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -384,7 +384,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarZoomIn, NO, 27.0, 19.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -393,7 +393,7 @@ do {\
         [path appendBezierPathWithRect:NSMakeRect(12.0, 4.0, 3.0, 13.0)];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarZoomOut, NO, 27.0, 9.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -401,7 +401,7 @@ do {\
         [path appendBezierPathWithRect:NSMakeRect(7.0, 4.0, 13.0, 3.0)];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarZoomActual, NO, 27.0, 14.0, 
         [shadow1 set];
         [fgColor setFill];
@@ -410,7 +410,7 @@ do {\
         [path appendBezierPathWithRect:NSMakeRect(7.0, 9.0, 13.0, 3.0)];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarZoomToFit, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -433,7 +433,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarZoomToSelection, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -476,7 +476,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarRotateLeft, NO, 27.0, 21.0, 
         [shadow1 set];
         [fgColor set];
@@ -489,7 +489,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarRotateRight, NO, 27.0, 21.0, 
         [shadow1 set];
         [fgColor set];
@@ -502,7 +502,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarCrop, NO, 27.0, 21.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -521,7 +521,7 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(17.0, 2.0, 2.0, 17.0)];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarFullScreen, NO, 27.0, 21.0, 
         [shadow1 set];
         [fgColor set];
@@ -546,7 +546,7 @@ do {\
         [path setWindingRule:NSEvenOddWindingRule];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarPresentation, NO, 27.0, 21.0, 
         [shadow1 set];
         [fgColor set];
@@ -559,7 +559,7 @@ do {\
         [path closePath];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarSinglePage, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -569,7 +569,7 @@ do {\
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(10.0, 5.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarTwoUp, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -580,7 +580,7 @@ do {\
         drawPageBackgroundInRect(NSMakeRect(6.0, 5.0, 7.0 , 10.0));
         drawPageBackgroundInRect(NSMakeRect(14.0, 5.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarSinglePageContinuous, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -593,7 +593,7 @@ do {\
         drawPageBackgroundInRect(NSMakeRect(10.0, 11.0, 7.0 , 10.0));
         drawPageBackgroundInRect(NSMakeRect(10.0, 0.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarTwoUpContinuous, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -608,7 +608,7 @@ do {\
         drawPageBackgroundInRect(NSMakeRect(6.0, 0.0, 7.0 , 10.0));
         drawPageBackgroundInRect(NSMakeRect(14.0, 0.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarBookMode, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -623,7 +623,7 @@ do {\
         drawPageBackgroundInRect(NSMakeRect(6.0, -1.0, 7.0 , 10.0));
         drawPageBackgroundInRect(NSMakeRect(14.0, -1.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarPageBreaks, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -637,7 +637,7 @@ do {\
         drawPageBackgroundInRect(NSMakeRect(10.0, 12.0, 7.0 , 10.0));
         drawPageBackgroundInRect(NSMakeRect(10.0, -2.0, 7.0 , 10.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarMediaBox, NO, 27.0, 21.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -649,7 +649,7 @@ do {\
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarCropBox, NO, 27.0, 21.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -697,7 +697,7 @@ do {\
         [path appendBezierPathWithRect:NSMakeRect(6.0, 13.0, 3.0, 1.0)];
         [path fill];
     );
-        
+    
     MAKE_IMAGE(SKImageNameToolbarRightPane, NO, 27.0, 17.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow3 set];
@@ -1265,13 +1265,13 @@ do {\
         [path setLineWidth:1.0];
         [path stroke];
     );
-    }
+}
 
-    + (void)makeCursorImages {
-        NSColor *fgColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
-        NSColor *bgColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
-        
-        NSBezierPath *path;
++ (void)makeCursorImages {
+    NSColor *fgColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
+    NSColor *bgColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+    
+    NSBezierPath *path;
     
     MAKE_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0, 
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
