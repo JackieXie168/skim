@@ -418,7 +418,6 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
         [fgColor setFill];
@@ -461,7 +460,6 @@ do {\
         [path lineToPoint:NSMakePoint(6.0, 12.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
         [fgColor setFill];
@@ -510,7 +508,6 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
         [shadow3 set];
@@ -645,7 +642,6 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
     );
@@ -657,7 +653,6 @@ do {\
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
         [shadow3 set];
@@ -799,7 +794,6 @@ do {\
         [path appendBezierPathWithOvalInRect:NSMakeRect(7.0, 7.0, 9.0, 9.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
     );
     
     MAKE_IMAGE(SKImageNameToolbarSelectTool, NO, 27.0, 19.0, 
@@ -828,7 +822,6 @@ do {\
         [path lineToPoint:NSMakePoint(8.0, 12.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
     );
     
     MAKE_IMAGE(SKImageNameToolbarNewFolder, NO, 32.0, 32.0, 
@@ -992,16 +985,14 @@ do {\
         path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
-        );
-
-        MAKE_IMAGE(SKImageNameSquareNote, NO, 21.0, 19.0,
+    );
+    
+    MAKE_IMAGE(SKImageNameSquareNote, NO, 21.0, 19.0,
         [shadow2 set];
         [lineColor setStroke];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
     );
     
     MAKE_IMAGE(SKImageNameHighlightNote, NO, 21.0, 19.0,
@@ -1105,7 +1096,6 @@ do {\
         [path curveToPoint:NSMakePoint(17.0, 11.0) controlPoint1:NSMakePoint(8.0, 15.0) controlPoint2:NSMakePoint(11.0, 15.0)];
         [path setLineWidth:2.0];
         [path stroke];
-        [path setLineWidth:1.0];
     );
     
     [shadow1 release];
