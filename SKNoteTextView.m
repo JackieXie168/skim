@@ -57,7 +57,7 @@ static char SKNoteTextViewDefaultsObservationContext;
     if (usesDefaultFontSize != flag) {
         usesDefaultFontSize = flag;
         if (usesDefaultFontSize) {
-            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKNoteTextFontSizeKey];
+            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKNoteTextFontSizeKey] ? [[NSUserDefaults standardUserDefaults] floatForKey:SKNoteTextFontSizeKey] : 0.0;
             [self setFont:[NSFont userFontOfSize:fontSize]];
             [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKNoteTextFontSizeKey context:&SKNoteTextViewDefaultsObservationContext];
         } else {
@@ -79,7 +79,7 @@ static char SKNoteTextViewDefaultsObservationContext;
     if (context == &SKNoteTextViewDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKNoteTextFontSizeKey] && usesDefaultFontSize) {
-            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKNoteTextFontSizeKey];
+            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKNoteTextFontSizeKey] ? [[NSUserDefaults standardUserDefaults] floatForKey:SKNoteTextFontSizeKey] : 0.0;
             [self setFont:[NSFont userFontOfSize:fontSize]];
         }
     } else {
