@@ -43,7 +43,6 @@
 #import "SKStatusBar.h"
 #import "SKTextWithIconCell.h"
 #import "SKToolbarItem.h"
-#import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKSeparatorCell.h"
 #import "NSMenu_SKExtensions.h"
@@ -920,6 +919,77 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         [self updateStatus];
 }
 
+#pragma mark Images
+
+
+static void drawAddBadgeAtPoint(NSPoint point) {
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
+    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
+    [path relativeLineToPoint:NSMakePoint(3.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
+    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 3.0)];
+    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
+    [path relativeLineToPoint:NSMakePoint(-3.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
+    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
+    [path closePath];
+    
+    NSShadow *shadow1 = [[NSShadow alloc] init];
+    [shadow1 setShadowBlurRadius:1.0];
+    [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [path fill];
+    [shadow1 set];
+    [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [shadow1 release];
+}
+
++ (NSImage *)toolbarNewFolderImage {
+    static NSImage *toolbarNewFolderImage = nil;
+    if (toolbarNewFolderImage == nil) {
+        toolbarNewFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        [toolbarNewFolderImage lockFocus];
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        drawAddBadgeAtPoint(NSMakePoint(18.0, 18.0));
+        [toolbarNewFolderImage unlockFocus];
+    }
+    return toolbarNewFolderImage;
+}
+
++ (NSImage *)toolbarNewSeparatorImage {
+    static NSImage *toolbarNewSeparatorImage = nil;
+    if (toolbarNewSeparatorImage == nil) {
+        toolbarNewSeparatorImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        [toolbarNewSeparatorImage lockFocus];
+        NSShadow *shadow1 = [[NSShadow alloc] init];
+        [shadow1 setShadowBlurRadius:2.0];
+        [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
+        [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
+        [NSGraphicsContext saveGraphicsState];
+        [shadow1 set];
+        [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
+        [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
+        [NSGraphicsContext restoreGraphicsState];
+        [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
+        [NSBezierPath fillRect:NSMakeRect(3.0, 15.0, 26.0, 3.0)];
+        [gradient drawInRect:NSMakeRect(3.0, 15.0, 26.0, 2.0) angle:90.0];
+        drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
+        [toolbarNewSeparatorImage unlockFocus];
+    }
+    return toolbarNewSeparatorImage;
+}
+
 #pragma mark Toolbar
 
 - (void)setupToolbar {
@@ -941,7 +1011,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewFolderToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Folder", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Folder", @"Tool tip message")];
-    [item setImageNamed:SKImageNameToolbarNewFolder];
+    [item setImage:[[self class] toolbarNewFolderImage]];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkFolder:)];
     [dict setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
@@ -950,7 +1020,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewSeparatorToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Separator", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Separator", @"Tool tip message")];
-    [item setImageNamed:SKImageNameToolbarNewSeparator];
+    [item setImage:[[self class] toolbarNewSeparatorImage]];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkSeparator:)];
     [dict setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
