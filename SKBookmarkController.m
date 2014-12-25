@@ -976,6 +976,7 @@ static void drawAddBadgeAtPoint(NSPoint point) {
         [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
         [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
+        NSBezierPath *path;
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
         [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
@@ -984,6 +985,18 @@ static void drawAddBadgeAtPoint(NSPoint point) {
         [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
         [NSBezierPath fillRect:NSMakeRect(3.0, 15.0, 26.0, 3.0)];
         [gradient drawInRect:NSMakeRect(3.0, 15.0, 26.0, 2.0) angle:90.0];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(3.0, 15.0)];
+        [path lineToPoint:NSMakePoint(3.0, 17.0)];
+        [path lineToPoint:NSMakePoint(5.0, 17.0)];
+        [path closePath];
+        [gradient drawInBezierPath:path angle:0.0];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(29.0, 15.0)];
+        [path lineToPoint:NSMakePoint(29.0, 17.0)];
+        [path lineToPoint:NSMakePoint(27.0, 17.0)];
+        [path closePath];
+        [gradient drawInBezierPath:path angle:180.0];
         drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
         [toolbarNewSeparatorImage unlockFocus];
     }
