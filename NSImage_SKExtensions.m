@@ -681,42 +681,6 @@ do {\
         [path fill];
     );
     
-    MAKE_BADGED_IMAGE(SKImageNameToolbarTextNoteMenu, SKImageNameTextNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddTextNote, SKImageNameTextNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddTextNoteMenu, SKImageNameToolbarAddTextNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAnchoredNoteMenu, SKImageNameAnchoredNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddAnchoredNote, SKImageNameAnchoredNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddAnchoredNoteMenu, SKImageNameToolbarAddTextNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarCircleNoteMenu, SKImageNameCircleNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddCircleNote, SKImageNameCircleNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddCircleNoteMenu, SKImageNameToolbarAddCircleNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarSquareNoteMenu, SKImageNameSquareNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddSquareNote, SKImageNameSquareNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddSquareNoteMenu, SKImageNameToolbarAddSquareNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarHighlightNoteMenu, SKImageNameHighlightNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddHighlightNote, SKImageNameHighlightNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddHighlightNoteMenu, SKImageNameToolbarAddHighlightNote, copyWithMenuBadge);
-        
-    MAKE_BADGED_IMAGE(SKImageNameToolbarUnderlineNoteMenu, SKImageNameUnderlineNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddUnderlineNote, SKImageNameUnderlineNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddUnderlineNoteMenu, SKImageNameToolbarAddUnderlineNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarStrikeOutNoteMenu, SKImageNameStrikeOutNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNote, SKImageNameStrikeOutNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNoteMenu, SKImageNameToolbarAddStrikeOutNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarLineNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameLineNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNoteMenu, SKImageNameToolbarAddLineNote, copyWithMenuBadge);
-    
-    MAKE_BADGED_IMAGE(SKImageNameToolbarInkNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNote, SKImageNameLineNote, copyWithAddBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNoteMenu, SKImageNameToolbarAddInkNote, copyWithMenuBadge);
-    
     MAKE_IMAGE(SKImageNameToolbarTextTool, NO, 27.0, 19.0, 
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
@@ -784,6 +748,42 @@ do {\
         [path setLineWidth:2.0];
         [path stroke];
     );
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarTextNoteMenu, SKImageNameTextNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddTextNote, SKImageNameTextNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddTextNoteMenu, SKImageNameToolbarAddTextNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAnchoredNoteMenu, SKImageNameAnchoredNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddAnchoredNote, SKImageNameAnchoredNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddAnchoredNoteMenu, SKImageNameToolbarAddTextNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarCircleNoteMenu, SKImageNameCircleNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddCircleNote, SKImageNameCircleNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddCircleNoteMenu, SKImageNameToolbarAddCircleNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarSquareNoteMenu, SKImageNameSquareNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddSquareNote, SKImageNameSquareNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddSquareNoteMenu, SKImageNameToolbarAddSquareNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarHighlightNoteMenu, SKImageNameHighlightNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddHighlightNote, SKImageNameHighlightNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddHighlightNoteMenu, SKImageNameToolbarAddHighlightNote, copyWithMenuBadge);
+        
+    MAKE_BADGED_IMAGE(SKImageNameToolbarUnderlineNoteMenu, SKImageNameUnderlineNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddUnderlineNote, SKImageNameUnderlineNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddUnderlineNoteMenu, SKImageNameToolbarAddUnderlineNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarStrikeOutNoteMenu, SKImageNameStrikeOutNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNote, SKImageNameStrikeOutNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNoteMenu, SKImageNameToolbarAddStrikeOutNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarLineNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameLineNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNoteMenu, SKImageNameToolbarAddLineNote, copyWithMenuBadge);
+    
+    MAKE_BADGED_IMAGE(SKImageNameToolbarInkNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNote, SKImageNameLineNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNoteMenu, SKImageNameToolbarAddInkNote, copyWithMenuBadge);
     
     [shadow1 release];
     [shadow2 release];
