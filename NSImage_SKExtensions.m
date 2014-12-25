@@ -108,8 +108,6 @@ NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
 NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
 NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
 NSString *SKImageNameToolbarSelectTool = @"ToolbarSelectTool";
-NSString *SKImageNameToolbarNewFolder = @"ToolbarNewFolder";
-NSString *SKImageNameToolbarNewSeparator = @"ToolbarNewSeparator";
 
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
@@ -207,38 +205,6 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
     return image;
 }
 
-static void drawAddBadgeAtPoint(NSPoint point) {
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
-    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
-    [path relativeLineToPoint:NSMakePoint(3.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
-    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 3.0)];
-    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
-    [path relativeLineToPoint:NSMakePoint(-3.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
-    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
-    [path closePath];
-    
-    NSShadow *shadow1 = [[NSShadow alloc] init];
-    [shadow1 setShadowBlurRadius:1.0];
-    [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-    
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
-    [path fill];
-    [shadow1 set];
-    [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
-    [path stroke];
-    [NSGraphicsContext restoreGraphicsState];
-    
-    [shadow1 release];
-}
-
 static void drawPageBackgroundInRect(NSRect rect) {
     NSGradient *gradient1 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.337 blue:0.814 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
     NSGradient *gradient2 = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.0 green:0.431 blue:0.891 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
@@ -278,13 +244,8 @@ do {\
     
     NSShadow *shadow2 = [[NSShadow alloc] init];
     [shadow2 setShadowBlurRadius:2.0];
-    [shadow2 setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-    
-    NSShadow *shadow3 = [[NSShadow alloc] init];
-    [shadow3 setShadowBlurRadius:2.0];
-    [shadow3 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    [shadow2 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
     NSColor *fgColor = [NSColor whiteColor];
     
@@ -510,7 +471,7 @@ do {\
         [path stroke];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
-        [shadow3 set];
+        [shadow2 set];
         [[NSColor colorWithCalibratedRed:1.0 green:0.865 blue:0.296 alpha:1.0] setFill];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 7.0, 21.0, 2.0)];
         [path fill];
@@ -655,7 +616,7 @@ do {\
         [path stroke];
         [NSGraphicsContext restoreGraphicsState];
         drawPageBackgroundInRect(NSMakeRect(7.0, 6.0, 13.0, 9.0));
-        [shadow3 set];
+        [shadow2 set];
         [[NSColor colorWithCalibratedRed:1.0 green:0.865 blue:0.296 alpha:1.0] setFill];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 7.0, 21.0, 2.0)];
         [path fill];
@@ -668,7 +629,7 @@ do {\
     
     MAKE_IMAGE(SKImageNameToolbarLeftPane, NO, 27.0, 17.0, 
         [NSGraphicsContext saveGraphicsState];
-        [shadow3 set];
+        [shadow2 set];
         [fgColor setFill];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
         [path fill];
@@ -695,7 +656,7 @@ do {\
     
     MAKE_IMAGE(SKImageNameToolbarRightPane, NO, 27.0, 17.0, 
         [NSGraphicsContext saveGraphicsState];
-        [shadow3 set];
+        [shadow2 set];
         [fgColor setFill];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
         [path fill];
@@ -824,33 +785,8 @@ do {\
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameToolbarNewFolder, NO, 32.0, 32.0, 
-        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        drawAddBadgeAtPoint(NSMakePoint(18.0, 18.0));
-    );
-    
-    MAKE_IMAGE(SKImageNameToolbarNewSeparator, NO, 32.0, 32.0, 
-        [NSGraphicsContext saveGraphicsState];
-        [shadow2 set];
-        [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
-        [path fill];
-        [NSGraphicsContext restoreGraphicsState];
-        [[NSColor colorWithCalibratedWhite:0.65 alpha:1.0] setFill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 15.0, 26.0, 2.0)];
-        [path fill];
-        [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] setFill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 16.0, 24.0, 1.0)];
-        [path fill];
-        [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 17.0, 26.0, 1.0)];
-        [path fill];
-        drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
-    );
-    
     [shadow1 release];
     [shadow2 release];
-    [shadow3 release];
 }
 
 + (void)makeNoteImages {
@@ -861,13 +797,13 @@ do {\
     
     NSShadow *shadow2 = [[NSShadow alloc] init];
     [shadow2 setShadowBlurRadius:2.0];
-    [shadow2 setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+    [shadow2 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
     NSShadow *shadow3 = [[NSShadow alloc] init];
     [shadow3 setShadowBlurRadius:2.0];
-    [shadow3 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    [shadow3 setShadowOffset:NSMakeSize(0.0, -1.0)];
+    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
     NSColor *fgColor = [NSColor whiteColor];
     NSColor *lineColor = [NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0];
@@ -879,7 +815,7 @@ do {\
     
     MAKE_IMAGE(SKImageNameTextNote, NO, 21.0, 19.0,
         [NSGraphicsContext saveGraphicsState];
-        [shadow3 set];
+        [shadow2 set];
         [fgColor setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(5.0, 5.0)];
@@ -980,7 +916,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameCircleNote, NO, 21.0, 19.0,
-        [shadow2 set];
+        [shadow3 set];
         [lineColor setStroke];
         path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
@@ -988,7 +924,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameSquareNote, NO, 21.0, 19.0,
-        [shadow2 set];
+        [shadow3 set];
         [lineColor setStroke];
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
@@ -998,12 +934,9 @@ do {\
     MAKE_IMAGE(SKImageNameHighlightNote, NO, 21.0, 19.0,
         gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0]] autorelease];
         [gradient drawInRect:NSMakeRect(3.0, 2.0, 15.0, 16.0) angle:90.0];
-        NSShadow *redShadow = [[NSShadow alloc] init];
-        [redShadow setShadowBlurRadius:2.0];
-        [redShadow setShadowOffset:NSZeroSize];
-        [redShadow setShadowColor:lineColor];
-        [redShadow set];
-        [redShadow release];
+        [shadow1 setShadowColor:lineColor];
+        [shadow1 set];
+        [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
         [fgColor setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(5.5, 5.0)];
@@ -1073,7 +1006,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameLineNote, NO, 21.0, 19.0,
-        [shadow2 set];
+        [shadow3 set];
         [lineColor setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(3.0, 10.0)];
@@ -1088,7 +1021,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameInkNote, NO, 21.0, 19.0,
-        [shadow2 set];
+        [shadow3 set];
         [lineColor setStroke];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 9.0)];
