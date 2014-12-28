@@ -778,11 +778,11 @@ do {\
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNoteMenu, SKImageNameToolbarAddStrikeOutNote, copyWithMenuBadge);
     
     MAKE_BADGED_IMAGE(SKImageNameToolbarLineNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameLineNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameInkNote, copyWithAddBadge);
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNoteMenu, SKImageNameToolbarAddLineNote, copyWithMenuBadge);
     
     MAKE_BADGED_IMAGE(SKImageNameToolbarInkNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNote, SKImageNameLineNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNote, SKImageNameInkNote, copyWithAddBadge);
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddInkNoteMenu, SKImageNameToolbarAddInkNote, copyWithMenuBadge);
     
     [shadow1 release];
