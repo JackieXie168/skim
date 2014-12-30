@@ -777,8 +777,8 @@ do {\
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNote, SKImageNameStrikeOutNote, copyWithAddBadge);
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddStrikeOutNoteMenu, SKImageNameToolbarAddStrikeOutNote, copyWithMenuBadge);
     
-    MAKE_BADGED_IMAGE(SKImageNameToolbarLineNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
-    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameInkNote, copyWithAddBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarLineNoteMenu, SKImageNameLineNote, copyWithMenuBadge);
+    MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNote, SKImageNameLineNote, copyWithAddBadge);
     MAKE_BADGED_IMAGE(SKImageNameToolbarAddLineNoteMenu, SKImageNameToolbarAddLineNote, copyWithMenuBadge);
     
     MAKE_BADGED_IMAGE(SKImageNameToolbarInkNoteMenu, SKImageNameInkNote, copyWithMenuBadge);
