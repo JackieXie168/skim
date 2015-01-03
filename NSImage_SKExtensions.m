@@ -811,6 +811,9 @@ do {\
     NSBezierPath *path;
     NSGradient *gradient;
     
+    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0];
+    NSGlyph glyph;
+    
     [NSBezierPath setDefaultLineWidth:1.0];
     
     MAKE_IMAGE(SKImageNameTextNote, NO, 21.0, 19.0,
@@ -932,6 +935,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameHighlightNote, NO, 21.0, 19.0,
+        glyph = [font glyphWithName:@"H"];
         gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0]] autorelease];
         [gradient drawInRect:NSMakeRect(3.0, 2.0, 15.0, 16.0) angle:90.0];
         [shadow1 setShadowColor:lineColor];
@@ -939,40 +943,19 @@ do {\
         [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
         [fgColor setFill];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(5.5, 5.0)];
-        [path lineToPoint:NSMakePoint(9.5, 15.0)];
-        [path lineToPoint:NSMakePoint(11.5, 15.0)];
-        [path lineToPoint:NSMakePoint(15.5, 5.0)];
-        [path lineToPoint:NSMakePoint(13.5, 5.0)];
-        [path lineToPoint:NSMakePoint(12.7, 7.0)];
-        [path lineToPoint:NSMakePoint(8.3, 7.0)];
-        [path lineToPoint:NSMakePoint(7.5, 5.0)];
-        [path closePath];
-        [path moveToPoint:NSMakePoint(9.1, 9.0)];
-        [path lineToPoint:NSMakePoint(11.9, 9.0)];
-        [path lineToPoint:NSMakePoint(10.5, 12.5)];
-        [path closePath];
+        [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
+        [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
     );
     
     MAKE_IMAGE(SKImageNameUnderlineNote, NO, 21.0, 19.0,
+        glyph = [font glyphWithName:@"U"];
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
         [fgColor setFill];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(5.5, 6.0)];
-        [path lineToPoint:NSMakePoint(9.5, 16.0)];
-        [path lineToPoint:NSMakePoint(11.5, 16.0)];
-        [path lineToPoint:NSMakePoint(15.5, 6.0)];
-        [path lineToPoint:NSMakePoint(13.5, 6.0)];
-        [path lineToPoint:NSMakePoint(12.7, 8.0)];
-        [path lineToPoint:NSMakePoint(8.3, 8.0)];
-        [path lineToPoint:NSMakePoint(7.5, 6.0)];
-        [path closePath];
-        [path moveToPoint:NSMakePoint(9.1, 10.0)];
-        [path lineToPoint:NSMakePoint(11.9, 10.0)];
-        [path lineToPoint:NSMakePoint(10.5, 13.5)];
-        [path closePath];
+        [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 6.0)];
+        [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [lineColor setFill];
@@ -981,27 +964,17 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameStrikeOutNote, NO, 21.0, 19.0,
+        glyph = [font glyphWithName:@"S"];
         [NSGraphicsContext saveGraphicsState];
         [shadow1 set];
         [fgColor setFill];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(5.5, 4.0)];
-        [path lineToPoint:NSMakePoint(9.5, 14.0)];
-        [path lineToPoint:NSMakePoint(11.5, 14.0)];
-        [path lineToPoint:NSMakePoint(15.5, 4.0)];
-        [path lineToPoint:NSMakePoint(13.5, 4.0)];
-        [path lineToPoint:NSMakePoint(12.7, 6.0)];
-        [path lineToPoint:NSMakePoint(8.3, 6.0)];
-        [path lineToPoint:NSMakePoint(7.5, 4.0)];
-        [path closePath];
-        [path moveToPoint:NSMakePoint(9.1, 8.0)];
-        [path lineToPoint:NSMakePoint(11.9, 8.0)];
-        [path lineToPoint:NSMakePoint(10.5, 11.5)];
-        [path closePath];
+        [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
+        [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [lineColor setFill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 7.0, 17.0, 2.0)];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 9.0, 17.0, 2.0)];
         [path fill];
     );
     
