@@ -1318,7 +1318,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameCircleNote, NO, 21.0, 19.0,
-        setShadow(2.0, -1.0, 0.4);
+        setShadow(2.0, -1.0, 0.5);
         [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
@@ -1326,7 +1326,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameSquareNote, NO, 21.0, 19.0,
-        setShadow(2.0, -1.0, 0.4);
+        setShadow(2.0, -1.0, 0.5);
         [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
         [path setLineWidth:2.0];
@@ -1384,7 +1384,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameLineNote, NO, 21.0, 19.0,
-        setShadow(2.0, -1.0, 0.4);
+        setShadow(2.0, -1.0, 0.5);
         [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(3.0, 10.0)];
@@ -1399,7 +1399,7 @@ do {\
     );
     
     MAKE_IMAGE(SKImageNameInkNote, NO, 21.0, 19.0,
-        setShadow(2.0, -1.0, 0.4);
+        setShadow(2.0, -1.0, 0.5);
         [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 9.0)];
