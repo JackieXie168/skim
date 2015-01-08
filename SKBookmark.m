@@ -380,20 +380,13 @@ static Class SKBookmarkClass = Nil;
 + (NSImage *)missingFileImage {
     static NSImage *image = nil;
     if (image == nil) {
-        image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
-        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-        [image lockFocus];
-        [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
-        [questionMark drawInRect:NSMakeRect(6.0, 4.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [image unlockFocus];
-        NSImage *tinyImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [tinyImage lockFocus];
-        [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
-        [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [tinyImage unlockFocus];
-        [image addRepresentation:[[tinyImage representations] lastObject]];
-        [tinyImage release];
+        image = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
+            NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+            NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
+            [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+            [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
+            return YES;
+        }] retain];
     }
     return image;
 }
@@ -699,47 +692,47 @@ static Class SKBookmarkClass = Nil;
 - (NSImage *)icon {
     static NSImage *menuIcon = nil;
     if (menuIcon == nil) {
-        menuIcon = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        NSShadow *s = [[[NSShadow alloc] init] autorelease];
-        [s setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333]];
-        [s setShadowBlurRadius:2.0];
-        [s setShadowOffset:NSMakeSize(0.0, -1.0)];
-        [menuIcon lockFocus];
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] set];
-        [NSBezierPath fillRect:NSMakeRect(1.0, 1.0, 14.0, 13.0)];
-        [NSGraphicsContext saveGraphicsState];
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(2.0, 2.0)];
-        [path lineToPoint:NSMakePoint(2.0, 15.0)];
-        [path lineToPoint:NSMakePoint(7.0, 15.0)];
-        [path lineToPoint:NSMakePoint(7.0, 13.0)];
-        [path lineToPoint:NSMakePoint(14.0, 13.0)];
-        [path lineToPoint:NSMakePoint(14.0, 2.0)];
-        [path closePath];
-        [[NSColor whiteColor] set];
-        [s set];
-        [path fill];
-        [NSGraphicsContext restoreGraphicsState];
-        [[NSColor colorWithCalibratedRed:0.162 green:0.304 blue:0.755 alpha:1.0] set];
-        NSRectFill(NSMakeRect(2.0, 13.0, 5.0, 2.0));
-        [[NSColor colorWithCalibratedRed:0.894 green:0.396 blue:0.202 alpha:1.0] set];
-        NSRectFill(NSMakeRect(3.0, 4.0, 1.0, 1.0));
-        NSRectFill(NSMakeRect(3.0, 7.0, 1.0, 1.0));
-        NSRectFill(NSMakeRect(3.0, 10.0, 1.0, 1.0));
-        [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
-        NSRectFill(NSMakeRect(5.0, 4.0, 1.0, 1.0));
-        NSRectFill(NSMakeRect(5.0, 7.0, 1.0, 1.0));
-        NSRectFill(NSMakeRect(5.0, 10.0, 1.0, 1.0));
-        NSUInteger i, j;
-        for (i = 0; i < 7; i++) {
-            for (j = 0; j < 3; j++) {
-                [[NSColor colorWithCalibratedWhite:0.45 + 0.1 * rand() / RAND_MAX alpha:1.0] set];
-                NSRectFill(NSMakeRect(6.0 + i, 4.0 + 3.0 * j, 1.0, 1.0));
+        menuIcon = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            NSShadow *s = [[[NSShadow alloc] init] autorelease];
+            [s setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333]];
+            [s setShadowBlurRadius:2.0];
+            [s setShadowOffset:NSMakeSize(0.0, -1.0)];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] set];
+            [NSBezierPath fillRect:NSMakeRect(1.0, 1.0, 14.0, 13.0)];
+            [NSGraphicsContext saveGraphicsState];
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            [path moveToPoint:NSMakePoint(2.0, 2.0)];
+            [path lineToPoint:NSMakePoint(2.0, 15.0)];
+            [path lineToPoint:NSMakePoint(7.0, 15.0)];
+            [path lineToPoint:NSMakePoint(7.0, 13.0)];
+            [path lineToPoint:NSMakePoint(14.0, 13.0)];
+            [path lineToPoint:NSMakePoint(14.0, 2.0)];
+            [path closePath];
+            [[NSColor whiteColor] set];
+            [s set];
+            [path fill];
+            [NSGraphicsContext restoreGraphicsState];
+            [[NSColor colorWithCalibratedRed:0.162 green:0.304 blue:0.755 alpha:1.0] set];
+            NSRectFill(NSMakeRect(2.0, 13.0, 5.0, 2.0));
+            [[NSColor colorWithCalibratedRed:0.894 green:0.396 blue:0.202 alpha:1.0] set];
+            NSRectFill(NSMakeRect(3.0, 4.0, 1.0, 1.0));
+            NSRectFill(NSMakeRect(3.0, 7.0, 1.0, 1.0));
+            NSRectFill(NSMakeRect(3.0, 10.0, 1.0, 1.0));
+            [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
+            NSRectFill(NSMakeRect(5.0, 4.0, 1.0, 1.0));
+            NSRectFill(NSMakeRect(5.0, 7.0, 1.0, 1.0));
+            NSRectFill(NSMakeRect(5.0, 10.0, 1.0, 1.0));
+            NSUInteger i, j;
+            for (i = 0; i < 7; i++) {
+                for (j = 0; j < 3; j++) {
+                    [[NSColor colorWithCalibratedWhite:0.45 + 0.1 * rand() / RAND_MAX alpha:1.0] set];
+                    NSRectFill(NSMakeRect(6.0 + i, 4.0 + 3.0 * j, 1.0, 1.0));
+                }
             }
-        }
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] autorelease];
-        [gradient drawInRect:NSMakeRect(2.0, 2.0, 12.0,11.0) angle:90.0];
-        [menuIcon unlockFocus];
+            NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] autorelease];
+            [gradient drawInRect:NSMakeRect(2.0, 2.0, 12.0,11.0) angle:90.0];
+            return YES;
+        }] retain];
     }
     return menuIcon;
 }
