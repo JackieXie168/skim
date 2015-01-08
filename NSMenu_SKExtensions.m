@@ -145,14 +145,9 @@
     if (NSEqualSizes(srcSize, dstSize)) {
         [self setImage:image];
     } else {
-        NSImage *newImage = [[NSImage alloc] initWithSize:dstSize];
-        [newImage lockFocus];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [image drawInRect:NSMakeRect(0, 0, dstSize.width, dstSize.height) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-        [newImage unlockFocus];
+        NSImage *newImage = [[image copy] autorelease];
+        [newImage setSize:dstSize];
         [self setImage:newImage];
-        [newImage release];
     }
 }
         
