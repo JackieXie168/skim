@@ -136,6 +136,8 @@ extern NSString *SKImageNameInkNoteCursor;
 
 @interface NSImage (SKExtensions)
 
++ (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
+
 + (void)makeImages;
 
 @end
