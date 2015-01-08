@@ -51,6 +51,7 @@
 #import "NSError_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -178,10 +179,10 @@ static SKDownloadController *sharedDownloadController = nil;
 + (NSImage *)cancelImage {
     static NSImage *cancelImage = nil;
     if (cancelImage == nil) {    
-        cancelImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [cancelImage lockFocus];
-        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [cancelImage unlockFocus];
+        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+            return YES;
+        }] retain];
     }
     return cancelImage;
 }
@@ -189,19 +190,15 @@ static SKDownloadController *sharedDownloadController = nil;
 + (NSImage *)deleteImage {
     static NSImage *deleteImage = nil;
     if (deleteImage == nil) {
-        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [tmpImage lockFocus];
-        [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [[NSColor lightGrayColor] setFill];
-        NSRectFillUsingOperation(NSMakeRect(0.0, 0.0, 16.0, 16.0), NSCompositeSourceAtop);
-        [tmpImage unlockFocus];
-        deleteImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [deleteImage lockFocus];
-        [[NSColor whiteColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
-        [tmpImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [tmpImage release];
-        [deleteImage unlockFocus];
+        deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            [[NSColor lightGrayColor] setFill];
+            [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+            [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+            [[NSColor whiteColor] setFill];
+            [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            return YES;
+        }] retain];
     }
     return deleteImage;
 }
@@ -209,19 +206,15 @@ static SKDownloadController *sharedDownloadController = nil;
 + (NSImage *)resumeImage {
     static NSImage *resumeImage = nil;
     if (resumeImage == nil) {
-        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [tmpImage lockFocus];
-        [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [[NSColor orangeColor] setFill];
-        NSRectFillUsingOperation(NSMakeRect(0.0, 0.0, 16.0, 16.0), NSCompositeSourceAtop);
-        [tmpImage unlockFocus];
-        resumeImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [resumeImage lockFocus];
-        [[NSColor whiteColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
-        [tmpImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [tmpImage release];
-        [resumeImage unlockFocus];
+        resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            [[NSColor lightGrayColor] setFill];
+            [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+            [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+            [[NSColor whiteColor] setFill];
+            [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            return YES;
+        }] retain];
     }
     return resumeImage;
 }
