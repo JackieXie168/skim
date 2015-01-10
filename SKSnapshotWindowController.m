@@ -55,6 +55,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSAnimationContext_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -436,56 +437,45 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
-    BOOL isScaled = size > 0.0;
-    CGFloat shadowBlurRadius = round(size / 32.0);
-    NSSize shadowOffset = NSMakeSize(0.0, - ceil(shadowBlurRadius * 0.75));
-    CGFloat scaleX, scaleY;
-    NSSize thumbnailSize;
+    NSShadow *aShadow = nil;
+    NSAffineTransform *transform = nil;
+    NSSize thumbnailSize = thumbnailSize = bounds.size;
     NSImage *image;
     
     [pdfView cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
     
+    bounds.origin = NSZeroPoint;
     
-    if (isScaled) {
+    if (size > 0.0) {
+        CGFloat shadowBlurRadius = round(size / 32.0);
+        NSSize shadowOffset = NSMakeSize(0.0, - ceil(shadowBlurRadius * 0.75));
         if (NSHeight(bounds) > NSWidth(bounds))
             thumbnailSize = NSMakeSize(round((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
             thumbnailSize = NSMakeSize(size, round((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
-        scaleX = (thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds);
-        scaleY = (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds);
-    } else {
-        thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
-        scaleX = scaleY = 1.0;
-    }
-    
-    image = [[NSImage alloc] initWithSize:thumbnailSize];
-    [image lockFocus];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    if (isScaled) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        if (isScaled)
-            [transform scaleXBy:scaleX yBy:scaleY];
-        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scaleX yBy:(shadowBlurRadius - shadowOffset.height) / scaleY];
-        [transform concat];
-    }
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor whiteColor] set];
-    if (isScaled) {
-        NSShadow *aShadow = [[NSShadow alloc] init];
+        aShadow = [[[NSShadow alloc] init] autorelease];
         [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         [aShadow setShadowBlurRadius:shadowBlurRadius];
         [aShadow setShadowOffset:shadowOffset];
-        [aShadow set];
-        [aShadow release];
+        transform = [NSAffineTransform transform];
+        [transform translateXBy:shadowBlurRadius - shadowOffset.width yBy:shadowBlurRadius - shadowOffset.height];
+        [transform scaleXBy:(thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds) yBy:(thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds)];
+        [transform concat];
     }
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-    [NSGraphicsContext restoreGraphicsState];
-    [imageRep drawInRect:bounds];
-    [image unlockFocus];
     
-    return [image autorelease];
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        [transform concat];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor whiteColor] set];
+        [aShadow set];
+        NSRectFill(bounds);
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+        [NSGraphicsContext restoreGraphicsState];
+        [imageRep drawInRect:bounds];
+    }];
+    
+    return image;
 }
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size {

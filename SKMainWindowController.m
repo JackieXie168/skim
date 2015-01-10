@@ -2464,21 +2464,22 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if ([pageLabels count] > 0) {
+        BOOL isLocked = [[pdfView document] isLocked];
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
         PDFPage *emptyPage = [[[SKPDFPage alloc] init] autorelease];
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [emptyPage setRotation:[firstPage rotation]];
-        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
-        [image lockFocus];
-        NSRect imgRect = NSZeroRect;
-        imgRect.size = [image size];
-        CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
-        imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
-        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
-        if ([[pdfView document] isLocked])
-            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
-        [image unlockFocus];
+        NSImage *pageImage = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
+        NSImage *image = [NSImage bitmapImageWithSize:[pageImage size] drawingHandler:^(NSRect rect){
+            NSRect imgRect = rect;
+            CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
+            imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
+            [pageImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+            [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+            if (isLocked)
+                [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        }];
         
         [pageLabels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:label pageIndex:i];
