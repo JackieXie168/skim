@@ -37,6 +37,7 @@
  */
 
 #import "NSImage_SKExtensions.h"
+#import "NSBitmapImageRep_SKExtensions.h"
 
 
 NSString *SKImageNameTextNote = @"TextNote";
@@ -207,7 +208,23 @@ macro(Ink)
         return image;
     }
 }
- 
+
++ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
+    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler];
+    [image addRepresentation:imageRep];
+    return image;
+}
+
++ (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
+    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithSize:size scale:2.0 drawingHandler:drawingHandler];
+    [image addRepresentation:imageRep];
+    imageRep = [NSBitmapImageRep imageRepWithSize:size scale:1.0 drawingHandler:drawingHandler];
+    [image addRepresentation:imageRep];
+    return image;
+}
+
 + (void)makeToolbarImages {
     
     MAKE_IMAGE(SKImageNameToolbarPageUp, NO, 27.0, 19.0, 

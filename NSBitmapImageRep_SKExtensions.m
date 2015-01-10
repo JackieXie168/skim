@@ -229,4 +229,19 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, NSInteger x, 
         bzero(bitmapData, [self bytesPerRow] * [self pixelsHigh]);
 }
 
++ (id)imageRepWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSBitmapImageRep *bmpImageRep = [[self alloc] initWithBitmapDataPlanes:NULL
+        pixelsWide:size.width * scale pixelsHigh:size.height * scale
+        bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO
+        colorSpaceName:NSCalibratedRGBColorSpace bitmapFormat:NSAlphaFirstBitmapFormat
+        bytesPerRow:0 bitsPerPixel:0];
+    bmpImageRep = [bmpImageRep bitmapImageRepByRetaggingWithColorSpace:[NSColorSpace sRGBColorSpace]];
+    [bmpImageRep setSize:size];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:bmpImageRep]];
+    if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
+    [NSGraphicsContext restoreGraphicsState];
+    return bmpImageRep;
+
+}
 @end

@@ -60,6 +60,7 @@
 #import "NSFileManager_SKExtensions.h"
 #import "SKMainWindowController.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -92,11 +93,10 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     
     NSUInteger i;
     for (i = 0; i < 7; i++) {
-        noteIcons[i] = [[NSImage alloc] initWithSize:SKNPDFAnnotationNoteSize];
-        [noteIcons[i] lockFocus];
         [annotation setIconType:i];
-        [annotation drawWithBox:kPDFDisplayBoxMediaBox];
-        [noteIcons[i] unlockFocus];
+        noteIcons[i] = [[NSImage bitmapImageWithSize:SKNPDFAnnotationNoteSize drawingHandler:^(NSRect rect){
+                [annotation drawWithBox:kPDFDisplayBoxMediaBox];
+            }] retain];
     }
     [page release];
 }

@@ -44,6 +44,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define TEXT_MARGIN_X 2.0
 #define TEXT_MARGIN_Y 2.0
@@ -74,14 +75,13 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     textRect.size.height = fmin(NSHeight(textRect), height);
     textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
     
-    NSRect imageRect = {NSZeroPoint, NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size};
-    NSImage *image = [[[NSImage alloc] initWithSize:imageRect.size] autorelease];
+    textRect = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y);
     
-    [image lockFocus];
-    [backgroundColor setFill];
-    NSRectFill(imageRect);
-    [self drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
-    [image unlockFocus];
+    NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect){
+        [backgroundColor setFill];
+        NSRectFill(rect);
+        [self drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+    }];
     
     return image;
 }
@@ -139,29 +139,24 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     labelRect.origin.y = TEXT_MARGIN_Y;
     labelRect = NSIntegralRect(labelRect);
     
-    NSRect targetRect = sourceRect;
-    targetRect.origin = NSZeroPoint;
-    
-    NSImage *image = [[[NSImage alloc] initWithSize:targetRect.size] autorelease];
-    
-    [image lockFocus];
-    
-    [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-    
-    CGFloat radius = 0.5 * NSHeight(labelRect);
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    
-    [path moveToPoint:SKTopLeftPoint(labelRect)];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(labelRect), NSMidY(labelRect)) radius:radius startAngle:90.0 endAngle:270.0];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(labelRect), NSMidY(labelRect)) radius:radius startAngle:-90.0 endAngle:90.0];
-    [path closePath];
-    
-    [labelColor setFill];
-    [path fill];
-    
-    [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
-    
-    [image unlockFocus];
+    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect rect){
+        
+        [pageImage drawInRect:rect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        
+        CGFloat radius = 0.5 * NSHeight(labelRect);
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        
+        [path moveToPoint:SKTopLeftPoint(labelRect)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(labelRect), NSMidY(labelRect)) radius:radius startAngle:90.0 endAngle:270.0];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(labelRect), NSMidY(labelRect)) radius:radius startAngle:-90.0 endAngle:90.0];
+        [path closePath];
+        
+        [labelColor setFill];
+        [path fill];
+        
+        [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
+        
+    }];
     
     [labelString release];
     
