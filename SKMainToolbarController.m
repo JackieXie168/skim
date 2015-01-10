@@ -862,23 +862,21 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     NSToolbarItem *toolbarItem = [self toolbarItemForItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
     NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
     
-    NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
+    NSSize size = NSMakeSize(16.0, 16.0);
     
     [menu removeAllItems];
     
     for (NSColor *color in [colorSwatch colors]) {
-        NSImage *image = [[NSImage alloc] initWithSize:rect.size];
         NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) target:self];
         
-        [image lockFocus];
-        [color drawSwatchInRoundedRect:rect];
-        [image unlockFocus];
+        NSImage *image = [NSImage bitmapImageWithSize:size drawingHandler:^(NSRect rect){
+                [color drawSwatchInRoundedRect:rect];
+            }];
         [item setRepresentedObject:color];
         [item setImage:image];
-        [image release];
     }
     
-    NSSize size = [colorSwatch bounds].size;
+    size = [colorSwatch bounds].size;
     [toolbarItem setMinSize:size];
     [toolbarItem setMaxSize:size];
 }

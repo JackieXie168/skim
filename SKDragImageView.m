@@ -41,6 +41,8 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSView_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 @implementation SKDragImageView
 
@@ -132,23 +134,19 @@
 					
 					if ([delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)] &&
 						[delegate dragImageView:self writeDataToPasteboard:pboard]) {
-                   
-                        NSRect rect = [self bounds];
-                        NSPoint dragPoint = rect.origin;
-                        rect.origin = NSZeroPoint;
                         
-                        NSImage *image = [[NSImage alloc] initWithSize:rect.size];
-
-                        [image lockFocus];
-                        [[self cell] drawInteriorWithFrame:rect inView:self];
-                        [image lockFocus];
+                        NSRect bounds = [self bounds];
+                        CGFloat scale = [self backingScale];
                         
-                        NSImage *dragImage = [[[NSImage alloc] initWithSize:rect.size] autorelease];
-                        [dragImage lockFocus];
-                        [image drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7];
-                        [dragImage unlockFocus];
-                        [image release];
-                        [self dragImage:dragImage at:dragPoint offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
+                        NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
+                            [[self cell] drawInteriorWithFrame:rect inView:self];
+                        }];
+                        
+                        NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
+                            [image drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7];
+                        }];
+                        
+                        [self dragImage:dragImage at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
                     }
 					keepOn = NO;
                     break;

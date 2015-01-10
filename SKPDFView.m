@@ -75,6 +75,7 @@
 #import "NSView_SKExtensions.h"
 #import "SKApplication.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -3961,8 +3962,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 magRect = [self convertRect:magRect fromView:nil];
                 
                 NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
-                NSRect imageRect = {NSZeroPoint, magRect.size};
-                NSImage *image = [[NSImage alloc] initWithSize:imageRect.size];
+                NSImage *image;
                 NSAffineTransform *transform = [NSAffineTransform transform];
                 NSArray *pages = magnification < 1.0 ? [self displayedPages] : [self visiblePages];
                 
@@ -3970,47 +3970,49 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [transform scaleBy:magnification];
                 [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
                 
-                [image lockFocus];
-                
-                [[NSBezierPath bezierPathWithRoundedRect:imageRect xRadius:loupeLayer.cornerRadius yRadius:loupeLayer.cornerRadius] setClip];
-                
-                if (aShadow)
-                    imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
-                
-                for (PDFPage *page in pages) {
-                    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
-                    NSPoint pageOrigin = pageRect.origin;
-                    NSAffineTransform *pageTransform;
+                image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
                     
-                    pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
+                    NSRect imageRect = rect;
                     
-                    // only draw the page when there is something to draw
-                    if (NSIntersectsRect(imageRect, pageRect) == NO)
-                        continue;
+                    [[NSBezierPath bezierPathWithRoundedRect:imageRect xRadius:loupeLayer.cornerRadius yRadius:loupeLayer.cornerRadius] setClip];
                     
-                    // draw page background, simulate the private method -drawPagePre:
-                    [NSGraphicsContext saveGraphicsState];
-                    [[NSColor whiteColor] set];
-                    [aShadow set];
-                    NSRectFill(SKIntegralRect(pageRect));
-                    [NSGraphicsContext restoreGraphicsState];
+                    if (aShadow)
+                        imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
                     
-                    // draw page contents
-                    [NSGraphicsContext saveGraphicsState];
-                    pageTransform = [transform copy];
-                    [pageTransform translateXBy:pageOrigin.x yBy:pageOrigin.y];
-                    [pageTransform scaleBy:[self scaleFactor]];
-                    [pageTransform concat];
-                    [pageTransform release];
-                    [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-                    [self drawPage:page];
-                    [NSGraphicsContext restoreGraphicsState];
-                }
-                [image unlockFocus];
+                    for (PDFPage *page in pages) {
+                        NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+                        NSPoint pageOrigin = pageRect.origin;
+                        NSAffineTransform *pageTransform;
+                        
+                        pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
+                        
+                        // only draw the page when there is something to draw
+                        if (NSIntersectsRect(imageRect, pageRect) == NO)
+                            continue;
+                        
+                        // draw page background, simulate the private method -drawPagePre:
+                        [NSGraphicsContext saveGraphicsState];
+                        [[NSColor whiteColor] set];
+                        [aShadow set];
+                        NSRectFill(SKIntegralRect(pageRect));
+                        [NSGraphicsContext restoreGraphicsState];
+                        
+                        // draw page contents
+                        [NSGraphicsContext saveGraphicsState];
+                        pageTransform = [transform copy];
+                        [pageTransform translateXBy:pageOrigin.x yBy:pageOrigin.y];
+                        [pageTransform scaleBy:[self scaleFactor]];
+                        [pageTransform concat];
+                        [pageTransform release];
+                        [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
+                        [self drawPage:page];
+                        [NSGraphicsContext restoreGraphicsState];
+                    }
+                    
+                }];
                 
                 [loupeLayer setContents:image];
                 [loupeLayer setFrame:NSRectToCGRect(magRect)];
-                [image release];
                 
             } else {
                 

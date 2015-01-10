@@ -41,6 +41,8 @@
 #import "SKAccessibilityFauxUIElement.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -212,14 +214,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     [pboard clearContents];
                     [pboard writeObjects:[NSArray arrayWithObjects:color, nil]];
                     
-                    NSRect rect = NSMakeRect(0.0, 0.0, 12.0, 12.0);
-                    NSImage *image = [[NSImage alloc] initWithSize:rect.size];
-                    [image lockFocus];
-                    [[NSColor blackColor] set];
-                    [NSBezierPath setDefaultLineWidth:1.0];
-                    [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
-                    [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
-                    [image unlockFocus];
+                    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
+                        [[NSColor blackColor] set];
+                        [NSBezierPath setDefaultLineWidth:1.0];
+                        [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
+                        [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
+                    }];
                     
                     mouseLoc = [theEvent locationInView:self];
                     mouseLoc.x -= 6.0;

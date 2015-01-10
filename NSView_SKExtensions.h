@@ -45,4 +45,6 @@
 
 - (void)deactivateWellSubcontrols;
 
+- (CGFloat)backingScale;
+
 @end

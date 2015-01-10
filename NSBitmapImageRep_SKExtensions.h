@@ -44,4 +44,6 @@
 
 - (void)clear;
 
++ (id)imageRepWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
+
 @end

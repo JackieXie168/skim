@@ -41,6 +41,10 @@
 #import "SKFontWell.h"
 
 
+@interface NSView (SKLionExtensions)
+- (NSSize)convertSizeToBacking:(NSSize)size;
+@end
+
 @implementation NSView (SKExtensions)
 
 - (id)subviewOfClass:(Class)aClass {
@@ -58,6 +62,12 @@
 
 - (void)deactivateWellSubcontrols {
     [[self subviews] makeObjectsPerformSelector:_cmd];
+}
+
+- (CGFloat)backingScale {
+    if ([self respondsToSelector:@selector(convertSizeToBacking:)])
+        return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
+    return 1.0;
 }
 
 @end

@@ -40,6 +40,8 @@
 #import "SKLineInspector.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 NSString *SKPasteboardTypeLineStyle = @"net.sourceforge.skim-app.pasteboard.line-style";
 
@@ -279,28 +281,20 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (NSImage *)dragImage {
     NSRect bounds = [self bounds];
-    NSRect sourceRect = NSInsetRect(bounds, 1.0, 1.0);
-    NSRect targetRect = {NSZeroPoint, sourceRect.size};
-    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
+    NSBezierPath *path = lineWidth > 0.0 ? [self path] : nil;
+    CGFloat scale = [self backingScale];
     
-    [image lockFocus];
-    [[NSColor darkGrayColor] set];
-    NSRectFill(bounds);
-    [[NSColor controlBackgroundColor] setFill];
-    NSRectFill(NSInsetRect(bounds, 2.0, 2.0));
-    [[NSColor blackColor] setStroke];
-    if (lineWidth > 0.0)
-        [[self path] stroke];
-    [image unlockFocus];
+    NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
+        CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
+        [[NSColor darkGrayColor] setFill];
+        NSRectFill(NSInsetRect(rect, 1.0, 1.0));
+        [[NSColor controlBackgroundColor] setFill];
+        NSRectFill(NSInsetRect(rect, 2.0, 2.0));
+        [[NSColor blackColor] setStroke];
+        [path stroke];
+    }];
     
-    NSImage *dragImage = [[[NSImage alloc] initWithSize:targetRect.size] autorelease];
-    
-    [dragImage lockFocus];
-    [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:0.7];
-    [dragImage unlockFocus];
-    [image release];
-    
-    return dragImage;
+    return image;
 }
 
 - (void)changedValueForKey:(NSString *)key {
