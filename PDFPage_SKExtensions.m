@@ -56,6 +56,7 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -152,18 +153,16 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBar:(SKReadingBar *)readingBar {
     NSRect bounds = [self boundsForBox:box];
     NSSize pageSize = bounds.size;
-    BOOL isScaled = aSize > 0.0;
-    BOOL hasShadow = shadowBlurRadius > 0.0;
     CGFloat scale = 1.0;
     NSSize thumbnailSize;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
-    NSImage *pageImage = nil;
+    NSShadow *aShadow = nil;
     
     if ([self rotation] % 180 == 90)
         pageSize = NSMakeSize(pageSize.height, pageSize.width);
     
-    if (isScaled) {
+    if (aSize > 0.0) {
         if (pageSize.height > pageSize.width)
             thumbnailSize = NSMakeSize(round((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
         else
@@ -173,57 +172,49 @@ static BOOL usesSequentialPageNumbering = NO;
         thumbnailSize = NSMakeSize(pageSize.width + 2.0 * shadowBlurRadius, pageSize.height + 2.0 * shadowBlurRadius);
     }
     
-    image = [[NSImage alloc] initWithSize:thumbnailSize];
-    [image lockFocus];
+    pageRect.size = thumbnailSize;
     
-    [NSGraphicsContext saveGraphicsState];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    [[NSColor whiteColor] set];
-    if (hasShadow) {
-        NSShadow *aShadow = [[NSShadow alloc] init];
+    if (shadowBlurRadius > 0.0) {
+        aShadow = [[[NSShadow alloc] init] autorelease];
         [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         [aShadow setShadowBlurRadius:shadowBlurRadius];
         [aShadow setShadowOffset:shadowOffset];
+        
+        pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
+        pageRect.origin.x -= shadowOffset.width;
+        pageRect.origin.y -= shadowOffset.height;
+    }
+    
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
+        
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor whiteColor] setFill];
         [aShadow set];
-        [aShadow release];
-    }
-    pageRect.size = thumbnailSize;
-    pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
-    pageRect.origin.x -= shadowOffset.width;
-    pageRect.origin.y -= shadowOffset.height;
-    NSRectFill(pageRect);
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-    [NSGraphicsContext restoreGraphicsState];
-    
-    if (isScaled || hasShadow) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        if (hasShadow)
-            [transform translateXBy:shadowBlurRadius - shadowOffset.width yBy:shadowBlurRadius - shadowOffset.height];
-        if (isScaled)
+        NSRectFill(pageRect);
+        [NSGraphicsContext restoreGraphicsState];
+        
+        if (fabs(scale - 1.0) > 0.0 || aShadow) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            if (aShadow)
+                [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
             [transform scaleBy:scale];
-        [transform concat];
-    }
+            [transform concat];
+        }
+        
+        [self drawWithBox:box]; 
+        
+        if (readingBar) {
+            [self transformContextForBox:box];
+            [readingBar drawForPage:self withBox:box];
+        }
+        
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+        
+    }];
     
-    if (isScaled) {
-        // drawing the page with an active transform can sometimes lead to a deadlock in CG, rdar://problem/5447966
-        pageImage = [[NSImage alloc] initWithSize:pageSize];
-        [pageImage lockFocus];
-    }
-    [self drawWithBox:box]; 
-    if (isScaled) {
-        [pageImage unlockFocus];
-        [pageImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        [pageImage release];
-    }
-    
-    if (readingBar) {
-        [self transformContextForBox:box];
-        [readingBar drawForPage:self withBox:box];
-    }
-    
-    [image unlockFocus];
-    
-    return [image autorelease];
+    return image;
 }
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)aSize {
@@ -290,17 +281,12 @@ static BOOL usesSequentialPageNumbering = NO;
     
     NSAffineTransform *transform = [self affineTransformForBox:box];
     NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
-    NSRect targetRect = {NSZeroPoint, sourceRect.size};
     
-    NSImage *image = [[NSImage alloc] initWithSize:targetRect.size];
-    [image lockFocus];
-    [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-    [image unlockFocus];
+    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect){
+        [pageImage drawInRect:destRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+    }];
     
-    NSData *data = [image TIFFRepresentation];
-    [image release];
-    
-    return data;
+    return [image TIFFRepresentation];
 }
 
 static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
