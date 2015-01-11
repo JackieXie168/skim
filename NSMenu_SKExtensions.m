@@ -136,18 +136,15 @@
 }
 
 - (void)setImageAndSize:(NSImage *)image {
-    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-    [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_4];
-    CGFloat lineHeight = [layoutManager defaultLineHeightForFont:[NSFont menuFontOfSize:0]];
-    [layoutManager release];
-    NSSize dstSize = { lineHeight, lineHeight };
+    NSSize dstSize = NSMakeSize(16.0, 16.0);
     NSSize srcSize = [image size];
     if (NSEqualSizes(srcSize, dstSize)) {
         [self setImage:image];
     } else {
-        NSImage *newImage = [[image copy] autorelease];
+        NSImage *newImage = [image copy];
         [newImage setSize:dstSize];
         [self setImage:newImage];
+        [image release];
     }
 }
         
