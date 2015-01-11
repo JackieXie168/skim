@@ -144,7 +144,7 @@
         NSImage *newImage = [image copy];
         [newImage setSize:dstSize];
         [self setImage:newImage];
-        [image release];
+        [newImage release];
     }
 }
         
