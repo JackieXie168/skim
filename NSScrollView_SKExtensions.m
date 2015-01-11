@@ -159,8 +159,8 @@ static NSMapTable *scrollViewPlacardViews = nil;
 @implementation SKPlacardView
 
 - (void)drawRect:(NSRect)aRect {
-    NSImage *bgImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Background_Lion" : @"Scroller_Background"];
-    NSImage *divImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Divider_Lion" : @"Scroller_Divider"];
+    NSImage *bgImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ? @"Scroller_Background_Yosemite" : floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Background_Lion" : @"Scroller_Background"];
+    NSImage *divImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ? @"Scroller_Divider_Yosemite" : floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Divider_Lion" : @"Scroller_Divider"];
     NSRect bgSrcRect = {NSZeroPoint, [bgImage size]};
     NSRect divSrcRect = {NSZeroPoint, [divImage size]};
     NSRect leftRect, rightRect, leftSrcRect, rightSrcRect, midSrcRect = bgSrcRect;
