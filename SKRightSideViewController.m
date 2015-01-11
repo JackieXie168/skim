@@ -88,6 +88,10 @@
     [[snapshotTableView menu] setDelegate:mainController];
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+        [snapshotTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+    }
 }
 
 @end

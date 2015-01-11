@@ -101,6 +101,11 @@
     
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+        [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+        [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+    }
 }
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
