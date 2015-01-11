@@ -58,6 +58,8 @@
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
 		CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */; };
+		CE0AAE7E1A628B5D00274399 /* Scroller_Background_Yosemite.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */; };
+		CE0AAE801A628B6100274399 /* Scroller_Divider_Yosemite.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */; };
 		CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0AEDC2107A137C000C075E /* SKColorCell.m */; };
 		CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */; };
 		CE0E83EE114D15E000E37F38 /* SyncPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */; };
@@ -545,6 +547,8 @@
 		CE0A3C8C0EBF3AAA00526C74 /* NSResponder_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSResponder_SKExtensions.h; sourceTree = "<group>"; };
 		CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSResponder_SKExtensions.m; sourceTree = "<group>"; };
 		CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XDVDocument.icns; sourceTree = "<group>"; };
+		CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background_Yosemite.tiff; sourceTree = "<group>"; };
+		CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider_Yosemite.tiff; sourceTree = "<group>"; };
 		CE0AEDC1107A137C000C075E /* SKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorCell.h; sourceTree = "<group>"; };
 		CE0AEDC2107A137C000C075E /* SKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorCell.m; sourceTree = "<group>"; };
 		CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDictionaryFormatter.h; sourceTree = "<group>"; };
@@ -1848,6 +1852,8 @@
 				CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */,
 				CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */,
 				CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */,
+				CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */,
+				CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */,
 				CE6DC9930D699F21003A072F /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */,
@@ -2283,6 +2289,8 @@
 				CE109796161320A500C4FA18 /* ExportAccessoryView.xib in Resources */,
 				CE1098F11613CFC800C4FA18 /* ExportAccessoryView.strings in Resources */,
 				CE25BB6B163FFB770046A348 /* Skim.help in Resources */,
+				CE0AAE7E1A628B5D00274399 /* Scroller_Background_Yosemite.tiff in Resources */,
+				CE0AAE801A628B6100274399 /* Scroller_Divider_Yosemite.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
