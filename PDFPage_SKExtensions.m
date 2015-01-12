@@ -57,6 +57,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -137,7 +138,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSImage *)pageImage {
-    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
+    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
@@ -146,15 +147,15 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar {
     CGFloat shadowBlurRadius = round(aSize / 32.0);
-    CGFloat shadowOffset = - ceil(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBar:readingBar];
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius readingBar:readingBar];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBar:(SKReadingBar *)readingBar {
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius readingBar:(SKReadingBar *)readingBar {
     NSRect bounds = [self boundsForBox:box];
     NSSize pageSize = bounds.size;
     CGFloat scale = 1.0;
     NSSize thumbnailSize;
+    CGFloat shadowOffset = shadowBlurRadius > 0.0 ? - ceil(shadowBlurRadius * 0.75) : 0.0;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
     
@@ -175,8 +176,7 @@ static BOOL usesSequentialPageNumbering = NO;
     
     if (shadowBlurRadius > 0.0) {
         pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
-        pageRect.origin.x -= shadowOffset.width;
-        pageRect.origin.y -= shadowOffset.height;
+        pageRect.origin.y -= shadowOffset;
     }
     
     image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect, CGFloat bScale){
@@ -185,20 +185,14 @@ static BOOL usesSequentialPageNumbering = NO;
         
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] setFill];
-        NSShadow *aShadow = nil;
-        if (shadowBlurRadius > 0.0) {
-            aShadow = [[[NSShadow alloc] init] autorelease];
-            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-            [aShadow setShadowBlurRadius:shadowBlurRadius * bScale];
-            [aShadow setShadowOffset:NSMakeSize(shadowOffset.width * bScale, shadowOffset.height * bScale)];
-            [aShadow set];
-        }
+        if (shadowBlurRadius > 0.0)
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius * bScale yOffset:shadowOffset * bScale];
         NSRectFill(pageRect);
         [NSGraphicsContext restoreGraphicsState];
         
-        if (fabs(scale - 1.0) > 0.0 || aShadow) {
+        if (fabs(scale - 1.0) > 0.0 || shadowBlurRadius > 0.0) {
             NSAffineTransform *transform = [NSAffineTransform transform];
-            if (aShadow)
+            if (shadowBlurRadius > 0.0)
                 [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
             [transform scaleBy:scale];
             [transform concat];
@@ -272,7 +266,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSData *)TIFFDataForRect:(NSRect)rect {
     PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
-    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 readingBar:nil];
     NSRect bounds = [self boundsForBox:box];
     
     if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))

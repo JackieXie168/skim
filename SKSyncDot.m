@@ -38,6 +38,7 @@
 
 #import "SKSyncDot.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 
 @interface SKSyncDot (SKPrivate)
@@ -103,10 +104,7 @@
     CGFloat s = 6.0;
     if (phase < 1.0) {
         s += 8.0 * sin(phase * M_PI);
-        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-        [shade setShadowBlurRadius:2.0];
-        [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
-        [shade set];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
         [[NSColor redColor] setFill];
         [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
         [NSGraphicsContext restoreGraphicsState];

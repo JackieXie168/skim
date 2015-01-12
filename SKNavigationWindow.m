@@ -43,6 +43,7 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -522,11 +523,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)drawKnob:(NSRect)frame {
 	if ([self isEnabled]) {
         [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.7] setFill];
-        NSShadow *shade = [[NSShadow alloc] init];
-        [shade setShadowColor:[NSColor blackColor]];
-        [shade setShadowBlurRadius:2.0];
-        [shade set];
-        [shade release];
+        [NSShadow setShadowWithColor:[NSColor blackColor] blurRadius:2.0 yOffset:0.0];
     } else {
         [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setFill];
     }

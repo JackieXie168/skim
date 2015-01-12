@@ -104,7 +104,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
         labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
     
     PDFPage *page = [self page];
-    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
+    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
     NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect sourceRect = NSZeroRect;
@@ -219,7 +219,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 @implementation PDFPage (SKImageToolTipContext)
 
 - (NSImage *)toolTipImage {
-    return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBar:nil];
+    return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
 }
 
 @end
