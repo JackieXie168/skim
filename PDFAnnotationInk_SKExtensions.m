@@ -46,6 +46,7 @@
 #import "NSData_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSShadow_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
@@ -56,10 +57,7 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
 - (void)replacement_drawWithBox:(PDFDisplayBox)box {
     if ([PDFAnnotation currentActiveAnnotation] == self) {
         [NSGraphicsContext saveGraphicsState];
-        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-        [shade setShadowBlurRadius:2.0];
-        [shade setShadowOffset:NSMakeSize(0.0, -2.0)];
-        [shade set];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
         original_drawWithBox(self, _cmd, box);
         [NSGraphicsContext restoreGraphicsState];
     } else {

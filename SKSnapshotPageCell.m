@@ -39,6 +39,7 @@
 #import "SKSnapshotPageCell.h"
 #import "SKDictionaryFormatter.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
@@ -90,29 +91,28 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
         CGFloat radius = 2.0, topY, bottomY, topAngle;
         BOOL clockwise;
         NSBezierPath *path = [NSBezierPath bezierPath];
-        NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
+        NSColor *shadowColor;
         NSColor *fillColor;
         
         switch ([self interiorBackgroundStyle]) {
             case NSBackgroundStyleDark:
-                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+                shadowColor = [NSColor colorWithCalibratedWhite:1.0 alpha:0.2];
                 fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
                 break;
             case NSBackgroundStyleLowered:
-                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.3333]];
+                shadowColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.3333];
                 fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
                 break;
             case NSBackgroundStyleRaised:
-                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.3]];
+                shadowColor = [NSColor colorWithCalibratedWhite:1.0 alpha:0.3];
                 fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
                 break;
             case NSBackgroundStyleLight:
             default:
-                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.2]];
+                shadowColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.2];
                 fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
                 break;
         }
-        [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
         imageRect = NSOffsetRect(SKSliceRect(SKSliceRect(imageRect, 10.0, topEdge), 10.0, NSMinXEdge), 4.0, 0.0);
         if ([controlView isFlipped]) {
@@ -140,7 +140,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
         
         [NSGraphicsContext saveGraphicsState];
         
-        [aShadow set];
+        [NSShadow setShadowWithColor:shadowColor blurRadius:0.0 yOffset:-1.0];
         [fillColor setFill];
 
         [path fill];

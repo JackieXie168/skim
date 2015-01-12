@@ -45,6 +45,7 @@
 #import "SKMainDocument.h"
 #import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -693,10 +694,6 @@ static Class SKBookmarkClass = Nil;
     static NSImage *menuIcon = nil;
     if (menuIcon == nil) {
         menuIcon = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            NSShadow *s = [[[NSShadow alloc] init] autorelease];
-            [s setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333]];
-            [s setShadowBlurRadius:2.0];
-            [s setShadowOffset:NSMakeSize(0.0, -1.0)];
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] set];
             [NSBezierPath fillRect:NSMakeRect(1.0, 1.0, 14.0, 13.0)];
             [NSGraphicsContext saveGraphicsState];
@@ -709,7 +706,7 @@ static Class SKBookmarkClass = Nil;
             [path lineToPoint:NSMakePoint(14.0, 2.0)];
             [path closePath];
             [[NSColor whiteColor] set];
-            [s set];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
             [path fill];
             [NSGraphicsContext restoreGraphicsState];
             [[NSColor colorWithCalibratedRed:0.162 green:0.304 blue:0.755 alpha:1.0] set];

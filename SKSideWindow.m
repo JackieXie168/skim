@@ -42,6 +42,7 @@
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSAnimationContext_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -369,7 +370,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (void)drawRect:(NSRect)aRect {
     NSRect topRect, bottomRect, rect = [self bounds];
     NSPoint startPoint, endPoint;
-    NSShadow *shade = [[[NSShadow alloc] init] autorelease];
     
     topRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMaxYEdge);
     bottomRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMinYEdge);
@@ -392,15 +392,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [[NSBezierPath bezierPathWithLeftRoundedRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS] fill];
     }
     
-    [shade setShadowBlurRadius:0.0];
-    [shade setShadowOffset:NSMakeSize(1.0, 0.0)];
-    [shade setShadowColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
     endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
     [NSBezierPath setDefaultLineWidth:1.0];
     [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
-    [shade set];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] blurRadius:0.0 offset:NSMakeSize(1.0, 0.0)];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;

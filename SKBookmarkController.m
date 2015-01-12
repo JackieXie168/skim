@@ -50,6 +50,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
@@ -939,20 +940,13 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
     [path closePath];
     
-    NSShadow *shadow1 = [[NSShadow alloc] init];
-    [shadow1 setShadowBlurRadius:1.0];
-    [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-    
     [NSGraphicsContext saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
     [path fill];
-    [shadow1 set];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:1.0 yOffset:0.0];
     [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
-    
-    [shadow1 release];
 }
 
 + (NSImage *)toolbarNewFolderImage {
@@ -971,14 +965,10 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     static NSImage *toolbarNewSeparatorImage = nil;
     if (toolbarNewSeparatorImage == nil) {
         toolbarNewSeparatorImage = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
-            NSShadow *shadow1 = [[NSShadow alloc] init];
-            [shadow1 setShadowBlurRadius:2.0];
-            [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
-            [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
             NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
             NSBezierPath *path;
             [NSGraphicsContext saveGraphicsState];
-            [shadow1 set];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:2.0 yOffset:-1.0];
             [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
             [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
             [NSGraphicsContext restoreGraphicsState];

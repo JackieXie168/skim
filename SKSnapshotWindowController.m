@@ -56,6 +56,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSAnimationContext_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -465,14 +466,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [transform concat];
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] set];
-        if (shadowBlurRadius > 0.0) {
-            NSShadow *aShadow = [[NSShadow alloc] init];
-            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-            [aShadow setShadowBlurRadius:shadowBlurRadius * bScale];
-            [aShadow setShadowOffset:NSMakeSize(0.0, shadowOffset * bScale)];
-            [aShadow set];
-            [aShadow release];
-        }
+        if (shadowBlurRadius > 0.0)
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius * bScale yOffset:shadowOffset * bScale];
         NSRectFill(bounds);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         [NSGraphicsContext restoreGraphicsState];
