@@ -77,7 +77,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     
     textRect = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y);
     
-    NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect){
+    NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect, CGFloat bScale){
         [backgroundColor setFill];
         NSRectFill(rect);
         [self drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
@@ -139,7 +139,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     labelRect.origin.y = TEXT_MARGIN_Y;
     labelRect = NSIntegralRect(labelRect);
     
-    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect rect){
+    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect rect, CGFloat bScale){
         
         [pageImage drawInRect:rect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
         

@@ -3970,7 +3970,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [transform scaleBy:magnification];
                 [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
                 
-                image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
+                image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect, CGFloat bScale){
                     
                     NSRect imageRect = rect;
                     
@@ -3983,6 +3983,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                         NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
                         NSPoint pageOrigin = pageRect.origin;
                         NSAffineTransform *pageTransform;
+                        NSShadow *bShadow;
                         
                         pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
                         
@@ -3993,7 +3994,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                         // draw page background, simulate the private method -drawPagePre:
                         [NSGraphicsContext saveGraphicsState];
                         [[NSColor whiteColor] set];
-                        [aShadow set];
+                        bShadow = [aShadow copy];
+                        [bShadow setShadowBlurRadius:[aShadow shadowBlurRadius] * bScale];
+                        [bShadow setShadowOffset:NSMakeSize([aShadow shadowOffset].width * bScale, [aShadow shadowOffset].height * bScale)];
+                        [bShadow set];
+                        [bShadow release];
                         NSRectFill(SKIntegralRect(pageRect));
                         [NSGraphicsContext restoreGraphicsState];
                         

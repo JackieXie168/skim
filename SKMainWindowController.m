@@ -2471,7 +2471,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [emptyPage setRotation:[firstPage rotation]];
         NSImage *pageImage = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
-        NSImage *image = [NSImage bitmapImageWithSize:[pageImage size] drawingHandler:^(NSRect rect){
+        NSImage *image = [NSImage bitmapImageWithSize:[pageImage size] drawingHandler:^(NSRect rect, CGFloat bScale){
             NSRect imgRect = rect;
             CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
             imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));

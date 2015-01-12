@@ -157,7 +157,6 @@ static BOOL usesSequentialPageNumbering = NO;
     NSSize thumbnailSize;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
-    NSShadow *aShadow = nil;
     
     if ([self rotation] % 180 == 90)
         pageSize = NSMakeSize(pageSize.height, pageSize.width);
@@ -175,23 +174,25 @@ static BOOL usesSequentialPageNumbering = NO;
     pageRect.size = thumbnailSize;
     
     if (shadowBlurRadius > 0.0) {
-        aShadow = [[[NSShadow alloc] init] autorelease];
-        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-        [aShadow setShadowBlurRadius:shadowBlurRadius];
-        [aShadow setShadowOffset:shadowOffset];
-        
         pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
         pageRect.origin.x -= shadowOffset.width;
         pageRect.origin.y -= shadowOffset.height;
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect, CGFloat bScale){
         
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] setFill];
-        [aShadow set];
+        NSShadow *aShadow = nil;
+        if (shadowBlurRadius > 0.0) {
+            aShadow = [[[NSShadow alloc] init] autorelease];
+            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+            [aShadow setShadowBlurRadius:shadowBlurRadius * bScale];
+            [aShadow setShadowOffset:NSMakeSize(shadowOffset.width * bScale, shadowOffset.height * bScale)];
+            [aShadow set];
+        }
         NSRectFill(pageRect);
         [NSGraphicsContext restoreGraphicsState];
         
@@ -282,7 +283,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSAffineTransform *transform = [self affineTransformForBox:box];
     NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     
-    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect){
+    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect, CGFloat bScale){
         [pageImage drawInRect:destRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
     }];
     

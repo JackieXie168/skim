@@ -437,9 +437,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
-    NSShadow *aShadow = nil;
     NSAffineTransform *transform = nil;
     NSSize thumbnailSize = thumbnailSize = bounds.size;
+    CGFloat shadowBlurRadius = 0.0;
+    CGFloat shadowOffset = 0.0;
     NSImage *image;
     
     [pdfView cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
@@ -447,28 +448,31 @@ static char SKSnaphotWindowDefaultsObservationContext;
     bounds.origin = NSZeroPoint;
     
     if (size > 0.0) {
-        CGFloat shadowBlurRadius = round(size / 32.0);
-        NSSize shadowOffset = NSMakeSize(0.0, - ceil(shadowBlurRadius * 0.75));
+        shadowBlurRadius = round(size / 32.0);
+        shadowOffset = -ceil(shadowBlurRadius * 0.75);
         if (NSHeight(bounds) > NSWidth(bounds))
             thumbnailSize = NSMakeSize(round((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
             thumbnailSize = NSMakeSize(size, round((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
-        aShadow = [[[NSShadow alloc] init] autorelease];
-        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-        [aShadow setShadowBlurRadius:shadowBlurRadius];
-        [aShadow setShadowOffset:shadowOffset];
         transform = [NSAffineTransform transform];
-        [transform translateXBy:shadowBlurRadius - shadowOffset.width yBy:shadowBlurRadius - shadowOffset.height];
+        [transform translateXBy:shadowBlurRadius yBy:shadowBlurRadius - shadowOffset];
         [transform scaleXBy:(thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds) yBy:(thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds)];
         [transform concat];
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect, CGFloat bScale){
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         [transform concat];
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] set];
-        [aShadow set];
+        if (shadowBlurRadius > 0.0) {
+            NSShadow *aShadow = [[NSShadow alloc] init];
+            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+            [aShadow setShadowBlurRadius:shadowBlurRadius * bScale];
+            [aShadow setShadowOffset:NSMakeSize(0.0, shadowOffset * bScale)];
+            [aShadow set];
+            [aShadow release];
+        }
         NSRectFill(bounds);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         [NSGraphicsContext restoreGraphicsState];
