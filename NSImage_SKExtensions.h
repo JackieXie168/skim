@@ -105,6 +105,10 @@ extern NSString *SKImageNameToolbarTextTool;
 extern NSString *SKImageNameToolbarMoveTool;
 extern NSString *SKImageNameToolbarMagnifyTool;
 extern NSString *SKImageNameToolbarSelectTool;
+extern NSString *SKImageNameToolbarInfo;
+extern NSString *SKImageNameToolbarColors;
+extern NSString *SKImageNameToolbarFonts;
+extern NSString *SKImageNameToolbarLines;
 
 extern NSString *SKImageNameOutlineViewAdorn;
 extern NSString *SKImageNameThumbnailViewAdorn;
