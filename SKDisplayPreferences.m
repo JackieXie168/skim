@@ -40,6 +40,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
@@ -95,6 +96,19 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 #pragma mark Accessors
 
 - (NSString *)title { return NSLocalizedString(@"Display", @"Preference pane label"); }
+
+- (NSImage *)icon {
+    static NSImage *image = nil;
+    if (image == nil) {
+        image = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect, CGFloat bScale){
+            NSImage *colorImage = [NSImage imageNamed:NSImageNameColorPanel];
+            NSImage *fontImage = [NSImage imageNamed:NSImageNameFontPanel];
+            [colorImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+            [fontImage drawInRect:NSMakeRect(-4.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
+        }] retain];
+    }
+    return image;
+}
 
 - (NSUInteger)countOfSizes {
     return sizeof(SKDefaultFontSizes) / sizeof(CGFloat);

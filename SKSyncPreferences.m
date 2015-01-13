@@ -41,6 +41,9 @@
 #import "SKStringConstants.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
+#import "NSBitmapImageRep_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define TEXEDITORS_KEY @"TeXEditors"
@@ -103,6 +106,24 @@ static NSArray *TeXEditors = nil;
 #pragma mark Accessors
 
 - (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
+
+- (NSImage *)icon {
+    static NSImage *image = nil;
+    if (image == nil) {
+        image = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect, CGFloat bScale){
+            NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+            NSBitmapImageRep *refreshImageRep = [NSBitmapImageRep imageRepWithSize:NSMakeSize(10.0, 12.0) scale:bScale drawingHandler:^(NSRect r, CGFloat s){
+                [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
+                NSRectFill(r);
+                [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:r fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            }];
+            [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+            [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-bScale];
+            [refreshImageRep drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
+        }] retain];
+    }
+    return image;
+}
 
 + (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name {
     for (NSDictionary *editor in TeXEditors) {
