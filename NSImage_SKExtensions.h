@@ -109,6 +109,7 @@ extern NSString *SKImageNameToolbarInfo;
 extern NSString *SKImageNameToolbarColors;
 extern NSString *SKImageNameToolbarFonts;
 extern NSString *SKImageNameToolbarLines;
+extern NSString *SKImageNameToolbarPrint;
 
 extern NSString *SKImageNameOutlineViewAdorn;
 extern NSString *SKImageNameThumbnailViewAdorn;
