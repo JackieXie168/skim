@@ -42,6 +42,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 #import "NSGraphics_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
 #define AUTOMATICALLYCHECKSFORUPDATES_KEY @"automaticallyChecksForUpdates"
@@ -79,6 +80,10 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (NSString *)nibName {
     return @"GeneralPreferences";
+}
+
+- (NSImage *)icon {
+    return [NSImage imageNamed:NSImageNamePreferencesGeneral];
 }
 
 - (void)loadView {
