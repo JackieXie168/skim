@@ -112,6 +112,7 @@ NSString *SKImageNameToolbarInfo = @"ToolbarInfo";
 NSString *SKImageNameToolbarColors = @"ToolbarColors";
 NSString *SKImageNameToolbarFonts = @"ToolbarFonts";
 NSString *SKImageNameToolbarLines = @"ToolbarLines";
+NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
 
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
@@ -683,7 +684,7 @@ macro(Ink)
     
     MAKE_IMAGE(SKImageNameToolbarMoveTool, YES, 27.0, 19.0, 
         [[NSColor whiteColor] setStroke];
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] blurRadius:2.0 yOffset:0.0];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:2.0 yOffset:0.0];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(10.5, 3.0)];
         [path curveToPoint:NSMakePoint(8.0, 7.0) controlPoint1:NSMakePoint(10.5, 4.5) controlPoint2:NSMakePoint(10.5, 4.5)];
@@ -758,9 +759,9 @@ macro(Ink)
     );
     
     MAKE_IMAGE(SKImageNameToolbarLines, NO, 27.0, 20.0, 
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6, 14, 15, 1)];
-        [path appendBezierPathWithRect:NSMakeRect(6, 10, 15, 2)];
-        [path appendBezierPathWithRect:NSMakeRect(6, 5, 15, 3)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 14.0, 15.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(6.0, 10.0, 15.0, 2.0)];
+        [path appendBezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0, 3.0)];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
         [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.8 alpha:1.0] set];
         [path fill];
@@ -768,6 +769,74 @@ macro(Ink)
         [path appendBezierPathWithRect:NSMakeRect(0.0, 0.0, 27.0, 20.0)];
         [path setWindingRule:NSEvenOddWindingRule];
         [[NSColor blackColor] set];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarPrint, NO, 27.0, 20.0, 
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(3.0, 13.0)];
+        [path lineToPoint:NSMakePoint(5.0, 15.0)];
+        [path lineToPoint:NSMakePoint(22.0, 15.0)];
+        [path lineToPoint:NSMakePoint(24.0, 13.0)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(24.0, 5.0) toPoint:NSMakePoint(3.0, 5.0) radius:2.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 5.0) toPoint:NSMakePoint(3.0, 13.0) radius:2.0];
+        [path closePath];
+        [NSGraphicsContext saveGraphicsState];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.333] blurRadius:1.0 yOffset:-1.0];
+        [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] set];
+        [path fill];
+        [NSGraphicsContext restoreGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
+        [path addClip];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.2]] autorelease];
+        [gradient drawInRect:NSMakeRect(5.0, 5.0, 17.0, 6.0) angle:90.0];
+        gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]] autorelease];
+        [gradient drawInRect:NSMakeRect(6.0, 5.0, 15.0, 6.0) angle:90.0];
+        gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] autorelease];
+        [gradient drawInRect:NSMakeRect(3.0, 5.0, 21.0, 3.0) angle:90.0];
+        gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.6]] autorelease];
+        [gradient drawInRect:NSMakeRect(3.0, 11.5, 21.0, 3.5) angle:90.0];
+        [NSGraphicsContext restoreGraphicsState];
+        gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.316 green:0.488 blue:0.630 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.395 green:0.602 blue:0.792 alpha:1.0]] autorelease];
+        [gradient drawInRect:NSMakeRect(6.0, 15.0, 15.0, 2.0) angle:90.0];
+        [NSGraphicsContext saveGraphicsState];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(0.0, 14.0, 27.0, 6.0)];
+        [path addClip];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 14.0, 11.0, 4.0)];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
+        [[NSColor whiteColor] set];
+        [path fill];
+        [NSGraphicsContext restoreGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.0, 2.0, 13.0, 8.0)];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:1.0 yOffset:-1.0];
+        [[NSColor whiteColor] set];
+        [path fill];
+        [NSGraphicsContext restoreGraphicsState];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 10.0, 2.0, 1.0)];
+        [[NSColor colorWithCalibratedRed:1.0 green:0.51 blue:0.16 alpha:1.0] set];
+        [path fill];
+        gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.35]] autorelease];
+        [gradient drawInRect:NSMakeRect(7.0, 6.0, 13.0, 4.0) angle:90.0];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.05] set];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 11.0, 7.0)];
+        [path fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 4.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(13.0, 3.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 3.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 7.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 7.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 9.0, 8.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 9.0, 2.0, 1.0)];
+        [path fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 1.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 4.0, 1.0)];
         [path fill];
     );
     
@@ -1212,9 +1281,9 @@ macro(Ink)
     );
     
     MAKE_IMAGE(SKImageNameToolbarLines, NO, 27.0, 20.0, 
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6, 14, 15, 1)];
-        [path appendBezierPathWithRect:NSMakeRect(6, 10, 15, 2)];
-        [path appendBezierPathWithRect:NSMakeRect(6, 5, 15, 3)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 14.0, 15.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(6.0, 10.0, 15.0, 2.0)];
+        [path appendBezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0, 3.0)];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
         [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.8 alpha:1.0] set];
         [path fill];
@@ -1222,6 +1291,43 @@ macro(Ink)
         [path appendBezierPathWithRect:NSMakeRect(0.0, 0.0, 27.0, 20.0)];
         [path setWindingRule:NSEvenOddWindingRule];
         [[NSColor blackColor] set];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarPrint, YES, 27.0, 20.0, 
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(7.5, 5.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 5.5) toPoint:NSMakePoint(3.5, 14.5) radius:2.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 14.5) toPoint:NSMakePoint(23.5, 14.5) radius:2.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(23.5, 14.5) toPoint:NSMakePoint(23.5, 5.5) radius:2.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(23.5, 5.5) toPoint:NSMakePoint(3.5, 5.5) radius:2.5];
+        [path lineToPoint:NSMakePoint(19.5, 5.5)];
+        [path appendBezierPathWithRect:NSMakeRect(7.5, 2.5, 12.0, 8.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.5, 14.5, 10.0, 3.0)];
+        [[NSColor blackColor] set];
+        [path stroke];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 10.0, 2.0, 1.0)];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] set];
+        [path fill];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] set];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 11.0, 7.0)];
+        [path fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 4.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(13.0, 3.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 3.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 7.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 7.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 9.0, 8.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(16.0, 9.0, 2.0, 1.0)];
+        [path fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 3.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 1.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 2.0, 1.0)];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 4.0, 1.0)];
         [path fill];
     );
     
