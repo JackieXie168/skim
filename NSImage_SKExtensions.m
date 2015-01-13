@@ -681,6 +681,28 @@ macro(Ink)
         [gradient drawInRect:NSMakeRect(7.0, 4.0, 13.0, 6.0) angle:90.0];
     );
     
+    MAKE_IMAGE(SKImageNameToolbarMoveTool, YES, 27.0, 19.0, 
+        [[NSColor whiteColor] setStroke];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] blurRadius:2.0 yOffset:0.0];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(10.5, 3.0)];
+        [path curveToPoint:NSMakePoint(8.0, 7.0) controlPoint1:NSMakePoint(10.5, 4.5) controlPoint2:NSMakePoint(10.5, 4.5)];
+        [path curveToPoint:NSMakePoint(6.5, 11.0) controlPoint1:NSMakePoint(5.5, 9.5) controlPoint2:NSMakePoint(5.5, 10.0)];
+        [path curveToPoint:NSMakePoint(10.0, 9.5) controlPoint1:NSMakePoint(7.5, 12.0) controlPoint2:NSMakePoint(7.5, 12.0)];
+        [path curveToPoint:NSMakePoint(9.5, 15.5) controlPoint1:NSMakePoint(7.5, 14.0) controlPoint2:NSMakePoint(7.0, 15.5)];
+        [path curveToPoint:NSMakePoint(11.5, 11.5) controlPoint1:NSMakePoint(10.5, 15.5) controlPoint2:NSMakePoint(10.5, 15.5)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(13.0, 15.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path moveToPoint:NSMakePoint(14.5, 11.0)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(16.0, 14.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path lineToPoint:NSMakePoint(17.5, 12.5)];
+        [path moveToPoint:NSMakePoint(17.5, 10.5)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(19.0, 12.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path curveToPoint:NSMakePoint(17.5, 3.0) controlPoint1:NSMakePoint(20.5, 8.5) controlPoint2:NSMakePoint(17.5, 7.0)];
+        [path setLineJoinStyle:NSRoundLineJoinStyle];
+        [path setLineWidth:1.5];
+        [path stroke];
+    );
+    
     MAKE_IMAGE(SKImageNameToolbarMagnifyTool, NO, 27.0, 19.0, 
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:2.0 yOffset:0.0];
         [[NSColor whiteColor] setStroke];
