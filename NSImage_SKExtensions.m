@@ -108,6 +108,10 @@ NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
 NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
 NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
 NSString *SKImageNameToolbarSelectTool = @"ToolbarSelectTool";
+NSString *SKImageNameToolbarInfo = @"ToolbarInfo";
+NSString *SKImageNameToolbarColors = @"ToolbarColors";
+NSString *SKImageNameToolbarFonts = @"ToolbarFonts";
+NSString *SKImageNameToolbarLines = @"ToolbarLines";
 
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
@@ -719,6 +723,32 @@ macro(Ink)
         [path stroke];
     );
     
+    MAKE_IMAGE(SKImageNameToolbarInfo, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameInfo] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarColors, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarFonts, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameFontPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarLines, NO, 27.0, 20.0, 
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6, 14, 15, 1)];
+        [path appendBezierPathWithRect:NSMakeRect(6, 10, 15, 2)];
+        [path appendBezierPathWithRect:NSMakeRect(6, 5, 15, 3)];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
+        [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.8 alpha:1.0] set];
+        [path fill];
+        [path addClip];
+        [path appendBezierPathWithRect:NSMakeRect(0.0, 0.0, 27.0, 20.0)];
+        [path setWindingRule:NSEvenOddWindingRule];
+        [[NSColor blackColor] set];
+        [path fill];
+    );
+    
 #define MAKE_BADGED_IMAGES(name) \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## Note, NO, 27.0, 19.0, \
         translate(3.0); \
@@ -1145,6 +1175,32 @@ macro(Ink)
         [path moveToPoint:NSMakePoint(7.5, 9.0)];
         [path lineToPoint:NSMakePoint(7.5, 12.0)];
         [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarInfo, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameInfo] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarColors, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarFonts, NO, 27.0, 20.0, 
+        [[NSImage imageNamed:NSImageNameFontPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarLines, NO, 27.0, 20.0, 
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6, 14, 15, 1)];
+        [path appendBezierPathWithRect:NSMakeRect(6, 10, 15, 2)];
+        [path appendBezierPathWithRect:NSMakeRect(6, 5, 15, 3)];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
+        [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.8 alpha:1.0] set];
+        [path fill];
+        [path addClip];
+        [path appendBezierPathWithRect:NSMakeRect(0.0, 0.0, 27.0, 20.0)];
+        [path setWindingRule:NSEvenOddWindingRule];
+        [[NSColor blackColor] set];
+        [path fill];
     );
     
 #define MAKE_BADGED_TEMPLATE_IMAGES(name) \
