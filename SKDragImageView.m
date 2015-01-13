@@ -43,6 +43,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSBitmapImageRep_SKExtensions.h"
 
 @implementation SKDragImageView
 
@@ -138,12 +139,12 @@
                         NSRect bounds = [self bounds];
                         CGFloat scale = [self backingScale];
                         
-                        NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect, CGFloat bScale){
+                        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect, CGFloat bScale){
                             [[self cell] drawInteriorWithFrame:rect inView:self];
                         }];
                         
                         NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect, CGFloat bScale){
-                            [image drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7];
+                            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:YES hints:nil];
                         }];
                         
                         [self dragImage:dragImage at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
