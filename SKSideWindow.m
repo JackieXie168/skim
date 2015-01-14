@@ -368,6 +368,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (void)drawRect:(NSRect)aRect {
     NSRect rect = [self bounds];
+    NSRect topRect = SKSliceRect(rect, CORNER_RADIUS, NSMaxYEdge);
+    NSRect bottomRect = SKSliceRect(rect, CORNER_RADIUS, NSMinYEdge);
+    NSSize offset = NSZeroSize;
     NSPoint startPoint, endPoint;
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
     
@@ -379,22 +382,22 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
     [path fill];
     
-    [[NSColor blackColor] set];
-    path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, -2.0, 0.0) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
+    offset.width = NSWidth(rect) + 6.0;
+    rect.origin.x -= offset.width;
+    path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, -2.0, 0.0) xRadius:CORNER_RADIUS + 2.0 yRadius:CORNER_RADIUS];
     [path appendBezierPathWithRect:NSInsetRect(rect, -4.0 , -2.0)];
     [path setWindingRule:NSEvenOddWindingRule];
     
     [NSGraphicsContext saveGraphicsState];
-    [[NSBezierPath bezierPathWithRect:SKSliceRect(rect, CORNER_RADIUS, NSMaxYEdge)] addClip];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:1.0 alpha:1.0]  blurRadius:2.0 yOffset:0.0];
+    [[NSBezierPath bezierPathWithRect:topRect] addClip];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:1.0 alpha:1.0]  blurRadius:2.0 offset:offset];
     [path fill];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     
     [NSGraphicsContext saveGraphicsState];
-    [[NSBezierPath bezierPathWithRect:SKSliceRect(rect, CORNER_RADIUS, NSMinYEdge)] addClip];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]  blurRadius:2.0 yOffset:0.0];
-    [[NSColor whiteColor] set];
+    [[NSBezierPath bezierPathWithRect:bottomRect] addClip];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]  blurRadius:2.0 offset:offset];
     [path fill];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
@@ -402,9 +405,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
     endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
+    offset.width = 1.0;
     [NSBezierPath setDefaultLineWidth:1.0];
     [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] blurRadius:0.0 offset:NSMakeSize(1.0, 0.0)];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] blurRadius:0.0 offset:offset];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;
