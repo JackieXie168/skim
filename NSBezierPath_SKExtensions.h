@@ -40,9 +40,6 @@
 
 @interface NSBezierPath (SKExtensions)
 
-+ (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius;
-
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)newPattern;
 
