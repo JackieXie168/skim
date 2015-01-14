@@ -51,7 +51,7 @@
 }
 
 - (NSImage *)icon {
-    return [NSImage imageNamed:[self nibName]];
+    return nil;
 }
 
 - (SKFontWell *)activeFontWell {
