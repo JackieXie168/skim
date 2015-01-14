@@ -37,7 +37,6 @@
  */
 
 #import "SKSideWindow.h"
-#import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
@@ -368,29 +367,37 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)drawRect:(NSRect)aRect {
-    NSRect topRect, bottomRect, rect = [self bounds];
+    NSRect rect = [self bounds];
     NSPoint startPoint, endPoint;
-    
-    topRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMaxYEdge);
-    bottomRect = SKSliceRect(rect, 2.0 * CORNER_RADIUS, NSMinYEdge);
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
     
     [NSGraphicsContext saveGraphicsState];
     
-    if (edge == NSMinXEdge) {
-        [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithRightRoundedRect:topRect radius:CORNER_RADIUS] fill];
-        [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithRightRoundedRect:bottomRect radius:CORNER_RADIUS] fill];
-        [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithRightRoundedRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS] fill];
-    } else {
-        [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithLeftRoundedRect:topRect radius:CORNER_RADIUS] fill];
-        [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithLeftRoundedRect:bottomRect radius:CORNER_RADIUS] fill];
-        [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
-        [[NSBezierPath bezierPathWithLeftRoundedRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS] fill];
-    }
+    [path addClip];
+    rect = SKShrinkRect(rect, -CORNER_RADIUS, edge);
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] addClip];
+    [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
+    [path fill];
+    
+    [[NSColor blackColor] set];
+    path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, -2.0, 0.0) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
+    [path appendBezierPathWithRect:NSInsetRect(rect, -4.0 , -2.0)];
+    [path setWindingRule:NSEvenOddWindingRule];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[NSBezierPath bezierPathWithRect:SKSliceRect(rect, CORNER_RADIUS, NSMaxYEdge)] addClip];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:1.0 alpha:1.0]  blurRadius:2.0 yOffset:0.0];
+    [path fill];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[NSBezierPath bezierPathWithRect:SKSliceRect(rect, CORNER_RADIUS, NSMinYEdge)] addClip];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]  blurRadius:2.0 yOffset:0.0];
+    [[NSColor whiteColor] set];
+    [path fill];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
     
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
