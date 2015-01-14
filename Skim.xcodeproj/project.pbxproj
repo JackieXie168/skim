@@ -37,7 +37,6 @@
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE01E6A21154FE0B00004111 /* SKPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CE01E6A11154FE0B00004111 /* SKPreferencePane.m */; };
 		CE030C6113C07A57007A47E9 /* PDFView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE030C6013C07A57007A47E9 /* PDFView_SKExtensions.m */; };
-		CE0458310FB6FAB0003CAF5D /* Scroller_Divider.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */; };
 		CE0458320FB6FAB0003CAF5D /* Scroller_Background.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */; };
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE05A7380E9024ED0060BB07 /* SKPresentationOptionsSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE05A7360E9024ED0060BB07 /* SKPresentationOptionsSheetController.m */; };
@@ -53,13 +52,11 @@
 		CE0905AE113F0B82004B85C6 /* NoteTypeSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */; };
 		CE090613113F1655004B85C6 /* PrintAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090612113F1655004B85C6 /* PrintAccessoryView.xib */; };
 		CE0928C413FFC0E4008A6A69 /* Scroller_Background_Lion.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */; };
-		CE0928C513FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */; };
 		CE099663112577A000EDB88F /* SKNotesPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE099662112577A000EDB88F /* SKNotesPage.m */; };
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
 		CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */; };
 		CE0AAE7E1A628B5D00274399 /* Scroller_Background_Yosemite.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */; };
-		CE0AAE801A628B6100274399 /* Scroller_Divider_Yosemite.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */; };
 		CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0AEDC2107A137C000C075E /* SKColorCell.m */; };
 		CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */; };
 		CE0E83EE114D15E000E37F38 /* SyncPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */; };
@@ -520,7 +517,6 @@
 		CE01E6A11154FE0B00004111 /* SKPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPreferencePane.m; sourceTree = "<group>"; };
 		CE030C5F13C07A57007A47E9 /* PDFView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFView_SKExtensions.h; sourceTree = "<group>"; };
 		CE030C6013C07A57007A47E9 /* PDFView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFView_SKExtensions.m; sourceTree = "<group>"; };
-		CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider.tiff; sourceTree = "<group>"; };
 		CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background.tiff; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
@@ -541,7 +537,6 @@
 		CE0905AD113F0B82004B85C6 /* NoteTypeSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteTypeSheet.xib; sourceTree = "<group>"; };
 		CE090612113F1655004B85C6 /* PrintAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PrintAccessoryView.xib; sourceTree = "<group>"; };
 		CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background_Lion.tiff; sourceTree = "<group>"; };
-		CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider_Lion.tiff; sourceTree = "<group>"; };
 		CE099661112577A000EDB88F /* SKNotesPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesPage.h; sourceTree = "<group>"; };
 		CE099662112577A000EDB88F /* SKNotesPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesPage.m; sourceTree = "<group>"; };
 		CE09FC3B0E3886C100BDF413 /* SKRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRuntime.m; sourceTree = "<group>"; };
@@ -549,7 +544,6 @@
 		CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSResponder_SKExtensions.m; sourceTree = "<group>"; };
 		CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XDVDocument.icns; sourceTree = "<group>"; };
 		CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Background_Yosemite.tiff; sourceTree = "<group>"; };
-		CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scroller_Divider_Yosemite.tiff; sourceTree = "<group>"; };
 		CE0AEDC1107A137C000C075E /* SKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorCell.h; sourceTree = "<group>"; };
 		CE0AEDC2107A137C000C075E /* SKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorCell.m; sourceTree = "<group>"; };
 		CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDictionaryFormatter.h; sourceTree = "<group>"; };
@@ -1851,12 +1845,9 @@
 				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
-				CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */,
 				CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */,
-				CE0928C313FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff */,
 				CE0928C213FFC0E4008A6A69 /* Scroller_Background_Lion.tiff */,
 				CE0AAE7D1A628B5D00274399 /* Scroller_Background_Yosemite.tiff */,
-				CE0AAE7F1A628B6100274399 /* Scroller_Divider_Yosemite.tiff */,
 				CE6DC9930D699F21003A072F /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE0E83EA114D15E000E37F38 /* SyncPreferences.tiff */,
@@ -2228,7 +2219,6 @@
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CEB34A530F5C1B7E0037E086 /* dsa_pub.pem in Resources */,
-				CE0458310FB6FAB0003CAF5D /* Scroller_Divider.tiff in Resources */,
 				CE0458320FB6FAB0003CAF5D /* Scroller_Background.tiff in Resources */,
 				CE19446310627483007E8770 /* BookmarksWindow.xib in Resources */,
 				CE19446410627483007E8770 /* ConversionProgressWindow.xib in Resources */,
@@ -2290,12 +2280,10 @@
 				CEFBB07F13AA07B400162F75 /* FindBar.xib in Resources */,
 				CEFBB33913AA737B00162F75 /* FindBar.strings in Resources */,
 				CE0928C413FFC0E4008A6A69 /* Scroller_Background_Lion.tiff in Resources */,
-				CE0928C513FFC0E4008A6A69 /* Scroller_Divider_Lion.tiff in Resources */,
 				CE109796161320A500C4FA18 /* ExportAccessoryView.xib in Resources */,
 				CE1098F11613CFC800C4FA18 /* ExportAccessoryView.strings in Resources */,
 				CE25BB6B163FFB770046A348 /* Skim.help in Resources */,
 				CE0AAE7E1A628B5D00274399 /* Scroller_Background_Yosemite.tiff in Resources */,
-				CE0AAE801A628B6100274399 /* Scroller_Divider_Yosemite.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

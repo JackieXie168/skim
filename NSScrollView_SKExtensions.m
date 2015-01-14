@@ -160,21 +160,21 @@ static NSMapTable *scrollViewPlacardViews = nil;
 
 - (void)drawRect:(NSRect)aRect {
     NSImage *bgImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ? @"Scroller_Background_Yosemite" : floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Background_Lion" : @"Scroller_Background"];
-    NSImage *divImage = [NSImage imageNamed:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ? @"Scroller_Divider_Yosemite" : floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? @"Scroller_Divider_Lion" : @"Scroller_Divider"];
     NSRect bgSrcRect = {NSZeroPoint, [bgImage size]};
-    NSRect divSrcRect = {NSZeroPoint, [divImage size]};
-    NSRect leftRect, rightRect, leftSrcRect, rightSrcRect, midSrcRect = bgSrcRect;
+    NSRect leftRect, rightRect, leftSrcRect, rightSrcRect, midSrcRect, divSrcRect = bgSrcRect;
     NSRect midRect = [self bounds];
     NSRect divRect = midRect;
     CGFloat width = NSHeight(bgSrcRect);
     
     divRect.size.width = 1.0;
-    midSrcRect.origin.x = floor(NSWidth(midSrcRect) / 2.0);
-    midSrcRect.size.width = 1.0;
+    divSrcRect.origin.x = floor(NSWidth(midSrcRect) / 2.0);
+    divSrcRect.size.width = 1.0;
     NSDivideRect(bgSrcRect, &rightSrcRect, &bgSrcRect, width, NSMaxXEdge);
     NSDivideRect(bgSrcRect, &leftSrcRect, &bgSrcRect, width, NSMinXEdge);
     NSDivideRect(midRect, &rightRect, &midRect, width, NSMaxXEdge);
     NSDivideRect(midRect, &leftRect, &midRect, width, NSMinXEdge);
+    midSrcRect = rightSrcRect;
+    midSrcRect.size.width = 1.0;
     
     [bgImage drawInRect:leftRect fromRect:leftSrcRect operation:NSCompositeSourceOver fraction:1.0];
     [bgImage drawInRect:rightRect fromRect:rightSrcRect operation:NSCompositeSourceOver fraction:1.0];
@@ -187,7 +187,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
     [viewEnum nextObject];
     while ((view = [viewEnum nextObject])) {
         divRect.origin.x = NSMinX([view frame]);
-        [divImage drawInRect:divRect fromRect:divSrcRect operation:NSCompositeSourceOver fraction:f];
+        [bgImage drawInRect:divRect fromRect:divSrcRect operation:NSCompositeSourceOver fraction:f];
     }
 }
 
