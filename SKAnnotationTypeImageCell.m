@@ -114,7 +114,7 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
-        if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
+        if ([self backgroundStyle] == NSBackgroundStyleDark)
             [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
         else
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
