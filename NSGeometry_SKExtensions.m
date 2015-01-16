@@ -79,24 +79,10 @@ NSRect SKIntersectionRect(NSRect rect, NSRect boundary) {
     return NSMakeRect(minX, minY, maxX - minX, maxY - minY);
 }
 
-NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped) {
-    rect.origin.x += 0.5 * (NSWidth(rect) - size.width);
-    rect.origin.y += 0.5 * (NSHeight(rect) - size.height);
-    rect.origin.y = flipped ? ceil(rect.origin.y)  : floor(rect.origin.y);
-    rect.size = size;
-    return rect;
-}
-
-NSRect SKCenterRectVertically(NSRect rect, CGFloat height, BOOL flipped) {
+NSRect SKCenterRectVertically(NSRect rect, CGFloat height, CGFloat offset, BOOL flipped) {
     rect.origin.y += 0.5 * (NSHeight(rect) - height);
-    rect.origin.y = flipped ? ceil(rect.origin.y)  : floor(rect.origin.y);
+    rect.origin.y = flipped ? ceil(rect.origin.y) - offset  : floor(rect.origin.y) + offset;
     rect.size.height = height;
-    return rect;
-}
-
-NSRect SKCenterRectHorizontally(NSRect rect, CGFloat width) {
-    rect.origin.x += floor(0.5 * (NSWidth(rect) - width));
-    rect.size.width = width;
     return rect;
 }
 
