@@ -114,8 +114,7 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
     
     // Draw the image
     NSRect imageRect = [self iconRectForBounds:aRect];
-    imageRect = SKCenterRectVertically(imageRect, NSWidth(imageRect), [controlView isFlipped]);
-    imageRect.origin.y += [controlView isFlipped] ? -IMAGE_OFFSET : IMAGE_OFFSET;
+    imageRect = SKCenterRectVertically(imageRect, NSWidth(imageRect), IMAGE_OFFSET, [controlView isFlipped]);
     [imageCell drawInteriorWithFrame:imageRect inView:controlView];
 }
 

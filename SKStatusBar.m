@@ -151,15 +151,14 @@
 		textRect.size.width = 0.0;
 	
     CGFloat height = fmax([leftCell cellSize].height, [rightCell cellSize].height);
-    textRect = SKCenterRectVertically(textRect, height, NO);
+    textRect = SKCenterRectVertically(textRect, height, VERTICAL_OFFSET, NO);
     textRect.origin.y += VERTICAL_OFFSET;
     
 	[leftCell drawWithFrame:textRect inView:self];
 	[rightCell drawWithFrame:textRect inView:self];
     
     if (iconCell) {
-        iconRect = SKCenterRectVertically(iconRect, iconHeight, NO);
-        iconRect.origin.y += VERTICAL_OFFSET;
+        iconRect = SKCenterRectVertically(iconRect, iconHeight, VERTICAL_OFFSET, NO);
         [iconCell drawWithFrame:iconRect inView:self];
     }
 }
