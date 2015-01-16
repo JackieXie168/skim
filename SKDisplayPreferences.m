@@ -100,11 +100,12 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
 - (NSImage *)icon {
     static NSImage *image = nil;
     if (image == nil) {
-        image = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect, CGFloat bScale){
+        image = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
             NSImage *colorImage = [NSImage imageNamed:NSImageNameColorPanel];
             NSImage *fontImage = [NSImage imageNamed:NSImageNameFontPanel];
             [colorImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
             [fontImage drawInRect:NSMakeRect(-4.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
+            return YES;
         }] retain];
     }
     return image;

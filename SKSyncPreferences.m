@@ -110,16 +110,18 @@ static NSArray *TeXEditors = nil;
 - (NSImage *)icon {
     static NSImage *image = nil;
     if (image == nil) {
-        image = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect, CGFloat bScale){
+        image = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
             NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-            NSBitmapImageRep *refreshImageRep = [NSBitmapImageRep imageRepWithSize:NSMakeSize(10.0, 12.0) scale:bScale drawingHandler:^(NSRect r, CGFloat s){
+            NSImage *refreshImage = [NSImage imageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
                 [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
                 NSRectFill(r);
                 [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:r fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                return YES;
             }];
             [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-            [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-bScale];
-            [refreshImageRep drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
+            [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
+            [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+            return YES;
         }] retain];
     }
     return image;

@@ -148,7 +148,7 @@
 - (NSImage *)icon {
     static NSImage *image = nil;
     if (image == nil) {
-        image = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect, CGFloat bScale){
+        image = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
             NSImage *clippingImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)];
             NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.935 blue:0.422 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.975 blue:0.768 alpha:1.0]] autorelease];
             [[NSColor blackColor] setFill];
@@ -157,6 +157,7 @@
             CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
             [gradient drawInRect:rect angle:90.0];
             [clippingImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            return YES;
         }] retain];
     }
     return image;
