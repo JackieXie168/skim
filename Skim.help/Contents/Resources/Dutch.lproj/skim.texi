@@ -121,7 +121,7 @@ Control-Cmd-\key\
 
 @box{topframeleft}
 
-@heading @image{gfx/Skim,,, Skim} Skim Help
+@heading Skim Help
 
 @image{gfx/screenshot,,, Screenshot}
 
