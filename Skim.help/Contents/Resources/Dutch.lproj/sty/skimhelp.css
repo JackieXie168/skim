@@ -178,3 +178,24 @@ td  {
     margin-top: 30px;
     margin-bottom: 30px
     }
+
+h1:before, .topframe h2:before {
+    content: "";
+    display: inline-block;
+    background: url("../gfx/Skim.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    }
+
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+    
+    h1:before {
+        background: url("../gfx/Skim_2x.png");
+        }
+    
+    .topframe h2:before {
+        background: url("../gfx/Skim_2x.png");
+        }
+    
+    }
