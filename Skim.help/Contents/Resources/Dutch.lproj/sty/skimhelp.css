@@ -5,7 +5,7 @@ body {
 h1  {
     font-size: 11pt;
     font-family: "Lucida Grande", Arial, sans-serif;
-    margin-bottom: 10px
+    margin-bottom: 10px;
     }
 
 h2  {
@@ -146,7 +146,7 @@ td  {
     left: 0
     }
 
-.topframe {
+.topmainbox {
     text-align: left;
     margin-top: 20px;
     margin-right: auto;
@@ -155,14 +155,18 @@ td  {
     width: 500px
     }
 
-.topframeleft {
+.toptitlebox {
     margin: 0;
     padding-left: 10px;
     width: 236px;
-    float: left
+    height: 276px;
+    float: left;
+    background-image: url("../gfx/screenshot.png");
+    background-repeat: no-repeat;
+    background-position: bottom;
     }
 
-.topframeright {
+.topcontentbox {
     margin: 0;
     padding-left: 20px;
     padding-bottom: 8px;
@@ -172,14 +176,14 @@ td  {
     border-left: 1px solid #808080
     }
 
-.topframe h2  {
+.topmainbox h1  {
     font-size: 18pt;
     font-family: "Lucida Grande", Arial, sans-serif;
     margin-top: 30px;
     margin-bottom: 30px
     }
 
-h1:before, .topframe h2:before {
+h1:before {
     content: "";
     display: inline-block;
     background: url("../gfx/Skim.png");
@@ -190,7 +194,7 @@ h1:before, .topframe h2:before {
 
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
     
-    h1:before .topframe h2:before {
+    h1:before {
         background: url("../gfx/Skim_2x.png");
         }
     

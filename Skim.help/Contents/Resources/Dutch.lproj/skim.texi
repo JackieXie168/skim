@@ -117,18 +117,6 @@ Control-Cmd-\key\
 @c THIS SHOULD CORRESPOND TO CFBundleHelpBookFolder IN Infoplist.strings OR Info.plist
 @top Skim Help
 
-@box{topframe}
-
-@box{topframeleft}
-
-@heading Skim Help
-
-@image{gfx/screenshot,,, Screenshot}
-
-@endbox
-
-@box{topframeright}
-
 Skim is een vertoner voor Portable Document Format (PDF) bestanden, bedoeld voor het gemakkelijk lezen en bestuderen van PDF-documenten. 
 
 U kunt zoeken in PDF-bestanden, bladwijzers aanmaken, onderdelen benadrukken, en "kiekjes" nemen als hadige referenties bij het lezen. Skim kan ook PosScript (PS) bestanden openen, waarbij deze worden omgezet in PDF. 
@@ -139,8 +127,6 @@ Daarbij kunt u zich met Skim volledig concentreren op het lezen van het PDF-best
 * indexcp::
 * Meer informatie::
 @end menu
-
-@endbox
 
 @c ======================================================================================
 
