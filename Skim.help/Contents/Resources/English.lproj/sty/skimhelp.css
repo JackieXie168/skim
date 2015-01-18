@@ -190,11 +190,7 @@ h1:before, .topframe h2:before {
 
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
     
-    h1:before {
-        background: url("../gfx/Skim_2x.png");
-        }
-    
-    .topframe h2:before {
+    h1:before .topframe h2:before {
         background: url("../gfx/Skim_2x.png");
         }
     
