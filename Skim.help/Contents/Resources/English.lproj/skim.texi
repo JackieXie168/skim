@@ -143,8 +143,6 @@ In addition, with Skim you can fully concentrate  on reading the PDF file in a p
 
 @endbox
 
-@endbox
-
 @c ======================================================================================
 
 @topic Viewing PDF files

@@ -142,8 +142,6 @@ Daarbij kunt u zich met Skim volledig concentreren op het lezen van het PDF-best
 
 @endbox
 
-@endbox
-
 @c ======================================================================================
 
 @topic PDF-bestanden bekijken
