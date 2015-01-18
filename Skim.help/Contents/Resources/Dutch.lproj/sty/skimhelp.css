@@ -89,7 +89,7 @@ a:hover {
 
 hr  {
     text-decoration: none;
-    border: solid 1px #bfbfbf
+    border: solid 1px #d7d7d7
     }
 
 td  {
@@ -126,13 +126,13 @@ td  {
     }
 
 .taskbox {
-    background-color: #e6edff;
     list-style-type: decimal;
     list-style-position: outside;
     margin: 12px 0;
     padding: 2px 12px;
-    border: solid 1px #bfbfbf;
-    border-radius: 5px
+    border: solid 1px #d7d7d7;
+    border-radius: 10px;
+    box-shadow: 0px 2px 2px #cdcdcd
     }
 
 .taskbox h2 {
@@ -169,12 +169,10 @@ td  {
 
 .topcontentbox {
     margin: 0;
-    padding-left: 20px;
     padding-bottom: 8px;
-    width: 224px;
+    width: 234px;
     height: auto;
-    float: left;
-    border-left: 1px solid #808080
+    float: right
     }
 
 .toptitlebox h1  {
@@ -186,13 +184,11 @@ td  {
 h1:before {
     content: "";
     display: inline-block;
+    vertical-align: bottom;
     background-image: url("../gfx/Skim.png");
     background-repeat: no-repeat;
     width: 32px;
-    height: 32px
-    }
-
-.toptitlebox h1:before  {
+    height: 32px;
     margin-right: 6px
     }
 
