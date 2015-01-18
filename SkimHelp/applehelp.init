@@ -262,18 +262,23 @@ sub appleHelp_print_Top
     my $fh = shift;
     my $has_top_heading = shift;
 
-    # we don't pront the navigation buttons' on the Top page
+    # we don't print the navigation buttons on the Top page
     #my $buttons = \@MISC_BUTTONS;
     #&$print_head_navigation($fh, $buttons);
     main::print_lines($fh, $Texi2HTML::THIS_HEADER);
+    # this is instead of $AFTER_NAVIGATION and balanced by $PRE_BODY_CLOSE
+    print $fh "<div class=\"topmainbox\">\n";
     my $nw;
     if ($Texi2HTML::THIS_SECTION)
     {
         # if top-level node has content, then print it with extra header
         #print $fh "<h1>$Texi2HTML::NAME{Top}</h1>\n"
-        print $fh "<h1 class=\"settitle\">$Texi2HTML::NAME{Top}</h1>\n"
-            unless ($has_top_heading);
+        print $fh "<div class=\"toptitlebox\">\n";
+        print $fh "<h1 class=\"settitle\">$Texi2HTML::NAME{Top}</h1>\n";
+        print $fh "</div>\n";
+        print $fh "<div class=\"topcontentbox\">\n";
         $nw = main::print_lines($fh, $Texi2HTML::THIS_SECTION);
+        print $fh "</div>\n";
     }
     else
     {
