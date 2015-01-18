@@ -151,7 +151,7 @@ td  {
     margin-top: 20px;
     margin-right: auto;
     margin-left: auto;
-    padding:0;
+    padding: 0;
     width: 500px
     }
 
@@ -176,26 +176,29 @@ td  {
     border-left: 1px solid #808080
     }
 
-.topmainbox h1  {
+.toptitlebox h1  {
     font-size: 18pt;
     font-family: "Lucida Grande", Arial, sans-serif;
     margin-top: 30px;
-    margin-bottom: 30px
     }
 
 h1:before {
     content: "";
     display: inline-block;
-    background: url("../gfx/Skim.png");
+    background-image: url("../gfx/Skim.png");
     background-repeat: no-repeat;
     width: 32px;
     height: 32px;
     }
 
+.toptitlebox h1:before  {
+    margin-right: 6px
+    }
+
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
     
     h1:before {
-        background: url("../gfx/Skim_2x.png");
+        background-image: url("../gfx/Skim_2x.png");
         }
     
     }
