@@ -9,7 +9,7 @@
 @c Command names start with '@' and should not be localized.
 @c Lines starting with @c, such as this one, are comments and should not be localized.
 @c Arguments are written on the line after the command, or as a comma-separated list within braces. 
-@c Most arguments should be localized, but not for @end or @box.
+@c Most arguments should be localized, but not for @endx.
 @c References (first argument of @ref or @xref, or between * and :: in a @menu) should be exactly the same as their target (argument of @node or @anchor). 
 
 @c ======================================================================================
