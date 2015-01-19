@@ -200,7 +200,7 @@ h1:before {
        only screen and (     -o-min-device-pixel-ratio: 2/1),
        only screen and (        min-device-pixel-ratio: 2) {
     
-.toptitlebox {
+    .toptitlebox {
         background-image: url("../gfx/screenshot_2x.png");
     }
     
