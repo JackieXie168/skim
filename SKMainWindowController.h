@@ -167,6 +167,7 @@ enum {
         unsigned int wholeWordSearch:1;
         unsigned int caseInsensitiveNoteSearch:1;
         unsigned int autoResizeNoteRows:1;
+        unsigned int addOrRemoveNotesInBulk:1;
         unsigned int updatingOutlineSelection:1;
         unsigned int updatingThumbnailSelection:1;
         unsigned int isAnimating:1;
@@ -219,7 +220,7 @@ enum {
 - (NSUInteger)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex;
 - (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(NSUInteger)theIndex;
-- (void)insertNotes:(NSArray *)newNotes atIndex:(NSIndexSet *)theIndexes;
+- (void)insertNotes:(NSArray *)newNotes atIndexes:(NSIndexSet *)theIndexes;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex;
 - (void)removeAllObjectsFromNotes;
 
