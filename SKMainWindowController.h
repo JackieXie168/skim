@@ -219,6 +219,7 @@ enum {
 - (NSUInteger)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex;
 - (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(NSUInteger)theIndex;
+- (void)insertNotes:(NSArray *)newNotes atIndex:(NSIndexSet *)theIndexes;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex;
 - (void)removeAllObjectsFromNotes;
 

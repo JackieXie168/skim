@@ -889,7 +889,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace {
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
-    NSMutableArray *observableNotes = [self mutableArrayValueForKey:NOTES_KEY];
+    NSMutableArray *notesToAdd = [NSMutableArray array];
     
     if (replace) {
         [pdfView removePDFToolTipRects];
@@ -911,12 +911,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page];
             // this is necessary for the initial load of the document, as the notification handler is not yet registered
-            if ([observableNotes containsObject:annotation] == NO)
-                [observableNotes addObject:annotation];
+            if ([notes containsObject:annotation] == NO)
+                [notesToAdd addObject:annotation];
             [annotation release];
         }
         [pool release];
     }
+    if ([notesToAdd count] > 0)
+        [self insertNotes:notesToAdd atIndex:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([notes count], [notesToAdd count])]];
     // make sure we clear the undo handling
     [self observeUndoManagerCheckpoint:nil];
     [rightSideController.noteOutlineView reloadData];
@@ -1070,6 +1072,13 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
     // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
     [self startObservingNotes:[NSArray arrayWithObject:note]];
+}
+
+- (void)insertNotes:(NSArray *)newNotes atIndex:(NSIndexSet *)theIndexes {
+    [notes insertObjects:newNotes atIndexes:theIndexes];
+
+    // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
+    [self startObservingNotes:newNotes];
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
