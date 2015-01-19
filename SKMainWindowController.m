@@ -891,12 +891,17 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
     
+    // disable automatic add/remove from the notification handlers
+    // we want to do this in bulk as binding can be very slow and there are potentially many notes
+    mwcFlags.addOrRemoveNotesInBulk = 1;
+    
     if (replace) {
         [pdfView removePDFToolTipRects];
         // remove the current annotations
         [pdfView setActiveAnnotation:nil];
         for (annotation in [[notes copy] autorelease])
             [pdfView removeAnnotation:annotation];
+        [self removeAllObjectsFromNotes];
     }
     
     // create new annotations from the dictionary and add them to their page and to the document
@@ -910,20 +915,20 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page];
-            // this is necessary for the initial load of the document, as the notification handler is not yet registered
-            if ([notes containsObject:annotation] == NO)
-                [notesToAdd addObject:annotation];
+            [notesToAdd addObject:annotation];
             [annotation release];
         }
         [pool release];
     }
     if ([notesToAdd count] > 0)
-        [self insertNotes:notesToAdd atIndex:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([notes count], [notesToAdd count])]];
+        [self insertNotes:notesToAdd atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([notes count], [notesToAdd count])]];
     // make sure we clear the undo handling
     [self observeUndoManagerCheckpoint:nil];
     [rightSideController.noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
     [pdfView resetPDFToolTipRects];
+    
+    mwcFlags.addOrRemoveNotesInBulk = 0;
 }
 
 - (void)updatePageNumber {
@@ -1074,7 +1079,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self startObservingNotes:[NSArray arrayWithObject:note]];
 }
 
-- (void)insertNotes:(NSArray *)newNotes atIndex:(NSIndexSet *)theIndexes {
+- (void)insertNotes:(NSArray *)newNotes atIndexes:(NSIndexSet *)theIndexes {
     [notes insertObjects:newNotes atIndexes:theIndexes];
 
     // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.

@@ -1818,7 +1818,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([annotation isSkimNote]) {
+    if ([annotation isSkimNote] && mwcFlags.addOrRemoveNotesInBulk == 0) {
         mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] addObject:annotation];
         [rightSideController.noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
@@ -1839,7 +1839,7 @@ static NSArray *allMainDocumentPDFViews() {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([annotation isSkimNote]) {
+    if ([annotation isSkimNote] && mwcFlags.addOrRemoveNotesInBulk == 0) {
         if ([[self selectedNotes] containsObject:annotation])
             [rightSideController.noteOutlineView deselectAll:self];
         
