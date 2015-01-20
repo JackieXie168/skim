@@ -1063,7 +1063,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSArray *)notes {
-    return [[notes copy] autorelease];
+    return notes;
 }
 	 
 - (NSUInteger)countOfNotes {
@@ -1125,7 +1125,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSArray *)thumbnails {
-    return [[thumbnails copy] autorelease];
+    return thumbnails;
 }
 
 - (NSUInteger)countOfThumbnails {
@@ -1156,7 +1156,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSArray *)snapshots {
-    return [[snapshots copy] autorelease];
+    return snapshots;
 }
 
 - (NSUInteger)countOfSnapshots {
@@ -1203,7 +1203,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSArray *)searchResults {
-    return [[searchResults copy] autorelease];
+    return searchResults;
 }
 
 - (void)setSearchResults:(NSArray *)newSearchResults {
@@ -1227,7 +1227,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (NSArray *)groupedSearchResults {
-    return [[groupedSearchResults copy] autorelease];
+    return groupedSearchResults;
 }
 
 - (void)setGroupedSearchResults:(NSArray *)newGroupedSearchResults {
