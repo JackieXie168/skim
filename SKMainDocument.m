@@ -194,7 +194,7 @@ enum {
     [self tryToUnlockDocument:pdfDoc];
     [[self mainWindowController] setPdfDocument:pdfDoc];
     
-    [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES autoUpdate:NO];
+    [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES];
     
     if ([tmpData presentationOptions])
         [[self mainWindowController] setPresentationOptions:[tmpData presentationOptions]];
@@ -990,7 +990,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     if (array) {
-        [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace autoUpdate:NO];
+        [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace];
         [[self undoManager] setActionName:replace ? NSLocalizedString(@"Replace Notes", @"Undo action name") : NSLocalizedString(@"Add Notes", @"Undo action name")];
     } else
         NSBeep();
@@ -1042,8 +1042,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
-    NSMutableArray *noteDicts = [NSMutableArray array];
+    BOOL didConvert = NO;
     NSMapTable *offsets = nil;
+    SKPDFView *pdfView = [self pdfView];
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
@@ -1054,8 +1055,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 NSDictionary *properties = [annotation SkimNoteProperties];
                 if ([[annotation type] isEqualToString:SKNTextString])
                     properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
-                [noteDicts addObject:properties];
-                [[self pdfView] removeAnnotation:annotation];
+                PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
+                if (newAnnotation) {
+                    [pdfView removeAnnotation:annotation];
+                    [pdfView addAnnotation:newAnnotation toPage:page];
+                    if ([[newAnnotation contents] length] == 0)
+                        [newAnnotation autoUpdateString];
+                    [newAnnotation release];
+                    didConvert = YES;
+                }
             }
         }
         
@@ -1068,10 +1076,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
     }
     
-    if ([noteDicts count] > 0) {
-        
-        [[self mainWindowController] addAnnotationsFromDictionaries:noteDicts replace:NO autoUpdate:YES];
-        
+    if (didConvert) {
         // if pdfDocWithoutNotes was nil, the document was not encrypted, so no need to try to unlock
         if (pdfDocWithoutNotes == nil)
             pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];

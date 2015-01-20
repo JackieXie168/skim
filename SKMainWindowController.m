@@ -886,7 +886,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     }
 }
     
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace autoUpdate:(BOOL)autoUpdate {
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace {
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
@@ -915,8 +915,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page];
-            if (autoUpdate && [[annotation contents] length] == 0)
-                [annotation autoUpdateString];
             [notesToAdd addObject:annotation];
             [annotation release];
         }
