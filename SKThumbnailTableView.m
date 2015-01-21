@@ -131,19 +131,14 @@
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     NSWindow *oldWindow = [self window];
+    NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
     if (oldWindow) {
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidResignMainNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
     }
     if (newWindow) {
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:newWindow];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:newWindow];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
-        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:name object:newWindow];
     }
     [super viewWillMoveToWindow:newWindow];
 }
