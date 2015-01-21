@@ -99,19 +99,24 @@
     [super drawRow:row clipRect:clipRect];
 }
 
+- (void)handleHighlightsChanged:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
+        [self setNeedsDisplay:YES];
+}
+
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
     [super selectRowIndexes:indexes byExtendingSelection:extendSelection];
-    [self setNeedsDisplay:YES];
+    [self handleHighlightsChanged:nil];
 }
 
 - (void)deselectRow:(NSInteger)row {
     [super deselectRow:row];
-    [self setNeedsDisplay:YES];
+    [self handleHighlightsChanged:nil];
 }
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        [self setNeedsDisplay:YES];
+        [self handleHighlightsChanged:nil];
         return YES;
     }
     return NO;
@@ -119,14 +124,10 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        [self setNeedsDisplay:YES];
+        [self handleHighlightsChanged:nil];
         return YES;
     }
     return NO;
-}
-
-- (void)handleKeyOrMainStateChangedNotification:(NSNotification *)note {
-    [self setNeedsDisplay:YES];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
@@ -138,7 +139,7 @@
     }
     if (newWindow) {
         for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:name object:newWindow];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleHighlightsChanged:) name:name object:newWindow];
     }
     [super viewWillMoveToWindow:newWindow];
 }
