@@ -104,7 +104,9 @@
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
         [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+        [tocOutlineView setBackgroundColor:[NSColor controlColor]];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+        [thumbnailTableView setBackgroundColor:[NSColor controlColor]];
     }
 }
 
