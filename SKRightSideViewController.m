@@ -91,6 +91,7 @@
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
         [snapshotTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+        [snapshotTableView setBackgroundColor:[NSColor controlColor]];
     }
 }
 
