@@ -102,7 +102,7 @@
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
         [tocOutlineView setBackgroundColor:[NSColor controlColor]];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
