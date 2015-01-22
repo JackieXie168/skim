@@ -89,7 +89,7 @@
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [snapshotTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
         [snapshotTableView setBackgroundColor:[NSColor controlColor]];
     }
