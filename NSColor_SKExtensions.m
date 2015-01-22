@@ -97,31 +97,19 @@
 }
 
 + (NSColor *)selectionHighlightColor {
-    static NSColor *color = nil;
-    if (color == nil)
-        color = [[NSColor colorWithCalibratedRed:0.278477 green:0.467857 blue:0.810941 alpha:1.0] retain];
-    return color;
+    return [NSColor alternateSelectedControlColor];
 }
 
 + (NSColor *)selectionHighlightInteriorColor {
-    static NSColor *color = nil;
-    if (color == nil)
-        color = [[NSColor colorWithCalibratedRed:0.737118 green:0.837339 blue:0.983108 alpha:0.8] retain];
-    return color;
+    return [[[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
 }
 
 + (NSColor *)disabledSelectionHighlightColor {
-    static NSColor *color = nil;
-    if (color == nil)
-        color = [[NSColor colorWithCalibratedWhite:0.466820 alpha:1.0] retain];
-    return color;
+    return [NSColor disabledControlTextColor];
 }
 
 + (NSColor *)disabledSelectionHighlightInteriorColor {
-    static NSColor *color = nil;
-    if (color == nil)
-        color = [[NSColor colorWithCalibratedWhite:0.827376 alpha:0.8] retain];
-    return color;
+    return [[[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
 }
 
 - (uint32_t)uint32HSBAValue {
