@@ -45,8 +45,8 @@ void SKDrawResizeHandle(NSPoint point, CGFloat radius, BOOL active)
 {
     NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
     [path setLineWidth:0.25 * radius];
-    [(active ? [NSColor selectionHighlightInteriorColor] : [NSColor disabledSelectionHighlightInteriorColor]) setFill];
-    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setStroke];
+    [[[(active ? [NSColor selectedControlColor] : [NSColor secondarySelectedControlColor]) colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8] setFill];
+    [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) setStroke];
     [path fill];
     [path stroke];
 }

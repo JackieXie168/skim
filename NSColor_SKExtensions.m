@@ -96,22 +96,6 @@
     }
 }
 
-+ (NSColor *)selectionHighlightColor {
-    return [NSColor alternateSelectedControlColor];
-}
-
-+ (NSColor *)selectionHighlightInteriorColor {
-    return [[[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
-}
-
-+ (NSColor *)disabledSelectionHighlightColor {
-    return [NSColor disabledControlTextColor];
-}
-
-+ (NSColor *)disabledSelectionHighlightInteriorColor {
-    return [[[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
-}
-
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     if (rgbColor) {

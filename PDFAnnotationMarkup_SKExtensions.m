@@ -287,7 +287,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     PDFPage *page = [self page];
     
     [NSGraphicsContext saveGraphicsState];
-    [(active ? [NSColor selectionHighlightColor] : [NSColor disabledSelectionHighlightColor]) setFill];
+    [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) setFill];
     for (i = 0; i < iMax; i++)
         NSFrameRectWithWidth([pdfView convertRect:NSIntegralRect([pdfView convertRect:[lines rectAtIndex:i] fromPage:page]) toPage:page], lineWidth);
     [NSGraphicsContext restoreGraphicsState];
