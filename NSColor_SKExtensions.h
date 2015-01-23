@@ -75,11 +75,6 @@ enum {
 + (NSColor *)mainSourceListHighlightColor;
 + (NSColor *)disabledSourceListHighlightColor;
 
-+ (NSColor *)selectionHighlightColor;
-+ (NSColor *)selectionHighlightInteriorColor;
-+ (NSColor *)disabledSelectionHighlightColor;
-+ (NSColor *)disabledSelectionHighlightInteriorColor;
-
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 - (void)drawSwatchInRoundedRect:(NSRect)rect;
