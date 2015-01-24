@@ -936,6 +936,11 @@
                 description="The PDF view settings.">
                 <cocoa key="pdfViewSettings"/>
             </property>
+            <property name="note selection" code="NSel"
+                description="The selection in the note table.">
+                <type type="note" list="yes"/>
+                <cocoa key="noteSelection"/>
+            </property>
             <property name="info" type="document attributes" code="DInf" access="r"
                 description="The attributes of the PDF document.">
                 <cocoa key="scriptingInfo"/>

@@ -948,4 +948,18 @@
     return [super handleSaveScriptCommand:command];
 }
 
+
+- (NSArray *)noteSelection {
+    NSMutableArray *selectedNotes = [NSMutableArray array];
+    NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
+    [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop) {
+        id item = [outlineView itemAtRow:row];
+        if ([(PDFAnnotation *)item type] == nil)
+            item = [(SKNoteText *)item note];
+        if ([selectedNotes containsObject:item] == NO)
+            [selectedNotes addObject:item];
+    }];
+    return selectedNotes;
+}
+
 @end
