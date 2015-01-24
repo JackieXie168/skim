@@ -89,6 +89,7 @@ extern NSString *SKSkimFileDidSaveNotification;
 @property (nonatomic, readonly) double rating;
 
 - (NSArray *)notes;
+- (id)valueInNotesWithUniqueID:(NSString *)aUniqueID;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
 

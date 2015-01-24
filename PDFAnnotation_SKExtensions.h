@@ -101,6 +101,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (void)autoUpdateString;
 
+- (NSString *)uniqueID;
+
 - (NSSet *)keysForValuesToObserveForUndo;
 
 + (NSSet *)customScriptingKeys;

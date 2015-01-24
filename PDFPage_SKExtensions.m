@@ -513,6 +513,14 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return notes;
 }
 
+- (id)valueInNotesWithUniqueID:(NSString *)aUniqueID {
+    for (PDFAnnotation *annotation in [self annotations]) {
+        if ([[annotation uniqueID] isEqualToString:aUniqueID])
+            return annotation;
+    }
+    return nil;
+}
+
 - (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
     if ([self isEditable]) {
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];

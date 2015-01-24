@@ -948,6 +948,13 @@
     return [super handleSaveScriptCommand:command];
 }
 
+- (id)valueInNotesWithUniqueID:(NSString *)aUniqueID {
+    for (PDFAnnotation *annotation in [self notes]) {
+        if ([[annotation uniqueID] isEqualToString:aUniqueID])
+            return annotation;
+    }
+    return nil;
+}
 
 - (NSArray *)noteSelection {
     NSMutableArray *selectedNotes = [NSMutableArray array];
