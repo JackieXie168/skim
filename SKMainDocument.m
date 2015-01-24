@@ -1720,6 +1720,10 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     return [[self mainWindowController] selectedNotes];
 }
 
+- (void)setNoteSelection:(NSArray *)newNoteSelection {
+    return [[self mainWindowController] setSelectedNotes:newNoteSelection];
+}
+
 - (NSDictionary *)pdfViewSettings {
     return [[self mainWindowController] currentPDFSettings];
 }

@@ -962,4 +962,14 @@
     return selectedNotes;
 }
 
+- (void)setNoteSelection:(NSArray *)newNoteSelection {
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
+    for (PDFAnnotation *note in newNoteSelection) {
+        NSInteger row = [outlineView rowForItem:note];
+        if (row != -1)
+            [rowIndexes addIndex:row];
+    }
+    [outlineView selectRowIndexes:rowIndexes byExtendingSelection:NO];
+}
+
 @end
