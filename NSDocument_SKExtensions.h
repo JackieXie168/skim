@@ -99,6 +99,7 @@ typedef NSInteger SKInteractionMode;
 - (id)selectionSpecifier;
 - (NSData *)selectionQDRect;
 - (id)selectionPage;
+- (NSArray *)noteSelection;
 - (NSDictionary *)pdfViewSettings;
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;

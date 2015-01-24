@@ -1716,6 +1716,10 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     [[self pdfView] setCurrentSelectionPage:[page isKindOfClass:[PDFPage class]] ? page : nil];
 }
 
+- (NSArray *)noteSelection {
+    return [[self mainWindowController] selectedNotes];
+}
+
 - (NSDictionary *)pdfViewSettings {
     return [[self mainWindowController] currentPDFSettings];
 }
