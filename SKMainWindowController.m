@@ -1200,6 +1200,16 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     return selectedNotes;
 }
 
+- (void)setSelectedNotes:(NSArray *)newSelectedNotes {
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
+    for (PDFAnnotation *note in newSelectedNotes) {
+        NSInteger row = [rightSideController.noteOutlineView rowForItem:note];
+        if (row != -1)
+            [rowIndexes addIndex:row];
+    }
+    [rightSideController.noteOutlineView selectRowIndexes:rowIndexes byExtendingSelection:NO];
+}
+
 - (NSArray *)searchResults {
     return searchResults;
 }
