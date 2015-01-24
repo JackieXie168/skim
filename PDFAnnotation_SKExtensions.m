@@ -328,10 +328,14 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 	NSUInteger idx = [[[self page] notes] indexOfObjectIdenticalTo:self];
     if (idx != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
-        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" index:idx] autorelease];
+        return [[[NSUniqueIDSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" uniqueID:[self uniqueID]] autorelease];
     } else {
         return nil;
     }
+}
+
+- (NSString *)uniqueID {
+    return [NSString stringWithFormat:@"%p", (void *)self];
 }
 
 // overridden by subclasses to add or remove custom scripting keys relevant for the class, subclasses should call super first

@@ -1630,6 +1630,14 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     return [[self mainWindowController] notes];
 }
 
+- (id)valueInNotesWithUniqueID:(NSString *)aUniqueID {
+    for (PDFAnnotation *annotation in [[self mainWindowController] notes]) {
+        if ([[annotation uniqueID] isEqualToString:aUniqueID])
+            return annotation;
+    }
+    return nil;
+}
+
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex {
     PDFPage *page = [newNote page];
     if (page && [[page annotations] containsObject:newNote] == NO) {

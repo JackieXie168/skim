@@ -1079,6 +1079,10 @@
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
             </element>
+            <property name="id" code="ID  " type="text" access="r"
+                description="Unique ID of the note.">
+                <cocoa key="uniqueID"/>
+            </property>  
             <property name="type" code="NTyp" type="note type" access="r"
                 description="The type of note.">
                 <cocoa key="type"/>
