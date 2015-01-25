@@ -166,7 +166,6 @@
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
-		CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */; };
 		CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */; };
 		CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C96B00CD925550022D69F /* SKNotesPanelController.m */; };
 		CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */; };
@@ -841,7 +840,6 @@
 		CE68C6740CEF89E100B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE68C6770CEF89ED00B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE68C67A0CEF89F300B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ZoomValues.strings; sourceTree = "<group>"; };
-		CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarCustomize.tiff; sourceTree = "<group>"; };
 		CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSParagraphStyle_SKExtensions.h; sourceTree = "<group>"; };
 		CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSParagraphStyle_SKExtensions.m; sourceTree = "<group>"; };
 		CE6C96AF0CD925550022D69F /* SKNotesPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesPanelController.h; sourceTree = "<group>"; };
@@ -1818,7 +1816,6 @@
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
 				CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
-				CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */,
 				CE0458300FB6FAB0003CAF5D /* Scroller.tiff */,
 				CE0928C213FFC0E4008A6A69 /* Scroller_Lion.tiff */,
 				CE0AAE7D1A628B5D00274399 /* Scroller_Yosemite.tiff */,
@@ -2180,7 +2177,6 @@
 				CE4D88D80C3AE531002C20CB /* DVIDocument.icns in Resources */,
 				CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
-				CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CEB34A530F5C1B7E0037E086 /* dsa_pub.pem in Resources */,
 				CE0458320FB6FAB0003CAF5D /* Scroller.tiff in Resources */,
