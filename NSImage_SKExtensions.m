@@ -1320,7 +1320,7 @@ macro(Ink)
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 14.0, 15.0, 1.0)];
         [path appendBezierPathWithRect:NSMakeRect(6.0, 10.0, 15.0, 2.0)];
         [path appendBezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0, 3.0)];
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:1.0 yOffset:0.0];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] blurRadius:1.0 yOffset:0.0];
         [[NSColor colorWithCalibratedRed:0.32 green:0.388 blue:0.484 alpha:1.0] set];
         [path fill];
         [path addClip];
