@@ -113,6 +113,7 @@ NSString *SKImageNameToolbarColors = @"ToolbarColors";
 NSString *SKImageNameToolbarFonts = @"ToolbarFonts";
 NSString *SKImageNameToolbarLines = @"ToolbarLines";
 NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
+NSString *SKImageNameToolbarCustomize = @"ToolbarCustomize";
 
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
@@ -1328,6 +1329,12 @@ macro(Ink)
         [[NSColor blackColor] set];
         [path fill];
     );
+    
+    MAKE_IMAGE(SKImageNameToolbarCustomize, NO, 27.0, 20.0, 
+        NSImage *customizeImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarCustomizeIcon)];
+        [customizeImage drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
 }
 
 + (void)makeNoteImages {
