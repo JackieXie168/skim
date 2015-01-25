@@ -1321,13 +1321,10 @@ macro(Ink)
         [path appendBezierPathWithRect:NSMakeRect(6.0, 10.0, 15.0, 2.0)];
         [path appendBezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0, 3.0)];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] blurRadius:1.0 yOffset:0.0];
-        [[NSColor colorWithCalibratedRed:0.32 green:0.388 blue:0.484 alpha:1.0] set];
+        [[NSColor colorWithCalibratedRed:0.320 green:0.388 blue:0.484 alpha:1.0] set];
         [path fill];
-        [path addClip];
-        [path appendBezierPathWithRect:NSMakeRect(0.0, 0.0, 27.0, 20.0)];
-        [path setWindingRule:NSEvenOddWindingRule];
-        [[NSColor blackColor] set];
-        [path fill];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.216 green:0.280 blue:0.375 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.357 green:0.430 blue:0.530 alpha:1.0]] autorelease];
+        [gradient drawInBezierPath:path angle:90.0];
     );
     
     MAKE_IMAGE(SKImageNameToolbarCustomize, NO, 27.0, 20.0, 
