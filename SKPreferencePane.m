@@ -38,13 +38,10 @@
 
 #import "SKPreferencePane.h"
 
-#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
-#define RESETTABLEKEYS_KEY @"ResettableKeys"
-
 
 @implementation SKPreferencePane
 
-@dynamic identifier, icon, resettableKeys, activeFontWell;
+@dynamic identifier, icon, activeFontWell;
 
 - (NSString *)identifier {
     return [self nibName];
@@ -56,11 +53,6 @@
 
 - (SKFontWell *)activeFontWell {
     return nil;
-}
-
-- (NSArray *)resettableKeys {
-    NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
-    return [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[self nibName]];
 }
 
 - (void)defaultsDidRevert {}
