@@ -61,6 +61,9 @@
 
 #define BOTTOM_MARGIN 27.0
 
+#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
+#define RESETTABLEKEYS_KEY @"ResettableKeys"
+
 @implementation SKPreferenceController
 
 @synthesize resetButtons;
@@ -244,7 +247,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:[currentPane resettableKeys]];
+        NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
+        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane identifier]];
+        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
         [currentPane defaultsDidRevert];
     }
 }
