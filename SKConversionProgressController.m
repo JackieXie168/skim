@@ -162,28 +162,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
 }
 
-- (NSInteger)runModalBlock:(void(^)(void))block {
-    
-    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
-    NSInteger rv = 0;
-    
-    // we run this inside the modal session since the thread could end before runModalForWindow starts
-    block();
-    
-    while (YES) {
-        rv = [NSApp runModalSession:session];
-        if (rv != NSRunContinuesResponse)
-            break;
-    }
-    
-    [NSApp endModalSession:session];
-    
-    // close the window when finished
-    [self close];
-    
-    return rv;
-}
-
 - (void)converterWasStopped {
     NSBeep();
     [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
@@ -244,9 +222,14 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     fileType = SKPostScriptDocumentType;
     cancelled = NO;
     
-    NSInteger rv = [self runModalBlock:^{
-        [self convertPostScriptData:psData];
-    }];
+    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
+    NSInteger rv = NSRunContinuesResponse;
+    
+    [self convertPostScriptData:psData];
+    
+    while (rv == NSRunContinuesResponse)
+        rv = [NSApp runModalSession:session];
+    [NSApp endModalSession:session];
     
     if (rv != SKConversionSucceeded && outError) {
         if (cancelled)
@@ -254,6 +237,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         else
             *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }
+    
+    [self close];
     
     return [outputData retain];
 }
@@ -349,16 +334,21 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     outputFileURL = [outFileURL retain];
     
-    NSInteger rv = [self runModalBlock:^{
-        @try {
-            [task launch];
-            [self conversionStarted];
-        }
-        @catch(id exception) {
-            SKDESTROY(task);
-            [NSApp stopModalWithCode:SKConversionFailed];
-        }
-    }];
+    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
+    NSInteger rv = NSRunContinuesResponse;
+    
+    @try {
+        [task launch];
+        [self conversionStarted];
+    }
+    @catch(id exception) {
+        SKDESTROY(task);
+        [NSApp stopModalWithCode:SKConversionFailed];
+    }
+    
+    while (rv == NSRunContinuesResponse)
+        rv = [NSApp runModalSession:session];
+    [NSApp endModalSession:session];
     
     [fm removeItemAtURL:tmpDirURL error:NULL];
     
@@ -368,6 +358,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         else
             *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }
+    
+    [self close];
     
     return [outputData retain];
 }
