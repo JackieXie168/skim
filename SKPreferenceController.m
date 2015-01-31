@@ -37,7 +37,6 @@
  */
 
 #import "SKPreferenceController.h"
-#import "SKPreferencePane.h"
 #import "SKGeneralPreferences.h"
 #import "SKDisplayPreferences.h"
 #import "SKNotesPreferences.h"
@@ -57,7 +56,7 @@
 
 #define SKLastSelectedPreferencePaneKey @"SKLastSelectedPreferencePane"
 
-#define IDENTIFIER_KEY @"identifier"
+#define NIBNAME_KEY @"nibName"
 
 #define BOTTOM_MARGIN 27.0
 
@@ -109,14 +108,14 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [super dealloc];
 }
 
-- (SKPreferencePane *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
-    for (SKPreferencePane *pane in preferencePanes)
-        if ([[pane identifier] isEqualToString:itemIdent])
+- (NSViewController<SKPreferencePane> *)preferencePaneForItemIdentifier:(NSString *)itemIdent {
+    for (NSViewController<SKPreferencePane> *pane in preferencePanes)
+        if ([[pane nibName] isEqualToString:itemIdent])
             return pane;
     return nil;
 }
 
-- (void)selectPane:(SKPreferencePane *)pane {
+- (void)selectPane:(NSViewController<SKPreferencePane> *)pane {
     if ([pane isEqual:currentPane] == NO) {
         if (pane) {
             historyIndex++;
@@ -140,8 +139,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         currentPane = pane;
         
         [window setTitle:[currentPane title]];
-        [[NSUserDefaults standardUserDefaults] setObject:[currentPane identifier] forKey:SKLastSelectedPreferencePaneKey];
-        [[window toolbar] setSelectedItemIdentifier:[currentPane identifier]];
+        [[NSUserDefaults standardUserDefaults] setObject:[currentPane nibName] forKey:SKLastSelectedPreferencePaneKey];
+        [[window toolbar] setSelectedItemIdentifier:[currentPane nibName]];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
@@ -181,7 +180,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     CGFloat width = 0.0;
     NSRect frame;
-    SKPreferencePane *pane;
+    NSViewController<SKPreferencePane> *pane;
     NSView *view;
     for (pane in preferencePanes)
         width = fmax(width, NSWidth([[pane view] frame]));
@@ -197,7 +196,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     }
     
     currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
-    [toolbar setSelectedItemIdentifier:[currentPane identifier]];
+    [toolbar setSelectedItemIdentifier:[currentPane nibName]];
     [window setTitle:[currentPane title]];
     [history addObject:currentPane];
     
@@ -229,7 +228,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-        [preferencePanes makeObjectsPerformSelector:@selector(defaultsDidRevert)];
+        for (NSViewController<SKPreferencePane> *pane in preferencePanes) {
+            if ([pane respondsToSelector:@selector(defaultsDidRevert)])
+                [pane defaultsDidRevert];
+        }
     }
 }
 
@@ -248,9 +250,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
-        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane identifier]];
+        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
         [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
-        [currentPane defaultsDidRevert];
+        if ([currentPane respondsToSelector:@selector(defaultsDidRevert)])
+            [currentPane defaultsDidRevert];
     }
 }
 
@@ -328,7 +331,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 #pragma mark Toolbar
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
-    SKPreferencePane *pane = [self preferencePaneForItemIdentifier:itemIdent];
+    NSViewController<SKPreferencePane> *pane = [self preferencePaneForItemIdentifier:itemIdent];
     NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdent] autorelease];
     [item setLabel:[pane title]];
     [item setImage:[pane icon]];
@@ -338,7 +341,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return [preferencePanes valueForKey:IDENTIFIER_KEY];
+    return [preferencePanes valueForKey:NIBNAME_KEY];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {

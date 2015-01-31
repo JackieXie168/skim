@@ -37,10 +37,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKPreferencePane.h"
+#import "SKPreferenceController.h"
+#import "SKViewController.h"
 
 
-@interface SKDisplayPreferences : SKPreferencePane {
+@interface SKDisplayPreferences : SKViewController <SKPreferencePane> {
     NSTextField *tableFontLabelField;
     NSComboBox *tableFontComboBox;
     NSTextField *greekingLabelField;
