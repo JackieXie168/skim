@@ -41,17 +41,13 @@
 
 @implementation SKPreferencePane
 
-@dynamic identifier, icon, activeFontWell;
+@dynamic identifier, icon;
 
 - (NSString *)identifier {
     return [self nibName];
 }
 
 - (NSImage *)icon {
-    return nil;
-}
-
-- (SKFontWell *)activeFontWell {
     return nil;
 }
 

@@ -306,11 +306,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)changeFont:(id)sender {
-    [[currentPane activeFontWell] changeFontFromFontManager:sender];
+    [[[[self window] contentView] activeFontWell] changeFontFromFontManager:sender];
 }
 
 - (IBAction)changeAttributes:(id)sender {
-    [[currentPane activeFontWell] changeAttributesFromFontManager:sender];
+    [[[[self window] contentView] activeFontWell] changeAttributesFromFontManager:sender];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

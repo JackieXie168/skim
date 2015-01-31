@@ -38,12 +38,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SKFontWell;
 
 @interface NSView (SKExtensions)
 
 - (id)subviewOfClass:(Class)aClass;
 
 - (void)deactivateWellSubcontrols;
+
+- (SKFontWell *)activeFontWell;
 
 - (CGFloat)backingScale;
 

@@ -135,12 +135,6 @@
     [fontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
 }
 
-- (SKFontWell *)activeFontWell {
-    for (SKFontWell *fontWell in fontWells)
-        if ([fontWell isActive]) return fontWell;
-    return nil;
-}
-
 #pragma mark Accessors
 
 - (NSString *)title { return NSLocalizedString(@"Notes", @"Preference pane label"); }

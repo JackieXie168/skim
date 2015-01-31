@@ -39,13 +39,11 @@
 #import <Cocoa/Cocoa.h>
 #import "SKViewController.h"
 
-@class SKFontWell;
 
 @interface SKPreferencePane : SKViewController
 
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSImage *icon;
-@property (nonatomic, readonly) SKFontWell *activeFontWell;
 
 - (void)defaultsDidRevert;
 
