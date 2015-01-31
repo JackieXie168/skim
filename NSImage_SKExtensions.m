@@ -115,6 +115,11 @@ NSString *SKImageNameToolbarLines = @"ToolbarLines";
 NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
 NSString *SKImageNameToolbarCustomize = @"ToolbarCustomize";
 
+NSString *SKImageNameGeneralPreferences = @"GeneralPreferences";
+NSString *SKImageNameDisplayPreferences = @"DisplayPreferences";
+NSString *SKImageNameNotesPreferences = @"NotesPreferences";
+NSString *SKImageNameSyncPreferences = @"SyncPreferences";
+
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
 NSString *SKImageNameNoteViewAdorn = @"NoteViewAdorn";
@@ -1345,6 +1350,46 @@ macro(Ink)
     
 }
 
++ (void)makePreferenceImages {
+    
+    MAKE_IMAGE(SKImageNameGeneralPreferences, NO, 32.0, 32.0, 
+        NSImage *generalImage = [NSImage imageNamed:NSImageNamePreferencesGeneral];
+        [generalImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameDisplayPreferences, NO, 32.0, 32.0, 
+        NSImage *colorImage = [NSImage imageNamed:NSImageNameColorPanel];
+        NSImage *fontImage = [NSImage imageNamed:NSImageNameFontPanel];
+        [colorImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [fontImage drawInRect:NSMakeRect(-4.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
+    );
+    
+    MAKE_IMAGE(SKImageNameNotesPreferences, NO, 32.0, 32.0, 
+        NSImage *clippingImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.935 blue:0.422 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.975 blue:0.768 alpha:1.0]] autorelease];
+        [[NSColor blackColor] setFill];
+        [NSBezierPath fillRect:rect];
+        [clippingImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
+        [gradient drawInRect:rect angle:90.0];
+        [clippingImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+    );
+    
+    MAKE_IMAGE(SKImageNameSyncPreferences, NO, 32.0, 32.0, 
+        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+        NSImage *refreshImage = [NSImage imageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
+            [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
+            NSRectFill(r);
+            [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:r fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            return YES;
+        }];
+        [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
+        [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    );
+    
+}
+
 + (void)makeNoteTemplateImages {
     
 #define MAKE_NOTE_TEMPLATE_IMAGE(name) \
@@ -1719,6 +1764,7 @@ macro(Ink)
         [self makeToolbarImages];
     }
     [self makePanelToolbarImages];
+    [self makePreferenceImages];
     [self makeAdornImages];
     [self makeTextAlignImages];
     [self makeCursorImages];

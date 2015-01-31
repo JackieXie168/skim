@@ -107,26 +107,6 @@ static NSArray *TeXEditors = nil;
 
 - (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
 
-- (NSImage *)icon {
-    static NSImage *image = nil;
-    if (image == nil) {
-        image = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
-            NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-            NSImage *refreshImage = [NSImage imageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
-                [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
-                NSRectFill(r);
-                [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:r fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-                return YES;
-            }];
-            [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-            [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
-            [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-            return YES;
-        }] retain];
-    }
-    return image;
-}
-
 + (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name {
     for (NSDictionary *editor in TeXEditors) {
         if ([[editor objectForKey:NAME_KEY] isEqualToString:name]) {

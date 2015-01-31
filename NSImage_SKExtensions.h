@@ -112,6 +112,11 @@ extern NSString *SKImageNameToolbarLines;
 extern NSString *SKImageNameToolbarPrint;
 extern NSString *SKImageNameToolbarCustomize;
 
+extern NSString *SKImageNameGeneralPreferences;
+extern NSString *SKImageNameDisplayPreferences;
+extern NSString *SKImageNameNotesPreferences;
+extern NSString *SKImageNameSyncPreferences;
+
 extern NSString *SKImageNameOutlineViewAdorn;
 extern NSString *SKImageNameThumbnailViewAdorn;
 extern NSString *SKImageNameNoteViewAdorn;

@@ -82,10 +82,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     return @"GeneralPreferences";
 }
 
-- (NSImage *)icon {
-    return [NSImage imageNamed:NSImageNamePreferencesGeneral];
-}
-
 - (void)loadView {
     [super loadView];
     

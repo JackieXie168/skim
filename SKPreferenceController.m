@@ -334,7 +334,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     NSViewController<SKPreferencePane> *pane = [self preferencePaneForItemIdentifier:itemIdent];
     NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdent] autorelease];
     [item setLabel:[pane title]];
-    [item setImage:[pane icon]];
+    [item setImage:[NSImage imageNamed:[pane nibName]]];
     [item setTarget:self];
     [item setAction:@selector(selectPaneAction:)];
     return item;

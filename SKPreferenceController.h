@@ -71,8 +71,6 @@
 
 
 @protocol SKPreferencePane
-@required
-@property (nonatomic, readonly) NSImage *icon;
 @optional
 - (void)defaultsDidRevert;
 @end
