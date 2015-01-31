@@ -37,10 +37,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKPreferencePane.h"
+#import "SKPreferenceController.h"
+#import "SKViewController.h"
 
 
-@interface SKGeneralPreferences : SKPreferencePane {
+@interface SKGeneralPreferences : SKViewController <SKPreferencePane> {
     NSPopUpButton *updateIntervalPopUpButton;
     NSArray *revertPDFSettingsButtons;
     NSTextField *openFilesLabelField;

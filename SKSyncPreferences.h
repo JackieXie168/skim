@@ -37,10 +37,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKPreferencePane.h"
+#import "SKPreferenceController.h"
+#import "SKViewController.h"
 
 
-@interface SKSyncPreferences : SKPreferencePane {
+@interface SKSyncPreferences : SKViewController <SKPreferencePane> {
     NSArray *texEditorLabels;
     NSArray *texEditorControls;
     BOOL customTeXEditor;

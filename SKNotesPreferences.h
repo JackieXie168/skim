@@ -37,10 +37,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKPreferencePane.h"
+#import "SKPreferenceController.h"
+#import "SKViewController.h"
 
 
-@interface SKNotesPreferences : SKPreferencePane {
+@interface SKNotesPreferences : SKViewController <SKPreferencePane> {
     NSArray *labels1;
     NSArray *colorLabels2;
     NSArray *colorLabels3;

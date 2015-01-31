@@ -39,12 +39,13 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 
-@class SKPreferencePane, SKIBArray;
+@class SKIBArray;
+@protocol SKPreferencePane;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate> {
     NSArray *resetButtons;
     NSArray *preferencePanes;
-    SKPreferencePane *currentPane;
+    NSViewController<SKPreferencePane> *currentPane;
     NSMutableArray *history;
     NSUInteger historyIndex;
 }
@@ -67,3 +68,12 @@
 - (IBAction)changeAttributes:(id)sender;
 
 @end
+
+
+@protocol SKPreferencePane
+@required
+@property (nonatomic, readonly) NSImage *icon;
+@optional
+- (void)defaultsDidRevert;
+@end
+
