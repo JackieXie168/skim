@@ -64,6 +64,15 @@
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
+- (SKFontWell *)activeFontWell {
+	SKFontWell *fontWell;
+    for (NSView *subview in [self subviews]) {
+        if ((fontWell = [subview activeFontWell]))
+            return fontWell;
+    }
+    return nil;
+}
+
 - (CGFloat)backingScale {
     if ([self respondsToSelector:@selector(convertSizeToBacking:)])
         return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
@@ -107,6 +116,12 @@
 - (void)deactivateWellSubcontrols {
     [self deactivate];
     [super deactivateWellSubcontrols];
+}
+
+- (SKFontWell *)activeFontWell {
+    if ([self isActive])
+        return self;
+    return [super activeFontWell];
 }
 
 @end
