@@ -120,6 +120,9 @@ NSString *SKImageNameDisplayPreferences = @"DisplayPreferences";
 NSString *SKImageNameNotesPreferences = @"NotesPreferences";
 NSString *SKImageNameSyncPreferences = @"SyncPreferences";
 
+NSString *SKImageNameNewFolder = @"NewFolder";
+NSString *SKImageNameNewSeparator = @"NewSeparator";
+
 NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
 NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
 NSString *SKImageNameNoteViewAdorn = @"NoteViewAdorn";
@@ -178,6 +181,8 @@ static inline void drawPageBackgroundInRect(NSRect rect);
 static inline void drawPageBackgroundTemplateInRect(NSRect rect);
 
 static inline void drawArrowCursor();
+
+static inline void drawAddBadgeAtPoint(NSPoint point);
 
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
@@ -1307,7 +1312,7 @@ macro(Ink)
     
 }
     
-+ (void)makePanelToolbarImages {
++ (void)makeOtherToolbarImages {
     
     MAKE_IMAGE(SKImageNameToolbarInfo, NO, 27.0, 20.0, 
         [[NSImage imageNamed:NSImageNameInfo] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
@@ -1336,21 +1341,6 @@ macro(Ink)
         NSImage *customizeImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarCustomizeIcon)];
         [customizeImage drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     );
-    
-}
-
-+ (void)makeNoteImages {
-    
-#define MAKE_NOTE_IMAGE(name) \
-    MAKE_IMAGE(SKImageName ## name ## Note, NO, 21.0, 19.0, \
-        draw ## name ## Note(); \
-    );
-    
-    APPLY_NOTE_TYPES(MAKE_NOTE_IMAGE);
-    
-}
-
-+ (void)makePreferenceImages {
     
     MAKE_IMAGE(SKImageNameGeneralPreferences, NO, 32.0, 32.0, 
         NSImage *generalImage = [NSImage imageNamed:NSImageNamePreferencesGeneral];
@@ -1387,6 +1377,47 @@ macro(Ink)
         [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
         [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
+    
+    MAKE_IMAGE(SKImageNameNewFolder, NO, 32.0, 32.0, 
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        drawAddBadgeAtPoint(NSMakePoint(18.0, 18.0));
+    );
+    
+    MAKE_IMAGE(SKImageNameNewSeparator, NO, 32.0, 32.0, 
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
+        NSBezierPath *path;
+        [NSGraphicsContext saveGraphicsState];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:2.0 yOffset:-1.0];
+        [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
+        [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
+        [NSGraphicsContext restoreGraphicsState];
+        [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
+        [NSBezierPath fillRect:NSMakeRect(3.0, 15.0, 26.0, 3.0)];
+        [gradient drawInRect:NSMakeRect(3.0, 15.0, 26.0, 2.0) angle:90.0];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(3.0, 15.0)];
+        [path lineToPoint:NSMakePoint(3.0, 17.0)];
+        [path lineToPoint:NSMakePoint(5.0, 17.0)];
+        [path closePath];
+        [gradient drawInBezierPath:path angle:0.0];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(29.0, 15.0)];
+        [path lineToPoint:NSMakePoint(29.0, 17.0)];
+        [path lineToPoint:NSMakePoint(27.0, 17.0)];
+        [path closePath];
+        [gradient drawInBezierPath:path angle:180.0];
+        drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
+    );
+}
+
++ (void)makeNoteImages {
+    
+#define MAKE_NOTE_IMAGE(name) \
+    MAKE_IMAGE(SKImageName ## name ## Note, NO, 21.0, 19.0, \
+        draw ## name ## Note(); \
+    );
+    
+    APPLY_NOTE_TYPES(MAKE_NOTE_IMAGE);
     
 }
 
@@ -1763,8 +1794,7 @@ macro(Ink)
         [self makeNoteImages];
         [self makeToolbarImages];
     }
-    [self makePanelToolbarImages];
-    [self makePreferenceImages];
+    [self makeOtherToolbarImages];
     [self makeAdornImages];
     [self makeTextAlignImages];
     [self makeCursorImages];
@@ -2160,4 +2190,29 @@ static inline void drawPageBackgroundTemplateInRect(NSRect rect) {
 static inline void drawArrowCursor() {
     NSImage *arrowCursor = [[NSCursor arrowCursor] image];
     [arrowCursor drawAtPoint:NSMakePoint(0.0, 40.0 - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+}
+
+static void drawAddBadgeAtPoint(NSPoint point) {
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
+    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
+    [path relativeLineToPoint:NSMakePoint(3.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
+    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 3.0)];
+    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
+    [path relativeLineToPoint:NSMakePoint(-3.0, 0.0)];
+    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
+    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
+    [path closePath];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [path fill];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:1.0 yOffset:0.0];
+    [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
 }
