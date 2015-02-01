@@ -921,79 +921,6 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         [self updateStatus];
 }
 
-#pragma mark Images
-
-
-static void drawAddBadgeAtPoint(NSPoint point) {
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
-    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
-    [path relativeLineToPoint:NSMakePoint(3.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
-    [path relativeLineToPoint:NSMakePoint(4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 3.0)];
-    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, 4.0)];
-    [path relativeLineToPoint:NSMakePoint(-3.0, 0.0)];
-    [path relativeLineToPoint:NSMakePoint(0.0, -4.0)];
-    [path relativeLineToPoint:NSMakePoint(-4.0, 0.0)];
-    [path closePath];
-    
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
-    [path fill];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:1.0 yOffset:0.0];
-    [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
-    [path stroke];
-    [NSGraphicsContext restoreGraphicsState];
-}
-
-+ (NSImage *)toolbarNewFolderImage {
-    static NSImage *toolbarNewFolderImage = nil;
-    if (toolbarNewFolderImage == nil) {
-        toolbarNewFolderImage = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
-            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-            drawAddBadgeAtPoint(NSMakePoint(18.0, 18.0));
-            return YES;
-        }] retain];
-    }
-    return toolbarNewFolderImage;
-}
-
-+ (NSImage *)toolbarNewSeparatorImage {
-    static NSImage *toolbarNewSeparatorImage = nil;
-    if (toolbarNewSeparatorImage == nil) {
-        toolbarNewSeparatorImage = [[NSImage imageWithSize:NSMakeSize(32.0, 32.0) drawingHandler:^(NSRect rect){
-            NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
-            NSBezierPath *path;
-            [NSGraphicsContext saveGraphicsState];
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:2.0 yOffset:-1.0];
-            [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
-            [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
-            [NSGraphicsContext restoreGraphicsState];
-            [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
-            [NSBezierPath fillRect:NSMakeRect(3.0, 15.0, 26.0, 3.0)];
-            [gradient drawInRect:NSMakeRect(3.0, 15.0, 26.0, 2.0) angle:90.0];
-            path = [NSBezierPath bezierPath];
-            [path moveToPoint:NSMakePoint(3.0, 15.0)];
-            [path lineToPoint:NSMakePoint(3.0, 17.0)];
-            [path lineToPoint:NSMakePoint(5.0, 17.0)];
-            [path closePath];
-            [gradient drawInBezierPath:path angle:0.0];
-            path = [NSBezierPath bezierPath];
-            [path moveToPoint:NSMakePoint(29.0, 15.0)];
-            [path lineToPoint:NSMakePoint(29.0, 17.0)];
-            [path lineToPoint:NSMakePoint(27.0, 17.0)];
-            [path closePath];
-            [gradient drawInBezierPath:path angle:180.0];
-            drawAddBadgeAtPoint(NSMakePoint(18.0, 14.0));
-            return YES;
-        }] retain];
-    }
-    return toolbarNewSeparatorImage;
-}
-
 #pragma mark Toolbar
 
 - (void)setupToolbar {
@@ -1015,7 +942,7 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewFolderToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Folder", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Folder", @"Tool tip message")];
-    [item setImage:[[self class] toolbarNewFolderImage]];
+    [item setImage:[NSImage imageNamed:SKImageNameNewFolder]];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkFolder:)];
     [dict setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
@@ -1024,7 +951,7 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewSeparatorToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"New Separator", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add a New Separator", @"Tool tip message")];
-    [item setImage:[[self class] toolbarNewSeparatorImage]];
+    [item setImage:[NSImage imageNamed:SKImageNameNewSeparator]];
     [item setTarget:self];
     [item setAction:@selector(insertBookmarkSeparator:)];
     [dict setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
