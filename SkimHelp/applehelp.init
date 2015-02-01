@@ -159,6 +159,50 @@ sub appleHelp_index_entry($$$$)
 }
 
 # footers
+$print_page_head = \&appleHelp_print_page_head;
+
+sub appleHelp_print_page_head($)
+{
+    my $fh = shift;
+    my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
+    $shorttitle = $Texi2HTML::UNFORMATTED{'This'} if exists $Texi2HTML::UNFORMATTED{'This'};
+    my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
+    $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
+    #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
+    #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
+    my $description = $DOCUMENT_DESCRIPTION;
+    $description = $shorttitle if (!defined($description));
+    $description = "<meta name=\"description\" content=\"$description\">" if
+         ($description ne '');
+    $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
+    my $encoding = '';
+    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
+    print $fh <<EOT;
+$DOCTYPE
+<html>
+$Texi2HTML::THISDOC{'copying'}<!-- Created on $Texi2HTML::THISDOC{today} by $Texi2HTML::THISDOC{program} -->
+<!--
+$Texi2HTML::THISDOC{program_authors}
+-->
+<head>
+<title>$longtitle</title>
+
+$description
+<meta name="keywords" content="$longtitle">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
+$encoding
+$CSS_LINES
+$EXTRA_HEAD
+</head>
+
+<body $BODYTEXT>
+$AFTER_BODY_OPEN
+EOT
+}
+
+# footers
 $print_page_foot = \&appleHelp_print_page_foot;
 $print_Top_footer = \&appleHelp_print_page_foot;
 
@@ -219,12 +263,14 @@ sub appleHelp_print_Top_header($$)
 sub appleHelp_print_Top_head($)
 {
     my $fh = shift;
+    my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
+    $shorttitle = $Texi2HTML::UNFORMATTED{'This'} if exists $Texi2HTML::UNFORMATTED{'This'};
     my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
     $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
     #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
     #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
     my $description = $DOCUMENT_DESCRIPTION;
-    $description = $longtitle if (!defined($description));
+    $description = $shorttitle if (!defined($description));
     $description = "<meta name=\"description\" content=\"$description\">" if
          ($description ne '');
     $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
