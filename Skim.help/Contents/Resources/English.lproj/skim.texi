@@ -75,14 +75,6 @@ Control-Cmd-\key\
 @end ifnothtml
 @end macro
 
-@c A macro for search-result abstracts
-
-@macro abstract{text}
-@html
-<META NAME="DESCRIPTION" CONTENT="\text\">
-@end html
-@end macro
-
 @c Macros for special task box
 
 @macro task
@@ -101,7 +93,6 @@ Control-Cmd-\key\
 @node \title\
 @chapter \title\
 @cindex \title\
-@abstract{\title\}
 @end macro
 
 @c ======================================================================================
@@ -1341,7 +1332,6 @@ Check the Skim Wiki for more details, in particular about how to set up various 
 
 @node More information
 @chapter More information
-@abstract{Getting more help}
 
 @heading Online Resources
 @itemize
@@ -1380,7 +1370,6 @@ be obtained from the Console application (in `Applications/Utilities`).
 
 @node indexcp
 @appendix Help Topics
-@abstract{Help Topics}
 
 Click a topic below.
 

@@ -75,14 +75,6 @@ Control-Cmd-\key\
 @end ifnothtml
 @end macro
 
-@c A macro for search-result abstracts
-
-@macro abstract{tekst}
-@html
-<META NAME="DESCRIPTION" CONTENT="\tekst\">
-@end html
-@end macro
-
 @c Macros for special task box
 
 @macro task
@@ -101,7 +93,6 @@ Control-Cmd-\key\
 @node \title\
 @chapter \title\
 @cindex \title\
-@abstract{\title\}
 @end macro
 
 @c ======================================================================================
@@ -1349,7 +1340,6 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 
 @node Meer informatie
 @chapter Meer informatie
-@abstract{Vind meer help}
 
 @heading Weblocaties
 @itemize
@@ -1384,7 +1374,6 @@ Crashverslagen kunnen ook nuttig zijn en kunnen worden verkregen via het program
 
 @node indexcp
 @appendix Help-onderwerpen
-@abstract{Help-onderwerpen}
 
 Klik op een van de onderwerpen hieronder.
 
