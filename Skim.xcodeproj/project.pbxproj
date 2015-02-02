@@ -2339,6 +2339,7 @@
 			inputPaths = (
 				"$(DERIVED_FILE_DIR)/SkimHelp/English.lproj/SkimHelp.html",
 				"$(DERIVED_FILE_DIR)/SkimHelp/Dutch.lproj/SkimHelp.html",
+				"$(SRCROOT)/Skim.help",
 			);
 			name = "Run Script: Copy Help";
 			outputPaths = (
