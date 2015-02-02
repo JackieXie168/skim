@@ -11335,13 +11335,10 @@ sub do_names()
         my $section = $sections{$number};
         $section->{'name'} = substitute_line ($section->{'texi'});
         $section->{'text'} = $section->{'number'} . " " . $section->{'name'};
-        $section->{'text'} = $section->{'name'} if (!$Texi2HTML::Config::NUMBER_SECTIONS);
         $section->{'text'} =~ s/^\s*//;
         $section->{'no_texi'} = &$Texi2HTML::Config::protect_text($section->{'number'} . " " .remove_texi($section->{'texi'}));
-        $section->{'no_texi'} = &$Texi2HTML::Config::protect_text(remove_texi($section->{'texi'})) if (!$Texi2HTML::Config::NUMBER_SECTIONS);
         $section->{'no_texi'} =~ s/^\s*//;
         $section->{'unformatted'} = &$Texi2HTML::Config::protect_text($section->{'number'}) . " " .unformatted_text(undef,$section->{'texi'});
-        $section->{'unformatted'} = unformatted_text(undef,$section->{'texi'}) if (!$Texi2HTML::Config::NUMBER_SECTIONS);
         $section->{'unformatted'} =~ s/^\s*//;
     }
     my $tocnr = 1;
@@ -12077,6 +12074,7 @@ print STDERR "!!$key\n" if (!defined($Texi2HTML::THISDOC{$key}));
                             $Texi2HTML::HREF{$direction} = href($elem, $element->{'file'});
                         }
                         $Texi2HTML::NAME{$direction} = $elem->{'text'};
+                        $Texi2HTML::NAME{$direction} = $elem->{'name'} if (!$Texi2HTML::Config::NUMBER_SECTIONS);
                         $Texi2HTML::NO_TEXI{$direction} = $elem->{'no_texi'};
                         $Texi2HTML::UNFORMATTED{$direction} = $elem->{'unformatted'};
                         #print STDERR "$direction ($element->{'texi'}): \n  NO_TEXI: $Texi2HTML::NO_TEXI{$direction}\n  NAME $Texi2HTML::NAME{$direction}\n  NODE $Texi2HTML::NODE{$direction}\n  HREF $Texi2HTML::HREF{$direction}\n\n";

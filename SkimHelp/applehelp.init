@@ -165,9 +165,9 @@ sub appleHelp_print_page_head($)
 {
     my $fh = shift;
     my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $shorttitle = $Texi2HTML::UNFORMATTED{'This'} if exists $Texi2HTML::UNFORMATTED{'This'};
+    $shorttitle = $Texi2HTML::NAME{'This'} if exists $Texi2HTML::NAME{'This'};
     my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
+    $longtitle .= ": $Texi2HTML::NAME{'This'}" if exists $Texi2HTML::NAME{'This'};
     #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
     #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
     my $description = $DOCUMENT_DESCRIPTION;
@@ -264,9 +264,9 @@ sub appleHelp_print_Top_head($)
 {
     my $fh = shift;
     my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $shorttitle = $Texi2HTML::UNFORMATTED{'This'} if exists $Texi2HTML::UNFORMATTED{'This'};
+    $shorttitle = $Texi2HTML::NAME{'This'} if exists $Texi2HTML::NAME{'This'};
     my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
+    $longtitle .= ": $Texi2HTML::NAME{'This'}" if exists $Texi2HTML::NAME{'This'};
     #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
     #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
     my $description = $DOCUMENT_DESCRIPTION;
