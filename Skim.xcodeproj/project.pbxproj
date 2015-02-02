@@ -2317,7 +2317,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/SkimHelp/applehelp.init",
-				"$(SRCROOT)/SkimHelp/postprocess-nontitle.py",
 				"$(SRCROOT)/Skim.help/Contents/Resources/English.lproj/skim.texi",
 				"$(SRCROOT)/Skim.help/Contents/Resources/Dutch.lproj/skim.texi",
 			);
