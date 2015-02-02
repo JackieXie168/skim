@@ -158,7 +158,7 @@ sub appleHelp_index_entry($$$$)
     return '<tr><td valign="top">' . &$anchor('', $text_href, $entry) . "</td></tr>\n";
 }
 
-# footers
+# headers
 $print_page_head = \&appleHelp_print_page_head;
 
 sub appleHelp_print_page_head($)
