@@ -94,6 +94,8 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
+		CE1F60121A822BC8002C3942 /* texi2html in Resources */ = {isa = PBXBuildFile; fileRef = CE1F60111A822BC8002C3942 /* texi2html */; };
+		CE1F60141A822BD8002C3942 /* stopwords-nl.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE1F60131A822BD8002C3942 /* stopwords-nl.txt */; };
 		CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2083E316ADFFD600BC5AFB /* SKAlias.m */; };
 		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
@@ -681,6 +683,8 @@
 		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
+		CE1F60111A822BC8002C3942 /* texi2html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = texi2html; sourceTree = "<group>"; };
+		CE1F60131A822BD8002C3942 /* stopwords-nl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "stopwords-nl.txt"; sourceTree = "<group>"; };
 		CE1F67FD0E37552400E07E76 /* SKRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRuntime.h; sourceTree = "<group>"; };
 		CE2083E216ADFFD600BC5AFB /* SKAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAlias.h; sourceTree = "<group>"; };
 		CE2083E316ADFFD600BC5AFB /* SKAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAlias.m; sourceTree = "<group>"; };
@@ -997,8 +1001,8 @@
 		CEECD61B12E9E30B00B9E35E /* NSError_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSError_SKExtensions.m; sourceTree = "<group>"; };
 		CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationInk_SKExtensions.h; sourceTree = "<group>"; };
 		CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationInk_SKExtensions.m; sourceTree = "<group>"; };
-		CEF1D626117EFB760069E249 /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = applehelp.init; path = SkimHelp/applehelp.init; sourceTree = "<group>"; };
-		CEF1D627117EFB760069E249 /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "postprocess-nontitle.py"; path = "SkimHelp/postprocess-nontitle.py"; sourceTree = "<group>"; };
+		CEF1D626117EFB760069E249 /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = applehelp.init; sourceTree = "<group>"; };
+		CEF1D627117EFB760069E249 /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "postprocess-nontitle.py"; sourceTree = "<group>"; };
 		CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLocalization.h; sourceTree = "<group>"; };
 		CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLocalization.m; sourceTree = "<group>"; };
 		CEF60CF0114C07D90074ACC4 /* SKWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKWindowController.h; sourceTree = "<group>"; };
@@ -1274,7 +1278,7 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				453DC2740B4F23E500A72509 /* Third Party Sources */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
-				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
+				CE4DA8CF0B9E157E0039E89C /* Help Tools */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
 				CE2BD8160BD4123D00A5F4DB /* Subprojects */,
@@ -1792,13 +1796,16 @@
 			name = Commands;
 			sourceTree = "<group>";
 		};
-		CE4DA8CF0B9E157E0039E89C /* Help Sources */ = {
+		CE4DA8CF0B9E157E0039E89C /* Help Tools */ = {
 			isa = PBXGroup;
 			children = (
 				CEF1D626117EFB760069E249 /* applehelp.init */,
 				CEF1D627117EFB760069E249 /* postprocess-nontitle.py */,
+				CE1F60111A822BC8002C3942 /* texi2html */,
+				CE1F60131A822BD8002C3942 /* stopwords-nl.txt */,
 			);
-			name = "Help Sources";
+			name = "Help Tools";
+			path = SkimHelp;
 			sourceTree = "<group>";
 		};
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
@@ -2235,6 +2242,8 @@
 				CE1098F11613CFC800C4FA18 /* ExportAccessoryView.strings in Resources */,
 				CE25BB6B163FFB770046A348 /* Skim.help in Resources */,
 				CE0AAE7E1A628B5D00274399 /* Scroller_Yosemite.tiff in Resources */,
+				CE1F60121A822BC8002C3942 /* texi2html in Resources */,
+				CE1F60141A822BD8002C3942 /* stopwords-nl.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
