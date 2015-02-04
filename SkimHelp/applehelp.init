@@ -224,8 +224,10 @@ sub appleHelp_print_head_navigation{
     my $buttons = shift;
     print $fh "<div class=\"anchor\">\n";
     main::print_lines($fh, $Texi2HTML::THIS_HEADER);
-    print $fh "</div>\n" .
-              "<div class=\"banner\">\n";
+    print $fh <<EOT;
+</div>
+<div class="banner">
+EOT
     for my $button (@$buttons)
     {
         if ($Texi2HTML::HREF{$button})
@@ -240,9 +242,11 @@ sub appleHelp_print_head_navigation{
                              );
         }
     }
-    print $fh "\n</div>\n" .
-          $AFTER_NAVIGATION .
-          "\n"
+    print $fh <<EOT;
+
+</div>
+$AFTER_NAVIGATION
+EOT
 }
 
 sub appleHelp_print_no_navigation{
@@ -311,7 +315,9 @@ sub appleHelp_print_Top
     # we don't print the navigation buttons on the Top page
     #my $buttons = \@MISC_BUTTONS;
     #&$print_head_navigation($fh, $buttons);
+    print $fh "<div class=\"anchor\">\n";
     main::print_lines($fh, $Texi2HTML::THIS_HEADER);
+    print $fh "</div>\n";
     # this is instead of $AFTER_NAVIGATION and balanced by $PRE_BODY_CLOSE
     print $fh "<div class=\"topmainbox\">\n";
     my $nw;
@@ -319,10 +325,12 @@ sub appleHelp_print_Top
     {
         # if top-level node has content, then print it with extra header
         #print $fh "<h1>$Texi2HTML::NAME{Top}</h1>\n"
-        print $fh "<div class=\"toptitlebox\">\n";
-        print $fh "<h1 class=\"settitle\">$Texi2HTML::NAME{Top}</h1>\n";
-        print $fh "</div>\n";
-        print $fh "<div class=\"topcontentbox\">\n";
+        print $fh <<EOT;
+<div class="toptitlebox">
+<h1 class="settitle">$Texi2HTML::NAME{Top}</h1>
+</div>
+<div class="topcontentbox">
+EOT
         $nw = main::print_lines($fh, $Texi2HTML::THIS_SECTION);
         print $fh "</div>\n";
     }
