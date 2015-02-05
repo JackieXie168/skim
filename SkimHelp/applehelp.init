@@ -254,57 +254,6 @@ sub appleHelp_print_no_navigation{
     my $buttons = shift;
 }
 
-$print_Top_header = \&appleHelp_print_Top_header;
-$print_Top_head = \&appleHelp_print_Top_head;
-
-sub appleHelp_print_Top_header($$)
-{
-    my $fh = shift;
-    my $do_page_head = shift;
-    &$print_Top_head($fh) if ($do_page_head);
-}
-
-sub appleHelp_print_Top_head($)
-{
-    my $fh = shift;
-    my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $shorttitle = $Texi2HTML::NAME{'This'} if exists $Texi2HTML::NAME{'This'};
-    my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $longtitle .= ": $Texi2HTML::NAME{'This'}" if exists $Texi2HTML::NAME{'This'};
-    #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
-    #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
-    my $description = $DOCUMENT_DESCRIPTION;
-    $description = $shorttitle if (!defined($description));
-    $description = "<meta name=\"description\" content=\"$description\">" if
-         ($description ne '');
-    $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
-    my $encoding = '';
-    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
-    print $fh <<EOT;
-$DOCTYPE
-<html>
-$Texi2HTML::THISDOC{'copying'}<!-- Created on $Texi2HTML::THISDOC{today} by $Texi2HTML::THISDOC{program} -->
-<!--
-$Texi2HTML::THISDOC{program_authors}
--->
-<head>
-<title>$longtitle</title>
-
-$description
-<meta name="keywords" content="$longtitle">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
-<meta name="robots" content="anchors">
-$encoding
-$CSS_LINES
-</head>
-
-<body $BODYTEXT>
-$AFTER_BODY_OPEN
-EOT
-}
-
 $print_Top = \&appleHelp_print_Top;
 
 sub appleHelp_print_Top
