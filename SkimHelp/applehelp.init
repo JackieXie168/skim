@@ -1,7 +1,7 @@
 # -*-perl-*-
 
 # HTML 3.2 - ouch!
-$DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN" "http://www.w3.org/TR/html32/loose.dtd">';
+#$DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN" "http://www.w3.org/TR/html32/loose.dtd">';
 $FRAMESET_DOCTYPE = $DOCTYPE;
 $USE_ISO = 0;
 $things_map{'oe'} = '&#156;';
@@ -36,83 +36,11 @@ $DO_CONTENTS = 0;
 $SECTION_NAVIGATION = 1;
 $WORDS_IN_PAGE = 1000000;
 
-$AFTER_NAVIGATION = "<div class=\"mainbox\">";
-$PRE_BODY_CLOSE = "</div>";
-
-# formatting functions
-
-#$summary_letter    = \&t2h_html32_summary_letter;
-$protect_text       = \&t2h_html32_protect_text;
-$heading            = \&t2h_html32_heading;
-$preformatted       = \&t2h_html32_preformatted;
-$menu               = \&t2h_html32_menu;
-$foot_section       = \&t2h_html32_foot_section;
-#$cartouche         = \&t2h_html32_cartouche;
-#$listoffloats      = \&t2h_html32_listoffloats;
-#$float             = \&t2h_html32_float;
-
-sub t2h_html32_protect_text($)
-{
-   my $text = shift;
-   $text =~ s/&/&amp;/g;
-   $text =~ s/</&lt;/g;
-   $text =~ s/>/&gt;/g;
-   #$text =~ s/\"/&quot;/g;
-   return $text;
-}
-
-# a heading
-sub t2h_html32_heading($)
-{
-    my $element = shift;
-    my $text = $element->{'text'};
-    my $level = $element->{'level'};
-    my $tag_level = $element->{'tag_level'};
-    if (!$element->{'node'} && !$NUMBER_SECTIONS)
-    {
-        $text = $element->{'name'};
-    }
-    if (($tag_level eq "chapter") || ($tag_level eq "section") || ($tag_level eq "subsection") || ($tag_level eq "appendix"))
-    {
-        $text = $text;
-    }
-    return "<h$level class=\"$tag_level\"> $text</h$level>\n";
-}
-
-# a preformatted section
-sub t2h_html32_preformatted($$$)
-{
-    my $text = shift;
-    my $pre_style = shift;
-    my $class = shift;
-
-    return '' if ($text eq '');
-    return "<pre>$text</pre>";
-}
-
-# a simple menu entry ref in case we aren't in a standard menu context
-sub t2h_html32_foot_section($)
-{
-    my $lines = shift;
-    unshift (@$lines, "<hr>\n", "<h3>Footnotes</h3>\n");
-    return $lines; 
-}
-
-# a whole menu
-sub t2h_html32_menu($)
-{
-    my $text = shift;
-    if ($text =~ /\S/)
-    {
-        return "<table border=\"0\" cellspacing=\"0\">\n" 
-        . $text . "</table>\n";
-    }
-}
-
 # an image
 $image = \&appleHelp_image;
 
-sub appleHelp_image{
+sub appleHelp_image
+{
    my $file = shift;
    my $base = shift;
    my $preformatted = shift;
@@ -158,18 +86,69 @@ sub appleHelp_index_entry($$$$)
     return '<tr><td valign="top">' . &$anchor('', $text_href, $entry) . "</td></tr>\n";
 }
 
+# headings
+$element_heading = \&appleHelp_element_heading;
+
+sub appleHelp_element_heading
+{
+    my $element = shift;
+    my $command = shift;
+    my $texi_line = shift;
+    my $line = shift;
+    my $in_preformatted = shift;
+    my $one_section = shift;
+    my $element_heading = shift;
+    my $first_in_page = shift;
+    my $is_top = shift;
+    my $previous_is_top = shift;
+    my $command_line = shift;
+    my $element_id = shift;
+    my $new_element = shift;
+
+    my $result = '';
+    my $label = &$element_label($element_id, $element, $command, $command_line);
+    my $heading = &$heading($element, $command, $texi_line, $line, $in_preformatted, $one_section, $element_heading) if $element_heading;
+    if ($new_element and !$one_section)
+    {
+       $result .= "<div class=\"anchor\">\n" . $label . "</div>\n";
+       if (!$element->{'element_ref'}->{'top'})
+       {
+          $result .= &$print_element_header($first_in_page, $previous_is_top);
+          $result .= "<div class=\"mainbox\">\n" if $first_in_page;
+       }
+       else
+       {
+          $result .= "<div class=\"topmainbox\">\n" if $first_in_page;
+       }
+    }
+    else
+    {
+       $result .= $label;
+    }
+    if ($element_heading)
+    {
+       if ($first_in_page and $is_top)
+       {
+          $result .= "<div class=\"toptitlebox\">\n" . $heading . "</div>\n" . "<div class=\"topcontentbox\">\n" if ($first_in_page and $is_top);
+       }
+       else
+       {
+          $result .= $heading;
+       }
+    }
+    return $result;
+}
+
 # headers
 $print_page_head = \&appleHelp_print_page_head;
 
-sub appleHelp_print_page_head($)
+sub appleHelp_print_page_head
 {
     my $fh = shift;
-    my $shorttitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $shorttitle = $Texi2HTML::NAME{'This'} if exists $Texi2HTML::NAME{'This'};
-    my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
-    $longtitle .= ": $Texi2HTML::NAME{'This'}" if exists $Texi2HTML::NAME{'This'};
-    #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
-    #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
+    my $shorttitle = "$Texi2HTML::THISDOC{'fulltitle_simple_format'}";
+    $shorttitle = $Texi2HTML::SIMPLE_TEXT{'This'} if (defined ($Texi2HTML::SIMPLE_TEXT{'This'}) and ($Texi2HTML::SIMPLE_TEXT{'This'} !~ /^\s*$/) and $SPLIT);
+    my $longtitle = "$Texi2HTML::THISDOC{'fulltitle_simple_format'}";
+    $longtitle .= ": $Texi2HTML::SIMPLE_TEXT{'This'}" if (defined ($Texi2HTML::SIMPLE_TEXT{'This'}) and ($Texi2HTML::SIMPLE_TEXT{'This'} !~ /^\s*$/) and $SPLIT);
     my $description = $DOCUMENT_DESCRIPTION;
     $description = $shorttitle if (!defined($description));
     $description = "<meta name=\"description\" content=\"$description\">" if
@@ -206,9 +185,11 @@ EOT
 $print_page_foot = \&appleHelp_print_page_foot;
 $print_Top_footer = \&appleHelp_print_page_foot;
 
-sub appleHelp_print_page_foot{
+sub appleHelp_print_page_foot
+{
     $fh = shift;
     print $fh <<EOT;
+</div>
 $PRE_BODY_CLOSE
 </body>
 </html>
@@ -217,24 +198,22 @@ EOT
 
 # head and foot navigation
 $print_head_navigation = \&appleHelp_print_head_navigation;
-$print_foot_navigation = \&appleHelp_print_no_navigation;
+$print_foot_navigation = \&appleHelp_print_foot_navigation;
 
-sub appleHelp_print_head_navigation{
+sub appleHelp_print_head_navigation
+{
     my $fh = shift;
     my $buttons = shift;
-    print $fh "<div class=\"anchor\">\n";
-    main::print_lines($fh, $Texi2HTML::THIS_HEADER);
-    print $fh <<EOT;
-</div>
-<div class="banner">
-EOT
+
+    my $result = '';
+    $result .= "<div class=\"banner\">\n";
     for my $button (@$buttons)
     {
         if ($Texi2HTML::HREF{$button})
         {
         my $btitle = $BUTTONS_GOTO{$button} ?
             'title="' . ucfirst($BUTTONS_GOTO{$button}) . '"' : '';
-            print $fh "" .
+            $result .= "" .
                   &$anchor('',
                               $Texi2HTML::HREF{$button},
                               $Texi2HTML::NAME{$button},
@@ -242,14 +221,14 @@ EOT
                              );
         }
     }
-    print $fh <<EOT;
+    $result .= "\n</div>\n";
 
-</div>
-$AFTER_NAVIGATION
-EOT
+    print $fh $result if (defined($fh));
+    return $result;
 }
 
-sub appleHelp_print_no_navigation{
+sub appleHelp_print_foot_navigation
+{
     my $fh = shift;
     my $buttons = shift;
 }
@@ -260,39 +239,45 @@ sub appleHelp_print_Top
 {
     my $fh = shift;
     my $has_top_heading = shift;
+    my $element = shift;
 
-    # we don't print the navigation buttons on the Top page
-    #my $buttons = \@MISC_BUTTONS;
-    #&$print_head_navigation($fh, $buttons);
-    print $fh "<div class=\"anchor\">\n";
-    main::print_lines($fh, $Texi2HTML::THIS_HEADER);
-    print $fh "</div>\n";
-    # this is instead of $AFTER_NAVIGATION and balanced by $PRE_BODY_CLOSE
-    print $fh "<div class=\"topmainbox\">\n";
+    # for redefining navigation buttons use:
+    # my $buttons = [...];
+    # as it is, 'Top', 'Contents', 'Index', 'About' are printed
+    my $buttons = \@MISC_BUTTONS;
+
     my $nw;
-    if ($Texi2HTML::THIS_SECTION)
+    # a dirty hack. A section is considered to be empty if there are 2
+    # lines or less in it. Indeed, this catches the sectionning command like
+    # @top and the @node.
+    if (scalar(@$Texi2HTML::THIS_SECTION) > 2)
     {
-        # if top-level node has content, then print it with extra header
-        #print $fh "<h1>$Texi2HTML::NAME{Top}</h1>\n"
-        print $fh <<EOT;
-<div class="toptitlebox">
-<h1 class="settitle">$Texi2HTML::NAME{Top}</h1>
-</div>
-<div class="topcontentbox">
-EOT
+        # if top-level node has content
         $nw = main::print_lines($fh, $Texi2HTML::THIS_SECTION);
+        # this is to close the topcontentbox div
         print $fh "</div>\n";
     }
     else
     {
         # top-level node is fully enclosed in @ifnothtml
-        # print fulltitle, subtitle, author, Overview
+        # print fulltitle, subtitle, author, Overview or table of contents
+        # redo the titlepage with the actual state
+        my ($titlepage_text, $titlepage_no_texi, $titlepage_simple_format) = main::do_special_region_lines('titlepage',$Texi2HTML::THISDOC{'state'});
+
+        &$titlepage([],$titlepage_text, $titlepage_no_texi, $titlepage_simple_format); 
+        # only print the header and node label
+        print $fh $Texi2HTML::THIS_SECTION->[0];
         print $fh $Texi2HTML::TITLEPAGE;
-        if (@{$Texi2HTML::OVERVIEW})
+        if (@{$Texi2HTML::OVERVIEW} and !$Texi2HTML::THISDOC{'setshortcontentsaftertitlepage'})
         {
-             print $fh '<h2> ' . &$I('Overview:') . "</h2>\n" . "<blockquote>\n";
+             print $fh '<h2> ' . $Texi2HTML::NAME{'Overview'} . "</h2>\n" . "<blockquote\n";
              my $nw = main::print_lines($fh, $Texi2HTML::OVERVIEW);
              print $fh "</blockquote>\n";
+        }
+        elsif (@{$Texi2HTML::TOC_LINES} and !$Texi2HTML::THISDOC{'setcontentsaftertitlepage'})
+        {
+             print $fh '<h1> ' . $Texi2HTML::NAME{'Contents'}  . "</h1>\n";
+             my $nw = main::print_lines($fh, $Texi2HTML::TOC_LINES);
         }
     }
 }
