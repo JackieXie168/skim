@@ -107,7 +107,7 @@ sub appleHelp_element_heading
 
     my $result = '';
     my $label = &$element_label($element_id, $element, $command, $command_line);
-    my $heading = &$heading($element, $command, $texi_line, $line, $in_preformatted, $one_section, $element_heading) if $element_heading;
+    my $el_heading = '';
     if ($new_element and !$one_section)
     {
        $result .= "<div class=\"anchor\">\n" . $label . "</div>\n";
@@ -127,13 +127,14 @@ sub appleHelp_element_heading
     }
     if ($element_heading)
     {
+       $el_heading .= &$heading($element, $command, $texi_line, $line, $in_preformatted, $one_section, $element_heading);
        if ($first_in_page and $is_top)
        {
-          $result .= "<div class=\"toptitlebox\">\n" . $heading . "</div>\n" . "<div class=\"topcontentbox\">\n" if ($first_in_page and $is_top);
+          $result .= "<div class=\"toptitlebox\">\n" . $el_heading . "</div>\n" . "<div class=\"topcontentbox\">\n" if ($first_in_page and $is_top);
        }
        else
        {
-          $result .= $heading;
+          $result .= $el_heading;
        }
     }
     return $result;
