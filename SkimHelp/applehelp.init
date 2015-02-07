@@ -83,7 +83,7 @@ sub appleHelp_index_entry($$$$)
     my $element_href = shift;
     my $element_text = shift;
     
-    return '<tr><td valign="top">' . &$anchor('', $text_href, $entry) . "</td></tr>\n";
+    return '<tr><td valign="top">' . &$anchor('', $element_href, $entry) . "</td></tr>\n";
 }
 
 # headings
