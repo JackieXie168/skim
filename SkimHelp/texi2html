@@ -15051,10 +15051,10 @@ sub rearrange_elements()
                    last;
                 }
             }
-            #unless ($found)
-            #{
-            #    warn "$WARN `$node->{'texi'}' doesn't appear in menus\n";
-            #}
+            unless ($found)
+            {
+                #warn "$WARN `$node->{'texi'}' doesn't appear in menus\n";
+            }
         }
 
         # use values deduced from menus to complete missing up, next, prev
@@ -15100,11 +15100,11 @@ sub rearrange_elements()
         {
             # We detect when the up node has no menu entry for that node, as
             # there may be infinite loops when finding following node (see below)
-            #unless (defined($node->{'menu_up_hash'}) and ($node->{'menu_up_hash'}->{$node->{'nodeup'}->{'texi'}}))
-            #{
-            #    print STDERR "$WARN `$node->{'nodeup'}->{'texi'}' is up for `$node->{'texi'}', but has no menu entry for this node\n" if ($Texi2HTML::Config::SHOW_MENU);
-            #    push @{$node->{'up_not_in_menu'}}, $node->{'nodeup'}->{'texi'};
-            #}
+            unless (defined($node->{'menu_up_hash'}) and ($node->{'menu_up_hash'}->{$node->{'nodeup'}->{'texi'}}))
+            {
+                #print STDERR "$WARN `$node->{'nodeup'}->{'texi'}' is up for `$node->{'texi'}', but has no menu entry for this node\n" if ($Texi2HTML::Config::SHOW_MENU);
+                push @{$node->{'up_not_in_menu'}}, $node->{'nodeup'}->{'texi'};
+            }
         }
 
         # Find next node if not already found
@@ -15123,13 +15123,13 @@ sub rearrange_elements()
             my $section = $node->{'with_section'};
             if (defined($section->{'sectionnext'}))
             {
-                #$next = get_node($section->{'sectionnext'});
-                #if (defined($next) and $Texi2HTML::Config::SHOW_MENU)
-                #{
-                #    echo_warn ("No node following `$node->{'texi'}' in menu, but `$next->{'texi'}' follows in sectionning") if (!defined($node->{'menu_next'}));
-                #    echo_warn ("Node following `$node->{'texi'}' in menu `$node->{'menu_next'}->{'texi'}' and in sectionning `$next->{'texi'}' differ") 
-                #       if (defined($node->{'menu_next'}) and $next ne $node->{'menu_next'});
-                #}
+                $next = get_node($section->{'sectionnext'});
+                if (defined($next) and $Texi2HTML::Config::SHOW_MENU)
+                {
+                    #echo_warn ("No node following `$node->{'texi'}' in menu, but `$next->{'texi'}' follows in sectionning") if (!defined($node->{'menu_next'}));
+                    #echo_warn ("Node following `$node->{'texi'}' in menu `$node->{'menu_next'}->{'texi'}' and in sectionning `$next->{'texi'}' differ") 
+                       if (defined($node->{'menu_next'}) and $next ne $node->{'menu_next'});
+                }
             }
             elsif ($Texi2HTML::Config::USE_UP_FOR_ADJACENT_NODES) 
             { # makeinfo don't do that
