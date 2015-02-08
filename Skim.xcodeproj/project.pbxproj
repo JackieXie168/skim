@@ -1002,7 +1002,6 @@
 		CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationInk_SKExtensions.h; sourceTree = "<group>"; };
 		CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationInk_SKExtensions.m; sourceTree = "<group>"; };
 		CEF1D626117EFB760069E249 /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = applehelp.init; sourceTree = "<group>"; };
-		CEF1D627117EFB760069E249 /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "postprocess-nontitle.py"; sourceTree = "<group>"; };
 		CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLocalization.h; sourceTree = "<group>"; };
 		CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLocalization.m; sourceTree = "<group>"; };
 		CEF60CF0114C07D90074ACC4 /* SKWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKWindowController.h; sourceTree = "<group>"; };
@@ -1800,7 +1799,6 @@
 			isa = PBXGroup;
 			children = (
 				CEF1D626117EFB760069E249 /* applehelp.init */,
-				CEF1D627117EFB760069E249 /* postprocess-nontitle.py */,
 				CE1F60111A822BC8002C3942 /* texi2html */,
 				CE1F60131A822BD8002C3942 /* stopwords-nl.txt */,
 			);
