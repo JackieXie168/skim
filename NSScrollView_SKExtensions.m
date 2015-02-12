@@ -167,7 +167,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
     CGFloat width = NSHeight(bgSrcRect);
     
     divRect.size.width = 1.0;
-    divSrcRect.origin.x = floor(NSWidth(midSrcRect) / 2.0);
+    divSrcRect.origin.x = floor(NSWidth(divSrcRect) / 2.0);
     divSrcRect.size.width = 1.0;
     NSDivideRect(bgSrcRect, &rightSrcRect, &bgSrcRect, width, NSMaxXEdge);
     NSDivideRect(bgSrcRect, &leftSrcRect, &bgSrcRect, width, NSMinXEdge);
