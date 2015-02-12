@@ -128,24 +128,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (sharedBookmarkController == nil) {
         self = [super initWithWindowNibName:@"BookmarksWindow"];
         if (self) {
-            recentDocuments = [[NSMutableArray alloc] init];
-            
-            NSMutableArray *bookmarks = [NSMutableArray array];
-            
             NSDictionary *bookmarkDictionary = [[NSUserDefaults standardUserDefaults] persistentDomainForName:SKBookmarksIdentifier];
-            if (bookmarkDictionary) {
-                [recentDocuments addObjectsFromArray:[bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]];
-                for (NSDictionary *dict in [bookmarkDictionary objectForKey:BOOKMARKS_KEY]) {
-                    SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
-                    if (bookmark) {
-                        [bookmarks addObject:bookmark];
-                        [bookmark release];
-                    } else
-                        NSLog(@"Failed to read bookmark: %@", dict);
-                }
-            }
             
-            bookmarkRoot = [[SKBookmark alloc] initRootWithChildren:bookmarks];
+            recentDocuments = [[NSMutableArray alloc] init];
+            [recentDocuments addObjectsFromArray:[bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]];
+            
+            bookmarkRoot = [[SKBookmark alloc] initRootWithChildrenProperties:[bookmarkDictionary objectForKey:BOOKMARKS_KEY]];
             [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
             
             [[NSNotificationCenter defaultCenter] addObserver:self

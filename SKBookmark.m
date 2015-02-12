@@ -177,7 +177,7 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
-- (id)initRootWithChildren:(NSArray *)aChildren {
+- (id)initRootWithChildrenProperties:(NSArray *)childrenProperties {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
@@ -320,7 +320,15 @@ static Class SKBookmarkClass = Nil;
     return [self initFolderWithChildren:nil label:aLabel];
 }
 
-- (id)initRootWithChildren:(NSArray *)aChildren {
+- (id)initRootWithChildrenProperties:(NSArray *)childrenProperties {
+    NSMutableArray *aChildren = [NSMutableArray array];
+    SKBookmark *child;
+    for (NSDictionary *dict in childrenProperties) {
+        if ((child = [[SKBookmark alloc] initWithProperties:dict])) {
+            [aChildren addObject:child];
+            [child release];
+        }
+    }
     return (id)[[SKRootBookmark alloc] initFolderWithChildren:aChildren label:NSLocalizedString(@"Bookmarks Menu", @"Menu item title")];
 }
 
