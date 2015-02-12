@@ -15128,7 +15128,7 @@ sub rearrange_elements()
                 {
                     #echo_warn ("No node following `$node->{'texi'}' in menu, but `$next->{'texi'}' follows in sectionning") if (!defined($node->{'menu_next'}));
                     #echo_warn ("Node following `$node->{'texi'}' in menu `$node->{'menu_next'}->{'texi'}' and in sectionning `$next->{'texi'}' differ") 
-                       if (defined($node->{'menu_next'}) and $next ne $node->{'menu_next'});
+                    #   if (defined($node->{'menu_next'}) and $next ne $node->{'menu_next'});
                 }
             }
             elsif ($Texi2HTML::Config::USE_UP_FOR_ADJACENT_NODES) 
