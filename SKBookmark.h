@@ -63,7 +63,7 @@ typedef NSInteger SKBookmarkType;
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
-- (id)initRootWithChildren:(NSArray *)aChildren;
+- (id)initRootWithChildrenProperties:(NSArray *)childrenProperties;
 - (id)initSessionWithSetups:(NSArray *)aSetupDicts label:(NSString *)aLabel;
 - (id)initSeparator;
 - (id)initWithProperties:(NSDictionary *)dictionary;
