@@ -80,11 +80,12 @@
 
 static char SKBookmarkPropertiesObservationContext;
 
+static NSString *SKBookmarksIdentifier = nil;
+
 static NSArray *minimumCoverForBookmarks(NSArray *items);
 
 @interface SKBookmarkController (SKPrivate)
 - (void)setupToolbar;
-- (NSString *)bookmarksFilePath;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)endEditing;
 - (void)startObservingBookmarks:(NSArray *)newBookmarks;
@@ -109,6 +110,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
     maxRecentDocumentsCount = [[NSUserDefaults standardUserDefaults] integerForKey:SKMaximumDocumentPageHistoryCountKey];
     if (maxRecentDocumentsCount == 0)
         maxRecentDocumentsCount = 50;
+    
+    SKBookmarksIdentifier = [[[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".bookmarks"] retain];
 }
 
 + (id)sharedBookmarkController {
@@ -128,29 +131,18 @@ static NSUInteger maxRecentDocumentsCount = 0;
             recentDocuments = [[NSMutableArray alloc] init];
             
             NSMutableArray *bookmarks = [NSMutableArray array];
-            NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
-            if (data) {
-                NSError *error = nil;
-                NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
-                id plist = [NSPropertyListSerialization propertyListWithData:data
-                                                                     options:NSPropertyListMutableContainers
-                                                                      format:&format 
-                                                                       error:&error];
-                
-                if (error) {
-                    NSLog(@"Error deserializing: %@", error);
-                } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                    [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
-                    for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
-                        SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
-                        if (bookmark) {
-                            [bookmarks addObject:bookmark];
-                            [bookmark release];
-                        } else
-                            NSLog(@"Failed to read bookmark: %@", dict);
-                    }
+            
+            NSDictionary *bookmarkDictionary = [[NSUserDefaults standardUserDefaults] persistentDomainForName:SKBookmarksIdentifier];
+            if (bookmarkDictionary) {
+                [recentDocuments addObjectsFromArray:[bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]];
+                for (NSDictionary *dict in [bookmarkDictionary objectForKey:BOOKMARKS_KEY]) {
+                    SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
+                    if (bookmark) {
+                        [bookmarks addObject:bookmark];
+                        [bookmark release];
+                    } else
+                        NSLog(@"Failed to read bookmark: %@", dict);
                 }
-                
             }
             
             bookmarkRoot = [[SKBookmark alloc] initRootWithChildren:bookmarks];
@@ -270,36 +262,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 #pragma mark Bookmarks support
-
-- (NSString *)bookmarksFilePath {
-    static NSString *bookmarksPath = nil;
-    
-    if (bookmarksPath == nil) {
-        NSString *prefsPath = nil;
-        FSRef foundRef;
-        OSStatus err = noErr;
-        
-        err = FSFindFolder(kUserDomain,  kPreferencesFolderType, kCreateFolder, &foundRef);
-        if (err != noErr) {
-            NSLog(@"Error %d:  the system was unable to find your Preferences folder.", err);
-            return nil;
-        }
-        
-        CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
-        
-        if (url != nil) {
-            prefsPath = [(NSURL *)url path];
-            CFRelease(url);
-            
-            NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-            
-            bookmarksPath = [[[prefsPath stringByAppendingPathComponent:[bundleIdentifier stringByAppendingString:@".bookmarks"]] stringByAppendingPathExtension:@"plist"] copy];
-        }
-        
-    }
-    
-    return bookmarksPath;
-}
 
 - (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {
     NSInteger rowIndex = [outlineView clickedRow];
@@ -632,15 +594,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
     [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
     NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[bookmarkRoot children] valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENTDOCUMENTS_KEY, nil];
-    NSError *error = nil;
-    NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataWithPropertyList:bookmarksDictionary format:format options:0 error:&error];
-    
-	if (error) {
-		NSLog(@"Error serializing: %@", error);
-	} else {
-        [data writeToFile:[self bookmarksFilePath] atomically:YES];
-    }
+    [[NSUserDefaults standardUserDefaults] setPersistentDomain:bookmarksDictionary forName:SKBookmarksIdentifier];
 }
 
 - (void)endEditing {
