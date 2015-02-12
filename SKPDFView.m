@@ -4158,7 +4158,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         area &= kPDFPageArea;
     } else {
         
-        SKRectEdges resizeHandle;
+        SKRectEdges resizeHandle = SKNoEdgeMask;
         PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
         
         if (readingBar && [[readingBar page] isEqual:page]) {

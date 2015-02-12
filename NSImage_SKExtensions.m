@@ -182,7 +182,7 @@ static inline void drawPageBackgroundTemplateInRect(NSRect rect);
 
 static inline void drawArrowCursor();
 
-static inline void drawAddBadgeAtPoint(NSPoint point);
+static void drawAddBadgeAtPoint(NSPoint point);
 
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
