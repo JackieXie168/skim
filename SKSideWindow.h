@@ -41,7 +41,6 @@
 
 
 @interface SKSideWindow : SKMainWindow {
-    NSWindowController *controller;
     NSDrawerState state;
     NSRectEdge edge;
     NSView *mainContentView;
@@ -60,7 +59,7 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic) BOOL acceptsMouseOver;
 
-- (id)initWithMainController:(NSWindowController *)aController edge:(NSRectEdge)anEdge;
+- (id)initWithEdge:(NSRectEdge)anEdge screen:(NSScreen *)screen;
 - (void)attachToWindow:(NSWindow *)window;
 - (void)slideIn;
 - (void)slideOut;
