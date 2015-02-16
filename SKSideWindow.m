@@ -43,7 +43,6 @@
 #import "NSAnimationContext_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 
-#define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
@@ -77,10 +76,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
-- (id)initWithEdge:(NSRectEdge)anEdge screen:(NSScreen *)screen {
-    NSRect contentRect = NSInsetRect(SKSliceRect([(screen ?: [NSScreen mainScreen]) frame], DEFAULT_WINDOW_WIDTH, anEdge), 0.0, WINDOW_INSET);
-    
-    self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+- (id)initWithEdge:(NSRectEdge)anEdge {
+    self = [super initWithContentRect:NSMakeRect(0.0, 0.0, 200.0, 400.0) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
@@ -98,7 +95,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         NSView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
         [self setContentView:contentView];
         
-        contentRect = SKShrinkRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+        NSRect contentRect = SKShrinkRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
         mainContentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
         [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [contentView addSubview:mainContentView];
