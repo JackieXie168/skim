@@ -1293,7 +1293,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)showLeftSideWindow {
     if (leftSideWindow == nil)
-        leftSideWindow = [[SKSideWindow alloc] initWithEdge:NSMinXEdge screen:[[self window] screen]];
+        leftSideWindow = [[SKSideWindow alloc] initWithEdge:NSMinXEdge];
     
     if ([[[leftSideController.view window] firstResponder] isDescendantOf:leftSideController.view])
         [[leftSideController.view window] makeFirstResponder:nil];
@@ -1315,7 +1315,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)showRightSideWindow {
     if (rightSideWindow == nil) 
-        rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge screen:[[self window] screen]];
+        rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge];
     
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];

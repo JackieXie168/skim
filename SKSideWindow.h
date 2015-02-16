@@ -59,7 +59,7 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic) BOOL acceptsMouseOver;
 
-- (id)initWithEdge:(NSRectEdge)anEdge screen:(NSScreen *)screen;
+- (id)initWithEdge:(NSRectEdge)anEdge;
 - (void)attachToWindow:(NSWindow *)window;
 - (void)slideIn;
 - (void)slideOut;
