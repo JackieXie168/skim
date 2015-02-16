@@ -77,9 +77,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
-- (id)initWithMainController:(NSWindowController *)aController edge:(NSRectEdge)anEdge {
-    NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
-    NSRect contentRect = NSInsetRect(SKSliceRect([screen frame], DEFAULT_WINDOW_WIDTH, anEdge), 0.0, WINDOW_INSET);
+- (id)initWithEdge:(NSRectEdge)anEdge screen:(NSScreen *)screen {
+    NSRect contentRect = NSInsetRect(SKSliceRect([(screen ?: [NSScreen mainScreen]) frame], DEFAULT_WINDOW_WIDTH, anEdge), 0.0, WINDOW_INSET);
     
     self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
@@ -91,7 +90,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
-        controller = aController;
         edge = anEdge;
         enabled = YES;
         
@@ -145,7 +143,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)animateToWidth:(CGFloat)width completionHandler:(void(^)(void))completionHandler {
-    NSRect screenFrame = [[[controller window] screen] frame];
+    NSRect screenFrame = [[[self parentWindow] screen] frame];
     NSRect frame = [self frame];
     frame.size.width = width;
     frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
@@ -170,7 +168,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [self animateToWidth:WINDOW_OFFSET
             completionHandler:^{
                 if ([self isKeyWindow])
-                    [[controller window] makeKeyAndOrderFront:self];
+                    [[self parentWindow] makeKeyAndOrderFront:self];
                 state = NSDrawerClosedState;
                 if (hideWhenClosed != SKClosedSidePanelCollapse)
                     [self makeTransparent];
@@ -185,7 +183,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         state = NSDrawerOpeningState;
         [self animateToWidth:NSWidth([mainContentView frame]) + CONTENT_INSET 
             completionHandler:^{
-                if ([[controller window] isKeyWindow])
+                if ([[self parentWindow] isKeyWindow])
                     [self makeKeyAndOrderFront:nil];
                 else
                     [self orderFront:nil];
@@ -243,12 +241,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (void)cancelOperation:(id)sender {
     // for some reason this action method is not passed on up the responder chain, so we do this ourselves
-    if ([controller respondsToSelector:@selector(cancelOperation:)])
-        [controller cancelOperation:self];
+    if ([[self nextResponder] respondsToSelector:@selector(cancelOperation:)])
+        [[self nextResponder] cancelOperation:self];
 }
     
 - (NSResponder *)nextResponder {
-    return controller;
+    return [[self parentWindow] windowController];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
