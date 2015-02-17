@@ -43,6 +43,8 @@
 #import "NSAnimationContext_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 
+#define DEFAULT_WINDOW_WIDTH    300.0
+#define DEFAULT_WINDOW_HEIGHT   400.0
 #define WINDOW_INSET            1.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
@@ -77,7 +79,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (id)initWithEdge:(NSRectEdge)anEdge {
-    self = [super initWithContentRect:NSMakeRect(0.0, 0.0, 200.0, 400.0) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+    self = [super initWithContentRect:NSMakeRect(0.0, 0.0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
