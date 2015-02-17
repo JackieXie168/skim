@@ -298,7 +298,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [mainContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
 	while (keepGoing) {
-		theEvent = [self nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		theEvent = [self nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseEnteredMask | NSMouseExitedMask];
 		switch ([theEvent type]) {
 			case NSLeftMouseDragged:
             {
