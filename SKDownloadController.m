@@ -598,6 +598,10 @@ static SKDownloadController *sharedDownloadController = nil;
     return iconRect;
 }
 
+- (NSImage *)previewPanel:(QLPreviewPanel *)panel transitionImageForPreviewItem:(id <QLPreviewItem>)item contentRect:(NSRect *)contentRect {
+    return [(SKDownload *)item fileIcon];
+}
+
 - (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
     if ([event type] == NSKeyDown) {
         [tableView keyDown:event];

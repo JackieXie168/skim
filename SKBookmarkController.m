@@ -1011,6 +1011,10 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     return iconRect;
 }
 
+- (NSImage *)previewPanel:(QLPreviewPanel *)panel transitionImageForPreviewItem:(id <QLPreviewItem>)item contentRect:(NSRect *)contentRect {
+    return [(SKBookmark *)item icon];
+}
+
 - (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
     if ([event type] == NSKeyDown) {
         [outlineView keyDown:event];
