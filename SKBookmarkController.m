@@ -1012,6 +1012,8 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
 }
 
 - (NSImage *)previewPanel:(QLPreviewPanel *)panel transitionImageForPreviewItem:(id <QLPreviewItem>)item contentRect:(NSRect *)contentRect {
+    if ([[(SKBookmark *)item parent] bookmarkType] == SKBookmarkTypeSession)
+        item = [(SKBookmark *)item parent];
     return [(SKBookmark *)item icon];
 }
 
