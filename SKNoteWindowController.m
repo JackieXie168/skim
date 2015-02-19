@@ -231,6 +231,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [[[[self document] mainWindowController] window] makeKeyWindow];
     else if ([[self window] isMainWindow])
         [[[[self document] mainWindowController] window] makeMainWindow];
+    if (previewURL)
+        [self endPreviewPanelControl:nil];
 }
 
 - (void)setDocument:(NSDocument *)document {
