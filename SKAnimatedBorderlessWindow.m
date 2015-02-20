@@ -134,9 +134,9 @@
                 [context setDuration:[self fadeOutDuration]];
                 [[self animator] setAlphaValue:0.0];
             }
-            completionHandler:^{
-                [self remove];
-        }];
+            completionHandler:nil];
+        // don't put this in the completionHandler, because we want to be able to stop this using stopAnimation
+        [self performSelector:@selector(remove) withObject:nil afterDelay:[self fadeOutDuration]];
     }
 }
 
