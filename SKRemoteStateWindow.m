@@ -40,17 +40,16 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSImage_SKExtensions.h"
 
 #define ALPHA_VALUE 0.95
 #define WINDOW_SIZE 60.0
 
-@interface SKRemoteStateView : NSView {
-    SKRemoteState remoteState;
-}
-- (SKRemoteState)remoteState;
-- (void)setRemoteState:(SKRemoteState)newRemoteState;
-@end
 
+@interface SKRemoteStateWindow (SKPrivate)
++ (NSImage *)resizeImage;
++ (NSImage *)scrollImage;
+@end
 
 @implementation SKRemoteStateWindow
 
@@ -72,7 +71,6 @@
         [self setIgnoresMouseEvents:YES];
         [self setDisplaysWhenScreenProfileChanges:NO];
         [self setLevel:NSStatusWindowLevel];
-        [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
     }
     return self;
 }
@@ -88,7 +86,7 @@
         [self stopAnimation];
         
         [self setFrame:SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0)) display:NO animate:NO];
-        [(SKRemoteStateView *)[self contentView] setRemoteState:remoteState];
+        [self setBackgroundImage:remoteState == SKRemoteStateResize ? [[self class] resizeImage] : [[self class] scrollImage]];
         
         [self orderFrontRegardless];
     }
@@ -99,104 +97,106 @@
         [[self sharedRemoteStateWindow] showWithType:remoteState];
 }
 
-@end
-
-#pragma mark -
-
-@implementation SKRemoteStateView
-
-- (SKRemoteState)remoteState {
-    return remoteState;
-}
-
-- (void)setRemoteState:(SKRemoteState)newRemoteState {
-    remoteState = newRemoteState;
-    [self setNeedsDisplay:YES];
-}
-
-- (void)drawRect:(NSRect)rect {
-    NSRect bounds = [self bounds];
-    NSPoint center = SKCenterPoint(bounds);
-    
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-    [[NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:10.0 yRadius:10.0] fill];
-    
-    NSBezierPath *path = nil;
-    
-    if (remoteState == SKRemoteStateResize) {
-        
-        path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
-        [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 24.0, 24.0)]];
-        
-        NSBezierPath *arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 10.0, NSMinY(bounds) + 10.0)];
-        [arrow relativeLineToPoint:NSMakePoint(6.0, 0.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, 2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(0.0, 6.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-6.0, 0.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
-        [arrow closePath];
-        
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 5.0, NSMidY(bounds))];
-        [arrow relativeLineToPoint:NSMakePoint(10.0, 5.0)];
-        [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
-        [arrow closePath];
-        [path appendBezierPath:arrow];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        [path setWindingRule:NSEvenOddWindingRule];
-        
-    } else if (remoteState == SKRemoteStateScroll) {
-        
-        path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)];
-        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 9.0, 9.0)]];
-        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 25.0, 25.0)]];
-        
-        NSBezierPath *arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds) + 12.0)];
-        [arrow relativeLineToPoint:NSMakePoint(7.0, 7.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-14.0, 0.0)];
-        [arrow closePath];
-        
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        [path setWindingRule:NSEvenOddWindingRule];
-        
++ (NSImage *)resizeImage {
+    static NSImage *resizeImage = nil;
+    if (resizeImage == nil) {
+        resizeImage = [[NSImage imageWithSize:NSMakeSize(WINDOW_SIZE, WINDOW_SIZE) drawingHandler:^(NSRect rect){
+                NSPoint center = SKCenterPoint(rect);
+                
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+                [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+                
+                NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
+                [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 24.0, 24.0)]];
+                
+                NSBezierPath *arrow = [NSBezierPath bezierPath];
+                [arrow moveToPoint:NSMakePoint(NSMinX(rect) + 10.0, NSMinY(rect) + 10.0)];
+                [arrow relativeLineToPoint:NSMakePoint(6.0, 0.0)];
+                [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+                [arrow relativeLineToPoint:NSMakePoint(2.0, 2.0)];
+                [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+                [arrow relativeLineToPoint:NSMakePoint(0.0, 6.0)];
+                [arrow relativeLineToPoint:NSMakePoint(-6.0, 0.0)];
+                [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+                [arrow relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
+                [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+                [arrow closePath];
+                
+                NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+                [transform translateXBy:center.x yBy:center.y];
+                [transform rotateByDegrees:90.0];
+                [transform translateXBy:-center.x yBy:-center.y];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                
+                arrow = [NSBezierPath bezierPath];
+                [arrow moveToPoint:NSMakePoint(NSMinX(rect) + 5.0, NSMidY(rect))];
+                [arrow relativeLineToPoint:NSMakePoint(10.0, 5.0)];
+                [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
+                [arrow closePath];
+                [path appendBezierPath:arrow];
+                [transform translateXBy:center.x yBy:center.y];
+                [transform rotateByDegrees:90.0];
+                [transform translateXBy:-center.x yBy:-center.y];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                
+                [path setWindingRule:NSEvenOddWindingRule];
+                
+                [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+                [path fill];
+                
+                return YES;
+            }] retain];
     }
-    
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
-    [path fill];
+    return resizeImage;
+}
+
++ (NSImage *)scrollImage {
+    static NSImage *scrollImage = nil;
+    if (scrollImage == nil) {
+        scrollImage = [[NSImage imageWithSize:NSMakeSize(WINDOW_SIZE, WINDOW_SIZE) drawingHandler:^(NSRect rect){
+                NSPoint center = SKCenterPoint(rect);
+                
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+                [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+                
+                NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 8.0, 8.0)];
+                [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 9.0, 9.0)]];
+                [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 25.0, 25.0)]];
+                
+                NSBezierPath *arrow = [NSBezierPath bezierPath];
+                [arrow moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) + 12.0)];
+                [arrow relativeLineToPoint:NSMakePoint(7.0, 7.0)];
+                [arrow relativeLineToPoint:NSMakePoint(-14.0, 0.0)];
+                [arrow closePath];
+                
+                NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+                [transform translateXBy:center.x yBy:center.y];
+                [transform rotateByDegrees:90.0];
+                [transform translateXBy:-center.x yBy:-center.y];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                [arrow transformUsingAffineTransform:transform];
+                [path appendBezierPath:arrow];
+                
+                [path setWindingRule:NSEvenOddWindingRule];
+                
+                [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+                [path fill];
+            
+                return YES;
+            }] retain];
+    }
+    return scrollImage;
 }
 
 @end

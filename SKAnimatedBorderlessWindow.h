@@ -47,6 +47,7 @@
 
 @property (nonatomic, readonly) CGFloat defaultAlphaValue;
 @property (nonatomic, readonly) NSTimeInterval fadeInDuration, fadeOutDuration, autoHideTimeInterval;
+@property (nonatomic, retain) NSImage *backgroundImage;
 
 - (void)fadeIn;
 - (void)fadeOut;

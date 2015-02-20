@@ -57,6 +57,7 @@
 #import "NSAnimationContext_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "SKAnimatedBorderlessWindow.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -547,24 +548,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)miniaturizeWindowFromRect:(NSRect)startRect toRect:(NSRect)endRect {
-    NSWindow *miniaturizeWindow = [[NSWindow alloc] initWithContentRect:startRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-    [miniaturizeWindow setIgnoresMouseEvents:YES];
-    [miniaturizeWindow setLevel:NSFloatingWindowLevel];
-    [miniaturizeWindow setBackgroundColor:[NSColor clearColor]];
-    [miniaturizeWindow setOpaque:NO];
-    [miniaturizeWindow setHasShadow:YES];
-    if ([miniaturizeWindow respondsToSelector:@selector(setAnimationBehavior:)])
-        [miniaturizeWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
-    
     if (windowImage == nil)
         windowImage = [[(SKSnapshotWindow *)[self window] windowImage] retain];
     
-    NSImageView *imageView = [[NSImageView alloc] init];
-    [imageView setImageFrameStyle:NSImageFrameNone];
-    [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
-    [imageView setImage:windowImage];
-    [miniaturizeWindow setContentView:imageView];
-    [imageView release];
+    SKAnimatedBorderlessWindow *miniaturizeWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:startRect];
+    [miniaturizeWindow setLevel:NSFloatingWindowLevel];
+    [miniaturizeWindow setBackgroundImage:windowImage];
     
     [miniaturizeWindow orderFront:nil];
     

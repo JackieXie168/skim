@@ -44,6 +44,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -80,7 +81,16 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setMovableByWindowBackground:YES];
         
-        [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
+        NSImage *image = [NSImage imageWithSize:contentRect.size drawingHandler:^(NSRect dstRect){
+            [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] setFill];
+            [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] setStroke];
+            [NSBezierPath setDefaultLineWidth:1.0];
+            [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(dstRect, 1.0, 1.0) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
+            [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(dstRect, 0.5, 0.5) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] stroke];
+            return YES;
+        }];
+        
+        [self setBackgroundImage:image];
         
         NSRect rect = NSMakeRect(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
         previousButton = [[SKNavigationButton alloc] initWithFrame:rect];
@@ -178,24 +188,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [previousButton setEnabled:[[notification object] canGoToPreviousPage]];
     [nextButton setEnabled:[[notification object] canGoToNextPage]];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKNavigationContentView
-
-- (void)drawRect:(NSRect)rect {
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    rect = NSInsetRect([self bounds], 1.0, 1.0);
-    [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
-    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
-    rect = NSInsetRect([self bounds], 0.5, 0.5);
-    [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] set];
-    [NSBezierPath setDefaultLineWidth:1.0];
-    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] stroke];
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
 @end
