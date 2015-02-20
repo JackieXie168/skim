@@ -46,11 +46,6 @@
 #define WINDOW_SIZE 60.0
 
 
-@interface SKRemoteStateWindow (SKPrivate)
-+ (NSImage *)resizeImage;
-+ (NSImage *)scrollImage;
-@end
-
 @implementation SKRemoteStateWindow
 
 + (id)sharedRemoteStateWindow {
@@ -65,7 +60,7 @@
 }
 
 - (id)init {
-    NSRect contentRect = SKRectFromCenterAndSquareSize(NSZeroPoint, WINDOW_SIZE);
+    NSRect contentRect = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0));
     self = [super initWithContentRect:contentRect];
     if (self) {
         [self setIgnoresMouseEvents:YES];
@@ -79,22 +74,6 @@
 
 - (NSTimeInterval)autoHideTimeInterval {
     return [[self class] timeInterval];
-}
-
-- (void)showWithType:(SKRemoteState)remoteState {
-    if ([self autoHideTimeInterval] > 0.0) {
-        [self stopAnimation];
-        
-        [self setFrame:SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0)) display:NO animate:NO];
-        [self setBackgroundImage:remoteState == SKRemoteStateResize ? [[self class] resizeImage] : [[self class] scrollImage]];
-        
-        [self orderFrontRegardless];
-    }
-}
-
-+ (void)showWithType:(SKRemoteState)remoteState {
-    if ([[self class] timeInterval] > 0.0)
-        [[self sharedRemoteStateWindow] showWithType:remoteState];
 }
 
 + (NSImage *)resizeImage {
@@ -197,6 +176,15 @@
             }] retain];
     }
     return scrollImage;
+}
+
++ (void)showWithType:(SKRemoteState)remoteState {
+    if ([self timeInterval] > 0.0) {
+        SKRemoteStateWindow *remoteStateWindow = [self sharedRemoteStateWindow];
+        [remoteStateWindow center];
+        [remoteStateWindow setBackgroundImage:remoteState == SKRemoteStateResize ? [self resizeImage] : [self scrollImage]];
+        [remoteStateWindow orderFrontRegardless];
+    }
 }
 
 @end
