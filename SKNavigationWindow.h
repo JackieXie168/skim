@@ -54,10 +54,6 @@
 @end
 
 
-@interface SKNavigationContentView : NSView
-@end
-
-
 @interface SKNavigationToolTipWindow : NSPanel {
     NSView *view;
 }

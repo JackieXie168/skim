@@ -48,7 +48,7 @@
 
 @implementation SKAnimatedBorderlessWindow
 
-@dynamic defaultAlphaValue, fadeInDuration, fadeOutDuration, autoHideTimeInterval;
+@dynamic defaultAlphaValue, fadeInDuration, fadeOutDuration, autoHideTimeInterval, backgroundImage;
 
 - (id)initWithContentRect:(NSRect)contentRect {
     self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
@@ -60,6 +60,12 @@
         [self setHidesOnDeactivate:NO];
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        
+        NSImageView *imageView = [[NSImageView alloc] init];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+        [self setContentView:imageView];
+        [imageView release];
     }
     return self;
 }
@@ -157,6 +163,14 @@
             completionHandler:nil];
     }
     [self fadeOutAfterTimeout];
+}
+
+- (NSImage *)backgroundImage {
+    return [(NSImageView *)[self contentView] image];
+}
+
+- (void)setBackgroundImage:(NSImage *)newBackgroundImage {
+    return [(NSImageView *)[self contentView] setImage:newBackgroundImage];
 }
 
 @end

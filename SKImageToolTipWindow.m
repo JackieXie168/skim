@@ -70,12 +70,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
         [self setLevel:NSStatusWindowLevel];
-    
-        
-        NSImageView *imageView = [[NSImageView alloc] init];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [self setContentView:imageView];
-        [imageView release];
         
         context = nil;
         point = NSZeroPoint;
@@ -101,7 +95,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     NSImage *image = [context toolTipImage];
     
     if (image) {
-        [(NSImageView *)[self contentView] setImage:image];
+        [self setBackgroundImage:image];
         
         contentRect.size = [image size];
         contentRect.origin.x = thePoint.x;
