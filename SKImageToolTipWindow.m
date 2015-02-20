@@ -74,7 +74,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         
         NSImageView *imageView = [[NSImageView alloc] init];
         [imageView setImageFrameStyle:NSImageFrameNone];
-        [[imageView enclosingScrollView] setDrawsBackground:NO];
         [self setContentView:imageView];
         [imageView release];
         
