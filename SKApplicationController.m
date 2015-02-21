@@ -67,7 +67,6 @@
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
-#import "SKRemoteStateWindow.h"
 #import "SKFDFParser.h"
 #import "SKLocalization.h"
 #import "SKScriptMenu.h"
