@@ -193,7 +193,6 @@
 		CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */; };
 		CE9768A211611C0F008DCB8F /* DownloadPreferenceSheet.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE9768A011611C0F008DCB8F /* DownloadPreferenceSheet.strings */; };
 		CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B80491030642400EA8774 /* SKTransitionInfo.m */; };
-		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
 		CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA1CCE60C9864470061A6D4 /* Security.framework */; };
 		CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */; };
@@ -893,8 +892,6 @@
 		CE9768A911611C2D008DCB8F /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/DownloadPreferenceSheet.strings; sourceTree = "<group>"; };
 		CE9B80481030642400EA8774 /* SKTransitionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionInfo.h; sourceTree = "<group>"; };
 		CE9B80491030642400EA8774 /* SKTransitionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTransitionInfo.m; sourceTree = "<group>"; };
-		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
-		CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRemoteStateWindow.m; sourceTree = "<group>"; };
 		CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSData_SKExtensions.h; sourceTree = "<group>"; };
 		CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSData_SKExtensions.m; sourceTree = "<group>"; };
 		CEA1CCE60C9864470061A6D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -1616,8 +1613,6 @@
 				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
 				CE0E864F114DBF7000E37F38 /* SKPreferenceWindow.h */,
 				CE0E8650114DBF7000E37F38 /* SKPreferenceWindow.m */,
-				CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */,
-				CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */,
 				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
 				CE19641316E811D40027E2CF /* SKSnapshotWindow.h */,
@@ -2442,7 +2437,6 @@
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
 				CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,
-				CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */,
 				CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */,
 				CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */,
 				CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */,
