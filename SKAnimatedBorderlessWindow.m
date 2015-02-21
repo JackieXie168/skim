@@ -48,7 +48,8 @@
 
 @implementation SKAnimatedBorderlessWindow
 
-@dynamic defaultAlphaValue, fadeInDuration, fadeOutDuration, autoHideTimeInterval, backgroundImage;
+@synthesize defaultAlphaValue, autoHideTimeInterval;
+@dynamic fadeInDuration, fadeOutDuration, backgroundImage;
 
 - (id)initWithContentRect:(NSRect)contentRect {
     self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
@@ -66,6 +67,9 @@
         [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
         [self setContentView:imageView];
         [imageView release];
+        
+        defaultAlphaValue = ALPHA_VALUE;
+        autoHideTimeInterval = AUTO_HIDE_TIME_INTERVAL;
     }
     return self;
 }
@@ -83,13 +87,9 @@
 
 - (void)willClose {}
 
-- (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
-
 - (NSTimeInterval)fadeInDuration { return FADE_IN_DURATION; }
 
 - (NSTimeInterval)fadeOutDuration { return FADE_OUT_DURATION; }
-
-- (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)stopAnimation {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
@@ -97,9 +97,8 @@
 }
 
 - (void)fadeOutAfterTimeout {
-    NSTimeInterval autoHideTimeInterval = [self autoHideTimeInterval];
-    if (autoHideTimeInterval > 0.0)
-        [self performSelector:@selector(fadeOut) withObject:nil afterDelay:autoHideTimeInterval];
+    if ([self autoHideTimeInterval] > 0.0)
+        [self performSelector:@selector(fadeOut) withObject:nil afterDelay:[self autoHideTimeInterval]];
 }
 
 - (void)orderFront:(id)sender {

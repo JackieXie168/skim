@@ -66,6 +66,8 @@
         [self setIgnoresMouseEvents:YES];
         [self setDisplaysWhenScreenProfileChanges:NO];
         [self setLevel:NSStatusWindowLevel];
+        [self setDefaultAlphaValue:ALPHA_VALUE];
+        [self setAutoHideTimeInterval:[[self class] timeInterval]];
     }
     return self;
 }
