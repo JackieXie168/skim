@@ -39,14 +39,18 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKAnimatedBorderlessWindow : NSPanel
+@interface SKAnimatedBorderlessWindow : NSPanel {
+    CGFloat defaultAlphaValue;
+    NSTimeInterval autoHideTimeInterval;
+}
 
 - (id)initWithContentRect:(NSRect)contentRect;
 
 - (void)willClose;
 
-@property (nonatomic, readonly) CGFloat defaultAlphaValue;
-@property (nonatomic, readonly) NSTimeInterval fadeInDuration, fadeOutDuration, autoHideTimeInterval;
+@property (nonatomic) CGFloat defaultAlphaValue;
+@property (nonatomic) NSTimeInterval autoHideTimeInterval;
+@property (nonatomic, readonly) NSTimeInterval fadeInDuration, fadeOutDuration;
 @property (nonatomic, retain) NSImage *backgroundImage;
 
 - (void)fadeIn;

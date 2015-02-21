@@ -70,6 +70,8 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
         [self setLevel:NSStatusWindowLevel];
+        [self setDefaultAlphaValue:ALPHA_VALUE];
+        [self setAutoHideTimeInterval:AUTO_HIDE_TIME_INTERVAL];
         
         context = nil;
         point = NSZeroPoint;
@@ -79,10 +81,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     }
     return self;
 }
-
-- (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
-
-- (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)willClose {
     SKDESTROY(context);
