@@ -74,6 +74,7 @@
 #import "NSScreen_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "NSValueTransformer_SKExtensions.h"
+#import "SKAnimatedBorderlessWindow.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://sourceforge.net/p/skim-app/wiki/"
@@ -336,11 +337,30 @@
     return YES;
 }
 
+- (void)showRemoteSwitchIndication {
+    NSTimeInterval timeInterval = [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
+    if (timeInterval > 0.0) {
+        static SKAnimatedBorderlessWindow *remoteStateWindow = nil;
+        if (remoteStateWindow == nil) {
+            NSRect contentRect = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0));
+            remoteStateWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:contentRect];
+            [remoteStateWindow setIgnoresMouseEvents:YES];
+            [remoteStateWindow setDisplaysWhenScreenProfileChanges:NO];
+            [remoteStateWindow setLevel:NSStatusWindowLevel];
+            [remoteStateWindow setDefaultAlphaValue:0.95];
+            [remoteStateWindow setAutoHideTimeInterval:timeInterval];
+        }
+        [remoteStateWindow center];
+        [remoteStateWindow setBackgroundImage:[NSImage imageNamed:remoteScrolling ? SKImageNameRemoteStateScroll : SKImageNameRemoteStateResize]];
+        [remoteStateWindow orderFrontRegardless];
+    }
+}
+
 - (void)hidRemote:(HIDRemote *)hidRemote eventWithButton:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed fromHardwareWithAttributes:(NSMutableDictionary *)attributes {
     if (isPressed) {
         if (buttonCode == kHIDRemoteButtonCodeMenu) {
             remoteScrolling = !remoteScrolling;
-            [SKRemoteStateWindow showWithType:remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize];
+            [self showRemoteSwitchIndication];
         } else {
             NSEvent *theEvent = [NSEvent otherEventWithType:NSApplicationDefined
                                                    location:NSZeroPoint

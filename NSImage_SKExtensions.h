@@ -148,6 +148,9 @@ extern NSString *SKImageNameStrikeOutNoteCursor;
 extern NSString *SKImageNameLineNoteCursor;
 extern NSString *SKImageNameInkNoteCursor;
 
+extern NSString *SKImageNameRemoteStateResize;
+extern NSString *SKImageNameRemoteStateScroll;
+
 @interface NSImage (SKExtensions)
 
 + (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
