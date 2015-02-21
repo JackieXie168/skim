@@ -151,6 +151,9 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 NSString *SKImageNameOpenHandBarCursor = @"OpenHandBarCursor";
 NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
 
+NSString *SKImageNameRemoteStateResize = @"RemoteStateResize";
+NSString *SKImageNameRemoteStateScroll = @"RemoteStateScroll";
+
 static void drawTextNote();
 static void drawAnchoredNote();
 static void drawCircleNote();
@@ -1786,6 +1789,96 @@ macro(Ink)
     
 }
 
++ (void)makeRemoteStateImages {
+    
+    MAKE_IMAGE(SKImageNameRemoteStateResize, NO, 60.0, 60.0, 
+        NSPoint center = NSMakePoint(30.0, 30.0);
+        
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+        
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
+        [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 24.0, 24.0)]];
+        
+        NSBezierPath *arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMinX(rect) + 10.0, NSMinY(rect) + 10.0)];
+        [arrow relativeLineToPoint:NSMakePoint(6.0, 0.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, 2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(0.0, 6.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-6.0, 0.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+        [arrow closePath];
+        
+        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        [transform translateXBy:center.x yBy:center.y];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-center.x yBy:-center.y];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMinX(rect) + 5.0, NSMidY(rect))];
+        [arrow relativeLineToPoint:NSMakePoint(10.0, 5.0)];
+        [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
+        [arrow closePath];
+        [path appendBezierPath:arrow];
+        [transform translateXBy:center.x yBy:center.y];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-center.x yBy:-center.y];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        [path setWindingRule:NSEvenOddWindingRule];
+        
+        [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameRemoteStateScroll, NO, 60.0, 60.0, 
+        NSPoint center = NSMakePoint(30.0, 30.0);
+        
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+        
+        NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 8.0, 8.0)];
+        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 9.0, 9.0)]];
+        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 25.0, 25.0)]];
+        
+        NSBezierPath *arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) + 12.0)];
+        [arrow relativeLineToPoint:NSMakePoint(7.0, 7.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-14.0, 0.0)];
+        [arrow closePath];
+        
+        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        [transform translateXBy:center.x yBy:center.y];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-center.x yBy:-center.y];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        [path setWindingRule:NSEvenOddWindingRule];
+        
+        [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+        [path fill];
+    );
+    
+}
+
 + (void)makeImages {
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [self makeNoteTemplateImages];
@@ -1798,6 +1891,7 @@ macro(Ink)
     [self makeAdornImages];
     [self makeTextAlignImages];
     [self makeCursorImages];
+    [self makeRemoteStateImages];
 }
 
 @end
