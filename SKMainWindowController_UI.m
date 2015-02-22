@@ -258,13 +258,20 @@
         NSScreen *screen = [[self window] screen];
         [[self window] setFrame:[screen frame] display:NO];
         if ([self interactionMode] == SKFullScreenMode) {
+            NSDrawerState state;
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
+                state = [leftSideWindow state];
                 [leftSideWindow remove];
                 [leftSideWindow attachToWindow:[self window]];
+                if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+                    [leftSideWindow slideIn];
             }
             if ([[rightSideWindow screen] isEqual:screen] == NO) {
+                state = [rightSideWindow state];
                 [rightSideWindow remove];
                 [rightSideWindow attachToWindow:[self window]];
+                if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+                    [rightSideWindow slideIn];
             }
         }
         [pdfView layoutDocumentView];
