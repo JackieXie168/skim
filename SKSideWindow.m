@@ -86,6 +86,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
+        [self setAlphaValue:0.0];
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
@@ -128,12 +129,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     frame = SKSliceRect([[window screen] frame], WINDOW_OFFSET, edge);
     [self setFrame:NSInsetRect(frame, 0.0, WINDOW_INSET) display:NO];
     state = NSDrawerClosedState;
-    if (hideWhenClosed != SKClosedSidePanelCollapse)
-        [self setAlphaValue:0.0];
     [self setAcceptsMouseOver:YES];
     [self setLevel:[window level]];
     [self orderFront:nil];
     [window addChildWindow:self ordered:NSWindowAbove];
+    if (hideWhenClosed == SKClosedSidePanelCollapse && [self alphaValue] < 0.1)
+        [([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? self : [self animator]) setAlphaValue:1.0];
 }
 
 - (void)remove {
