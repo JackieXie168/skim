@@ -1453,12 +1453,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     SKMainFullScreenWindow *fullScreenWindow = (SKMainFullScreenWindow *)[[[self window] retain] autorelease];
     
     [self setWindow:mainWindow];
+    [mainWindow setAlphaValue:0.0];
     // trick to make sure the main window shows up in the same space as the fullscreen window
     [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
     [fullScreenWindow removeChildWindow:mainWindow];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     // these can change due to the child window trick
     [mainWindow setLevel:NSNormalWindowLevel];
+    [mainWindow setAlphaValue:1.0];
     [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
     [mainWindow display];
     [mainWindow makeFirstResponder:pdfView];
