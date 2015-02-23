@@ -1339,6 +1339,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
             [leftSideWindow makeFirstResponder:nil];
         addSideSubview(leftSideController.view, leftSideContentView, mwcFlags.usesDrawers);
         
+        if ([self interactionMode] == SKPresentationMode)
+            [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
+        
         SKDESTROY(leftSideWindow);
     }
 }
