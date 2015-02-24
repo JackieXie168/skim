@@ -63,6 +63,7 @@
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
         NSImageView *imageView = [[NSImageView alloc] init];
+        [imageView setEditable:NO];
         [imageView setImageFrameStyle:NSImageFrameNone];
         [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
         [self setContentView:imageView];
@@ -165,11 +166,12 @@
 }
 
 - (NSImage *)backgroundImage {
-    return [(NSImageView *)[self contentView] image];
+    return [[self contentView] respondsToSelector:@selector(image)] ? [(NSImageView *)[self contentView] image] : nil;
 }
 
 - (void)setBackgroundImage:(NSImage *)newBackgroundImage {
-    return [(NSImageView *)[self contentView] setImage:newBackgroundImage];
+    if ([[self contentView] respondsToSelector:@selector(setImage:)])
+        [(NSImageView *)[self contentView] setImage:newBackgroundImage];
 }
 
 @end
