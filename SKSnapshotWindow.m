@@ -89,7 +89,7 @@
         [self orderOut:nil];
         [self setFrameOrigin:frame.origin];
     }
-    NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:NSZeroSize];
+    NSImage *image = [[NSImage alloc] initWithCGImage:cgImage size:frame.size];
     CGImageRelease(cgImage);
     return [image autorelease];
 }
