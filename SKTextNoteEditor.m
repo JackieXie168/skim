@@ -206,6 +206,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
         [self commitEditing];
         return YES;
+    } else if (command == @selector(cancelOperation:)) {
+        [self discardEditing];
+        return YES;
     }
     return NO;
 }
