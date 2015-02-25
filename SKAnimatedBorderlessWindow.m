@@ -86,8 +86,6 @@
 
 - (BOOL)accessibilityIsIgnored { return YES; }
 
-- (void)willClose {}
-
 - (NSTimeInterval)fadeInDuration { return FADE_IN_DURATION; }
 
 - (NSTimeInterval)fadeOutDuration { return FADE_OUT_DURATION; }
@@ -118,7 +116,6 @@
 
 - (void)orderOut:(id)sender {
     [self stopAnimation];
-    [self willClose];
     [super orderOut:sender];
     [self setAlphaValue:[self defaultAlphaValue]];
 }
@@ -131,7 +128,6 @@
     [self stopAnimation];
     
     [self setAlphaValue:[self defaultAlphaValue]];
-    [self willClose];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self remove];

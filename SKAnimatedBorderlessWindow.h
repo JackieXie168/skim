@@ -46,8 +46,6 @@
 
 - (id)initWithContentRect:(NSRect)contentRect;
 
-- (void)willClose;
-
 @property (nonatomic) CGFloat defaultAlphaValue;
 @property (nonatomic) NSTimeInterval autoHideTimeInterval;
 @property (nonatomic, readonly) NSTimeInterval fadeInDuration, fadeOutDuration;

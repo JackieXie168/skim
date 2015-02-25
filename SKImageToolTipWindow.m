@@ -82,9 +82,16 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     return self;
 }
 
-- (void)willClose {
+- (void)orderOut:(id)sender {
     SKDESTROY(context);
     point = NSZeroPoint;
+    [super orderOut:sender];
+}
+
+- (void)fadeOut {
+    SKDESTROY(context);
+    point = NSZeroPoint;
+    [super fadeOut];
 }
 
 - (void)showDelayed {
