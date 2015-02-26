@@ -42,19 +42,16 @@
 
 @interface SKFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
     NSViewAnimation *animation;
+    BOOL isMain;
 }
 
-- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level;
+- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level isMain:(BOOL)flag;
 
 - (void)fadeOutBlocking;
 - (void)fadeOut;
 - (void)fadeInBlocking;
 - (void)fadeIn;
 
-@end
-
-
-@interface SKMainFullScreenWindow : SKFullScreenWindow
 @end
 
 
