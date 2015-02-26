@@ -1405,7 +1405,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([[mainWindow firstResponder] isDescendantOf:pdfSplitView])
         [mainWindow makeFirstResponder:nil];
     
-    SKMainFullScreenWindow *fullScreenWindow = [[SKMainFullScreenWindow alloc] initWithScreen:[mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel];
+    SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:[mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel isMain:YES];
     
     [mainWindow setDelegate:nil];
     [fullScreenWindow fadeInBlocking];
@@ -1419,8 +1419,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)fadeInFullScreenView:(NSView *)view inset:(CGFloat)inset {
-    SKMainFullScreenWindow *fullScreenWindow = (SKMainFullScreenWindow *)[self window];
-    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level]];
+    SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
+    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
     [view setFrame:NSInsetRect([[fadeWindow contentView] bounds], inset, 0.0)];
     [[fadeWindow contentView] addSubview:view];
@@ -1439,8 +1439,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)fadeOutFullScreenView:(NSView *)view {
-    SKMainFullScreenWindow *fullScreenWindow = (SKMainFullScreenWindow *)[self window];
-    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level]];
+    SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
+    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
     [[fadeWindow contentView] addSubview:view];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
@@ -1453,7 +1453,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)fadeOutFullScreenWindow {
-    SKMainFullScreenWindow *fullScreenWindow = (SKMainFullScreenWindow *)[[[self window] retain] autorelease];
+    SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
     
     [self setWindow:mainWindow];
     [mainWindow setAlphaValue:0.0];
@@ -1482,7 +1482,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         NSColor *backgroundColor = [[self window] backgroundColor];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
-                SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel];
+                SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel isMain:NO];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
                 [aWindow setHidesOnDeactivate:YES];
                 [aWindow fadeIn];

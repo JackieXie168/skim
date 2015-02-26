@@ -43,14 +43,17 @@
 
 @implementation SKFullScreenWindow
 
-- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
+- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level isMain:(BOOL)flag {
     NSRect screenFrame = [(screen ?: [NSScreen mainScreen]) frame];
     self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
+        isMain = flag;
         [self setBackgroundColor:backgroundColor];
         [self setLevel:level];
         [self setReleasedWhenClosed:NO];
-        [self setExcludedFromWindowsMenu:YES];
+        [self setDisplaysWhenScreenProfileChanges:isMain];
+        [self setAcceptsMouseMovedEvents:isMain];
+        [self setExcludedFromWindowsMenu:isMain == NO];
         // appartently this is needed for secondary screens
         [self setFrame:screenFrame display:NO];
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
@@ -69,9 +72,9 @@
     [super dealloc];
 }
 
-- (BOOL)canBecomeKeyWindow { return NO; }
+- (BOOL)canBecomeKeyWindow { return isMain; }
 
-- (BOOL)canBecomeMainWindow { return NO; }
+- (BOOL)canBecomeMainWindow { return isMain; }
 
 - (void)orderFront:(id)sender {
     [self stopAnimation];
@@ -153,24 +156,6 @@
     [self orderOut:nil];
     [self setAlphaValue:1.0];
 }
-
-@end
-
-@implementation SKMainFullScreenWindow
-
-- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
-    self = [super initWithScreen:screen backgroundColor:backgroundColor level:level];
-    if (self) {
-        [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setAcceptsMouseMovedEvents:YES];
-        [self setExcludedFromWindowsMenu:NO];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeKeyWindow { return YES; }
-
-- (BOOL)canBecomeMainWindow { return YES; }
 
 - (void)sendEvent:(NSEvent *)theEvent {
     if ([theEvent type] == NSRightMouseDown || ([theEvent type] == NSLeftMouseDown && ([theEvent modifierFlags] & NSControlKeyMask))) {
