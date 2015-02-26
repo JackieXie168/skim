@@ -37,6 +37,7 @@
  */
 
 #import "NSMenu_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 
 @implementation NSMenu (SKExtensions)
@@ -141,10 +142,10 @@
     if (NSEqualSizes(srcSize, dstSize)) {
         [self setImage:image];
     } else {
-        NSImage *newImage = [image copy];
-        [newImage setSize:dstSize];
+        NSImage *newImage = [NSImage bitmapImageWithSize:dstSize drawingHandler:^(NSRect rect, CGFloat scale) {
+            [image drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        }];
         [self setImage:newImage];
-        [newImage release];
     }
 }
         
