@@ -245,7 +245,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (BOOL)hasTransition {
-    return transitionStyle != SKNoTransition && pageTransitions != nil;
+    return transitionStyle != SKNoTransition || pageTransitions != nil;
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {
