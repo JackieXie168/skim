@@ -43,6 +43,7 @@
 
 #import "SKTransitionController.h"
 #import "NSBitmapImageRep_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 #import <CoreFoundation/CoreFoundation.h>
 #import <Quartz/Quartz.h>
 #include <unistd.h>
@@ -137,14 +138,20 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
+@interface NSOpenGLView (SKMountainLionExtensions)
+- (void)setWantsBestResolutionOpenGLSurface:(BOOL)flag;
+@end
+
 @interface SKTransitionView : NSOpenGLView <SKTransitionAnimationDelegate> {
     SKTransitionAnimation *animation;
     CIImage *image;
+    CGFloat imageScale;
     CIContext *context;
     BOOL needsReshape;
 }
 @property (nonatomic, retain) SKTransitionAnimation *animation;
 @property (nonatomic, retain) CIImage *image;
+@property (nonatomic) CGFloat imageScale;
 @property (nonatomic, readonly) CIImage *currentImage;
 @end
 
@@ -220,6 +227,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     [window setReleasedWhenClosed:NO];
     [window setIgnoresMouseEvents:YES];
     [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
+    if ([[window contentView] respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+        [(NSOpenGLView *)[window contentView] setWantsBestResolutionOpenGLSurface:YES];
     
     if ((self = [self initWithWindow:window])) {
         view = aView; // don't retain as it may retain us
@@ -278,6 +287,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return inputMaskImage;
 }
 
+// rect is in pixels
 - (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
     CIFilter *cropFilter = [self filterWithName:@"CICrop"];
     [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:kCIInputRectangleKey];
@@ -285,6 +295,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [cropFilter valueForKey:kCIOutputImageKey];
 }
 
+// dx and dy are in pixels
 - (CIImage *)translateImage:(CIImage *)image xBy:(CGFloat)dx yBy:(CGFloat)dy {
     CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
     NSAffineTransform *affineTransform = [NSAffineTransform transform];
@@ -294,6 +305,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [translationFilter valueForKey:kCIOutputImageKey];
 }
 
+// size is in pixels
 - (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
     CIFilter *scalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
     CGRect extent = [image extent];
@@ -305,11 +317,17 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [scalingFilter valueForKey:kCIOutputImageKey];
 }
 
+static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
+    return NSMakeRect(scale * NSMinX(rect), scale * NSMinY(rect), scale * NSWidth(rect), scale * NSHeight(rect));
+}
+
 - (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:currentTransitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
     
-    NSRect bounds = [view bounds];
+    CGFloat scale = [view backingScale];
+    NSRect bounds = scaleRect([view bounds], scale);
+    rect = scaleRect(rect, scale);
     
     for (NSString *key in [transitionFilter inputKeys]) {
         id value = nil;
@@ -404,20 +422,25 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         if (initialImage == nil)
             [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
         
+        CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
+        
         NSRect bounds = [view bounds];
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
         
         finalImage = [self newCurrentImage];
         
-        CGFloat dx = NSMinX(bounds) - NSMinX(imageRect);
-        CGFloat dy = NSMinY(bounds) - NSMinY(imageRect);
-        initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
-        finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
+        CGFloat scale = [view backingScale];
+        NSRect r = scaleRect(rect, scale);
+        CGFloat dx = scale * (NSMinX(bounds) - NSMinX(imageRect));
+        CGFloat dy = scale * (NSMinY(bounds) - NSMinY(imageRect));
+        initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:r] xBy:dx yBy:dy];
+        finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:r] xBy:dx yBy:dy];
         
         NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
         [[self transitionView] setImage:initialImage];
+        [[self transitionView] setImageScale:imageScale];
         initialImage = nil;
         
         [[self window] setFrame:frame display:YES];
@@ -470,6 +493,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     if (initialImage == nil)
         [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
     
+    CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
+    
     NSRect bounds = [view bounds];
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
     
@@ -486,6 +511,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     
     SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
     [[self transitionView] setAnimation:animation];
+    [[self transitionView] setImageScale:imageScale];
     [animation release];
     
     [[self window] setFrame:frame display:NO];
@@ -557,7 +583,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 @implementation SKTransitionView
 
-@synthesize animation, image;
+@synthesize animation, image, imageScale;
 @dynamic currentImage;
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
@@ -567,7 +593,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         NSOpenGLPixelFormatAttribute attr[] = {
             NSOpenGLPFAAccelerated,
             NSOpenGLPFANoRecovery,
-            NSOpenGLPFAColorSize, 32,
+            NSOpenGLPFAColorSize,
+            32,
             0
         };
         
@@ -575,6 +602,22 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     }
 
     return pf;
+}
+
+- (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format {
+    self = [super initWithFrame:frameRect pixelFormat:format];
+    if (self) {
+        imageScale = 1.0;
+    }
+    return self;
+}
+
+- (id)initWithFrame:(NSRect)frameRect {
+    self = [super initWithFrame:frameRect];
+    if (self) {
+        imageScale = 1.0;
+    }
+    return self;
 }
 
 - (void)dealloc {
@@ -648,14 +691,15 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)updateMatrices {
     NSRect bounds = [self bounds];
+    CGFloat scale = [self backingScale];
     
     [[self openGLContext] update];
     
-    glViewport(0, 0, NSWidth(bounds), NSHeight(bounds));
+    glViewport(0, 0, scale * NSWidth(bounds), scale * NSHeight(bounds));
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
+    glOrtho(NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -664,6 +708,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)drawRect:(NSRect)rect {
+    CGFloat scale = [self backingScale];
     
     [[self openGLContext] makeCurrentContext];
     
@@ -672,16 +717,16 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     
     glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
     glBegin(GL_POLYGON);
-        glVertex2f(NSMinX(rect), NSMinY(rect));
-        glVertex2f(NSMaxX(rect), NSMinY(rect));
-        glVertex2f(NSMaxX(rect), NSMaxY(rect));
-        glVertex2f(NSMinX(rect), NSMaxY(rect));
+        glVertex2f(scale * NSMinX(rect), scale * NSMinY(rect));
+        glVertex2f(scale * NSMaxX(rect), scale * NSMinY(rect));
+        glVertex2f(scale * NSMaxX(rect), scale * NSMaxY(rect));
+        glVertex2f(scale * NSMinX(rect), scale * NSMaxY(rect));
     glEnd();
     
     CIImage *currentImage = [self currentImage];
     if (currentImage) {
         NSRect bounds = [self bounds];
-        [[self ciContext] drawImage:currentImage inRect:NSRectToCGRect(bounds) fromRect:NSRectToCGRect(bounds)];
+        [[self ciContext] drawImage:currentImage inRect:NSRectToCGRect(bounds) fromRect:scaleRect(NSRectToCGRect(bounds), imageScale)];
     }
     
     glFlush();
