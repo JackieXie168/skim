@@ -726,7 +726,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     CIImage *currentImage = [self currentImage];
     if (currentImage) {
         NSRect bounds = [self bounds];
-        [[self ciContext] drawImage:currentImage inRect:NSRectToCGRect(bounds) fromRect:scaleRect(NSRectToCGRect(bounds), imageScale)];
+        [[self ciContext] drawImage:currentImage inRect:scaleRect(NSRectToCGRect(bounds), scale) fromRect:scaleRect(NSRectToCGRect(bounds), imageScale)];
     }
     
     glFlush();
