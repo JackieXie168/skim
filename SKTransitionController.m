@@ -321,13 +321,10 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     return NSMakeRect(scale * NSMinX(rect), scale * NSMinY(rect), scale * NSWidth(rect), scale * NSHeight(rect));
 }
 
-- (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+// rect and bounds are in pixels
+- (CIFilter *)transitionFilterForRect:(NSRect)rect bounds:(NSRect)bounds forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:currentTransitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
-    
-    CGFloat scale = [view backingScale];
-    NSRect bounds = scaleRect([view bounds], scale);
-    rect = scaleRect(rect, scale);
     
     for (NSString *key in [transitionFilter inputKeys]) {
         id value = nil;
@@ -429,10 +426,9 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
         
         finalImage = [self newCurrentImage];
         
-        CGFloat scale = [view backingScale];
-        NSRect r = scaleRect(rect, scale);
-        CGFloat dx = scale * (NSMinX(bounds) - NSMinX(imageRect));
-        CGFloat dy = scale * (NSMinY(bounds) - NSMinY(imageRect));
+        NSRect r = scaleRect(rect, imageScale);
+        CGFloat dx = imageScale * (NSMinX(bounds) - NSMinX(imageRect));
+        CGFloat dy = imageScale * (NSMinY(bounds) - NSMinY(imageRect));
         initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:r] xBy:dx yBy:dy];
         finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:r] xBy:dx yBy:dy];
         
@@ -500,7 +496,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     
     CIImage *finalImage = [self newCurrentImage];
     
-    CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
+    CIFilter *transitionFilter = [self transitionFilterForRect:scaleRect(imageRect, imageScale) bounds:scaleRect(bounds, imageScale) forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
     
     [finalImage release];
     [initialImage release];
