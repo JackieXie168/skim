@@ -410,15 +410,13 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
         [[view window] disableFlushWindow];
     }
     imageRect = rect;
+    didPrepare = YES;
 }
 
 - (void)animateCoreGraphicsForRect:(NSRect)rect {
     CIImage *finalImage = nil;
     
     if (currentShouldRestrict) {
-        if (initialImage == nil)
-            [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
-        
         CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
         
         NSRect bounds = [view bounds];
@@ -486,9 +484,6 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)animateCoreImageForRect:(NSRect)rect  {
-    if (initialImage == nil)
-        [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
-    
     CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
     
     NSRect bounds = [view bounds];
@@ -528,7 +523,10 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)animateForRect:(NSRect)rect  {
-	if (currentTransitionStyle >= SKCoreImageTransition)
+    if (didPrepare == NO)
+        [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
+	
+    if (currentTransitionStyle >= SKCoreImageTransition)
         [self animateCoreImageForRect:rect];
 	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
         [self animateCoreGraphicsForRect:rect];
@@ -537,6 +535,8 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     currentDuration = duration;
     currentShouldRestrict = shouldRestrict;
     currentForward = YES;
+    
+    didPrepare = NO;
 }
 
 @end
