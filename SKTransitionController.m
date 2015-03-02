@@ -138,7 +138,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@interface NSOpenGLView (SKMountainLionExtensions)
+@interface NSOpenGLView (SKLionExtensions)
+- (BOOL)wantsBestResolutionOpenGLSurface;
 - (void)setWantsBestResolutionOpenGLSurface:(BOOL)flag;
 @end
 
@@ -227,10 +228,9 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     [window setReleasedWhenClosed:NO];
     [window setIgnoresMouseEvents:YES];
     [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
-    if ([[window contentView] respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
-        [(NSOpenGLView *)[window contentView] setWantsBestResolutionOpenGLSurface:YES];
     
-    if ((self = [self initWithWindow:window])) {
+    self = [self initWithWindow:window];
+    if (self) {
         view = aView; // don't retain as it may retain us
         
         transitionStyle = SKNoTransition;
@@ -608,6 +608,8 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     self = [super initWithFrame:frameRect pixelFormat:format];
     if (self) {
         imageScale = 1.0;
+        if ([self respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+            [self setWantsBestResolutionOpenGLSurface:YES];
     }
     return self;
 }
@@ -616,6 +618,8 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     self = [super initWithFrame:frameRect];
     if (self) {
         imageScale = 1.0;
+        if ([self respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+            [self setWantsBestResolutionOpenGLSurface:YES];
     }
     return self;
 }
@@ -691,7 +695,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
 
 - (void)updateMatrices {
     NSRect bounds = [self bounds];
-    CGFloat scale = [self backingScale];
+    CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
     
     [[self openGLContext] update];
     
@@ -708,7 +712,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)drawRect:(NSRect)rect {
-    CGFloat scale = [self backingScale];
+    CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
     
     [[self openGLContext] makeCurrentContext];
     
