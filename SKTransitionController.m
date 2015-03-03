@@ -270,9 +270,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (CIImage *)inputShadingImage {
     static CIImage *inputShadingImage = nil;
     if (inputShadingImage == nil) {
-        NSData *shadingBitmapData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionShading" withExtension:@"tiff"]];
-        NSBitmapImageRep *shadingBitmap = [[[NSBitmapImageRep alloc] initWithData:shadingBitmapData] autorelease];
-        inputShadingImage = [[CIImage alloc] initWithBitmapImageRep:shadingBitmap];
+        inputShadingImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionShading" withExtension:@"tiff"]];
     }
     return inputShadingImage;
 }
@@ -280,9 +278,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (CIImage *)inputMaskImage {
     static CIImage *inputMaskImage = nil;
     if (inputMaskImage == nil) {
-        NSData *maskBitmapData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionMask" withExtension:@"jpg"]];
-        NSBitmapImageRep *maskBitmap = [[[NSBitmapImageRep alloc] initWithData:maskBitmapData] autorelease];
-        inputMaskImage = [[CIImage alloc] initWithBitmapImageRep:maskBitmap];
+        inputMaskImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionMask" withExtension:@"jpg"]];
     }
     return inputMaskImage;
 }
