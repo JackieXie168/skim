@@ -291,26 +291,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [cropFilter valueForKey:kCIOutputImageKey];
 }
 
-// dx and dy are in pixels
-- (CIImage *)translateImage:(CIImage *)image xBy:(CGFloat)dx yBy:(CGFloat)dy {
+// transform is in pixel dimensions
+- (CIImage *)transformImage:(CIImage *)image usingTransform:(NSAffineTransform *)affineTransform {
     CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
-    NSAffineTransform *affineTransform = [NSAffineTransform transform];
-    [affineTransform translateXBy:dx yBy:dy];
     [translationFilter setValue:affineTransform forKey:kCIInputTransformKey];
     [translationFilter setValue:image forKey:kCIInputImageKey];
     return [translationFilter valueForKey:kCIOutputImageKey];
-}
-
-// size is in pixels
-- (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
-    CIFilter *scalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
-    CGRect extent = [image extent];
-    CGFloat xScale = size.width / CGRectGetWidth(extent);
-    CGFloat yScale = size.height / CGRectGetHeight(extent);
-    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:kCIInputScaleKey];
-    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:kCIInputAspectRatioKey];
-    [scalingFilter setValue:image forKey:kCIInputImageKey];
-    return [scalingFilter valueForKey:kCIOutputImageKey];
 }
 
 static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
@@ -350,9 +336,18 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
                 value = [self cropImage:value toRect:rect];
         } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
             // Scale and translate our mask image to match the transition area size.
-            value = [self scaleImage:[self inputMaskImage] toSize:rect.size];
-            if (NSEqualPoints(rect.origin, bounds.origin) == NO)
-                value = [self translateImage:value xBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
+            CIImage *maskImage = [self inputMaskImage];
+            CGRect extent = [maskImage extent];
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            if ((CGRectGetWidth(extent) < CGRectGetHeight(extent)) != (NSWidth(rect) < NSHeight(rect))) {
+                [transform setTransformStruct:(NSAffineTransformStruct){0.0, 1.0, 1.0, 0.0, 0.0, 0.0}];
+                [transform translateXBy:NSMinY(rect) - NSMinY(bounds) yBy:NSMinX(rect) - NSMinX(bounds)];
+                [transform scaleXBy:NSHeight(rect) / CGRectGetWidth(extent) yBy:NSWidth(rect) / CGRectGetHeight(extent)];
+            } else {
+                [transform translateXBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
+                [transform scaleXBy:NSWidth(rect) / CGRectGetWidth(extent) yBy:NSHeight(rect) / CGRectGetHeight(extent)];
+            }
+            value = [self transformImage:maskImage usingTransform:transform];
         } else continue;
         [transitionFilter setValue:value forKey:key];
     }
@@ -421,10 +416,10 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
         finalImage = [self newCurrentImage];
         
         NSRect r = scaleRect(imageRect, imageScale);
-        CGFloat dx = imageScale * (NSMinX(bounds) - NSMinX(imageRect));
-        CGFloat dy = imageScale * (NSMinY(bounds) - NSMinY(imageRect));
-        initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:r] xBy:dx yBy:dy];
-        finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:r] xBy:dx yBy:dy];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform translateXBy:imageScale * (NSMinX(bounds) - NSMinX(imageRect)) yBy:imageScale * (NSMinY(bounds) - NSMinY(imageRect))];
+        initialImage = [self transformImage:[self cropImage:[initialImage autorelease] toRect:r] usingTransform:transform];
+        finalImage = [self transformImage:[self cropImage:[finalImage autorelease] toRect:r] usingTransform:transform];
         
         NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
