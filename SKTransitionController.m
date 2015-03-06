@@ -420,7 +420,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
         
         finalImage = [self newCurrentImage];
         
-        NSRect r = scaleRect(rect, imageScale);
+        NSRect r = scaleRect(imageRect, imageScale);
         CGFloat dx = imageScale * (NSMinX(bounds) - NSMinX(imageRect));
         CGFloat dy = imageScale * (NSMinY(bounds) - NSMinY(imageRect));
         initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:r] xBy:dx yBy:dy];
