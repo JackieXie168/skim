@@ -90,7 +90,6 @@ typedef NSUInteger SKAnimationTransitionStyle;
 @property (nonatomic, copy) NSArray *pageTransitions;
 @property (nonatomic) BOOL hasTransition;
 
-+ (NSArray *)transitionFilterNames;
 + (NSArray *)transitionNames;
 
 + (NSString *)nameForStyle:(SKAnimationTransitionStyle)style;

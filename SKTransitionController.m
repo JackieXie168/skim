@@ -163,23 +163,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @synthesize view, transitionStyle, duration, shouldRestrict, pageTransitions;
 @dynamic hasTransition;
 
-+ (NSArray *)transitionFilterNames {
-    static NSArray *transitionFilterNames = nil;
-    
-    if (transitionFilterNames == nil) {
-        // get all the transition filters
-		[CIPlugIn loadAllPlugIns];
-        transitionFilterNames = [[CIFilter filterNamesInCategories:[NSArray arrayWithObject:kCICategoryTransition]] copy];
-    }
-    
-    return transitionFilterNames;
-}
-
 + (NSArray *)transitionNames {
     static NSArray *transitionNames = nil;
     
     if (transitionNames == nil) {
         transitionNames = [NSArray arrayWithObjects:
+            @"", 
             @"CoreGraphics SKFadeTransition", 
             @"CoreGraphics SKZoomTransition", 
             @"CoreGraphics SKRevealTransition", 
@@ -189,22 +178,24 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             @"CoreGraphics SKCubeTransition", 
             @"CoreGraphics SKWarpSwitchTransition", 
             @"CoreGraphics SKWarpFlipTransition", nil];
-        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[self transitionFilterNames]] copy];
+        // get all the transition filters
+		[CIPlugIn loadAllPlugIns];
+        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategories:[NSArray arrayWithObject:kCICategoryTransition]]] copy];
     }
     
     return transitionNames;
 }
 
 + (NSString *)nameForStyle:(SKAnimationTransitionStyle)style {
-    if (style > SKNoTransition && style <= [[self transitionNames] count])
-        return [[self transitionNames] objectAtIndex:style - 1];
+    if (style > SKNoTransition && style < [[self transitionNames] count])
+        return [[self transitionNames] objectAtIndex:style];
     else
         return nil;
 }
 
 + (SKAnimationTransitionStyle)styleForName:(NSString *)name {
     NSUInteger idx = [[self transitionNames] indexOfObject:name];
-    return idx == NSNotFound ? SKNoTransition : idx + 1;
+    return idx == NSNotFound ? SKNoTransition : idx;
 }
 
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
@@ -301,7 +292,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
 
 // rect and bounds are in pixels
 - (CIFilter *)transitionFilterForRect:(NSRect)rect bounds:(NSRect)bounds forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
-    NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:currentTransitionStyle - SKCoreImageTransition];
+    NSString *filterName = [[self class] nameForStyle:currentTransitionStyle];
     CIFilter *transitionFilter = [self filterWithName:filterName];
     
     for (NSString *key in [transitionFilter inputKeys]) {

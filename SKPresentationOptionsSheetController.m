@@ -136,7 +136,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (void)windowDidLoad {
     // add the filter names to the popup
-    NSUInteger i, count = 1 + [[SKTransitionController transitionNames] count];
+    NSUInteger i, count = [[SKTransitionController transitionNames] count];
     
     NSPopUpButton *transitionStylePopUpButton = [transitionControls objectAtIndex:0];
     [transitionStylePopUpButton removeAllItems];
