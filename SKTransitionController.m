@@ -224,12 +224,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (id)initForView:(NSView *)aView {
-    NSWindow *window = [[[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO] autorelease];
-    [window setReleasedWhenClosed:NO];
-    [window setIgnoresMouseEvents:YES];
-    [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
-    
-    self = [self initWithWindow:window];
+    self = [super init];
     if (self) {
         view = aView; // don't retain as it may retain us
         
@@ -247,6 +242,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)dealloc {
     view = nil;
+    SKDESTROY(window);
     SKDESTROY(initialImage);
     SKDESTROY(filters);
     SKDESTROY(pageTransitions);
@@ -363,6 +359,16 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     [view cacheDisplayInRect:bounds toBitmapImageRep:contentBitmap];
     
     return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+}
+
+- (NSWindow *)window {
+    if (window == nil) {
+        window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [window setReleasedWhenClosed:NO];
+        [window setIgnoresMouseEvents:YES];
+        [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
+    }
+    return window;
 }
 
 - (SKTransitionView *)transitionView {
