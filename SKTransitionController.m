@@ -254,22 +254,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return filter;
 }
 
-- (CIImage *)inputShadingImage {
-    static CIImage *inputShadingImage = nil;
-    if (inputShadingImage == nil) {
-        inputShadingImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionShading" withExtension:@"tiff"]];
-    }
-    return inputShadingImage;
-}
-
-- (CIImage *)inputMaskImage {
-    static CIImage *inputMaskImage = nil;
-    if (inputMaskImage == nil) {
-        inputMaskImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionMask" withExtension:@"jpg"]];
-    }
-    return inputMaskImage;
-}
-
 // rect is in pixels
 - (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
     CIFilter *cropFilter = [self filterWithName:@"CICrop"];
@@ -316,15 +300,20 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
             if (NSEqualRects(rect, bounds) == NO)
                 value = [self cropImage:value toRect:rect];
         } else if ([key isEqualToString:kCIInputShadingImageKey]) {
-            value = [self inputShadingImage];
+            static CIImage *inputShadingImage = nil;
+            if (inputShadingImage == nil)
+                inputShadingImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionShading" withExtension:@"tiff"]];
+            value = inputShadingImage;
         } else if ([key isEqualToString:kCIInputBacksideImageKey]) {
             value = initialCIImage;
             if (NSEqualRects(rect, bounds) == NO)
                 value = [self cropImage:value toRect:rect];
         } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
             // Scale and translate our mask image to match the transition area size.
-            CIImage *maskImage = [self inputMaskImage];
-            CGRect extent = [maskImage extent];
+            static CIImage *inputMaskImage = nil;
+            if (inputMaskImage == nil)
+                inputMaskImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionMask" withExtension:@"jpg"]];
+            CGRect extent = [inputMaskImage extent];
             NSAffineTransform *transform = [NSAffineTransform transform];
             if ((CGRectGetWidth(extent) < CGRectGetHeight(extent)) != (NSWidth(rect) < NSHeight(rect))) {
                 [transform setTransformStruct:(NSAffineTransformStruct){0.0, 1.0, 1.0, 0.0, 0.0, 0.0}];
@@ -334,7 +323,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
                 [transform translateXBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
                 [transform scaleXBy:NSWidth(rect) / CGRectGetWidth(extent) yBy:NSHeight(rect) / CGRectGetHeight(extent)];
             }
-            value = [self transformImage:maskImage usingTransform:transform];
+            value = [self transformImage:inputMaskImage usingTransform:transform];
         } else continue;
         [transitionFilter setValue:value forKey:key];
     }
