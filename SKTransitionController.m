@@ -263,11 +263,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 // transform is in pixel dimensions
-- (CIImage *)transformImage:(CIImage *)image usingTransform:(NSAffineTransform *)affineTransform {
-    CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
-    [translationFilter setValue:affineTransform forKey:kCIInputTransformKey];
-    [translationFilter setValue:image forKey:kCIInputImageKey];
-    return [translationFilter valueForKey:kCIOutputImageKey];
+- (CIImage *)transformImage:(CIImage *)image usingTransform:(NSAffineTransform *)transform {
+    CIFilter *transformFilter = [self filterWithName:@"CIAffineTransform"];
+    [transformFilter setValue:transform forKey:kCIInputTransformKey];
+    [transformFilter setValue:image forKey:kCIInputImageKey];
+    return [transformFilter valueForKey:kCIOutputImageKey];
 }
 
 static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
