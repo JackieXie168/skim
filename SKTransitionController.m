@@ -448,7 +448,7 @@ static inline NSRect scaleRect(NSRect rect, CGFloat scale) {
     
     CGSInvokeTransition(cgs, handle, currentDuration);
     // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-    usleep((useconds_t)(currentDuration * 1000000));
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:currentDuration]];
     
     CGSReleaseTransition(cgs, handle);
     handle = 0;
