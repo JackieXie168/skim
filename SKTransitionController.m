@@ -180,7 +180,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             @"CoreGraphics SKWarpFlipTransition", nil];
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
-        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategories:[NSArray arrayWithObject:kCICategoryTransition]]] copy];
+        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]] copy];
     }
     
     return transitionNames;
