@@ -386,7 +386,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         finalImage = [self newCurrentImage];
         
         CGRect r = scaleRect(imageRect, imageScale);
-        CGAffineTransform transform = CGAffineTransformMakeTranslation(imageScale * (NSMinX(bounds) - NSMinX(imageRect)), imageScale * (NSMinY(bounds) - NSMinY(imageRect)));
+        CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(imageRect), -CGRectGetMinY(imageRect));
         initialImage = [[[initialImage autorelease] imageByCroppingToRect:r] imageByApplyingTransform:transform];
         finalImage = [[[finalImage autorelease] imageByCroppingToRect:r] imageByApplyingTransform:transform];
         
