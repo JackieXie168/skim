@@ -59,7 +59,7 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 
 #if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
-@interface NSUndoManager (SKLionExtensions)
+@interface NSUndoManager (SKLionDeclarations)
 - (void)setActionIsDiscardable:(BOOL)discardable;
 @end
 #endif

@@ -46,9 +46,11 @@
 #import "SKRuntime.h"
 
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 @interface NSScreen (SKLionDeclarations)
 - (CGFloat)backingScaleFactor;
 @end
+#endif
 
 @implementation PDFView (SKExtensions)
 

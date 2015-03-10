@@ -41,9 +41,11 @@
 #import "SKFontWell.h"
 
 
-@interface NSView (SKLionExtensions)
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+@interface NSView (SKLionDeclarations)
 - (NSSize)convertSizeToBacking:(NSSize)size;
 @end
+#endif
 
 @implementation NSView (SKExtensions)
 

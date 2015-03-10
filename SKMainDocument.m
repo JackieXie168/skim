@@ -139,10 +139,11 @@ enum {
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 @end
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 @interface PDFDocument (SKLionDeclarations)
 - (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate;
 @end
-
+#endif
 
 @interface NSDocument (SKPrivateDeclarations)
 // private method used as the action for the file format popup in the save panel, decalred so we can override
