@@ -335,10 +335,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return window;
 }
 
-- (SKTransitionView *)transitionView {
-    return (SKTransitionView *)[[self window] contentView];
-}
-
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
@@ -376,11 +372,14 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 - (void)animateCoreGraphicsForRect:(NSRect)rect {
     CIImage *finalImage = nil;
+    NSWindow *viewWindow = [view window];
+    NSWindow *transitionWindow = nil;
+    SKTransitionView *transitionView = nil;
     
     if (currentShouldRestrict) {
-        CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
-        
         NSRect bounds = [view bounds];
+        CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
+        
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
         
         finalImage = [self newCurrentImage];
@@ -391,15 +390,17 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         finalImage = [[[finalImage autorelease] imageByCroppingToRect:r] imageByApplyingTransform:transform];
         
         NSRect frame = [view convertRect:imageRect toView:nil];
-        frame.origin = [[view window] convertBaseToScreen:frame.origin];
+        frame.origin = [viewWindow convertBaseToScreen:frame.origin];
         
-        [[self transitionView] setImageScale:imageScale];
-        [[self transitionView] setImage:initialImage];
+        transitionWindow = [self window];
+        transitionView = (SKTransitionView *)[transitionWindow contentView];
+        [transitionView setImageScale:imageScale];
+        [transitionView setImage:initialImage];
         initialImage = nil;
         
-        [[self window] setFrame:frame display:YES];
-        [[self window] orderBack:nil];
-        [[view window] addChildWindow:[self window] ordered:NSWindowAbove];
+        [transitionWindow setFrame:frame display:YES];
+        [transitionWindow orderBack:nil];
+        [viewWindow addChildWindow:transitionWindow ordered:NSWindowAbove];
     }
     
     // declare our variables  
@@ -410,7 +411,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     spec.type =  currentTransitionStyle;
     spec.option = currentForward ? CGSLeft : CGSRight;
     spec.backColour = NULL;
-    spec.wid = [(currentShouldRestrict ? [self window] : [view window]) windowNumber];
+    spec.wid = [(currentShouldRestrict ? transitionWindow : viewWindow) windowNumber];
     
     // Let's get a connection
     CGSConnection cgs = _CGSDefaultConnection();
@@ -419,15 +420,15 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     CGSNewTransition(cgs, &spec, &handle);
     
     if (currentShouldRestrict) {
-        [[self transitionView] setImage:finalImage];
-        [[self transitionView] display];
+        [transitionView setImage:finalImage];
+        [transitionView display];
     }
     
     // Redraw the window
-    [[view window] display];
+    [viewWindow display];
     // Remember we disabled flushing in the previous method, we need to balance that.
-    [[view window] enableFlushWindow];
-    [[view window] flushWindow];
+    [viewWindow enableFlushWindow];
+    [viewWindow flushWindow];
     
     CGSInvokeTransition(cgs, handle, currentDuration);
     // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
@@ -437,9 +438,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     handle = 0;
     
     if (currentShouldRestrict) {
-        [[view window] removeChildWindow:[self window]];
-        [[self window] orderOut:nil];
-        [[self transitionView] setImage:nil];
+        [viewWindow removeChildWindow:transitionWindow];
+        [transitionWindow orderOut:nil];
+        [transitionView setImage:nil];
     }
 }
 
@@ -457,29 +458,32 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [initialImage release];
     initialImage = nil;
     
+    NSWindow *viewWindow = [view window];
     NSRect frame = [view convertRect:[view frame] toView:nil];
-    frame.origin = [[view window] convertBaseToScreen:frame.origin];
+    frame.origin = [viewWindow convertBaseToScreen:frame.origin];
     
+    NSWindow *transitionWindow = [self window];
+    SKTransitionView *transitionView = (SKTransitionView *)[transitionWindow contentView];
     SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
-    [[self transitionView] setImageScale:imageScale];
-    [[self transitionView] setAnimation:animation];
+    [transitionView setImageScale:imageScale];
+    [transitionView setAnimation:animation];
     [animation release];
     
-    [[self window] setFrame:frame display:NO];
-    [[self window] orderBack:nil];
-    [[view window] addChildWindow:[self window] ordered:NSWindowAbove];
+    [transitionWindow setFrame:frame display:NO];
+    [transitionWindow orderBack:nil];
+    [viewWindow addChildWindow:transitionWindow ordered:NSWindowAbove];
     
     [animation startAnimation];
     
     // Update the view and its window, so it shows the correct state when it is shown.
     [view display];
     // Remember we disabled flushing in the previous method, we need to balance that.
-    [[view window] enableFlushWindow];
-    [[view window] flushWindow];
+    [viewWindow enableFlushWindow];
+    [viewWindow flushWindow];
     
-    [[view window] removeChildWindow:[self window]];
-    [[self window] orderOut:nil];
-    [[self transitionView] setAnimation:nil];
+    [viewWindow removeChildWindow:transitionWindow];
+    [transitionWindow orderOut:nil];
+    [transitionView setAnimation:nil];
 }
 
 - (void)animateForRect:(NSRect)rect  {
