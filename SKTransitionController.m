@@ -586,6 +586,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 - (void)dealloc {
     SKDESTROY(animation);
+    SKDESTROY(image);
     SKDESTROY(context);
     [super dealloc];
 }
