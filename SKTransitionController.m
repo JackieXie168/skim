@@ -393,8 +393,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
-        [[self transitionView] setImage:initialImage];
         [[self transitionView] setImageScale:imageScale];
+        [[self transitionView] setImage:initialImage];
         initialImage = nil;
         
         [[self window] setFrame:frame display:YES];
@@ -461,8 +461,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     frame.origin = [[view window] convertBaseToScreen:frame.origin];
     
     SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
-    [[self transitionView] setAnimation:animation];
     [[self transitionView] setImageScale:imageScale];
+    [[self transitionView] setAnimation:animation];
     [animation release];
     
     [[self window] setFrame:frame display:NO];
