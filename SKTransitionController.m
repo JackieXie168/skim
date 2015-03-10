@@ -138,10 +138,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@interface NSOpenGLView (SKLionExtensions)
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+@interface NSOpenGLView (SKLionCeclarations)
 - (BOOL)wantsBestResolutionOpenGLSurface;
 - (void)setWantsBestResolutionOpenGLSurface:(BOOL)flag;
 @end
+#endif
 
 @interface SKTransitionView : NSOpenGLView <SKTransitionAnimationDelegate> {
     SKTransitionAnimation *animation;

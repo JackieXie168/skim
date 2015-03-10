@@ -209,9 +209,11 @@ macro(StrikeOut); \
 macro(Line); \
 macro(Ink)
 
-@interface NSImage (SKMountainLionExtensions)
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_7
+@interface NSImage (SKMountainLionDeclarations)
 + (NSImage *)imageWithSize:(NSSize)size flipped:(BOOL)drawingHandlerShouldBeCalledWithFlippedContext drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
 @end
+#endif
 
 @implementation NSImage (SKExtensions)
 
