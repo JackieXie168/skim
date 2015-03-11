@@ -67,7 +67,6 @@ typedef NSUInteger SKAnimationTransitionStyle;
     NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
-    BOOL didPrepare;
     
     NSMutableDictionary *filters;
     

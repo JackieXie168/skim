@@ -219,6 +219,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     self = [super init];
     if (self) {
         view = aView; // don't retain as it may retain us
+        imageRect = NSZeroRect;
         
         transitionStyle = SKNoTransition;
         duration = 1.0;
@@ -227,7 +228,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         currentDuration = 1.0;
         currentShouldRestrict = YES;
         currentForward = YES;
-        
     }
     return self;
 }
@@ -368,7 +368,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [[view window] disableFlushWindow];
     }
     imageRect = rect;
-    didPrepare = YES;
 }
 
 - (void)animateCoreGraphicsForRect:(NSRect)rect {
@@ -488,7 +487,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)animateForRect:(NSRect)rect  {
-    if (didPrepare == NO)
+    if (NSEqualRects(imageRect, NSZeroRect))
         [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
 	
     if (currentTransitionStyle >= SKCoreImageTransition)
@@ -501,7 +500,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     currentShouldRestrict = shouldRestrict;
     currentForward = YES;
     
-    didPrepare = NO;
+    imageRect = NSZeroRect;
 }
 
 @end
