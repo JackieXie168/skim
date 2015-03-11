@@ -121,19 +121,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@protocol SKTransitionAnimationDelegate;
+typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
 
 @interface SKTransitionAnimation : NSAnimation {
-    CIFilter *filter;
+    SKTransitionAnimationProgressHandler progressHandler;
 }
-@property (nonatomic, readonly) CIImage *currentImage;
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
-- (id <SKTransitionAnimationDelegate>)delegate;
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate;
-@end
-
-@protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
-- (void)animationDidUpdate:(NSAnimation *)anAnimation;
+@property (nonatomic, copy) SKTransitionAnimationProgressHandler progressHandler;
 @end
 
 #pragma mark -
@@ -145,14 +138,12 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @end
 #endif
 
-@interface SKTransitionView : NSOpenGLView <SKTransitionAnimationDelegate> {
-    SKTransitionAnimation *animation;
+@interface SKTransitionView : NSOpenGLView {
     CIImage *image;
     CGFloat imageScale;
     CIContext *context;
     BOOL needsReshape;
 }
-@property (nonatomic, retain) SKTransitionAnimation *animation;
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGFloat imageScale;
 @end
@@ -396,6 +387,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         transitionView = (SKTransitionView *)[transitionWindow contentView];
         [transitionView setImageScale:imageScale];
         [transitionView setImage:initialImage];
+        [transitionView setNeedsDisplay:YES];
         initialImage = nil;
         
         [transitionWindow setFrame:frame display:YES];
@@ -455,8 +447,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     CIFilter *transitionFilter = [self transitionFilterForRect:scaleRect(imageRect, imageScale) bounds:scaleRect(bounds, imageScale) forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
     
     [finalImage release];
-    [initialImage release];
-    initialImage = nil;
     
     NSWindow *viewWindow = [view window];
     NSRect frame = [view convertRect:[view frame] toView:nil];
@@ -464,16 +454,24 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     NSWindow *transitionWindow = [self window];
     SKTransitionView *transitionView = (SKTransitionView *)[transitionWindow contentView];
-    SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
     [transitionView setImageScale:imageScale];
-    [transitionView setAnimation:animation];
-    [animation release];
+    [transitionView setImage:initialImage];
+    [transitionView setNeedsDisplay:YES];
+    [initialImage release];
+    initialImage = nil;
     
     [transitionWindow setFrame:frame display:NO];
     [transitionWindow orderBack:nil];
     [viewWindow addChildWindow:transitionWindow ordered:NSWindowAbove];
     
+    SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithDuration:currentDuration animationCurve:NSAnimationEaseInOut];
+    [animation setProgressHandler:^(CGFloat value){
+            [transitionFilter setValue:[NSNumber numberWithDouble:value] forKey:kCIInputTimeKey];
+            [transitionView setImage:[transitionFilter valueForKey:kCIOutputImageKey]];
+            [transitionView display];
+        }];
     [animation startAnimation];
+    [animation release];
     
     // Update the view and its window, so it shows the correct state when it is shown.
     [view display];
@@ -483,7 +481,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     [viewWindow removeChildWindow:transitionWindow];
     [transitionWindow orderOut:nil];
-    [transitionView setAnimation:nil];
+    [transitionView setImage:nil];
 }
 
 - (void)animateForRect:(NSRect)rect  {
@@ -509,33 +507,17 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 @implementation SKTransitionAnimation
 
-@dynamic currentImage;
-
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration {
-    self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut];
-    if (self) {
-        filter = [aFilter retain];
-    }
-    return self;
-}
+@synthesize progressHandler;
 
 - (void)dealloc {
-    SKDESTROY(filter);
+    SKDESTROY(progressHandler);
     [super dealloc];
 }
 
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
-    [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:kCIInputTimeKey];
-    [[self delegate] animationDidUpdate:self];
+    if (progressHandler) progressHandler([self currentValue]);
 }
-
-- (CIImage *)currentImage {
-    return [filter valueForKey:kCIOutputImageKey];
-}
-
-- (id <SKTransitionAnimationDelegate>)delegate { return (id <SKTransitionAnimationDelegate>)[super delegate]; }
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 
 @end
 
@@ -543,7 +525,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 @implementation SKTransitionView
 
-@synthesize animation, image, imageScale;
+@synthesize image, imageScale;
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -584,7 +566,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)dealloc {
-    SKDESTROY(animation);
     SKDESTROY(image);
     SKDESTROY(context);
     [super dealloc];
@@ -615,38 +596,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
     
     needsReshape = YES;
-}
-
-- (void)animationDidUpdate:(NSAnimation *)anAnimation {
-    [self display];
-}
-
-- (void)setAnimation:(SKTransitionAnimation *)newAnimation {
-    if (animation != newAnimation) {
-        [animation release];
-        animation = [newAnimation retain];
-        [animation setDelegate:self];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setImage:(CIImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (CIContext *)ciContext {
-    if (context == nil) {
-        [[self openGLContext] makeCurrentContext];
-        
-        NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
-        
-        context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
-    }
-    return context;
 }
 
 - (void)updateMatrices {
@@ -683,10 +632,13 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         glVertex2f(scale * NSMinX(rect), scale * NSMaxY(rect));
     glEnd();
     
-    CIImage *currentImage = image ?: [animation currentImage];
-    if (currentImage) {
+    if (image) {
         NSRect bounds = [self bounds];
-        [[self ciContext] drawImage:currentImage inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
+        if (context == nil) {
+            NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
+            context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
+        }
+        [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
     }
     
     glFlush();
