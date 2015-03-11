@@ -155,7 +155,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @property (nonatomic, retain) SKTransitionAnimation *animation;
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGFloat imageScale;
-@property (nonatomic, readonly) CIImage *currentImage;
 @end
 
 #pragma mark -
@@ -546,7 +545,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 @implementation SKTransitionView
 
 @synthesize animation, image, imageScale;
-@dynamic currentImage;
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -641,10 +639,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     }
 }
 
-- (CIImage *)currentImage {
-    return image ?: [animation currentImage];
-}
-
 - (CIContext *)ciContext {
     if (context == nil) {
         [[self openGLContext] makeCurrentContext];
@@ -690,7 +684,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         glVertex2f(scale * NSMinX(rect), scale * NSMaxY(rect));
     glEnd();
     
-    CIImage *currentImage = [self currentImage];
+    CIImage *currentImage = image ?: [animation currentImage];
     if (currentImage) {
         NSRect bounds = [self bounds];
         [[self ciContext] drawImage:currentImage inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
