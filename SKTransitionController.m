@@ -617,22 +617,16 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)drawRect:(NSRect)rect {
-    CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
-    
     [[self openGLContext] makeCurrentContext];
     
     if (needsReshape)
         [self updateMatrices];
     
-    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-    glBegin(GL_POLYGON);
-        glVertex2f(scale * NSMinX(rect), scale * NSMinY(rect));
-        glVertex2f(scale * NSMaxX(rect), scale * NSMinY(rect));
-        glVertex2f(scale * NSMaxX(rect), scale * NSMaxY(rect));
-        glVertex2f(scale * NSMinX(rect), scale * NSMaxY(rect));
-    glEnd();
-    
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     if (image) {
+        CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
         NSRect bounds = [self bounds];
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
