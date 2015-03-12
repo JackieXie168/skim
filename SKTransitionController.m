@@ -608,7 +608,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
+    glOrtho(scale * NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
