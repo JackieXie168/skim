@@ -518,7 +518,7 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             NSUInteger page = synctex_node_page(node);
-            *pageIndexPtr = MAX(page, 1u) - 1;
+            *pageIndexPtr = MAX(page, 1ul) - 1;
             *pointPtr = NSMakePoint(synctex_node_visible_h(node), synctex_node_visible_v(node));
             rv = YES;
         }
