@@ -236,16 +236,6 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
     return transitionStyle != SKNoTransition || pageTransitions != nil;
 }
 
-- (CIFilter *)filterWithName:(NSString *)name {
-    if (filters == nil)
-        filters = [[NSMutableDictionary alloc] init];
-    CIFilter *filter = [filters objectForKey:name];
-    if (filter == nil && (filter = [CIFilter filterWithName:name]))
-        [filters setObject:filter forKey:name];
-    [filter setDefaults];
-    return filter;
-}
-
 static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return CGRectMake(scale * NSMinX(rect), scale * NSMinY(rect), scale * NSWidth(rect), scale * NSHeight(rect));
 }
@@ -253,7 +243,13 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 // rect and bounds are in pixels
 - (CIFilter *)transitionFilterForRect:(CGRect)rect bounds:(CGRect)bounds forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[self class] nameForStyle:currentTransitionStyle];
-    CIFilter *transitionFilter = [self filterWithName:filterName];
+    CIFilter *transitionFilter = [filters objectForKey:filterName];
+    if (transitionFilter == transitionFilter && (transitionFilter = [CIFilter filterWithName:filterName])) {
+        if (filters == nil)
+            filters = [[NSMutableDictionary alloc] init];
+        [filters setObject:transitionFilter forKey:filterName];
+    }
+    [transitionFilter setDefaults];
     
     for (NSString *key in [transitionFilter inputKeys]) {
         id value = nil;
