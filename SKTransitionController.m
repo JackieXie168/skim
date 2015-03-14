@@ -331,7 +331,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     }
     
     [transitionView setImageScale:imageScale];
-    [transitionView setImage:initialImage];
+    [transitionView setImage:image];
     [transitionView setNeedsDisplay:YES];
     
     [window setFrame:frame display:NO];
