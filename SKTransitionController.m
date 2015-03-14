@@ -244,7 +244,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 - (CIFilter *)transitionFilterForRect:(CGRect)rect bounds:(CGRect)bounds forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[self class] nameForStyle:currentTransitionStyle];
     CIFilter *transitionFilter = [filters objectForKey:filterName];
-    if (transitionFilter == transitionFilter && (transitionFilter = [CIFilter filterWithName:filterName])) {
+    if (transitionFilter == nil && (transitionFilter = [CIFilter filterWithName:filterName])) {
         if (filters == nil)
             filters = [[NSMutableDictionary alloc] init];
         [filters setObject:transitionFilter forKey:filterName];
