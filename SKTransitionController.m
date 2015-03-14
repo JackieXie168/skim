@@ -388,10 +388,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         finalImage = [self newCurrentImage];
         
-        CGRect r = scaleRect(imageRect, imageScale);
         CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(imageRect), -CGRectGetMinY(imageRect));
-        initialImage = [[[initialImage autorelease] imageByCroppingToRect:r] imageByApplyingTransform:transform];
-        finalImage = [[[finalImage autorelease] imageByCroppingToRect:r] imageByApplyingTransform:transform];
+        initialImage = [[initialImage autorelease] imageByApplyingTransform:transform];
+        finalImage = [[finalImage autorelease] imageByApplyingTransform:transform];
         
         NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [viewWindow convertBaseToScreen:frame.origin];
