@@ -453,7 +453,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [finalImage release];
     
     NSWindow *viewWindow = [view window];
-    NSRect frame = [view convertRect:[view frame] toView:nil];
+    NSRect frame = [view convertRect:[view bounds] toView:nil];
     frame.origin = [viewWindow convertBaseToScreen:frame.origin];
     
     SKTransitionView *transitionView = [self transitionViewWithImage:initialImage scale:imageScale frame:frame];
