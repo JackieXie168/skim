@@ -317,14 +317,28 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
 }
 
-- (NSWindow *)window {
+- (SKTransitionView *)transitionViewWithImage:(CIImage *)image scale:(CGFloat)imageScale frame:(NSRect)frame {
+    SKTransitionView *transitionView = nil;
+    
     if (window == nil) {
+        transitionView = [[[SKTransitionView alloc] init] autorelease];
         window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
         [window setReleasedWhenClosed:NO];
         [window setIgnoresMouseEvents:YES];
-        [window setContentView:[[[SKTransitionView alloc] init] autorelease]];
+        [window setContentView:transitionView];
+    } else {
+        transitionView = (SKTransitionView *)[window contentView];
     }
-    return window;
+    
+    [transitionView setImageScale:imageScale];
+    [transitionView setImage:initialImage];
+    [transitionView setNeedsDisplay:YES];
+    
+    [window setFrame:frame display:NO];
+    [window orderBack:nil];
+    [[view window] addChildWindow:window ordered:NSWindowAbove];
+    
+    return transitionView;
 }
 
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
@@ -364,7 +378,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 - (void)animateCoreGraphicsForRect:(NSRect)rect {
     CIImage *finalImage = nil;
     NSWindow *viewWindow = [view window];
-    NSWindow *transitionWindow = nil;
     SKTransitionView *transitionView = nil;
     
     if (currentShouldRestrict) {
@@ -382,17 +395,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [viewWindow convertBaseToScreen:frame.origin];
-        
-        transitionWindow = [self window];
-        transitionView = (SKTransitionView *)[transitionWindow contentView];
-        [transitionView setImageScale:imageScale];
-        [transitionView setImage:initialImage];
-        [transitionView setNeedsDisplay:YES];
+        transitionView = [self transitionViewWithImage:initialImage scale:imageScale frame:frame];
         initialImage = nil;
-        
-        [transitionWindow setFrame:frame display:YES];
-        [transitionWindow orderBack:nil];
-        [viewWindow addChildWindow:transitionWindow ordered:NSWindowAbove];
     }
     
     // declare our variables  
@@ -403,7 +407,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     spec.type =  currentTransitionStyle;
     spec.option = currentForward ? CGSLeft : CGSRight;
     spec.backColour = NULL;
-    spec.wid = [(currentShouldRestrict ? transitionWindow : viewWindow) windowNumber];
+    spec.wid = [(currentShouldRestrict ? window : viewWindow) windowNumber];
     
     // Let's get a connection
     CGSConnection cgs = _CGSDefaultConnection();
@@ -430,8 +434,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     handle = 0;
     
     if (currentShouldRestrict) {
-        [viewWindow removeChildWindow:transitionWindow];
-        [transitionWindow orderOut:nil];
+        [viewWindow removeChildWindow:window];
+        [window orderOut:nil];
         [transitionView setImage:nil];
     }
 }
@@ -452,17 +456,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     NSRect frame = [view convertRect:[view frame] toView:nil];
     frame.origin = [viewWindow convertBaseToScreen:frame.origin];
     
-    NSWindow *transitionWindow = [self window];
-    SKTransitionView *transitionView = (SKTransitionView *)[transitionWindow contentView];
-    [transitionView setImageScale:imageScale];
-    [transitionView setImage:initialImage];
-    [transitionView setNeedsDisplay:YES];
+    SKTransitionView *transitionView = [self transitionViewWithImage:initialImage scale:imageScale frame:frame];
+    
     [initialImage release];
     initialImage = nil;
-    
-    [transitionWindow setFrame:frame display:NO];
-    [transitionWindow orderBack:nil];
-    [viewWindow addChildWindow:transitionWindow ordered:NSWindowAbove];
     
     SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithDuration:currentDuration animationCurve:NSAnimationEaseInOut];
     [animation setProgressHandler:^(CGFloat value){
@@ -479,8 +476,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [viewWindow enableFlushWindow];
     [viewWindow flushWindow];
     
-    [viewWindow removeChildWindow:transitionWindow];
-    [transitionWindow orderOut:nil];
+    [viewWindow removeChildWindow:window];
+    [window orderOut:nil];
     [transitionView setImage:nil];
 }
 
