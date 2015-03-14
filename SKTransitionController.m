@@ -317,7 +317,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
 }
 
-- (SKTransitionView *)transitionViewWithImage:(CIImage *)image scale:(CGFloat)imageScale frame:(NSRect)frame {
+- (SKTransitionView *)transitionViewForRect:(NSRect)rect image:(CIImage *)image scale:(CGFloat)imageScale {
     SKTransitionView *transitionView = nil;
     
     if (window == nil) {
@@ -334,6 +334,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [transitionView setImage:image];
     [transitionView setNeedsDisplay:YES];
     
+    NSRect frame = [view convertRect:rect toView:nil];
+    frame.origin = [[view window] convertBaseToScreen:frame.origin];
     [window setFrame:frame display:NO];
     [window orderBack:nil];
     [[view window] addChildWindow:window ordered:NSWindowAbove];
@@ -392,9 +394,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         initialImage = [[initialImage autorelease] imageByApplyingTransform:transform];
         finalImage = [[finalImage autorelease] imageByApplyingTransform:transform];
         
-        NSRect frame = [view convertRect:imageRect toView:nil];
-        frame.origin = [viewWindow convertBaseToScreen:frame.origin];
-        transitionView = [self transitionViewWithImage:initialImage scale:imageScale frame:frame];
+        transitionView = [self transitionViewForRect:imageRect image:initialImage scale:imageScale];
         initialImage = nil;
     }
     
@@ -451,11 +451,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     [finalImage release];
     
-    NSWindow *viewWindow = [view window];
-    NSRect frame = [view convertRect:[view bounds] toView:nil];
-    frame.origin = [viewWindow convertBaseToScreen:frame.origin];
-    
-    SKTransitionView *transitionView = [self transitionViewWithImage:initialImage scale:imageScale frame:frame];
+    SKTransitionView *transitionView = [self transitionViewForRect:[view bounds] image:initialImage scale:imageScale];
     
     [initialImage release];
     initialImage = nil;
@@ -472,6 +468,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     // Update the view and its window, so it shows the correct state when it is shown.
     [view display];
     // Remember we disabled flushing in the previous method, we need to balance that.
+    NSWindow *viewWindow = [view window];
     [viewWindow enableFlushWindow];
     [viewWindow flushWindow];
     
