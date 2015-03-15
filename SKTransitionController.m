@@ -227,7 +227,6 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
     view = nil;
     SKDESTROY(window);
     SKDESTROY(initialImage);
-    SKDESTROY(filters);
     SKDESTROY(pageTransitions);
     [super dealloc];
 }
@@ -243,12 +242,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 // rect and bounds are in pixels
 - (CIFilter *)transitionFilterForRect:(CGRect)rect bounds:(CGRect)bounds forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[self class] nameForStyle:currentTransitionStyle];
-    CIFilter *transitionFilter = [filters objectForKey:filterName];
-    if (transitionFilter == nil && (transitionFilter = [CIFilter filterWithName:filterName])) {
-        if (filters == nil)
-            filters = [[NSMutableDictionary alloc] init];
-        [filters setObject:transitionFilter forKey:filterName];
-    }
+    CIFilter *transitionFilter = [CIFilter filterWithName:filterName];
+    
     [transitionFilter setDefaults];
     
     for (NSString *key in [transitionFilter inputKeys]) {
