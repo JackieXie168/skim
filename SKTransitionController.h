@@ -68,8 +68,6 @@ typedef NSUInteger SKAnimationTransitionStyle;
     CIImage *initialImage;
     NSRect imageRect;
     
-    NSMutableDictionary *filters;
-    
     SKAnimationTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;
