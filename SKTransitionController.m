@@ -377,8 +377,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         NSRect bounds = [view bounds];
         CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
         
-        imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
-        
         finalImage = [self newCurrentImage];
         
         CGAffineTransform transform = CGAffineTransformMakeTranslation(-imageScale * NSMinX(imageRect), -imageScale * NSMinY(imageRect));
@@ -431,10 +429,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)animateCoreImageForRect:(NSRect)rect  {
-    CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth([view bounds]);
-    
     NSRect bounds = [view bounds];
-    imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
+    CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
     
     CIImage *finalImage = [self newCurrentImage];
     
@@ -442,7 +438,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     [finalImage release];
     
-    SKTransitionView *transitionView = [self transitionViewForRect:[view bounds] image:initialImage scale:imageScale];
+    SKTransitionView *transitionView = [self transitionViewForRect:bounds image:initialImage scale:imageScale];
     
     [initialImage release];
     initialImage = nil;
@@ -471,6 +467,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 - (void)animateForRect:(NSRect)rect  {
     if (NSEqualRects(imageRect, NSZeroRect))
         [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
+    imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
 	
     if (currentTransitionStyle >= SKCoreImageTransition)
         [self animateCoreImageForRect:rect];
