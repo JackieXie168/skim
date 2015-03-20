@@ -368,7 +368,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     imageRect = rect;
 }
 
-- (void)animateCoreGraphicsForRect:(NSRect)rect {
+- (void)animateUsingCoreGraphics {
     CIImage *finalImage = nil;
     NSWindow *viewWindow = [view window];
     SKTransitionView *transitionView = nil;
@@ -428,7 +428,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     }
 }
 
-- (void)animateCoreImageForRect:(NSRect)rect  {
+- (void)animateUsingCoreImage {
     NSRect bounds = [view bounds];
     CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
     
@@ -470,9 +470,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
 	
     if (currentTransitionStyle >= SKCoreImageTransition)
-        [self animateCoreImageForRect:rect];
+        [self animateUsingCoreImage];
 	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
-        [self animateCoreGraphicsForRect:rect];
+        [self animateUsingCoreGraphics];
     
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
