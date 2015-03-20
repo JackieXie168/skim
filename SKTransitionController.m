@@ -313,6 +313,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     if (window == nil) {
         transitionView = [[[SKTransitionView alloc] init] autorelease];
+        if ([transitionView respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+            [transitionView setWantsBestResolutionOpenGLSurface:YES];
         window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
         [window setReleasedWhenClosed:NO];
         [window setIgnoresMouseEvents:YES];
@@ -524,26 +526,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     }
 
     return pf;
-}
-
-- (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat *)format {
-    self = [super initWithFrame:frameRect pixelFormat:format];
-    if (self) {
-        imageScale = 1.0;
-        if ([self respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
-            [self setWantsBestResolutionOpenGLSurface:YES];
-    }
-    return self;
-}
-
-- (id)initWithFrame:(NSRect)frameRect {
-    self = [super initWithFrame:frameRect];
-    if (self) {
-        imageScale = 1.0;
-        if ([self respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
-            [self setWantsBestResolutionOpenGLSurface:YES];
-    }
-    return self;
 }
 
 - (void)dealloc {
