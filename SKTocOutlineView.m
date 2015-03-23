@@ -99,24 +99,24 @@
     [super drawRow:row clipRect:clipRect];
 }
 
-- (void)handleHighlightsChanged:(id)sender {
+- (void)handleHighlightsChanged {
     if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
 }
 
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
     [super selectRowIndexes:indexes byExtendingSelection:extendSelection];
-    [self handleHighlightsChanged:nil];
+    [self handleHighlightsChanged];
 }
 
 - (void)deselectRow:(NSInteger)row {
     [super deselectRow:row];
-    [self handleHighlightsChanged:nil];
+    [self handleHighlightsChanged];
 }
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        [self handleHighlightsChanged:nil];
+        [self handleHighlightsChanged];
         return YES;
     }
     return NO;
@@ -124,10 +124,22 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        [self handleHighlightsChanged:nil];
+        [self handleHighlightsChanged];
         return YES;
     }
     return NO;
+}
+
+- (void)handleKeyOrMainStateChanged:(NSNotification *)note {
+    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList) {
+        [self handleHighlightsChanged];
+    } else {
+        if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+            [self setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
+        else
+            [self setBackgroundColor:[NSColor controlBackgroundColor]];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
@@ -139,9 +151,13 @@
     }
     if (newWindow) {
         for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleHighlightsChanged:) name:name object:newWindow];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
     }
     [super viewWillMoveToWindow:newWindow];
+}
+
+- (void)viewDidMoveToWindow {
+    [self handleKeyOrMainStateChanged:nil];
 }
 
 - (void)removeTrackingAreas {
