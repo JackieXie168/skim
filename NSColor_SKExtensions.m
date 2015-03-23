@@ -96,6 +96,13 @@
     }
 }
 
++ (NSColor *)mainSourceListBackgroundColor {
+    static NSColor *color = nil;
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0] retain];
+    return color;
+}
+
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     if (rgbColor) {
