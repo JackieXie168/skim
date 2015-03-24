@@ -436,6 +436,14 @@
     return NO;
 }
 
+- (void)tableViewColumnDidResize:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
+        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:nil];
+    } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
+        [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:nil];
+    }
+}
+
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
