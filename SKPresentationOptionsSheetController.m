@@ -171,8 +171,6 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView registerForDraggedTypes:[SKTransitionInfo readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
-    [tableView setBackgroundColor:[[NSColor controlAlternatingRowBackgroundColors] lastObject]];
-    
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     
     [tableView setHasImageToolTips:YES];
