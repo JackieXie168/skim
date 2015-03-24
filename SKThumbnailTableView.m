@@ -157,6 +157,7 @@
 }
 
 - (void)viewDidMoveToWindow {
+    [super viewDidMoveToWindow];
     [self handleKeyOrMainStateChanged:nil];
 }
 
