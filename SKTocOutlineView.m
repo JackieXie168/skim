@@ -158,7 +158,8 @@
 
 - (void)viewDidMoveToWindow {
     [super viewDidMoveToWindow];
-    [self handleKeyOrMainStateChanged:nil];
+    if ([self window])
+        [self handleKeyOrMainStateChanged:nil];
 }
 
 - (void)removeTrackingAreas {
