@@ -181,20 +181,6 @@
     }
 }
 
-- (void)setFrame:(NSRect)frameRect {
-    BOOL changed = fabs(NSWidth([self frame]) - NSWidth(frameRect)) > 0.0;
-    [super setFrame:frameRect];
-    if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
-        [self noteHeightOfRowsWithIndexesChanged:nil];
-}
-
-- (void)setFrameSize:(NSSize)frameSize {
-    BOOL changed = fabs(NSWidth([self frame]) - frameSize.width) > 0.0;
-    [super setFrameSize:frameSize];
-    if (changed && [[self delegate] respondsToSelector:@selector(tableView:heightOfRow:)])
-        [self noteHeightOfRowsWithIndexesChanged:nil];
-}
-
 - (void)mouseDown:(NSEvent *)theEvent {
     if (([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
         NSInteger row = [self rowAtPoint:[theEvent locationInView:self]];
