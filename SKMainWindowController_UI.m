@@ -437,10 +437,12 @@
 }
 
 - (void)tableViewColumnDidResize:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
-        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:nil];
-    } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
-        [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:nil];
+    if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
+        if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
+            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:nil];
+        } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
+            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:nil];
+        }
     }
 }
 
