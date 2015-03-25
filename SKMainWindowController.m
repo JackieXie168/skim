@@ -106,6 +106,7 @@
 #import "NSScanner_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
 #import "SKAccessibilityFauxUIElement.h"
+#import "SKScroller.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -2471,7 +2472,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
-    if ([leftSideController.thumbnailTableView isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
+    if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
         return NO;
     [self performSelector:@selector(makeImageForThumbnail:) withObject:thumbnail afterDelay:0.0];
     return YES;

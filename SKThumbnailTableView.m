@@ -48,8 +48,6 @@
 
 @implementation SKThumbnailTableView
 
-@synthesize isScrolling;
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
@@ -162,25 +160,6 @@
         [self handleKeyOrMainStateChanged:nil];
 }
 
-- (void)handleScrollerWillScroll:(NSNotification *)note {
-    isScrolling = YES;
-}
-
-- (void)handleScrollerDidScroll:(NSNotification *)note {
-    isScrolling = NO;
-    [self setNeedsDisplayInRect:[self visibleRect]];
-}
-
-- (void)awakeFromNib {
-    NSScroller *scroller = [[self enclosingScrollView] verticalScroller];
-    if ([scroller isKindOfClass:[SKScroller class]]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
-                                                     name:SKScrollerWillScrollNotification object:scroller];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:)
-                                                     name:SKScrollerDidScrollNotification object:scroller];
-    }
-}
-
 - (void)mouseDown:(NSEvent *)theEvent {
     if (([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
         NSInteger row = [self rowAtPoint:[theEvent locationInView:self]];
@@ -196,17 +175,5 @@
 
 - (id <SKThumbnailTableViewDelegate>)delegate { return (id <SKThumbnailTableViewDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate { [super setDelegate:newDelegate]; }
-
-@end
-
-#pragma mark -
-
-@implementation SKScroller
-
-- (void)trackKnob:(NSEvent *)theEvent {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerWillScrollNotification object:self];
-    [super trackKnob:theEvent];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
-}
 
 @end
