@@ -39,13 +39,13 @@
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
 #import "SKTransitionController.h"
-#import "SKThumbnailTableView.h"
+#import "SKTableView.h"
 
 @class SKMainWindowController, SKThumbnail, SKTransitionInfo;
 
-@interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource> {
+@interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKTableViewDelegate, NSTableViewDataSource> {
     NSPopUpButton *notesDocumentPopUpButton;
-    SKThumbnailTableView *tableView;
+    SKTableView *tableView;
     NSButton *separateCheckButton;
     NSArray *boxes;
     NSArray *transitionLabels;
@@ -60,7 +60,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *notesDocumentPopUpButton;
-@property (nonatomic, retain) IBOutlet SKThumbnailTableView *tableView;
+@property (nonatomic, retain) IBOutlet SKTableView *tableView;
 @property (nonatomic, retain) IBOutlet NSButton *separateCheckButton;
 @property (nonatomic, retain) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
 @property (nonatomic, retain) IBOutlet NSArrayController *arrayController;

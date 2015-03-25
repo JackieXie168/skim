@@ -51,6 +51,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER (unichar)0x2192
 
@@ -175,6 +176,8 @@ static char *SKTransitionPropertiesObservationContext;
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     
     [tableView setHasImageToolTips:YES];
+    
+    [tableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
     
     if ([transitionController pageTransitions]) {
         [[self undoManager] disableUndoRegistration];

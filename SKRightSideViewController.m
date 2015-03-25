@@ -44,6 +44,7 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKNoteOutlineView.h"
+#import "NSColor_SKExtensions.h"
 
 #define COLOR_COLUMNID @"color"
 
@@ -88,6 +89,8 @@
     [[snapshotTableView menu] setDelegate:mainController];
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+    
+    [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
 }
 
 @end

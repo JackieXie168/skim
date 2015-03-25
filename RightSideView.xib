@@ -473,7 +473,7 @@
 				<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 			</object>
 			<object class="NSScrollView" id="876605194">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">4370</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSClipView" id="89727699">
@@ -485,7 +485,6 @@
 								<int key="NSvFlags">4352</int>
 								<string key="NSFrameSize">{198, 398}</string>
 								<reference key="NSSuperview" ref="89727699"/>
-								<reference key="NSWindow"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="_NSCornerView" key="NSCornerView">
 									<nil key="NSNextResponder"/>
@@ -564,7 +563,6 @@
 						</array>
 						<string key="NSFrame">{{1, 1}, {198, 398}}</string>
 						<reference key="NSSuperview" ref="876605194"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="320087225"/>
 						<reference key="NSDocView" ref="320087225"/>
 						<reference key="NSBGColor" ref="255332107"/>
@@ -575,7 +573,6 @@
 						<int key="NSvFlags">-2147483392</int>
 						<string key="NSFrame">{{184, 1}, {15, 398}}</string>
 						<reference key="NSSuperview" ref="876605194"/>
-						<reference key="NSWindow"/>
 						<reference key="NSTarget" ref="876605194"/>
 						<string key="NSAction">_doScroller:</string>
 						<double key="NSPercent">0.30615379999999998</double>
@@ -585,7 +582,6 @@
 						<int key="NSvFlags">-2147483392</int>
 						<string key="NSFrame">{{-100, -100}, {183, 15}}</string>
 						<reference key="NSSuperview" ref="876605194"/>
-						<reference key="NSWindow"/>
 						<int key="NSsFlags">1</int>
 						<reference key="NSTarget" ref="876605194"/>
 						<string key="NSAction">_doScroller:</string>
@@ -593,8 +589,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{200, 400}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="89727699"/>
 				<int key="NSsFlags">530</int>
 				<reference key="NSVScroller" ref="458809914"/>
@@ -1147,7 +1141,7 @@
 				<boolean value="YES" key="11.ImportedFromIB2"/>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="12.ImportedFromIB2"/>
-				<string key="13.CustomClassName">SKThumbnailTableView</string>
+				<string key="13.CustomClassName">SKTableView</string>
 				<string key="13.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="13.ImportedFromIB2"/>
 				<string key="14.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2470,7 +2464,7 @@
 						<string key="noteArrayController">NSArrayController</string>
 						<string key="noteOutlineView">SKNoteOutlineView</string>
 						<string key="snapshotArrayController">NSArrayController</string>
-						<string key="snapshotTableView">SKThumbnailTableView</string>
+						<string key="snapshotTableView">SKTableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="noteArrayController">
@@ -2487,7 +2481,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="snapshotTableView">
 							<string key="name">snapshotTableView</string>
-							<string key="candidateClassName">SKThumbnailTableView</string>
+							<string key="candidateClassName">SKTableView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
