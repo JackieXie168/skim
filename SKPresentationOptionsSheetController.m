@@ -47,6 +47,7 @@
 #import "SKMainWindowController.h"
 #import "SKPDFView.h"
 #import "SKImageToolTipWindow.h"
+#import "SKScroller.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
@@ -322,7 +323,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (BOOL)isScrolling {
-    return [tableView isScrolling];
+    return [(SKScroller *)[[tableView enclosingScrollView] verticalScroller] isScrolling];
 }
 
 #pragma mark Undo

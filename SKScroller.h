@@ -1,10 +1,10 @@
 //
-//  SKThumbnailTableView.h
+//  SKScroller.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 3/25/15.
 /*
- This software is Copyright (c) 2007-2015
+ This software is Copyright (c) 2015
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,22 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKTableView.h"
-
-@protocol SKThumbnailTableViewDelegate;
-
-@interface SKThumbnailTableView : SKTableView
-
-- (id <SKThumbnailTableViewDelegate>)delegate;
-- (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate;
-
-@end
 
 
-@protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
-@optional
-
-- (NSUInteger)tableView:(NSTableView *)tableView highlightLevelForRow:(NSInteger)row;
-- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
-
+@interface SKScroller : NSScroller {
+    BOOL isScrolling;
+}
+@property (nonatomic, readonly) BOOL isScrolling;
 @end
