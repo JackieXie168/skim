@@ -710,6 +710,14 @@
     return [tableColumn dataCellForRow:[ov rowForItem:item]];
 }
 
+- (void)outlineView:(NSOutlineView *)ov willDisplayOutlineCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([ov isEqual:leftSideController.tocOutlineView] && 
+        [ov selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular && 
+        [ov isRowSelected:[ov rowForItem:item]]) {
+        [cell setBackgroundStyle:NSBackgroundStyleLowered];
+    }
+}
+
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         if (tableColumn == nil) {

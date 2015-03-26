@@ -37,12 +37,8 @@
  */
 
 #import "SKThumbnailTableView.h"
-#import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-
-#define SKScrollerWillScrollNotification @"SKScrollerWillScrollNotification"
-#define SKScrollerDidScrollNotification @"SKScrollerDidScrollNotification"
 
 #define MAX_HIGHLIGHTS 5
 
@@ -62,25 +58,12 @@
         if (level < MAX_HIGHLIGHTS) {
             
             NSColor *color = nil;
-            
-            switch ([self selectionHighlightStyle]) {
-                case NSTableViewSelectionHighlightStyleSourceList:
-                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                        color = [NSColor keySourceListHighlightColor];
-                    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-                        color = [NSColor mainSourceListHighlightColor];
-                    else
-                        color = [NSColor disabledSourceListHighlightColor];
-                    break;
-                case NSTableViewSelectionHighlightStyleRegular:
-                    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                        color = [NSColor alternateSelectedControlColor];
-                    else
-                        color = [NSColor secondarySelectedControlColor];
-                    break;
-                default:
-                    break;
-            }
+            if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                color = [NSColor keySourceListHighlightColor];
+            else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+                color = [NSColor mainSourceListHighlightColor];
+            else
+                color = [NSColor disabledSourceListHighlightColor];
             
             if (color) {
                 NSRect rect = [self rectOfRow:row];
@@ -95,6 +78,26 @@
     }
     
     [super drawRow:row clipRect:clipRect];
+}
+
+- (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular) {
+        [NSGraphicsContext saveGraphicsState];
+        NSColor *color = nil;
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            color = [NSColor keySourceListHighlightColor];
+        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+            color = [NSColor mainSourceListHighlightColor];
+        else
+            color = [NSColor disabledSourceListHighlightColor];
+        [color setFill];
+        [[self selectedRowIndexes] enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop){
+                NSRectFill([self rectOfRow:row]);
+            }];
+        [NSGraphicsContext restoreGraphicsState];
+    } else {
+        [super highlightSelectionInClipRect:clipRect];
+    }
 }
 
 - (void)handleHighlightsChanged {
