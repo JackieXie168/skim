@@ -255,7 +255,7 @@
 											<reference key="NSTextColor" ref="976628544"/>
 										</object>
 										<object class="NSTextFieldCell" key="NSDataCell" id="123467765">
-											<int key="NSCellFlags">337772096</int>
+											<int key="NSCellFlags">338820672</int>
 											<int key="NSCellFlags2">67109888</int>
 											<object class="NSFont" key="NSSupport" id="237171480">
 												<string key="NSName">LucidaGrande</string>
@@ -410,7 +410,7 @@
 											<reference key="NSTextColor" ref="976628544"/>
 										</object>
 										<object class="NSTextFieldCell" key="NSDataCell" id="1044552294">
-											<int key="NSCellFlags">337772096</int>
+											<int key="NSCellFlags">338820672</int>
 											<int key="NSCellFlags2">67109888</int>
 											<reference key="NSSupport" ref="237171480"/>
 											<reference key="NSControlView" ref="862316959"/>
@@ -1772,8 +1772,10 @@
 				<boolean value="YES" key="120.ImportedFromIB2"/>
 				<string key="121.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="121.ImportedFromIB2"/>
+				<string key="122.CustomClassName">SKSourceListTextFieldCell</string>
 				<string key="122.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="122.ImportedFromIB2"/>
+				<string key="123.CustomClassName">SKSourceListTextFieldCell</string>
 				<string key="123.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="123.ImportedFromIB2"/>
 				<string key="124.IBEditorWindowLastContentRect">{{189, 238}, {200, 400}}</string>
@@ -2064,7 +2066,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKCenteredTextFieldCell</string>
-					<string key="superclassName">NSTextFieldCell</string>
+					<string key="superclassName">SKSourceListTextFieldCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKCenteredTextFieldCell.h</string>
@@ -3089,7 +3091,7 @@
 						<string key="noteArrayController">NSArrayController</string>
 						<string key="noteOutlineView">SKNoteOutlineView</string>
 						<string key="snapshotArrayController">NSArrayController</string>
-						<string key="snapshotTableView">SKThumbnailTableView</string>
+						<string key="snapshotTableView">SKTableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="noteArrayController">
@@ -3106,7 +3108,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="snapshotTableView">
 							<string key="name">snapshotTableView</string>
-							<string key="candidateClassName">SKThumbnailTableView</string>
+							<string key="candidateClassName">SKTableView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -3117,9 +3119,9 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKScroller</string>
 					<string key="superclassName">NSScroller</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="371493357">
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKThumbnailTableView.h</string>
+						<string key="minorKey">SKScroller.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -3162,6 +3164,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKSideViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKSourceListTextFieldCell</string>
+					<string key="superclassName">NSTextFieldCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKSourceListTextFieldCell.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -3212,7 +3222,10 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SKThumbnailTableView</string>
 					<string key="superclassName">SKTableView</string>
-					<reference key="sourceIdentifier" ref="371493357"/>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKThumbnailTableView.h</string>
+					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKTocOutlineView</string>

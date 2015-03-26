@@ -1,10 +1,10 @@
 //
-//  SKCenteredTextFieldCell.h
+//  SKSourceListTextFieldCell.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/28/07.
+//  Created by Christiaan Hofman on 3/26/15.
 /*
- This software is Copyright (c) 2007-2015
+ This software is Copyright (c) 2015
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,9 +36,29 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
 #import "SKSourceListTextFieldCell.h"
 
 
-@interface SKCenteredTextFieldCell : SKSourceListTextFieldCell
+@implementation SKSourceListTextFieldCell
+
+@synthesize simulatesSourceList;
+
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    if ([self simulatesSourceList])
+        return nil;
+    return [super highlightColorWithFrame:cellFrame inView:controlView];
+}
+
+- (NSBackgroundStyle)backgroundStyle {
+    if ([self simulatesSourceList])
+        return [self isHighlighted] ? NSBackgroundStyleLowered : NSBackgroundStyleLight;
+    return [super backgroundStyle];
+}
+
+- (NSBackgroundStyle)interiorBackgroundStyle {
+    if ([self simulatesSourceList])
+        return [self isHighlighted] ? NSBackgroundStyleLowered : NSBackgroundStyleLight;
+    return [super interiorBackgroundStyle];
+}
+
 @end

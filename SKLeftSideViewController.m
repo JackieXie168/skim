@@ -45,6 +45,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKThumbnailTableView.h"
 #import "SKTocOutlineView.h"
+#import "SKSourceListTextFieldCell.h"
 
 @implementation SKLeftSideViewController
 
@@ -104,9 +105,10 @@
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-        [tocOutlineView setBackgroundColor:[NSColor controlColor]];
+        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"label"] dataCell] setSimulatesSourceList:YES];
+        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"page"] dataCell] setSimulatesSourceList:YES];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-        [thumbnailTableView setBackgroundColor:[NSColor controlColor]];
+        [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:@"page"] dataCell] setSimulatesSourceList:YES];
     }
 }
 

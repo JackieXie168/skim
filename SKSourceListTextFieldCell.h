@@ -1,10 +1,10 @@
 //
-//  SKCenteredTextFieldCell.h
+//  SKSourceListTextFieldCell.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/28/07.
+//  Created by Christiaan Hofman on 3/26/15.
 /*
- This software is Copyright (c) 2007-2015
+ This software is Copyright (c) 2015
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKSourceListTextFieldCell.h"
 
 
-@interface SKCenteredTextFieldCell : SKSourceListTextFieldCell
+@interface SKSourceListTextFieldCell : NSTextFieldCell {
+    BOOL simulatesSourceField;
+}
+@property (nonatomic) BOOL simulatesSourceList;
 @end
