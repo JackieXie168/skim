@@ -126,7 +126,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
     NSRect foregroundBox = [imageRep foregroundRect];
     if (imageRep == nil) {
-        foregroundBox = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        foregroundBox = bounds;
     } else if (NSIsEmptyRect(foregroundBox)) {
         foregroundBox.origin = SKIntegralPoint(SKCenterPoint(bounds));
         foregroundBox.size = NSZeroSize;
