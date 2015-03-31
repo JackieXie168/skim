@@ -40,7 +40,7 @@
 
 
 @interface SKSourceListTextFieldCell : NSTextFieldCell {
-    BOOL simulatesSourceField;
+    BOOL simulatesSourceList;
 }
 @property (nonatomic) BOOL simulatesSourceList;
 @end
