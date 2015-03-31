@@ -39,7 +39,6 @@
 #import "SKNoteOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKColorCell.h"
 #import "SKApplication.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
@@ -80,8 +79,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)awakeFromNib {
-    [[self tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
-    
     NSMenu *menu = [NSMenu menu];
     
     for (NSTableColumn *tc in [self tableColumns]) {
