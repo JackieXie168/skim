@@ -173,26 +173,15 @@
 														</object>
 														<reference key="NSTextColor" ref="880548551"/>
 													</object>
-													<object class="NSTextFieldCell" key="NSDataCell" id="858288968">
-														<int key="NSCellFlags">67239488</int>
-														<int key="NSCellFlags2">272630784</int>
-														<string key="NSContents"/>
+													<object class="IBCustomCell" key="NSDataCell" id="226697617">
+														<int key="NSCellFlags">67239424</int>
+														<int key="NSCellFlags2">0</int>
 														<object class="NSFont" key="NSSupport" id="61715986">
 															<string key="NSName">LucidaGrande</string>
 															<double key="NSSize">13</double>
 															<int key="NSfFlags">1044</int>
 														</object>
 														<reference key="NSControlView" ref="977420889"/>
-														<object class="NSColor" key="NSBackgroundColor">
-															<int key="NSColorSpace">6</int>
-															<string key="NSCatalogName">System</string>
-															<string key="NSColorName">controlColor</string>
-															<object class="NSColor" key="NSColor" id="744686160">
-																<int key="NSColorSpace">3</int>
-																<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
-															</object>
-														</object>
-														<reference key="NSTextColor" ref="1041026160"/>
 													</object>
 													<reference key="NSTableView" ref="977420889"/>
 												</object>
@@ -218,7 +207,10 @@
 															<int key="NSColorSpace">6</int>
 															<string key="NSCatalogName">System</string>
 															<string key="NSColorName">controlBackgroundColor</string>
-															<reference key="NSColor" ref="744686160"/>
+															<object class="NSColor" key="NSColor">
+																<int key="NSColorSpace">3</int>
+																<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
+															</object>
 														</object>
 														<reference key="NSTextColor" ref="1041026160"/>
 													</object>
@@ -674,14 +666,9 @@
 						<int key="objectID">106</int>
 						<reference key="object" ref="34399184"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="858288968"/>
+							<reference ref="226697617"/>
 						</array>
 						<reference key="parent" ref="977420889"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">109</int>
-						<reference key="object" ref="858288968"/>
-						<reference key="parent" ref="34399184"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">110</int>
@@ -736,6 +723,11 @@
 						<reference key="object" ref="791337291"/>
 						<reference key="parent" ref="309677353"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">121</int>
+						<reference key="object" ref="226697617"/>
+						<reference key="parent" ref="34399184"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -749,12 +741,13 @@
 				<string key="105.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="105.IBShouldRemoveOnLegacySave"/>
 				<string key="106.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="109.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="110.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="117.CustomClassName">SKCenteredTextFieldCell</string>
 				<string key="119.CustomClassName">SKCenteredTextFieldCell</string>
 				<integer value="1" key="120.IBDateFormatterBehaviorMetadataKey"/>
 				<string key="120.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="121.CustomClassName">SKColorCell</string>
+				<string key="121.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="48.CustomClassName">SKScrollView</string>
 				<string key="48.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="48.ImportedFromIB2"/>
@@ -793,7 +786,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">120</int>
+			<int key="maxID">121</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1140,7 +1133,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKCenteredTextFieldCell</string>
-					<string key="superclassName">NSTextFieldCell</string>
+					<string key="superclassName">SKSourceListTextFieldCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKCenteredTextFieldCell.h</string>
@@ -1148,10 +1141,18 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKCenteredTextFieldCell</string>
-					<string key="superclassName">NSTextFieldCell</string>
+					<string key="superclassName">SKSourceListTextFieldCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKColorCell</string>
+					<string key="superclassName">NSCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKColorCell.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1291,6 +1292,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKScrollView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SKSourceListTextFieldCell</string>
+					<string key="superclassName">NSTextFieldCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKSourceListTextFieldCell.h</string>
 					</object>
 				</object>
 			</array>
@@ -2004,4 +2013,11 @@
 		<string key="IBDocument.LastKnownRelativeProjectPath">Skim.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
+	<classes>
+		<class name="IBCustomCell">
+			<fallbacks>
+				<name>NSCell</name>
+			</fallbacks>
+		</class>
+	</classes>
 </archive>
