@@ -103,6 +103,16 @@
     return color;
 }
 
++ (NSColor *)sourceListHighlightColorForView:(NSView *)view {
+    NSWindow *window = [view window];
+    if ([window isKeyWindow] && [window firstResponder] == self)
+        return [self keySourceListHighlightColor];
+    else if ([window isMainWindow] || [window isKeyWindow])
+        return [self mainSourceListHighlightColor];
+    else
+        return [self disabledSourceListHighlightColor];
+}
+
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     if (rgbColor) {

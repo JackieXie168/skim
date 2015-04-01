@@ -62,15 +62,7 @@
         
         if (level < MAX_HIGHLIGHTS) {
             
-            NSColor *color = nil;
-            NSWindow *window = [self window];
-            if ([window isKeyWindow] && [window firstResponder] == self)
-                color = [NSColor keySourceListHighlightColor];
-            else if ([window isMainWindow] || [window isKeyWindow])
-                color = [NSColor mainSourceListHighlightColor];
-            else
-                color = [NSColor disabledSourceListHighlightColor];
-            
+            NSColor *color = [NSColor sourceListHighlightColorForView:self];
             if (color) {
                 NSRect rect = [self rectOfRow:row];
                 if (NSIntersectsRect(rect, clipRect)) {
@@ -89,14 +81,7 @@
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular) {
         [NSGraphicsContext saveGraphicsState];
-        NSColor *color = nil;
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            color = [NSColor keySourceListHighlightColor];
-        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-            color = [NSColor mainSourceListHighlightColor];
-        else
-            color = [NSColor disabledSourceListHighlightColor];
-        [color setFill];
+        [[NSColor sourceListHighlightColorForView:self] setFill];
         [[self selectedRowIndexes] enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop){
                 NSRectFill([self rectOfRow:row]);
             }];
