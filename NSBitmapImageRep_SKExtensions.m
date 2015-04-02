@@ -49,7 +49,7 @@ static inline BOOL differentPixels( const unsigned char *p1, const unsigned char
 {
     NSUInteger i;    
     for (i = 0; i < count; i++) {
-        if ((p2[i] > p1[i] && p2[i] - p1[i] > EPSILON) || (p1[i] > p2[i] && p1[i] - p2[i] > EPSILON))
+        if ((p2[i] > p1[i] + EPSILON) || (p1[i] > p2[i] + EPSILON))
             return YES;
     }
     return NO;
