@@ -105,7 +105,7 @@
 
 + (NSColor *)sourceListHighlightColorForView:(NSView *)view {
     NSWindow *window = [view window];
-    if ([window isKeyWindow] && [window firstResponder] == self)
+    if ([window isKeyWindow] && [window firstResponder] == view)
         return [self keySourceListHighlightColor];
     else if ([window isMainWindow] || [window isKeyWindow])
         return [self mainSourceListHighlightColor];
