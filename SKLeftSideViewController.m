@@ -105,6 +105,7 @@
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+        [tocOutlineView setIntercellSpacing:NSMakeSize(3.0, 2.0)];
         [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"label"] dataCell] setSimulatesSourceList:YES];
         [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"page"] dataCell] setSimulatesSourceList:YES];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
