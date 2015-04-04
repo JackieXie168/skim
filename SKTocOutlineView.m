@@ -91,6 +91,18 @@
     }
 }
 
+- (NSCell *)preparedCellAtColumn:(NSInteger)column row:(NSInteger)row {
+    NSCell *cell = [super preparedCellAtColumn:column row:row];
+    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular && [self isRowSelected:row] && [cell type] == NSTextCellType) {
+        NSMutableAttributedString *attrString = [[cell attributedStringValue] mutableCopy];
+        NSFont *font = [[NSFontManager sharedFontManager] convertFont:[cell font] toHaveTrait:NSBoldFontMask];
+        [attrString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [attrString length])];
+        [cell setAttributedStringValue:attrString];
+        [attrString release];
+    }
+    return cell;
+}
+
 - (void)handleHighlightsChanged {
     if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
