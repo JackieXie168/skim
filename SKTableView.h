@@ -59,6 +59,9 @@
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
+- (void)moveLeft:(id)sender;
+- (void)moveRight:(id)sender;
+
 - (id <SKTableViewDelegate>)delegate;
 - (void)setDelegate:(id <SKTableViewDelegate>)newDelegate;
 
@@ -76,6 +79,9 @@
 
 - (void)tableView:(NSTableView *)aTableView pasteFromPasteboard:(NSPasteboard *)pboard;
 - (BOOL)tableView:(NSTableView *)aTableView canPasteFromPasteboard:(NSPasteboard *)pboard;
+
+- (void)tableViewMoveLeft:(NSTableView *)aTableView;
+- (void)tableViewMoveRight:(NSTableView *)aTableView;
 
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForRow:(NSInteger)rowIndex;
 

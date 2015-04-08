@@ -100,6 +100,10 @@
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToEndOfDocument:nil];
+	} else if (eventChar == NSLeftArrowFunctionKey && modifierFlags == 0) {
+        [self moveLeft:nil];
+    } else if (eventChar == NSRightArrowFunctionKey && modifierFlags == 0) {
+        [self moveRight:nil];
     } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
@@ -113,6 +117,16 @@
 - (void)scrollToEndOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:[self numberOfRows] - 1];
+}
+
+- (void)moveLeft:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(tableViewMoveLeft:)])
+        [[self delegate] tableViewMoveLeft:self];
+}
+
+- (void)moveRight:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(tableViewMoveRight:)])
+        [[self delegate] tableViewMoveRight:self];
 }
 
 - (BOOL)canDelete {
