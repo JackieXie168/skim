@@ -43,7 +43,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKRuntime.h"
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
@@ -55,64 +54,6 @@
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages;
-
-static void (*original_keyDown)(id, SEL, id) = NULL;
-
-// on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
-- (void)replacement_keyDown:(NSEvent *)theEvent {
-    unichar eventChar = [theEvent firstCharacter];
-    NSUInteger modifiers = [theEvent standardModifierFlags];
-    
-    if ((eventChar == SKSpaceCharacter) && ((modifiers & ~NSShiftKeyMask) == 0)) {
-        eventChar = modifiers == NSShiftKeyMask ? NSPageUpFunctionKey : NSPageDownFunctionKey;
-        modifiers = 0;
-    }
-    
-    if ((([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && 
-        (eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSPageDownFunctionKey || eventChar == NSPageUpFunctionKey) && 
-        (modifiers == 0)) {
-        
-        NSScrollView *scrollView = [self scrollView];
-        NSView *documentView = [scrollView documentView];
-        NSClipView *clipView = [scrollView contentView];
-        NSRect docRect = [documentView frame];
-        NSRect clipRect = [clipView bounds];
-        BOOL flipped = [clipView isFlipped];
-        
-        if (eventChar == NSDownArrowFunctionKey || eventChar == NSPageDownFunctionKey) {
-            if (flipped ? NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0 : NSMinY(clipRect) >= NSMinY(docRect) + 1.0) {
-                CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
-                clipRect.origin.y += flipped ? scroll : -scroll;
-                [clipView scrollPoint:clipRect.origin];
-            } else if ([self canGoToNextPage]) {
-                [self goToNextPage:nil];
-                docRect = [documentView frame];
-                clipRect = [clipView bounds];
-                clipRect.origin.y = flipped ? NSMinY(docRect) : NSMaxY(docRect) - NSHeight(clipRect);
-                [clipView scrollPoint:clipRect.origin];
-            }
-        } else if (eventChar == NSUpArrowFunctionKey || eventChar == NSPageUpFunctionKey) {
-            if (flipped ? NSMinY(clipRect) >= NSMinY(docRect) + 1.0 : NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0) {
-                CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
-                clipRect.origin.y += flipped ? -scroll : scroll;
-                [clipView scrollPoint:clipRect.origin];
-            } else if ([self canGoToPreviousPage]) {
-                [self goToPreviousPage:nil];
-                docRect = [documentView frame];
-                clipRect = [clipView bounds];
-                clipRect.origin.y = flipped ? NSMaxY(docRect) - NSHeight(clipRect) : NSMinY(docRect);
-                [clipView scrollPoint:clipRect.origin];
-            }
-        }
-    } else {
-        original_keyDown(self, _cmd, theEvent);
-    }
-}
-
-+ (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
-        original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
-}
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {
     NSScreen *screen = [[view window] screen];
