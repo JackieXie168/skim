@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKSideViewController.h"
 
-@class SKTocOutlineView, SKThumbnailTableView, SKFindTableView;
+@class SKTocOutlineView, SKThumbnailTableView, SKTableView;
 
 @interface SKLeftSideViewController : SKSideViewController {
     SKTocOutlineView *tocOutlineView;
@@ -48,16 +48,16 @@
     SKThumbnailTableView *thumbnailTableView;
     
     NSArrayController *findArrayController;
-    SKFindTableView *findTableView;
+    SKTableView *findTableView;
     
     NSArrayController *groupedFindArrayController;
-    SKFindTableView *groupedFindTableView;
+    SKTableView *groupedFindTableView;
 }
 
 @property (nonatomic, retain) IBOutlet NSArrayController *thumbnailArrayController, *findArrayController,  *groupedFindArrayController;
 @property (nonatomic, retain) IBOutlet SKTocOutlineView *tocOutlineView;
 @property (nonatomic, retain) IBOutlet SKThumbnailTableView *thumbnailTableView;
-@property (nonatomic, retain) IBOutlet SKFindTableView *findTableView;
-@property (nonatomic, retain) IBOutlet SKFindTableView *groupedFindTableView;
+@property (nonatomic, retain) IBOutlet SKTableView *findTableView;
+@property (nonatomic, retain) IBOutlet SKTableView *groupedFindTableView;
 
 @end

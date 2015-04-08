@@ -68,7 +68,6 @@
 #import "SKNoteOutlineView.h"
 #import "SKTableView.h"
 #import "SKThumbnailTableView.h"
-#import "SKFindTableView.h"
 #import "SKNoteTypeSheetController.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"

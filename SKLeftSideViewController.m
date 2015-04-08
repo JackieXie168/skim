@@ -47,6 +47,9 @@
 #import "SKTocOutlineView.h"
 #import "SKSourceListTextFieldCell.h"
 
+#define PAGE_COLUMNID  @"page"
+#define LABEL_COLUMNID @"label"
+
 @implementation SKLeftSideViewController
 
 @synthesize tocOutlineView, thumbnailArrayController, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
@@ -103,13 +106,16 @@
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
+    [[[findTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[groupedFindTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
         [tocOutlineView setIntercellSpacing:NSMakeSize(3.0, 2.0)];
-        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"label"] dataCell] setSimulatesSourceList:YES];
-        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:@"page"] dataCell] setSimulatesSourceList:YES];
+        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:LABEL_COLUMNID] dataCell] setSimulatesSourceList:YES];
+        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-        [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:@"page"] dataCell] setSimulatesSourceList:YES];
+        [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
     }
 }
 
