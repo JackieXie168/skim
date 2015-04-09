@@ -12,10 +12,5 @@
 
 int main(int argc, char *argv[])
 {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
-        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:0] forKey:@"AppleFontSmoothing"]];
-        [pool release];
-    }
     return NSApplicationMain(argc, (const char **) argv);
 }
