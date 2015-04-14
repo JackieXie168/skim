@@ -42,6 +42,8 @@ Subversion Repository Info
 
 	All The source code necessary to build Skim is available in Subversion. There is a separate page on how to use the Skim Subversion Repository.
 
+		$ svn checkout svn+ssh://svn.code.sf.net/p/skim-app/code/trunk trunk
+
 
 Building Skim
 
