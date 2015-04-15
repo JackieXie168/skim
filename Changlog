@@ -1,0 +1,1357 @@
+Skim Release Notes
+
+Changes since 1.4.7
+
+New Features
+	•	New PDF-TeX preset for Sublime Text 3.
+
+Bugs Fixed
+	•	Improve automatic text detection for notes on Mavericks.
+	•	Fix Rotate Right toolbar item.
+	•	Avoid crasher after note editing due to infinite looping accessibility.
+	•	Always select Skim note when it is on top of a link.
+
+Changes since 1.4.6
+
+Bugs Fixed
+	•	Fix vertical direction for scroll tool.
+	•	Workaround for initial PDF display bug on Mavericks.
+	•	Fix hang in note tool modes.
+	•	Workaround for system writing bug on Mavericks.
+	•	Code-sign all components.
+	•	Draw new line notes from start point to end point.
+	•	Improve automatic text detection for notes.
+
+Changes since 1.4.5
+
+New Features
+	•	Hidden preference for using initial settings from PDF, default is off.
+
+Bugs Fixed
+	•	Fix saving failures on Mavericks.
+	•	Fix note editing and display issues on Mavericks.
+
+Changes since 1.4.4
+
+New Features
+	•	Quick Look support for bookmarks, downloads, and anchored notes.
+	•	Respect initial display mode from the PDF.
+
+Bugs Fixed
+	•	Fix scaling to physical size on retina displays.
+	•	Fix some drawing issues for Mavericks.
+	•	Fix positioning issues from some contextual menu items.
+
+Changes since 1.4.3
+
+Bugs Fixed
+	•	Fix Help.
+	•	Fix selection indication for markup notes.
+	•	Fix reopening last open files when a file is lost.
+	•	Improve accessibility access for notes.
+	•	Fix AppleScript saving of PDF with embedded notes.
+	•	Fix reading notes from external file.
+
+Changes since 1.4.2
+
+New Features
+	•	Allow editing text note properties while editing text.
+	•	Hold down Shift on Favorite Colors for sticky change of default color.
+	•	Smoothen freehand notes.
+	•	Better default placement of new notes around selection.
+
+Bugs Fixed
+	•	Improve minitaturizing snapshot windows.
+	•	Fix TeX-PDF sync for file name containing non-ASCII characters.
+	•	Coalesce tablet pen events while drawing freehand.
+	•	Fix maximum scale factor in some controls.
+	•	Correct placement of notes after note conversion when saving for some PDFs.
+
+Changes since 1.4.1
+
+Bugs Fixed
+	•	Fix saving of notes as RTF from notes document.
+	•	Avoid Mountain Lion bug when converting PostScript.
+	•	Remember export save option.
+	•	Improve efficiency of freehand note drawing.
+
+Changes since 1.4
+
+Bugs Fixed
+	•	Fix selector name leading to serious exception.
+
+Changes since 1.3.22
+
+NOTE:  Mac OS X 10.5 (Leopard) is no longer supported as of 1.4
+
+New Features
+	•	New hidden preference to disable automatic search after opening from Spotlight.
+	•	Add PDF-TeX sync preset for Sublime Text 2.
+	•	Use save options for export without notes or with embedded notes.
+	•	Delete notes using tablet erase tool.
+
+Bugs Fixed
+	•	No mouse event coalescing during drawing of freehand notes.
+
+Changes since 1.3.21
+
+New Features
+	•	Add Simplified Chinese localization (Thanks LiFeng Zhang).
+
+Bugs Fixed
+	•	Fix centering of sync point.
+
+Changes since 1.3.20
+
+New Features
+	•	Scripting support for some presentation options.
+	•	Make grouped search result sortable.
+	•	Allow setting text note alignment in preferences.
+
+Bugs Fixed
+	•	Reset tool tips for notes.
+
+Changes since 1.3.19
+
+New Features
+	•	Allow customizing columns for notes table.
+
+Bugs Fixed
+	•	Fix type select cancel event.
+	•	Fix scripting of modification date and document info.
+	•	Make sure search results are ordered according to page position.
+	•	Fix displayline script for SyncTeX support for Lion.
+	•	Avoid loss of file location that can happen due to bug in Lion.
+	•	Fix note redrawing for large line widths.
+	•	Allow editing multiple page transition at once.
+
+Changes since 1.3.18
+
+New Features
+	•	Extend freehand notes when having CapsLock pressed.
+	•	Improve resizing.
+	•	Restore Previous Session item in Bookmarks menu.
+	•	Use Command-Arrow to collapse or expand all table of contents items.
+
+Bugs Fixed
+	•	Update SyncTeX to latest version 1.16, various bug fixes.
+	•	Fix OpenMeta tags support.
+	•	Allow phrases using double-quotes when searching with Whole Words Only.
+	•	Change some zoom action shortcuts consistent with Preview and to avoid conflicts.
+	•	Improvements to find field.
+	•	Fix display update after changes to media box.
+	•	Remember height of split PDF after closing.
+
+Changes since 1.3.17
+
+New Features
+	•	Hold Option key to show content of a session bookmark.
+	•	Remember search options between documents.
+	•	Allow setting the folder to save downloads in.
+
+Bugs Fixed
+	•	Make sure zoom popups in snapshots are shown in Lion.
+	•	Prevent certain save, convert, and copy operations when printing is not allowed.
+	•	Avoid a Lion system bug in the updater.
+
+Changes since 1.3.16
+
+New Features
+	•	Remove find bar using escape.
+	•	Command-click on split PDF to go to a point in the main view.
+
+Bugs Fixed
+	•	Fix AppleScript support for selections on Lion.
+	•	Improve printing support on Lion.
+	•	Clear selection on mouse down in Move, Magnify, and Select tool mode.
+	•	Rotate the page below the mouse when using gestures.
+	•	Initially display snapshots after they're fully set up.
+	•	Make sure search field in notes document is always shown when initiating a search.
+	•	Disable Lion's built-in window restoration feature.
+
+Changes since 1.3.15
+
+Bugs Fixed
+	•	Fix full screen support on Lion.
+	•	Fix preview tool tips.
+	•	Improve displayline script for .dvi and .xdv files.
+
+Changes since 1.3.14
+
+New Features
+	•	Support for "open location" script command.
+	•	Support some URL open parameters, if we receive them.
+	•	Replace the find bpanel by a scope bar in the window.
+	•	Support Outlook email client.
+	•	Hold Option in actual size toolbar button for physical size.
+	•	AppleScript support for downloads.
+
+Bugs Fixed
+	•	Allow numeric pad keys for type select.
+	•	Update Get Info window when information changes.
+	•	Fix position of synctex indication.
+	•	Fixes to German localization.
+	•	Improvements to preferences: layout, animation, and next/previous actions.
+
+Changes since 1.3.13
+
+New Features
+	•	New hidden default for image smoothing.
+	•	Support select script command.
+	•	Allow AppleScript select command to animate the selection.
+	•	Improved search highlighting, use arrows to move through selected results.
+
+Bugs Fixed
+	•	Don't scale down pages when printed by default.
+	•	Remove Move to Trash menu item as it is incompatible with text editing.
+	•	Scale font passed to accessibility.
+
+Changes since 1.3.12
+
+New Features
+	•	New action to move a file to trash.
+
+Bugs Fixed
+	•	Fix creating bookmarks in AppleScript.
+	•	Fix crasher after trying to reopen deleted files.
+	•	Run AppleScripts from menu in separate process, to avoid timeouts.
+	•	Default to scale down printed pages.
+	•	Fix a sheet conflict when converting notes.
+	•	Fix a crasher on searching PDF.
+
+Changes since 1.3.11
+
+Bugs Fixed
+	•	Fix automatic file updating.
+	•	Fix check in action to add new note.
+	•	Fix duplicate bookmarks manager.
+	•	Fix clicking remote links.
+
+Changes since 1.3.10
+
+New Features
+	•	Hold down Option to open all bookmarks in a bookmark folder at once.
+	•	Codesigning for enhanced security and portability of saved PDF passwords.
+	•	Added Japanese localization (thanks Toru Ishizaki).
+	•	New background option for displayline script.
+	•	New service to show Skim notes.
+
+Bugs Fixed
+	•	Fixes and improvements for scripting selections.
+	•	Complete support for webarchive templates.
+	•	Warn before opening a folder containing a large number of documents.
+	•	Make sure we don't crash when reading corrupted bookmarks.
+	•	Don't show duplicate error alert when opening a file was already cancelled.
+	•	Improved scripting support for bookmarks, in particular creating session and folder bookmarks.
+	•	Fix saving of default full screen PDF settings.
+	•	Fix clicking links hidden behind notes.
+	•	Improvements to freehand notes tool, give preference to drawing, only select on simple click.
+	•	Replacement of remote control support, it is now turned on by default again.
+	•	Improve printing from AppleScript.
+	•	Apply initial PDF view settings and snapshots after unlocking a locked document.
+	•	Always open PDFs from links using Skim.
+	•	Improvements to PDF passwords saved in keychain.
+	•	Disable actions that won't work for locked documents.
+	•	Fix Clear button enabling in Downloads window.
+	•	Allow setting owner password when it's different from the user password.
+
+Changes since 1.3.9
+
+New Features
+	•	Support for .webarchive export templates.
+
+Bugs Fixed
+	•	Make sure page popup is updated in snapshot zooming.
+	•	Update synctex parser to latest version, with some fixes.
+	•	Make sure the favorite colors toolbar item is properly updated when colors are added or removed.
+	•	Fix resetting PDF display settings after presentation.
+	•	Update help on display modes.
+	•	Fix used mail program.
+	•	Fix for interpreting selections in AppleScript.
+	•	Avoid calling a method not defined on Leopard.
+
+Changes since 1.3.8
+
+New Features
+	•	New scripting command to read in notes from a separate notes file.
+	•	Scripting support for bookmarks.
+	•	Embed new skimpdf command line tool to manipulate PDFs with attached notes.
+	•	Make font size in generic note text window sticky and global.
+	•	Support for text alignment in text notes.
+	•	Support for fill color in line-end artifacts of line notes.
+
+Bugs Fixed
+	•	Fully hide split PDF view when removing it while it's closed.
+	•	Keep position in split PDF when re-showing it.
+	•	Support email through Mailplane, Postbox, and PostboxExpress.
+	•	Don't change line style when creating notes.
+	•	Make sure the current page is retained after toggling full screen.
+	•	Make it impossible to create empty documents in AppleScript.
+	•	Fix UI for "Open files" preferences.
+	•	Avoid random page switches in zooming and switching fullscreen modes.
+	•	Workaround for a leak in created notes.
+	•	Support paste of files on bookmarks window.
+	•	Support color drops on the notes table.
+	•	Fix alphabetic page lables.
+	•	Improvements to bookmark scripting.
+	•	Improved cleanup of closed snapshots.
+	•	Fix possible crash due to editor not being cleaned up.
+	•	Fix Spanish localization of line inspector.
+	•	Fix keywords in Info panel.
+
+Changes since 1.3.7
+
+Bugs Fixed
+	•	Fix fullscreen window placement on secondary screens.
+	•	More improvements to fullscreen suport.
+	•	Reenable font menu shortcuts.
+
+Changes since 1.3.6
+
+New Features
+	•	Added Polish localization (thanks Adam Strzelecki!).
+	•	New hidden preference to disable all animations.
+	•	Improvements to bookmark management, allow dropping files, allow changing page, support .skim, and autosave columns.
+	•	Try to keep table of contents expansion states on a reload.
+	•	New scriptable properties for default note fonts.
+	•	Initialize empty contents of converted markup notes from text.
+	•	Restrict full screen mode to single space.
+
+Bugs Fixed
+	•	Fix page count in info window.
+	•	Fix some names of presentation page transitions.
+	•	Help on modifying line attributes.
+	•	Avoid an exception on Leopard when a document closes.
+	•	Disable Apple Remote support by default, as Apple has disabled support and it leaks.
+	•	Update notes table when note color changes.
+	•	Fix FDF export on Leopard.
+
+Changes since 1.3.5
+
+New Features
+	•	Optional Script menu, see the Wiki for details.
+
+Bugs Fixed
+	•	Fix preference for automatic update checking.
+	•	Fix preference control for PDF-TeX synchronization preset.
+	•	Don't show PDF previews in presentation mode.
+	•	Fix an exception on saving.
+	•	Make secondary PDF views key on mouse down.
+	•	Fix hiding Skim in full screen mode.
+	•	Fix info window on Leopard.
+	•	Search TeX editor in application bundle first.
+
+Changes since 1.3.4
+
+New Features
+	•	Custom cursors for note tool modes are now only used based on a hidden preference.
+	•	Extended Font submenu now in the Edit menu.
+	•	Support for extended DVI (XDV) format.
+
+Bugs Fixed
+	•	Don't hide full screen window when deactivating Skim.
+	•	Fix creating notes with properties from AppleScript.
+	•	Fix a potential leak.
+	•	Fix icon sizes in add bookmark sheet.
+	•	Use improved contextual menu support in tables.
+	•	Avoid using up too much memory when adding a lot of notes.
+	•	Allow resizing new notes from note tools in all directions.
+	•	Don't add extra separators in windows menu.
+
+Changes since 1.3.3
+
+New Features
+	•	Indicate note tool mode in cursor.
+	•	Support for modification date of notes, and creator name through hidden default.
+	•	New hidden preference for page background color.
+	•	Make Skim notes documents accessible for AppleScript.
+
+Bugs Fixed
+	•	Avoid "empty" search field after an animation.
+	•	Fix updating preview tool tips after changing pages.
+	•	Allow multiple full screen documents without overlapping side panels.
+	•	Fix some leaks.
+	•	Don't allow dropping colors inside favorite colors widget.
+	•	Faster loading of PDFs with lots of separate page labels.
+	•	Avoid some random crashers due to calls to closed windows.
+	•	Remove search criteria and quotes from spotlight search term before using it.
+	•	Use helvetica italic for quicklook preview of .skim files.
+
+Changes since 1.3.2
+
+New Features
+	•	Use standard status bar and divider styles and animate dividers.
+	•	Hitting Enter in tables simulates double-click, hitting Space scrolls.
+	•	Allow exporting PDFs that were encrypted with embedded notes, at least when PDFkit lets us.
+	•	New hidden preference to allow windows above presentation level.
+
+Bugs Fixed
+
+	•	Show colors in table for .skim documents.
+	•	Try to display the full page when scrolling to a find result.
+	•	Make sure the window title is synchronized when leaving full screen or presentation mode.
+	•	Re-enable conversion of PDF annotations to Skim notes.
+	•	Make searching a bit more efficient.
+	•	Safer save when user permission is needed.
+	•	Add newline in RTFD export template.
+	•	Fix page bubble in preview tooltips.
+
+Changes since 1.3.1
+
+Bugs Fixed
+	•	Fix offset of color swatches in notes table.
+	•	Fix mixup of cursor images.
+	•	Update colors for history highlighting when key state changes.
+	•	Fix adding favorite colors by option-drop.
+	•	Reenable tool-tip preview on links and anchored notes.
+	•	Fix initial opening of table of contents pane.
+	•	Coerce initial scripting properties passed in with "make" command.
+	•	Workaround for memory problems with full screen fade out on some hardware.
+	•	Some fixes to AppleScript support.
+	•	Allow saving notes to locked and read-only files when permission is granted.
+	•	Fix PDFSync support.
+
+Changes since 1.3
+
+Bugs Fixed
+	•	Fix a crasher when opening encrypted PDFs on Leopard.
+
+Changes since 1.2.7
+
+NOTE:  Mac OS X 10.4 (Tiger) is no longer supported as of 1.3
+
+New Features
+	•	64-bit support on Snow Leopard, unfortunately Leopards 64-bit binaries are too buggy.
+	•	Always reopen the last open files after an automated update.
+	•	Allow clicking links below the reading bar.
+	•	Multi-line text view for editing generic note text.
+	•	All new high resolution icons. Thanks Kim Does!
+	•	Add sortable color column to note table.
+
+Bugs Fixed
+	•	Better method to prevent sleep during presentations.
+	•	Make sure the main PDF view gets focus on mouse down, and use it as the default target for some Edit commands.
+	•	Avoid using empty selections, which could lead to various problems on 10.6.
+	•	More accurate calculation for the alternate menu actions Zoom to Width and Zoom to Height.
+	•	Rotate markup notes on rotated pages, so they will probably align with the lines.
+	•	Make use of Core Animation for several fading transitions.
+	•	Prevent empty item in presentation transition style popup.
+	•	Workaround for a 10.6 bug that scrolled to the first page after a display mode change.
+	•	Prevent empty item in presentation transition style popup.
+	•	Workaround for a 10.6 bug that scrolled to the first page after a display mode change.
+	•	Prevent black edges around pages in presentation page transitions.
+
+Changes since 1.2.6
+
+New Features
+	•	Set the text color of a text note from the favorite colors when holding the Option key.
+
+Bugs Fixed
+	•	Enable new note menu items.
+	•	Smooth images when anti-aliasing.
+	•	Fix initialization of saved line style of notes.
+	•	Workaround for 10.6 scrolling back to the first page after a display mode change.
+
+Changes since 1.2.5
+
+Bugs Fixed
+	•	Fix toolbar images for 10.6.
+	•	Fix AppleScript support for selections and highlights on 10.6.
+	•	Fix a bug that sometimes created huge notes on 10.6.
+	•	Avoid a hang due to tooltips of notes starting with spaces.
+
+Changes since 1.2.4
+
+New Features
+	•	Select a square when holding the Shift key.
+	•	New option to TeX-PDF sync AppleScript "go to" command and displayline script to show the reading bar instead of selecting.
+	•	Enable PDF-TeX sync in the Snapshots and Split-PDF.
+	•	Easier setting of text note font color, using Option-drag and a check box in the Colors panel.
+	•	The presentation transition options are now saved.
+	•	You can now choose separate page transitions for Presentation mode.
+	•	Hidden preference to hide full screen side panels extended to allow for disabling auto-hide completely.
+	•	Hidden preference to disable pinch-zoom.
+	•	New script command to get a text representation using templates.
+	•	Add PDF-TeX sync preset for new Aquamacs.
+
+Bugs Fixed
+	•	Fix localized document type names.
+	•	Don't select in Presentation mode when using TeX-PDF sync.
+	•	Make sure tool tip rects are reset when the page changes.
+	•	Fix markups on Snow Leopard.
+	•	Reject the "revert" script command during auto-reloading, these features should never be used together.
+	•	Safer editing registration to avoid possible crashers.
+	•	Remove PDF With Embedded Notes export option for encrypted PDFs.
+
+Changes since 1.2.3
+
+New Features
+	•	The Split PDF feature is now also available in Full Screen mode.
+	•	You can now open folders containing files Skim recognizes.
+	•	New hidden preference to hide full screen side panels when they are closed.
+	•	Enable tablet scribbling in presentation mode.
+	•	Extend freehand notes by holding down Shift.
+
+Bugs Fixed
+	•	Always enable zoom slider in full screen navigation controls.
+	•	Continuously auto-scroll during certain drags.
+	•	Fix reopening documents from a session bookmark.
+	•	Fix reading of setup bookmarks.
+	•	Workaround for Tiger crasher due to uncommitted editors.
+	•	Don't let PDFKit animate page transitions when Skim already does.
+	•	Always activate open or minimized windows when clicking the dock icon.
+	•	Use correct rotation for placeholder thumbnail.
+	•	Avoid hang due to thumbnail drawing.
+
+Changes since 1.2.2
+
+New Features
+	•	You can now save PostScript and DVI with attached Skim notes.
+	•	Change hidden default for the full screen and presentation navigation behavior, allow disabling it.
+	•	Add a zoom slider in the full screen navigation controls.
+
+Bugs Fixed
+	•	Workaround for Leopard's buggy identification of file types.
+	•	Fix selection behavior of toolbar buttons on Tiger.
+	•	Fix activation of line wells in notes preferences.
+	•	Increase minimum size of page column in snapshots table.
+
+Changes since 1.2.1
+
+New Features
+	•	Update Sparkle updating framework and use signed updates.
+	•	Use source list style colors on Leopard.
+	•	Reduce effective width for hit testing of line and freehand notes.
+	•	Book mode is now the default in two-page layout.
+	•	You can now drag pages and snapshots from the tables.
+
+Bugs Fixed
+	•	Fix some leaks.
+	•	Workaround for Apple bugs in AppleScript support for selection specifiers.
+	•	Fix AppleScript grab command.
+	•	Fix link to Wiki in Help menu.
+	•	Draw focus ring on some custom controls.
+	•	Don't show notes in spotlight comments.
+	•	Make sure the window icon in the snapshot table is shown initially.
+	•	Make sure navigation toolbar buttons are validated after a reload.
+	•	Application and window switching disabled in Presentation mode.
+	•	Fix text color of highlighted cells on Tiger.
+
+Changes since 1.2
+
+New Features
+	•	Add preset for synchronization with TeXMaker and AlphaX.
+	•	New AppleScript command to convert PDF annotations to Skim notes.
+	•	Handle PDF files in Skim's Spotlight importer, so Skim notes can be searched.
+	•	Add alternate contextual menu in notes table to edit text in a separate window.
+	•	Black screen feature in Presentation mode, use the 'b' key.
+	•	Improved AppleScript support for rich text
+	•	The width of the reading bar is now sticky.
+	•	Set fill color from Favorite Colors toolbar item when holding the Option key.
+	•	Add Traditional Chinese localization (thanks Jim Chiu!).
+	•	Some initial support for Open Meta tags. Readable by ApppleScript and saved with Save As and Export as PDF.
+
+Bugs Fixed
+	•	Rotate pages in the correct direction using gestures.
+	•	Use larger margins around selectable text.
+	•	Show find panel on the current space.
+	•	Ignore mouse moved events for PDF-TeX synchronization.
+	•	Fix Quick Look generator for Freehand notes.
+	•	Prevent clipped small toolbar buttons on Tiger.
+	•	Fix Help on PDF-TeX synchronization.
+	•	Respect page rotation in copied TIFF images.
+	•	Better conversions of PDF annotations to Skim notes.
+	•	Prefer using SyncTeX over PDFSync.
+	•	Improvements to template support.
+	•	Fix resizing and tracking rect of full screen side panels.
+	•	Make freehand note tool mode accessible through shortcuts.
+	•	Make sure full screen windows fill the screen after illegal moves in Spaces.
+	•	Fix row height in thumbnail and snapshot tables.
+	•	Display more context around a selected find result.
+	•	Full screen windows are now shown on all Spaces to avoid inconsistencies.
+	•	Fix automatic cropping of a single page.
+	•	Make sure the window is redrawn after a reload.
+	•	Improved thread safety for dvi conversion.
+
+Changes since 1.1.13
+
+New Features
+	•	New freehand note type, only supported through tool mode.
+	•	Allow choosing an associated document with presentation notes to be navigated simultaneous with the presentation. Requires a 1-to-1 correspondence of pages.
+	•	Improvements to notes document. Support searching, printing, and multiple selections.
+	•	Support Word 2007 Format (docx) templates (Leopard only).
+	•	Add file name as comment to keychain items.
+	•	Allow opening some PDF files with a wrong extension.
+	•	Allow changing the default text color for text notes (Leopard only).
+	•	Use capsule style toolbar buttons on Tiger.
+	•	Add optional "-r" argument to displayline script to revert the document.
+	•	Add option to match the scale in the split PDF with the main PDF: select "=" in the scale popup.
+	•	Support for trackpad gestures in snapshot and split PDF features.
+	•	New AppleScript command to grab part of a page as an PDF or TIFF image.
+    
+Bugs Fixed
+	•	Fix open script command on Tiger.
+	•	Fix PDF-TeX backward search for the Aquamacs Emacs preset.
+	•	Fix saving of anchored notes from a notes document.
+	•	Avoid a hang after the first double-click in tables.
+	•	Avoid an excaption that could occur when closing a document with an active search.
+	•	Smoother fade out of full screen windows.
+	•	Use consistent set of icons for various note types.
+	•	Fix for an exception in the Info window.
+	•	Remember the current page after page rotation.
+	•	Clean "alien" characters from selection strings.
+	•	Fix PDFSync and SyncTeX support for file names containing spaces and periods.
+	•	Fix sorting exception in notes document.
+	•	Fix a crasher when removing a bookmark while editing it.
+	•	Make sure old Skim notes are removed from extended attributes when saving.
+	•	Make sure the main window becomes key after closing a note or snapshot window.
+	•	Fix a crasher that could occur when closing a document with open snapshots.
+	•	Allow more complex recursive specifiers for scripting selections, as well as selections in the whole document.
+	•	Change preference keys for text note font, you may need to set it.
+	•	Only set fullscreen key window when the main or side window was key.
+	•	Allow saving passwords for files without an ID in the Keychain.
+
+Changes since 1.1.12
+
+New Features
+	•	Allow editing the text of generic non-anchored notes using a little window.
+	•	New bookmark to save the current session.
+	•	New bookmark for a file including full setup. Hold down Shift and Option to see the menu item.
+	•	New hidden preference to disable preview tool tips in tables.
+	•	Replace the Italian localization (Thanks Mauro Mazzieri!).
+	•	Renamed hidden default to use sequential instead of logical page numbering.
+	•	Expand some table of contents items initially.
+
+Bugs Fixed
+	•	Improvement to finding the editor script for a preset synchronization, fixes sync for BBEdit.
+	•	Remove incomplete Italian localization.
+	•	Avoid empty window titles for note windows.
+	•	Avoid keeping the system from going to sleep.
+	•	Fix a bug that could cause a hang when using the note table.
+	•	Fix some leaks.
+	•	Fix page numbers in thumbnail table in Spanish localization.
+	•	Updated SyncTeX support, containing fixes for ConTeXt.
+	•	Ignore some more errors due to unsupported extended attributes when reading notes failed.
+	•	Make sure any edit in the note table is committed before saving.
+	•	Explicitly resolve symlinks in file names used by PDFSync and SyncTeX, as Apple fails us.
+	•	Improved accessibility overrides, hopefully fixes a crasher.
+
+Changes since 1.1.11
+
+Bugs Fixed
+	•	Fix loading of notes.
+
+Changes since 1.1.10
+
+New Features
+	•	New hidden default to disable animated search highlights.
+
+Bugs Fixed
+	•	Don't reopen last open file when reactivating Skim.
+	•	Fix DVI conversion.
+	•	Fix SyncTeX support.
+	•	Compare tex files for TeX-PDF synchronization case insensitively.
+	•	Consistently use one-based line numbers for TeX-PDF synchronization.
+	•	Fix convert action in included skimnotes tool.
+	•	Properly update row height when changing table font iun the preferences.
+	•	Avoid a bug that prevented the jump-scroll system preference to be respected.
+	•	Allow opening an alias to an associated PDF from a Skim notes document window.
+	•	Fix the UTI used for RTF. Fixes a bug that may prevent exporting.
+
+Changes since 1.1.9
+
+Bugs Fixed
+	•	Use correct separator in extended attribute names.
+
+Changes since 1.1.8
+
+New Features
+	•	Remember last used export types for Skim note files.
+	•	New hidden preference to autosave a document.
+	•	Add support for SyncTeX. Thanks Jerome Laurens for providing the SyncTeX parser.
+	•	New hidden preference to use logical page numbering.
+	•	Improvements to skimnotes tool.
+
+Bugs Fixed
+	•	Prevent calling Leopard-only methods. This fixes a bug that prevented Export and Save As on Tiger.
+	•	Make sure the last chosen export type is remembered only for Export.
+	•	Workaround for a system leak when loading appcasts for update checking.
+	•	Fix exported FDF.
+	•	Fix various leaks.
+	•	Try other dvi conversion tools when the default one is not found.
+
+Changes since 1.1.7
+
+New Features
+	•	You can now copy information about search results from the tables.
+
+Bugs Fixed
+	•	Initializes line notes with default properties.
+	•	Bring back children for anchored note text in note table.
+	•	Ignore errors when reading notes due to unsupported extended attributes.
+	•	Properly save line information in markup notes.
+	•	Properly initalize rich text of existing anchored notes, fixes AppleScript support.
+	•	Properly release the file when the document closes.
+
+Changes since 1.1.6
+	
+Bugs Fixed
+	•	Fix writing large data for Skim notes to extended attributes.
+
+Changes since 1.1.5
+	
+Bugs Fixed
+	•	Fix reading PDF bundles.
+	•	Fix saving notes to PDF files.
+	•	Fix drawing highlights on Tiger.
+	•	Fix going to a page from a bookmarks or using type select.
+
+Changes since 1.1.4
+
+NOTE: If you are using customized export templates, you should move those to the new location. See the Wiki for details.
+
+New Features
+	•	Presentation page transitions now set an optional angle depending on the direction. Some transitions on the Wiki have been updated.
+	•	New hidden defaults for the default note text. See the Wiki for details.
+	•	Add accessibility for the status bar.
+	•	Add support for the system dictionary popup.
+	•	You can now change the text color for text notes.
+	•	Change default DVI conversion tool to dvipdfmx.
+	•	You can now define new custom export types for various text formats using templates. See the Wiki for details.
+	•	New menu item to paste text without style.
+	•	The selection from the Selection Tool is now accessible from AppleScript.
+	•	You can now click the location in the status bar of the note window to display the note in the main window.
+	•	New pdfsync editor preset for AquaX.
+	•	Use animated search highlight on Leopard.
+	•	Update skimnotes tool.
+	•	New hidden preference to match the zoom of the split PDF to the main PDF.
+	
+Bugs Fixed
+	•	Disable preview tool tip when Skim is not active.
+	•	Connect markup for text with missing spaces.
+	•	Update preview tool tips more often, in particular after scrolling.
+	•	Change version number syntax, so Apple more reliably chooses the correct one.
+	•	More reliable auto-reload of DVI files.
+	•	Fix for making fullscreen window key after showing a side panel.
+	•	Make sure we don't use a non-existent font, avoids possible exceptions.
+	•	The selection (for copying) using the Select tool is now added to the page on which the selection was actually made.
+	•	Fix an exception when adding a highlight while a snapshot is open.
+	•	Fix opening associated PDF from Spotlight.
+	•	Fix UTI declarations.
+	•	Ignore duplicate file update notifications. On Leopard kqueue apparently sends more than one write notifications.
+	•	Make sure the reading bar is shown when turning the feature on.
+	•	Combine text when extending markup.
+	•	Use the system download folder when downloading files.
+	•	Use the system paper size for printing by default. Only change the orientation, if necessary.
+	•	Remove extraneous check marks in popup for update preference.
+	•	Make sure no notes can be added without a page.
+	•	Fix typos in help.
+	•	Fix backgrounmd color for keywords in info window on Leopard.
+	•	Find complete words only when the Whole Words Only option is checked.
+	•	Workaround for drawing artifacts in toolbar images on Tiger.
+
+Changes since 1.1.3
+
+New Features
+	•	Go to selected note from table using Enter key.
+	•	Many improvements to accessibility. Add accessibility information to toolbar buttons, and to notes and links in the PDF.
+	•	Use Control-Option-arrow to resize notes to avoid conflict with Spaces.
+
+Bugs Fixed
+	•	Fix crasher on Tiger due to font preference control.
+	•	Fix undo of text for anchored note.
+	•	Open PDF with wrong extension as PDF instead of PostScript.
+	•	Fix AppleScript save command with file type passed on Leopard.
+	•	Fix keyboard selection of active note or link.
+	•	Fix crasher when setting empty text in anchored note.
+
+Changes since 1.1.2
+
+New Features
+	•	Allow copying text for multiple notes from the note tables.
+	•	Remember snapshot window locations when rebuilding snapshots on reload and reopening a file.
+	•	Allow opening PDFs with any unrecognized file extension.
+	•	Much more efficient undo implementation.
+	•	Add Czech localization (thanks Czech X Team!).
+	•	New hidden preference to disable automatic update of the contents of circle and box notes.
+	•	Support links to locations in other PDF files.
+	•	Apple Remote now scrolls faster.
+	•	New toolbar buttons for display mode.
+	•	Allow selecting text inside a highlight.
+	•	You can now add new favorite colors using option-drag, and remove them by dragging to the trash.
+	•	You can now set the fill color of circles and boxes using drag and drop by holding down the Option key.
+	•	Use system font panel to choose default fonts, allows choosing font with traits.
+
+Bugs Fixed
+	•	Allow removing selection from a search in certain tool modes.
+	•	Avoid warning when saving PDF bundle on Leopard.
+	•	Fix a crasher when cropping pages.
+	•	Properly include start/end point for line notes in FDF export.
+	•	Revert selected image copying behavior on Tiger, to avoid a PDFKit bug.
+	•	Don't use arrow buttons without modifiers to navigate pages, as this is used to move notes.
+	•	Fix French translation error.
+	•	Enable pinch-zoom for multi-touch trackpads.
+	•	Never clear text contents of a circle or box note when it does not enclose any text.
+	•	Trim whitespace and newlines from text in tool tips.
+	•	Fix adding notes in AppleScript.
+	•	Use correct action for menu form of Print toolbar item.
+	•	FDF export now should always work, but may drop non-ASCII characters.
+
+Changes since 1.1.1
+
+New Features
+	•	Use dark toolbar images on Tiger.
+	•	Allow printing without dialog from AppleScript.
+
+Bugs Fixed
+	•	Fix opening DVI files.
+	•	Allow opening linked PDFs from notes document.
+	•	Fix printing on Tiger.
+	•	Improve toolbar validation.
+	•	Fix conversion of PDF annotations to Skim notes.
+
+Changes since 1.1
+
+Bugs Fixed
+	•	Fix printing problems.
+	•	Reinsert missing toolbar icons.
+
+Changes since 1.0.3
+
+New Features
+	•	Navigate through pages using left/right arrow buttons when there is no horizontal scroll bar.
+	•	Add alternate menu item to navigate synchronously in all open documents (use Control).
+	•	More consistent and Leopard compatible toolbar buttons.
+	•	Print panel improvements. Allow setting auto-rotate in print panel, and on Leopard allow setting page auto-scaling and show a preview.
+	•	Using Command-arrow in the note table now selects and scrolls to the selected note or highlight.
+	•	Reading bar now centers vertically when moved through keyboard shortcuts.
+	•	Copied images are now fully cropped, including their media box.
+	•	Allow changing the media box through AppleScript.
+	•	More descriptive menu titles for alternate Auto Crop menu items.
+	•	Full screen navigation buttons are now activated at the bottom of the screen by default. Can be changed with a hidden preference.
+	•	Add search options in a contextual menu of the PDF search field.
+
+Bugs Fixed
+	•	Remove Spotlight search criteria from initial search string. 
+	•	Use more reliable method to determine whether to use metric units.
+	•	Don't round off scaling of snapshots.
+	•	Fix Copy contextual menu in notes table.
+	•	Make sure a font exists before using it.
+	•	Fix resizing of cancel button in update progress panel.
+	•	Remove duplicate tool tips from notes and links.
+	•	Make sure the document is not mrked dirty after undoing e.g. page rotation.
+	•	Fix height of toolbar buttons on Leopard.
+	•	Workaround for a Leopard PDFKit leading to exceptions in snapshots.
+	•	Fix removal of preview tool tip in some situations.
+	•	Fix preview tool tip refreshing on Leopard.
+	•	Draw nothing in line preview for zero line width.
+
+Changes since 1.0.2
+
+New Features
+	•	Add hidden defaults for modifiers of reading bar navigation and resizing shortcuts.
+
+Bugs Fixed
+	•	Revert shortcuts for reading bar navigation and resizing shortcuts to Option-arrow and Shift-Option-arrow.
+	•	Rename some AppleScript properties of default line styles to avoid conflicts.
+	•	Avoid tracking rects during load. Fixes a bug that prevented loading of some PDFs.
+	•	Don't bounce the application icon in the dock when showing the progress bar, e.g. during reload.
+	•	Don't auto-rotate printed pages. This can be changed in Page Setup after choosing Skim from the Settings popup button.
+
+Changes since 1.0.1
+
+New Features
+	•	Use page label when present in default export template rather than page index + 1.
+	•	Hidden default to remove reload alert. Use at your own risk.
+
+Bugs Fixed
+	•	Finally avoid a Leopard bug that often led to blank windows.
+	•	Improvements to Fit To PDF.
+	•	Printing from snapshots now prints the document.
+	•	Fix minimum size of French update window.
+
+Changes since 1.0
+
+New Features
+	•	Setting to auto-rotate printed pages in the Page Setup sheet now sticks for new documents and between sessions.
+
+Bugs Fixed
+	•	Make sure relative links are completed. Fix an Apple crasher for relative links.
+	•	Fix file extension for initial choice of exported file type in Leopard.
+	•	Fix crashing bugs Spanish localization.
+
+Changes since 1.0RC2
+
+New Features
+	•	Automatically select the proper paper size in the print info.
+	•	Add support for Keyspan Frontrow remote control.
+	•	Change the shortcuts for moving and resizing of the reading bar to avoid conflicts with Spaces on Leopard.
+	•	New keys for note type icons to be used in RTFD export templates.
+	•	Add Russian localization. (Thanks Michael Krekin!)
+	•	Add QuickLook plugin for PDF bundles and Skim notes files.
+	•	Add support for counters in export template.
+	•	Show page number in window title.
+
+Bugs Fixed
+	•	Really prevent selection in Leopard for context menu.
+	•	Fix remote control support.
+	•	Fix empty thumbnails that could sometimes occur.
+	•	Fix transition popup in French localization.
+	•	More efficient gradient drawing.
+	•	Faster save of disk image on Leopard.
+	•	Fix line widths that could sometimes be wrong.
+	•	Smoother first transition in presentation mode.
+	•	Fix a possible crasher in DVI converter.
+	•	Fix segmented buttons on Leopard, shift images and use consistent style.
+	•	Smoother animation of button when swapping find tables.
+	•	Fix an exception that prevented toolbar customization on Leopard.
+	•	Reduce some unnecessary memory usage.
+	•	Always synchronize full screen zoom button.
+
+Changes since 1.0RC1
+
+New Features
+	•	Allow grouping search result by page.
+	•	Allow multiple selection in note table.
+	•	Add script to SharedSupport in Skim bundle to create a disk image, used by Save Disk Image.
+	•	Allow moving the navigation buttons in full screen modes.
+	•	More note preference settings are now available from AppleScript.
+	•	Add german localization (thanks Jonas Zimmermann!)
+	•	Add menu items to go to a marked page.
+	•	New alternate menu action to zoom fit to height or width, make Physical Size an alternate item. Press the Option key to see an alternate item.
+	•	Implement zoom actions for snapshots.
+
+Bugs Fixed
+	•	Use font size from defaults in bookmarks table.
+	•	Toggle utility panels instead of only showing them.
+	•	Don't select for a contextual menu on Leopard for tool modes ather than Text Tool Mode.
+	•	Don't set the size fo new anchored notes from the current selection.
+	•	Remove auto-saved .skim notes backup when there are no notes.
+	•	Prevent running Skim on pre-Tiger systems.
+	•	Only warn when saving notes in extended attributes fails and a .skim backup is automatically saved.
+	•	Fix a crasher when reading a PDF.
+	•	Try to ignore hyphenation for default text of a note from a selection.
+	•	Order windows in the Windows menu alphabetically.
+	•	Fix a leak.
+	•	Fix text export template.
+	•	Workaround for a bug in the page history on Tiger.
+
+Changes since 0.9.3
+
+Note:  if you use custom export templates, you may want to change the "contents" key by the key "string".  See the Wiki for further details.
+
+New Features
+	•	Add an alternative page toolbar item with buttons to go to the first or last page.
+	•	Rotate preview tool tip for rotated pages.
+	•	Hidden default to automatically reload files changed on disk without notes. Use at your own risk.
+	•	Allow to directly add a new bookmark to a folder.
+	•	Split the overcrowded View menu into two separate menus.
+	•	Allow automatic reloading of DVI files changed on disk.
+	•	Use "string" key instead of "contents" to allow saving the full text of embedded anchored notes on Leopard. This may affect custom templates.
+	•	Add preference for the font size used in text tables.
+	•	New utility window to add new notes.
+	•	New alternate composited zoom toolbar items.
+	•	New action to convert PDF annotations added in other PDF editors to Skim note. Intended for use on Leopard.
+	•	You can now resize notes in all directions using improved anchor points.
+
+Bugs Fixed
+	•	Fix button autoresizing in French update window.
+	•	Update status bar after reloading.
+	•	Fix remaining reading bar when moving it at top or bottom of page.
+	•	More efficient template parsing.
+	•	Fix removal of empty space around template tags.
+	•	Correctly remove empty space around template tags in template parsing.
+	•	Add a remark in the preferences on how to set the default view settings.
+	•	Fix saving of bookmarks, they could be corrupted when the file was deleted.
+	•	Rename the label of a toolbar item.
+	•	Fix a leak.
+	•	Fix scripting support for default view settings.
+	•	Fix saving of recently viewed pages and snapshots.
+	•	Fix autoresizing row heights in note table.
+	•	Leopard fixes for magnify and highlight note tools, text note editing, reversed gradients, and dirtying landscape PDFs.
+	•	Fix reverting DVI files.
+	•	Avoid an infinite loop when converting DVI.
+	•	Fix zoom buttons in snapshot and split PDF view scroller on Leopard.
+	•	Don't use the size of the selection for new anchored notes.
+	•	Use bash shell in pdfsync forward search script, as sh does not work on Leopard.
+
+Changes since 0.9.2
+
+New Features
+	•	Support for smaller comparison condition in templates.
+	•	Hide preview tool tip after a few seconds.
+	•	Make reading bar resizable, drag the bottom of the bar or use Control-Option-arrow keys.
+	•	Allow condition tags comparing two properties in text templates.
+
+Bugs Fixed
+	•	Fix French and Italian localization of bookmarks window.
+	•	Respect stickyness of closed contents pane, unless table of contents should always be shown.
+	•	Don't search for an empty string, as this leads to a crash.
+	•	Avoid locking the PDF file.
+	•	Fix a check to enable presentation page transitions.
+	•	Allow non-ASCII characters in the paths passed to pdfsync forward search scripts.
+	•	Fix layout problems of the PDF when resizing the window.
+	•	Use subdirectory of temporary directory for for DVI conversion.
+
+Changes since 0.9.1
+
+New Features
+	•	Make reading notes from .skim or .fdf files undoable.
+	•	Allow saving passwords for protected files in the keychain.
+	•	Organize bookmarks with folders and separators.
+	•	Add RTFD export templates and make snapshots and pages and their thumbnails accessible in templates.
+	•	You can now show a PDF snapshot in a split below the main PDF.
+	•	Drawer die-hards can now set a hidden default to let Skim use drawers instead of panes.
+	•	Add Spanish translation (thanks Alejandro Cámara Iglesis).
+
+Bugs Fixed
+	•	Don't use transparent background color text note editing, as the black background shines through.
+	•	Show progress sheet when reverting a document, so you access the document and crash during reload.
+	•	The contents pane is now always opened, unless the file has no TOC and you have chosen so in the preferences.
+	•	Remove the table of contents before reloading a document to avoid a crash.
+	•	Don't animate page state changes in a presentation.
+
+Changes since 0.9
+
+New Features
+	•	Allow copying and auto-resizing rows in note documents.
+	•	Allow viewing FDF files in Skim.
+	•	Add a status bar to document window for notes.
+	•	Update French localization.
+	•	Remember window location and size for notes documents.
+
+Bugs Fixed
+	•	Really save FDF data in bundle.
+	•	Fix a crasher in the skim notes window.
+	•	Try to reconstruct split of short contents and larger text in anchored notes from FDF files.
+	•	Allow opening PDF bundles saved with older version of Skim.
+	•	Fix exported FDF for items without a border.
+
+Changes since 0.8
+
+New Features
+	•	Use blue background for some tables.
+	•	Name files inside a bundle the same as the bundle.
+	•	Add contextual menu items to note window to auto-size a single row or all rows.
+	•	Support for import and export of FDF files, allowing interchange of notes with Adobe.
+	•	New hidden default for the size of the preview tool-tip.
+	•	Keep the color of a text note while editing.
+
+Bugs Fixed
+	•	Always use the current selection for snapshots when available.
+	•	Show full size of the content of a PDF bundle in info window.
+	•	Fix a crasher when loading a password protected file.
+	•	Update page labels and page clumn widths when unlocking a file.
+	•	Report failing type-select in the status bar.
+	•	Allow non-ASCII characters, such as accents, in type-select.
+	•	Make sure the message in the search results table changes at the end of a search.
+	•	Fix delete using delete key in note table.
+
+Changes since 0.7
+
+New Features
+	•	Hold down Shift key while moving the end points of a line to restrict the angle of a line to multiples of 45 degrees.
+	•	You can now save the PDF and notes together in a bundle. This format is safe for email and version control.
+	•	Notes in PDF bundles can be searched through Spotlight.
+	•	The skimnotes command line tool can now use the standard input or standard output.
+	•	The skimnotes command line tool now won't write empty notes.
+	•	New preferences for default fontto use for anchored notes.
+	•	New hidden default to keep notes on top by defaul.
+	•	You can now double-click in the table of search results or the table of contents to force going back to the link.
+	•	New "Select None" menu item in the Edit menu.
+	•	Added tool-tips in the note table.
+	•	Added a link to the Wiki in the Help menu.
+	•	New hidden default to add the Skim creator code to files it saves. Setting this can cause PDFs saved by Skim to be opened by Skim.
+	•	New hidden defaults for the default size of new notes.
+
+Bugs Fixed
+	•	Add white outline to magnify cursors so they are visible on a dark background.
+	•	Adjust the size of page columns so they use as little space as possible.
+	•	Periodically save current documents, so the last open files can be opened after a crash.
+	•	Fix editing of lines.
+	•	Show the snapshot cursor only when pressing the mouse.
+	•	Unarchive notes as text in skimnotes command line tool.
+	•	Fix a crasher with search highlighting when reloading the document.
+	•	Update French localization.
+	•	Scale page thumbnails proportionally to avoid a PDFKit bug.
+	•	Fix of a leak in the note window. This should also improve stickyness of the note window position and size.
+	•	Change the creator code for Skim, as the one we used was already registered.
+	•	The toolbar items to add notes now can be clicked using the spacebar when selected.
+
+Changes since 0.6.1
+
+New Features
+	•	You can now resize all rows of the notes table to view the full text.
+	•	PDFSync from the editor now shows an indication of the target location.
+	•	The tool tip of the table of contents and the table of search results now shows a preview of the target location.
+	•	New toolbar item to add new note and highlights.
+	•	Added contextual menus for tables.
+	•	New menu item to save a disk image with the saved file. Useful for protecting and sending files with a large number of notes.
+	•	Choosing Auto for the zoom of a snapshot auto-resizes the currently shown area rather than the full page.
+	•	PDF view can now provide selected PDF for services.
+	•	Skim can now download PDFs from remote URLs, which can be provided on the clipboard, dropped on the Skim icon, or through Services.
+	•	Added a service to open selected PDF in Skim.
+	•	Added a new item in the page setup sheet to automatically rotate pages for printing. Choose Skim from the Settings popup.
+	•	You can now drag the image from an anchored notes window.
+	•	Added type-select to quickly move to a page or an item in a table.
+	•	You can now preview the image linked to an anchored note.
+	•	Added some copy and delete actions as well as contextual menus to various tables.
+	•	Some interface improvements.
+
+Bugs Fixed
+	•	Fix spell checking freeze for single page PDFs.
+	•	Selecting text is now completely disabled in presentation mode.
+	•	Changed shortcuts of Search PDF and Presentation to be consistent with other application.
+	•	Improvements to the Find panel. We now synchronize with the global find pasteboard.
+	•	Fix searching for application support folder on computer or network domain.
+	•	Fix automatic determination of landscape printing for rotated documents.
+	•	Reset thumbnails, table of contents, page labels and snapshots after unlocking an encrypted document.
+	•	Allow copying text from copy protected documents.
+	•	Disable printing and export with embedded notes of print protected files, as it doesn't do anything anyway.
+	•	Disable full screen modes when the document is unlocked, as it has side effects.
+	•	Fix dragging end points of lines on rotated pages.
+	•	Fix copying PDF selection from rotated pages.
+	•	Hopefully fix some problems with the placement of fullscreen windows.
+	•	Fix window title for single page documents.
+	•	Fix rounding problems when joining highlights.
+	•	Implement Home and End keys in tables.
+	•	Fix a possible crasher when reloading a file.
+	•	Fix placement of full screen windows on secondary screens.
+	•	Open all snapshots fom a previous run.
+
+Changes since 0.6
+
+Bugs Fixed
+	•	Fix updater.
+	•	Make sure side panes are opened at the saved widths.
+	•	Fix a typo in the scripting dictionary.
+
+Changes since 0.5.1
+
+New Features
+	•	Default print settings automatically choose landscape for wide pages.
+	•	Hidden preference for custom dvi conversion utilitiesto read DVI (e.g. dvips).
+	•	You can now spell-check a PDF.
+	•	Animated page transitions for your presentations. A large set of default transitions is provided.
+	•	You can now quickly go to a page in presentation mode using the Show Contents Pane action.
+	•	You can now search notes displayed in the table.
+	•	New View menu item to show the file at the real size at which it would be printed.
+	•	Added a Speech menu to Edit menu.
+	•	Added keyboard shortcuts 'p' and 'a' to toggle pages and auto-resize in presentation mode.
+	•	Added French localization. (Thanks Corentin Cras-Méneur!)
+
+Bugs Fixed
+	•	Correct display of zero line width in Line inspector panel.
+	•	Fix broken Note preferences in Italian localization.
+	•	Improved security for PDFSync, escape special shell characters.
+	•	Most tool modes now don't show the hand cursor, as you cannot drag.
+	•	Notes and highlights are not printed anymore when they are hidden.
+	•	Shortcuts to quickly change tool modes is changed to Option-Command-arrow, to avoid conflicts with moving notes (was Shift-arrow).
+	•	Disable invalid menu actions in presentation mode.
+	•	You can now also exit full screen mode by pressing action when a side panel is opened. Also some other actions are enabled in that case.
+	•	You can now open PDF and PS files even if they happen to have the wrong extension.
+	•	Fix layout issues in main window.
+	•	Reopen snapshots after a reload at the correct zoom factor.
+	•	Notes sorted by contents ignores case and uses numeric compare.
+	•	Ignore empty Spotlight search text.
+
+Changes since 0.5
+
+New Features
+	•	Added some more sorting keys for use in text export templates.
+	•	Reorganized document info window, with some new properties.
+	•	You can now navigate through a presentation using mouse clicks.
+	•	New toolbar items to open color, font, and line panels.
+	•	Added an optional status bar, displaying the page number, number and pages, as well as informatino about the tool mode, if it applies.
+	•	You can now print documents from AppleScript.
+	•	Pdfsync from AppleScript now goes separately through the go command instead of the open command.
+	•	You can now quickly rotate through tool modes using Shift-modified arrow keys.
+
+Bugs Fixed
+	•	Prevent chaching of update info for updater.
+	•	Fix the default text export templates.
+	•	Allow other active application windows in front of Skim in presentation mode.
+	•	Show the keywords in the document info window.
+	•	Fix notification of file changes on disk.
+	•	Fix a crasher that occured when reverting a document containing notes.
+	•	Prevent setting negative sizes from AppleScript.
+	•	Skim can now find text export templates also in the local or network domain.
+	•	Move Skim windows to the background when switching to another application in full screen or presentation mode.
+	•	Hitting tab while editing a text note now end the edit. This fixes text noite editing in PDFs with fillable forms.
+	•	Make sure the document's print settings are used for printing.
+	•	Fix full screen window layout when the full screen window moves to another screen.
+
+Changes since 0.4.1
+
+New Features
+	•	You can now hide all notes and highlights.
+	•	Remember last exported type.
+	•	Keyboard shortcut for Export.
+	•	Use menu button on Remote Control to switch between scrolling and navigation/zoom.
+	•	You can now change the sort order of the note table.
+	•	You can now display only certain types of notes and highlights in the note table.
+	•	AppleScript support for revert of a document.
+	•	Allow dragging of the reading bar from the region outside a page in any tool mode.
+	•	Greatly enhance file update checking. Use kqueue notifications instead of a timer and check for complete PDF files.
+	•	Smart auto-cropping of all pages separately, but keeping the same size, for unevenly scanned papers. Accessible through Control-Command-K.
+	•	Improvements to magnify tool.
+	•	Hidden defaults for magnification tool sizes.
+	•	New hidden default for the maximum document page history length (SKMaximumDocumentPageHistoryCount).
+	•	Extensions to AppleScript support. Support for selections, additional note properties; new revert, find, and join commands; allow creation of markups; many new properties for documents, pages, and notes.
+	•	You can now change the icon type of anchored notes from the note's window to some standard proofreader marks.
+	•	Hidden default for icon type of anchored notes (SKAnchoredNoteiconType).
+	•	Skim now saves the file type and creator code.
+	•	The reading bar is now shown on the thumbnails.
+	•	Add border/line properties to circle, box, text and line notes. Accessible through a new inspector panel and AppleScript.
+	•	Allow setting the interior (fill) color for circles and boxes. Select the check button at the bottom of the color panel.
+	•	Add a TeX editor perset for LyX.
+	•	You can now reopen snapshots from a previous run.
+	•	New preferences for line styles and interior colors.
+	•	You can now change the colors and line styles of notes using drag and drop.
+	•	Hidden default for the timeout of Apple remote switch indication.
+	•	You can now open DVI files with Skim. These are first converted to PostScript using the dvipdfmx tool, which must be installed as part of a ghostscript installation. 
+	•	New color swatch toolbar control to easily use a few default colors.
+
+Bugs Fixed
+	•	Use old-style check for network availability for the updater, as the newer API is not reliable for dial-up connections.
+	•	Never add a new note on a click in note tool mode, because undoing such an addition can also remove a text edit in progress.
+	•	Update the window title when the document is reloaded; the number of pages can change. 
+	•	Avoid possible crash due to tool-tip when reloading a document.
+	•	Fix Apple bug for AppleScript support for saving with arbitrary file types.
+	•	Fix AppleScript support for note color property.
+	•	Add help about cropping pages.
+	•	Start and end points for arrow notes in AppleScript are now relative to the page, and changing them automatically changes the bounds.
+	•	The side panels in full screen mode are now hidden when you switch to another application.
+	•	Renamed "Arrow" to "Line", as it now allows more general line styles. Also change some keyboard shortcuts.
+	•	Enable Password menu item for encrypted files that are flagged as unlocked, as the latter is unreliable in PDFKit.
+	•	Fix tab-loop for PDFs with fiallable forms. Also add some help about fillable forms.
+	•	Fix issues with updating the color panel.
+	•	Fix saving of window frames for shared windows.
+	•	Scroll reading bar to visible when it is moved.
+	•	Default text templates now sort the notes according to the page.
+	•	Fix a bug that prevented adding notes in note tool mode on some places on the page.
+	•	Snapshots are now reopened after reverting a document.
+	•	The page chooser toolbar item now uses the page label (logical page) rather than in index. 
+	•	Increase maximal width of page column in note table.
+	•	Links are now active in move tool mode.
+	•	The rotation of text notes is now saved.
+
+Changes since 0.4
+
+Bugs Fixed
+	•	Fixed installation of new versions by updater.
+
+Changes since 0.3
+
+New Features
+	•	Add a menu item in the Help menu to visit the web site.
+	•	Add single-character shortcuts to change the note style in note mode (t, n, c, b, h, u, s, a).
+	•	Fix PDFSync support to work with file names containing spaces.
+	•	Add hidden default for activation of navigation buttons in presentation mode (SKActivatePresentationNavigationAtBottom).
+	•	Start search using the find panel at the current page when there is no selection.
+	•	Wrap selection using the find panel.
+	•	Add support for apple remote control. It can be disabled through the hidden default SKEnableAppleRemote.
+	•	Hidden defaults for line ending style of arrows (SKLineNoteStartLineStyle, SKLineNoteEndLineStyle).
+	•	Hidden pref option for reading missing notes from separate .skim file (SKReadMissingNotesFromSkimFileOption). 
+	•	You can now open the corresponding PDF from a Skim Notes document.
+	•	Skim can now read TIFF images from the clipboard.
+	•	New select tool. Allows you to copy PDF and TIFF images from a section of a page.
+	•	You can now search Skim note files from Spotlight.
+	•	New Crop menu items and toolbar button.
+	•	Cropping and page rotation are now undoable.
+	•	Allow reverting a document when it has changed on disk.
+	•	New menu item to set the selection from the content of the page.
+	•	Hidden defaults for automatic crop box margins (SKAutoCropBoxMarginWidth, SKAutoCropBoxMarginHeight).
+	•	New Zoom To Selection menu item and toolbar button.
+	•	New preference option to open files fit to the PDF.
+	•	You can now join markup highlights using shift-click, or by selecting a highlight before adding a new one.
+	•	You can now supply templates for text export of notes. See the wiki for more information.
+
+Bugs Fixed
+	•	Fix links in help.
+	•	Don't create a new note in note tool mode on mousedown outside a page.
+	•	Don't add new resizable notes in note tool mode when just clicking.
+	•	You can now access links that are "hidden" by transparent highlights and arrows.
+	•	Scroll reading bar to visible when it is shown.
+	•	Scroll to previous position on page when reloading PDF.
+	•	Escape spaces in TeX editor command.
+	•	Thumbnails now use the current display box.
+	•	Retry automatic reloading of files changed on disk a few times.
+
+Changes since 0.2
+
+New Features
+	•	Add shortcuts for bigger/smaller font sizes.
+	•	Command-click a snapshot.
+	•	We now print notes and highlights.
+	•	Add copy/cut/paste items to the contextual menu, when they apply.
+	•	You can now make a snapshot of a page by Command-clicking a thumbnail.
+	•	Added Dutch localization.
+	•	We now do not leave Full Screen when switching to another application.
+	•	Export notes as RTF.
+	•	Add preference options for default note/highlight colors and text note font.
+	•	Add menu item to save the current PDF display settings to be used for new documents.
+	•	Search results from the Find Panel are now also highlighted with a red oval.
+	•	Select search field when opening the Contents pane in full screen mode.
+	•	You can now reset all preferences or all preferences in a pane.
+	•	Added Italian localization. (Thanks Andrea Bergia!)
+	•	Screensaver and sleep are now disabled in Presentation mode.
+	•	Skim can now return to the last page viewed in a document.
+	•	Link tool tips now show the top of the text when the link refers to the (empty) top of a page. 
+	•	Skim can now also view separate Skim notes (.skim) files.
+	•	Using Sparkle for automatic updating. (Thanks Andy Matuschak!)
+	•	Display the number of pages in the title bar.
+	•	Skim can now automatically backup a skim notes file whenever it saves a PDF file.
+	•	You can now resize the current note using the arrow keys, when you hold down the Control key.
+	•	Notes are now ordered according to page and location in page.
+	•	Several improvements of Skim's custom tool-tips.
+	•	Add a menu item to select the search field.
+	•	You can now add arrows to a PDF document.
+	•	You can now add notes from external .skim files rather than just overwriting them.
+	•	PDFSync support. See the Wiki for more information.
+	•	You can now set transparent colors from the color panel. 
+	•	You can now set separate PDF view settings for full screen mode. 
+	•	Add a Look Up in Dictionary item to the contextual menu.
+	•	You can now undo edits of notes and highlights.
+	•	Add a hidden preference (SKActivateFullScreenNavigationAtBottom) to show the navigation buttons in full screen mode only when moving the mouse at the bottom of the screen. 
+	•	Add hidden preferences for the line widths of circles and boxes (SKCircleNoteLineWidth and SKSquareNoteLineWidth).
+	•	New tool modes for ading notes or highlights.
+
+Bugs Fixed
+	•	We now don't edit new text notes, so they can be moved, resized or deleted.
+	•	We now make sure new notes are added to a visible page.
+	•	Disable the TOC menu item when there is no TOC.
+	•	Return to the location that was viewed when reloading a document.
+	•	Search text in a PDf file asynchronously, so it does not block Skim.
+	•	Fix crashes that can appear for links with missing URLs.
+	•	Add separators in the Notes menu for categories.
+	•	Fix a crasher when reverting a PDF-document.
+	•	Fix typos in the Help and update for new features.
+	•	Fix a crasher when reverting the document. Unfortunately this disabled tool tips.
+	•	Open the contents pane to display the search term when opening from Spotlight.
+	•	Save notes when auto-saving and exporting as PDF.
+	•	Remember the width of notes pane.
+	•	Fix leaks leading to excessive memory use.
+	•	Fix back-tabbing through notes and links.
+	•	Zooming using the scroll-wheel now only affects the current window.
+	•	Lazy updating of page thumbnails to avoid slowdown when opening a file.
+
+Colofon
+
+Thanks for using Skim. 
+
+About Skim
+
+Skim is a PDF Reader and note-taker for OS X. Skim is designed to help you read and annotate scientific papers in PDF.
+
+Web Site
+
+The Skim website is at http://skim-app.sourceforge.net - check there for current information and ways to find out more about the program and the development efforts.
+
+Getting Help
+
+If you have a problem with using the program and you'd like to talk with other users about it, there is a mailing list set up for discussing using Skim. Information about it is available at http://lists.sourceforge.net/mailman/listinfo/skim-app-users.
+
+Reporting Bugs
+
+Bug reports should be submitted to the bug tracker on SourceForge.  Note: If you can, please assign the bug report to someone - if you don't personally know any developers, assign the bug to Mike (username mmcc). If you don't assign the bug to someone, nobody may notice it for a long time. Assigning it to someone sends them an email notification.
