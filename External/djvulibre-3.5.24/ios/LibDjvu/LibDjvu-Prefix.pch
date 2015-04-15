@@ -1,0 +1,11 @@
+//
+// Prefix header for all source files of the 'LibDjvu' target in the 'LibDjvu' project
+//
+
+#import "config.h"
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+
+    
+#endif

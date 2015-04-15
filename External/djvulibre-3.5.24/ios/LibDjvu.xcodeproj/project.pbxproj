@@ -1,0 +1,600 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC5BF6D2176D0B27007C14E7 /* miniexp.h in Headers */ = {isa = PBXBuildFile; fileRef = ED02F60E152757D4001AF533 /* miniexp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ED02F61D152757D4001AF533 /* Arrays.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5AE152757D4001AF533 /* Arrays.cpp */; };
+		ED02F61F152757D4001AF533 /* atomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B0152757D4001AF533 /* atomic.cpp */; };
+		ED02F621152757D4001AF533 /* BSByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B2152757D4001AF533 /* BSByteStream.cpp */; };
+		ED02F623152757D4001AF533 /* BSEncodeByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B4152757D4001AF533 /* BSEncodeByteStream.cpp */; };
+		ED02F624152757D4001AF533 /* ByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B5152757D4001AF533 /* ByteStream.cpp */; };
+		ED02F626152757D4001AF533 /* DataPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B7152757D4001AF533 /* DataPool.cpp */; };
+		ED02F628152757D4001AF533 /* ddjvuapi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5B9152757D4001AF533 /* ddjvuapi.cpp */; };
+		ED02F62A152757D4001AF533 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5BB152757D4001AF533 /* debug.cpp */; };
+		ED02F62C152757D4001AF533 /* DjVmDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5BD152757D4001AF533 /* DjVmDir.cpp */; };
+		ED02F62E152757D4001AF533 /* DjVmDir0.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5BF152757D4001AF533 /* DjVmDir0.cpp */; };
+		ED02F630152757D4001AF533 /* DjVmDoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5C1152757D4001AF533 /* DjVmDoc.cpp */; };
+		ED02F632152757D4001AF533 /* DjVmNav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5C3152757D4001AF533 /* DjVmNav.cpp */; };
+		ED02F634152757D4001AF533 /* DjVuAnno.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5C5152757D4001AF533 /* DjVuAnno.cpp */; };
+		ED02F636152757D4001AF533 /* DjVuDocEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5C7152757D4001AF533 /* DjVuDocEditor.cpp */; };
+		ED02F638152757D4001AF533 /* DjVuDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5C9152757D4001AF533 /* DjVuDocument.cpp */; };
+		ED02F63A152757D4001AF533 /* DjVuDumpHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5CB152757D4001AF533 /* DjVuDumpHelper.cpp */; };
+		ED02F63C152757D4001AF533 /* DjVuErrorList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5CD152757D4001AF533 /* DjVuErrorList.cpp */; };
+		ED02F63E152757D4001AF533 /* DjVuFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5CF152757D4001AF533 /* DjVuFile.cpp */; };
+		ED02F640152757D4001AF533 /* DjVuFileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5D1152757D4001AF533 /* DjVuFileCache.cpp */; };
+		ED02F642152757D4001AF533 /* DjVuGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5D3152757D4001AF533 /* DjVuGlobal.cpp */; };
+		ED02F644152757D4001AF533 /* DjVuGlobalMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5D5152757D4001AF533 /* DjVuGlobalMemory.cpp */; };
+		ED02F645152757D4001AF533 /* DjVuImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5D6152757D4001AF533 /* DjVuImage.cpp */; };
+		ED02F647152757D4001AF533 /* DjVuInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5D8152757D4001AF533 /* DjVuInfo.cpp */; };
+		ED02F649152757D4001AF533 /* DjVuMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5DA152757D4001AF533 /* DjVuMessage.cpp */; };
+		ED02F64B152757D4001AF533 /* DjVuMessageLite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5DC152757D4001AF533 /* DjVuMessageLite.cpp */; };
+		ED02F64D152757D4001AF533 /* DjVuNavDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5DE152757D4001AF533 /* DjVuNavDir.cpp */; };
+		ED02F64F152757D4001AF533 /* DjVuPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5E0152757D4001AF533 /* DjVuPalette.cpp */; };
+		ED02F651152757D4001AF533 /* DjVuPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5E2152757D4001AF533 /* DjVuPort.cpp */; };
+		ED02F653152757D4001AF533 /* DjVuText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5E4152757D4001AF533 /* DjVuText.cpp */; };
+		ED02F655152757D4001AF533 /* DjVuToPS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5E6152757D4001AF533 /* DjVuToPS.cpp */; };
+		ED02F657152757D4001AF533 /* GBitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5E8152757D4001AF533 /* GBitmap.cpp */; };
+		ED02F659152757D4001AF533 /* GContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5EA152757D4001AF533 /* GContainer.cpp */; };
+		ED02F65B152757D4001AF533 /* GException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5EC152757D4001AF533 /* GException.cpp */; };
+		ED02F65D152757D4001AF533 /* GIFFManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5EE152757D4001AF533 /* GIFFManager.cpp */; };
+		ED02F65F152757D4001AF533 /* GMapAreas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5F0152757D4001AF533 /* GMapAreas.cpp */; };
+		ED02F661152757D4001AF533 /* GOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5F2152757D4001AF533 /* GOS.cpp */; };
+		ED02F663152757D4001AF533 /* GPixmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5F4152757D4001AF533 /* GPixmap.cpp */; };
+		ED02F665152757D4001AF533 /* GRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5F6152757D4001AF533 /* GRect.cpp */; };
+		ED02F667152757D4001AF533 /* GScaler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5F8152757D4001AF533 /* GScaler.cpp */; };
+		ED02F669152757D4001AF533 /* GSmartPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5FA152757D4001AF533 /* GSmartPointer.cpp */; };
+		ED02F66B152757D4001AF533 /* GString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5FC152757D4001AF533 /* GString.cpp */; };
+		ED02F66D152757D4001AF533 /* GThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F5FE152757D4001AF533 /* GThreads.cpp */; };
+		ED02F66F152757D4001AF533 /* GUnicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F600152757D4001AF533 /* GUnicode.cpp */; };
+		ED02F670152757D4001AF533 /* GURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F601152757D4001AF533 /* GURL.cpp */; };
+		ED02F672152757D4001AF533 /* IFFByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F603152757D4001AF533 /* IFFByteStream.cpp */; };
+		ED02F674152757D4001AF533 /* IW44EncodeCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F605152757D4001AF533 /* IW44EncodeCodec.cpp */; };
+		ED02F675152757D4001AF533 /* IW44Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F606152757D4001AF533 /* IW44Image.cpp */; };
+		ED02F677152757D4001AF533 /* JB2EncodeCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F608152757D4001AF533 /* JB2EncodeCodec.cpp */; };
+		ED02F678152757D4001AF533 /* JB2Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F609152757D4001AF533 /* JB2Image.cpp */; };
+		ED02F67A152757D4001AF533 /* JPEGDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F60B152757D4001AF533 /* JPEGDecoder.cpp */; };
+		ED02F67C152757D4001AF533 /* miniexp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F60D152757D4001AF533 /* miniexp.cpp */; };
+		ED02F67E152757D4001AF533 /* MMRDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F60F152757D4001AF533 /* MMRDecoder.cpp */; };
+		ED02F680152757D4001AF533 /* MMX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F611152757D4001AF533 /* MMX.cpp */; };
+		ED02F683152757D4001AF533 /* UnicodeByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F614152757D4001AF533 /* UnicodeByteStream.cpp */; };
+		ED02F685152757D4001AF533 /* XMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F616152757D4001AF533 /* XMLParser.cpp */; };
+		ED02F687152757D4001AF533 /* XMLTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F618152757D4001AF533 /* XMLTags.cpp */; };
+		ED02F689152757D4001AF533 /* ZPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED02F61A152757D4001AF533 /* ZPCodec.cpp */; };
+		ED02F68E1527594D001AF533 /* ddjvuapi.h in Headers */ = {isa = PBXBuildFile; fileRef = ED02F5BA152757D4001AF533 /* ddjvuapi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ED2197FC14E6C33E00CF25CD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2197FB14E6C33D00CF25CD /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		ED02F5A9152757D4001AF533 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		ED02F5AE152757D4001AF533 /* Arrays.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Arrays.cpp; sourceTree = "<group>"; };
+		ED02F5AF152757D4001AF533 /* Arrays.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arrays.h; sourceTree = "<group>"; };
+		ED02F5B0152757D4001AF533 /* atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = atomic.cpp; sourceTree = "<group>"; };
+		ED02F5B1152757D4001AF533 /* atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = atomic.h; sourceTree = "<group>"; };
+		ED02F5B2152757D4001AF533 /* BSByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSByteStream.cpp; sourceTree = "<group>"; };
+		ED02F5B3152757D4001AF533 /* BSByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSByteStream.h; sourceTree = "<group>"; };
+		ED02F5B4152757D4001AF533 /* BSEncodeByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSEncodeByteStream.cpp; sourceTree = "<group>"; };
+		ED02F5B5152757D4001AF533 /* ByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ByteStream.cpp; sourceTree = "<group>"; };
+		ED02F5B6152757D4001AF533 /* ByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteStream.h; sourceTree = "<group>"; };
+		ED02F5B7152757D4001AF533 /* DataPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataPool.cpp; sourceTree = "<group>"; };
+		ED02F5B8152757D4001AF533 /* DataPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataPool.h; sourceTree = "<group>"; };
+		ED02F5B9152757D4001AF533 /* ddjvuapi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ddjvuapi.cpp; sourceTree = "<group>"; };
+		ED02F5BA152757D4001AF533 /* ddjvuapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ddjvuapi.h; sourceTree = "<group>"; };
+		ED02F5BB152757D4001AF533 /* debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = debug.cpp; sourceTree = "<group>"; };
+		ED02F5BC152757D4001AF533 /* debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debug.h; sourceTree = "<group>"; };
+		ED02F5BD152757D4001AF533 /* DjVmDir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVmDir.cpp; sourceTree = "<group>"; };
+		ED02F5BE152757D4001AF533 /* DjVmDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVmDir.h; sourceTree = "<group>"; };
+		ED02F5BF152757D4001AF533 /* DjVmDir0.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVmDir0.cpp; sourceTree = "<group>"; };
+		ED02F5C0152757D4001AF533 /* DjVmDir0.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVmDir0.h; sourceTree = "<group>"; };
+		ED02F5C1152757D4001AF533 /* DjVmDoc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVmDoc.cpp; sourceTree = "<group>"; };
+		ED02F5C2152757D4001AF533 /* DjVmDoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVmDoc.h; sourceTree = "<group>"; };
+		ED02F5C3152757D4001AF533 /* DjVmNav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVmNav.cpp; sourceTree = "<group>"; };
+		ED02F5C4152757D4001AF533 /* DjVmNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVmNav.h; sourceTree = "<group>"; };
+		ED02F5C5152757D4001AF533 /* DjVuAnno.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuAnno.cpp; sourceTree = "<group>"; };
+		ED02F5C6152757D4001AF533 /* DjVuAnno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuAnno.h; sourceTree = "<group>"; };
+		ED02F5C7152757D4001AF533 /* DjVuDocEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuDocEditor.cpp; sourceTree = "<group>"; };
+		ED02F5C8152757D4001AF533 /* DjVuDocEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuDocEditor.h; sourceTree = "<group>"; };
+		ED02F5C9152757D4001AF533 /* DjVuDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuDocument.cpp; sourceTree = "<group>"; };
+		ED02F5CA152757D4001AF533 /* DjVuDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuDocument.h; sourceTree = "<group>"; };
+		ED02F5CB152757D4001AF533 /* DjVuDumpHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuDumpHelper.cpp; sourceTree = "<group>"; };
+		ED02F5CC152757D4001AF533 /* DjVuDumpHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuDumpHelper.h; sourceTree = "<group>"; };
+		ED02F5CD152757D4001AF533 /* DjVuErrorList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuErrorList.cpp; sourceTree = "<group>"; };
+		ED02F5CE152757D4001AF533 /* DjVuErrorList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuErrorList.h; sourceTree = "<group>"; };
+		ED02F5CF152757D4001AF533 /* DjVuFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuFile.cpp; sourceTree = "<group>"; };
+		ED02F5D0152757D4001AF533 /* DjVuFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuFile.h; sourceTree = "<group>"; };
+		ED02F5D1152757D4001AF533 /* DjVuFileCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuFileCache.cpp; sourceTree = "<group>"; };
+		ED02F5D2152757D4001AF533 /* DjVuFileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuFileCache.h; sourceTree = "<group>"; };
+		ED02F5D3152757D4001AF533 /* DjVuGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuGlobal.cpp; sourceTree = "<group>"; };
+		ED02F5D4152757D4001AF533 /* DjVuGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuGlobal.h; sourceTree = "<group>"; };
+		ED02F5D5152757D4001AF533 /* DjVuGlobalMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuGlobalMemory.cpp; sourceTree = "<group>"; };
+		ED02F5D6152757D4001AF533 /* DjVuImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuImage.cpp; sourceTree = "<group>"; };
+		ED02F5D7152757D4001AF533 /* DjVuImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuImage.h; sourceTree = "<group>"; };
+		ED02F5D8152757D4001AF533 /* DjVuInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuInfo.cpp; sourceTree = "<group>"; };
+		ED02F5D9152757D4001AF533 /* DjVuInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuInfo.h; sourceTree = "<group>"; };
+		ED02F5DA152757D4001AF533 /* DjVuMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuMessage.cpp; sourceTree = "<group>"; };
+		ED02F5DB152757D4001AF533 /* DjVuMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuMessage.h; sourceTree = "<group>"; };
+		ED02F5DC152757D4001AF533 /* DjVuMessageLite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuMessageLite.cpp; sourceTree = "<group>"; };
+		ED02F5DD152757D4001AF533 /* DjVuMessageLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuMessageLite.h; sourceTree = "<group>"; };
+		ED02F5DE152757D4001AF533 /* DjVuNavDir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuNavDir.cpp; sourceTree = "<group>"; };
+		ED02F5DF152757D4001AF533 /* DjVuNavDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuNavDir.h; sourceTree = "<group>"; };
+		ED02F5E0152757D4001AF533 /* DjVuPalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuPalette.cpp; sourceTree = "<group>"; };
+		ED02F5E1152757D4001AF533 /* DjVuPalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuPalette.h; sourceTree = "<group>"; };
+		ED02F5E2152757D4001AF533 /* DjVuPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuPort.cpp; sourceTree = "<group>"; };
+		ED02F5E3152757D4001AF533 /* DjVuPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuPort.h; sourceTree = "<group>"; };
+		ED02F5E4152757D4001AF533 /* DjVuText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuText.cpp; sourceTree = "<group>"; };
+		ED02F5E5152757D4001AF533 /* DjVuText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuText.h; sourceTree = "<group>"; };
+		ED02F5E6152757D4001AF533 /* DjVuToPS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DjVuToPS.cpp; sourceTree = "<group>"; };
+		ED02F5E7152757D4001AF533 /* DjVuToPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DjVuToPS.h; sourceTree = "<group>"; };
+		ED02F5E8152757D4001AF533 /* GBitmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GBitmap.cpp; sourceTree = "<group>"; };
+		ED02F5E9152757D4001AF533 /* GBitmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBitmap.h; sourceTree = "<group>"; };
+		ED02F5EA152757D4001AF533 /* GContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GContainer.cpp; sourceTree = "<group>"; };
+		ED02F5EB152757D4001AF533 /* GContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GContainer.h; sourceTree = "<group>"; };
+		ED02F5EC152757D4001AF533 /* GException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GException.cpp; sourceTree = "<group>"; };
+		ED02F5ED152757D4001AF533 /* GException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GException.h; sourceTree = "<group>"; };
+		ED02F5EE152757D4001AF533 /* GIFFManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GIFFManager.cpp; sourceTree = "<group>"; };
+		ED02F5EF152757D4001AF533 /* GIFFManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GIFFManager.h; sourceTree = "<group>"; };
+		ED02F5F0152757D4001AF533 /* GMapAreas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GMapAreas.cpp; sourceTree = "<group>"; };
+		ED02F5F1152757D4001AF533 /* GMapAreas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMapAreas.h; sourceTree = "<group>"; };
+		ED02F5F2152757D4001AF533 /* GOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GOS.cpp; sourceTree = "<group>"; };
+		ED02F5F3152757D4001AF533 /* GOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GOS.h; sourceTree = "<group>"; };
+		ED02F5F4152757D4001AF533 /* GPixmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPixmap.cpp; sourceTree = "<group>"; };
+		ED02F5F5152757D4001AF533 /* GPixmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPixmap.h; sourceTree = "<group>"; };
+		ED02F5F6152757D4001AF533 /* GRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GRect.cpp; sourceTree = "<group>"; };
+		ED02F5F7152757D4001AF533 /* GRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRect.h; sourceTree = "<group>"; };
+		ED02F5F8152757D4001AF533 /* GScaler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GScaler.cpp; sourceTree = "<group>"; };
+		ED02F5F9152757D4001AF533 /* GScaler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GScaler.h; sourceTree = "<group>"; };
+		ED02F5FA152757D4001AF533 /* GSmartPointer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GSmartPointer.cpp; sourceTree = "<group>"; };
+		ED02F5FB152757D4001AF533 /* GSmartPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSmartPointer.h; sourceTree = "<group>"; };
+		ED02F5FC152757D4001AF533 /* GString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GString.cpp; sourceTree = "<group>"; };
+		ED02F5FD152757D4001AF533 /* GString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GString.h; sourceTree = "<group>"; };
+		ED02F5FE152757D4001AF533 /* GThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GThreads.cpp; sourceTree = "<group>"; };
+		ED02F5FF152757D4001AF533 /* GThreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GThreads.h; sourceTree = "<group>"; };
+		ED02F600152757D4001AF533 /* GUnicode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUnicode.cpp; sourceTree = "<group>"; };
+		ED02F601152757D4001AF533 /* GURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GURL.cpp; sourceTree = "<group>"; };
+		ED02F602152757D4001AF533 /* GURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GURL.h; sourceTree = "<group>"; };
+		ED02F603152757D4001AF533 /* IFFByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IFFByteStream.cpp; sourceTree = "<group>"; };
+		ED02F604152757D4001AF533 /* IFFByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFByteStream.h; sourceTree = "<group>"; };
+		ED02F605152757D4001AF533 /* IW44EncodeCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IW44EncodeCodec.cpp; sourceTree = "<group>"; };
+		ED02F606152757D4001AF533 /* IW44Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IW44Image.cpp; sourceTree = "<group>"; };
+		ED02F607152757D4001AF533 /* IW44Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IW44Image.h; sourceTree = "<group>"; };
+		ED02F608152757D4001AF533 /* JB2EncodeCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JB2EncodeCodec.cpp; sourceTree = "<group>"; };
+		ED02F609152757D4001AF533 /* JB2Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JB2Image.cpp; sourceTree = "<group>"; };
+		ED02F60A152757D4001AF533 /* JB2Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JB2Image.h; sourceTree = "<group>"; };
+		ED02F60B152757D4001AF533 /* JPEGDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JPEGDecoder.cpp; sourceTree = "<group>"; };
+		ED02F60C152757D4001AF533 /* JPEGDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPEGDecoder.h; sourceTree = "<group>"; };
+		ED02F60D152757D4001AF533 /* miniexp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = miniexp.cpp; sourceTree = "<group>"; };
+		ED02F60E152757D4001AF533 /* miniexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = miniexp.h; sourceTree = "<group>"; };
+		ED02F60F152757D4001AF533 /* MMRDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMRDecoder.cpp; sourceTree = "<group>"; };
+		ED02F610152757D4001AF533 /* MMRDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMRDecoder.h; sourceTree = "<group>"; };
+		ED02F611152757D4001AF533 /* MMX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMX.cpp; sourceTree = "<group>"; };
+		ED02F612152757D4001AF533 /* MMX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMX.h; sourceTree = "<group>"; };
+		ED02F613152757D4001AF533 /* Template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Template.h; sourceTree = "<group>"; };
+		ED02F614152757D4001AF533 /* UnicodeByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UnicodeByteStream.cpp; sourceTree = "<group>"; };
+		ED02F615152757D4001AF533 /* UnicodeByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnicodeByteStream.h; sourceTree = "<group>"; };
+		ED02F616152757D4001AF533 /* XMLParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLParser.cpp; sourceTree = "<group>"; };
+		ED02F617152757D4001AF533 /* XMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLParser.h; sourceTree = "<group>"; };
+		ED02F618152757D4001AF533 /* XMLTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLTags.cpp; sourceTree = "<group>"; };
+		ED02F619152757D4001AF533 /* XMLTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLTags.h; sourceTree = "<group>"; };
+		ED02F61A152757D4001AF533 /* ZPCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZPCodec.cpp; sourceTree = "<group>"; };
+		ED02F61B152757D4001AF533 /* ZPCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPCodec.h; sourceTree = "<group>"; };
+		ED2197F814E6C33D00CF25CD /* libLibDjvu.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLibDjvu.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED2197FB14E6C33D00CF25CD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		ED2197FF14E6C33E00CF25CD /* LibDjvu-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LibDjvu-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ED2197F514E6C33D00CF25CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED2197FC14E6C33E00CF25CD /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ED02F5A5152757A7001AF533 /* djvulibre */ = {
+			isa = PBXGroup;
+			children = (
+				ED02F5A7152757D4001AF533 /* config */,
+				ED02F5AA152757D4001AF533 /* libdjvu */,
+			);
+			name = djvulibre;
+			sourceTree = "<group>";
+		};
+		ED02F5A7152757D4001AF533 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				ED02F5A9152757D4001AF533 /* config.h */,
+			);
+			name = config;
+			path = ../../config;
+			sourceTree = "<group>";
+		};
+		ED02F5AA152757D4001AF533 /* libdjvu */ = {
+			isa = PBXGroup;
+			children = (
+				ED02F5AE152757D4001AF533 /* Arrays.cpp */,
+				ED02F5AF152757D4001AF533 /* Arrays.h */,
+				ED02F5B0152757D4001AF533 /* atomic.cpp */,
+				ED02F5B1152757D4001AF533 /* atomic.h */,
+				ED02F5B2152757D4001AF533 /* BSByteStream.cpp */,
+				ED02F5B3152757D4001AF533 /* BSByteStream.h */,
+				ED02F5B4152757D4001AF533 /* BSEncodeByteStream.cpp */,
+				ED02F5B5152757D4001AF533 /* ByteStream.cpp */,
+				ED02F5B6152757D4001AF533 /* ByteStream.h */,
+				ED02F5B7152757D4001AF533 /* DataPool.cpp */,
+				ED02F5B8152757D4001AF533 /* DataPool.h */,
+				ED02F5B9152757D4001AF533 /* ddjvuapi.cpp */,
+				ED02F5BA152757D4001AF533 /* ddjvuapi.h */,
+				ED02F5BB152757D4001AF533 /* debug.cpp */,
+				ED02F5BC152757D4001AF533 /* debug.h */,
+				ED02F5BD152757D4001AF533 /* DjVmDir.cpp */,
+				ED02F5BE152757D4001AF533 /* DjVmDir.h */,
+				ED02F5BF152757D4001AF533 /* DjVmDir0.cpp */,
+				ED02F5C0152757D4001AF533 /* DjVmDir0.h */,
+				ED02F5C1152757D4001AF533 /* DjVmDoc.cpp */,
+				ED02F5C2152757D4001AF533 /* DjVmDoc.h */,
+				ED02F5C3152757D4001AF533 /* DjVmNav.cpp */,
+				ED02F5C4152757D4001AF533 /* DjVmNav.h */,
+				ED02F5C5152757D4001AF533 /* DjVuAnno.cpp */,
+				ED02F5C6152757D4001AF533 /* DjVuAnno.h */,
+				ED02F5C7152757D4001AF533 /* DjVuDocEditor.cpp */,
+				ED02F5C8152757D4001AF533 /* DjVuDocEditor.h */,
+				ED02F5C9152757D4001AF533 /* DjVuDocument.cpp */,
+				ED02F5CA152757D4001AF533 /* DjVuDocument.h */,
+				ED02F5CB152757D4001AF533 /* DjVuDumpHelper.cpp */,
+				ED02F5CC152757D4001AF533 /* DjVuDumpHelper.h */,
+				ED02F5CD152757D4001AF533 /* DjVuErrorList.cpp */,
+				ED02F5CE152757D4001AF533 /* DjVuErrorList.h */,
+				ED02F5CF152757D4001AF533 /* DjVuFile.cpp */,
+				ED02F5D0152757D4001AF533 /* DjVuFile.h */,
+				ED02F5D1152757D4001AF533 /* DjVuFileCache.cpp */,
+				ED02F5D2152757D4001AF533 /* DjVuFileCache.h */,
+				ED02F5D3152757D4001AF533 /* DjVuGlobal.cpp */,
+				ED02F5D4152757D4001AF533 /* DjVuGlobal.h */,
+				ED02F5D5152757D4001AF533 /* DjVuGlobalMemory.cpp */,
+				ED02F5D6152757D4001AF533 /* DjVuImage.cpp */,
+				ED02F5D7152757D4001AF533 /* DjVuImage.h */,
+				ED02F5D8152757D4001AF533 /* DjVuInfo.cpp */,
+				ED02F5D9152757D4001AF533 /* DjVuInfo.h */,
+				ED02F5DA152757D4001AF533 /* DjVuMessage.cpp */,
+				ED02F5DB152757D4001AF533 /* DjVuMessage.h */,
+				ED02F5DC152757D4001AF533 /* DjVuMessageLite.cpp */,
+				ED02F5DD152757D4001AF533 /* DjVuMessageLite.h */,
+				ED02F5DE152757D4001AF533 /* DjVuNavDir.cpp */,
+				ED02F5DF152757D4001AF533 /* DjVuNavDir.h */,
+				ED02F5E0152757D4001AF533 /* DjVuPalette.cpp */,
+				ED02F5E1152757D4001AF533 /* DjVuPalette.h */,
+				ED02F5E2152757D4001AF533 /* DjVuPort.cpp */,
+				ED02F5E3152757D4001AF533 /* DjVuPort.h */,
+				ED02F5E4152757D4001AF533 /* DjVuText.cpp */,
+				ED02F5E5152757D4001AF533 /* DjVuText.h */,
+				ED02F5E6152757D4001AF533 /* DjVuToPS.cpp */,
+				ED02F5E7152757D4001AF533 /* DjVuToPS.h */,
+				ED02F5E8152757D4001AF533 /* GBitmap.cpp */,
+				ED02F5E9152757D4001AF533 /* GBitmap.h */,
+				ED02F5EA152757D4001AF533 /* GContainer.cpp */,
+				ED02F5EB152757D4001AF533 /* GContainer.h */,
+				ED02F5EC152757D4001AF533 /* GException.cpp */,
+				ED02F5ED152757D4001AF533 /* GException.h */,
+				ED02F5EE152757D4001AF533 /* GIFFManager.cpp */,
+				ED02F5EF152757D4001AF533 /* GIFFManager.h */,
+				ED02F5F0152757D4001AF533 /* GMapAreas.cpp */,
+				ED02F5F1152757D4001AF533 /* GMapAreas.h */,
+				ED02F5F2152757D4001AF533 /* GOS.cpp */,
+				ED02F5F3152757D4001AF533 /* GOS.h */,
+				ED02F5F4152757D4001AF533 /* GPixmap.cpp */,
+				ED02F5F5152757D4001AF533 /* GPixmap.h */,
+				ED02F5F6152757D4001AF533 /* GRect.cpp */,
+				ED02F5F7152757D4001AF533 /* GRect.h */,
+				ED02F5F8152757D4001AF533 /* GScaler.cpp */,
+				ED02F5F9152757D4001AF533 /* GScaler.h */,
+				ED02F5FA152757D4001AF533 /* GSmartPointer.cpp */,
+				ED02F5FB152757D4001AF533 /* GSmartPointer.h */,
+				ED02F5FC152757D4001AF533 /* GString.cpp */,
+				ED02F5FD152757D4001AF533 /* GString.h */,
+				ED02F5FE152757D4001AF533 /* GThreads.cpp */,
+				ED02F5FF152757D4001AF533 /* GThreads.h */,
+				ED02F600152757D4001AF533 /* GUnicode.cpp */,
+				ED02F601152757D4001AF533 /* GURL.cpp */,
+				ED02F602152757D4001AF533 /* GURL.h */,
+				ED02F603152757D4001AF533 /* IFFByteStream.cpp */,
+				ED02F604152757D4001AF533 /* IFFByteStream.h */,
+				ED02F605152757D4001AF533 /* IW44EncodeCodec.cpp */,
+				ED02F606152757D4001AF533 /* IW44Image.cpp */,
+				ED02F607152757D4001AF533 /* IW44Image.h */,
+				ED02F608152757D4001AF533 /* JB2EncodeCodec.cpp */,
+				ED02F609152757D4001AF533 /* JB2Image.cpp */,
+				ED02F60A152757D4001AF533 /* JB2Image.h */,
+				ED02F60B152757D4001AF533 /* JPEGDecoder.cpp */,
+				ED02F60C152757D4001AF533 /* JPEGDecoder.h */,
+				ED02F60D152757D4001AF533 /* miniexp.cpp */,
+				ED02F60E152757D4001AF533 /* miniexp.h */,
+				ED02F60F152757D4001AF533 /* MMRDecoder.cpp */,
+				ED02F610152757D4001AF533 /* MMRDecoder.h */,
+				ED02F611152757D4001AF533 /* MMX.cpp */,
+				ED02F612152757D4001AF533 /* MMX.h */,
+				ED02F613152757D4001AF533 /* Template.h */,
+				ED02F614152757D4001AF533 /* UnicodeByteStream.cpp */,
+				ED02F615152757D4001AF533 /* UnicodeByteStream.h */,
+				ED02F616152757D4001AF533 /* XMLParser.cpp */,
+				ED02F617152757D4001AF533 /* XMLParser.h */,
+				ED02F618152757D4001AF533 /* XMLTags.cpp */,
+				ED02F619152757D4001AF533 /* XMLTags.h */,
+				ED02F61A152757D4001AF533 /* ZPCodec.cpp */,
+				ED02F61B152757D4001AF533 /* ZPCodec.h */,
+			);
+			name = libdjvu;
+			path = ../../libdjvu;
+			sourceTree = "<group>";
+		};
+		ED2197ED14E6C33D00CF25CD = {
+			isa = PBXGroup;
+			children = (
+				ED2197FD14E6C33E00CF25CD /* LibDjvu */,
+				ED2197FA14E6C33D00CF25CD /* Frameworks */,
+				ED2197F914E6C33D00CF25CD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ED2197F914E6C33D00CF25CD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ED2197F814E6C33D00CF25CD /* libLibDjvu.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ED2197FA14E6C33D00CF25CD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED2197FB14E6C33D00CF25CD /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ED2197FD14E6C33E00CF25CD /* LibDjvu */ = {
+			isa = PBXGroup;
+			children = (
+				ED02F5A5152757A7001AF533 /* djvulibre */,
+				ED2197FE14E6C33E00CF25CD /* Supporting Files */,
+			);
+			path = LibDjvu;
+			sourceTree = "<group>";
+		};
+		ED2197FE14E6C33E00CF25CD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ED2197FF14E6C33E00CF25CD /* LibDjvu-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		ED2197F614E6C33D00CF25CD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED02F68E1527594D001AF533 /* ddjvuapi.h in Headers */,
+				EC5BF6D2176D0B27007C14E7 /* miniexp.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		ED2197F714E6C33D00CF25CD /* LibDjvu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED21980514E6C33E00CF25CD /* Build configuration list for PBXNativeTarget "LibDjvu" */;
+			buildPhases = (
+				ED2197F414E6C33D00CF25CD /* Sources */,
+				ED2197F514E6C33D00CF25CD /* Frameworks */,
+				ED2197F614E6C33D00CF25CD /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LibDjvu;
+			productName = LibDjvu;
+			productReference = ED2197F814E6C33D00CF25CD /* libLibDjvu.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ED2197EF14E6C33D00CF25CD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = ED2197F214E6C33D00CF25CD /* Build configuration list for PBXProject "LibDjvu" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = ED2197ED14E6C33D00CF25CD;
+			productRefGroup = ED2197F914E6C33D00CF25CD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ED2197F714E6C33D00CF25CD /* LibDjvu */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ED2197F414E6C33D00CF25CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED02F61D152757D4001AF533 /* Arrays.cpp in Sources */,
+				ED02F61F152757D4001AF533 /* atomic.cpp in Sources */,
+				ED02F621152757D4001AF533 /* BSByteStream.cpp in Sources */,
+				ED02F623152757D4001AF533 /* BSEncodeByteStream.cpp in Sources */,
+				ED02F624152757D4001AF533 /* ByteStream.cpp in Sources */,
+				ED02F626152757D4001AF533 /* DataPool.cpp in Sources */,
+				ED02F628152757D4001AF533 /* ddjvuapi.cpp in Sources */,
+				ED02F62A152757D4001AF533 /* debug.cpp in Sources */,
+				ED02F62C152757D4001AF533 /* DjVmDir.cpp in Sources */,
+				ED02F62E152757D4001AF533 /* DjVmDir0.cpp in Sources */,
+				ED02F630152757D4001AF533 /* DjVmDoc.cpp in Sources */,
+				ED02F632152757D4001AF533 /* DjVmNav.cpp in Sources */,
+				ED02F634152757D4001AF533 /* DjVuAnno.cpp in Sources */,
+				ED02F636152757D4001AF533 /* DjVuDocEditor.cpp in Sources */,
+				ED02F638152757D4001AF533 /* DjVuDocument.cpp in Sources */,
+				ED02F63A152757D4001AF533 /* DjVuDumpHelper.cpp in Sources */,
+				ED02F63C152757D4001AF533 /* DjVuErrorList.cpp in Sources */,
+				ED02F63E152757D4001AF533 /* DjVuFile.cpp in Sources */,
+				ED02F640152757D4001AF533 /* DjVuFileCache.cpp in Sources */,
+				ED02F642152757D4001AF533 /* DjVuGlobal.cpp in Sources */,
+				ED02F644152757D4001AF533 /* DjVuGlobalMemory.cpp in Sources */,
+				ED02F645152757D4001AF533 /* DjVuImage.cpp in Sources */,
+				ED02F647152757D4001AF533 /* DjVuInfo.cpp in Sources */,
+				ED02F649152757D4001AF533 /* DjVuMessage.cpp in Sources */,
+				ED02F64B152757D4001AF533 /* DjVuMessageLite.cpp in Sources */,
+				ED02F64D152757D4001AF533 /* DjVuNavDir.cpp in Sources */,
+				ED02F64F152757D4001AF533 /* DjVuPalette.cpp in Sources */,
+				ED02F651152757D4001AF533 /* DjVuPort.cpp in Sources */,
+				ED02F653152757D4001AF533 /* DjVuText.cpp in Sources */,
+				ED02F655152757D4001AF533 /* DjVuToPS.cpp in Sources */,
+				ED02F657152757D4001AF533 /* GBitmap.cpp in Sources */,
+				ED02F659152757D4001AF533 /* GContainer.cpp in Sources */,
+				ED02F65B152757D4001AF533 /* GException.cpp in Sources */,
+				ED02F65D152757D4001AF533 /* GIFFManager.cpp in Sources */,
+				ED02F65F152757D4001AF533 /* GMapAreas.cpp in Sources */,
+				ED02F661152757D4001AF533 /* GOS.cpp in Sources */,
+				ED02F663152757D4001AF533 /* GPixmap.cpp in Sources */,
+				ED02F665152757D4001AF533 /* GRect.cpp in Sources */,
+				ED02F667152757D4001AF533 /* GScaler.cpp in Sources */,
+				ED02F669152757D4001AF533 /* GSmartPointer.cpp in Sources */,
+				ED02F66B152757D4001AF533 /* GString.cpp in Sources */,
+				ED02F66D152757D4001AF533 /* GThreads.cpp in Sources */,
+				ED02F66F152757D4001AF533 /* GUnicode.cpp in Sources */,
+				ED02F670152757D4001AF533 /* GURL.cpp in Sources */,
+				ED02F672152757D4001AF533 /* IFFByteStream.cpp in Sources */,
+				ED02F674152757D4001AF533 /* IW44EncodeCodec.cpp in Sources */,
+				ED02F675152757D4001AF533 /* IW44Image.cpp in Sources */,
+				ED02F677152757D4001AF533 /* JB2EncodeCodec.cpp in Sources */,
+				ED02F678152757D4001AF533 /* JB2Image.cpp in Sources */,
+				ED02F67A152757D4001AF533 /* JPEGDecoder.cpp in Sources */,
+				ED02F67C152757D4001AF533 /* miniexp.cpp in Sources */,
+				ED02F67E152757D4001AF533 /* MMRDecoder.cpp in Sources */,
+				ED02F680152757D4001AF533 /* MMX.cpp in Sources */,
+				ED02F683152757D4001AF533 /* UnicodeByteStream.cpp in Sources */,
+				ED02F685152757D4001AF533 /* XMLParser.cpp in Sources */,
+				ED02F687152757D4001AF533 /* XMLTags.cpp in Sources */,
+				ED02F689152757D4001AF533 /* ZPCodec.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		ED21980314E6C33E00CF25CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		ED21980414E6C33E00CF25CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ED21980614E6C33E00CF25CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/LibDjvu.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LibDjvu/LibDjvu-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = /include;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		ED21980714E6C33E00CF25CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/LibDjvu.dst;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LibDjvu/LibDjvu-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				LLVM_LTO = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = /include;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ED2197F214E6C33D00CF25CD /* Build configuration list for PBXProject "LibDjvu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED21980314E6C33E00CF25CD /* Debug */,
+				ED21980414E6C33E00CF25CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED21980514E6C33E00CF25CD /* Build configuration list for PBXNativeTarget "LibDjvu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED21980614E6C33E00CF25CD /* Debug */,
+				ED21980714E6C33E00CF25CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ED2197EF14E6C33D00CF25CD /* Project object */;
+}

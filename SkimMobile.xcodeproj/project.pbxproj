@@ -1,0 +1,748 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC1BB62C1767FBE9009BF41B /* SKDjvuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1BB62B1767FBE9009BF41B /* SKDjvuViewController.m */; };
+		EC1BB6321767FC51009BF41B /* SKDjvuView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1BB6311767FC51009BF41B /* SKDjvuView.m */; };
+		EC1BB64D17680051009BF41B /* SKDjvuParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC1BB64C17680051009BF41B /* SKDjvuParser.mm */; };
+		EC1BB64E17680268009BF41B /* libLibDjvu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1BB6461767FE3A009BF41B /* libLibDjvu.a */; };
+		EC1C36811742DCD9005BCF13 /* UIImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1C367F1742DCC7005BCF13 /* UIImage_SKExtensions.m */; };
+		EC1C36841742DE94005BCF13 /* UIBezierPath_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1C36831742DE94005BCF13 /* UIBezierPath_SKExtensions.m */; };
+		EC1C36881742E067005BCF13 /* UIGeometry_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1C36871742E067005BCF13 /* UIGeometry_SKExtensions.m */; };
+		EC1F926817688615003977F9 /* TiledDjvuView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1F926717688615003977F9 /* TiledDjvuView.m */; };
+		EC7315A4172C78A20077F67F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315A3172C78A20077F67F /* UIKit.framework */; };
+		EC7315A6172C78A20077F67F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315A5172C78A20077F67F /* Foundation.framework */; };
+		EC7315A8172C78A20077F67F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315A7172C78A20077F67F /* CoreGraphics.framework */; };
+		EC7315AE172C78A20077F67F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC7315AC172C78A20077F67F /* InfoPlist.strings */; };
+		EC7315B0172C78A20077F67F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC7315AF172C78A20077F67F /* main.m */; };
+		EC7315B4172C78A20077F67F /* SKAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC7315B3172C78A20077F67F /* SKAppDelegate.m */; };
+		EC7315B6172C78A20077F67F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = EC7315B5172C78A20077F67F /* Default.png */; };
+		EC7315B8172C78A20077F67F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EC7315B7172C78A20077F67F /* Default@2x.png */; };
+		EC7315BA172C78A20077F67F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EC7315B9172C78A20077F67F /* Default-568h@2x.png */; };
+		EC7315BD172C78A20077F67F /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC7315BB172C78A20077F67F /* MainStoryboard_iPhone.storyboard */; };
+		EC7315CB172C78A30077F67F /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315CA172C78A30077F67F /* SenTestingKit.framework */; };
+		EC7315CC172C78A30077F67F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315A3172C78A20077F67F /* UIKit.framework */; };
+		EC7315CD172C78A30077F67F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315A5172C78A20077F67F /* Foundation.framework */; };
+		EC7315D5172C78A30077F67F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC7315D3172C78A30077F67F /* InfoPlist.strings */; };
+		EC7315D8172C78A30077F67F /* SkimMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC7315D7172C78A30077F67F /* SkimMobileTests.m */; };
+		EC7315EB172C92330077F67F /* SKPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC7315EA172C92330077F67F /* SKPDFView.m */; };
+		EC7315F2172C98A80077F67F /* TiledPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC7315F1172C98A80077F67F /* TiledPDFView.m */; };
+		EC7315F4172C99130077F67F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC7315F3172C99130077F67F /* QuartzCore.framework */; };
+		EC97FE9D172CB56600E31C64 /* SKTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC97FE9C172CB56600E31C64 /* SKTabView.m */; };
+		ECAB42FC172F3B7B00237173 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECAB42FB172F3B7B00237173 /* CFNetwork.framework */; };
+		ECAB42FE172F3B8B00237173 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECAB42FD172F3B8B00237173 /* Security.framework */; };
+		ECAB4300172F3B9900237173 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECAB42FF172F3B9900237173 /* SystemConfiguration.framework */; };
+		ECBCAC90176AA345009061F1 /* SKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECBCAC8F176AA345009061F1 /* SKViewController.m */; };
+		ECBDEDEB173C586100F069FE /* SKPDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECBDEDEA173C586100F069FE /* SKPDFViewController.m */; };
+		ECD652571784DD3500F33F89 /* SKDjvuTextLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = ECD652561784DD3500F33F89 /* SKDjvuTextLayer.m */; };
+		ECDD40E21785EDE8006F1B62 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECDD40E01785EDE8006F1B62 /* MainStoryboard_iPad.storyboard */; };
+		ECECD82C176D018300AFC335 /* SKTextArea.m in Sources */ = {isa = PBXBuildFile; fileRef = ECECD82B176D018300AFC335 /* SKTextArea.m */; };
+		ECF3C88C19FA98900073F495 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECF3C88B19FA98900073F495 /* DropboxSDK.framework */; };
+		ECF3C89819FAA4FD0073F495 /* SKCloudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF3C89719FAA4FD0073F495 /* SKCloudViewController.m */; };
+		ECF3C89F19FAE3880073F495 /* SKLocalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF3C89E19FAE3880073F495 /* SKLocalViewController.m */; };
+		ECF3C8A219FAE51F0073F495 /* SKFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF3C8A119FAE51F0073F495 /* SKFileViewController.m */; };
+		ECF72B4C17B0146600BB21B3 /* DownArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = ECF72B4817B0146600BB21B3 /* DownArrow.png */; };
+		ECF72B4D17B0146600BB21B3 /* UpArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = ECF72B4917B0146600BB21B3 /* UpArrow.png */; };
+		ECF72B4E17B0146600BB21B3 /* RightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = ECF72B4A17B0146600BB21B3 /* RightArrow.png */; };
+		ECF72B4F17B0146600BB21B3 /* LeftArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = ECF72B4B17B0146600BB21B3 /* LeftArrow.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EC1BB6451767FE3A009BF41B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC1BB6411767FE39009BF41B /* LibDjvu.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ED2197F814E6C33D00CF25CD;
+			remoteInfo = LibDjvu;
+		};
+		EC7315CE172C78A30077F67F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC731598172C78A20077F67F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EC73159F172C78A20077F67F;
+			remoteInfo = SkimMobile;
+		};
+		ECF3C88E19FA9F3D0073F495 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC1BB6411767FE39009BF41B /* LibDjvu.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ED2197F714E6C33D00CF25CD;
+			remoteInfo = LibDjvu;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EC1BB62A1767FBE9009BF41B /* SKDjvuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDjvuViewController.h; sourceTree = "<group>"; };
+		EC1BB62B1767FBE9009BF41B /* SKDjvuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDjvuViewController.m; sourceTree = "<group>"; };
+		EC1BB6301767FC51009BF41B /* SKDjvuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDjvuView.h; sourceTree = "<group>"; };
+		EC1BB6311767FC51009BF41B /* SKDjvuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDjvuView.m; sourceTree = "<group>"; };
+		EC1BB6411767FE39009BF41B /* LibDjvu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LibDjvu.xcodeproj; path = "External/djvulibre-3.5.24/ios/LibDjvu.xcodeproj"; sourceTree = "<group>"; };
+		EC1BB64B17680051009BF41B /* SKDjvuParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDjvuParser.h; sourceTree = "<group>"; };
+		EC1BB64C17680051009BF41B /* SKDjvuParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SKDjvuParser.mm; sourceTree = "<group>"; };
+		EC1BB64F176809B7009BF41B /* Introduction to stochastic processes.djvu */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Introduction to stochastic processes.djvu"; sourceTree = "<group>"; };
+		EC1C367E1742DCC7005BCF13 /* UIImage_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImage_SKExtensions.h; sourceTree = "<group>"; };
+		EC1C367F1742DCC7005BCF13 /* UIImage_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImage_SKExtensions.m; sourceTree = "<group>"; };
+		EC1C36821742DE94005BCF13 /* UIBezierPath_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIBezierPath_SKExtensions.h; sourceTree = "<group>"; };
+		EC1C36831742DE94005BCF13 /* UIBezierPath_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIBezierPath_SKExtensions.m; sourceTree = "<group>"; };
+		EC1C36861742E067005BCF13 /* UIGeometry_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIGeometry_SKExtensions.h; sourceTree = "<group>"; };
+		EC1C36871742E067005BCF13 /* UIGeometry_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIGeometry_SKExtensions.m; sourceTree = "<group>"; };
+		EC1F926617688615003977F9 /* TiledDjvuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiledDjvuView.h; sourceTree = "<group>"; };
+		EC1F926717688615003977F9 /* TiledDjvuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiledDjvuView.m; sourceTree = "<group>"; };
+		EC7315A0172C78A20077F67F /* SkimMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkimMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC7315A3172C78A20077F67F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		EC7315A5172C78A20077F67F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		EC7315A7172C78A20077F67F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		EC7315AB172C78A20077F67F /* SkimMobile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SkimMobile-Info.plist"; sourceTree = "<group>"; };
+		EC7315AD172C78A20077F67F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EC7315AF172C78A20077F67F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EC7315B1172C78A20077F67F /* SkimMobile-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SkimMobile-Prefix.pch"; sourceTree = "<group>"; };
+		EC7315B2172C78A20077F67F /* SKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKAppDelegate.h; sourceTree = "<group>"; };
+		EC7315B3172C78A20077F67F /* SKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKAppDelegate.m; sourceTree = "<group>"; };
+		EC7315B5172C78A20077F67F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		EC7315B7172C78A20077F67F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		EC7315B9172C78A20077F67F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		EC7315BC172C78A20077F67F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		EC7315C9172C78A30077F67F /* SkimMobileTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkimMobileTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC7315CA172C78A30077F67F /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		EC7315D2172C78A30077F67F /* SkimMobileTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SkimMobileTests-Info.plist"; sourceTree = "<group>"; };
+		EC7315D4172C78A30077F67F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EC7315D6172C78A30077F67F /* SkimMobileTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkimMobileTests.h; sourceTree = "<group>"; };
+		EC7315D7172C78A30077F67F /* SkimMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkimMobileTests.m; sourceTree = "<group>"; };
+		EC7315E6172C8DA00077F67F /* Introduction to Chinese Natural Language Processing.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Introduction to Chinese Natural Language Processing.pdf"; sourceTree = "<group>"; };
+		EC7315E9172C92330077F67F /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
+		EC7315EA172C92330077F67F /* SKPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFView.m; sourceTree = "<group>"; };
+		EC7315F0172C98A80077F67F /* TiledPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiledPDFView.h; sourceTree = "<group>"; };
+		EC7315F1172C98A80077F67F /* TiledPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiledPDFView.m; sourceTree = "<group>"; };
+		EC7315F3172C99130077F67F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		EC97FE9B172CB56600E31C64 /* SKTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTabView.h; sourceTree = "<group>"; };
+		EC97FE9C172CB56600E31C64 /* SKTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTabView.m; sourceTree = "<group>"; };
+		ECAB42FB172F3B7B00237173 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		ECAB42FD172F3B8B00237173 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		ECAB42FF172F3B9900237173 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		ECBCAC8D176AA0EA009061F1 /* SKViewControllerNavigatable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKViewControllerNavigatable.h; sourceTree = "<group>"; };
+		ECBCAC8E176AA345009061F1 /* SKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKViewController.h; sourceTree = "<group>"; };
+		ECBCAC8F176AA345009061F1 /* SKViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKViewController.m; sourceTree = "<group>"; };
+		ECBDEDE9173C586100F069FE /* SKPDFViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFViewController.h; sourceTree = "<group>"; };
+		ECBDEDEA173C586100F069FE /* SKPDFViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFViewController.m; sourceTree = "<group>"; };
+		ECD652551784DD3500F33F89 /* SKDjvuTextLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDjvuTextLayer.h; sourceTree = "<group>"; };
+		ECD652561784DD3500F33F89 /* SKDjvuTextLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDjvuTextLayer.m; sourceTree = "<group>"; };
+		ECDD40E11785EDE8006F1B62 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = SkimMobile/en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		ECECD82A176D018300AFC335 /* SKTextArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextArea.h; sourceTree = "<group>"; };
+		ECECD82B176D018300AFC335 /* SKTextArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextArea.m; sourceTree = "<group>"; };
+		ECF3C88B19FA98900073F495 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
+		ECF3C89619FAA4FD0073F495 /* SKCloudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCloudViewController.h; sourceTree = "<group>"; };
+		ECF3C89719FAA4FD0073F495 /* SKCloudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCloudViewController.m; sourceTree = "<group>"; };
+		ECF3C89D19FAE3880073F495 /* SKLocalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLocalViewController.h; sourceTree = "<group>"; };
+		ECF3C89E19FAE3880073F495 /* SKLocalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLocalViewController.m; sourceTree = "<group>"; };
+		ECF3C8A019FAE51F0073F495 /* SKFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFileViewController.h; sourceTree = "<group>"; };
+		ECF3C8A119FAE51F0073F495 /* SKFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFileViewController.m; sourceTree = "<group>"; };
+		ECF72B4817B0146600BB21B3 /* DownArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DownArrow.png; sourceTree = "<group>"; };
+		ECF72B4917B0146600BB21B3 /* UpArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UpArrow.png; sourceTree = "<group>"; };
+		ECF72B4A17B0146600BB21B3 /* RightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RightArrow.png; sourceTree = "<group>"; };
+		ECF72B4B17B0146600BB21B3 /* LeftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LeftArrow.png; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EC73159D172C78A20077F67F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC1BB64E17680268009BF41B /* libLibDjvu.a in Frameworks */,
+				ECAB4300172F3B9900237173 /* SystemConfiguration.framework in Frameworks */,
+				ECAB42FE172F3B8B00237173 /* Security.framework in Frameworks */,
+				ECF3C88C19FA98900073F495 /* DropboxSDK.framework in Frameworks */,
+				ECAB42FC172F3B7B00237173 /* CFNetwork.framework in Frameworks */,
+				EC7315F4172C99130077F67F /* QuartzCore.framework in Frameworks */,
+				EC7315A4172C78A20077F67F /* UIKit.framework in Frameworks */,
+				EC7315A6172C78A20077F67F /* Foundation.framework in Frameworks */,
+				EC7315A8172C78A20077F67F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC7315C5172C78A30077F67F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7315CB172C78A30077F67F /* SenTestingKit.framework in Frameworks */,
+				EC7315CC172C78A30077F67F /* UIKit.framework in Frameworks */,
+				EC7315CD172C78A30077F67F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EC1BB6331767FCA4009BF41B /* External */ = {
+			isa = PBXGroup;
+			children = (
+				EC1BB6411767FE39009BF41B /* LibDjvu.xcodeproj */,
+			);
+			name = External;
+			sourceTree = "<group>";
+		};
+		EC1BB6421767FE39009BF41B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC1BB6461767FE3A009BF41B /* libLibDjvu.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC1BB6471767FFE0009BF41B /* Djvu */ = {
+			isa = PBXGroup;
+			children = (
+				EC1BB64B17680051009BF41B /* SKDjvuParser.h */,
+				EC1BB64C17680051009BF41B /* SKDjvuParser.mm */,
+				ECECD82A176D018300AFC335 /* SKTextArea.h */,
+				ECECD82B176D018300AFC335 /* SKTextArea.m */,
+			);
+			name = Djvu;
+			sourceTree = "<group>";
+		};
+		EC1C367D1742DC9E005BCF13 /* AppKit Categories */ = {
+			isa = PBXGroup;
+			children = (
+				EC1C36821742DE94005BCF13 /* UIBezierPath_SKExtensions.h */,
+				EC1C36831742DE94005BCF13 /* UIBezierPath_SKExtensions.m */,
+				EC1C367E1742DCC7005BCF13 /* UIImage_SKExtensions.h */,
+				EC1C367F1742DCC7005BCF13 /* UIImage_SKExtensions.m */,
+			);
+			name = "AppKit Categories";
+			sourceTree = "<group>";
+		};
+		EC1C36851742E04F005BCF13 /* Foundation Categories */ = {
+			isa = PBXGroup;
+			children = (
+				EC1C36861742E067005BCF13 /* UIGeometry_SKExtensions.h */,
+				EC1C36871742E067005BCF13 /* UIGeometry_SKExtensions.m */,
+			);
+			name = "Foundation Categories";
+			sourceTree = "<group>";
+		};
+		EC731597172C78A20077F67F = {
+			isa = PBXGroup;
+			children = (
+				EC1C36851742E04F005BCF13 /* Foundation Categories */,
+				EC1C367D1742DC9E005BCF13 /* AppKit Categories */,
+				EC7315E8172C90FD0077F67F /* Views */,
+				ECD652531784DCF400F33F89 /* Layers */,
+				EC7315E5172C8D5B0077F67F /* Resources */,
+				EC7315E1172C844E0077F67F /* Controllers */,
+				EC1BB6471767FFE0009BF41B /* Djvu */,
+				EC7315A9172C78A20077F67F /* SkimMobile */,
+				EC7315D0172C78A30077F67F /* SkimMobileTests */,
+				EC1BB6331767FCA4009BF41B /* External */,
+				EC7315A2172C78A20077F67F /* Frameworks */,
+				EC7315A1172C78A20077F67F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EC7315A1172C78A20077F67F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC7315A0172C78A20077F67F /* SkimMobile.app */,
+				EC7315C9172C78A30077F67F /* SkimMobileTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC7315A2172C78A20077F67F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ECF3C88B19FA98900073F495 /* DropboxSDK.framework */,
+				ECAB42FF172F3B9900237173 /* SystemConfiguration.framework */,
+				ECAB42FD172F3B8B00237173 /* Security.framework */,
+				ECAB42FB172F3B7B00237173 /* CFNetwork.framework */,
+				EC7315F3172C99130077F67F /* QuartzCore.framework */,
+				EC7315A3172C78A20077F67F /* UIKit.framework */,
+				EC7315A5172C78A20077F67F /* Foundation.framework */,
+				EC7315A7172C78A20077F67F /* CoreGraphics.framework */,
+				EC7315CA172C78A30077F67F /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EC7315A9172C78A20077F67F /* SkimMobile */ = {
+			isa = PBXGroup;
+			children = (
+				ECDD40E01785EDE8006F1B62 /* MainStoryboard_iPad.storyboard */,
+				EC7315BB172C78A20077F67F /* MainStoryboard_iPhone.storyboard */,
+				EC7315B2172C78A20077F67F /* SKAppDelegate.h */,
+				EC7315B3172C78A20077F67F /* SKAppDelegate.m */,
+				EC7315AA172C78A20077F67F /* Supporting Files */,
+			);
+			path = SkimMobile;
+			sourceTree = "<group>";
+		};
+		EC7315AA172C78A20077F67F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EC7315AB172C78A20077F67F /* SkimMobile-Info.plist */,
+				EC7315AC172C78A20077F67F /* InfoPlist.strings */,
+				EC7315AF172C78A20077F67F /* main.m */,
+				EC7315B1172C78A20077F67F /* SkimMobile-Prefix.pch */,
+				EC7315B5172C78A20077F67F /* Default.png */,
+				EC7315B7172C78A20077F67F /* Default@2x.png */,
+				EC7315B9172C78A20077F67F /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EC7315D0172C78A30077F67F /* SkimMobileTests */ = {
+			isa = PBXGroup;
+			children = (
+				EC7315D6172C78A30077F67F /* SkimMobileTests.h */,
+				EC7315D7172C78A30077F67F /* SkimMobileTests.m */,
+				EC7315D1172C78A30077F67F /* Supporting Files */,
+			);
+			path = SkimMobileTests;
+			sourceTree = "<group>";
+		};
+		EC7315D1172C78A30077F67F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EC7315D2172C78A30077F67F /* SkimMobileTests-Info.plist */,
+				EC7315D3172C78A30077F67F /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EC7315E1172C844E0077F67F /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCAC8D176AA0EA009061F1 /* SKViewControllerNavigatable.h */,
+				ECBCAC8E176AA345009061F1 /* SKViewController.h */,
+				ECBCAC8F176AA345009061F1 /* SKViewController.m */,
+				EC1BB62A1767FBE9009BF41B /* SKDjvuViewController.h */,
+				EC1BB62B1767FBE9009BF41B /* SKDjvuViewController.m */,
+				ECBDEDE9173C586100F069FE /* SKPDFViewController.h */,
+				ECBDEDEA173C586100F069FE /* SKPDFViewController.m */,
+				ECF3C89619FAA4FD0073F495 /* SKCloudViewController.h */,
+				ECF3C89719FAA4FD0073F495 /* SKCloudViewController.m */,
+				ECF3C89D19FAE3880073F495 /* SKLocalViewController.h */,
+				ECF3C89E19FAE3880073F495 /* SKLocalViewController.m */,
+				ECF3C8A019FAE51F0073F495 /* SKFileViewController.h */,
+				ECF3C8A119FAE51F0073F495 /* SKFileViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		EC7315E5172C8D5B0077F67F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ECF72B4817B0146600BB21B3 /* DownArrow.png */,
+				ECF72B4917B0146600BB21B3 /* UpArrow.png */,
+				ECF72B4A17B0146600BB21B3 /* RightArrow.png */,
+				ECF72B4B17B0146600BB21B3 /* LeftArrow.png */,
+				EC1BB64F176809B7009BF41B /* Introduction to stochastic processes.djvu */,
+				EC7315E6172C8DA00077F67F /* Introduction to Chinese Natural Language Processing.pdf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		EC7315E8172C90FD0077F67F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EC1BB6301767FC51009BF41B /* SKDjvuView.h */,
+				EC1BB6311767FC51009BF41B /* SKDjvuView.m */,
+				EC7315E9172C92330077F67F /* SKPDFView.h */,
+				EC7315EA172C92330077F67F /* SKPDFView.m */,
+				EC97FE9B172CB56600E31C64 /* SKTabView.h */,
+				EC97FE9C172CB56600E31C64 /* SKTabView.m */,
+				EC7315F0172C98A80077F67F /* TiledPDFView.h */,
+				EC7315F1172C98A80077F67F /* TiledPDFView.m */,
+				EC1F926617688615003977F9 /* TiledDjvuView.h */,
+				EC1F926717688615003977F9 /* TiledDjvuView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		ECD652531784DCF400F33F89 /* Layers */ = {
+			isa = PBXGroup;
+			children = (
+				ECD652551784DD3500F33F89 /* SKDjvuTextLayer.h */,
+				ECD652561784DD3500F33F89 /* SKDjvuTextLayer.m */,
+			);
+			name = Layers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EC73159F172C78A20077F67F /* SkimMobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC7315DB172C78A30077F67F /* Build configuration list for PBXNativeTarget "SkimMobile" */;
+			buildPhases = (
+				EC73159C172C78A20077F67F /* Sources */,
+				EC73159D172C78A20077F67F /* Frameworks */,
+				EC73159E172C78A20077F67F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECF3C88F19FA9F3D0073F495 /* PBXTargetDependency */,
+			);
+			name = SkimMobile;
+			productName = SkimMobile;
+			productReference = EC7315A0172C78A20077F67F /* SkimMobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EC7315C8172C78A30077F67F /* SkimMobileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC7315DE172C78A30077F67F /* Build configuration list for PBXNativeTarget "SkimMobileTests" */;
+			buildPhases = (
+				EC7315C4172C78A30077F67F /* Sources */,
+				EC7315C5172C78A30077F67F /* Frameworks */,
+				EC7315C6172C78A30077F67F /* Resources */,
+				EC7315C7172C78A30077F67F /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EC7315CF172C78A30077F67F /* PBXTargetDependency */,
+			);
+			name = SkimMobileTests;
+			productName = SkimMobileTests;
+			productReference = EC7315C9172C78A30077F67F /* SkimMobileTests.octest */;
+			productType = "com.apple.product-type.bundle.ocunit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EC731598172C78A20077F67F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SK;
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Sylvain Bouchard";
+			};
+			buildConfigurationList = EC73159B172C78A20077F67F /* Build configuration list for PBXProject "SkimMobile" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = EC731597172C78A20077F67F;
+			productRefGroup = EC7315A1172C78A20077F67F /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = EC1BB6421767FE39009BF41B /* Products */;
+					ProjectRef = EC1BB6411767FE39009BF41B /* LibDjvu.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				EC73159F172C78A20077F67F /* SkimMobile */,
+				EC7315C8172C78A30077F67F /* SkimMobileTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		EC1BB6461767FE3A009BF41B /* libLibDjvu.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libLibDjvu.a;
+			remoteRef = EC1BB6451767FE3A009BF41B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EC73159E172C78A20077F67F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7315AE172C78A20077F67F /* InfoPlist.strings in Resources */,
+				EC7315B6172C78A20077F67F /* Default.png in Resources */,
+				EC7315B8172C78A20077F67F /* Default@2x.png in Resources */,
+				EC7315BA172C78A20077F67F /* Default-568h@2x.png in Resources */,
+				EC7315BD172C78A20077F67F /* MainStoryboard_iPhone.storyboard in Resources */,
+				ECDD40E21785EDE8006F1B62 /* MainStoryboard_iPad.storyboard in Resources */,
+				ECF72B4C17B0146600BB21B3 /* DownArrow.png in Resources */,
+				ECF72B4D17B0146600BB21B3 /* UpArrow.png in Resources */,
+				ECF72B4E17B0146600BB21B3 /* RightArrow.png in Resources */,
+				ECF72B4F17B0146600BB21B3 /* LeftArrow.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC7315C6172C78A30077F67F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7315D5172C78A30077F67F /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EC7315C7172C78A30077F67F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EC73159C172C78A20077F67F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7315B0172C78A20077F67F /* main.m in Sources */,
+				EC7315B4172C78A20077F67F /* SKAppDelegate.m in Sources */,
+				EC7315EB172C92330077F67F /* SKPDFView.m in Sources */,
+				EC7315F2172C98A80077F67F /* TiledPDFView.m in Sources */,
+				ECF3C89819FAA4FD0073F495 /* SKCloudViewController.m in Sources */,
+				EC97FE9D172CB56600E31C64 /* SKTabView.m in Sources */,
+				ECF3C8A219FAE51F0073F495 /* SKFileViewController.m in Sources */,
+				ECBDEDEB173C586100F069FE /* SKPDFViewController.m in Sources */,
+				EC1C36811742DCD9005BCF13 /* UIImage_SKExtensions.m in Sources */,
+				ECF3C89F19FAE3880073F495 /* SKLocalViewController.m in Sources */,
+				EC1C36841742DE94005BCF13 /* UIBezierPath_SKExtensions.m in Sources */,
+				EC1C36881742E067005BCF13 /* UIGeometry_SKExtensions.m in Sources */,
+				EC1BB62C1767FBE9009BF41B /* SKDjvuViewController.m in Sources */,
+				EC1BB6321767FC51009BF41B /* SKDjvuView.m in Sources */,
+				EC1BB64D17680051009BF41B /* SKDjvuParser.mm in Sources */,
+				EC1F926817688615003977F9 /* TiledDjvuView.m in Sources */,
+				ECBCAC90176AA345009061F1 /* SKViewController.m in Sources */,
+				ECECD82C176D018300AFC335 /* SKTextArea.m in Sources */,
+				ECD652571784DD3500F33F89 /* SKDjvuTextLayer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC7315C4172C78A30077F67F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7315D8172C78A30077F67F /* SkimMobileTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EC7315CF172C78A30077F67F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EC73159F172C78A20077F67F /* SkimMobile */;
+			targetProxy = EC7315CE172C78A30077F67F /* PBXContainerItemProxy */;
+		};
+		ECF3C88F19FA9F3D0073F495 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = LibDjvu;
+			targetProxy = ECF3C88E19FA9F3D0073F495 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		EC7315AC172C78A20077F67F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC7315AD172C78A20077F67F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		EC7315BB172C78A20077F67F /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC7315BC172C78A20077F67F /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		EC7315D3172C78A30077F67F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC7315D4172C78A30077F67F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		ECDD40E01785EDE8006F1B62 /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ECDD40E11785EDE8006F1B62 /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			path = ..;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EC7315D9172C78A30077F67F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EC7315DA172C78A30077F67F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EC7315DC172C78A30077F67F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SkimMobile/SkimMobile-Prefix.pch";
+				INFOPLIST_FILE = "SkimMobile/SkimMobile-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		EC7315DD172C78A30077F67F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SkimMobile/SkimMobile-Prefix.pch";
+				INFOPLIST_FILE = "SkimMobile/SkimMobile-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		EC7315DF172C78A30077F67F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SkimMobile.app/SkimMobile";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SkimMobile/SkimMobile-Prefix.pch";
+				INFOPLIST_FILE = "SkimMobileTests/SkimMobileTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		EC7315E0172C78A30077F67F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SkimMobile.app/SkimMobile";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SkimMobile/SkimMobile-Prefix.pch";
+				INFOPLIST_FILE = "SkimMobileTests/SkimMobileTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EC73159B172C78A20077F67F /* Build configuration list for PBXProject "SkimMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC7315D9172C78A30077F67F /* Debug */,
+				EC7315DA172C78A30077F67F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC7315DB172C78A30077F67F /* Build configuration list for PBXNativeTarget "SkimMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC7315DC172C78A30077F67F /* Debug */,
+				EC7315DD172C78A30077F67F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC7315DE172C78A30077F67F /* Build configuration list for PBXNativeTarget "SkimMobileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC7315DF172C78A30077F67F /* Debug */,
+				EC7315E0172C78A30077F67F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EC731598172C78A20077F67F /* Project object */;
+}
