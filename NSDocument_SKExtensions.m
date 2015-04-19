@@ -72,10 +72,7 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 - (SKInteractionMode)systemInteractionMode { return SKNormalMode; }
 
 - (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
-	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
-    // this should be automatic, but Leopard does not seem to do this
-    if ([[self valueForKey:@"changeCount"] integerValue] == 0)
-        [self updateChangeCount:NSChangeCleared];
+	[self updateChangeCount:[anUndoState boolValue] ? NSChangeRedone : NSChangeUndone];
 }
 
 - (void)undoableActionIsDiscardable {
