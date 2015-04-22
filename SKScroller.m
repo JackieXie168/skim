@@ -43,6 +43,10 @@
 
 @synthesize isScrolling;
 
++ (BOOL)isCompatibleWithOverlayScrollers {
+    return YES;
+}
+
 - (void)trackKnob:(NSEvent *)theEvent {
     isScrolling = YES;
     [super trackKnob:theEvent];
