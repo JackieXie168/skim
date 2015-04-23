@@ -362,11 +362,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self resetAutoFitRectIfNeeded];
 }
 
-- (void)goToDestination:(PDFDestination *)destination {
-    [super goToDestination:destination];
-    [self resetAutoFitRectIfNeeded];
-}
-
 - (void)doAutoFit:(id)sender {
     [self setAutoFits:YES];
 }
