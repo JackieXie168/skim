@@ -4228,7 +4228,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     else if (toolMode == SKMagnifyToolMode && (area & kPDFPageArea))
         [(([NSEvent standardModifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor]) set];
     else
-        [super setCursorForAreaOfInterest:area];
+        [super setCursorForAreaOfInterest:area & ~kPDFIconArea];
 }
 
 - (void)setCursorForMouse:(NSEvent *)theEvent {
