@@ -190,7 +190,7 @@ static void drawAddBadgeAtPoint(NSPoint point);
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
     static NSImage *image = nil; \
-    image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect, CGFloat bSize){ \
+    image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect, CGFloat bScale){ \
         instructions \
     }] retain]; \
     [image setTemplate:isTemplate]; \
@@ -1371,15 +1371,14 @@ macro(Ink)
     
     MAKE_IMAGE(SKImageNameSyncPreferences, NO, 32.0, 32.0, 
         NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-        NSImage *refreshImage = [NSImage imageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
+        NSBitmapImageRep *refreshImageRep = [NSBitmapImageRep imageRepWithSize:NSMakeSize(10.0, 12.0) scale:bScale drawingHandler:^(NSRect r, CGFloat s){
             [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
             NSRectFill(NSMakeRect(0.0, 0.0, 10.0, 12.0));
             [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:NSMakeRect(0.0, 0.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-            return YES;
         }];
         [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
         [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
-        [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [refreshImageRep drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
     );
     
     MAKE_IMAGE(SKImageNameNewFolder, NO, 32.0, 32.0, 
