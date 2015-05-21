@@ -190,9 +190,8 @@ static void drawAddBadgeAtPoint(NSPoint point);
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
     static NSImage *image = nil; \
-    image = [[NSImage imageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+    image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect, CGFloat bSize){ \
         instructions \
-        return YES; \
     }] retain]; \
     [image setTemplate:isTemplate]; \
     [image setName:name]; \
