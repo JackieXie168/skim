@@ -698,7 +698,7 @@ macro(Ink)
         [gradient drawInRect:NSMakeRect(7.0, 4.0, 13.0, 6.0) angle:90.0];
     );
     
-    MAKE_IMAGE(SKImageNameToolbarMoveTool, YES, 27.0, 19.0, 
+    MAKE_IMAGE(SKImageNameToolbarMoveTool, NO, 27.0, 19.0, 
         [[NSColor whiteColor] setStroke];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:2.0 yOffset:0.0];
         NSBezierPath *path = [NSBezierPath bezierPath];
