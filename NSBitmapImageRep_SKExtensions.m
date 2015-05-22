@@ -37,6 +37,7 @@
  */
 
 #import "NSBitmapImageRep_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 @implementation NSBitmapImageRep (SKExtensions)
 
@@ -229,7 +230,7 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, NSInteger x, 
         bzero(bitmapData, [self bytesPerRow] * [self pixelsHigh]);
 }
 
-+ (id)imageRepWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect, CGFloat backingScale))drawingHandler {
++ (id)imageRepWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSBitmapImageRep *bmpImageRep = [[[self alloc] initWithBitmapDataPlanes:NULL
         pixelsWide:size.width * scale pixelsHigh:size.height * scale
         bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO
@@ -239,7 +240,9 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, NSInteger x, 
     [bmpImageRep setSize:size];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:bmpImageRep]];
-    if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size}, scale);
+    [NSShadow setCurrentScale:scale];
+    if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
+    [NSShadow setCurrentScale:1.0];
     [NSGraphicsContext restoreGraphicsState];
     return bmpImageRep;
 

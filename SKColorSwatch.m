@@ -214,7 +214,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     [pboard clearContents];
                     [pboard writeObjects:[NSArray arrayWithObjects:color, nil]];
                     
-                    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) scale:[self backingScale] drawingHandler:^(NSRect rect, CGFloat bScale){
+                    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
                         [[NSColor blackColor] set];
                         [NSBezierPath setDefaultLineWidth:1.0];
                         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];

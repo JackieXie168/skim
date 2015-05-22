@@ -166,7 +166,7 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     
     NSString *name = [self isFileURL] ? [self path] : [self relativeString];
     if (name) {
-        NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(16, 16) drawingHandler:^(NSRect rect, CGFloat bScale){
+        NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(16, 16) drawingHandler:^(NSRect rect){
             [[[NSWorkspace sharedWorkspace] iconForFile:name] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
         }];
         name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];

@@ -462,13 +462,13 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [transform concat];
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect, CGFloat bScale){
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         [transform concat];
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] set];
         if (shadowBlurRadius > 0.0)
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius * bScale yOffset:shadowOffset * bScale];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
         NSRectFill(bounds);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         [NSGraphicsContext restoreGraphicsState];

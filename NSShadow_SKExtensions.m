@@ -41,11 +41,21 @@
 
 @implementation NSShadow (SKExtensions)
 
+static CGFloat currentScale = 1.0;
+
++ (CGFloat)currentScale {
+    return currentScale;
+}
+
++ (void)setCurrentScale:(CGFloat)newScale {
+    currentScale = newScale;
+}
+
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius offset:(NSSize)offset {
     NSShadow *aShadow = [[self alloc] init];
     [aShadow setShadowColor:color];
-    [aShadow setShadowBlurRadius:blurRadius];
-    [aShadow setShadowOffset:offset];
+    [aShadow setShadowBlurRadius:blurRadius * [self currentScale]];
+    [aShadow setShadowOffset:NSMakeSize(offset.width * [self currentScale], offset.height * [self currentScale])];
     [aShadow set];
     [self release];
 }

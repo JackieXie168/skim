@@ -94,7 +94,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     NSUInteger i;
     for (i = 0; i < 7; i++) {
         [annotation setIconType:i];
-        noteIcons[i] = [[NSImage bitmapImageWithSize:SKNPDFAnnotationNoteSize drawingHandler:^(NSRect rect, CGFloat bScale){
+        noteIcons[i] = [[NSImage bitmapImageWithSize:SKNPDFAnnotationNoteSize drawingHandler:^(NSRect rect){
                 [annotation drawWithBox:kPDFDisplayBoxMediaBox];
             }] retain];
     }

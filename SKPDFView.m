@@ -76,6 +76,7 @@
 #import "SKApplication.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSShadow_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -3970,7 +3971,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [transform scaleBy:magnification];
                 [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
                 
-                image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect, CGFloat bScale){
+                image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
                     
                     NSRect imageRect = rect;
                     
@@ -3983,7 +3984,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                         NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
                         NSPoint pageOrigin = pageRect.origin;
                         NSAffineTransform *pageTransform;
-                        NSShadow *bShadow;
                         
                         pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
                         
@@ -3994,11 +3994,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                         // draw page background, simulate the private method -drawPagePre:
                         [NSGraphicsContext saveGraphicsState];
                         [[NSColor whiteColor] set];
-                        bShadow = [aShadow copy];
-                        [bShadow setShadowBlurRadius:[aShadow shadowBlurRadius] * bScale];
-                        [bShadow setShadowOffset:NSMakeSize([aShadow shadowOffset].width * bScale, [aShadow shadowOffset].height * bScale)];
-                        [bShadow set];
-                        [bShadow release];
+                        [NSShadow setShadowWithColor:[aShadow shadowColor] blurRadius:[aShadow shadowBlurRadius] offset:[aShadow shadowOffset]];
                         NSRectFill(SKIntegralRect(pageRect));
                         [NSGraphicsContext restoreGraphicsState];
                         

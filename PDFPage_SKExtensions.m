@@ -179,14 +179,14 @@ static BOOL usesSequentialPageNumbering = NO;
         pageRect.origin.y -= shadowOffset;
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect, CGFloat bScale){
+    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
         
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         
         [NSGraphicsContext saveGraphicsState];
         [[NSColor whiteColor] setFill];
         if (shadowBlurRadius > 0.0)
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius * bScale yOffset:shadowOffset * bScale];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
         NSRectFill(pageRect);
         [NSGraphicsContext restoreGraphicsState];
         
@@ -277,7 +277,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSAffineTransform *transform = [self affineTransformForBox:box];
     NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     
-    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect, CGFloat bScale){
+    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect){
         [pageImage drawInRect:destRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
     }];
     

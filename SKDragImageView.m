@@ -139,11 +139,11 @@
                         NSRect bounds = [self bounds];
                         CGFloat scale = [self backingScale];
                         
-                        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect, CGFloat bScale){
+                        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
                             [[self cell] drawInteriorWithFrame:rect inView:self];
                         }];
                         
-                        NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect, CGFloat bScale){
+                        NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
                             [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:YES hints:nil];
                         }];
                         

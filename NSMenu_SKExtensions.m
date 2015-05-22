@@ -142,7 +142,7 @@
     if (NSEqualSizes(srcSize, dstSize)) {
         [self setImage:image];
     } else {
-        NSImage *newImage = [NSImage bitmapImageWithSize:dstSize drawingHandler:^(NSRect rect, CGFloat scale) {
+        NSImage *newImage = [NSImage bitmapImageWithSize:dstSize drawingHandler:^(NSRect rect) {
             [image drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
         }];
         [self setImage:newImage];
