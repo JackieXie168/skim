@@ -60,7 +60,7 @@ static CGFloat currentScale = 1.0;
     [aShadow setShadowBlurRadius:blurRadius];
     [aShadow setShadowOffset:offset];
     [aShadow set];
-    [self release];
+    [aShadow release];
 }
 
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset {
