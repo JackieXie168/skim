@@ -193,7 +193,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
-    if (didCheckReopen == NO)
+    if (didCheckReopen == NO && [[NSApp windows] count] == 0)
         [self applicationShouldOpenUntitledFile:NSApp];
     [sud removeObjectForKey:SKIsRelaunchKey];
     
