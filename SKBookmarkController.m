@@ -915,8 +915,6 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
     NSToolbarItem *item = [toolbarItems objectForKey:itemIdent];
-    if (willBeInserted == NO)
-        item = [[item copy] autorelease];
     return item;
 }
 
