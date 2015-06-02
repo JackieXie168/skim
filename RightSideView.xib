@@ -29,7 +29,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomView" id="846732309">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="205117829">
@@ -41,12 +41,14 @@
 								<int key="NSvFlags">274</int>
 								<string key="NSFrameSize">{200, 355}</string>
 								<reference key="NSSuperview" ref="205117829"/>
+								<reference key="NSWindow"/>
 								<string key="NSClassName">NSView</string>
 								<string key="NSExtension">NSResponder</string>
 							</object>
 						</array>
 						<string key="NSFrameSize">{200, 355}</string>
 						<reference key="NSSuperview" ref="846732309"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 					<object class="NSCustomView" id="772521819">
@@ -58,6 +60,7 @@
 								<int key="NSvFlags">258</int>
 								<string key="NSFrame">{{75, 11}, {115, 22}}</string>
 								<reference key="NSSuperview" ref="772521819"/>
+								<reference key="NSWindow"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSearchFieldCell" key="NSCell" id="792639661">
 									<int key="NSCellFlags">343014976</int>
@@ -127,8 +130,9 @@
 							<object class="NSSegmentedControl" id="64353672">
 								<reference key="NSNextResponder" ref="772521819"/>
 								<int key="NSvFlags">260</int>
-								<string key="NSFrame">{{10, 8}, {57, 25}}</string>
+								<string key="NSFrame">{{10, 9}, {57, 25}}</string>
 								<reference key="NSSuperview" ref="772521819"/>
+								<reference key="NSWindow"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="1056362971">
 									<int key="NSCellFlags">67239424</int>
@@ -163,11 +167,14 @@
 						</array>
 						<string key="NSFrame">{{0, 355}, {200, 45}}</string>
 						<reference key="NSSuperview" ref="846732309"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">SKGradientView</string>
 						<string key="NSExtension">NSView</string>
 					</object>
 				</array>
 				<string key="NSFrameSize">{200, 400}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -1479,14 +1486,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SKFindTableView</string>
-					<string key="superclassName">SKTableView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKFindTableView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">SKGradientView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -1510,9 +1509,9 @@
 					<string key="superclassName">SKSideViewController</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="findArrayController">NSArrayController</string>
-						<string key="findTableView">SKFindTableView</string>
+						<string key="findTableView">SKTableView</string>
 						<string key="groupedFindArrayController">NSArrayController</string>
-						<string key="groupedFindTableView">SKFindTableView</string>
+						<string key="groupedFindTableView">SKTableView</string>
 						<string key="thumbnailArrayController">NSArrayController</string>
 						<string key="thumbnailTableView">SKThumbnailTableView</string>
 						<string key="tocOutlineView">SKTocOutlineView</string>
@@ -1524,7 +1523,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="findTableView">
 							<string key="name">findTableView</string>
-							<string key="candidateClassName">SKFindTableView</string>
+							<string key="candidateClassName">SKTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindArrayController">
 							<string key="name">groupedFindArrayController</string>
@@ -1532,7 +1531,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="groupedFindTableView">
 							<string key="name">groupedFindTableView</string>
-							<string key="candidateClassName">SKFindTableView</string>
+							<string key="candidateClassName">SKTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="thumbnailArrayController">
 							<string key="name">thumbnailArrayController</string>
@@ -2575,6 +2574,8 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="copy:">id</string>
 						<string key="delete:">id</string>
+						<string key="moveLeft:">id</string>
+						<string key="moveRight:">id</string>
 						<string key="paste:">id</string>
 						<string key="scrollToBeginningOfDocument:">id</string>
 						<string key="scrollToEndOfDocument:">id</string>
@@ -2586,6 +2587,14 @@
 						</object>
 						<object class="IBActionInfo" key="delete:">
 							<string key="name">delete:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="moveLeft:">
+							<string key="name">moveLeft:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="moveRight:">
+							<string key="name">moveRight:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="paste:">
