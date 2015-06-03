@@ -1859,7 +1859,7 @@ macro(Ink)
 }
 
 + (void)makeImages {
-    if (1||floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [self makeNoteTemplateImages];
         [self makeToolbarTemplateImages];
     } else {
