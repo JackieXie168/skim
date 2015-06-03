@@ -807,26 +807,15 @@ macro(Ink)
         [path fill];
         gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0] endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.35]] autorelease];
         [gradient drawInRect:NSMakeRect(7.0, 6.0, 13.0, 4.0) angle:90.0];
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.05] set];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 11.0, 7.0)];
-        [path fill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 4.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(13.0, 3.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 3.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 7.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 7.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 9.0, 8.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 9.0, 2.0, 1.0)];
-        [path fill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 1.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 4.0, 1.0)];
-        [path fill];
+        NSUInteger i;
+        NSUInteger j;
+        for (i = 0; i < 11; i++) {
+            for (j = 0; j < 4; j++) {
+                path = [NSBezierPath bezierPathWithRect:NSMakeRect(18.0 - i, 9.0 - 2.0 * j, 1.0, 1.0)];
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.15 * rand() / RAND_MAX] set];
+                [path fill];
+            }
+        }
     );
     
 #define MAKE_BADGED_IMAGES(name) \
@@ -1272,26 +1261,15 @@ macro(Ink)
         path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 10.0, 2.0, 1.0)];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] set];
         [path fill];
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] set];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 11.0, 7.0)];
-        [path fill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 4.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(13.0, 3.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 3.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 7.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 7.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 9.0, 8.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(16.0, 9.0, 2.0, 1.0)];
-        [path fill];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 3.0, 3.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 1.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(12.0, 5.0, 2.0, 1.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.0, 7.0, 4.0, 1.0)];
-        [path fill];
+        NSUInteger i;
+        NSUInteger j;
+        for (i = 0; i < 11; i++) {
+            for (j = 0; j < 4; j++) {
+                path = [NSBezierPath bezierPathWithRect:NSMakeRect(18.0 - i, 9.0 - 2.0 * j, 1.0, 1.0)];
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.2 * rand() / RAND_MAX] set];
+                [path fill];
+            }
+        }
     );
     
 #define MAKE_BADGED_TEMPLATE_IMAGES(name) \
@@ -1881,7 +1859,7 @@ macro(Ink)
 }
 
 + (void)makeImages {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
+    if (1||floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [self makeNoteTemplateImages];
         [self makeToolbarTemplateImages];
     } else {
