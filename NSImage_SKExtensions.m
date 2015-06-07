@@ -809,9 +809,9 @@ macro(Ink)
         [gradient drawInRect:NSMakeRect(7.0, 6.0, 13.0, 4.0) angle:90.0];
         NSUInteger i;
         NSUInteger j;
-        for (i = 0; i < 11; i++) {
-            for (j = 0; j < 4; j++) {
-                path = [NSBezierPath bezierPathWithRect:NSMakeRect(18.0 - i, 9.0 - 2.0 * j, 1.0, 1.0)];
+        for (i = 0; i < 22; i++) {
+            for (j = 0; j < 8; j++) {
+                path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0 + 0.5 * i, 3.0 + j - 0.5 * (j % 2), 0.5, 0.5)];
                 [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.15 * rand() / RAND_MAX] set];
                 [path fill];
             }
@@ -1263,10 +1263,10 @@ macro(Ink)
         [path fill];
         NSUInteger i;
         NSUInteger j;
-        for (i = 0; i < 11; i++) {
-            for (j = 0; j < 4; j++) {
-                path = [NSBezierPath bezierPathWithRect:NSMakeRect(18.0 - i, 9.0 - 2.0 * j, 1.0, 1.0)];
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.2 * rand() / RAND_MAX] set];
+        for (i = 0; i < 22; i++) {
+            for (j = 0; j < 8; j++) {
+                path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0 + 0.5 * i, 3.0 + j - 0.5 * (j % 2), 0.5, 0.5)];
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.15 * rand() / RAND_MAX] set];
                 [path fill];
             }
         }
