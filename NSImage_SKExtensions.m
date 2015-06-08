@@ -812,7 +812,7 @@ macro(Ink)
         for (i = 0; i < 22; i++) {
             for (j = 0; j < 8; j++) {
                 path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0 + 0.5 * i, 3.0 + j - 0.5 * (j % 2), 0.5, 0.5)];
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.15 * rand() / RAND_MAX] set];
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.15 * rand() / RAND_MAX] set];
                 [path fill];
             }
         }
@@ -1266,7 +1266,7 @@ macro(Ink)
         for (i = 0; i < 22; i++) {
             for (j = 0; j < 8; j++) {
                 path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0 + 0.5 * i, 3.0 + j - 0.5 * (j % 2), 0.5, 0.5)];
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.0 + 0.15 * rand() / RAND_MAX] set];
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2 * rand() / RAND_MAX] set];
                 [path fill];
             }
         }
