@@ -23,13 +23,13 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-        <string>net.sourceforge.skim-app.quicklookgenerator</string>
+	<string>net.sourceforge.skim-app.quicklookgenerator</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleVersion</key>
 	<string>21</string>
-    <key>CFBundleShortVersionString</key>
-    <string>1.4</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.4</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
@@ -48,16 +48,16 @@
 	</dict>
 	<key>CFPlugInUnloadFunction</key>
 	<string></string>
-    <!-- Change following property to <true/> if the generators supports
-         multiple concurrent requests -->
-    <key>QLSupportsConcurrentRequests</key>
-    <true/>
-    <!-- Change following property to <true/> if the generators needs
-         to be run on main thread -->
-    <key>QLNeedsToBeRunInMainThread</key>
-    <false/>
-    <key>QLThumbnailMinimumSize</key>
-    <real>32</real>
+	<!-- Change following property to <true/> if the generators supports
+		 multiple concurrent requests -->
+	<key>QLSupportsConcurrentRequests</key>
+	<true/>
+	<!-- Change following property to <true/> if the generators needs
+		 to be run on main thread -->
+	<key>QLNeedsToBeRunInMainThread</key>
+	<false/>
+	<key>QLThumbnailMinimumSize</key>
+	<real>32</real>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
