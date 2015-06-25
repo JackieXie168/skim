@@ -19,7 +19,6 @@
 		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
 		CEFD60CF0C01D0E40027B933 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60CE0C01D0E40027B933 /* Foundation.framework */; };
 		CEFD60D30C01D1040027B933 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60D20C01D1040027B933 /* ApplicationServices.framework */; };
-		CEFEDB291B3C806C00C6E312 /* SkimNotesBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFEDB281B3C806C00C6E312 /* SkimNotesBase.framework */; };
 		F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F915705F0C020DDF008B68E9 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -135,7 +134,6 @@
 				F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */,
 				CEE23DEB0ECFA8370013CDF7 /* Quartz.framework in Frameworks */,
 				CEE23E5B0ECFA8F30013CDF7 /* SkimNotesBase.framework in Frameworks */,
-				CEFEDB291B3C806C00C6E312 /* SkimNotesBase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,9 +478,9 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
