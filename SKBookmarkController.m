@@ -130,7 +130,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
         if (self) {
             NSDictionary *bookmarkDictionary = [[NSUserDefaults standardUserDefaults] persistentDomainForName:SKBookmarksIdentifier];
             
-            recentDocuments = [[NSMutableArray alloc] initWithArray:[bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]];
+            recentDocuments = [[NSMutableArray alloc] init];
+            for (NSDictionary *info in [bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]) {
+                NSMutableDictionary *mutableInfo = [info mutableCopy];
+                [recentDocuments addObject:mutableInfo];
+                [mutableInfo release];
+            }
             
             bookmarkRoot = [[SKBookmark alloc] initRootWithChildrenProperties:[bookmarkDictionary objectForKey:BOOKMARKS_KEY]];
             [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
