@@ -93,12 +93,13 @@ static NSArray *minimumCoverForBookmarks(NSArray *items);
 @end
 
 @interface SKBookmarkController ()
+@property (nonatomic, readonly) NSUndoManager *undoManager;
 @property (nonatomic, retain) NSArray *draggedBookmarks;
 @end
 
 @implementation SKBookmarkController
 
-@synthesize outlineView, statusBar, bookmarkRoot, recentDocuments, undoManager, draggedBookmarks;
+@synthesize outlineView, statusBar, bookmarkRoot, undoManager, draggedBookmarks;
 
 static SKBookmarkController *sharedBookmarkController = nil;
 
