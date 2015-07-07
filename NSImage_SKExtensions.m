@@ -1407,7 +1407,7 @@ macro(Ink)
     
 #define MAKE_NOTE_TEMPLATE_IMAGE(name) \
     MAKE_IMAGE(SKImageName ## name ## Note, YES, 21.0, 19.0, \
-        draw ## name ## Note(); \
+        draw ## name ## NoteTemplate(); \
     );
     
     APPLY_NOTE_TYPES(MAKE_NOTE_TEMPLATE_IMAGE);
