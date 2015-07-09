@@ -78,7 +78,8 @@
 @interface SKNavigationButton : NSButton
 
 @property (nonatomic, retain) NSBezierPath *path, *alternatePath;
-@property (nonatomic, retain) NSString *toolTip, *alternateToolTip;
+@property (copy) NSString *toolTip;
+@property (copy) NSString *alternateToolTip;
 
 @end
 
@@ -101,7 +102,7 @@
     NSString *toolTip;
 }
 
-@property (nonatomic, retain) NSString *toolTip;
+@property (copy) NSString *toolTip;
 
 @end
 

@@ -4192,7 +4192,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         } else {
             area = kPDFPageArea;
             if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO &&
-                (resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor])) || NSPointInRect(p, selectionRect))
+                ((resizeHandle = SKResizeHandleForPointFromRect(p, selectionRect, HANDLE_SIZE / [self scaleFactor])) || NSPointInRect(p, selectionRect)))
                 area |= SKAreaOfInterestForResizeHandle(resizeHandle, page);
         }
     }
