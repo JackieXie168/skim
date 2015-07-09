@@ -286,6 +286,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [leftSideDrawer setDelegate:nil];
     [rightSideDrawer setDelegate:nil];
     [noteTypeSheetController setDelegate:nil];
+    // Yosemite seems to have a retain cycle when we leave the PDFView with a document
+    [pdfView setDocument:nil];
+    [secondaryPdfView setDocument:nil];
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);

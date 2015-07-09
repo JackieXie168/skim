@@ -277,7 +277,7 @@ enum {
     return self;
 }
 
-- (void)dealloc {
+- (void)dealloc {log_method();
     [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
