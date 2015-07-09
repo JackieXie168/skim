@@ -141,7 +141,7 @@
         if ([[self window] isMainWindow] || [[self window] isKeyWindow])
             [self setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
         else
-            [self setBackgroundColor:[NSColor controlBackgroundColor]];
+            [self setBackgroundColor:[NSColor controlColor]];
         [self setNeedsDisplay:YES];
     }
 }
