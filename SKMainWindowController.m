@@ -1414,7 +1414,11 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [fullScreenWindow fadeInBlocking];
     [self setWindow:fullScreenWindow];  
     [fullScreenWindow makeKeyWindow];
-    [mainWindow orderOut:nil];  
+    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
+        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+    [mainWindow orderOut:nil];
+    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
+        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [fullScreenWindow setLevel:level];
     [fullScreenWindow orderFront:nil];
     [NSApp addWindowsItem:fullScreenWindow title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
@@ -1460,6 +1464,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [self setWindow:mainWindow];
     [mainWindow setAlphaValue:0.0];
+    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
+        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
     // trick to make sure the main window shows up in the same space as the fullscreen window
     [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
     [fullScreenWindow removeChildWindow:mainWindow];
@@ -1473,6 +1479,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
+    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
+        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [NSApp removeWindowsItem:fullScreenWindow];
     [fullScreenWindow fadeOut];
 }
