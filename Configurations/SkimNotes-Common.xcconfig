@@ -13,6 +13,8 @@ STRIP_STYLE = all
 PREBINDING = NO
 ZERO_LINK = NO
 
+COMBINE_HIDPI_IMAGES = YES
+
 ALWAYS_SEARCH_USER_PATHS = NO
 
 // GC is not supported in Xcode 5, and we never need it
