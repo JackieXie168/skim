@@ -203,6 +203,8 @@
 /* Begin PBXProject section */
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 2CA326220896AD4900168862 /* Build configuration list for PBXProject "QuickLook-Skim" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -344,7 +346,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CED8D45B0D744F910028E3E2 /* Skim-Debug.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 			};
 			name = Debug;
 		};
@@ -352,7 +353,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CED8D45C0D744F910028E3E2 /* Skim-Release.xcconfig */;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 			};
 			name = Release;
 		};
