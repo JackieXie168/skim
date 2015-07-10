@@ -175,10 +175,10 @@
 		CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7611630EA49D1400301E45 /* SKPrintableView.m */; };
 		CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteField.m */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
-		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
+		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */; };
-		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
+		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */; };
 		CE873B561AC41A6E00963EDE /* SKSourceListTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE873B551AC41A6E00963EDE /* SKSourceListTextFieldCell.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
@@ -239,8 +239,8 @@
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */; };
 		CEE73ECE106CEC1900419544 /* SKSeparatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */; };
-		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
-		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
 		CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */; };
@@ -285,12 +285,12 @@
 		CEFBB33913AA737B00162F75 /* FindBar.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB33713AA737B00162F75 /* FindBar.strings */; };
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFC7EDA1137FDE20055D1E2 /* NotesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFC7ED91137FDE20055D1E2 /* NotesPanel.xib */; };
-		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
+		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEFDEA9111F6FF8300D6FEBA /* NSScreen_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDEA9011F6FF8300D6FEBA /* NSScreen_SKExtensions.m */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		CEFE71951129AAA30018CD74 /* ServicesMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFE71941129AAA30018CD74 /* ServicesMenu.strings */; };
 		CEFF22F711412E51008DB4DC /* DownloadsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFF22F611412E51008DB4DC /* DownloadsWindow.xib */; };
-		CEFF6B9D122B1495008CDE73 /* skimpdf in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1411451229B66B00C9EBA0 /* skimpdf */; };
+		CEFF6B9D122B1495008CDE73 /* skimpdf in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1411451229B66B00C9EBA0 /* skimpdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* SKSnapshotPDFView.m */; };
 		F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */; };
 		F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKConversionProgressController.m */; };
@@ -2031,6 +2031,9 @@
 /* Begin PBXProject section */
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "Skim" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
