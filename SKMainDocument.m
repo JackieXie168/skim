@@ -1516,7 +1516,7 @@ enum {
     }
     
     if (err != noErr && err != errSecItemNotFound)
-        NSLog(@"Error %d occurred finding password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+        NSLog(@"Error %d occurred finding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     
     return status;
 }
@@ -1552,12 +1552,12 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         // password was on keychain, so modify the keychain
         err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, passwordLength, passwordData);
         if (err != noErr)
-            NSLog(@"Error %d occurred modifying password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+            NSLog(@"Error %d occurred modifying password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     } else if (password) {
         // password not on keychain, so add it
         err = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass, &attributes, passwordLength, passwordData, NULL, NULL, NULL);
         if (err != noErr)
-            NSLog(@"Error %d occurred adding password: %@", err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+            NSLog(@"Error %d occurred adding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     }
 }
 
