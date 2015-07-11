@@ -950,6 +950,9 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         number = pageCount;
     if (number > 0 && [[pdfView currentPage] pageIndex] != number - 1)
         [pdfView goToPage:[[pdfView document] pageAtIndex:number - 1]];
+    if (pageNumber != number) {
+        pageNumber = number;
+    }
 }
 
 - (void)updatePageLabel {
@@ -966,6 +969,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     NSUInteger idx = [pageLabels indexOfObject:label];
     if (idx != NSNotFound && [[pdfView currentPage] pageIndex] != idx)
         [pdfView goToPage:[[pdfView document] pageAtIndex:idx]];
+    if (label != pageLabel) {
+        [pageLabel release];
+        pageLabel = [label retain];
+    }
 }
 
 - (BOOL)validatePageLabel:(id *)value error:(NSError **)error {

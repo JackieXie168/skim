@@ -108,6 +108,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     if (interval > 0)
         [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0];
+    updateInterval = interval;
 }
 
 #pragma mark Actions
