@@ -20,7 +20,7 @@ inputfile = codecs.open(input, 'r', 'utf-16')
 lines = inputfile.readlines()
 inputfile.close()
 
-if len (lines) > 0:
+if len (lines) > 1 or ( len (lines) == 1  and len (lines[0]) > 1 ):
     
     outputfile = codecs.open(output, 'w', 'utf-16')
     outputfile.seek(0)
