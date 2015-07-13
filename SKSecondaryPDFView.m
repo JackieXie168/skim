@@ -176,9 +176,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
         [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
-        
-        if ([pagePopUpButton isDescendantOf:[self scrollView]])
-            [[self scrollView] tile];
     }
 }
 
@@ -189,7 +186,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     
     NSScrollView *scrollView = [self scrollView];
     [scrollView setHasHorizontalScroller:YES];
-    NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
+    NSControlSize controlSize = NSSmallControlSize;
     
     if (scalePopUpButton == nil) {
 

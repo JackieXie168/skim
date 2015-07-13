@@ -152,7 +152,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         // create it        
         scalePopUpButton = [[SKHighlightingPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
-        NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
+        NSControlSize controlSize = NSSmallControlSize;
         [[scalePopUpButton cell] setControlSize:controlSize];
 		[scalePopUpButton setBordered:NO];
 		[scalePopUpButton setEnabled:YES];
