@@ -176,6 +176,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
         [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
+        
+        if ([pagePopUpButton isDescendantOf:[self scrollView]])
+            [[self scrollView] tile];
     }
 }
 
