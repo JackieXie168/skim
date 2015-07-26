@@ -59,7 +59,6 @@
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKNoteText.h"
 #import "SKSplitView.h"
-#import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
@@ -1447,7 +1446,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
-    [fullScreenWindow display];
+    if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_7)
+        [fullScreenWindow display];
     [fadeWindow orderOut:nil];
     [fadeWindow release];
 }
