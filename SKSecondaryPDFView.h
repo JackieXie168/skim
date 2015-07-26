@@ -43,6 +43,7 @@
 @interface SKSecondaryPDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
     NSPopUpButton *pagePopUpButton;
+    NSView *controlView;
     PDFView *synchronizedPDFView;
     BOOL synchronizeZoom;
     BOOL switching;
@@ -51,5 +52,6 @@
 
 @property (nonatomic, retain) PDFView *synchronizedPDFView;
 @property (nonatomic) BOOL synchronizeZoom;
+@property (nonatomic, readonly) NSView *controlView;
 
 @end

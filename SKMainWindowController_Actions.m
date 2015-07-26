@@ -67,6 +67,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "SKFindController.h"
 #import "PDFView_SKExtensions.h"
+#import "SKGradientView.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -937,7 +938,7 @@ static NSArray *allMainDocumentPDFViews() {
         PDFPage *page = nil;
         
         if (secondaryPdfView == nil) {
-            secondaryPdfContentView = [[NSView alloc] init];
+            secondaryPdfContentView = [[SKGradientView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 200.0, 20.0)];
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[secondaryPdfContentView bounds]];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [secondaryPdfContentView setHidden:YES];
@@ -954,6 +955,19 @@ static NSArray *allMainDocumentPDFViews() {
             [secondaryPdfView setDocument:[pdfView document]];
             point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
             page = [pdfView pageForPoint:point nearest:YES];
+            
+            NSView *controlView = [secondaryPdfView controlView];
+            NSColor *color = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0];
+            [(SKGradientView *)secondaryPdfContentView setGradient:[[[NSGradient alloc] initWithStartingColor:color endingColor:color] autorelease]];
+            [(SKGradientView *)secondaryPdfContentView setAlternateGradient:nil];
+            NSRect pdfRect, controlRect;
+            NSDivideRect([secondaryPdfContentView bounds], &controlRect, &pdfRect, NSHeight([controlView frame]), NSMinYEdge);
+            controlRect.size.width = NSWidth([controlView frame]);
+            [controlView setFrame:controlRect];
+            [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
+            [(SKGradientView *)secondaryPdfContentView setMinSize:controlRect.size];
+            [secondaryPdfView setFrame:pdfRect];
+            [secondaryPdfContentView addSubview:controlView];
         } else {
             [secondaryPdfContentView setHidden:YES];
             [pdfSplitView addSubview:secondaryPdfContentView];

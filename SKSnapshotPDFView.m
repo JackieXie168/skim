@@ -37,10 +37,8 @@
  */
 
 #import "SKSnapshotPDFView.h"
-#import "NSScrollView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKHighlightingPopUpButton.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
@@ -51,8 +49,6 @@
 
 
 @interface SKSnapshotPDFView (SKPrivate)
-
-- (void)makeScalePopUpButton;
 
 - (void)resetAutoFitRectIfNeeded;
 
@@ -70,6 +66,7 @@
 @implementation SKSnapshotPDFView
 
 @synthesize autoFits;
+@dynamic scalePopUpButton;
 
 #define SKPDFContentViewChangedNotification @"SKPDFContentViewChangedNotification"
 
@@ -79,7 +76,9 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 #define SKMinDefaultScaleMenuFactor (SKDefaultScaleMenuFactors[1])
 #define SKDefaultScaleMenuFactorsCount (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat))
 
-#define SKScaleMenuFontSize ((CGFloat)11.0)
+#define CONTROL_FONT_SIZE 10.0
+#define CONTROL_HEIGHT 15.0
+#define CONTROL_WIDTH_OFFSET 20.0
 
 - (void)drawPage:(PDFPage *)pdfPage {
     NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
@@ -99,9 +98,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     autoFitRect = NSZeroRect;
     didMagnify = NO;
     
-    [self makeScalePopUpButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:)
                                                  name:NSViewFrameDidChangeNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:self];
@@ -129,20 +126,11 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    SKDESTROY(scalePopUpButton);
     [super dealloc];
 }
 
-static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anIndex) {
-    NSUInteger i = [popUpButton indexOfSelectedItem];
-    [popUpButton selectItemAtIndex:anIndex];
-    [popUpButton sizeToFit];
-    NSSize frameSize = [popUpButton frame].size;
-    frameSize.width -= 22.0 + 2 * [[popUpButton cell] controlSize];
-    [popUpButton setFrameSize:frameSize];
-    [popUpButton selectItemAtIndex:i];
-}
-
-- (void)makeScalePopUpButton {
+- (NSPopUpButton *)scalePopUpButton {
     
     if (scalePopUpButton == nil) {
         
@@ -150,17 +138,16 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [scrollView setHasHorizontalScroller:YES];
         
         // create it        
-        scalePopUpButton = [[SKHighlightingPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        scalePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
-        NSControlSize controlSize = NSSmallControlSize;
-        [[scalePopUpButton cell] setControlSize:controlSize];
+        [[scalePopUpButton cell] setControlSize:NSSmallControlSize];
 		[scalePopUpButton setBordered:NO];
 		[scalePopUpButton setEnabled:YES];
 		[scalePopUpButton setRefusesFirstResponder:YES];
 		[[scalePopUpButton cell] setUsesItemFromMenu:YES];
         
         // set a suitable font, the control size is 0, 1 or 2
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKScaleMenuFontSize - controlSize]];
+        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize:CONTROL_FONT_SIZE]];
 		
         NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;
@@ -182,6 +169,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             curItem = [scalePopUpButton itemAtIndex:cnt];
             [curItem setRepresentedObject:(SKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithDouble:SKDefaultScaleMenuFactors[cnt]] : nil)];
         }
+        
+        // Make sure the popup is big enough to fit the largest cell
+        [scalePopUpButton selectItemAtIndex:maxIndex];
+        [scalePopUpButton sizeToFit];
+        [scalePopUpButton setFrameSize:NSMakeSize(NSWidth([scalePopUpButton frame]) - CONTROL_WIDTH_OFFSET, CONTROL_HEIGHT)];
+        
         // select the appropriate item, adjusting the scaleFactor if necessary
         if([self autoFits])
             [self setScaleFactor:0.0 adjustPopup:YES];
@@ -195,13 +188,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
         
-        // Make sure the popup is big enough to fit the largest cell
-        sizePopUpToItemAtIndex(scalePopUpButton, maxIndex);
-        
-        // put it in the scrollview
-        [scrollView setPlacards:[NSArray arrayWithObject:scalePopUpButton]];
-        [scalePopUpButton release];
     }
+    
+    return scalePopUpButton;
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {

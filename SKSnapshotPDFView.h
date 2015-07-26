@@ -50,6 +50,7 @@
 }
 
 @property (nonatomic) BOOL autoFits;
+@property (nonatomic, readonly) NSPopUpButton *scalePopUpButton;
 
 - (void)resetHistory;
 

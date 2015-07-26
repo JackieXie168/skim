@@ -268,7 +268,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
-    [self window];
+    NSWindow *window = [self window];
     
     [pdfView setScaleFactor:factor];
     [pdfView setAutoScales:NO];
@@ -279,17 +279,25 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView setDocument:pdfDocument];
     
-    PDFPage *page = [pdfDocument pageAtIndex:pageNum];
-    NSRect frame = [pdfView convertRect:rect fromPage:page];
-    frame = [pdfView convertRect:frame toView:nil];
-    
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     
-    frame.size.width += [NSScroller scrollerWidth];
-    frame.size.height += [NSScroller scrollerWidth];
-    frame = [[self window] frameRectForContentRect:frame];
-    frame.origin.x = NSMinX([[self window] frame]);
-    frame.origin.y = NSMaxY([[self window] frame]) - NSHeight(frame);
+    NSView *controlView = [pdfView scalePopUpButton];
+    NSRect controlFrame, frame;
+    NSDivideRect([[window contentView] bounds], &controlFrame, &frame, NSHeight([controlView frame]), NSMinYEdge);
+    controlFrame.size.width = NSWidth([controlView frame]);
+    [controlView setFrame:controlFrame];
+    [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
+    [[window contentView] addSubview:controlView];
+    [pdfView setFrame:frame];
+    [window setBackgroundColor:[NSColor colorWithCalibratedWhite:0.97 alpha:1.0]];
+    
+    PDFPage *page = [pdfDocument pageAtIndex:pageNum];
+    frame = [pdfView convertRect:rect fromPage:page];
+    frame = [pdfView convertRect:frame toView:nil];
+    frame.size.height += NSHeight(controlFrame);
+    frame = [window frameRectForContentRect:frame];
+    frame.origin.x = NSMinX([window frame]);
+    frame.origin.y = NSMaxY([window frame]) - NSHeight(frame);
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
     [pdfView goToPage:page];
