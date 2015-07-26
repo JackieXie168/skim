@@ -89,17 +89,10 @@
     if (mwcFlags.updatingColor == 0 && [annotation isSkimNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
         BOOL isText = [textColorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setFontColor:)];
-        NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
-        if ([color isEqual:[sender color]] == NO) {
-            mwcFlags.updatingColor = 1;
-            if (isFill)
-                [(id)annotation setInteriorColor:[[sender color] alphaComponent] > 0.0 ? [sender color] : nil];
-            else if (isText)
-                [(id)annotation setFontColor:[[sender color] alphaComponent] > 0.0 ? [sender color] : nil];
-            else
-                [annotation setColor:[sender color]];
-            mwcFlags.updatingColor = 0;
-        }
+        BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+        mwcFlags.updatingColor = 1;
+        [annotation setColor:[sender color] alternate:isFill || isText updateDefaults:isShift];
+        mwcFlags.updatingColor = 0;
     }
 }
 

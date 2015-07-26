@@ -1579,12 +1579,9 @@ enum {
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
             if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]]) {
-                if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
-                    [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
-                else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
-                    [(id)highlightAnnotation setFontColor:[NSColor colorFromPasteboard:pboard]];
-                else
-                    [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
+                BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+                BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
+                [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard] alternate:isAlt updateDefaults:isShift];
                 performedDrag = YES;
             } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
                 [pboard types];

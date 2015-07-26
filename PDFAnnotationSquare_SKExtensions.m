@@ -93,6 +93,10 @@
         [self setString:selString];
 }
 
+- (NSString *)colorDefaultKey { return SKSquareNoteColorKey; }
+
+- (NSString *)alternateColorDefaultKey { return SKSquareNoteInteriorColorKey; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *squareKeys = nil;
     if (squareKeys == nil) {

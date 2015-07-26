@@ -58,6 +58,7 @@
 #import "SKVersionNumber.h"
 #import "NSColor_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -314,6 +315,29 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (void)autoUpdateString {}
+
+- (NSString *)colorDefaultKey { return nil; }
+
+- (NSString *)alternateColorDefaultKey { return nil; }
+
+- (void)setColor:(NSColor *)color alternate:(BOOL)alternate updateDefaults:(BOOL)update {
+    BOOL isFill = alternate && [self respondsToSelector:@selector(setInteriorColor:)];
+    BOOL isText = alternate && [self respondsToSelector:@selector(setFontColor:)];
+    NSColor *oldColor = (isFill ? [(id)self interiorColor] : (isText ? [(id)self fontColor] : [self color])) ?: [NSColor clearColor];
+    if ([oldColor isEqual:color] == NO) {
+        if (isFill)
+            [(id)self setInteriorColor:[color alphaComponent] > 0.0 ? color : nil];
+        else if (isText)
+            [(id)self setFontColor:[color alphaComponent] > 0.0 ? color : nil];
+        else
+            [self setColor:color];
+    }
+    if (update) {
+        NSString *key = (isFill || isText) ? [self alternateColorDefaultKey] : [self colorDefaultKey];
+        if (key)
+            [[NSUserDefaults standardUserDefaults] setColor:color forKey:key];
+    }
+}
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *keys = nil;

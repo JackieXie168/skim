@@ -103,6 +103,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (NSString *)uniqueID;
 
+- (void)setColor:(NSColor *)color alternate:(BOOL)alternate updateDefaults:(BOOL)update;
+
 - (NSSet *)keysForValuesToObserveForUndo;
 
 + (NSSet *)customScriptingKeys;

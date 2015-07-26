@@ -107,6 +107,10 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
         [self setString:selString];
 }
 
+- (NSString *)colorDefaultKey { return SKCircleNoteColorKey; }
+
+- (NSString *)alternateColorDefaultKey { return SKCircleNoteInteriorColorKey; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *circleKeys = nil;
     if (circleKeys == nil) {

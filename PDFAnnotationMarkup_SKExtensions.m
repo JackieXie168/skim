@@ -299,6 +299,15 @@ static void (*original_dealloc)(id, SEL) = NULL;
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
+- (NSString *)colorDefaultKey {
+    switch ([self markupType]) {
+        case kPDFMarkupTypeUnderline: return SKUnderlineNoteColorKey;
+        case kPDFMarkupTypeStrikeOut: return SKStrikeOutNoteColorKey;
+        case kPDFMarkupTypeHighlight: return SKHighlightNoteColorKey;
+    }
+    return nil;
+}
+
 - (void)autoUpdateString {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;

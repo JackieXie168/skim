@@ -689,12 +689,9 @@
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSPasteboard *pboard = [info draggingPasteboard];
         if ([pboard canReadObjectForClasses:[NSArray arrayWithObject:[NSColor class]] options:[NSDictionary dictionary]]) {
-            if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setInteriorColor:)])
-                [item setInteriorColor:[NSColor colorFromPasteboard:pboard]];
-            else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [item respondsToSelector:@selector(setFontColor:)])
-                [item setFontColor:[NSColor colorFromPasteboard:pboard]];
-            else
-                [item setColor:[NSColor colorFromPasteboard:pboard]];
+            BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+            BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
+            [item setColor:[NSColor colorFromPasteboard:pboard] alternate:isAlt updateDefaults:isShift];
             return YES;
         }
     }

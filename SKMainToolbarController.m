@@ -56,6 +56,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 
@@ -1033,35 +1034,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     NSColor *newColor = [sender respondsToSelector:@selector(color)] ? [sender color] : [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
     BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
-    if ([annotation isSkimNote]) {
-        BOOL isFill = isAlt && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        BOOL isText = isAlt && [annotation respondsToSelector:@selector(setFontColor:)];
-        NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
-        if (newColor && [color isEqual:newColor] == NO) {
-            if (isFill)
-                [(id)annotation setInteriorColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
-            else if (isText)
-                [(id)annotation setFontColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
-            else
-                [annotation setColor:newColor];
-        }
-    }
-    if (isShift && [mainController.pdfView toolMode] == SKNoteToolMode) {
-        NSString *key = nil;
-        switch ([mainController.pdfView annotationMode]) {
-            case SKFreeTextNote:  key = isAlt ? SKFreeTextNoteFontColorKey : SKFreeTextNoteColorKey; break;
-            case SKAnchoredNote:  key = SKAnchoredNoteColorKey; break;
-            case SKCircleNote:    key = isAlt ? SKCircleNoteInteriorColorKey : SKCircleNoteColorKey; break;
-            case SKSquareNote:    key = isAlt ? SKSquareNoteInteriorColorKey : SKSquareNoteColorKey; break;
-            case SKHighlightNote: key = SKHighlightNoteColorKey; break;
-            case SKUnderlineNote: key = SKUnderlineNoteColorKey; break;
-            case SKStrikeOutNote: key = SKStrikeOutNoteColorKey; break;
-            case SKLineNote:      key = SKLineNoteColorKey; break;
-            case SKInkNote:       key = SKInkNoteColorKey; break;
-        }
-        if (key)
-            [[NSUserDefaults standardUserDefaults] setColor:newColor forKey:key];
-    }
+    if ([annotation isSkimNote])
+        [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
 #pragma mark Notifications

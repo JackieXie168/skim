@@ -97,6 +97,10 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
+- (NSString *)colorDefaultKey { return SKFreeTextNoteColorKey; }
+
+- (NSString *)alternateColorDefaultKey { return SKFreeTextNoteFontColorKey; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *freeTextKeys = nil;
     if (freeTextKeys == nil) {

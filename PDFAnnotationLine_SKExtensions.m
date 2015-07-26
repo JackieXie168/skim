@@ -158,6 +158,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     SKDrawResizeHandle(point, delta, active);
 }
 
+- (NSString *)colorDefaultKey { return SKLineNoteColorKey; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *lineKeys = nil;
     if (lineKeys == nil) {

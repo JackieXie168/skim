@@ -231,6 +231,8 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
     return pointLists;
 }
 
+- (NSString *)colorDefaultKey { return SKInkNoteColorKey; }
+
 #pragma mark Scripting support
 
 + (NSSet *)customScriptingKeys {

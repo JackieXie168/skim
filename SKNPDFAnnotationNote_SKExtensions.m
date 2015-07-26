@@ -102,6 +102,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (NSArray *)texts { return texts; }
 
+- (NSString *)colorDefaultKey { return SKAnchoredNoteColorKey; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *noteKeys = nil;
     if (noteKeys == nil) {
