@@ -110,10 +110,6 @@
     [[[groupedFindTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
-        [tocOutlineView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-        [tocOutlineView setIntercellSpacing:NSMakeSize(3.0, 2.0)];
-        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:LABEL_COLUMNID] dataCell] setSimulatesSourceList:YES];
-        [(SKSourceListTextFieldCell *)[[tocOutlineView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
         [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
     }

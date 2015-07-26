@@ -55,7 +55,7 @@
 }
 
 - (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9 && [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
         [self isRowSelected:row] == NO) {
         
         NSUInteger level = [[self delegate] outlineView:self highlightLevelForRow:row];
@@ -104,7 +104,7 @@
 }
 
 - (void)handleHighlightsChanged {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9 && [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
 }
 
