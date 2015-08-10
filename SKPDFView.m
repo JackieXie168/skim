@@ -2315,9 +2315,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return YES;
     } else if (action == @selector(changeAnnotationMode:)) {
         if ([[menuItem menu] numberOfItems] > ANNOTATION_MODE_COUNT)
-            [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (SKNoteType)[menuItem tag] ? NSOnState : NSOffState];
         else
-            [menuItem setState:[self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[self annotationMode] == (SKNoteType)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(copy:)) {
         if ([[self currentSelection] hasCharacters])
@@ -4242,24 +4242,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page) {
     BOOL rotated = ([page rotation] % 180 != 0);
-    switch (mask) {
-        case 0:
-            return SKDragArea;
-        case SKMaxXEdgeMask:
-        case SKMinXEdgeMask:
-            return rotated ? SKResizeUpDownArea : SKResizeLeftRightArea;
-        case SKMaxXEdgeMask | SKMaxYEdgeMask:
-        case SKMinXEdgeMask | SKMinYEdgeMask:
-            return rotated ? SKResizeDiagonal135Area : SKResizeDiagonal45Area;
-        case SKMaxYEdgeMask:
-        case SKMinYEdgeMask:
-            return rotated ? SKResizeLeftRightArea : SKResizeUpDownArea;
-        case SKMaxXEdgeMask | SKMinYEdgeMask:
-        case SKMinXEdgeMask | SKMaxYEdgeMask:
-            return rotated ? SKResizeDiagonal45Area : SKResizeDiagonal135Area;
-        default:
-            return kPDFNoArea;
-    }
+    if (mask == 0)
+        return SKDragArea;
+    else if (mask == SKMaxXEdgeMask || mask == SKMinXEdgeMask)
+        return rotated ? SKResizeUpDownArea : SKResizeLeftRightArea;
+    else if (mask == (SKMaxXEdgeMask | SKMaxYEdgeMask) || mask == (SKMinXEdgeMask | SKMinYEdgeMask))
+        return rotated ? SKResizeDiagonal135Area : SKResizeDiagonal45Area;
+    else if (mask == SKMaxYEdgeMask || mask == SKMinYEdgeMask)
+        return rotated ? SKResizeLeftRightArea : SKResizeUpDownArea;
+    else if (mask == (SKMaxXEdgeMask | SKMinYEdgeMask) || mask == (SKMinXEdgeMask | SKMaxYEdgeMask))
+        return rotated ? SKResizeDiagonal45Area : SKResizeDiagonal135Area;
+    else
+        return kPDFNoArea;
 }
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower) 

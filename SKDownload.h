@@ -44,7 +44,7 @@ extern NSString *SKDownloadFileNameKey;
 extern NSString *SKDownloadStatusKey;
 extern NSString *SKDownloadProgressIndicatorKey;
 
-enum {
+typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     SKDownloadStatusUndefined,
     SKDownloadStatusStarting,
     SKDownloadStatusDownloading,
@@ -52,7 +52,6 @@ enum {
     SKDownloadStatusFailed,
     SKDownloadStatusCanceled
 };
-typedef NSInteger SKDownloadStatus;
 
 @interface SKDownload : NSObject <NSURLDownloadDelegate, QLPreviewItem> {
     NSURL *URL;

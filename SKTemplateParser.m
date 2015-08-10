@@ -214,10 +214,12 @@ static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, S
     }
 }
 
+#define SKNoTemplateTagType (SKTemplateTagType)-1
+
 static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateTagType typeBefore, SKTemplateTagType typeAfter, BOOL isSubtemplate) {
     NSRange range = NSMakeRange(0, [string length]);
     
-    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType || (isSubtemplate && typeAfter == -1)) {
+    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType || (isSubtemplate && typeAfter == SKNoTemplateTagType)) {
         // remove whitespace at the end, just before the collection or condition tag
         NSRange lastCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:NSBackwardsSearch range:range];
         if (lastCharRange.location != NSNotFound) {
@@ -225,11 +227,11 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             NSUInteger rangeEnd = NSMaxRange(lastCharRange);
             if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
                 range.length = rangeEnd;
-        } else if (isSubtemplate == NO && typeBefore == -1) {
+        } else if (isSubtemplate == NO && typeBefore == SKNoTemplateTagType) {
             range.length = 0;
         }
     }
-    if (typeBefore == SKCollectionTemplateTagType || typeBefore == SKConditionTemplateTagType || (isSubtemplate && typeBefore == -1)) {
+    if (typeBefore == SKCollectionTemplateTagType || typeBefore == SKConditionTemplateTagType || (isSubtemplate && typeBefore == SKNoTemplateTagType)) {
         // remove whitespace and a newline at the start, just after the collection or condition tag
         NSRange firstCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:0 range:range];
         if (firstCharRange.location != NSNotFound) {
@@ -241,7 +243,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 else 
                     range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
             }
-        } else if (isSubtemplate == NO && typeAfter == -1) {
+        } else if (isSubtemplate == NO && typeAfter == SKNoTemplateTagType) {
             range.length = 0;
         }
     }

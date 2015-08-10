@@ -38,22 +38,20 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKTemplateTagType) {
     SKValueTemplateTagType,
     SKCollectionTemplateTagType,
     SKConditionTemplateTagType,
     SKTextTemplateTagType
 };
-typedef NSInteger SKTemplateTagType;
 
-enum {
+typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {
     SKTemplateTagMatchOther,
     SKTemplateTagMatchEqual,
     SKTemplateTagMatchContain,
     SKTemplateTagMatchSmaller,
     SKTemplateTagMatchSmallerOrEqual,
 };
-typedef NSInteger SKTemplateTagMatchType;
 
 @interface SKTemplateTag : NSObject
 

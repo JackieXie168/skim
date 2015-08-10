@@ -537,6 +537,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
             if ([self displayStyle] == SKLineWellDisplayStyleLine)
                 key = SKLineWellEndLineStyleKey;
             break;
+        case SKNoLineChangeAction:
+            break;
     }
     if (key) {
         [self takeValueForKey:key from:inspector];

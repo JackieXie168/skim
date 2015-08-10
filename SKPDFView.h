@@ -58,16 +58,15 @@ extern NSString *SKPDFViewPageKey;
 extern NSString *SKPDFViewOldPageKey;
 extern NSString *SKPDFViewNewPageKey;
 
-enum _SKToolMode {
+typedef NS_ENUM(NSInteger, SKToolMode) {
     SKTextToolMode,
     SKMoveToolMode,
     SKMagnifyToolMode,
     SKSelectToolMode,
     SKNoteToolMode
 };
-typedef NSInteger SKToolMode;
 
-enum {
+typedef NS_ENUM(NSInteger, SKNoteType) {
     SKFreeTextNote,
     SKAnchoredNote,
     SKCircleNote,
@@ -78,7 +77,6 @@ enum {
     SKLineNote,
     SKInkNote
 };
-typedef NSInteger SKNoteType;
 
 enum {
     SKDragArea = 1 << 16,

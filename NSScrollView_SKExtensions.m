@@ -41,11 +41,10 @@
 
 #if !defined(MAC_OS_X_VERSION_10_6) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 
-enum {
+typedef NS_ENUM(NSInteger, NSScrollerStyle) {
    NSScrollerStyleLegacy,
    NSScrollerStyleOverlay
 };
-typedef NSInteger NSScrollerStyle;
 
 @interface NSScroller (SKLionDeclarations)
 + (NSScrollerStyle)preferredScrollerStyle;

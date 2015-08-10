@@ -43,7 +43,7 @@ extern NSString *SKDurationKey;
 extern NSString *SKShouldRestrictKey;
 
 // this corresponds to the CGSTransitionType enum
-enum {
+typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 	SKNoTransition,
     // Core Graphics transitions
 	SKFadeTransition,
@@ -58,7 +58,6 @@ enum {
     // Core Image transitions
     SKCoreImageTransition
 };
-typedef NSUInteger SKAnimationTransitionStyle;
 
 @class CIImage;
 

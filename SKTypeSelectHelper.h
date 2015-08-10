@@ -39,12 +39,11 @@
 #import <Cocoa/Cocoa.h>
 
 
-enum {
+typedef NS_ENUM(NSInteger, SKTypeSelectMatchOption) {
     SKPrefixMatch,
     SKSubstringMatch,
     SKFullStringMatch
 };
-typedef NSInteger SKTypeSelectMatchOption;
 
 @protocol SKTypeSelectDelegate;
 

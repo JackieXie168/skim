@@ -163,6 +163,8 @@
                 if ([annotation isLine])
                     [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
                 break;
+            case SKNoLineChangeAction:
+                break;
         }
         mwcFlags.updatingLine = 0;
         // in case one property changes another, e.g. when adding a dashPattern the borderStyle can change

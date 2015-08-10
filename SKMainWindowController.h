@@ -43,23 +43,20 @@
 #import "NSDocument_SKExtensions.h"
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
     SKThumbnailSidePaneState,
     SKOutlineSidePaneState
 };
-typedef NSInteger SKLeftSidePaneState;
 
-enum {
+typedef NS_ENUM(NSInteger, SKRightSidePaneState) {
     SKNoteSidePaneState,
     SKSnapshotSidePaneState
 };
-typedef NSInteger SKRightSidePaneState;
 
-enum {
+typedef NS_ENUM(NSInteger, SKFindPaneState) {
     SKSingularFindPaneState,
     SKGroupedFindPaneState
 };
-typedef NSInteger SKFindPaneState;
 
 enum {
     SKDefaultWindowOption,

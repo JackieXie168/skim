@@ -42,7 +42,7 @@
 
 extern NSString *SKLineInspectorLineAttributeDidChangeNotification;
 
-enum {
+typedef NS_ENUM(NSUInteger, SKLineChangeAction) {
     SKNoLineChangeAction,
     SKLineWidthLineChangeAction,
     SKStyleLineChangeAction,
@@ -50,7 +50,6 @@ enum {
     SKStartLineStyleLineChangeAction,
     SKEndLineStyleLineChangeAction
 };
-typedef NSUInteger SKLineChangeAction;
 
 @class SKLineWell;
 

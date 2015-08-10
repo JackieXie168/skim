@@ -38,12 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKProgressIndicatorStyle) {
    SKProgressIndicatorNone = -1,
    SKProgressIndicatorBarStyle = NSProgressIndicatorBarStyle,
    SKProgressIndicatorSpinningStyle = NSProgressIndicatorSpinningStyle
 };
-typedef NSInteger SKProgressIndicatorStyle;
 
 
 @interface SKStatusBar : NSView {

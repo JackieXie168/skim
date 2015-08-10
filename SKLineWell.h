@@ -47,13 +47,12 @@ extern NSString *SKLineWellDashPatternKey;
 extern NSString *SKLineWellStartLineStyleKey;
 extern NSString *SKLineWellEndLineStyleKey;
 
-enum {
+typedef NS_ENUM(NSInteger, SKLineWellDisplayStyle) {
     SKLineWellDisplayStyleLine,
     SKLineWellDisplayStyleSimpleLine,
     SKLineWellDisplayStyleRectangle,
     SKLineWellDisplayStyleOval
 };
-typedef NSInteger SKLineWellDisplayStyle;
 
 @interface SKLineWell : NSControl {
     CGFloat lineWidth;

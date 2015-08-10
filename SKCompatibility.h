@@ -51,18 +51,25 @@
     #define NSAppKitVersionNumber10_9 1265
 #endif
 
+#ifndef NS_ENUM
+#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
+
+#ifndef NS_OPTIONS
+#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
+
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
 
 @protocol NSURLDownloadDelegate <NSObject> @end
 
-enum {
+typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) {
     NSWindowAnimationBehaviorDefault = 0,
     NSWindowAnimationBehaviorNone = 2,
     NSWindowAnimationBehaviorDocumentWindow = 3,
     NSWindowAnimationBehaviorUtilityWindow = 4,
     NSWindowAnimationBehaviorAlertPanel = 5
 };
-typedef NSInteger NSWindowAnimationBehavior;
 
 enum {
     NSWindowDocumentVersionsButton = 6,

@@ -39,13 +39,12 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKBookmarkType) {
     SKBookmarkTypeBookmark,
     SKBookmarkTypeFolder,
     SKBookmarkTypeSession,
     SKBookmarkTypeSeparator
 };
-typedef NSInteger SKBookmarkType;
 
 @interface SKBookmark : NSObject <NSCopying, QLPreviewItem> {
     SKBookmark *parent;

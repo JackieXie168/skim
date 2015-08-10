@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
+typedef NS_OPTIONS(NSUInteger, SKRectEdges) {
 	SKNoEdgeMask = 0,
 	SKMinXEdgeMask = 1 << NSMinXEdge,
 	SKMinYEdgeMask = 1 << NSMinYEdge,
@@ -46,7 +46,6 @@ enum {
 	SKMaxYEdgeMask = 1 << NSMaxYEdge,
 	SKEveryEdgeMask = SKMinXEdgeMask | SKMinYEdgeMask | SKMaxXEdgeMask | SKMaxYEdgeMask,
 };
-typedef NSUInteger SKRectEdges;
 
 static inline NSPoint SKIntegralPoint(NSPoint point) {
     return NSMakePoint(round(point.x), round(point.y));
