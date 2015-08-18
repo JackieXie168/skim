@@ -290,7 +290,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSInteger)toolMode { return 0; }
 
-- (NSInteger)interactionMode { return 0; }
+- (NSInteger)scriptingInteractionMode { return 0; }
 
 - (NSDocument *)presentationNotesDocument { return nil; }
 

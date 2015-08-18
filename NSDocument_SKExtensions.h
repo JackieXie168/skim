@@ -103,7 +103,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;
 - (NSInteger)toolMode;
-- (NSInteger)interactionMode;
+- (NSInteger)scriptingInteractionMode;
 - (NSDocument *)presentationNotesDocument;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;

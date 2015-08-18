@@ -951,7 +951,7 @@
             </property>
             <property name="interaction mode" type="interaction mode type" code="IMod"
                 description="The interaction mode for the document.">
-                <cocoa key="interactionMode"/>
+                <cocoa key="scriptingInteractionMode"/>
             </property>
             <property name="containing PDF" type="boolean" code="iPDF" access="r"
                 description="Is this a PDF document?">
