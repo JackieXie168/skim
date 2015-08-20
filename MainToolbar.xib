@@ -1966,7 +1966,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">enterFullscreen:</string>
-						<reference key="source" ref="1003"/>
+						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="206221324"/>
 					</object>
 					<int key="connectionID">194</int>
