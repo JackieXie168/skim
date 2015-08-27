@@ -257,7 +257,7 @@
     if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:mainWindow] == NO) {
         NSScreen *screen = [[self window] screen];
         [[self window] setFrame:[screen frame] display:NO];
-        if ([self interactionMode] == SKFullScreenMode) {
+        if ([self interactionMode] == SKLegacyFullScreenMode) {
             NSDrawerState state;
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 state = [leftSideWindow state];
@@ -285,7 +285,7 @@
         NSRect screenFrame = [screen frame];
         if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
             [[self window] setFrame:screenFrame display:NO];
-            if ([self interactionMode] == SKFullScreenMode) {
+            if ([self interactionMode] == SKLegacyFullScreenMode) {
                 [leftSideWindow remove];
                 [leftSideWindow attachToWindow:[self window]];
                 [rightSideWindow remove];
@@ -1692,19 +1692,33 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(searchPDF:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(toggleFullscreen:)) {
-        if ([self interactionMode] == SKFullScreenMode)
+        if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode;
+        else
+            return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(togglePresentation:)) {
         if ([self interactionMode] == SKPresentationMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
-        return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(enterFullscreen:) || action == @selector(enterPresentation:)) {
-        return [[self pdfDocument] isLocked] == NO;
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
+        else
+            return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(enterFullscreen:) ) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [self interactionMode] == SKNormalMode;
+        else
+            return [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(enterPresentation:)) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
+        else
+            return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(performFit:)) {
@@ -1718,7 +1732,7 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
-        if ([self interactionMode] == SKFullScreenMode)
+        if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
@@ -1738,7 +1752,7 @@ static NSArray *allMainDocumentPDFViews() {
         [menuItem setState:mwcFlags.autoResizeNoteRows ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(performFindPanelAction:)) {
-        if (interactionMode == SKPresentationMode)
+        if ([self interactionMode] == SKPresentationMode)
             return NO;
         switch ([menuItem tag]) {
             case NSFindPanelActionShowFindPanel:

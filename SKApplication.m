@@ -79,7 +79,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 }
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
-    const NSApplicationPresentationOptions options[3] = {NSApplicationPresentationDefault, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching};
+    const NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault, NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar};
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
     if ([self presentationOptions] != options[mode])
         [self setPresentationOptions:options[mode]];

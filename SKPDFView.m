@@ -465,7 +465,7 @@ enum {
         if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
             [[self documentView] setHidden:NO];
         interactionMode = newInteractionMode;
-        if (interactionMode == SKNormalMode)
+        if (interactionMode == SKNormalMode || interactionMode == SKFullScreenMode)
             [self disableNavigation];
         else
             [self enableNavigation];
@@ -1443,7 +1443,7 @@ enum {
     NSTrackingArea *eventArea = [theEvent trackingArea];
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
-        [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
+        [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKLegacyFullScreenMode)];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
@@ -2412,10 +2412,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)doAutohideDelayed {
     if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
-    if (interactionMode == SKPresentationMode)
-        [NSCursor setHiddenUntilMouseMoves:YES];
-    if (interactionMode != SKNormalMode)
+    if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
+        if (interactionMode == SKPresentationMode)
+            [NSCursor setHiddenUntilMouseMoves:YES];
         [navWindow fadeOut];
+    }
 }
 
 - (void)doAutohide:(BOOL)flag {

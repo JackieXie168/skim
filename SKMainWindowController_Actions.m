@@ -783,10 +783,10 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)savePDFSettingToDefaults:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode)
-        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
-    else if ([self interactionMode] == SKNormalMode)
+    if ([self interactionMode] == SKNormalMode)
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+    else if ([self interactionMode] != SKPresentationMode)
+        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
 
 - (IBAction)chooseTransition:(id)sender {
@@ -819,7 +819,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode) {
+    if ([self interactionMode] == SKLegacyFullScreenMode) {
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
         if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
@@ -856,7 +856,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode) {
+    if ([self interactionMode] == SKLegacyFullScreenMode) {
         if ([self rightSidePaneIsOpen])
             [rightSideWindow collapse];
         else
@@ -981,26 +981,26 @@ static NSArray *allMainDocumentPDFViews() {
     }
     
     [[self window] recalculateKeyViewLoop];
-    if ([self interactionMode] == SKFullScreenMode)
+    if ([self interactionMode] == SKLegacyFullScreenMode)
         [[self window] makeFirstResponder:pdfView];
 }
 
 - (IBAction)toggleFullscreen:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode)
+    if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
         [self exitFullscreen:sender];
-    else
+    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
         [self enterFullscreen:sender];
 }
 
 - (IBAction)togglePresentation:(id)sender {
     if ([self interactionMode] == SKPresentationMode)
         [self exitFullscreen:sender];
-    else
+    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
         [self enterPresentation:sender];
 }
 
 - (IBAction)performFindPanelAction:(id)sender {
-    if (interactionMode == SKPresentationMode) {
+    if ([self interactionMode] == SKPresentationMode) {
         NSBeep();
         return;
     }

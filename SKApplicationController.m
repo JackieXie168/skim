@@ -157,7 +157,8 @@
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    [NSApp updatePresentationOptionsForWindow:[aNotification object]];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 
 #pragma mark NSApplication delegate

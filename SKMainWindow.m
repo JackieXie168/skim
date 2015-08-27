@@ -43,6 +43,8 @@
 
 @implementation SKMainWindow
 
+@synthesize disableConstrainedFrame;
+
 - (void)sendEvent:(NSEvent *)theEvent {
     if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSKeyDown) {
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
@@ -71,6 +73,10 @@
 - (void)performClose:(id)sender {
     if ([self delegate])
         [super performClose:sender];
+}
+
+- (NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen *)screen {
+    return [self disableConstrainedFrame] ? frameRect : [super constrainFrameRect:frameRect toScreen:screen];
 }
 
 @end

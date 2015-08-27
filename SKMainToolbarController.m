@@ -830,8 +830,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
         return ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [mainController.pdfView.document isLocked] == NO;
-    } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
-        return [mainController.pdfView.document isLocked] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [mainController interactionMode] == SKNormalMode;
+        else
+            return [mainController.pdfView.document isLocked] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [mainController interactionMode] == SKNormalMode && [mainController.pdfView.document isLocked] == NO;
+        else
+            return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarRotateRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:NSToolbarPrintItemIdentifier]) {

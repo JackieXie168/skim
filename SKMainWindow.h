@@ -39,5 +39,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKMainWindow : NSWindow
+@interface SKMainWindow : NSWindow {
+    BOOL disableConstrainedFrame;
+}
+@property (nonatomic) BOOL disableConstrainedFrame;
 @end
