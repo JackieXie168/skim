@@ -1727,6 +1727,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (BOOL)canEnterPresentation {
+    if (mwcFlags.isSwitchingFullScreen)
+        return NO;
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     else
@@ -1734,10 +1736,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (BOOL)canExitFullscreen {
+    if (mwcFlags.isSwitchingFullScreen)
+        return NO;
     return [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode;
 }
 
 - (BOOL)canExitPresentation {
+    if (mwcFlags.isSwitchingFullScreen)
+        return NO;
     return [self interactionMode] == SKPresentationMode;
 }
 
