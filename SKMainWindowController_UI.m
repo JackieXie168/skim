@@ -1696,19 +1696,13 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return [self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode;
-        else
-            return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
+        return [self canEnterFullscreen] || [self canExitFullscreen];
     } else if (action == @selector(togglePresentation:)) {
         if ([self interactionMode] == SKPresentationMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
-        else
-            return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
+        return [self canEnterPresentation] || [self canExitPresentation];
     } else if (action == @selector(getInfo:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(performFit:)) {

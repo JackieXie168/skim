@@ -986,16 +986,16 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleFullscreen:(id)sender {
-    if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
+    if ([self canExitFullscreen])
         [self exitFullscreen];
-    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
+    else if ([self canEnterFullscreen])
         [self enterFullscreen];
 }
 
 - (IBAction)togglePresentation:(id)sender {
-    if ([self interactionMode] == SKPresentationMode)
+    if ([self canExitPresentation])
         [self exitFullscreen];
-    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
+    else if ([self canEnterPresentation])
         [self enterPresentation];
 }
 

@@ -200,6 +200,11 @@ enum {
 - (void)enterPresentation;
 - (void)exitFullscreen;
 
+- (BOOL)canEnterFullscreen;
+- (BOOL)canEnterPresentation;
+- (BOOL)canExitFullscreen;
+- (BOOL)canExitPresentation;
+
 - (void)displaySearchResultsForString:(NSString *)string;
 - (IBAction)search:(id)sender;
 - (IBAction)searchNotes:(id)sender;

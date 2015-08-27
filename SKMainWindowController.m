@@ -1527,7 +1527,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)enterFullscreen {
     SKInteractionMode wasInteractionMode = [self interactionMode];
-    if (wasInteractionMode == SKLegacyFullScreenMode)
+    if ([self canEnterFullscreen] == NO)
         return;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6) {
@@ -1595,7 +1595,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)enterPresentation {
     SKInteractionMode wasInteractionMode = [self interactionMode];
-    if (wasInteractionMode == SKPresentationMode)
+    if ([self canEnterPresentation] == NO)
         return;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && wasInteractionMode != SKNormalMode)
@@ -1654,7 +1654,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 
 - (void)exitFullscreen {
     SKInteractionMode wasInteractionMode = [self interactionMode];
-    if (wasInteractionMode == SKNormalMode)
+    if ([self canExitFullscreen] == NO && [self canExitPresentation] == NO)
         return;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && wasInteractionMode == SKFullScreenMode) {
@@ -1717,6 +1717,28 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self synchronizeWindowTitleWithDocumentName];
     
     [self removeBlankingWindows];
+}
+
+- (BOOL)canEnterFullscreen {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        return [self interactionMode] == SKNormalMode;
+    else
+        return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
+}
+
+- (BOOL)canEnterPresentation {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
+    else
+        return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode) && [[self pdfDocument] isLocked] == NO;
+}
+
+- (BOOL)canExitFullscreen {
+    return [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode;
+}
+
+- (BOOL)canExitPresentation {
+    return [self interactionMode] == SKPresentationMode;
 }
 
 - (BOOL)handleRightMouseDown:(NSEvent *)theEvent {
