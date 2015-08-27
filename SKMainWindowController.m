@@ -1525,7 +1525,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     blankingWindows = nil;
 }
 
-- (IBAction)enterFullscreen:(id)sender {
+- (void)enterFullscreen {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if (wasInteractionMode == SKLegacyFullScreenMode)
         return;
@@ -1593,7 +1593,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [self showRightSideWindow];
 }
 
-- (IBAction)enterPresentation:(id)sender {
+- (void)enterPresentation {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if (wasInteractionMode == SKPresentationMode)
         return;
@@ -1652,7 +1652,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [pdfView setInteractionMode:SKPresentationMode];
 }
 
-- (IBAction)exitFullscreen:(id)sender {
+- (void)exitFullscreen {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if (wasInteractionMode == SKNormalMode)
         return;

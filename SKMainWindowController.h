@@ -196,9 +196,9 @@ enum {
     
 @property (nonatomic, retain) IBOutlet NSView *leftSideContentView, *rightSideContentView;
 
-- (IBAction)enterFullscreen:(id)sender;
-- (IBAction)exitFullscreen:(id)sender;
-- (IBAction)enterPresentation:(id)sender;
+- (void)enterFullscreen;
+- (void)enterPresentation;
+- (void)exitFullscreen;
 
 - (void)displaySearchResultsForString:(NSString *)string;
 - (IBAction)search:(id)sender;

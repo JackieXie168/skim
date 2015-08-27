@@ -1401,11 +1401,11 @@
 }
 
 - (void)PDFViewExitFullscreen:(PDFView *)sender {
-    [self exitFullscreen:sender];
+    [self exitFullscreen];
 }
 
 - (void)PDFViewToggleContents:(PDFView *)sender {
-    [self toggleLeftSidePane:sender];
+    [self toggleLeftSidePane];
 }
 
 #pragma mark NSSplitView delegate protocol
@@ -1709,16 +1709,6 @@ static NSArray *allMainDocumentPDFViews() {
             return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
         else
             return [self interactionMode] != SKNormalMode || [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(enterFullscreen:) ) {
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return [self interactionMode] == SKNormalMode;
-        else
-            return [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(enterPresentation:)) {
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
-        else
-            return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(performFit:)) {

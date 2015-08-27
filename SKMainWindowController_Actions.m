@@ -987,16 +987,16 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleFullscreen:(id)sender {
     if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
-        [self exitFullscreen:sender];
+        [self exitFullscreen];
     else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
-        [self enterFullscreen:sender];
+        [self enterFullscreen];
 }
 
 - (IBAction)togglePresentation:(id)sender {
     if ([self interactionMode] == SKPresentationMode)
-        [self exitFullscreen:sender];
+        [self exitFullscreen];
     else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || [self interactionMode] == SKNormalMode)
-        [self enterPresentation:sender];
+        [self enterPresentation];
 }
 
 - (IBAction)performFindPanelAction:(id)sender {
@@ -1051,11 +1051,11 @@ static NSArray *allMainDocumentPDFViews() {
     // passed on from SKSideWindow or SKFullScreenWindow
     if ([self interactionMode] != SKNormalMode) {
         if (sender == [self window]) {
-            [self exitFullscreen:sender];
+            [self exitFullscreen];
         } else if (sender == leftSideWindow || sender == rightSideWindow) {
             NSDrawerState state = [(SKSideWindow *)sender state];
             if (state == NSDrawerClosedState || state == NSDrawerClosingState)
-                [self exitFullscreen:sender];
+                [self exitFullscreen];
             else if (sender == leftSideWindow)
                 [self toggleLeftSidePane:sender];
             else if (sender == rightSideWindow)
