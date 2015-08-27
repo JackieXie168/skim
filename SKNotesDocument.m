@@ -70,6 +70,7 @@
 #import "SKTemplateManager.h"
 #import "SKCenteredTextFieldCell.h"
 #import "NSArray_SKExtensions.h"
+#import "NSScreen_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -99,7 +100,7 @@
 
 @implementation SKNotesDocument
 
-@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
+@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL, interactionMode;
 
 - (id)init {
     self = [super init];
@@ -177,6 +178,9 @@
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
     [[aController window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        [[aController window] setCollectionBehavior:[[aController window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
         [self toggleStatusBar:nil];
@@ -423,6 +427,12 @@
     return [super displayName];
 }
 
+- (SKInteractionMode)systemInteractionMode  {
+    if ([[[[[self windowControllers] objectAtIndex:0] window] screen] isEqual:[NSScreen primaryScreen]])
+        return [self interactionMode];
+    return SKNormalMode;
+}
+
 #pragma mark Printing
 
 - (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
@@ -554,6 +564,11 @@
     [[NSUserDefaults standardUserDefaults] setBool:ndFlags.caseInsensitiveSearch forKey:SKCaseInsensitiveNoteSearchKey];
 }
 
+- (IBAction)toggleFullscreen:(id)sender {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        [[[[self windowControllers] objectAtIndex:0] window] toggleFullScreen:sender];
+}
+
 - (void)performFindPanelAction:(id)sender {
     if ([sender tag] == NSFindPanelActionShowFindPanel) {
         NSToolbar *toolbar = [[[[self windowControllers] objectAtIndex:0] window] toolbar];
@@ -582,6 +597,12 @@
     } else if (action == @selector(toggleAutoResizeNoteRows:)) {
         [menuItem setState:ndFlags.autoResizeRows ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(toggleFullscreen:)) {
+        if ([self interactionMode] == SKFullScreenMode)
+            [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
+        return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6;
     } else if (action == @selector(performFindPanelAction:)) {
         switch ([menuItem tag]) {
             case NSFindPanelActionShowFindPanel:
@@ -975,6 +996,15 @@
             [rowIndexes addIndex:row];
     }
     [outlineView selectRowIndexes:rowIndexes byExtendingSelection:NO];
+}
+
+- (NSInteger)scriptingInteractionMode {
+    return [self interactionMode];
+}
+
+- (void)setScriptingInteractionMode:(NSInteger)mode {
+    if (mode != [self interactionMode] && (mode == SKFullScreenMode || mode == SKNormalMode))
+        [self toggleFullscreen:nil];
 }
 
 @end

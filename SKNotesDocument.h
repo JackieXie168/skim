@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "SKNoteOutlineView.h"
 #import "SKNoteTypeSheetController.h"
+#import "NSDocument_SKExtensions.h"
 
 @class SKNoteOutlineView, SKStatusBar, SKFloatMapTable;
 
@@ -55,6 +56,7 @@
     SKFloatMapTable *rowHeights;
     SKNoteTypeSheetController *noteTypeSheetController;
     NSRect windowRect;
+    SKInteractionMode interactionMode;
     struct _ndFlags {
         unsigned int exportUsingPanel:1;
         unsigned int caseInsensitiveSearch:1;
@@ -69,11 +71,13 @@
 @property (nonatomic, readonly) NSArray *notes;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;
 @property (nonatomic, retain) NSURL *sourceFileURL;
+@property (nonatomic) SKInteractionMode interactionMode;
 
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
+- (IBAction)toggleFullscreen:(id)sender;
 
 - (void)setupToolbarForWindow:(NSWindow *)aWindow;
 
