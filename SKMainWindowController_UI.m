@@ -1405,7 +1405,7 @@
 }
 
 - (void)PDFViewToggleContents:(PDFView *)sender {
-    [self toggleLeftSidePane];
+    [self toggleLeftSidePane:sender];
 }
 
 #pragma mark NSSplitView delegate protocol
@@ -1809,7 +1809,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
     if ([self interactionMode] != SKNormalMode)
-        [self exitFullscreen:self];
+        [self exitFullscreen];
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
