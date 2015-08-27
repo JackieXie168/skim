@@ -101,6 +101,7 @@
 @implementation SKNotesDocument
 
 @synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL, interactionMode;
+@dynamic window;
 
 - (id)init {
     self = [super init];
@@ -132,6 +133,11 @@
 
 - (NSString *)windowNibName {
     return @"NotesDocument";
+}
+
+- (NSWindow *)window {
+    NSArray *wcs = [self windowControllers];
+    return [wcs count] > 0 ? [[wcs objectAtIndex:0] window] : nil;
 }
 
 - (void)showWindows{
@@ -392,7 +398,7 @@
 
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [[[super currentDocumentSetup] mutableCopy] autorelease];
-    NSWindow *window = [[[self windowControllers] lastObject] window];
+    NSWindow *window = [self window];
     if (window)
         [setup setObject:NSStringFromRect([window frame]) forKey:SKWindowFrameKey];
     return setup;
@@ -428,7 +434,7 @@
 }
 
 - (SKInteractionMode)systemInteractionMode  {
-    if ([[[[[self windowControllers] objectAtIndex:0] window] screen] isEqual:[NSScreen primaryScreen]])
+    if ([[[self window] screen] isEqual:[NSScreen primaryScreen]])
         return [self interactionMode];
     return SKNormalMode;
 }
@@ -566,12 +572,12 @@
 
 - (IBAction)toggleFullscreen:(id)sender {
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
-        [[[[self windowControllers] objectAtIndex:0] window] toggleFullScreen:sender];
+        [[self window] toggleFullScreen:sender];
 }
 
 - (void)performFindPanelAction:(id)sender {
     if ([sender tag] == NSFindPanelActionShowFindPanel) {
-        NSToolbar *toolbar = [[[[self windowControllers] objectAtIndex:0] window] toolbar];
+        NSToolbar *toolbar = [[self window] toolbar];
         if ([[[toolbar items] valueForKey:@"itemIdentifier"] containsObject:SKNotesDocumentSearchToolbarItemIdentifier] == NO)
             [toolbar insertItemWithItemIdentifier:SKNotesDocumentSearchToolbarItemIdentifier atIndex:0];
         if ([toolbar displayMode] == NSToolbarDisplayModeLabelOnly)
@@ -922,7 +928,7 @@
 }
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
-    if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
+    if ([[[self window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
         return [(sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"]) checkResourceIsReachableAndReturnError:NULL];

@@ -70,6 +70,7 @@
 @property (nonatomic, retain) IBOutlet NSSearchField *searchField;
 @property (nonatomic, readonly) NSArray *notes;
 @property (nonatomic, readonly) PDFDocument *pdfDocument;
+@property (nonatomic, readonly) NSWindow *window;
 @property (nonatomic, retain) NSURL *sourceFileURL;
 @property (nonatomic) SKInteractionMode interactionMode;
 
