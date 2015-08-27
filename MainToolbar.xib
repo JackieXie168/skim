@@ -1925,7 +1925,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">enterPresentation:</string>
+						<string key="label">togglePresentation:</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="1058504007"/>
 					</object>
@@ -1965,7 +1965,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">enterFullscreen:</string>
+						<string key="label">toggleFullscreen:</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="206221324"/>
 					</object>
@@ -3172,13 +3172,13 @@
 						<string key="createNewNote:">id</string>
 						<string key="createNewTextNote:">id</string>
 						<string key="cropAll:">id</string>
-						<string key="enterFullscreen:">id</string>
-						<string key="enterPresentation:">id</string>
 						<string key="goBackOrForward:">id</string>
 						<string key="goToPreviousNextFirstLastPage:">id</string>
 						<string key="rotateAllLeftRight:">id</string>
 						<string key="selectColor:">id</string>
+						<string key="toggleFullscreen:">id</string>
 						<string key="toggleLeftSidePane:">id</string>
+						<string key="togglePresentation:">id</string>
 						<string key="toggleRightSidePane:">id</string>
 						<string key="zoomActualPhysical:">id</string>
 						<string key="zoomInActualOut:">id</string>
@@ -3242,14 +3242,6 @@
 							<string key="name">cropAll:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="enterFullscreen:">
-							<string key="name">enterFullscreen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="enterPresentation:">
-							<string key="name">enterPresentation:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="goBackOrForward:">
 							<string key="name">goBackOrForward:</string>
 							<string key="candidateClassName">id</string>
@@ -3266,8 +3258,16 @@
 							<string key="name">selectColor:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="toggleFullscreen:">
+							<string key="name">toggleFullscreen:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="toggleLeftSidePane:">
 							<string key="name">toggleLeftSidePane:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="togglePresentation:">
+							<string key="name">togglePresentation:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleRightSidePane:">
@@ -3504,21 +3504,13 @@
 					<string key="className">SKMainWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="enterFullscreen:">id</string>
-						<string key="enterPresentation:">id</string>
 						<string key="exitFullscreen:">id</string>
 						<string key="search:">id</string>
 						<string key="searchNotes:">id</string>
+						<string key="toggleFullscreen:">id</string>
+						<string key="togglePresentation:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="enterFullscreen:">
-							<string key="name">enterFullscreen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="enterPresentation:">
-							<string key="name">enterPresentation:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exitFullscreen:">
 							<string key="name">exitFullscreen:</string>
 							<string key="candidateClassName">id</string>
@@ -3529,6 +3521,14 @@
 						</object>
 						<object class="IBActionInfo" key="searchNotes:">
 							<string key="name">searchNotes:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="toggleFullscreen:">
+							<string key="name">toggleFullscreen:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="togglePresentation:">
+							<string key="name">togglePresentation:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -3661,10 +3661,8 @@
 						<string key="toggleCaseInsensitiveSearch:">id</string>
 						<string key="toggleDisplayAsBook:">id</string>
 						<string key="toggleDisplayPageBreaks:">id</string>
-						<string key="toggleFullscreen:">id</string>
 						<string key="toggleHideNotes:">id</string>
 						<string key="toggleLeftSidePane:">id</string>
-						<string key="togglePresentation:">id</string>
 						<string key="toggleReadingBar:">id</string>
 						<string key="toggleRightSidePane:">id</string>
 						<string key="toggleSplitPDF:">id</string>
@@ -3940,20 +3938,12 @@
 							<string key="name">toggleDisplayPageBreaks:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="toggleFullscreen:">
-							<string key="name">toggleFullscreen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="toggleHideNotes:">
 							<string key="name">toggleHideNotes:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleLeftSidePane:">
 							<string key="name">toggleLeftSidePane:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="togglePresentation:">
-							<string key="name">togglePresentation:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleReadingBar:">

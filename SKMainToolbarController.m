@@ -410,7 +410,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
             
-            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(enterFullscreen:) target:mainController];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Full Screen", @"Menu item title") action:@selector(toggleFullscreen:) target:self];
             
             [item setLabels:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
@@ -419,7 +419,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
             
-            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Presentation", @"Menu item title") action:@selector(enterPresentation:) target:mainController];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Presentation", @"Menu item title") action:@selector(togglePresentation:) target:self];
             
             [item setLabels:NSLocalizedString(@"Presentation", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
@@ -832,14 +832,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return [mainController interactionMode] == SKNormalMode;
+            return [mainController interactionMode] == SKNormalMode || [mainController interactionMode] == SKFullScreenMode;
         else
-            return [mainController.pdfView.document isLocked] == NO;
+            return [mainController interactionMode] != SKNormalMode || [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            return [mainController interactionMode] == SKNormalMode && [mainController.pdfView.document isLocked] == NO;
+            return ([mainController interactionMode] == SKNormalMode || [mainController interactionMode] == SKPresentationMode) && [mainController.pdfView.document isLocked] == NO;
         else
-            return [mainController.pdfView.document isLocked] == NO;
+            return [mainController interactionMode] != SKNormalMode || [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarRotateRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarRotateLeftRightItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
         return [mainController.pdfView.document isLocked] == NO;
     } else if ([identifier isEqualToString:NSToolbarPrintItemIdentifier]) {
@@ -863,6 +863,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     } else if (action == @selector(createNewMarkupNote:)) {
         [menuItem setState:[markupNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [[mainController.pdfView currentSelection] hasCharacters];
+    } else if (action == @selector(toggleFullScreen:)) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return [mainController interactionMode] == SKNormalMode || [mainController interactionMode] == SKFullScreenMode;
+        else
+            return [mainController interactionMode] != SKNormalMode || [mainController.pdfView.document isLocked] == NO;
+    } else if (action == @selector(togglePresentation:)) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+            return ([mainController interactionMode] == SKNormalMode || [mainController interactionMode] == SKPresentationMode) && [mainController.pdfView.document isLocked] == NO;
+        else
+            return [mainController interactionMode] != SKNormalMode || [mainController.pdfView.document isLocked] == NO;
     }
     return YES;
 }
@@ -959,12 +969,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [mainController cropAll:sender];
 }
 
-- (IBAction)enterFullscreen:(id)sender {
-    [mainController enterFullscreen:sender];
+- (IBAction)toggleFullscreen:(id)sender {
+    [mainController toggleFullscreen:sender];
 }
 
-- (IBAction)enterPresentation:(id)sender {
-    [mainController enterPresentation:sender];
+- (IBAction)togglePresentation:(id)sender {
+    [mainController togglePresentation:sender];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
