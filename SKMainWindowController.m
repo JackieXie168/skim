@@ -1793,6 +1793,10 @@ static char SKMainWindowDefaultsObservationContext;
     [[window standardWindowButton:NSWindowMiniaturizeButton] setAlphaValue:0.0];
     [[window standardWindowButton:NSWindowZoomButton] setAlphaValue:0.0];
     [[window standardWindowButton:NSWindowDocumentIconButton] setAlphaValue:0.0];
+    CGFloat offset = 14.0;
+    if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
+        offset = NSHeight([window frame]) - NSHeight([window contentRectForFrameRect:[window frame]]);
+    [window setFrame:SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge) display:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
