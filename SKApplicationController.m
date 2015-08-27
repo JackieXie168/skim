@@ -157,7 +157,7 @@
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 

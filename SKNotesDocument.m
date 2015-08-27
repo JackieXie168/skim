@@ -179,7 +179,7 @@
     
     [[aController window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[aController window] setCollectionBehavior:[[aController window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
@@ -565,7 +565,7 @@
 }
 
 - (IBAction)toggleFullscreen:(id)sender {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[[[self windowControllers] objectAtIndex:0] window] toggleFullScreen:sender];
 }
 
@@ -602,7 +602,7 @@
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6;
+        return [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)];
     } else if (action == @selector(performFindPanelAction:)) {
         switch ([menuItem tag]) {
             case NSFindPanelActionShowFindPanel:

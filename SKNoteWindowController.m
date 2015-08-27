@@ -165,7 +165,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     [[self window] setContentBorderThickness:NSHeight([statusBar frame]) forEdge:NSMinYEdge];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
     [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];

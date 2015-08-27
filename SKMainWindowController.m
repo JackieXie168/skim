@@ -399,7 +399,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     if ([sud boolForKey:SKShowStatusBarKey])
@@ -1530,7 +1530,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([self canEnterFullscreen] == NO)
         return;
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6) {
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)]) {
         if (wasInteractionMode == SKNormalMode)
             [[self window] toggleFullScreen:nil];
         return;
@@ -1598,7 +1598,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([self canEnterPresentation] == NO)
         return;
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && wasInteractionMode != SKNormalMode)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && wasInteractionMode != SKNormalMode)
         return;
     
     NSColor *backgroundColor = [NSColor blackColor];
@@ -1657,7 +1657,7 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     if ([self canExitFullscreen] == NO && [self canExitPresentation] == NO)
         return;
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && wasInteractionMode == SKFullScreenMode) {
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && wasInteractionMode == SKFullScreenMode) {
         [[self window] toggleFullScreen:nil];
         return;
     }
@@ -1720,14 +1720,14 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (BOOL)canEnterFullscreen {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         return [self interactionMode] == SKNormalMode;
     else
         return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
 }
 
 - (BOOL)canEnterPresentation {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     else
         return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode) && [[self pdfDocument] isLocked] == NO;
