@@ -830,14 +830,6 @@ static NSArray *allMainDocumentPDFViews() {
             [self hideLeftSideWindow];
         else
             [self showLeftSideWindow];
-    } else if (mwcFlags.usesDrawers) {
-        if ([self leftSidePaneIsOpen]) {
-            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[leftSideController.searchField stringValue] length])
-                [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-            [leftSideDrawer close];
-        } else {
-            [leftSideDrawer openOnEdge:NSMinXEdge];
-        }
     } else {
         CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
         if ([self leftSidePaneIsOpen]) {
@@ -866,11 +858,6 @@ static NSArray *allMainDocumentPDFViews() {
             [self hideRightSideWindow];
         else
             [self showRightSideWindow];
-    } else if (mwcFlags.usesDrawers) {
-        if ([self rightSidePaneIsOpen])
-            [rightSideDrawer close];
-        else
-            [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
         if ([self rightSidePaneIsOpen]) {

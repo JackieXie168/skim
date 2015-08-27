@@ -1462,7 +1462,7 @@
 }
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
-    if ([sender isEqual:splitView] && mwcFlags.usesDrawers == 0) {
+    if ([sender isEqual:splitView]) {
         NSView *leftView = [[sender subviews] objectAtIndex:0];
         NSView *mainView = [[sender subviews] objectAtIndex:1];
         NSView *rightView = [[sender subviews] objectAtIndex:2];
@@ -1506,7 +1506,7 @@
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
     id sender = [notification object];
-    if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0 && mwcFlags.usesDrawers == 0) {
+    if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
         CGFloat leftWidth = [splitView isSubviewCollapsed:leftSideContentView] ? 0.0 : NSWidth([leftSideContentView frame]);
         CGFloat rightWidth = [splitView isSubviewCollapsed:rightSideContentView] ? 0.0 : NSWidth([rightSideContentView frame]);
         [[NSUserDefaults standardUserDefaults] setFloat:leftWidth forKey:SKLeftSidePaneWidthKey];

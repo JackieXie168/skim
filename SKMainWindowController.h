@@ -174,7 +174,6 @@ enum {
         unsigned int updatingFontAttributes:1;
         unsigned int updatingLine:1;
         unsigned int settingUpWindow:1;
-        unsigned int usesDrawers:1;
         unsigned int isEditingPDF:1;
         unsigned int isEditingTable:1;
         unsigned int isSwitchingFullScreen:1;

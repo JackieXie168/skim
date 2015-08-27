@@ -168,23 +168,11 @@ static char SKMainWindowDefaultsObservationContext;
 #define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
-#define SKUsesDrawersKey @"SKUsesDrawers"
-
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds"
 
 #define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
 #define SKUseSettingsFromPDFKey @"SKUseSettingsFromPDF"
-
-static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) {
-    NSRect rect = [contentView bounds];
-    if (usesDrawers == 0) {
-        rect = NSInsetRect(rect, -1, -1);
-        rect.size.height -= 1;
-    }
-    [view setFrame:rect];
-    [contentView addSubview:view];
-}
 
 @interface SKMainWindowController (SKPrivate)
 
@@ -270,7 +258,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         mwcFlags.updatingColor = 0;
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
-        mwcFlags.usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:SKUsesDrawersKey];
         activityAssertionID = kIOPMNullAssertionID;
     }
     
@@ -349,8 +336,10 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [pdfContentView setAutoresizesSubviews:YES];
     
     // make sure the first thing we call on the side view controllers is its view so their nib is loaded
-    addSideSubview(leftSideController.view, leftSideContentView, mwcFlags.usesDrawers);
-    addSideSubview(rightSideController.view, rightSideContentView, mwcFlags.usesDrawers);
+    [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+    [leftSideContentView addSubview:leftSideController.view];
+    [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+    [rightSideContentView addSubview:rightSideController.view];
     
     [leftSideController.searchField setAction:@selector(search:)];
     [leftSideController.searchField setTarget:self];
@@ -369,20 +358,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
     [leftSideController.groupedFindTableView setTarget:self];
     
     [self updateTableFont];
-    
-    if (mwcFlags.usesDrawers) {
-        leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
-        [leftSideDrawer setParentWindow:[self window]];
-        [leftSideDrawer setContentView:leftSideContentView];
-        [leftSideDrawer openOnEdge:NSMinXEdge];
-        [leftSideDrawer setDelegate:self];
-        rightSideDrawer = [[NSDrawer alloc] initWithContentSize:[rightSideContentView frame].size preferredEdge:NSMaxXEdge];
-        [rightSideDrawer setParentWindow:[self window]];
-        [rightSideDrawer setContentView:rightSideContentView];
-        [rightSideDrawer openOnEdge:NSMaxXEdge];
-        [rightSideDrawer setDelegate:self];
-        [centerContentView setFrame:[splitView bounds]];
-    }
     
     [self displayThumbnailViewAnimating:NO];
     [self displayNoteViewAnimating:NO];
@@ -552,23 +527,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
 }
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
-    if (mwcFlags.usesDrawers == 0) {
-        [splitView setPosition:leftSideWidth ofDividerAtIndex:0];
-        [splitView setPosition:[splitView maxPossiblePositionOfDividerAtIndex:1] - [splitView dividerThickness] - rightSideWidth ofDividerAtIndex:1];
-    } else {
-        if (leftSideWidth > 0.0) {
-            [leftSideDrawer setContentSize:NSMakeSize(leftSideWidth, NSHeight([leftSideContentView frame]))];
-            [leftSideDrawer openOnEdge:NSMinXEdge];
-        } else {
-            [leftSideDrawer close];
-        }
-        if (rightSideWidth > 0.0) {
-            [rightSideDrawer setContentSize:NSMakeSize(leftSideWidth, NSHeight([rightSideContentView frame]))];
-            [rightSideDrawer openOnEdge:NSMaxXEdge];
-        } else {
-            [rightSideDrawer close];
-        }
-    }
+    [splitView setPosition:leftSideWidth ofDividerAtIndex:0];
+    [splitView setPosition:[splitView maxPossiblePositionOfDividerAtIndex:1] - [splitView dividerThickness] - rightSideWidth ofDividerAtIndex:1];
 }
 
 - (void)applySetup:(NSDictionary *)setup{
@@ -1057,8 +1017,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         state = [leftSideWindow state];
     else if ([self interactionMode] == SKPresentationMode)
         state = [leftSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
-    else if (mwcFlags.usesDrawers)
-        state = [leftSideDrawer state];
     else
         state = [splitView isSubviewCollapsed:leftSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
@@ -1070,8 +1028,6 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         state = [rightSideWindow state];
     else if ([self interactionMode] == SKPresentationMode)
         state = [rightSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
-    else if (mwcFlags.usesDrawers)
-        state = [rightSideDrawer state];
     else
         state = [splitView isSubviewCollapsed:rightSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
@@ -1354,7 +1310,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
-        addSideSubview(leftSideController.view, leftSideContentView, mwcFlags.usesDrawers);
+        [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+        [leftSideContentView addSubview:leftSideController.view];
         
         if ([self interactionMode] == SKPresentationMode)
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
@@ -1369,7 +1326,8 @@ static void addSideSubview(NSView *view, NSView *contentView, BOOL usesDrawers) 
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
-        addSideSubview(rightSideController.view, rightSideContentView, mwcFlags.usesDrawers);
+        [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+        [rightSideContentView addSubview:rightSideController.view];
         
         SKDESTROY(rightSideWindow);
     }
