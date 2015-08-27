@@ -40,7 +40,6 @@
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE05A7380E9024ED0060BB07 /* SKPresentationOptionsSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE05A7360E9024ED0060BB07 /* SKPresentationOptionsSheetController.m */; };
 		CE05A86F0E90ED950060BB07 /* SKTextFieldSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE05A86D0E90ED950060BB07 /* SKTextFieldSheetController.m */; };
-		CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */; };
 		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
@@ -512,8 +511,6 @@
 		CE05A7360E9024ED0060BB07 /* SKPresentationOptionsSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPresentationOptionsSheetController.m; sourceTree = "<group>"; };
 		CE05A86C0E90ED950060BB07 /* SKTextFieldSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextFieldSheetController.h; sourceTree = "<group>"; };
 		CE05A86D0E90ED950060BB07 /* SKTextFieldSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextFieldSheetController.m; sourceTree = "<group>"; };
-		CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScrollView_SKExtensions.h; sourceTree = "<group>"; };
-		CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScrollView_SKExtensions.m; sourceTree = "<group>"; };
 		CE0715890B8A3D6300733CC8 /* NoteDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = NoteDocument.icns; sourceTree = "<group>"; };
 		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDocument.icns; sourceTree = "<group>"; };
 		CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotPageCell.h; sourceTree = "<group>"; };
@@ -1917,8 +1914,6 @@
 				CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */,
 				CEFDEA8F11F6FF8300D6FEBA /* NSScreen_SKExtensions.h */,
 				CEFDEA9011F6FF8300D6FEBA /* NSScreen_SKExtensions.m */,
-				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
-				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
 				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
 				CE5234A41A6424F200710CF2 /* NSShadow_SKExtensions.h */,
@@ -2394,7 +2389,6 @@
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
 				CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */,
-				CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
 				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
