@@ -56,7 +56,6 @@
     SKFloatMapTable *rowHeights;
     SKNoteTypeSheetController *noteTypeSheetController;
     NSRect windowRect;
-    SKInteractionMode interactionMode;
     struct _ndFlags {
         unsigned int exportUsingPanel:1;
         unsigned int caseInsensitiveSearch:1;
@@ -72,7 +71,7 @@
 @property (nonatomic, readonly) PDFDocument *pdfDocument;
 @property (nonatomic, readonly) NSWindow *window;
 @property (nonatomic, retain) NSURL *sourceFileURL;
-@property (nonatomic) SKInteractionMode interactionMode;
+@property (nonatomic, readonly) SKInteractionMode interactionMode;
 
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;

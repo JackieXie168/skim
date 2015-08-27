@@ -100,8 +100,8 @@
 
 @implementation SKNotesDocument
 
-@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL, interactionMode;
-@dynamic window;
+@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
+@dynamic window, interactionMode;
 
 - (id)init {
     self = [super init];
@@ -431,6 +431,10 @@
     if (sourceFileURL)
         return [[sourceFileURL lastPathComponent] stringByDeletingPathExtension];
     return [super displayName];
+}
+
+- (SKInteractionMode)interactionMode  {
+    return ([[self window] styleMask] & NSFullScreenWindowMask) == 0 ? SKNormalMode : SKFullScreenMode;
 }
 
 - (SKInteractionMode)systemInteractionMode  {
