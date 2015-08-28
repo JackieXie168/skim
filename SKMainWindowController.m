@@ -1732,10 +1732,9 @@ static char SKMainWindowDefaultsObservationContext;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
-        [[[window standardWindowButton:NSWindowCloseButton] animator] setAlphaValue:0.0];
-        [[[window standardWindowButton:NSWindowMiniaturizeButton] animator] setAlphaValue:0.0];
-        [[[window standardWindowButton:NSWindowZoomButton] animator] setAlphaValue:0.0];
-        [[[window standardWindowButton:NSWindowDocumentIconButton] animator] setAlphaValue:0.0];
+        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+            if ([view isKindOfClass:[NSControl  class]])
+                [[view animator] setAlphaValue:0.0];
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
     }];
@@ -1780,10 +1779,9 @@ static char SKMainWindowDefaultsObservationContext;
     NSRect frame = NSRectFromString(frameString);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
-    [[window standardWindowButton:NSWindowCloseButton] setAlphaValue:0.0];
-    [[window standardWindowButton:NSWindowMiniaturizeButton] setAlphaValue:0.0];
-    [[window standardWindowButton:NSWindowZoomButton] setAlphaValue:0.0];
-    [[window standardWindowButton:NSWindowDocumentIconButton] setAlphaValue:0.0];
+    for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+        if ([view isKindOfClass:[NSControl  class]])
+            [view setAlphaValue:0.0];
     CGFloat offset = 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
         offset = NSHeight([window frame]) - NSHeight([window contentRectForFrameRect:[window frame]]);
@@ -1791,10 +1789,9 @@ static char SKMainWindowDefaultsObservationContext;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
-        [[[window standardWindowButton:NSWindowCloseButton] animator] setAlphaValue:1.0];
-        [[[window standardWindowButton:NSWindowMiniaturizeButton] animator] setAlphaValue:1.0];
-        [[[window standardWindowButton:NSWindowZoomButton] animator] setAlphaValue:1.0];
-        [[[window standardWindowButton:NSWindowDocumentIconButton] animator] setAlphaValue:1.0];
+        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+            if ([view isKindOfClass:[NSControl  class]])
+                [[view animator] setAlphaValue:1.0];
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
     }];
