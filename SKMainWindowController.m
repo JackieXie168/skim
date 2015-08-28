@@ -159,6 +159,7 @@
 
 #define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
+#define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 #define SKAutoHideToolbarInFullScreenKey @"SKAutoHideToolbarInFullScreen"
 
 static char SKPDFAnnotationPropertiesObservationContext;
@@ -185,6 +186,8 @@ static char SKMainWindowDefaultsObservationContext;
 - (void)updatePageLabel;
 
 - (SKProgressController *)progressController;
+
+- (BOOL)useNativeFullScreen;
 
 - (void)goToSelectedFindResults:(id)sender;
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
@@ -374,7 +377,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
+    if ([self useNativeFullScreen])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     if ([sud boolForKey:SKShowStatusBarKey])
@@ -1488,7 +1491,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([self canEnterFullscreen] == NO)
         return;
     
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)]) {
+    if ([self useNativeFullScreen]) {
         [[self window] toggleFullScreen:nil];
         return;
     }
@@ -1673,10 +1676,15 @@ static char SKMainWindowDefaultsObservationContext;
     [self removeBlankingWindows];
 }
 
+- (BOOL)useNativeFullScreen {
+    return [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] &&
+            [[NSUserDefaults standardUserDefaults] boolForKey:SKUseLegacyFullScreenKey] == NO;
+}
+
 - (BOOL)canEnterFullscreen {
     if (mwcFlags.isSwitchingFullScreen)
         return NO;
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
+    if ([self useNativeFullScreen])
         return [self interactionMode] == SKNormalMode;
     else
         return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) && [[self pdfDocument] isLocked] == NO;
