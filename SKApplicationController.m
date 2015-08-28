@@ -157,7 +157,7 @@
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
+    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] == NO)
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 

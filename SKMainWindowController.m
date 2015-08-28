@@ -1489,8 +1489,7 @@ static char SKMainWindowDefaultsObservationContext;
         return;
     
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)]) {
-        if (wasInteractionMode == SKNormalMode)
-            [[self window] toggleFullScreen:nil];
+        [[self window] toggleFullScreen:nil];
         return;
     }
     
@@ -1556,9 +1555,6 @@ static char SKMainWindowDefaultsObservationContext;
     if ([self canEnterPresentation] == NO)
         return;
     
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && wasInteractionMode != SKNormalMode)
-        return;
-    
     NSColor *backgroundColor = [NSColor blackColor];
     NSInteger level = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSNormalWindowLevel : NSPopUpMenuWindowLevel;
     PDFPage *page = [[self pdfView] currentPage];
@@ -1615,7 +1611,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([self canExitFullscreen] == NO && [self canExitPresentation] == NO)
         return;
     
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && wasInteractionMode == SKFullScreenMode) {
+    if (wasInteractionMode == SKFullScreenMode) {
         [[self window] toggleFullScreen:nil];
         return;
     }
@@ -1678,6 +1674,8 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (BOOL)canEnterFullscreen {
+    if (mwcFlags.isSwitchingFullScreen)
+        return NO;
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         return [self interactionMode] == SKNormalMode;
     else
@@ -1685,24 +1683,17 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (BOOL)canEnterPresentation {
-    if (mwcFlags.isSwitchingFullScreen)
-        return NO;
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
-        return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
-    else
-        return ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode) && [[self pdfDocument] isLocked] == NO;
+    return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
+            ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode);
 }
 
 - (BOOL)canExitFullscreen {
-    if (mwcFlags.isSwitchingFullScreen)
-        return NO;
-    return [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode;
+    return mwcFlags.isSwitchingFullScreen == 0 &&
+            ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode);
 }
 
 - (BOOL)canExitPresentation {
-    if (mwcFlags.isSwitchingFullScreen)
-        return NO;
-    return [self interactionMode] == SKPresentationMode;
+    return mwcFlags.isSwitchingFullScreen == 0 && [self interactionMode] == SKPresentationMode;
 }
 
 - (BOOL)handleRightMouseDown:(NSEvent *)theEvent {
