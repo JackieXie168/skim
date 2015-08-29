@@ -1449,7 +1449,7 @@ static char SKMainWindowDefaultsObservationContext;
     // these can change due to the child window trick
     [mainWindow setLevel:NSNormalWindowLevel];
     [mainWindow setAlphaValue:1.0];
-    [mainWindow setCollectionBehavior:NSWindowCollectionBehaviorDefault];
+    [mainWindow setCollectionBehavior:[self useNativeFullScreen] ? NSWindowCollectionBehaviorFullScreenPrimary : NSWindowCollectionBehaviorDefault];
     [mainWindow display];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
