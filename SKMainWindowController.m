@@ -1437,6 +1437,7 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (void)fadeOutFullScreenWindow {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
+    NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
     
     [self setWindow:mainWindow];
     [mainWindow setAlphaValue:0.0];
@@ -1449,7 +1450,7 @@ static char SKMainWindowDefaultsObservationContext;
     // these can change due to the child window trick
     [mainWindow setLevel:NSNormalWindowLevel];
     [mainWindow setAlphaValue:1.0];
-    [mainWindow setCollectionBehavior:[self useNativeFullScreen] ? NSWindowCollectionBehaviorFullScreenPrimary : NSWindowCollectionBehaviorDefault];
+    [mainWindow setCollectionBehavior:collectionBehavior];
     [mainWindow display];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
