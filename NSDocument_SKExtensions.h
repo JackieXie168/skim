@@ -43,9 +43,9 @@ extern NSString *SKDocumentFileURLDidChangeNotification;
 
 typedef NS_ENUM(NSInteger, SKInteractionMode) {
     SKNormalMode,
-    SKLegacyFullScreenMode,
+    SKFullScreenMode,
     SKPresentationMode,
-    SKFullScreenMode
+    SKLegacyFullScreenMode
 };
 
 @interface NSDocument (SKExtensions)
