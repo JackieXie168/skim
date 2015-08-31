@@ -1732,15 +1732,18 @@ static char SKMainWindowDefaultsObservationContext;
     return [[[self document] windowControllers] valueForKey:WINDOW_KEY];
 }
 
-- (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
-    [(SKMainWindow *)window setDisableConstrainedFrame:YES];
+static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
         offset = NSHeight([window frame]) - NSHeight([window contentRectForFrameRect:[window frame]]);
-    NSRect frame = SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
+    return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
+}
+
+- (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
+    [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
-        [[window animator] setFrame:frame display:YES];
+        [[window animator] setFrame:simulatedFullScreenWindowFrame(window) display:YES];
         for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
             if ([view isKindOfClass:[NSControl  class]])
                 [[view animator] setAlphaValue:0.0];
@@ -1792,10 +1795,7 @@ static char SKMainWindowDefaultsObservationContext;
     for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
         if ([view isKindOfClass:[NSControl  class]])
             [view setAlphaValue:0.0];
-    CGFloat offset = 14.0;
-    if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
-        offset = NSHeight([window frame]) - NSHeight([window contentRectForFrameRect:[window frame]]);
-    [window setFrame:SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge) display:YES];
+    [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
