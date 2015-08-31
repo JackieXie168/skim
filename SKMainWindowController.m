@@ -1718,6 +1718,8 @@ static char SKMainWindowDefaultsObservationContext;
     interactionMode = SKFullScreenMode;
     if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 0)
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
+    NSString *frameString = NSStringFromRect([[self window] frame]);
+    [savedNormalSetup setObject:frameString forKey:SKMainWindowFrameKey];
 }
 
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
@@ -1731,8 +1733,6 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
-    NSString *frameString = NSStringFromRect([window frame]);
-    [savedNormalSetup setObject:frameString forKey:SKMainWindowFrameKey];
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     CGFloat offset = 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
@@ -1762,7 +1762,8 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (void)windowDidFailToEnterFullScreen:(NSWindow *)window {
-    [savedNormalSetup removeAllObjects];
+    if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 1)
+        [savedNormalSetup removeAllObjects];
     interactionMode = SKNormalMode;
     mwcFlags.isSwitchingFullScreen = 0;
 }
@@ -1804,11 +1805,14 @@ static char SKMainWindowDefaultsObservationContext;
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
     }];
-    if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 1)
-        [savedNormalSetup removeAllObjects];
 }
 
 - (void)windowDidExitFullScreen:(NSNotification *)notification {
+    NSString *frameString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
+    if (frameString)
+        [[self window] setFrame:NSRectFromString(frameString) display:YES];
+    if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 1)
+        [savedNormalSetup removeAllObjects];
     mwcFlags.isSwitchingFullScreen = 0;
 }
 
