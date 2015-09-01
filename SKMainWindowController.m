@@ -1745,7 +1745,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:simulatedFullScreenWindowFrame(window) display:YES];
         for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl  class]])
+            if ([view isKindOfClass:[NSControl class]])
                 [[view animator] setAlphaValue:0.0];
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
@@ -1793,14 +1793,14 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
     for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-        if ([view isKindOfClass:[NSControl  class]])
+        if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
     [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
         for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl  class]])
+            if ([view isKindOfClass:[NSControl class]])
                 [[view animator] setAlphaValue:1.0];
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
