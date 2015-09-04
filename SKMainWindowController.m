@@ -1742,13 +1742,14 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-        [context setDuration:duration - 0.1];
-        [[window animator] setFrame:simulatedFullScreenWindowFrame(window) display:YES];
-        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl class]])
-                [[view animator] setAlphaValue:0.0];
-    } completionHandler:^{
-        [(SKMainWindow *)window setDisableConstrainedFrame:NO];
+            [context setDuration:duration - 0.1];
+            [[window animator] setFrame:simulatedFullScreenWindowFrame(window) display:YES];
+            for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+                if ([view isKindOfClass:[NSControl class]])
+                    [[view animator] setAlphaValue:0.0];
+        }
+        completionHandler:^{
+            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
     }];
 }
 
@@ -1798,14 +1799,15 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
     [window setLevel:NSPopUpMenuWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-        [context setDuration:duration - 0.1];
-        [[window animator] setFrame:frame display:YES];
-        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl class]])
-                [[view animator] setAlphaValue:1.0];
-    } completionHandler:^{
-        [(SKMainWindow *)window setDisableConstrainedFrame:NO];
-        [window setLevel:NSNormalWindowLevel];
+            [context setDuration:duration - 0.1];
+            [[window animator] setFrame:frame display:YES];
+            for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+                if ([view isKindOfClass:[NSControl class]])
+                    [[view animator] setAlphaValue:1.0];
+        }
+        completionHandler:^{
+            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
+            [window setLevel:NSNormalWindowLevel];
     }];
 }
 
