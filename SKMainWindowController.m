@@ -1735,7 +1735,7 @@ static char SKMainWindowDefaultsObservationContext;
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
-        offset = NSHeight([window contentRectForFrameRect:NSZeroRect]);
+        offset = NSHeight([window frameRectForContentRect:NSZeroRect]);
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
