@@ -1720,6 +1720,7 @@ static char SKMainWindowDefaultsObservationContext;
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
     NSString *frameString = NSStringFromRect([[self window] frame]);
     [savedNormalSetup setObject:frameString forKey:SKMainWindowFrameKey];
+    [self showBlankingWindows];
 }
 
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
@@ -1782,6 +1783,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [self applyPDFSettings:savedNormalSetup];
     [self forceSubwindowsOnTop:NO];
     interactionMode = SKNormalMode;
+    [self removeBlankingWindows];
 }
 
 - (NSArray *)customWindowsToExitFullScreenForWindow:(NSWindow *)window {
