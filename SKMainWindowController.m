@@ -1467,7 +1467,7 @@ static char SKMainWindowDefaultsObservationContext;
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
         NSScreen *screen = [[self window] screen];
-        NSColor *backgroundColor = [[self window] backgroundColor];
+        NSColor *backgroundColor = [pdfView backgroundColor];
         for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
                 SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel isMain:NO];
@@ -1476,7 +1476,7 @@ static char SKMainWindowDefaultsObservationContext;
                 [aWindow fadeIn];
                 [blankingWindows addObject:aWindow];
                 [aWindow release];
-            }
+        }
         }
     }
 }
@@ -1720,7 +1720,6 @@ static char SKMainWindowDefaultsObservationContext;
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
     NSString *frameString = NSStringFromRect([[self window] frame]);
     [savedNormalSetup setObject:frameString forKey:SKMainWindowFrameKey];
-    [self showBlankingWindows];
 }
 
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
@@ -1764,6 +1763,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [self applyPDFSettings:fullScreenSetup];
     [self forceSubwindowsOnTop:YES];
     mwcFlags.isSwitchingFullScreen = 0;
+    [self showBlankingWindows];
 }
 
 - (void)windowDidFailToEnterFullScreen:(NSWindow *)window {
