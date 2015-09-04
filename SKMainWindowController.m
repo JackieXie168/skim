@@ -1796,6 +1796,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
     [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
+    [window setLevel:NSPopUpMenuWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
         [[window animator] setFrame:frame display:YES];
@@ -1804,6 +1805,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                 [[view animator] setAlphaValue:1.0];
     } completionHandler:^{
         [(SKMainWindow *)window setDisableConstrainedFrame:NO];
+        [window setLevel:NSNormalWindowLevel];
     }];
 }
 
