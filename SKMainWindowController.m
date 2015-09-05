@@ -1799,7 +1799,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
     [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
-    [window setLevel:NSPopUpMenuWindowLevel];
+    [window setLevel:NSStatusWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             [context setDuration:duration - 0.1];
             [[window animator] setFrame:frame display:YES];
