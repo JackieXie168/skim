@@ -1895,7 +1895,7 @@ static NSArray *allMainDocumentPDFViews() {
                 [self snapshotNeedsUpdate:wc];
         }
         [secondaryPdfView setNeedsDisplay:YES];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8)
+        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_9)
             [pdfView setNeedsDisplay:YES];
     }
     
