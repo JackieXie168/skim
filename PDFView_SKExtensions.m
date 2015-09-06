@@ -58,7 +58,7 @@
 
 static void (*original_keyDown)(id, SEL, id) = NULL;
 
-// on Yosemite, the page up/down keys in non-continuous mode switch pages the wrong way
+// on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
 - (void)replacement_keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
     NSUInteger modifiers = [theEvent standardModifierFlags];
@@ -68,8 +68,8 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
         modifiers = 0;
     }
     
-    if ((([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) && 
-        (eventChar == NSPageDownFunctionKey || eventChar == NSPageUpFunctionKey) && 
+    if ((([self displayMode] & kPDFDisplaySinglePageContinuous) == 0) &&
+        (eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSPageDownFunctionKey || eventChar == NSPageUpFunctionKey) &&
         (modifiers == 0)) {
         
         NSScrollView *scrollView = [self scrollView];
@@ -79,9 +79,9 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
         NSRect clipRect = [clipView bounds];
         BOOL flipped = [clipView isFlipped];
         
-        if (eventChar == NSPageDownFunctionKey) {
+        if (eventChar == NSDownArrowFunctionKey || eventChar == NSPageDownFunctionKey) {
             if (flipped ? NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0 : NSMinY(clipRect) >= NSMinY(docRect) + 1.0) {
-                CGFloat scroll = NSHeight(clipRect) - [scrollView verticalPageScroll];
+                CGFloat scroll = eventChar == NSDownArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
                 clipRect.origin.y += flipped ? scroll : -scroll;
                 [clipView scrollPoint:clipRect.origin];
             } else if ([self canGoToNextPage]) {
@@ -91,9 +91,9 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
                 clipRect.origin.y = flipped ? NSMinY(docRect) : NSMaxY(docRect) - NSHeight(clipRect);
                 [clipView scrollPoint:clipRect.origin];
             }
-        } else {
+        } else if (eventChar == NSUpArrowFunctionKey || eventChar == NSPageUpFunctionKey) {
             if (flipped ? NSMinY(clipRect) >= NSMinY(docRect) + 1.0 : NSMaxY(clipRect) <= NSMaxY(docRect) - 1.0) {
-                CGFloat scroll = NSHeight(clipRect) - [scrollView verticalPageScroll];
+                CGFloat scroll = eventChar == NSUpArrowFunctionKey ? [scrollView verticalLineScroll] : NSHeight(clipRect) - [scrollView verticalPageScroll];
                 clipRect.origin.y += flipped ? -scroll : scroll;
                 [clipView scrollPoint:clipRect.origin];
             } else if ([self canGoToPreviousPage]) {
