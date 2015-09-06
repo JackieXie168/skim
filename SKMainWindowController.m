@@ -824,7 +824,7 @@ static char SKMainWindowDefaultsObservationContext;
             if (pageIndex != NSNotFound) {
                 if (pageIndex >= [document pageCount])
                     pageIndex = [document pageCount] - 1;
-                if ([document isLocked] && [self interactionMode] == SKNormalMode) {
+                if ([document isLocked] && ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode)) {
                     [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
                 } else {
                     page = [document pageAtIndex:pageIndex];

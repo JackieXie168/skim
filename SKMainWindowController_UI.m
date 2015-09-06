@@ -1688,7 +1688,7 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
-        return [self interactionMode] == SKNormalMode;
+        return [self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode;
     } else if (action == @selector(searchPDF:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(toggleFullscreen:)) {
