@@ -87,6 +87,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             [view1 setFrameSize:size1];
             [view1 setHidden:NO];
             [view2 setFrameSize:size2];
+            [self adjustSubviews];
         } else if (collapsed2) {
             size2.width = 0.0;
             size2.height = size1.height;
@@ -100,6 +101,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             [view2 setFrameSize:size2];
             [view2 setHidden:NO];
             [view1 setFrameSize:size1];
+            [self adjustSubviews];
         }
         size2.width -= position - min - size1.width;
         size1.width = position - min;
@@ -125,6 +127,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             [view1 setFrameSize:size1];
             [view1 setHidden:NO];
             [view2 setFrameSize:size2];
+            [self adjustSubviews];
         } else if (collapsed2) {
             size2.height = 0.0;
             size2.width = size1.width;
@@ -138,6 +141,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             [view2 setFrameSize:size2];
             [view2 setHidden:NO];
             [view1 setFrameSize:size1];
+            [self adjustSubviews];
         }
         size2.height -= position - min - size1.height;
         size1.height = position - min;
