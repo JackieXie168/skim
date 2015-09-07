@@ -1802,7 +1802,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    if ([self interactionMode] != SKNormalMode)
+    if ([self interactionMode] == SKPresentationMode || [self interactionMode] == SKLegacyFullScreenMode)
         [self exitFullscreen];
 }
 
