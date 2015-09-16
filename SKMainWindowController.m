@@ -2496,9 +2496,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                     if ([newValue isEqual:[NSNull null]] == NO)
                         newBounds = [newValue rectValue];
                     if (NSEqualSizes(oldBounds.size, newBounds.size) == NO)
-                        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityResizedNotification);
+                        [pdfView accessibilityPostNotification:NSAccessibilityResizedNotification forAnnotation:note];
                     if (NSEqualPoints(oldBounds.origin, newBounds.origin) == NO)
-                        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityMovedNotification);
+                        [pdfView accessibilityPostNotification:NSAccessibilityMovedNotification forAnnotation:note];
                     
                     if ([note isNote]) {
                         [pdfView annotationsChangedOnPage:[note page]];
@@ -2509,8 +2509,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                         [self updateRightStatus];
                     }
                 } else if (([keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) &&
-                           [[note accessibilityAttributeNames] containsObject:NSAccessibilityValueAttribute]) {
-                    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:note parent:[pdfView documentView]], NSAccessibilityValueChangedNotification);
+                           [[note accessibilityFauxUIElementAttributeNames] containsObject:NSAccessibilityValueAttribute]) {
+                    [pdfView accessibilityPostNotification:NSAccessibilityValueChangedNotification forAnnotation:note];
                 }
             }
             

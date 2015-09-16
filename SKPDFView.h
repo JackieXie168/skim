@@ -193,6 +193,8 @@ enum {
 - (id)accessibilityChildAtPoint:(NSPoint)point;
 - (id)accessibilityFocusedChild;
 
+- (void)accessibilityPostNotification:(NSString *)notification forAnnotation:(PDFAnnotation *)note;
+
 @end
 
 #pragma mark -

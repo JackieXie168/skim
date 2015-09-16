@@ -75,3 +75,10 @@
 - (void)fauxUIElement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused;
 - (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element;
 @end
+
+// object can implement these methods
+@interface NSObject (SKAccessibilityFauxUIElementObject)
+- (BOOL)accessibilityFauxUIElementIsIgnored;
+- (NSArray *)accessibilityFauxUIElementAttributeNames;
+- (NSArray *)accessibilityFauxUIElementActionNames;
+@end

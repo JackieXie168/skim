@@ -536,7 +536,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 #pragma mark Accessibility
 
-- (NSArray *)accessibilityAttributeNames {
+- (NSArray *)accessibilityFauxUIElementAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
         attributes = [[NSArray alloc] initWithObjects:
@@ -576,7 +576,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [NSNumber numberWithBool:NO];
 }
 
-- (BOOL)accessibilityIsIgnored {
+- (BOOL)accessibilityFauxUIElementIsIgnored {
     return [self shouldDisplay] == NO;
 }
 

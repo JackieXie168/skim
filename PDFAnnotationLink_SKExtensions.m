@@ -37,6 +37,7 @@
  */
 
 #import "PDFAnnotationLink_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKRuntime.h"
 
 
@@ -58,10 +59,10 @@ static id (*original_toolTip)(id, SEL) = NULL;
 
 - (BOOL)isLink { return YES; }
 
-- (NSArray *)accessibilityAttributeNames {
+- (NSArray *)accessibilityFauxUIElementAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+        attributes = [[[super accessibilityFauxUIElementAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
             NSAccessibilitySubroleAttribute,
             NSAccessibilityValueAttribute,
             NSAccessibilityURLAttribute, nil]] retain];
@@ -102,7 +103,7 @@ static id (*original_toolTip)(id, SEL) = NULL;
     return [NSNumber numberWithBool:YES];
 }
 
-- (NSArray *)accessibilityActionNames {
+- (NSArray *)accessibilityFauxUIElementActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
 

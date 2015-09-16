@@ -139,6 +139,8 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 
 static BOOL useToolModeCursors = NO;
 
+static BOOL extendedAccessibility = NO;
+
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page);
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower);
@@ -216,7 +218,7 @@ enum {
     
     useToolModeCursors = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey];
 
-    SKSwizzlePDFDisplayViewMethods();
+    extendedAccessibility = SKSwizzlePDFDisplayViewMethods();
 }
 
 - (void)commonInitialization {
@@ -498,7 +500,8 @@ enum {
         }
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
-        NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
+        if (extendedAccessibility)
+            NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
     }
 }
 
@@ -1850,7 +1853,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([annotation isSkimNote])
         SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
-    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]], NSAccessibilityCreatedNotification);
+    [self accessibilityPostNotification:NSAccessibilityCreatedNotification forAnnotation:annotation];
 }
 
 - (void)removeActiveAnnotation:(id)sender{
@@ -1887,7 +1890,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
-    NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:wasAnnotation parent:[self documentView]], NSAccessibilityUIElementDestroyedNotification);
+    [self accessibilityPostNotification:NSAccessibilityUIElementDestroyedNotification forAnnotation:annotation];
     [wasAnnotation release];
     [page release];
 }
@@ -2197,6 +2200,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     //else
     //    child = NSAccessibilityUnignoredDescendant([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityFocusedUIElement];
+}
+
+- (void)accessibilityPostNotification:(NSString *)notification forAnnotation:(PDFAnnotation *)annotation {
+    if (extendedAccessibility)
+        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]], notification);
 }
 
 #pragma mark Snapshots

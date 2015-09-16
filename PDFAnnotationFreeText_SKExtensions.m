@@ -185,10 +185,10 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
 
 #pragma mark Accessibility
 
-- (NSArray *)accessibilityAttributeNames {
+- (NSArray *)accessibilityFauxUIElementAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+        attributes = [[[super accessibilityFauxUIElementAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
             NSAccessibilityValueAttribute,
             NSAccessibilitySelectedTextAttribute,
             NSAccessibilitySelectedTextRangeAttribute,
@@ -227,7 +227,7 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
     return [NSNumber numberWithBool:YES];
 }
 
-- (NSArray *)accessibilityActionNames {
+- (NSArray *)accessibilityFauxUIElementActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
 

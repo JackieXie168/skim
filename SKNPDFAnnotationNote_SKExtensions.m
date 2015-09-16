@@ -155,10 +155,10 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 #pragma mark Accessibility
 
-- (NSArray *)accessibilityAttributeNames {
+- (NSArray *)accessibilityFauxUIElementAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityValueAttribute] retain];
+        attributes = [[[super accessibilityFauxUIElementAttributeNames] arrayByAddingObject:NSAccessibilityValueAttribute] retain];
     }
     return attributes;
 }
@@ -175,7 +175,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     return [NSNumber numberWithBool:YES];
 }
 
-- (NSArray *)accessibilityActionNames {
+- (NSArray *)accessibilityFauxUIElementActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
 

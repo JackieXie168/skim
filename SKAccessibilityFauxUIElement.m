@@ -81,7 +81,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSArray *)accessibilityAttributeNames {
-    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] performSelector:_cmd] : [NSArray array];
+    return [[self representedObject] respondsToSelector:@selector(accessibilityFauxUIElementAttributeNames)] ? [[self representedObject] accessibilityFauxUIElementAttributeNames] : [NSArray array];
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
@@ -122,7 +122,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (BOOL)accessibilityIsIgnored {
-    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] accessibilityIsIgnored] : NO;
+    return [[self representedObject] respondsToSelector:@selector(accessibilityFauxUIElementIsIgnored)] ? [[self representedObject] accessibilityFauxUIElementIsIgnored] : NO;
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
@@ -134,7 +134,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSArray *)accessibilityActionNames {
-    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] performSelector:_cmd] : [NSArray array];
+    return [[self representedObject] respondsToSelector:@selector(accessibilityFauxUIElementActionNames)] ? [[self representedObject] accessibilityFauxUIElementActionNames] : [NSArray array];
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction {
