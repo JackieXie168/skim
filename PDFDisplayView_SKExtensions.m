@@ -230,7 +230,8 @@ void SKSwizzlePDFDisplayViewMethods() {
     if (PDFDisplayViewClass) {
         original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey]) return;
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ||
+            [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey]) return;
         
         original_accessibilityAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacement_accessibilityAttributeNames);
         original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
