@@ -1765,7 +1765,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [self applyPDFSettings:fullScreenSetup];
     [self forceSubwindowsOnTop:YES];
     mwcFlags.isSwitchingFullScreen = 0;
-    [self showBlankingWindows];
 }
 
 - (void)windowDidFailToEnterFullScreen:(NSWindow *)window {
@@ -1785,7 +1784,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [self applyPDFSettings:savedNormalSetup];
     [self forceSubwindowsOnTop:NO];
     interactionMode = SKNormalMode;
-    [self removeBlankingWindows];
 }
 
 - (NSArray *)customWindowsToExitFullScreenForWindow:(NSWindow *)window {
