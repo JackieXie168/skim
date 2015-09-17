@@ -1389,6 +1389,7 @@ static char SKMainWindowDefaultsObservationContext;
     [fullScreenWindow fadeInBlocking];
     [self setWindow:fullScreenWindow];  
     [fullScreenWindow makeKeyWindow];
+    [NSApp updatePresentationOptionsForWindow:fullScreenWindow];
     if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
         [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
     [mainWindow orderOut:nil];
@@ -1456,6 +1457,7 @@ static char SKMainWindowDefaultsObservationContext;
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
+    [NSApp updatePresentationOptionsForWindow:mainWindow];
     if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
         [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [NSApp removeWindowsItem:fullScreenWindow];
@@ -1476,7 +1478,7 @@ static char SKMainWindowDefaultsObservationContext;
                 [aWindow fadeIn];
                 [blankingWindows addObject:aWindow];
                 [aWindow release];
-        }
+            }
         }
     }
 }
