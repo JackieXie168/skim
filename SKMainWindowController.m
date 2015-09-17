@@ -161,6 +161,7 @@
 
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 #define SKAutoHideToolbarInFullScreenKey @"SKAutoHideToolbarInFullScreen"
+#define SKCollapseSidePanesInFullScreenKey @"SKCollapseSidePanesInFullScreen"
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
@@ -1763,6 +1764,11 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO)
         [self applyPDFSettings:fullScreenSetup];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCollapseSidePanesInFullScreenKey]) {
+        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
+        [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
+    }
     [self forceSubwindowsOnTop:YES];
     mwcFlags.isSwitchingFullScreen = 0;
 }
@@ -1782,6 +1788,10 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO)
         [self applyPDFSettings:savedNormalSetup];
+    NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];
+    NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
+    if (leftWidth && rightWidth)
+        [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
     [self forceSubwindowsOnTop:NO];
     interactionMode = SKNormalMode;
 }
