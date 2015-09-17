@@ -139,7 +139,7 @@
 #define BUTTONVIEW_KEY @"buttonView"
 #define FIRSTRESPONDER_KEY @"firstResponder"
 
-#define SKMainWindowFrameKey        @"windowFrame"
+#define MAINWINDOWFRAME_KEY         @"windowFrame"
 #define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
 #define RIGHTSIDEPANEWIDTH_KEY      @"rightSidePaneWidth"
 #define SCALEFACTOR_KEY             @"scaleFactor"
@@ -385,7 +385,7 @@ static char SKMainWindowDefaultsObservationContext;
     
     NSInteger windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
     if (hasWindowSetup) {
-        NSString *rectString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
+        NSString *rectString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
         if (rectString)
             [[self window] setFrame:NSRectFromString(rectString) display:NO];
     } else if (windowSizeOption == SKMaximizeWindowOption) {
@@ -539,9 +539,9 @@ static char SKMainWindowDefaultsObservationContext;
         [savedNormalSetup setDictionary:setup];
     } else {
         
-        NSString *rectString = [setup objectForKey:SKMainWindowFrameKey];
+        NSString *rectString = [setup objectForKey:MAINWINDOWFRAME_KEY];
         if (rectString)
-            [mainWindow setFrame:NSRectFromString([setup objectForKey:SKMainWindowFrameKey]) display:[mainWindow isVisible]];
+            [mainWindow setFrame:NSRectFromString(rectString) display:[mainWindow isVisible]];
         
         NSNumber *leftWidth = [setup objectForKey:LEFTSIDEPANEWIDTH_KEY];
         NSNumber *rightWidth = [setup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
@@ -567,7 +567,7 @@ static char SKMainWindowDefaultsObservationContext;
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:SKMainWindowFrameKey];
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:MAINWINDOWFRAME_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
     [setup setObject:[NSNumber numberWithUnsignedInteger:[[pdfView currentPage] pageIndex]] forKey:PAGEINDEX_KEY];
@@ -1721,7 +1721,7 @@ static char SKMainWindowDefaultsObservationContext;
     if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 0)
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
     NSString *frameString = NSStringFromRect([[self window] frame]);
-    [savedNormalSetup setObject:frameString forKey:SKMainWindowFrameKey];
+    [savedNormalSetup setObject:frameString forKey:MAINWINDOWFRAME_KEY];
 }
 
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
@@ -1791,7 +1791,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)window:(NSWindow *)window startCustomAnimationToExitFullScreenWithDuration:(NSTimeInterval)duration {
-    NSString *frameString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
+    NSString *frameString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
     NSRect frame = NSRectFromString(frameString);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
@@ -1814,7 +1814,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)windowDidExitFullScreen:(NSNotification *)notification {
-    NSString *frameString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
+    NSString *frameString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
     if (frameString)
         [[self window] setFrame:NSRectFromString(frameString) display:YES];
     if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 1)
