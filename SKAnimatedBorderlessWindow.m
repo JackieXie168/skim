@@ -163,7 +163,7 @@
     if ([[self contentView] respondsToSelector:@selector(setImage:)]) {
         imageView = (NSImageView *)[self contentView];
     } else if (newBackgroundImage) {
-        NSImageView *imageView = [[NSImageView alloc] init];
+        imageView = [[NSImageView alloc] init];
         [imageView setEditable:NO];
         [imageView setImageFrameStyle:NSImageFrameNone];
         [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
