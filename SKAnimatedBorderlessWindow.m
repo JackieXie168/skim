@@ -62,13 +62,6 @@
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
-        NSImageView *imageView = [[NSImageView alloc] init];
-        [imageView setEditable:NO];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
-        [self setContentView:imageView];
-        [imageView release];
-        
         defaultAlphaValue = ALPHA_VALUE;
         autoHideTimeInterval = AUTO_HIDE_TIME_INTERVAL;
     }
@@ -166,8 +159,18 @@
 }
 
 - (void)setBackgroundImage:(NSImage *)newBackgroundImage {
-    if ([[self contentView] respondsToSelector:@selector(setImage:)])
-        [(NSImageView *)[self contentView] setImage:newBackgroundImage];
+    NSImageView *imageView = nil;
+    if ([[self contentView] respondsToSelector:@selector(setImage:)]) {
+        imageView = (NSImageView *)[self contentView];
+    } else if (newBackgroundImage) {
+        NSImageView *imageView = [[NSImageView alloc] init];
+        [imageView setEditable:NO];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+        [self setContentView:imageView];
+        [imageView release];
+    }
+    [imageView setImage:newBackgroundImage];
 }
 
 @end
