@@ -1006,7 +1006,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     if (item != nil && row != -1) {
         iconRect = [(SKTextWithIconCell *)[outlineView preparedCellAtColumn:0 row:row] iconRectForBounds:[outlineView frameOfCellAtColumn:0 row:row]];
         if (NSIntersectsRect([outlineView visibleRect], iconRect)) {
-            iconRect = [outlineView convertRectToBase:iconRect];
+            iconRect = [outlineView convertRect:iconRect toView:nil];
             iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
         } else {
             iconRect = NSZeroRect;

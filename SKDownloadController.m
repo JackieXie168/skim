@@ -589,7 +589,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (row != NSNotFound) {
         iconRect = [tableView frameOfCellAtColumn:0 row:row];
         if (NSIntersectsRect([tableView visibleRect], iconRect)) {
-            iconRect = [tableView convertRectToBase:iconRect];
+            iconRect = [tableView convertRect:iconRect toView:nil];
             iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
         } else {
             iconRect = NSZeroRect;

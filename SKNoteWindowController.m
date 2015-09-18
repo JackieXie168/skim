@@ -414,7 +414,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id <QLPreviewItem>)item {
     NSRect iconRect = NSInsetRect([imageView bounds], 8.0, 8.0);
-    iconRect = [imageView convertRectToBase:iconRect];
+    iconRect = [imageView convertRect:iconRect toView:nil];
     iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
     return iconRect;
 }
