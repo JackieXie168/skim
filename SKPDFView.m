@@ -3925,7 +3925,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [self setCursorForMouse:theEvent];
             if (loupeLayer) {
                 [aShadow setShadowBlurRadius:4.0 * magnification];
-                [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
+                [aShadow setShadowOffset:NSMakeSize(0.0, -2.0 * magnification)];
             } else {
                 [window displayIfNeeded];
                 if (currentLevel > 2) {
