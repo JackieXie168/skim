@@ -3960,9 +3960,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
                 magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
                 magRect = NSIntegralRect(magRect);
-                // restore the cached image in order to clear the rect
-                [window restoreCachedImage];
-                [window cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
+                if (loupeLayer == nil) {
+                    // restore the cached image in order to clear the rect
+                    [window restoreCachedImage];
+                    [window cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
+                }
             }
             
             if (loupeLayer) {
