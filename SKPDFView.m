@@ -3273,6 +3273,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [layer setAnchorPoint:CGPointZero];
         [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
         [layer setAffineTransform:t];
+        [layer setZPosition:1.0];
         [[self layer] addSublayer:layer];
     } else {
         NSRect rect = [self convertRect:[self convertRect:[page boundsForBox:[self displayBox]] fromPage:page] toView:[self documentView]];
@@ -3709,6 +3710,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [layer setFrame:rect];
         [layer setBounds:rect];
         [layer setMasksToBounds:YES];
+        [layer setZPosition:1.0];
         [[self layer] addSublayer:layer];
     } else {
         [[self window] discardCachedImage];
@@ -3885,6 +3887,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [loupeLayer setShadowOffset:CGSizeMake(0.0, -2.0)];
         [loupeLayer setShadowOpacity:0.5];
         [loupeLayer setHidden:YES];
+        [loupeLayer setZPosition:1.0];
         [[self layer] addSublayer:loupeLayer];
         
         if ([self displaysPageBreaks]) {
