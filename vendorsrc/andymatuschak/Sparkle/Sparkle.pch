@@ -17,4 +17,14 @@
 @protocol NSURLDownloadDelegate <NSObject>
 @end
 #endif
+#ifndef MAC_OS_X_VERSION_10_11
+@protocol WebFrameloadDelegate <NSObject>
+@end
+@protocol WebPolicyDelegate <NSObject>
+@end
+@protocol WebResourceLoadDelegate <NSObject>
+@end
+@protocol WebUIDelegate <NSObject>
+@end
+#endif
 #endif

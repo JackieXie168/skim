@@ -11,6 +11,9 @@
 #import "SUHost.h"
 #import <WebKit/WebKit.h>
 
+@interface SUUpdateAlert () <WebFrameLoadDelegate, WebPolicyDelegate>
+@end
+
 @implementation SUUpdateAlert
 
 - (id)initWithAppcastItem:(SUAppcastItem *)item host:(SUHost *)aHost
