@@ -222,7 +222,7 @@
 - (void)windowDidResize:(NSNotification *)notification {
     if (ndFlags.autoResizeRows) {
         [rowHeights removeAllFloats];
-        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 
@@ -521,10 +521,12 @@
     NSArray *items = [sender representedObject];
     NSInteger row;
     
-    if (items == nil)
+    if (items == nil) {
         items = [[self notes] arrayByAddingObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
-    else
+        rowIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])];
+    } else {
         rowIndexes = [NSMutableIndexSet indexSet];
+    }
     
     for (id item in items) {
         if ([(PDFAnnotation *)item type]) {
@@ -554,14 +556,14 @@
         for (id item in items)
             [rowHeights removeFloatForKey:item];
     }
-    [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+    [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
 }
 
 - (void)toggleAutoResizeNoteRows:(id)sender {
     ndFlags.autoResizeRows = (0 == ndFlags.autoResizeRows);
     if (ndFlags.autoResizeRows) {
         [rowHeights removeAllFloats];
-        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     } else {
         [self autoSizeNoteRows:nil];
     }
@@ -714,7 +716,7 @@
         [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
         [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
-        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 
@@ -722,7 +724,7 @@
     if (ndFlags.autoResizeRows &&
         [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         [rowHeights removeAllFloats];
-        [outlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 

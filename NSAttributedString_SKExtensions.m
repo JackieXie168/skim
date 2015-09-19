@@ -58,7 +58,7 @@
 }
 
 - (NSData *)RTFRepresentation {
-    return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:nil];
+    return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:[NSDictionary dictionaryWithObjectsAndKeys:NSRTFTextDocumentType, NSDocumentTypeDocumentAttribute, nil]];
 }
 
 #pragma mark Scripting support

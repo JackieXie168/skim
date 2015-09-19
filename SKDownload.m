@@ -315,7 +315,7 @@ static NSSet *infoKeys = nil;
         NSString *fileName = [fileURL lastPathComponent];
         NSInteger tag = 0;
         
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:@"" files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
     }
 }
 

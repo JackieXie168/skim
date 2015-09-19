@@ -360,7 +360,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (download && [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
-        [[NSWorkspace sharedWorkspace] selectFile:[[download fileURL] path] inFileViewerRootedAtPath:nil];
+        [[NSWorkspace sharedWorkspace] selectFile:[[download fileURL] path] inFileViewerRootedAtPath:@""];
     }
 }
 

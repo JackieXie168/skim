@@ -165,7 +165,7 @@ static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL
     PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]);
-        return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
+        return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:[NSDictionary dictionaryWithObjectsAndKeys:NSRTFTextDocumentType, NSDocumentTypeDocumentAttribute, nil]];
     }
     return nil;
 }

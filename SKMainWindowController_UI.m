@@ -439,9 +439,9 @@
 - (void)tableViewColumnDidResize:(NSNotification *)aNotification {
     if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
         if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
-            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:nil];
+            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [leftSideController.thumbnailTableView numberOfRows])]];
         } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
-            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:nil];
+            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.snapshotTableView numberOfRows])]];
         }
     }
 }
@@ -811,7 +811,7 @@
         [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
         [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 
@@ -820,7 +820,7 @@
         [ov isEqual:rightSideController.noteOutlineView] &&
         [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 
@@ -1120,14 +1120,14 @@
         for (id item in items)
             [rowHeights removeFloatForKey:item];
     }
-    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
 }
 
 - (void)toggleAutoResizeNoteRows:(id)sender {
     mwcFlags.autoResizeNoteRows = (0 == mwcFlags.autoResizeNoteRows);
     if (mwcFlags.autoResizeNoteRows) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     } else {
         [self autoSizeNoteRows:nil];
     }
@@ -1921,7 +1921,7 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
     if (mwcFlags.autoResizeNoteRows) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:nil];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 

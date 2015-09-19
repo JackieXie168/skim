@@ -225,11 +225,7 @@
     if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
         rowHeight += 2.0;
     [self setRowHeight:rowHeight];
-    [self noteHeightOfRowsWithIndexesChanged:nil];
-}
-
-- (void)noteHeightOfRowsWithIndexesChanged:(NSIndexSet *)indexSet {
-    [super noteHeightOfRowsWithIndexesChanged:indexSet ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol

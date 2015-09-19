@@ -1219,7 +1219,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSURL *folderURL = [fileURL URLByDeletingLastPathComponent];
         NSString *fileName = [fileURL lastPathComponent];
         NSInteger tag = 0;
-        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
+        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:@"" files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
             [self close];
         else NSBeep();
     } else NSBeep();

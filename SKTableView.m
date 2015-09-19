@@ -215,11 +215,7 @@
     }
     
     [self setRowHeight:[font defaultViewLineHeight]];
-    [self noteHeightOfRowsWithIndexesChanged:nil];
-}
-
-- (void)noteHeightOfRowsWithIndexesChanged:(NSIndexSet *)indexSet {
-    [super noteHeightOfRowsWithIndexesChanged:indexSet ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 - (NSImage *)dragImageForRowsWithIndexes:(NSIndexSet *)dragRows tableColumns:(NSArray *)tableColumns event:(NSEvent *)dragEvent offset:(NSPointPointer)dragImageOffset{
