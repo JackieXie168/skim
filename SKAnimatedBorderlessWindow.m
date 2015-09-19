@@ -54,16 +54,16 @@
 - (id)initWithContentRect:(NSRect)contentRect {
     self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
-		[self setBackgroundColor:[NSColor clearColor]];
+        defaultAlphaValue = ALPHA_VALUE;
+        autoHideTimeInterval = AUTO_HIDE_TIME_INTERVAL;
+		
+        [self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setAlphaValue:[self defaultAlphaValue]];
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:NO];
         if ([self respondsToSelector:@selector(setAnimationBehavior:)])
             [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
-        
-        defaultAlphaValue = ALPHA_VALUE;
-        autoHideTimeInterval = AUTO_HIDE_TIME_INTERVAL;
     }
     return self;
 }
