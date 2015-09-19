@@ -97,5 +97,5 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
         }
     }
     [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
-    return [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil];
+    return [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:[NSDictionary dictionaryWithObjectsAndKeys:NSRTFTextDocumentType, NSDocumentTypeDocumentAttribute, nil]];
 }
