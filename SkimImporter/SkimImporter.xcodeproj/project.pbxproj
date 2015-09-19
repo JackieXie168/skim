@@ -259,7 +259,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 70138C880896BE9A00968C2F /* Build configuration list for PBXProject "SkimImporter" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -471,6 +471,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
 				WRAPPER_EXTENSION = mdimporter;
 			};
@@ -487,6 +488,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
 				WARNING_CFLAGS = (
 					"-Wall",
