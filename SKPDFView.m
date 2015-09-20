@@ -204,7 +204,7 @@ enum {
     SKINITIALIZE;
     
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, nil];
-    [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:nil];
+    [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:[NSArray array]];
     
     NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
     NSNumber *resizeReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKResizeReadingBarModifiersKey];
@@ -4214,6 +4214,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
+    else if (interactionMode == SKPresentationMode)
+        [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))
         [[NSCursor openHandCursor] set];
     else if ((area & SKResizeUpDownArea))
