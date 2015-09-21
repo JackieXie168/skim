@@ -3225,7 +3225,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSColor *pathColor = nil;
     NSShadow *pathShadow = nil;
     CAShapeLayer *layer = nil;
-    NSAffineTransform *transform = nil;
+    NSWindow *overlay = nil;
     
     [bezierPath moveToPoint:point];
     [bezierPath setLineCapStyle:NSRoundLineCapStyle];
@@ -3252,47 +3252,45 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     }
     
+    NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
+    CGAffineTransform t = CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0);
+    layer = [CAShapeLayer layer];
+    [layer setStrokeColor:[pathColor CGColor]];
+    [layer setFillColor:NULL];
+    [layer setLineWidth:[bezierPath lineWidth]];
+    [layer setLineDashPattern:[bezierPath dashPattern]];
+    [layer setLineCap:[bezierPath lineCapStyle] == NSButtLineCapStyle ? kCALineCapButt : kCALineCapRound];
+    [layer setLineJoin:kCALineJoinRound];
+    [layer setMasksToBounds:YES];
+    if (pathShadow) {
+        [layer setShadowRadius:[pathShadow shadowBlurRadius] / [self scaleFactor]];
+        [layer setShadowOffset:CGSizeApplyAffineTransform(NSSizeToCGSize([pathShadow shadowOffset]), CGAffineTransformInvert(t))];
+        [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
+        [layer setShadowOpacity:1.0];
+    }
+    // transform and place so that the path is in page coordinates
+    [layer setBounds:NSRectToCGRect(boxBounds)];
+    [layer setAnchorPoint:CGPointZero];
+    [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
+    [layer setAffineTransform:t];
+    [layer setZPosition:1.0];
+    
     if ([self wantsLayer]) {
-        NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
-        CGAffineTransform t = CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0);
-        layer = [CAShapeLayer layer];
-        [layer setStrokeColor:[pathColor CGColor]];
-        [layer setFillColor:NULL];
-        [layer setLineWidth:[bezierPath lineWidth]];
-        [layer setLineDashPattern:[bezierPath dashPattern]];
-        [layer setLineCap:[bezierPath lineCapStyle] == NSButtLineCapStyle ? kCALineCapButt : kCALineCapRound];
-        [layer setLineJoin:kCALineJoinRound];
-        [layer setMasksToBounds:YES];
-        if (pathShadow) {
-            [layer setShadowRadius:[pathShadow shadowBlurRadius] / [self scaleFactor]];
-            [layer setShadowOffset:CGSizeApplyAffineTransform(NSSizeToCGSize([pathShadow shadowOffset]), CGAffineTransformInvert(t))];
-            [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
-            [layer setShadowOpacity:1.0];
-        }
-        // transform and place so that the path is in page coordinates
-        [layer setBounds:NSRectToCGRect(boxBounds)];
-        [layer setAnchorPoint:CGPointZero];
-        [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
-        [layer setAffineTransform:t];
-        [layer setZPosition:1.0];
         [[self layer] addSublayer:layer];
     } else {
-        NSRect rect = [self convertRect:[self convertRect:[page boundsForBox:[self displayBox]] fromPage:page] toView:[self documentView]];
-        transform = [NSAffineTransform transform];
-        [transform translateXBy:NSMinX(rect) yBy:NSMinY(rect)];
-        [transform scaleBy:[self scaleFactor]];
-        [transform prependTransform:[page affineTransformForBox:[self displayBox]]];
+        NSRect rect = [self convertRect:[self bounds] toView:nil];
+        rect.origin = [window convertBaseToScreen:rect.origin];
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:rect];
+        [overlay setIgnoresMouseEvents:YES];
+        [[overlay contentView] setWantsLayer:YES];
+        [[[overlay contentView] layer] addSublayer:layer];
+        [overlay orderFront:nil];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
     // but not from tablets because those fire very rapidly and lead to serious delays
     if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
-    
-    if (layer == nil) {
-        [self displayIfNeeded];
-        [window cacheImageInRect:[self convertRect:[self visibleContentRect] toView:nil]];
-    }
     
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -3301,37 +3299,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
         
-        if (layer) {
-            
-            CGPathRef path = SKCopyCGPathFromBezierPath(bezierPath);
-            [layer setPath:path];
-            CGPathRelease(path);
-            
-        } else {
-        
-            [window restoreCachedImage];
-            
-            if ([[self documentView] lockFocusIfCanDraw]) {
-                [NSGraphicsContext saveGraphicsState];
-                [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-                [transform concat];
-                [pathColor setStroke];
-                [pathShadow set];
-                [bezierPath stroke];
-                [NSGraphicsContext restoreGraphicsState];
-                [[self documentView] unlockFocus];
-            }
-            [window flushWindow];
-            
-        }
+        CGPathRef path = SKCopyCGPathFromBezierPath(bezierPath);
+        [layer setPath:path];
+        CGPathRelease(path);
         
         didDraw = YES;
     }
     
-    if (layer)
+    if (overlay) {
+        [overlay orderOut:nil];
+        [overlay release];
+    } else {
         [layer removeFromSuperlayer];
-    else
-        [window discardCachedImage];
+    }
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
@@ -3699,39 +3679,37 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSRect selRect = {startPoint, NSZeroSize};
     BOOL dragged = NO;
     CAShapeLayer *layer = nil;
+    NSWindow *overlay = nil;
     
     [[NSCursor cameraCursor] set];
 	
+    CGRect layerRect = NSRectToCGRect([self visibleContentRect]);
+    layer = [CAShapeLayer layer];
+    [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
+    [layer setFillColor:NULL];
+    [layer setLineWidth:1.0];
+    [layer setFrame:layerRect];
+    [layer setBounds:layerRect];
+    [layer setMasksToBounds:YES];
+    [layer setZPosition:1.0];
+    
     if ([self wantsLayer]) {
-        CGRect rect = NSRectToCGRect([self visibleContentRect]);
-        layer = [CAShapeLayer layer];
-        [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
-        [layer setFillColor:NULL];
-        [layer setLineWidth:1.0];
-        [layer setFrame:rect];
-        [layer setBounds:rect];
-        [layer setMasksToBounds:YES];
-        [layer setZPosition:1.0];
         [[self layer] addSublayer:layer];
     } else {
-        [[self window] discardCachedImage];
+        NSRect overlayRect = [self convertRect:[self bounds] toView:nil];
+        overlayRect.origin = [[self window] convertBaseToScreen:overlayRect.origin];
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:overlayRect];
+        [overlay setIgnoresMouseEvents:YES];
+        [[overlay contentView] setWantsLayer:YES];
+        [[[overlay contentView] layer] addSublayer:layer];
+        [overlay orderFront:nil];
     }
     
 	while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
-        if (layer == nil) {
-            [[self window] disableFlushWindow];
-            [[self window] restoreCachedImage];
-		}
-        
-        if ([theEvent type] == NSLeftMouseUp) {
-            if (layer == nil) {
-                [[self window] enableFlushWindow];
-                [[self window] flushWindow];
-            }
+        if ([theEvent type] == NSLeftMouseUp)
             break;
-        }
         
         if ([theEvent type] == NSLeftMouseDragged) {
             // change mouseLoc
@@ -3753,33 +3731,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         // intersect with the bounds, project on the bounds if necessary and allow zero width or height
         selRect = SKIntersectionRect(selRect, [[self documentView] bounds]);
         
-        if (layer) {
-            
-            CGMutablePathRef path = CGPathCreateMutable();
-            CGPathAddRect(path, NULL, NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)));
-            [layer setPath:path];
-            CGPathRelease(path);
-            
-        } else {
-            
-            [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
-            
-            if ([[self documentView] lockFocusIfCanDraw]) {;
-                [[NSColor blackColor] set];
-                [NSBezierPath setDefaultLineWidth:1.0];
-                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect(selRect), 0.5, 0.5)];
-                [[self documentView] unlockFocus];
-            }
-            [[self window] enableFlushWindow];
-            [[self window] flushWindow];
-            
-        }
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathAddRect(path, NULL, NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)));
+        [layer setPath:path];
+        CGPathRelease(path);
     }
     
-    if (layer)
+    if (overlay) {
+        [overlay orderOut:nil];
+        [overlay release];
+    } else {
         [layer removeFromSuperlayer];
-    else
-        [[self window] discardCachedImage];
+    }
     
 	[self setCursorForMouse:theEvent];
     
