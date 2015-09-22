@@ -3871,8 +3871,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
             [self setCursorForMouse:theEvent];
-            [aShadow setShadowBlurRadius:4.0 * magnification];
-            [aShadow setShadowOffset:NSMakeSize(0.0, (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ?  -1.0 : -4.0) * magnification)];
+            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+                [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
+                [aShadow setShadowOffset:NSMakeSize(0.0, -1.0 * magnification * [self scaleFactor])];
+            } else {
+                [aShadow setShadowBlurRadius:4.0 * magnification];
+                [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
+            }
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
