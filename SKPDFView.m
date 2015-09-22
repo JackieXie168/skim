@@ -3815,10 +3815,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	NSInteger currentLevel = 0;
     NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    NSSize smallSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
-    NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
-    NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, smallSize);
-    NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
+    NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]));
+    NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]));
     CALayer *loupeLayer = nil;
     NSWindow *loupeWindow = nil;
     NSAutoreleasePool *pool = nil;
@@ -3835,17 +3833,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [loupeLayer setBorderWidth:2.0];
     [loupeLayer setCornerRadius:16.0];
     [loupeLayer setMasksToBounds:YES];
-    [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:
-                            [NSNull null], @"contents",
-                            [NSNull null], @"position",
-                            [NSNull null], @"bounds",
-                            [NSNull null], @"hidden",
-                            nil]];
+    [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
     [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
     [loupeLayer setFrame:NSRectToCGRect([self bounds])];
     
-    magRect = [self convertRectToScreen:[self bounds]];
-    loupeWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:magRect];
+    loupeWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
     [loupeWindow setHasShadow:YES];
     [loupeWindow setIgnoresMouseEvents:YES];
     [[loupeWindow contentView] setWantsLayer:YES];
@@ -3970,12 +3962,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
                 [documentView autoscroll:lastMouseEvent];
-            if (loupeLayer == nil) {
-                if (currentLevel > 2)
-                    [window cacheImageInRect:visibleRect];
-                else
-                    [window discardCachedImage];
-            }
             
         }
         
