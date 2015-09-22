@@ -4,7 +4,6 @@ INFOPLIST_FILE = Info.plist
 INFOPLIST_OTHER_PREPROCESSOR_FLAGS = -C
 INFOPLIST_PREPROCESS = YES
 PRODUCT_NAME = Skim
-PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.skim-app.skim
 WRAPPER_EXTENSION = app
 
 // causes lots of warnings about missing paths in Xcode 4

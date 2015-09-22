@@ -471,7 +471,6 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
-				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
 				WRAPPER_EXTENSION = mdimporter;
 			};
@@ -488,7 +487,6 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
-				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
 				WARNING_CFLAGS = (
 					"-Wall",
