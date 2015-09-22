@@ -51,6 +51,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
@@ -1006,8 +1007,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     if (item != nil && row != -1) {
         iconRect = [(SKTextWithIconCell *)[outlineView preparedCellAtColumn:0 row:row] iconRectForBounds:[outlineView frameOfCellAtColumn:0 row:row]];
         if (NSIntersectsRect([outlineView visibleRect], iconRect)) {
-            iconRect = [outlineView convertRect:iconRect toView:nil];
-            iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
+            iconRect = [outlineView convertRectToScreen:iconRect];
         } else {
             iconRect = NSZeroRect;
         }

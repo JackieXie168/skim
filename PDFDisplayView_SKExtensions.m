@@ -44,6 +44,7 @@
 #import "SKMainDocument.h"
 #import "SKRuntime.h"
 #import "SKAccessibilityFauxUIElement.h"
+#import "NSView_SKExtensions.h"
 
 #define SKDisableExtendedPDFViewAccessibilityKey @"SKDisableExtendedPDFViewAccessibility"
 
@@ -260,8 +261,7 @@ BOOL SKSwizzlePDFDisplayViewMethods() {
     if (pdfView) {
         PDFAnnotation *annotation = [element representedObject];
         if ([annotation respondsToSelector:@selector(bounds)] && [annotation respondsToSelector:@selector(page)]) {
-            rect = [pdfView convertRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] toView:nil];
-            rect.origin = [[pdfView window] convertBaseToScreen:rect.origin];
+            rect = [pdfView convertRectToScreen:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]]];
         }
     }
     return rect;

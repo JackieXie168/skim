@@ -44,6 +44,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -234,8 +235,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     view = [aView retain];
     [[self contentView] setStringValue:toolTip];
     NSRect newFrame = NSZeroRect;
-    NSRect viewRect = [view convertRect:[view bounds] toView:nil];
-    viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
+    NSRect viewRect = [view convertRectToScreen:[view bounds]];
     newFrame.size = [[self contentView] fitSize];
     newFrame.origin = NSMakePoint(ceil(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
     [self setFrame:newFrame display:YES];

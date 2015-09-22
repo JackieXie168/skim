@@ -81,6 +81,12 @@
     return 1.0;
 }
 
+- (NSRect)convertRectToScreen:(NSRect)rect {
+    rect = [self convertRect:rect toView:nil];
+    rect.origin = [[self window] convertBaseToScreen:rect.origin];
+    return rect;
+}
+
 @end
 
 

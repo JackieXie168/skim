@@ -526,8 +526,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         rect = NSInsetRect([self bounds], 1.0, 1.0);
         rect.size.width = NSHeight(rect);
         rect.origin.x += [element index] * (NSWidth(rect) - 1.0);
-        rect = [self convertRect:rect toView:nil];
-        rect.origin = [[self window] convertBaseToScreen:rect.origin];
+        rect = [self convertRectToScreen:rect];
     }
     return rect;
 }

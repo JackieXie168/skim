@@ -50,4 +50,6 @@
 
 - (CGFloat)backingScale;
 
+- (NSRect)convertRectToScreen:(NSRect)rect;
+
 @end

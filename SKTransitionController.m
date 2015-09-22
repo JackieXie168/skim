@@ -327,9 +327,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [transitionView setImage:image];
     [transitionView setNeedsDisplay:YES];
     
-    NSRect frame = [view convertRect:rect toView:nil];
-    frame.origin = [[view window] convertBaseToScreen:frame.origin];
-    [window setFrame:frame display:NO];
+    [window setFrame:[view convertRectToScreen:rect] display:NO];
     [window orderBack:nil];
     [[view window] addChildWindow:window ordered:NSWindowAbove];
     

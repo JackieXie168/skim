@@ -3278,9 +3278,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([self wantsLayer]) {
         [[self layer] addSublayer:layer];
     } else {
-        NSRect rect = [self convertRect:[self bounds] toView:nil];
-        rect.origin = [window convertBaseToScreen:rect.origin];
-        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:rect];
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
         [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
@@ -3696,9 +3694,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([self wantsLayer]) {
         [[self layer] addSublayer:layer];
     } else {
-        NSRect overlayRect = [self convertRect:[self bounds] toView:nil];
-        overlayRect.origin = [[self window] convertBaseToScreen:overlayRect.origin];
-        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:overlayRect];
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
         [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
@@ -3848,8 +3844,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
     [loupeLayer setFrame:NSRectToCGRect([self bounds])];
     
-    magRect = [self convertRect:[self bounds] toView:nil];
-    magRect.origin = [window convertBaseToScreen:magRect.origin];
+    magRect = [self convertRectToScreen:[self bounds]];
     loupeWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:magRect];
     [loupeWindow setHasShadow:YES];
     [loupeWindow setIgnoresMouseEvents:YES];
@@ -3956,9 +3951,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }];
             
             [loupeLayer setContents:image];
-            magRect = [self convertRect:magRect toView:nil];
-            magRect.origin = [window convertBaseToScreen:magRect.origin];
-            [loupeWindow setFrame:magRect display:YES];
+            [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
             
         } else { // mouse is not in the rect
             

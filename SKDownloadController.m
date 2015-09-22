@@ -52,6 +52,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -589,8 +590,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (row != NSNotFound) {
         iconRect = [tableView frameOfCellAtColumn:0 row:row];
         if (NSIntersectsRect([tableView visibleRect], iconRect)) {
-            iconRect = [tableView convertRect:iconRect toView:nil];
-            iconRect.origin = [[self window] convertBaseToScreen:iconRect.origin];
+            iconRect = [tableView convertRectToScreen:iconRect];
         } else {
             iconRect = NSZeroRect;
         }

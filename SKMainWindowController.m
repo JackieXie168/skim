@@ -2289,8 +2289,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         rect.origin = SKBottomLeftPoint([rightSideController.snapshotTableView visibleRect]);
         rect.size.width = rect.size.height = 1.0;
     }
-    rect = [rightSideController.snapshotTableView convertRect:rect toView:nil];
-    rect.origin = [[rightSideController.snapshotTableView window] convertBaseToScreen:rect.origin];
+    rect = [rightSideController.snapshotTableView convertRectToScreen:rect];
     return rect;
 }
 
