@@ -155,9 +155,9 @@
 		<key>SKNoteColumnWidths</key>
 		<dict>
 			<key>author</key>
-            <real>32</real>
+			<real>32</real>
 			<key>date</key>
-            <real>32</real>
+			<real>32</real>
 		</dict>
 		<key>SKNotesDocumentColumns</key>
 		<array>
@@ -169,9 +169,9 @@
 		<key>SKNotesDocumentColumnWidths</key>
 		<dict>
 			<key>author</key>
-            <real>64</real>
+			<real>64</real>
 			<key>date</key>
-            <real>64</real>
+			<real>64</real>
 		</dict>
 		<key>SKSwatchColors</key>
 		<array>
@@ -207,9 +207,9 @@
 		<key>SKAutoCropBoxMarginWidth</key>
 		<real>10</real>
 		<key>SKSmallMagnificationHeight</key>
-		<real>200</real>
+		<integer>300</integer>
 		<key>SKSmallMagnificationWidth</key>
-		<real>300</real>
+		<integer>450</integer>
 		<key>SKLargeMagnificationHeight</key>
 		<real>400</real>
 		<key>SKLargeMagnificationWidth</key>
