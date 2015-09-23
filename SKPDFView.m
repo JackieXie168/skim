@@ -3901,9 +3901,16 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
             NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
             NSImage *image;
+            NSRange pageRange;
             NSAffineTransform *transform = [NSAffineTransform transform];
-            NSArray *pages = magnification < 1.0 ? [self displayedPages] : [self visiblePages];
             
+            [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
+            [transform scaleBy:1.0 / magnification];
+            [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
+            pageRange.location = [[self pageForPoint:[transform transformPoint:SKTopLeftPoint(magRect)] nearest:YES] pageIndex];
+            pageRange.length = [[self pageForPoint:[transform transformPoint:SKBottomRightPoint(magRect)] nearest:YES] pageIndex] + 1 - pageRange.location;
+            
+            transform = [NSAffineTransform transform];
             [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
             [transform scaleBy:magnification];
             [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
@@ -3911,11 +3918,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
                 
                 NSRect imageRect = rect;
+                NSUInteger i;
                 
                 if (aShadow)
                     imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
                 
-                for (PDFPage *page in pages) {
+                for (i = pageRange.location; i < NSMaxRange(pageRange); i++) {
+                    PDFPage *page = [[self document] pageAtIndex:i];
                     NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
                     NSPoint pageOrigin = pageRect.origin;
                     NSAffineTransform *pageTransform;
