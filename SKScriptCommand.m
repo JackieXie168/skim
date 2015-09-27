@@ -43,12 +43,12 @@
 
 // Workaround for Cocoa Scripting and AppleScript bugs.
 // Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSelection
-static void fixRangeSpecifier(id object) {
+- (void)fixRangeSpecifiers:(id)object {
     if ([object isKindOfClass:[NSArray class]]) {
         for (id subobject in (NSArray *)object)
-            fixRangeSpecifier(subobject);
+            [self fixRangeSpecifiers:subobject];
     } else if ([object isKindOfClass:[NSScriptObjectSpecifier class]]) {
-        fixRangeSpecifier([(NSScriptObjectSpecifier *)object containerSpecifier]);
+        [self fixRangeSpecifiers:[(NSScriptObjectSpecifier *)object containerSpecifier]];
         if ([object isKindOfClass:[NSRangeSpecifier class]]) {
             NSScriptObjectSpecifier *childSpec = [(NSRangeSpecifier *)object startSpecifier];
             if ([childSpec containerSpecifier]) {
@@ -65,18 +65,18 @@ static void fixRangeSpecifier(id object) {
 }
 
 - (void)setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
-    fixRangeSpecifier(receiversSpec);
+    [self fixRangeSpecifiers:receiversSpec];
     [super setReceiversSpecifier:receiversSpec];
 }
 
 - (void)setArguments:(NSDictionary *)args {
     for (NSString *key in args)
-        fixRangeSpecifier([args objectForKey:key]);
+        [self fixRangeSpecifiers:[args objectForKey:key]];
     [super setArguments:args];
 }
 
 - (void)setDirectParameter:(id)directParameter {
-    fixRangeSpecifier(directParameter);
+    [self fixRangeSpecifiers:directParameter];
     [super setDirectParameter:directParameter];
 }
 
