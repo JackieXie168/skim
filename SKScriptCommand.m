@@ -1,5 +1,5 @@
 //
-//  NSScriptCommand_SKExtensions.m
+//  SKScriptCommand.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 11/26/10.
@@ -36,11 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSScriptCommand_SKExtensions.h"
-#import "SKRuntime.h"
+#import "SKScriptCommand.h"
 
 
-@implementation NSScriptCommand (SKExtensions)
+@implementation SKScriptCommand
 
 // Workaround for Cocoa Scripting and AppleScript bugs.
 // Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSelection
@@ -65,30 +64,20 @@ static void fixRangeSpecifier(id object) {
     }
 }
 
-static void (*original_setReceiversSpecifier)(id, SEL, id) = NULL;
-static void (*original_setArguments)(id, SEL, id) = NULL;
-static void (*original_setDirectParameter)(id, SEL, id) = NULL;
-
-- (void)replacement_setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
+- (void)setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
     fixRangeSpecifier(receiversSpec);
-    original_setReceiversSpecifier(self, _cmd, receiversSpec);
+    [super setReceiversSpecifier:receiversSpec];
 }
 
-- (void)replacement_setArguments:(NSDictionary *)args {
+- (void)setArguments:(NSDictionary *)args {
     for (NSString *key in args)
         fixRangeSpecifier([args objectForKey:key]);
-    original_setArguments(self, _cmd, args);
+    [super setArguments:args];
 }
 
-- (void)replacement_setDirectParameter:(id)directParameter {
+- (void)setDirectParameter:(id)directParameter {
     fixRangeSpecifier(directParameter);
-    original_setDirectParameter(self, _cmd, directParameter);
-}
-
-+ (void)load {
-    original_setReceiversSpecifier = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setReceiversSpecifier:), @selector(replacement_setReceiversSpecifier:));
-    original_setArguments = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setArguments:), @selector(replacement_setArguments:));
-    original_setDirectParameter = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setDirectParameter:), @selector(replacement_setDirectParameter:));
+    [super setDirectParameter:directParameter];
 }
 
 @end
