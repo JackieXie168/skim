@@ -43,18 +43,24 @@
 @implementation NSScriptCommand (SKExtensions)
 
 // Workaround for Cocoa Scripting and AppleScript bugs.
-// Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSselection
-static void fixRangeSpecifier(NSScriptObjectSpecifier *specifier) {
-    if ([specifier isKindOfClass:[NSRangeSpecifier class]]) {
-        NSScriptObjectSpecifier *childSpec = [(NSRangeSpecifier *)specifier startSpecifier];
-        if ([childSpec containerSpecifier]) {
-            [childSpec setContainerSpecifier:nil];
-            [childSpec setContainerIsRangeContainerObject:YES];
-        }
-        childSpec = [(NSRangeSpecifier *)specifier endSpecifier];
-        if ([childSpec containerSpecifier]) {
-            [childSpec setContainerSpecifier:nil];
-            [childSpec setContainerIsRangeContainerObject:YES];
+// Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSelection
+static void fixRangeSpecifier(id object) {
+    if ([object isKindOfClass:[NSArray class]]) {
+        for (id subobject in (NSArray *)object)
+            fixRangeSpecifier(subobject);
+    } else if ([object isKindOfClass:[NSScriptObjectSpecifier class]]) {
+        fixRangeSpecifier([(NSScriptObjectSpecifier *)object containerSpecifier]);
+        if ([object isKindOfClass:[NSRangeSpecifier class]]) {
+            NSScriptObjectSpecifier *childSpec = [(NSRangeSpecifier *)object startSpecifier];
+            if ([childSpec containerSpecifier]) {
+                [childSpec setContainerSpecifier:nil];
+                [childSpec setContainerIsRangeContainerObject:YES];
+            }
+            childSpec = [(NSRangeSpecifier *)object endSpecifier];
+            if ([childSpec containerSpecifier]) {
+                [childSpec setContainerSpecifier:nil];
+                [childSpec setContainerIsRangeContainerObject:YES];
+            }
         }
     }
 }
