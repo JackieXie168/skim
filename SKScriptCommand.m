@@ -70,8 +70,7 @@
 }
 
 - (void)setArguments:(NSDictionary *)args {
-    for (NSString *key in args)
-        [self fixRangeSpecifiers:[args objectForKey:key]];
+    [self fixRangeSpecifiers:[args allValues]];
     [super setArguments:args];
 }
 
