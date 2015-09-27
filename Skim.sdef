@@ -560,6 +560,7 @@
 
         <command name="go" code="SKIMGoTo"
             description="Go to a location.">
+            <cocoa class="SKScriptCommand"/>
             <direct-parameter type="document"
                 description="The document in which to scroll."/>
             <parameter name="to" code="to  "
@@ -603,6 +604,7 @@
 
         <command name="find" code="SKIMFind"
             description="Find text in a document.">
+            <cocoa class="SKScriptCommand"/>
             <direct-parameter type="document"
                 description="The document in which to search."/>
             <parameter name="text" code="ctxt" type="text"
