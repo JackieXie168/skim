@@ -424,7 +424,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 return nil;
             specifier = [specifier containerSpecifier];
         } else {
-            key = [classDesc defaultSubcontainerAttributeKey];
+            key = [[classDesc toOneRelationshipKeys] lastObject];
             if (key == nil || [[[classDesc classDescriptionForKey:key] className] isEqualToString:@"rich text"] == NO)
                 return nil;
         }
@@ -468,7 +468,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSString *key = [spec key];
             static NSSet *selectionKeys = nil;
             if (selectionKeys == nil)
-                selectionKeys = [[NSSet alloc] initWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", @"richText", @"pages", nil];
+                selectionKeys = [[NSSet alloc] initWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", @"richText", @"pages", @"orderedDocuments", nil];
             if ([selectionKeys containsObject:key] == NO) {
                 // this allows to use selection properties directly
                 specifier = [spec objectsByEvaluatingSpecifier];
