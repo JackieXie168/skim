@@ -249,6 +249,9 @@ static NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substr
 #define RANGES_KEY @"ranges"
 #define CONTAINER_KEY @"container"
 
+#define RICH_TEXT_CLASSNAME @"rich text"
+#define CHARACTERS_KEY @"characters"
+
 static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous, BOOL continuousContainers) {
     if ([specifier isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
@@ -333,7 +336,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 
                 count = [tmpRanges count];
                 if (count == 0) {
-                } else if ([key isEqualToString:@"characters"]) {
+                } else if ([key isEqualToString:CHARACTERS_KEY]) {
                     for (i = 0; i < count; i++) {
                         NSRange range = [tmpRanges rangeAtIndex:i];
                         range.location += textRange.location;
@@ -419,13 +422,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     } else {
         
         NSScriptClassDescription *classDesc = [specifier keyClassDescription];
-        if ([[classDesc className] isEqualToString:@"rich text"]) {
+        if ([[classDesc className] isEqualToString:RICH_TEXT_CLASSNAME]) {
             if ([[[specifier containerClassDescription] toManyRelationshipKeys] containsObject:key])
                 return nil;
             specifier = [specifier containerSpecifier];
         } else {
             key = [[classDesc toOneRelationshipKeys] lastObject];
-            if (key == nil || [[[classDesc classDescriptionForKey:key] className] isEqualToString:@"rich text"] == NO)
+            if (key == nil || [[[classDesc classDescriptionForKey:key] className] isEqualToString:RICH_TEXT_CLASSNAME] == NO)
                 return nil;
         }
         
@@ -466,7 +469,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
         if ([spec isKindOfClass:[NSPropertySpecifier class]] &&
             [[[spec containerClassDescription] toManyRelationshipKeys] containsObject:[spec key]] == NO &&
-            [[[spec keyClassDescription] className] isEqualToString:@"rich text"] == NO) {
+            [[[spec keyClassDescription] className] isEqualToString:RICH_TEXT_CLASSNAME] == NO) {
             // this allows to use selection properties directly
             specifier = [spec objectsByEvaluatingSpecifier];
             if ([specifier isKindOfClass:[NSArray class]] == NO)
@@ -563,11 +566,11 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     
     if (textSpec) {
         containerClassDescription = [textSpec keyClassDescription];
-        if ((startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:range.location])) {
+        if ((startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:CHARACTERS_KEY index:range.location])) {
             if (range.length == 1) {
                 [ranges addObject:startSpec];
-            } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&
-                       (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec])) {
+            } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:CHARACTERS_KEY index:NSMaxRange(range) - 1]) &&
+                       (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:containerClassDescription containerSpecifier:textSpec key:CHARACTERS_KEY startSpecifier:startSpec endSpecifier:endSpec])) {
                 // in theory we should set the contentSpecifier of startSpec and endSpec to nil, and set containerIsRangeContainerObject to YES, but then AppleScript raises an errAENoSuchObject error
                 [ranges addObject:rangeSpec];
                 [rangeSpec release];
