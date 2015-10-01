@@ -464,17 +464,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         specifier = [NSArray arrayWithObject:specifier];
     if ([specifier count] == 1) {
         NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
-        if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
-            NSString *key = [spec key];
-            static NSSet *selectionKeys = nil;
-            if (selectionKeys == nil)
-                selectionKeys = [[NSSet alloc] initWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", @"richText", @"pages", @"orderedDocuments", nil];
-            if ([selectionKeys containsObject:key] == NO) {
-                // this allows to use selection properties directly
-                specifier = [spec objectsByEvaluatingSpecifier];
-                if ([specifier isKindOfClass:[NSArray class]] == NO)
-                    specifier = [NSArray arrayWithObject:specifier];
-            }
+        if ([spec isKindOfClass:[NSPropertySpecifier class]] &&
+            [[[spec containerClassDescription] toManyRelationshipKeys] containsObject:[spec key]] == NO &&
+            [[[spec keyClassDescription] className] isEqualToString:@"rich text"] == NO) {
+            // this allows to use selection properties directly
+            specifier = [spec objectsByEvaluatingSpecifier];
+            if ([specifier isKindOfClass:[NSArray class]] == NO)
+                specifier = [NSArray arrayWithObject:specifier];
         }
     }
     
