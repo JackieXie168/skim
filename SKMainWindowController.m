@@ -2046,6 +2046,10 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     }
     
     PDFPage *page = [instance safeFirstPage];
+    // this should never happen, but apparently PDFKit sometimes does return empty matches
+    if (page == nil)
+        return;
+    
     CGFloat order = [instance boundsOrderForPage:page];
     NSInteger i = [searchResults count];
     while (i-- > 0) {
