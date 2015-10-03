@@ -104,7 +104,7 @@
     sample = [extendedSelection cleanedString];
     
 	// Finally, create attributed string.
- 	attributedSample = [[NSMutableAttributedString alloc] initWithString:sample];
+    attributedSample = [[NSMutableAttributedString alloc] initWithString:sample ?: @""];
     attributedString = [attributedSample mutableString];
     [attributedString insertString:ellipse atIndex:0];
     [attributedString appendString:ellipse];
