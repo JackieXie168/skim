@@ -509,13 +509,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
     if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
         [super beginGestureWithEvent:theEvent];
-    didMagnify = NO;
+    startScale = [self scaleFactor];
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if (didMagnify)
+    if (fabs(startScale - [self scaleFactor]) > 0.001)
         [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
-    didMagnify = NO;
     if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
 }
@@ -524,7 +523,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
         CGFloat magnifyFactor = (1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification])));
         [super setScaleFactor:magnifyFactor * [self scaleFactor]];
-        didMagnify = YES;
     }
 }
 

@@ -45,7 +45,7 @@
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
-    BOOL didMagnify;
+    CGFloat startScale;
     NSInteger minHistoryIndex;
 }
 
