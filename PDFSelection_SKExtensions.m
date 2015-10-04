@@ -92,9 +92,9 @@
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
 	NSRange foundRange;
-    NSDictionary *attributes;
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
 	CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] : 0.0;
+    NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
     
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];
@@ -104,26 +104,21 @@
     sample = [extendedSelection cleanedString];
     
 	// Finally, create attributed string.
-    attributedSample = [[NSMutableAttributedString alloc] initWithString:sample ?: @""];
+    attributedSample = [[NSMutableAttributedString alloc] initWithString:sample ?: @"" attributes:attributes];
     attributedString = [attributedSample mutableString];
     [attributedString insertString:ellipse atIndex:0];
     [attributedString appendString:ellipse];
+    
+    // Clean.
+    [attributes release];
+    [extendedSelection release];
 	
 	// Find instances of search string and "bold" them.
 	foundRange = [sample rangeOfString:searchString options:NSCaseInsensitiveSearch];
     if (foundRange.location != NSNotFound) {
         // Bold the text range where the search term was found.
-        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:fontSize], NSFontAttributeName, nil];
-        [attributedSample setAttributes:attributes range:NSMakeRange(foundRange.location + 1, foundRange.length)];
-        [attributes release];
+        [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + 1, foundRange.length)];
     }
-    
-	attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
-	// Add paragraph style.
-    [attributedSample addAttributes:attributes range:NSMakeRange(0, [attributedSample length])];
-	// Clean.
-	[attributes release];
-	[extendedSelection release];
 	
 	return [attributedSample autorelease];
 }
