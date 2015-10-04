@@ -90,7 +90,6 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     pagePopUpButton = nil;
     synchronizedPDFView = nil;
     synchronizeZoom = NO;
-    didMagnify = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:)
                                                  name:PDFViewPageChangedNotification object:self];
