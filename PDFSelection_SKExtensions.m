@@ -87,7 +87,7 @@
 - (NSAttributedString *)contextString {
     PDFSelection *extendedSelection = [self copy];
 	NSMutableAttributedString *attributedSample;
-	NSString *searchString = [self cleanedString];
+    NSString *searchString = [self cleanedString] ?: @"";
 	NSString *sample;
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
@@ -101,10 +101,10 @@
 	[extendedSelection extendSelectionAtEnd:50];
 	
     // get the cleaned string
-    sample = [extendedSelection cleanedString];
+    sample = [extendedSelection cleanedString] ?: @"";
     
 	// Finally, create attributed string.
-    attributedSample = [[NSMutableAttributedString alloc] initWithString:sample ?: @"" attributes:attributes];
+    attributedSample = [[NSMutableAttributedString alloc] initWithString:sample attributes:attributes];
     attributedString = [attributedSample mutableString];
     [attributedString insertString:ellipse atIndex:0];
     [attributedString appendString:ellipse];
@@ -114,11 +114,12 @@
     [extendedSelection release];
 	
 	// Find instances of search string and "bold" them.
-	foundRange = [sample rangeOfString:searchString options:NSCaseInsensitiveSearch];
-    if (foundRange.location != NSNotFound) {
-        // Bold the text range where the search term was found.
-        [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + 1, foundRange.length)];
-    }
+    foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + 10, [sample length]))];
+    if (foundRange.location == NSNotFound)
+        foundRange = [sample rangeOfString:searchString];
+    if (foundRange.location != NSNotFound)
+            // Bold the text range where the search term was found.
+            [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + 1, foundRange.length)];
 	
 	return [attributedSample autorelease];
 }
