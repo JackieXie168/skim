@@ -241,25 +241,21 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSAttributedString *)thumbnail32Attachment { return [self thumbnailAttachmentWithSize:32.0]; }
 
 - (NSData *)PDFDataForRect:(NSRect)rect {
-    NSData *data = [self dataRepresentation];
-    
     if (NSEqualRects(rect, NSZeroRect))
-        return data;
+        return [self dataRepresentation];
     if (NSIsEmptyRect(rect))
         return nil;
     
-    PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
-    PDFPage *page = [pdfDoc pageAtIndex:0];
-    NSAffineTransform *transform = [self affineTransformForBox:kPDFDisplayBoxMediaBox];
+    NSData *data = nil;
+    PDFPage *page = [self copy];
     
-    rect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
     [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
     data = [page dataRepresentation];
-    [pdfDoc release];
+    [page release];
     
     return data;
 }
