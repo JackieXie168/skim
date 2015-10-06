@@ -249,8 +249,13 @@ static BOOL usesSequentialPageNumbering = NO;
     NSData *data = nil;
     PDFPage *page = [self copy];
     
-    [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
-    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_MAX) {
+        // a media box is shifted back to the origin on 10.11, this is a bug
+        [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
+    } else {
+        [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
+        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+    }
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];

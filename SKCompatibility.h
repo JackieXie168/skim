@@ -50,6 +50,12 @@
 #ifndef NSAppKitVersionNumber10_9
     #define NSAppKitVersionNumber10_9 1265
 #endif
+#ifndef NSAppKitVersionNumber10_10
+    #define NSAppKitVersionNumber10_10 1343
+#endif
+#ifndef NSAppKitVersionNumber10_10_MAX
+    #define NSAppKitVersionNumber10_10_MAX 1349
+#endif
 
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
