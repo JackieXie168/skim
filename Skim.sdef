@@ -934,14 +934,14 @@
                 description="The page for the selection from the selection tool of the document.">
                 <cocoa key="selectionPage"/>
             </property>
-            <property name="view settings" type="PDF view settings" code="vSet"
-                description="The PDF view settings.">
-                <cocoa key="pdfViewSettings"/>
-            </property>
             <property name="note selection" code="NSel"
                 description="The selection in the note table.">
                 <type type="note" list="yes"/>
                 <cocoa key="noteSelection"/>
+            </property>
+            <property name="view settings" type="PDF view settings" code="vSet"
+                description="The PDF view settings.">
+                <cocoa key="pdfViewSettings"/>
             </property>
             <property name="info" type="document attributes" code="DInf" access="r"
                 description="The attributes of the PDF document.">
