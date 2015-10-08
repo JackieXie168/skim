@@ -37,8 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKScriptCommand.h"
 
 
-@interface SKTextCommand : SKScriptCommand
+@interface SKTextCommand : NSScriptCommand
 @end

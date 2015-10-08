@@ -1,5 +1,5 @@
 //
-//  SKScriptCommand.m
+//  NSScriptCommand_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 11/26/10.
@@ -36,19 +36,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKScriptCommand.h"
+#import "NSScriptCommand_SKExtensions.h"
+#import "SKRuntime.h"
 
 
-@implementation SKScriptCommand
+@implementation NSScriptCommand (SKExtensions)
+
+static id (*original_setReceiversSpecifier)(id, SEL, id) = NULL;
+static id (*original_setArguments)(id, SEL, id) = NULL;
+static id (*original_setDirectParameter)(id, SEL, id) = NULL;
 
 // Workaround for Cocoa Scripting and AppleScript bugs.
 // Cocoa Scripting does not accept range specifiers whose start/end specifier have an absolute container specifier, but AppleScript does not accept range specifiers with relative container specifiers, so we cannot return those from PDFSelection
-- (void)fixRangeSpecifiers:(id)object {
+static void fixRangeSpecifiers(id object) {
     if ([object isKindOfClass:[NSArray class]]) {
         for (id subobject in (NSArray *)object)
-            [self fixRangeSpecifiers:subobject];
+            fixRangeSpecifiers(subobject);
     } else if ([object isKindOfClass:[NSScriptObjectSpecifier class]]) {
-        [self fixRangeSpecifiers:[(NSScriptObjectSpecifier *)object containerSpecifier]];
+        fixRangeSpecifiers([(NSScriptObjectSpecifier *)object containerSpecifier]);
         if ([object isKindOfClass:[NSRangeSpecifier class]]) {
             NSScriptObjectSpecifier *childSpec = [(NSRangeSpecifier *)object startSpecifier];
             if ([childSpec containerSpecifier]) {
@@ -64,19 +69,25 @@
     }
 }
 
-- (void)setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
-    [self fixRangeSpecifiers:receiversSpec];
-    [super setReceiversSpecifier:receiversSpec];
+- (void)replacement_setReceiversSpecifier:(NSScriptObjectSpecifier *)receiversSpec {
+    fixRangeSpecifiers(receiversSpec);
+    original_setReceiversSpecifier(self, _cmd, receiversSpec);
 }
 
-- (void)setArguments:(NSDictionary *)args {
-    [self fixRangeSpecifiers:[args allValues]];
-    [super setArguments:args];
+- (void)replacement_setArguments:(NSDictionary *)args {
+    fixRangeSpecifiers([args allValues]);
+    original_setArguments(self, _cmd, args);
 }
 
-- (void)setDirectParameter:(id)directParameter {
-    [self fixRangeSpecifiers:directParameter];
-    [super setDirectParameter:directParameter];
+- (void)replacement_setDirectParameter:(id)directParameter {
+    fixRangeSpecifiers(directParameter);
+    original_setDirectParameter(self, _cmd, directParameter);
+}
+
++ (void)load {
+    original_setReceiversSpecifier = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setReceiversSpecifier:), @selector(replacement_setReceiversSpecifier:));
+    original_setArguments = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setArguments:), @selector(replacement_setArguments:));
+    original_setDirectParameter = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setDirectParameter:), @selector(replacement_setDirectParameter:));
 }
 
 @end

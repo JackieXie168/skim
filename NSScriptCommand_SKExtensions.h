@@ -1,5 +1,5 @@
 //
-//  SKScriptCommand.h
+//  NSScriptCommand_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 11/26/10.
@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKScriptCommand : NSScriptCommand
+@interface NSScriptCommand (SKExtensions)
 @end
 
 
