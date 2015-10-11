@@ -322,6 +322,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.quicklookgenerator";
 				PRODUCT_NAME = Skim;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
@@ -332,6 +333,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.quicklookgenerator";
 				PRODUCT_NAME = Skim;
 				WARNING_CFLAGS = (
 					"-Wall",
