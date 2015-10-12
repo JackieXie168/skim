@@ -13,11 +13,11 @@
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
 #import "SUConstants.h"
-#ifndef MAC_OS_X_VERSION_10_7
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_7
 @protocol NSURLDownloadDelegate <NSObject>
 @end
 #endif
-#ifndef MAC_OS_X_VERSION_10_11
+#if !defined(MAC_OS_X_VERSION_10_11) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_11
 @protocol WebFrameloadDelegate <NSObject>
 @end
 @protocol WebPolicyDelegate <NSObject>

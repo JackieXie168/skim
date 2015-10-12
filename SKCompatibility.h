@@ -95,6 +95,6 @@ enum {
 
 #endif
 
-#ifndef MAC_OS_X_VERSION_10_10
+#if !defined(MAC_OS_X_VERSION_10_10) || MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_10
 typedef NSUInteger NSCellHitResult;
 #endif
