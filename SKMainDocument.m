@@ -129,6 +129,12 @@ enum {
    SKArchiveEmailMask = 2,
 };
 
+enum {
+    SKOptionAsk = -1,
+    SKOptionNever = 0,
+    SKOptionAlways = 1
+};
+
 
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
@@ -428,13 +434,13 @@ enum {
         BOOL fileExists = [notesURL checkResourceIsReachableAndReturnError:NULL];
         
         if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
-            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesURL lastPathComponent]]
-                                             defaultButton:NSLocalizedString(@"Save", @"Button title")
-                                           alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                               otherButton:nil
-                                 informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesURL URLByDeletingLastPathComponent] lastPathComponent]];
+            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesURL lastPathComponent]]];
+            [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesURL URLByDeletingLastPathComponent] lastPathComponent]]];
+            [alert addButtonWithTitle:NSLocalizedString(@"Save", @"Button title")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
             
-            saveNotesOK = NSAlertDefaultReturn == [alert runModal];
+            saveNotesOK = NSAlertFirstButtonReturn == [alert runModal];
         } else {
             saveNotesOK = YES;
         }
@@ -470,11 +476,10 @@ enum {
     if (NO == [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
         NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                           NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
-        NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog"), nil]
-                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:message, [absoluteURL lastPathComponent]];
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")];
+        [alert setInformativeText:[NSString stringWithFormat:message, [absoluteURL lastPathComponent]]];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
         [alert runModal];
     }
     
@@ -794,12 +799,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 (pdfDoc = [[SKPDFDocument alloc] initWithURL:pdfURL])) {
                 NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
                 if (array == nil) {
-                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
-                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
-                                                       otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[pdfURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
-                    if ([alert runModal] == NSAlertDefaultReturn) {
+                    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                    [alert setMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog")];
+                    [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[pdfURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]]];
+                    [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+                    [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+                    if ([alert runModal] == NSAlertFirstButtonReturn) {
                         SKDESTROY(data);
                         SKDESTROY(pdfDoc);
                         error = [NSError userCancelledErrorWithUnderlyingError:error];
@@ -832,12 +837,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             } else {
                 // we found no notes, see if we had an error finding notes. if EAs were not supported we ignore the error, as we may assume there won't be any notes
                 if (array == nil && isIgnorablePOSIXError(error) == NO) {
-                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
-                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
-                                                       otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]];
-                    if ([alert runModal] == NSAlertDefaultReturn) {
+                    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                    [alert setMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog")];
+                    [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [error localizedDescription]]];
+                    [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+                    [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+                    if ([alert runModal] == NSAlertFirstButtonReturn) {
                         SKDESTROY(fileData);
                         SKDESTROY(data);
                         SKDESTROY(pdfDoc);
@@ -848,15 +853,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     NSURL *url = [absoluteURL URLReplacingPathExtension:@"skim"];
                     if ([url checkResourceIsReachableAndReturnError:NULL]) {
                         NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
-                        if (readOption == NSAlertOtherReturn) {
-                            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
-                                                             defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                                           alternateButton:NSLocalizedString(@"No", @"Button title")
-                                                               otherButton:nil
-                                                 informativeTextWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]];
-                            readOption = [alert runModal];
+                        if (readOption == SKOptionAsk) {
+                            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                            [alert setMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") ];
+                            [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]]];
+                            [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+                            [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+                            readOption = (NSAlertFirstButtonReturn == [alert runModal]) ? SKOptionAlways : SKOptionNever;
                         }
-                        if (readOption == NSAlertDefaultReturn) {
+                        if (readOption == SKOptionAlways) {
                             array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:url error:NULL];
                             if ([array count]) {
                                 [tmpData setNoteDicts:array];
@@ -1119,7 +1124,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertAlternateReturn)
+    if (returnCode == NSAlertSecondButtonReturn)
         return;
     
     PDFDocument *pdfDocWithoutNotes = nil;
@@ -1156,11 +1161,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSBeep();
         return;
     }
-    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Convert Notes", @"Alert text when trying to convert notes")
-                                     defaultButton:NSLocalizedString(@"OK", @"Button title")
-                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                       otherButton:nil
-                         informativeTextWithFormat:NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog")];
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:NSLocalizedString(@"Convert Notes", @"Alert text when trying to convert notes")];
+    [alert setInformativeText:NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog")];
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
@@ -1208,7 +1213,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }];
         }
     } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document")];
+        [alert setInformativeText:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }
@@ -1226,7 +1234,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn) {
+    if (returnCode == NSAlertFirstButtonReturn) {
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] && [error isUserCancelledError] == NO) {
             [[alert window] orderOut:nil];
@@ -1241,12 +1249,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
              [super revertDocumentToSaved:sender]; 	 
          } else if ([fileUpdateChecker fileChangedOnDisk] || 
                     NSOrderedAscending == [[self fileModificationDate] compare:[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate]]) {
-             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileURL] lastPathComponent]] 	 
-                                              defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
-                                            alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
-                                                otherButton:nil 	 
-                                  informativeTextWithFormat:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")]; 	 
-             [alert beginSheetModalForWindow:[[self mainWindowController] window] 	 
+             NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+             [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileURL] lastPathComponent]]];
+             [alert setInformativeText:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")];
+             [alert addButtonWithTitle:NSLocalizedString(@"Revert", @"Button title")];
+             [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+             [alert beginSheetModalForWindow:[[self mainWindowController] window]
                                modalDelegate:self 	 
                               didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 	 
                                  contextInfo:NULL]; 	 
@@ -1579,7 +1587,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 
 - (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     NSString *password = [(NSString *)contextInfo autorelease];
-    if (returnCode == NSAlertDefaultReturn)
+    if (returnCode == NSAlertFirstButtonReturn)
         [self doSavePasswordInKeychain:password];   
 }
 
@@ -1588,18 +1596,18 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         return;
     
     NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
-    if (saveOption == NSAlertDefaultReturn) {
+    if (saveOption == SKOptionAlways) {
         [self doSavePasswordInKeychain:password];
-    } else if (saveOption == NSAlertOtherReturn) {
-        NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]
-                                         defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                       alternateButton:NSLocalizedString(@"No", @"Button title")
-                                           otherButton:nil
-                             informativeTextWithFormat:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
+    } else if (saveOption == SKOptionAsk) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]];
+        [alert setInformativeText:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"NO", @"Button title")];
         NSWindow *window = [[self mainWindowController] window];
         if ([window attachedSheet] == nil)
             [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[password retain]];
-        else if (NSAlertDefaultReturn == [alert runModal])
+        else if (NSAlertFirstButtonReturn == [alert runModal])
             [self doSavePasswordInKeychain:password];
     }
 }
@@ -1608,7 +1616,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     BOOL didUnlock = NO;
     if ([document isLocked] == NO) {
         didUnlock = YES;
-    } else if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
+    } else if (SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         NSString *fileID = [self fileIDStringForDocument:document];
         if (fileID) {
             NSString *password = nil;
@@ -1997,7 +2005,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if ([[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO)
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
     else if ([self hasConvertibleAnnotations])
-        [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+        [self convertNotesSheetDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
 }
 
 - (void)handleReadNotesScriptCommand:(NSScriptCommand *)command {

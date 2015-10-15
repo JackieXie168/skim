@@ -226,7 +226,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn) {
+    if (returnCode == NSAlertFirstButtonReturn) {
         [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
         for (NSViewController<SKPreferencePane> *pane in preferencePanes) {
             if ([pane respondsToSelector:@selector(defaultsDidRevert)])
@@ -236,11 +236,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)resetAll:(id)sender {
-    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Reset all preferences to their original values?", @"Message in alert dialog when pressing Reset All button") 
-                                     defaultButton:NSLocalizedString(@"Reset", @"Button title")
-                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                       otherButton:nil
-                         informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:NSLocalizedString(@"Reset all preferences to their original values?", @"Message in alert dialog when pressing Reset All button")];
+    [alert setInformativeText:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Reset", @"Button title")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
                      didEndSelector:@selector(resetAllSheetDidEnd:returnCode:contextInfo:)
@@ -248,7 +248,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn) {
+    if (returnCode == NSAlertFirstButtonReturn) {
         NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
         NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
         [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
@@ -263,11 +263,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
         return;
     }
     NSString *label = [currentPane title];
-    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]
-                                     defaultButton:NSLocalizedString(@"Reset", @"Button title")
-                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                       otherButton:nil
-                         informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label];
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]];
+    [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label]];
+    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
                      didEndSelector:@selector(resetCurrentSheetDidEnd:returnCode:contextInfo:)

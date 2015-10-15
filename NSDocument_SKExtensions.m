@@ -111,7 +111,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
 	[bookmarkSheetController setStringValue:[self displayName]];
     [bookmarkSheetController beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result) {
-            if (result == NSAlertDefaultReturn) {
+            if (result == NSOKButton) {
                 NSString *label = [bookmarkSheetController stringValue];
                 SKBookmark *folder = [bookmarkSheetController selectedFolder] ?: [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
                 SKBookmark *bookmark = nil;

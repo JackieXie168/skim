@@ -370,13 +370,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         if ([urls count] > WARNING_LIMIT) {
-            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]
-                                             defaultButton:NSLocalizedString(@"Cancel", @"Button title")
-                                           alternateButton:NSLocalizedString(@"Open", @"Button title")
-                                               otherButton:nil
-                                 informativeTextWithFormat:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
+            [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
             
-            if (NSAlertDefaultReturn == [alert runModal]) {
+            if (NSAlertFirstButtonReturn == [alert runModal]) {
                 urls = nil;
                 error = [NSError userCancelledErrorWithUnderlyingError:nil];
             }

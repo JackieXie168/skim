@@ -173,12 +173,12 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     
-    if (returnCode == NSAlertOtherReturn) {
+    if (returnCode == NSAlertSecondButtonReturn) {
         // if we don't reload now, we should not do it automatically next
         fucFlags.autoUpdate = NO;
     } else {
-        // should we reset autoUpdate to YES on NSAlertDefaultReturn when SKAutoReloadFileUpdateKey is set?
-        if (returnCode == NSAlertAlternateReturn)
+        // should we reset autoUpdate to YES on NSAlertFirstButtonReturn when SKAutoReloadFileUpdateKey is set?
+        if (returnCode == NSAlertThirdButtonReturn)
             fucFlags.autoUpdate = YES;
         
         [[alert window] orderOut:nil];
@@ -227,7 +227,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
             if (fucFlags.autoUpdate && documentHasEdits == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
             } else {
                 NSString *message;
                 if (documentHasEdits)
@@ -237,11 +237,13 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                 else
                     message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
                 
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:fucFlags.autoUpdate ? nil : NSLocalizedString(@"Auto", @"Button title")
-                                                   otherButton:NSLocalizedString(@"No", @"Button title")
-                                     informativeTextWithFormat:@"%@", message];
+                NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                [alert setMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog")];
+                [alert setInformativeText:message];
+                [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+                [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+                if (fucFlags.autoUpdate)
+                    [alert addButtonWithTitle:NSLocalizedString(@"Auto", @"Button title")];
                 [alert beginSheetModalForWindow:docWindow
                                   modalDelegate:self
                                  didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
