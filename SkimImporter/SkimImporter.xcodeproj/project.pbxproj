@@ -16,7 +16,7 @@
 		C88FB7E40674480E006EBB30 /* schema.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7E30674480E006EBB30 /* schema.strings */; };
 		CEE23DEB0ECFA8370013CDF7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23DEA0ECFA8370013CDF7 /* Quartz.framework */; };
 		CEE23E5B0ECFA8F30013CDF7 /* SkimNotesBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
-		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
+		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEFD60CF0C01D0E40027B933 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60CE0C01D0E40027B933 /* Foundation.framework */; };
 		CEFD60D30C01D1040027B933 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60D20C01D1040027B933 /* ApplicationServices.framework */; };
 		F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F915705F0C020DDF008B68E9 /* AppKit.framework */; };
@@ -259,7 +259,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 			};
 			buildConfigurationList = 70138C880896BE9A00968C2F /* Build configuration list for PBXProject "SkimImporter" */;
 			compatibilityVersion = "Xcode 3.2";
