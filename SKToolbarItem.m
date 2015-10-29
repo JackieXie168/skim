@@ -55,6 +55,10 @@
 }
 
 - (void)setViewWithSizes:(NSView *)view {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && [view isKindOfClass:[NSSegmentedControl class]]) {
+        [(NSSegmentedControl *)view setSegmentStyle:NSSegmentStyleTexturedSquare];
+        [(NSSegmentedControl *)view sizeToFit];
+    }
     [self setView:view];
     [self setMinSize:[view bounds].size];
     [self setMaxSize:[view bounds].size];
