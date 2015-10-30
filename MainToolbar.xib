@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">10K549</string>
+		<string key="IBDocument.SystemVersion">14F1021</string>
 		<string key="IBDocument.InterfaceBuilderVersion">851</string>
-		<string key="IBDocument.AppKitVersion">1038.36</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.AppKitVersion">1348.17</string>
+		<string key="IBDocument.HIToolboxVersion">758.70</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">851</string>
@@ -29,22 +29,23 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomView" id="850098044">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSSegmentedControl" id="948439344">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 274}, {61, 23}}</string>
+						<string key="NSFrame">{{20, 272}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="150978667">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<object class="NSFont" key="NSSupport" id="586405658">
-								<string key="NSName">LucidaGrande</string>
+								<string key="NSName">.HelveticaNeueDeskInterface-Regular</string>
 								<double key="NSSize">13</double>
-								<int key="NSfFlags">1044</int>
+								<int key="NSfFlags">1040</int>
 							</object>
 							<reference key="NSControlView" ref="948439344"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
@@ -70,17 +71,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="694808295">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{85, 273}, {50, 23}}</string>
+						<string key="NSFrame">{{85, 274}, {50, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="1016195632">
-							<int key="NSCellFlags">-1804468671</int>
+							<int key="NSCellFlags">-1804599231</int>
 							<int key="NSCellFlags2">272630784</int>
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="586405658"/>
@@ -105,15 +108,18 @@
 								</object>
 							</object>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+						<int key="NSTextFieldAlignmentRectInsetsVersion">1</int>
 					</object>
 					<object class="NSSegmentedControl" id="574277828">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 47}, {145, 23}}</string>
+						<string key="NSFrame">{{20, 45}, {141, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="743163770">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="574277828"/>
@@ -165,17 +171,19 @@
 								</object>
 							</array>
 							<int key="NSSelectedSegment">-1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="404684452">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{143, 274}, {50, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="980653423">
-							<int key="NSCellFlags">-1804468671</int>
+							<int key="NSCellFlags">-1804599231</int>
 							<int key="NSCellFlags2">272630784</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<object class="NSNumberFormatter" key="NSFormatter" id="919039886">
@@ -220,23 +228,27 @@
 							<reference key="NSBackgroundColor" ref="732140207"/>
 							<reference key="NSTextColor" ref="582378556"/>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+						<int key="NSTextFieldAlignmentRectInsetsVersion">1</int>
 					</object>
 					<object class="NSCustomView" id="177296294">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 19}, {117, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">SKColorSwatch</string>
 						<string key="NSExtension">NSControl</string>
 					</object>
 					<object class="NSSegmentedControl" id="76372141">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 75}, {229, 23}}</string>
+						<string key="NSFrame">{{20, 73}, {225, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="259829563">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="76372141"/>
@@ -323,23 +335,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="199292438">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{83, 302}, {61, 23}}</string>
+						<string key="NSFrame">{{85, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="1040797237">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<object class="NSFont" key="NSSupport" id="161875857">
-								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">13</double>
-								<int key="NSfFlags">16</int>
-							</object>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="199292438"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -365,17 +375,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="69299456">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 243}, {61, 23}}</string>
+						<string key="NSFrame">{{20, 241}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="674816434">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="69299456"/>
@@ -403,17 +415,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="390362245">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{83, 243}, {89, 23}}</string>
+						<string key="NSFrame">{{85, 241}, {85, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="706485920">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="390362245"/>
@@ -444,17 +458,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="576074747">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 302}, {61, 23}}</string>
+						<string key="NSFrame">{{20, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="863501943">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="576074747"/>
@@ -479,17 +495,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="519108589">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{176, 243}, {33, 23}}</string>
+						<string key="NSFrame">{{178, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="530854302">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="519108589"/>
@@ -503,17 +521,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="458553016">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{55, 215}, {33, 23}}</string>
+						<string key="NSFrame">{{57, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="915255045">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="458553016"/>
@@ -530,17 +550,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="840849757">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 215}, {33, 23}}</string>
+						<string key="NSFrame">{{20, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="670966833">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="840849757"/>
@@ -558,17 +580,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="697963551">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{213, 243}, {33, 23}}</string>
+						<string key="NSFrame">{{215, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="593110496">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="697963551"/>
@@ -585,17 +609,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="838752059">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{250, 243}, {33, 23}}</string>
+						<string key="NSFrame">{{252, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="889032406">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="838752059"/>
@@ -612,17 +638,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="206221324">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{20, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="102653450">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="206221324"/>
@@ -639,17 +667,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="1058504007">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{55, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{57, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="422472624">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="1058504007"/>
@@ -666,17 +696,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="255094502">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{276, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{278, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="514109988">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="255094502"/>
@@ -693,17 +725,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="747672717">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{235, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{237, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="519457297">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="747672717"/>
@@ -720,17 +754,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="835856591">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{157, 215}, {33, 23}}</string>
+						<string key="NSFrame">{{159, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="247618961">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="835856591"/>
@@ -747,19 +783,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="598815062">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{213, 302}, {117, 23}}</string>
+						<string key="NSFrame">{{215, 300}, {113, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="428967591">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="598815062"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -796,19 +834,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="473510583">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{148, 302}, {61, 23}}</string>
+						<string key="NSFrame">{{150, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="770942341">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="473510583"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -828,17 +868,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="633037374">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{92, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{94, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="335249521">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="633037374"/>
@@ -855,17 +897,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="1047787411">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{129, 187}, {33, 23}}</string>
+						<string key="NSFrame">{{131, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="257612657">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="1047787411"/>
@@ -882,17 +926,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="373684916">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{20, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="681524580">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="373684916"/>
@@ -909,17 +955,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="696516173">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{204, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{206, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="854787350">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="696516173"/>
@@ -936,17 +984,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="511485571">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{167, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{169, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="476618967">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="511485571"/>
@@ -963,17 +1013,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="778366371">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{55, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{57, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="661405275">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="778366371"/>
@@ -990,17 +1042,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="354912557">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{92, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{94, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="499875793">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="354912557"/>
@@ -1017,17 +1071,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="20120304">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{130, 131}, {33, 23}}</string>
+						<string key="NSFrame">{{132, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="771996419">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="20120304"/>
@@ -1044,19 +1100,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="854737512">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{166, 187}, {61, 23}}</string>
+						<string key="NSFrame">{{168, 185}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="149920704">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="854737512"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1080,19 +1138,21 @@
 								</object>
 							</array>
 							<int key="NSSelectedSegment">-1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="554203995">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 103}, {33, 23}}</string>
+						<string key="NSFrame">{{20, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="877103443">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="554203995"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1107,19 +1167,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="89418761">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{55, 103}, {33, 23}}</string>
+						<string key="NSFrame">{{57, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="398312503">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="89418761"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1135,19 +1197,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="171355934">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{92, 103}, {33, 23}}</string>
+						<string key="NSFrame">{{94, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="175877116">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="171355934"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1163,19 +1227,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="986113263">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{130, 103}, {33, 23}}</string>
+						<string key="NSFrame">{{132, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="244067068">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="986113263"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1188,17 +1254,19 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="747429681">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{92, 215}, {61, 23}}</string>
+						<string key="NSFrame">{{94, 213}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="756369067">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="747429681"/>
@@ -1219,19 +1287,21 @@
 							</array>
 							<int key="NSSelectedSegment">-1</int>
 							<int key="NSTrackingMode">2</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="568316381">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{18, 159}, {61, 23}}</string>
+						<string key="NSFrame">{{20, 157}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="776110356">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="568316381"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1255,19 +1325,21 @@
 								</object>
 							</array>
 							<int key="NSSelectedSegment">-1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="26223638">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{148, 159}, {117, 23}}</string>
+						<string key="NSFrame">{{150, 157}, {113, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="305837989">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="26223638"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1305,19 +1377,21 @@
 								</object>
 							</array>
 							<int key="NSSelectedSegment">-1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSSegmentedControl" id="864974698">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{83, 159}, {61, 23}}</string>
+						<string key="NSFrame">{{85, 157}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="627087466">
-							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
-							<reference key="NSSupport" ref="161875857"/>
+							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="864974698"/>
 							<array class="NSMutableArray" key="NSSegmentImages">
 								<object class="NSSegmentItem">
@@ -1335,11 +1409,14 @@
 								</object>
 							</array>
 							<int key="NSSelectedSegment">-1</int>
-							<int key="NSSegmentStyle">5</int>
+							<int key="NSSegmentStyle">4</int>
 						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 				</array>
 				<string key="NSFrameSize">{350, 344}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
 			</object>

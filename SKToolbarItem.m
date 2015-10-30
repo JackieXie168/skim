@@ -55,8 +55,8 @@
 }
 
 - (void)setViewWithSizes:(NSView *)view {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 && [view isKindOfClass:[NSSegmentedControl class]]) {
-        [(NSSegmentedControl *)view setSegmentStyle:NSSegmentStyleTexturedSquare];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 && [view isKindOfClass:[NSSegmentedControl class]]) {
+        [(NSSegmentedControl *)view setSegmentStyle:NSSegmentStyleCapsule];
         [(NSSegmentedControl *)view sizeToFit];
     }
     [self setView:view];
