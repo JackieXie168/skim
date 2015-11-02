@@ -249,7 +249,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSData *data = nil;
     PDFPage *page = [self copy];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_MAX) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max) {
         // on 10.11 the media box is shifted back to the origin without the contents being shifted
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     } else {
