@@ -1603,7 +1603,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]];
         [alert setInformativeText:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
         [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
-        [alert addButtonWithTitle:NSLocalizedString(@"NO", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
         NSWindow *window = [[self mainWindowController] window];
         if ([window attachedSheet] == nil)
             [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[password retain]];
