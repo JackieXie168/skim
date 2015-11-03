@@ -242,7 +242,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                 [alert setInformativeText:message];
                 [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
                 [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
-                if (fucFlags.autoUpdate)
+                if (fucFlags.autoUpdate == NO)
                     [alert addButtonWithTitle:NSLocalizedString(@"Auto", @"Button title")];
                 [alert beginSheetModalForWindow:docWindow
                                   modalDelegate:self
