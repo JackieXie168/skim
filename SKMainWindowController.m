@@ -1080,21 +1080,22 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (void)removeAllObjectsFromNotes {
     if ([notes count]) {
-        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [notes count])];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
-        
-        for (NSWindowController *wc in [[self document] windowControllers]) {
+        NSArray *wcs = [[[self document] windowControllers] copy];
+        for (NSWindowController *wc in wcs) {
             if ([wc isNoteWindowController])
                 [wc close];
         }
+        [wcs release];
         
         [rowHeights removeAllFloats];
         
         [self stopObservingNotes:notes];
 
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [notes count])];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
         [notes removeAllObjects];
-        
         [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
+        
         [rightSideController.noteOutlineView reloadData];
     }
 }
