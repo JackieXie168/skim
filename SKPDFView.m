@@ -3219,61 +3219,44 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSPoint point = NSZeroPoint;
     PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     NSWindow *window = [self window];
-    BOOL didDraw = NO;
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
     NSBezierPath *bezierPath = [NSBezierPath bezierPath];
-    NSColor *pathColor = nil;
-    NSShadow *pathShadow = nil;
     CAShapeLayer *layer = nil;
     NSWindow *overlay = nil;
-    
-    [bezierPath moveToPoint:point];
-    [bezierPath setLineCapStyle:NSRoundLineCapStyle];
-    [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
-    
-    if (([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
-        pathColor = [activeAnnotation color];
-        [bezierPath setLineWidth:[activeAnnotation lineWidth]];
-        if ([activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
-            [bezierPath setDashPattern:[activeAnnotation dashPattern]];
-            [bezierPath setLineCapStyle:NSButtLineCapStyle];
-        }
-        pathShadow = [[[NSShadow alloc] init] autorelease];
-        [pathShadow setShadowBlurRadius:2.0];
-        [pathShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
-    } else {
-        [self setActiveAnnotation:nil];
-        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-        pathColor = [sud colorForKey:SKInkNoteColorKey];
-        [bezierPath setLineWidth:[sud floatForKey:SKInkNoteLineWidthKey]];
-        if ((PDFBorderStyle)[sud integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
-            [bezierPath setDashPattern:[sud arrayForKey:SKInkNoteDashPatternKey]];
-            [bezierPath setLineCapStyle:NSButtLineCapStyle];
-        }
-    }
     
     NSRect boxBounds = NSIntersectionRect([page boundsForBox:[self displayBox]], [self convertRect:[self visibleContentRect] toPage:page]);
     CGAffineTransform t = CGAffineTransformRotate(CGAffineTransformMakeScale([self scaleFactor], [self scaleFactor]), -M_PI_2 * [page rotation] / 90.0);
     layer = [CAShapeLayer layer];
-    [layer setStrokeColor:[pathColor CGColor]];
-    [layer setFillColor:NULL];
-    [layer setLineWidth:[bezierPath lineWidth]];
-    [layer setLineDashPattern:[bezierPath dashPattern]];
-    [layer setLineCap:[bezierPath lineCapStyle] == NSButtLineCapStyle ? kCALineCapButt : kCALineCapRound];
-    [layer setLineJoin:kCALineJoinRound];
-    [layer setMasksToBounds:YES];
-    if (pathShadow) {
-        [layer setShadowRadius:[pathShadow shadowBlurRadius] / [self scaleFactor]];
-        [layer setShadowOffset:CGSizeApplyAffineTransform(NSSizeToCGSize([pathShadow shadowOffset]), CGAffineTransformInvert(t))];
-        [layer setShadowColor:[[pathShadow shadowColor] CGColor]];
-        [layer setShadowOpacity:1.0];
-    }
     // transform and place so that the path is in page coordinates
     [layer setBounds:NSRectToCGRect(boxBounds)];
     [layer setAnchorPoint:CGPointZero];
     [layer setPosition:NSPointToCGPoint([self convertPoint:boxBounds.origin fromPage:page])];
     [layer setAffineTransform:t];
     [layer setZPosition:1.0];
+    [layer setMasksToBounds:YES];
+    [layer setFillColor:NULL];
+    [layer setLineJoin:kCALineJoinRound];
+    [layer setLineCap:kCALineCapRound];
+    if (([theEvent modifierFlags] & (NSShiftKeyMask | NSAlphaShiftKeyMask)) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
+        [layer setStrokeColor:[[activeAnnotation color] CGColor]];
+        [layer setLineWidth:[activeAnnotation lineWidth]];
+        if ([activeAnnotation borderStyle] == kPDFBorderStyleDashed) {
+            [layer setLineDashPattern:[activeAnnotation dashPattern]];
+            [layer setLineCap:kCALineCapButt];
+        }
+        [layer setShadowRadius:2.0 / [self scaleFactor]];
+        [layer setShadowOffset:CGSizeApplyAffineTransform(CGSizeMake(0.0, -2.0), CGAffineTransformInvert(t))];
+        [layer setShadowOpacity:0.33333];
+    } else {
+        [self setActiveAnnotation:nil];
+        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        [layer setStrokeColor:[[sud colorForKey:SKInkNoteColorKey] CGColor]];
+        [layer setLineWidth:[sud floatForKey:SKInkNoteLineWidthKey]];
+        if ((PDFBorderStyle)[sud integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+            [layer setLineDashPattern:[sud arrayForKey:SKInkNoteDashPatternKey]];
+            [layer setLineCap:kCALineCapButt];
+        }
+    }
     
     if ([self wantsLayer]) {
         [[self layer] addSublayer:layer];
@@ -3290,6 +3273,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
     
+    [bezierPath moveToPoint:point];
+    
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
@@ -3300,8 +3285,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         CGPathRef path = SKCopyCGPathFromBezierPath(bezierPath);
         [layer setPath:path];
         CGPathRelease(path);
-        
-        didDraw = YES;
     }
     
     if (overlay) {
@@ -3313,7 +3296,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
-    if (didDraw) {
+    if ([bezierPath elementCount] > 1) {
         NSMutableArray *paths = [[NSMutableArray alloc] init];
         if (activeAnnotation)
             [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
@@ -3321,7 +3304,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         PDFAnnotationInk *annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
         if (activeAnnotation) {
-            [annotation setColor:pathColor];
+            [annotation setColor:[activeAnnotation color]];
             [annotation setBorder:[activeAnnotation border]];
             [annotation setString:[activeAnnotation string]];
         }
