@@ -3710,8 +3710,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         // intersect with the bounds, project on the bounds if necessary and allow zero width or height
         selRect = SKIntersectionRect(selRect, [[self documentView] bounds]);
         
-        CGMutablePathRef path = CGPathCreateMutable();
-        CGPathAddRect(path, NULL, NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)));
+        CGPathRef path = CGPathCreateWithRect(NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)), NULL);
         [layer setPath:path];
         CGPathRelease(path);
     }
