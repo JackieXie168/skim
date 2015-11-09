@@ -3964,7 +3964,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         pool = nil;
 	}
     
-    if (mouseInside == 1)
+    if (mouseInside == 0)
         [NSEvent stopPeriodicEvents];
     
     magnification = 0.0;
