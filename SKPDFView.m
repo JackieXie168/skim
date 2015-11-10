@@ -3265,6 +3265,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
+        [overlay setLevel:[[self window] level]];
         [overlay orderFront:nil];
     }
     
