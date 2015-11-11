@@ -3265,8 +3265,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
-        [overlay setLevel:[[self window] level]];
-        [overlay orderFront:nil];
+        [window addChildWindow:overlay ordered:NSWindowAbove];
     }
     
     // don't coalesce mouse event from mouse while drawing, 
@@ -3289,6 +3288,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     
     if (overlay) {
+        [window removeChildWindow:overlay];
         [overlay orderOut:nil];
         [overlay release];
     } else {
@@ -3662,6 +3662,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     BOOL dragged = NO;
     CAShapeLayer *layer = nil;
     NSWindow *overlay = nil;
+    NSWindow *window = [self window];
     
     [[NSCursor cameraCursor] set];
 	
@@ -3682,11 +3683,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
-        [overlay orderFront:nil];
+        [window addChildWindow:overlay ordered:NSWindowAbove];
     }
     
 	while (YES) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
+		theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
         if ([theEvent type] == NSLeftMouseUp)
             break;
@@ -3717,6 +3718,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     
     if (overlay) {
+        [window removeChildWindow:overlay];
         [overlay orderOut:nil];
         [overlay release];
     } else {
@@ -3868,7 +3870,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     [NSEvent stopPeriodicEvents];
                 mouseInside = 1;
                 [NSCursor hide];
-                [loupeWindow orderFront:nil];
             }
             
             // define rect for magnification in window coordinate
@@ -3941,6 +3942,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
             [loupeLayer setContents:image];
             [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
+            if ([loupeWindow parentWindow] == nil)
+                [window addChildWindow:loupeWindow ordered:NSWindowAbove];
             
         } else { // mouse is not in the rect
             
@@ -3950,6 +3953,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [NSCursor unhide];
                 // start periodic events for auto scrolling
                 [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+                [window removeChildWindow:loupeWindow];
                 [loupeWindow orderOut:nil];
             }
             if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
@@ -3970,7 +3974,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
-    [loupeWindow orderOut:nil];
+    if ([loupeWindow parentWindow]) {
+        [window removeChildWindow:loupeWindow];
+        [loupeWindow orderOut:nil];
+    }
     [loupeWindow release];
     
     [NSCursor unhide];
