@@ -3220,7 +3220,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     NSWindow *window = [self window];
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
-    NSBezierPath *bezierPath = [NSBezierPath bezierPath];
+    NSBezierPath *bezierPath = nil;
     CAShapeLayer *layer = nil;
     NSWindow *overlay = nil;
     
@@ -3273,12 +3273,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
     
-    [bezierPath moveToPoint:point];
-    
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
             break;
+        
+        if (bezierPath == nil) {
+            bezierPath = [NSBezierPath bezierPath];
+            [bezierPath moveToPoint:point];
+        }
         
         [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
         
@@ -3297,7 +3300,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
-    if ([bezierPath elementCount] > 1) {
+    if (bezierPath) {
         NSMutableArray *paths = [[NSMutableArray alloc] init];
         if (activeAnnotation)
             [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
