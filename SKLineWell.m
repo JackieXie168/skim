@@ -218,14 +218,14 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                 [path closePath];
                 break;
             case kPDFLineStyleOpenArrow:
-                [path moveToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y - 1.5 * lineWidth)];
+                [path moveToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y + 1.5 * lineWidth)];
                 [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y)];
-                [path lineToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y + 1.5 * lineWidth)];
+                [path lineToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y - 1.5 * lineWidth)];
                 break;
             case kPDFLineStyleClosedArrow:
-                [path moveToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y - 1.5 * lineWidth)];
+                [path moveToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y + 1.5 * lineWidth)];
                 [path lineToPoint:NSMakePoint(endPoint.x,  endPoint.y)];
-                [path lineToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y + 1.5 * lineWidth)];
+                [path lineToPoint:NSMakePoint(endPoint.x - 3.0 * lineWidth, endPoint.y - 1.5 * lineWidth)];
                 [path closePath];
                 break;
         }
