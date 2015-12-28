@@ -55,14 +55,32 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
 
 - (void)replacement_drawWithBox:(PDFDisplayBox)box {
-    if ([PDFAnnotation currentActiveAnnotation] == self) {
-        [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    if ([PDFAnnotation currentActiveAnnotation] == self)
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max || [self hasAppearanceStream]) {
         original_drawWithBox(self, _cmd, box);
-        [NSGraphicsContext restoreGraphicsState];
     } else {
-        original_drawWithBox(self, _cmd, box);
+        NSAffineTransform *t = [NSAffineTransform transform];
+        [t translateXBy:NSMinX([self bounds]) yBy:NSMinY([self bounds])];
+        [[self page] transformContextForBox:box];
+        [t concat];
+        [[self color] setStroke];
+        for (NSBezierPath *path in [self paths]) {
+            path = [path copy];
+            [path setLineWidth:[self lineWidth]];
+            [path setLineJoinStyle:NSRoundLineJoinStyle];
+            if ([self borderStyle] == kPDFBorderStyleDashed) {
+                [path setDashPattern:[self dashPattern]];
+                [path setLineCapStyle:NSButtLineCapStyle];
+            } else {
+                [path setLineCapStyle:NSRoundLineCapStyle];
+            }
+            [path stroke];
+            [path release];
+        }
     }
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 + (void)load {
