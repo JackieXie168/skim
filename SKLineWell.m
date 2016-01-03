@@ -261,15 +261,13 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    [NSGraphicsContext saveGraphicsState];
-    
-    [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];
-    
-    [[NSColor blackColor] setStroke];
-    if (lineWidth > 0.0)
+    if (lineWidth > 0.0) {
+        [NSGraphicsContext saveGraphicsState];
+        [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];
+        [[NSColor blackColor] setStroke];
         [[self path] stroke];
-    
-    [NSGraphicsContext restoreGraphicsState];
+        [NSGraphicsContext restoreGraphicsState];
+    }
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
         [NSGraphicsContext saveGraphicsState];

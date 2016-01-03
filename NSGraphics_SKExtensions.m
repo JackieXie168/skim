@@ -71,6 +71,8 @@ void SKDrawTextFieldBezel(NSRect rect, NSView *controlView) {
         cell = [[NSTextFieldCell alloc] initTextCell:@""];
         [cell setBezeled:YES];
     }
+    [[NSColor controlColor] setFill];
+    NSRectFill(rect);
     [cell drawWithFrame:rect inView:controlView];
     [cell setControlView:nil];
 }
