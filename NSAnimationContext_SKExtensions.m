@@ -4,7 +4,7 @@
 //
 //  Created by Christiaan Hofman on 11/15/14.
 /*
- This software is Copyright (c)2014-2015
+ This software is Copyright (c)2014-2016
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
