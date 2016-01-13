@@ -138,12 +138,14 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
-    NSView *docView = [self documentView];
-    CGFloat scale = [self scaleFactor];
-    rect = SKIntegralRect(NSInsetRect([self convertRect:rect fromPage:page], -scale, -scale));
-    rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
-    if (NSIsEmptyRect(rect) == NO)
-        [docView setNeedsDisplayInRect:rect];
+    if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
+        NSView *docView = [self documentView];
+        CGFloat scale = [self scaleFactor];
+        rect = SKIntegralRect(NSInsetRect([self convertRect:rect fromPage:page], -scale, -scale));
+        rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
+        if (NSIsEmptyRect(rect) == NO)
+            [docView setNeedsDisplayInRect:rect];
+    }
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
