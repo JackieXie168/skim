@@ -44,6 +44,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
@@ -137,16 +138,12 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
-    NSRect aRect = [self convertRect:rect fromPage:page];
+    NSView *docView = [self documentView];
     CGFloat scale = [self scaleFactor];
-	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
-	CGFloat minX = floor(NSMinX(aRect) - scale);
-	CGFloat minY = floor(NSMinY(aRect) - scale);
-	
-    aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
-    if (NSIsEmptyRect(aRect) == NO)
-        [self setNeedsDisplayInRect:aRect];
+    rect = SKIntegralRect(NSInsetRect([self convertRect:rect fromPage:page], -scale, -scale));
+    rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
+    if (NSIsEmptyRect(rect) == NO)
+        [docView setNeedsDisplayInRect:rect];
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
