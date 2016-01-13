@@ -2612,7 +2612,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)makeImageForThumbnail:(SKThumbnail *)thumbnail {
     NSSize newSize, oldSize = [thumbnail size];
     PDFDocument *pdfDoc = [pdfView document];
-    PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
+    NSUInteger pageIndex = [thumbnail pageIndex];
+    PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
     SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
     NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBar:readingBar];
     
@@ -2620,7 +2621,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     
     newSize = [image size];
     if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
-        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
+        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
+    [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
 }
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
