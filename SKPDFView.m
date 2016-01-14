@@ -629,18 +629,28 @@ enum {
 }
 
 - (void)toggleReadingBar {
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
+    PDFPage *page = nil;
+    NSRect bounds = NSZeroRect;
+    NSDictionary *userInfo = nil;
     if (readingBar) {
+        page = [readingBar page];
+        bounds = [readingBar currentBoundsForBox:[self displayBox]];
         [readingBar release];
         readingBar = nil;
+        userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     } else {
         readingBar = [[SKReadingBar alloc] initWithPage:[self currentPage]];
         [readingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
         [readingBar goToNextLine];
-        [self goToRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) onPage:[readingBar page]];
-        [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
+        page = [readingBar page];
+        bounds = [readingBar currentBoundsForBox:[self displayBox]];
+        [self goToRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) onPage:page];
+        userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, nil];
     }
-    [[self documentView] setNeedsDisplay:YES];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey])
+        [[self documentView] setNeedsDisplay:YES];
+    else
+        [self setNeedsDisplayInRect:bounds ofPage:page];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
 }
 
@@ -2372,7 +2382,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
             if (readingBar) {
-                [[self documentView] setNeedsDisplay:YES];
+                if ([key isEqualToString:SKReadingBarInvertKey] || [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey])
+                    [[self documentView] setNeedsDisplay:YES];
+                else
+                    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
                     object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
             }
@@ -2780,8 +2793,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {
+    PDFPage *oldPage = [readingBar page];
+    NSRect oldBounds = [readingBar currentBoundsForBox:[self displayBox]];
     BOOL moved = NO;
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
     if (eventChar == NSDownArrowFunctionKey)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
@@ -2791,12 +2805,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     else if (eventChar == NSLeftArrowFunctionKey)
         moved = [readingBar goToPreviousPage];
     if (moved) {
+        PDFPage *newPage = [readingBar page];
+        NSRect newBounds = [readingBar currentBoundsForBox:[self displayBox]];
         NSRect rect = [readingBar currentBounds];
         NSInteger rotation = [[readingBar page] intrinsicRotation];
         if ((rotation % 180)) {
             rect = NSInsetRect(rect, -20.0, 0.0) ;
             if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
-                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:[readingBar page]];
+                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:newPage];
                 rect = NSInsetRect(rect, - floor( ( NSWidth(visibleRect) - NSWidth(rect) ) / 2.0 ), 0.0 );
                 if (NSHeight(rect) <= NSHeight(visibleRect)) {
                     if (NSMinY(rect) > NSMinY(visibleRect))
@@ -2809,7 +2825,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         } else {
             rect = NSInsetRect(rect, 0.0, -20.0) ;
             if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
-                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:[readingBar page]];
+                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:newPage];
                 rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
                 if (NSWidth(rect) <= NSWidth(visibleRect)) {
                     if (NSMinX(rect) > NSMinX(visibleRect))
@@ -2820,9 +2836,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 rect.size.width = NSWidth(visibleRect);
             }
         }
-        [self goToRect:rect onPage:[readingBar page]];
+        [self goToRect:rect onPage:newPage];
         [[self documentView] setNeedsDisplay:YES];
-        [userInfo setObject:[readingBar page] forKey:SKPDFViewNewPageKey];
+        [self setNeedsDisplayInRect:oldBounds ofPage:oldPage];
+        [self setNeedsDisplayInRect:newBounds ofPage:newPage];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, newPage, SKPDFViewNewPageKey, nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
 }
