@@ -1358,7 +1358,7 @@ enum {
         PDFAnnotation *annotation = nil;
         
         if (page) {
-            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
+            annotation = [page annotationAtPoint:point];
             if ([annotation isSkimNote] == NO)
                 annotation = nil;
         }
