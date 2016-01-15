@@ -2156,7 +2156,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 #pragma mark Accessibility
 
-- (NSArray *)accessibilityChildren {
+- (NSArray *)accessibilityDisplayViewChildren {
     if (accessibilityChildren == nil) {
         PDFDocument *pdfDoc = [self document];
         NSRange range = [self displayedPageIndexRange];
@@ -2184,7 +2184,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return accessibilityChildren;
 }
 
-- (id)accessibilityChildAtPoint:(NSPoint)point {
+- (id)accessibilityDisplayViewChildAtPoint:(NSPoint)point {
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
     id child = nil;
     if ([[editor textField] superview] && NSMouseInRect([self convertPoint:localPoint toView:[self documentView]], [[editor textField] frame], [[self documentView] isFlipped])) {
@@ -2202,7 +2202,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return [child accessibilityHitTest:point];
 }
 
-- (id)accessibilityFocusedChild {
+- (id)accessibilityFocusedDisplayViewChild {
     id child = nil;
     if ([[editor textField] superview])
         child = NSAccessibilityUnignoredDescendant([editor textField]);

@@ -189,9 +189,9 @@ enum {
 
 - (void)resetHistory;
 
-- (NSArray *)accessibilityChildren;
-- (id)accessibilityChildAtPoint:(NSPoint)point;
-- (id)accessibilityFocusedChild;
+- (NSArray *)accessibilityDisplayViewChildren;
+- (id)accessibilityDisplayViewChildAtPoint:(NSPoint)point;
+- (id)accessibilityFocusedDisplayViewChild;
 
 - (void)accessibilityPostNotification:(NSString *)notification forAnnotation:(PDFAnnotation *)note;
 

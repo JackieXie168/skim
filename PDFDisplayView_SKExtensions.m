@@ -89,7 +89,7 @@ static void replacement_updateTrackingAreas(id self, SEL _cmd) {
 #pragma mark Accessibility
 
 static NSArray *replacement_accessibilityAttributeNames(id self, SEL _cmd) {
-    if ([SKGetPDFView(self) respondsToSelector:@selector(accessibilityChildren)]) {
+    if ([SKGetPDFView(self) respondsToSelector:@selector(accessibilityDisplayViewChildren)]) {
         static NSArray *attributes = nil;
         if (attributes == nil)
             attributes = [[original_accessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
@@ -111,7 +111,7 @@ static id replacement_accessibilityAttributeValue(id self, SEL _cmd, NSString *a
         return NSAccessibilityTextAreaRole;
     } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
         id pdfView = SKGetPDFView(self);
-        return [pdfView respondsToSelector:@selector(accessibilityChildren)] ? NSAccessibilityUnignoredChildren([pdfView accessibilityChildren]) : original_accessibilityAttributeValue(self, _cmd, attribute);
+        return [pdfView respondsToSelector:@selector(accessibilityDisplayViewChildren)] ? NSAccessibilityUnignoredChildren([pdfView accessibilityDisplayViewChildren]) : original_accessibilityAttributeValue(self, _cmd, attribute);
     } else {
         return original_accessibilityAttributeValue(self, _cmd, attribute);
     }
@@ -211,16 +211,16 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
 static id replacement_accessibilityHitTest(id self, SEL _cmd, NSPoint point) {
     id pdfView = SKGetPDFView(self);
     id element = nil;
-    if ([pdfView respondsToSelector:@selector(accessibilityChildAtPoint:)])
-        element = [pdfView accessibilityChildAtPoint:point];
+    if ([pdfView respondsToSelector:@selector(accessibilityDisplayViewChildAtPoint:)])
+        element = [pdfView accessibilityDisplayViewChildAtPoint:point];
     return element ?: original_accessibilityHitTest(self, _cmd, point);
 }
 
 static id replacement_accessibilityFocusedUIElement(id self, SEL _cmd) {
     id pdfView = SKGetPDFView(self);
     id element = nil;
-    if ([pdfView respondsToSelector:@selector(accessibilityFocusedChild)])
-        element = [pdfView accessibilityFocusedChild];
+    if ([pdfView respondsToSelector:@selector(accessibilityFocusedDisplayViewChild)])
+        element = [pdfView accessibilityFocusedDisplayViewChild];
     return element ?: original_accessibilityFocusedUIElement(self, _cmd);
 }
 
