@@ -39,4 +39,4 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern BOOL SKSwizzlePDFDisplayViewMethods();
+extern void SKSwizzlePDFDisplayViewMethods();

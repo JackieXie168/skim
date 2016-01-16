@@ -105,8 +105,6 @@ enum {
     
     SKTypeSelectHelper *typeSelectHelper;
     
-    NSArray *accessibilityChildren;
-    
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
     
@@ -188,12 +186,6 @@ enum {
 - (void)removePDFToolTipRects;
 
 - (void)resetHistory;
-
-- (NSArray *)accessibilityDisplayViewChildren;
-- (id)accessibilityDisplayViewChildAtPoint:(NSPoint)point;
-- (id)accessibilityFocusedDisplayViewChild;
-
-- (void)accessibilityPostNotification:(NSString *)notification forAnnotation:(PDFAnnotation *)note;
 
 @end
 

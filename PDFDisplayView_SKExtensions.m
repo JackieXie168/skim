@@ -39,12 +39,8 @@
 #import "PDFDisplayView_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import "SKPDFView.h"
-#import "PDFAnnotation_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
-#import "SKMainDocument.h"
 #import "SKRuntime.h"
-#import "SKAccessibilityFauxUIElement.h"
-#import "NSView_SKExtensions.h"
 
 #define SKDisableExtendedPDFViewAccessibilityKey @"SKDisableExtendedPDFViewAccessibility"
 
@@ -71,11 +67,8 @@ static id SKGetPDFView(id self) {
 
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
-static id (*original_accessibilityAttributeNames)(id, SEL) = NULL;
 static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
 static id (*original_accessibilityAttributeValue)(id, SEL, id) = NULL;
-static id (*original_accessibilityHitTest)(id, SEL, NSPoint) = NULL;
-static id (*original_accessibilityFocusedUIElement)(id, SEL) = NULL;
 
 #pragma mark Skim support
 
@@ -88,17 +81,6 @@ static void replacement_updateTrackingAreas(id self, SEL _cmd) {
 
 #pragma mark Accessibility
 
-static NSArray *replacement_accessibilityAttributeNames(id self, SEL _cmd) {
-    if ([SKGetPDFView(self) respondsToSelector:@selector(accessibilityDisplayViewChildren)]) {
-        static NSArray *attributes = nil;
-        if (attributes == nil)
-            attributes = [[original_accessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
-        return attributes;
-    } else {
-        return original_accessibilityAttributeNames(self, _cmd);
-    }
-}
-
 static NSArray *replacement_accessibilityParameterizedAttributeNames(id self, SEL _cmd) {
     static NSArray *attributes = nil;
     if (attributes == nil)
@@ -107,39 +89,33 @@ static NSArray *replacement_accessibilityParameterizedAttributeNames(id self, SE
 }
 
 static id replacement_accessibilityAttributeValue(id self, SEL _cmd, NSString *attribute) {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityTextAreaRole;
-    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
-        id pdfView = SKGetPDFView(self);
-        return [pdfView respondsToSelector:@selector(accessibilityDisplayViewChildren)] ? NSAccessibilityUnignoredChildren([pdfView accessibilityDisplayViewChildren]) : original_accessibilityAttributeValue(self, _cmd, attribute);
-    } else {
-        return original_accessibilityAttributeValue(self, _cmd, attribute);
-    }
+    id value = original_accessibilityAttributeValue(self, _cmd, attribute);
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute] && [value isEqualToString:NSAccessibilityStaticTextRole])
+        value = NSAccessibilityTextAreaRole;
+    return value;
 }
 
 static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range, CGFloat scale) {
     NSAttributedString *attributedString = nil;
-    if ([pdfDisplayView respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
-        // make sure the accessibility table is generated
-        [pdfDisplayView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
-        PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
-        if ([selection respondsToSelector:@selector(attributedString)]) {
-            attributedString = [selection attributedString];
-            if (fabs(scale - 1.0) > 0.0) {
-                NSMutableAttributedString *mutableAttrString = [[attributedString mutableCopy] autorelease];
-                NSUInteger i = 0, l = [mutableAttrString length];
-                NSRange r;
-                while (i < l) {
-                    NSFont *font = [mutableAttrString attribute:NSFontAttributeName atIndex:i effectiveRange:&r];
-                    if (font) {
-                        font = [[NSFontManager sharedFontManager] convertFont:font toSize:round(scale * [font pointSize])];
-                        [mutableAttrString addAttribute:NSFontAttributeName value:font range:r];
-                    }
-                    i = NSMaxRange(r);
+    // make sure the accessibility table is generated
+    [pdfDisplayView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
+    PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
+    if ([selection respondsToSelector:@selector(attributedString)]) {
+        attributedString = [selection attributedString];
+        if (fabs(scale - 1.0) > 0.0) {
+            NSMutableAttributedString *mutableAttrString = [[attributedString mutableCopy] autorelease];
+            NSUInteger i = 0, l = [mutableAttrString length];
+            NSRange r;
+            while (i < l) {
+                NSFont *font = [mutableAttrString attribute:NSFontAttributeName atIndex:i effectiveRange:&r];
+                if (font) {
+                    font = [[NSFontManager sharedFontManager] convertFont:font toSize:round(scale * [font pointSize])];
+                    [mutableAttrString addAttribute:NSFontAttributeName value:font range:r];
                 }
-                [mutableAttrString fixFontAttributeInRange:NSMakeRange(0, l)];
-                attributedString = mutableAttrString;
+                i = NSMaxRange(r);
             }
+            [mutableAttrString fixFontAttributeInRange:NSMakeRange(0, l)];
+            attributedString = mutableAttrString;
         }
     }
     return attributedString;
@@ -147,7 +123,7 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
 
 static id replacement_accessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
-    if (pdfView && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
+    if (pdfView) {
         NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
         PDFPage *page = [pdfView pageForPoint:point nearest:NO];
         if (page) {
@@ -208,96 +184,26 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
     return nil;
 }
 
-static id replacement_accessibilityHitTest(id self, SEL _cmd, NSPoint point) {
-    id pdfView = SKGetPDFView(self);
-    id element = nil;
-    if ([pdfView respondsToSelector:@selector(accessibilityDisplayViewChildAtPoint:)])
-        element = [pdfView accessibilityDisplayViewChildAtPoint:point];
-    return element ?: original_accessibilityHitTest(self, _cmd, point);
-}
-
-static id replacement_accessibilityFocusedUIElement(id self, SEL _cmd) {
-    id pdfView = SKGetPDFView(self);
-    id element = nil;
-    if ([pdfView respondsToSelector:@selector(accessibilityFocusedDisplayViewChild)])
-        element = [pdfView accessibilityFocusedDisplayViewChild];
-    return element ?: original_accessibilityFocusedUIElement(self, _cmd);
-}
-
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
-BOOL SKSwizzlePDFDisplayViewMethods() {
+void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass == Nil)
-        return NO;
+        return;
     
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ||
-        [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey])
-        return NO;
+        [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey] ||
+        [PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForSelection:)] == NO ||
+        [PDFDisplayViewClass instancesRespondToSelector:@selector(selectionForAccessibilityRange:)] == NO)
+        return;
     
-    original_accessibilityAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacement_accessibilityAttributeNames);
     original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
-    original_accessibilityHitTest = (id (*)(id, SEL, NSPoint))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityHitTest:), (IMP)replacement_accessibilityHitTest);
-    original_accessibilityFocusedUIElement = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityFocusedUIElement), (IMP)replacement_accessibilityFocusedUIElement);
     original_accessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacement_accessibilityParameterizedAttributeNames);
     
     SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacement_accessibilityRangeForPositionAttributeForParameter, "@@:@");
     SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacement_accessibilityRTFForRangeAttributeForParameter, "@@:@");
     SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacement_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
     SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)replacement_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
-    
-    return YES;
 }
-
-#pragma mark SKAccessibilityProxyElementParent
-
-@implementation NSView (SKPDFDisplayViewExtensions)
-
-- (NSRect)screenRectForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    NSRect rect = NSZeroRect;
-    SKPDFView *pdfView = SKGetPDFView(self);
-    if (pdfView) {
-        PDFAnnotation *annotation = [element representedObject];
-        if ([annotation respondsToSelector:@selector(bounds)] && [annotation respondsToSelector:@selector(page)]) {
-            rect = [pdfView convertRectToScreen:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]]];
-        }
-    }
-    return rect;
-}
-
-- (BOOL)isFauxUIElementFocused:(SKAccessibilityFauxUIElement *)element {
-    SKPDFView *pdfView = SKGetPDFView(self);
-    if ([pdfView respondsToSelector:@selector(activeAnnotation)])
-        return [pdfView activeAnnotation] == [element representedObject];
-    else
-        return NO;
-}
-
-- (void)fauxUIlement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused {
-    SKPDFView *pdfView = SKGetPDFView(self);
-    if ([pdfView respondsToSelector:@selector(setActiveAnnotation:)]) {
-        PDFAnnotation *annotation = [element representedObject];
-        if ([annotation isKindOfClass:[PDFAnnotation class]]) {
-            if (focused)
-                [pdfView setActiveAnnotation:annotation];
-            else if ([pdfView activeAnnotation] == annotation)
-                [pdfView setActiveAnnotation:nil];
-        }
-    }
-}
-
-- (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    SKPDFView *pdfView = SKGetPDFView(self);
-    if ([pdfView respondsToSelector:@selector(activeAnnotation)] && [pdfView respondsToSelector:@selector(setActiveAnnotation:)] && [pdfView respondsToSelector:@selector(editActiveAnnotation:)]) {
-        PDFAnnotation *annotation = [element representedObject];
-        if ([annotation isKindOfClass:[PDFAnnotation class]]) {
-            if ([pdfView activeAnnotation] != annotation)
-                [pdfView setActiveAnnotation:annotation];
-            [pdfView editActiveAnnotation:self];
-        }
-    }
-}
-
-@end

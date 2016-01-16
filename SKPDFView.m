@@ -57,7 +57,6 @@
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
 #import "SKTypeSelectHelper.h"
-#import "SKAccessibilityFauxUIElement.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import <CoreServices/CoreServices.h>
 #import "NSDocument_SKExtensions.h"
@@ -140,8 +139,6 @@ static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMas
 
 static BOOL useToolModeCursors = NO;
 
-static BOOL extendedAccessibility = NO;
-
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page);
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower);
@@ -219,7 +216,7 @@ enum {
     
     useToolModeCursors = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey];
 
-    extendedAccessibility = SKSwizzlePDFDisplayViewMethods();
+    SKSwizzlePDFDisplayViewMethods();
 }
 
 - (void)commonInitialization {
@@ -301,7 +298,6 @@ enum {
     SKDESTROY(transitionController);
     SKDESTROY(navWindow);
     SKDESTROY(readingBar);
-    SKDESTROY(accessibilityChildren);
     SKDESTROY(editor);
     [super dealloc];
 }
@@ -427,7 +423,6 @@ enum {
     [syncDot invalidate];
     SKDESTROY(syncDot);
     [self removePDFToolTipRects];
-    SKDESTROY(accessibilityChildren);
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [super setDocument:document];
     [self resetPDFToolTipRects];
@@ -501,8 +496,6 @@ enum {
         }
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
-        if (extendedAccessibility)
-            NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
     }
 }
 
@@ -518,7 +511,6 @@ enum {
             [self goToPage:page];
         [self resetPDFToolTipRects];
         [editor layout];
-        SKDESTROY(accessibilityChildren);
     }
 }
 
@@ -1861,10 +1853,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self setNeedsDisplayForAnnotation:annotation];
     [self annotationsChangedOnPage:page];
     [self resetPDFToolTipRects];
-    if ([annotation isSkimNote])
-        SKDESTROY(accessibilityChildren);
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
-    [self accessibilityPostNotification:NSAccessibilityCreatedNotification forAnnotation:annotation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];
 }
 
 - (void)removeActiveAnnotation:(id)sender{
@@ -1894,14 +1883,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
-    if ([wasAnnotation isSkimNote])
-        SKDESTROY(accessibilityChildren);
     [self annotationsChangedOnPage:page];
     if ([wasAnnotation isNote])
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
-    [self accessibilityPostNotification:NSAccessibilityUIElementDestroyedNotification forAnnotation:annotation];
     [wasAnnotation release];
     [page release];
 }
@@ -1922,7 +1908,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self resetPDFToolTipRects];
     if ([self isEditingAnnotation:annotation])
         [editor layout];
-    SKDESTROY(accessibilityChildren);
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
     [oldPage release];
 }
@@ -2154,70 +2139,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
-#pragma mark Accessibility
-
-- (NSArray *)accessibilityDisplayViewChildren {
-    if (accessibilityChildren == nil) {
-        PDFDocument *pdfDoc = [self document];
-        NSRange range = [self displayedPageIndexRange];
-        NSMutableArray *children = [NSMutableArray array];
-        
-        //[children addObject:[SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]];
-        
-        NSUInteger i;
-        for (i = range.location; i < NSMaxRange(range); i++) {
-            PDFPage *page = [pdfDoc pageAtIndex:i];
-            for (PDFAnnotation *annotation in [page annotations]) {
-                if ([annotation isLink] || [annotation isSkimNote]) {
-                    SKAccessibilityProxyFauxUIElement *element = [[SKAccessibilityProxyFauxUIElement alloc] initWithObject:annotation parent:[self documentView]];
-                    [children addObject:element];
-                    [element release];
-                }
-            }
-        
-        }
-        accessibilityChildren = [children copy];
-    }
-    if ([[editor textField] superview])
-        return [accessibilityChildren arrayByAddingObject:[editor textField]];
-    else
-        return accessibilityChildren;
-}
-
-- (id)accessibilityDisplayViewChildAtPoint:(NSPoint)point {
-    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
-    id child = nil;
-    if ([[editor textField] superview] && NSMouseInRect([self convertPoint:localPoint toView:[self documentView]], [[editor textField] frame], [[self documentView] isFlipped])) {
-        child = NSAccessibilityUnignoredDescendant([editor textField]);
-    } else {
-        PDFPage *page = [self pageForPoint:localPoint nearest:NO];
-        if (page) {
-            PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
-            if ([annotation isLink] || [annotation isSkimNote])
-                child = NSAccessibilityUnignoredDescendant([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]]);
-        }
-    }
-    //if (child == nil)
-    //    child = NSAccessibilityUnignoredDescendant([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
-    return [child accessibilityHitTest:point];
-}
-
-- (id)accessibilityFocusedDisplayViewChild {
-    id child = nil;
-    if ([[editor textField] superview])
-        child = NSAccessibilityUnignoredDescendant([editor textField]);
-    else if (activeAnnotation)
-        child = NSAccessibilityUnignoredDescendant([SKAccessibilityProxyFauxUIElement elementWithObject:activeAnnotation parent:[self documentView]]);
-    //else
-    //    child = NSAccessibilityUnignoredDescendant([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
-    return [child accessibilityFocusedUIElement];
-}
-
-- (void)accessibilityPostNotification:(NSString *)notification forAnnotation:(PDFAnnotation *)annotation {
-    if (extendedAccessibility)
-        NSAccessibilityPostNotification([SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]], notification);
-}
-
 #pragma mark Snapshots
 
 - (void)takeSnapshot:(id)sender {
@@ -2264,7 +2185,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
         [editor layout];
         [self resetPDFToolTipRects];
-        SKDESTROY(accessibilityChildren);
     }
 }
 

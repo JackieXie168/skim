@@ -103,7 +103,6 @@
 #import "PDFView_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
-#import "SKAccessibilityFauxUIElement.h"
 #import "SKScroller.h"
 #import "SKMainWindow.h"
 
@@ -2509,10 +2508,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                         oldBounds = [oldValue rectValue];
                     if ([newValue isEqual:[NSNull null]] == NO)
                         newBounds = [newValue rectValue];
-                    if (NSEqualSizes(oldBounds.size, newBounds.size) == NO)
-                        [pdfView accessibilityPostNotification:NSAccessibilityResizedNotification forAnnotation:note];
-                    if (NSEqualPoints(oldBounds.origin, newBounds.origin) == NO)
-                        [pdfView accessibilityPostNotification:NSAccessibilityMovedNotification forAnnotation:note];
                     
                     if ([note isNote]) {
                         [pdfView annotationsChangedOnPage:[note page]];
@@ -2522,9 +2517,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
                         [self updateRightStatus];
                     }
-                } else if (([keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) &&
-                           [[note accessibilityFauxUIElementAttributeNames] containsObject:NSAccessibilityValueAttribute]) {
-                    [pdfView accessibilityPostNotification:NSAccessibilityValueChangedNotification forAnnotation:note];
                 }
             }
             
