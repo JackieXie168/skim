@@ -238,4 +238,24 @@
     return [colorWell accessibilityAttributeValue:NSAccessibilityValueAttribute];
 }
 
+- (NSString *)hexString {
+    NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    if (rgbColor) {
+        CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
+        [rgbColor getRed:&r green:&g blue:&b alpha:&a];
+        return [NSString stringWithFormat:@"#%02x%02x%02x", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
+    }
+    return nil;
+}
+
+- (NSString *)rgbString {
+    NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    if (rgbColor) {
+        CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
+        [rgbColor getRed:&r green:&g blue:&b alpha:&a];
+        return [NSString stringWithFormat:@"(%i, %i, %i)", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
+    }
+    return nil;
+}
+
 @end
