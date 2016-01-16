@@ -153,30 +153,4 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
 }
 
-#pragma mark Accessibility
-
-- (NSArray *)accessibilityFauxUIElementAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil) {
-        attributes = [[[super accessibilityFauxUIElementAttributeNames] arrayByAddingObject:NSAccessibilityValueAttribute] retain];
-    }
-    return attributes;
-}
-
-- (id)accessibilityRoleAttribute {
-    return NSAccessibilityButtonRole;
-}
-
-- (id)accessibilityValueAttribute {
-    return [self contents];
-}
-
-- (id)accessibilityEnabledAttribute {
-    return [NSNumber numberWithBool:YES];
-}
-
-- (NSArray *)accessibilityFauxUIElementActionNames {
-    return [NSArray arrayWithObject:NSAccessibilityPressAction];
-}
-
 @end

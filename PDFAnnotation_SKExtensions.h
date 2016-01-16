@@ -136,10 +136,4 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (id)selectionSpecifier;
 - (NSArray *)scriptingPointLists;
 
-- (NSArray *)accessibilityFauxUIElementAttributeNames;
-- (id)accessibilityRoleAttribute;
-- (id)accessibilityRoleDescriptionAttribute;
-- (id)accessibilityDescriptionAttribute;
-- (id)accessibilityTitleAttribute;
-
 @end
