@@ -38,7 +38,6 @@
 
 #import "SKColorSwatch.h"
 #import "NSColor_SKExtensions.h"
-#import "SKAccessibilityFauxUIElement.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
@@ -53,7 +52,22 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #define AUTORESIZES_KEY @"autoResizes"
 
 
-@interface SKAccessibilityColorSwatchElement : SKAccessibilityIndexedFauxUIElement
+@interface SKAccessibilityColorSwatchElement : NSObject {
+    id parent;
+    NSInteger index;
+}
++ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent;
+- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent;
+@property (nonatomic, readonly) id parent;
+@property (nonatomic, readonly) NSInteger index;
+@end
+
+
+@interface SKColorSwatch (SKAccessibilityColorSwatchElementParent)
+- (NSRect)screenRectForElement:(SKAccessibilityColorSwatchElement *)element;
+- (BOOL)isElementFocused:(SKAccessibilityColorSwatchElement *)element;
+- (void)element:(SKAccessibilityColorSwatchElement *)element setFocused:(BOOL)focused;
+- (void)pressElement:(SKAccessibilityColorSwatchElement *)element;
 @end
 
 
@@ -514,13 +528,13 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         return NSAccessibilityUnignoredAncestor(self);
 }
 
-- (id)valueForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
+- (id)valueForElement:(SKAccessibilityColorSwatchElement *)element {
     if ([element index] >= (NSInteger)[[self colors] count])
         return nil;
     return [[[self colors] objectAtIndex:[element index]] accessibilityValue];
 }
 
-- (NSRect)screenRectForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
+- (NSRect)screenRectForElement:(SKAccessibilityColorSwatchElement *)element {
     NSRect rect = NSZeroRect;
     if ([element index] < (NSInteger)[[self colors] count]) {
         rect = NSInsetRect([self bounds], 1.0, 1.0);
@@ -531,11 +545,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     return rect;
 }
 
-- (BOOL)isFauxUIElementFocused:(SKAccessibilityFauxUIElement *)element {
+- (BOOL)isElementFocused:(SKAccessibilityColorSwatchElement *)element {
     return focusedIndex == [element index];
 }
 
-- (void)fauxUIElement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused {
+- (void)element:(SKAccessibilityColorSwatchElement *)element setFocused:(BOOL)focused {
     if (focused && [element index] < (NSInteger)[[self colors] count]) {
         [[self window] makeFirstResponder:self];
         focusedIndex = [element index];
@@ -543,7 +557,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     }
 }
 
-- (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
+- (void)pressElement:(SKAccessibilityColorSwatchElement *)element {
     if ([element index] < (NSInteger)[[self colors] count])
         [self performClickAtIndex:[element index]];
 }
@@ -553,6 +567,34 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #pragma mark -
 
 @implementation SKAccessibilityColorSwatchElement
+
+@synthesize parent, index;
+
++ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent {
+    return [[[self alloc] initWithIndex:anIndex parent:aParent] autorelease];
+}
+
+- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent {
+    self = [super init];
+    if (self) {
+        parent = aParent;
+        index = anIndex;
+    }
+    return self;
+}
+
+- (BOOL)isEqual:(id)other {
+    if ([other isKindOfClass:[SKAccessibilityColorSwatchElement class]]) {
+        SKAccessibilityColorSwatchElement *otherElement = (SKAccessibilityColorSwatchElement *)other;
+        return parent == [otherElement parent];
+    } else {
+        return NO;
+    }
+}
+
+- (NSUInteger)hash {
+    return [parent hash] + ((index + 1) >> 4);
+}
 
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
@@ -572,20 +614,65 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     return attributes;
 }
 
-- (id)accessibilityRoleAttribute {
-    return NSAccessibilityColorWellRole;
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+        return NSAccessibilityUnignoredAncestor(parent);
+    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
+        // We're in the same window as our parent.
+        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
+        // We're in the same top level element as our parent.
+        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
+        return [NSNumber numberWithBool:[parent isElementFocused:self]];
+    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
+        return [NSValue valueWithPoint:[parent screenRectForElement:self].origin];
+    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
+        return [NSValue valueWithSize:[parent screenRectForElement:self].size];
+    } else if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityColorWellRole;
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
+        return NSAccessibilityRoleDescriptionForUIElement(self);
+    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+        return [[self parent] valueForElement:self];
+    } else {
+        return nil;
+    }
 }
 
-- (id)accessibilityRoleDescriptionAttribute {
-    return NSAccessibilityRoleDescriptionForUIElement(self);
+- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
+    return [attribute isEqualToString:NSAccessibilityFocusedAttribute];
 }
 
-- (id)accessibilityValueAttribute {
-    return [[self parent] valueForFauxUIElement:self];
+- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
+        [parent element:self setFocused:[value boolValue]];
+}
+
+- (BOOL)accessibilityIsIgnored {
+    return NO;
+}
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    return NSAccessibilityUnignoredAncestor(self);
+}
+
+- (id)accessibilityFocusedUIElement {
+    return NSAccessibilityUnignoredAncestor(self);
 }
 
 - (NSArray *)accessibilityActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
+}
+
+- (NSString *)accessibilityActionDescription:(NSString *)anAction {
+    return NSAccessibilityActionDescription(anAction);
+}
+
+- (void)accessibilityPerformAction:(NSString *)anAction {
+    if ([anAction isEqualToString:NSAccessibilityPressAction])
+        [parent pressElement:self];
 }
 
 @end
