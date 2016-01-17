@@ -53,21 +53,21 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 
 @interface SKAccessibilityColorSwatchElement : NSObject {
-    id parent;
+    SKColorSwatch *parent;
     NSInteger index;
 }
-+ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent;
-- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent;
-@property (nonatomic, readonly) id parent;
++ (id)elementWithIndex:(NSInteger)anIndex parent:(SKColorSwatch *)aParent;
+- (id)initWithIndex:(NSInteger)anIndex parent:(SKColorSwatch *)aParent;
+@property (nonatomic, readonly) SKColorSwatch *parent;
 @property (nonatomic, readonly) NSInteger index;
 @end
 
 
 @interface SKColorSwatch (SKAccessibilityColorSwatchElementParent)
-- (NSRect)screenRectForElement:(SKAccessibilityColorSwatchElement *)element;
-- (BOOL)isElementFocused:(SKAccessibilityColorSwatchElement *)element;
-- (void)element:(SKAccessibilityColorSwatchElement *)element setFocused:(BOOL)focused;
-- (void)pressElement:(SKAccessibilityColorSwatchElement *)element;
+- (NSRect)screenRectForElementAtIndex:(NSInteger)anIndex;
+- (BOOL)isElementAtIndexFocused:(NSInteger)anIndex;
+- (void)elementAtIndex:(NSInteger)anIndex setFocused:(BOOL)focused;
+- (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
 
@@ -528,38 +528,38 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         return NSAccessibilityUnignoredAncestor(self);
 }
 
-- (id)valueForElement:(SKAccessibilityColorSwatchElement *)element {
-    if ([element index] >= (NSInteger)[[self colors] count])
+- (id)valueForElementAtIndex:(NSInteger)anIndex {
+    if (anIndex >= (NSInteger)[[self colors] count])
         return nil;
-    return [[[self colors] objectAtIndex:[element index]] accessibilityValue];
+    return [[[self colors] objectAtIndex:anIndex] accessibilityValue];
 }
 
-- (NSRect)screenRectForElement:(SKAccessibilityColorSwatchElement *)element {
+- (NSRect)screenRectForElementAtIndex:(NSInteger)anIndex {
     NSRect rect = NSZeroRect;
-    if ([element index] < (NSInteger)[[self colors] count]) {
+    if (anIndex < (NSInteger)[[self colors] count]) {
         rect = NSInsetRect([self bounds], 1.0, 1.0);
         rect.size.width = NSHeight(rect);
-        rect.origin.x += [element index] * (NSWidth(rect) - 1.0);
+        rect.origin.x += anIndex * (NSWidth(rect) - 1.0);
         rect = [self convertRectToScreen:rect];
     }
     return rect;
 }
 
-- (BOOL)isElementFocused:(SKAccessibilityColorSwatchElement *)element {
-    return focusedIndex == [element index];
+- (BOOL)isElementAtIndexFocused:(NSInteger)anIndex {
+    return focusedIndex == anIndex;
 }
 
-- (void)element:(SKAccessibilityColorSwatchElement *)element setFocused:(BOOL)focused {
-    if (focused && [element index] < (NSInteger)[[self colors] count]) {
+- (void)elementAtIndex:(NSInteger)anIndex setFocused:(BOOL)focused {
+    if (focused && anIndex < (NSInteger)[[self colors] count]) {
         [[self window] makeFirstResponder:self];
-        focusedIndex = [element index];
+        focusedIndex = anIndex;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     }
 }
 
-- (void)pressElement:(SKAccessibilityColorSwatchElement *)element {
-    if ([element index] < (NSInteger)[[self colors] count])
-        [self performClickAtIndex:[element index]];
+- (void)pressElementAtIndex:(NSInteger)anIndex {
+    if (anIndex < (NSInteger)[[self colors] count])
+        [self performClickAtIndex:anIndex];
 }
 
 @end
@@ -570,11 +570,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 @synthesize parent, index;
 
-+ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent {
++ (id)elementWithIndex:(NSInteger)anIndex parent:(SKColorSwatch *)aParent {
     return [[[self alloc] initWithIndex:anIndex parent:aParent] autorelease];
 }
 
-- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent {
+- (id)initWithIndex:(NSInteger)anIndex parent:(SKColorSwatch *)aParent {
     self = [super init];
     if (self) {
         parent = aParent;
@@ -584,12 +584,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (BOOL)isEqual:(id)other {
-    if ([other isKindOfClass:[SKAccessibilityColorSwatchElement class]]) {
-        SKAccessibilityColorSwatchElement *otherElement = (SKAccessibilityColorSwatchElement *)other;
-        return parent == [otherElement parent];
-    } else {
+    if ([other isKindOfClass:[self class]] == NO)
         return NO;
-    }
+    SKAccessibilityColorSwatchElement *otherElement = (SKAccessibilityColorSwatchElement *)other;
+    return parent == [otherElement parent] && index == [otherElement index];
 }
 
 - (NSUInteger)hash {
@@ -616,7 +614,13 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityColorWellRole;
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
+        return NSAccessibilityRoleDescriptionForUIElement(self);
+    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+        return [parent valueForElementAtIndex:index];
+    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
         return NSAccessibilityUnignoredAncestor(parent);
     } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
         // We're in the same window as our parent.
@@ -625,17 +629,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent isElementFocused:self]];
+        return [NSNumber numberWithBool:[parent isElementAtIndexFocused:index]];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent screenRectForElement:self].origin];
+        return [NSValue valueWithPoint:[parent screenRectForElementAtIndex:index].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent screenRectForElement:self].size];
-    } else if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityColorWellRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescriptionForUIElement(self);
-    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [[self parent] valueForElement:self];
+        return [NSValue valueWithSize:[parent screenRectForElementAtIndex:index].size];
     } else {
         return nil;
     }
@@ -647,7 +645,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent element:self setFocused:[value boolValue]];
+        [parent elementAtIndex:index setFocused:[value boolValue]];
 }
 
 - (BOOL)accessibilityIsIgnored {
@@ -672,7 +670,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent pressElement:self];
+        [parent pressElementAtIndex:index];
 }
 
 @end
