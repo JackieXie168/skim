@@ -87,7 +87,6 @@ enum {
 - (NSString *)accessibilityValue;
 
 - (NSString *)hexString;
-- (NSString *)rgbString;
 
 @end
 

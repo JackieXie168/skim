@@ -243,7 +243,7 @@
     if (rgbColor) {
         CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
         [rgbColor getRed:&r green:&g blue:&b alpha:&a];
-        return [NSString stringWithFormat:@"#%02x%02x%02x", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
+        return [NSString stringWithFormat:@"#%02x%02x%02x", (unsigned int)(r * 255), (unsigned int)(g * 255), (unsigned int)(b * 255)];
     }
     return nil;
 }
@@ -253,7 +253,7 @@
     if (rgbColor) {
         CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
         [rgbColor getRed:&r green:&g blue:&b alpha:&a];
-        return [NSString stringWithFormat:@"(%i, %i, %i)", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
+        return [NSString stringWithFormat:@"(%u, %u, %u)", (unsigned int)(r * 255), (unsigned int)(g * 255), (unsigned int)(b * 255)];
     }
     return nil;
 }
