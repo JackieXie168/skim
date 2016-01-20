@@ -59,6 +59,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "SKMainDocument.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -532,6 +533,14 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (NSArray *)scriptingPointLists {
     return nil;
+}
+
+- (void)handleEditScriptCommand:(NSScriptCommand *)command {
+    if ([self isEditable]) {
+        NSDocument *doc = [[self page] containingDocument];
+        if ([doc isPDFDocument])
+            [[(SKMainDocument *)doc pdfView] editAnnotation:self];
+    }
 }
 
 @end

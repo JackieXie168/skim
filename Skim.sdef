@@ -801,6 +801,13 @@
                 <type type="specifier"/>
             </result>
         </command>
+        
+        <command name="edit" code="SKIMEdit"
+            description="Edit a note.">
+            <direct-parameter type="note"
+                description="The note to edit.">
+            </direct-parameter>
+        </command>
 
         <class-extension extends="application"
             description="Skim's top level scripting object.">
@@ -1190,9 +1197,12 @@
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="format">
-				<cocoa method=""/>
-			</responds-to>
+            <responds-to name="format">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="edit">
+                <cocoa method="handleEditScriptCommand:"/>
+            </responds-to>
         </class>
 
         <class name="bookmark" plural="bookmarks" code="Bkmk"

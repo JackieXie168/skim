@@ -173,6 +173,7 @@ enum {
 
 - (void)editActiveAnnotation:(id)sender;
 - (void)editThisAnnotation:(id)sender;
+- (void)editAnnotation:(PDFAnnotation *)annotation;
 
 - (void)selectNextActiveAnnotation:(id)sender;
 - (void)selectPreviousActiveAnnotation:(id)sender;

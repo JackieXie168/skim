@@ -136,4 +136,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (id)selectionSpecifier;
 - (NSArray *)scriptingPointLists;
 
+- (void)handleEditScriptCommand:(NSScriptCommand *)command;
+
 @end

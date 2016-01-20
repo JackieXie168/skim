@@ -1913,15 +1913,16 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)editThisAnnotation:(id)sender {
-    PDFAnnotation *annotation = [sender representedObject];
-    
+    [self editAnnotation:[sender representedObject]];
+}
+
+- (void)editAnnotation:(PDFAnnotation *)annotation {
     if (annotation == nil || [self isEditingAnnotation:annotation])
         return;
     
-    [self commitEditing];
     if (activeAnnotation != annotation)
         [self setActiveAnnotation:annotation];
-    [self editActiveAnnotation:sender];
+    [self editActiveAnnotation:nil];
 }
 
 - (void)editActiveAnnotation:(id)sender {
