@@ -634,7 +634,7 @@
         NSString *tcID = [tableColumn identifier];
         PDFOutline *ol = item;
         if([tcID isEqualToString:LABEL_COLUMNID]) {
-            return [ol label];
+            return [[ol label] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         } else if([tcID isEqualToString:PAGE_COLUMNID]) {
             return [ol pageLabel];
         }
