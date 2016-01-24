@@ -81,7 +81,7 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     
     CFCharacterSetRef wsnlCharSet = CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline);
     CFCharacterSetRef nlCharSet = CFCharacterSetGetPredefined(kCFCharacterSetNewline);
-    BOOL isFirst = NO, wasHyphen = NO;
+    BOOL isFirst = NO, wasHyphen = NO, found = NO;
     CFIndex bufCnt = 0;
     for(cnt = 0; cnt < length; cnt++){
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, cnt);
@@ -98,14 +98,21 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
                 wasHyphen = NO;
                 isFirst = NO;
             }
+            found = YES;
         }
     }
     
-    if(buffer[(bufCnt-1)] == ' ') // we've collapsed any trailing whitespace, so disregard it
-        bufCnt--;
+    if (found){
+        if(buffer[(bufCnt-1)] == ' ') // we've collapsed any trailing whitespace, so disregard it
+            bufCnt--;
+        
+        retStr = CFStringCreateWithCharacters(allocator, buffer, bufCnt);
+    } else {
+        retStr = CFRetain(aString);
+    }
     
-    retStr = CFStringCreateWithCharacters(allocator, buffer, bufCnt);
     if(buffer != stackBuffer) CFAllocatorDeallocate(allocator, buffer);
+
     return retStr;
 }
 
