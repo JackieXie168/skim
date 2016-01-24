@@ -205,12 +205,11 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
                 
                 UniChar highChar = ch;
                 UniChar lowChar = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx + 1);
-                UTF32Char longChar = __SKGetLongCharacterForSurrogatePair(highChar, lowChar);
                 // if we only have half of a surrogate pair, delete the offending character
                 if (__SKIsSurrogateLowCharacter(lowChar) == false || __SKIsSurrogateHighCharacter(highChar) == false) {
                     DELETE_CHARACTERS(1);
                     // only deleted a single char, so don't need to adjust idx
-                } else if (__SKIsPrivateUseCharacter(longChar)) {
+                } else if (__SKIsPrivateUseCharacter(__SKGetLongCharacterForSurrogatePair(highChar, lowChar))) {
                     // remove the pair; can't display private use characters
                     DELETE_CHARACTERS(2);
                     // adjust since we removed two characters...
