@@ -462,11 +462,12 @@ static char SKMainWindowDefaultsObservationContext;
         if ([[pdfView document] isLocked]) {
             [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
         } else if ([[pdfView currentPage] pageIndex] != pageIndex || pointString) {
-            [lastViewedPages setCount:0];
             if (pointString)
                 [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
             else
                 [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+            [lastViewedPages setCount:0];
+            [lastViewedPages addPointer:(void *)pageIndex];
             [pdfView resetHistory];
         }
     }
@@ -2141,8 +2142,13 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         settings = [savedNormalSetup objectForKey:AUTOSCALES_KEY] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey];
     [self applyPDFSettings:settings];
     if (pageIndex != NSNotFound) {
+        NSString *pointString = [savedNormalSetup objectForKey:SCROLLPOINT_KEY];
+        if (pointString)
+            [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+        else
+            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         [lastViewedPages setCount:0];
-        [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        [lastViewedPages addPointer:(void *)pageIndex];
         [pdfView resetHistory];
     }
     if ([snapshotSetups count]) {
