@@ -151,6 +151,7 @@
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
 #define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
 #define PAGEINDEX_KEY               @"pageIndex"
+#define SCROLLPOINT_KEY               @"scrollPoint"
 
 #define PAGETRANSITIONS_KEY @"pageTransitions"
 
@@ -450,16 +451,22 @@ static char SKMainWindowDefaultsObservationContext;
     
     // Go to page?
     NSUInteger pageIndex = NSNotFound;
-    if (hasWindowSetup)
+    NSString *pointString = nil;
+    if (hasWindowSetup) {
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
-    else if ([sud boolForKey:SKRememberLastPageViewedKey])
+        pointString = [savedNormalSetup objectForKey:SCROLLPOINT_KEY];
+    } else if ([sud boolForKey:SKRememberLastPageViewedKey]) {
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtURL:[[self document] fileURL]];
+    }
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex) {
         if ([[pdfView document] isLocked]) {
             [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
-        } else if ([[pdfView currentPage] pageIndex] != pageIndex) {
+        } else if ([[pdfView currentPage] pageIndex] != pageIndex || pointString) {
             [lastViewedPages setCount:0];
-            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+            if (pointString)
+                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+            else
+                [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
             [pdfView resetHistory];
         }
     }
@@ -550,8 +557,11 @@ static char SKMainWindowDefaultsObservationContext;
         
         NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
         NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
-        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex])
-            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        PDFPage *page = nil;
+        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
+            page = [[pdfView document] pageAtIndex:pageIndex];
+            [pdfView goToPage:page];
+        }
         
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
         if ([snapshotSetups count])
@@ -561,16 +571,26 @@ static char SKMainWindowDefaultsObservationContext;
             [self applyPDFSettings:setup];
         else
             [savedNormalSetup addEntriesFromDictionary:setup];
+        
+        NSString *pointString = [setup objectForKey:SCROLLPOINT_KEY];
+        if (page && pointString)
+            [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:NSPointFromString(pointString)] autorelease]];
     }
 }
 
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    PDFPage *page = [pdfView currentPage];
+    PDFDestination *dest = [pdfView currentDestination];
+    NSPoint point = [dest point];
+    if ([page isEqual:[dest page]] == NO)
+        point = [pdfView convertPoint:[pdfView convertPoint:point fromPage:[dest page]] toPage:page];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:MAINWINDOWFRAME_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
-    [setup setObject:[NSNumber numberWithUnsignedInteger:[[pdfView currentPage] pageIndex]] forKey:PAGEINDEX_KEY];
+    [setup setObject:[NSNumber numberWithUnsignedInteger:[page pageIndex]] forKey:PAGEINDEX_KEY];
+    [setup setObject:NSStringFromPoint(point) forKey:SCROLLPOINT_KEY];
     if ([snapshots count])
         [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SNAPSHOTS_KEY];
     if ([self interactionMode] == SKNormalMode) {
