@@ -236,7 +236,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     [string appendFDFName:SKFDFFileKey];
     [string appendString:@"("];
     if (filename)
-        [string appendString:[[filename lossyISOLatin1String] stringByEscapingParenthesis]];
+        [string appendString:[[filename lossyStringUsingEncoding:NSISOLatin1StringEncoding] stringByEscapingParenthesis]];
     [string appendString:@")"];
     if ([fileIDStrings count] == 2) {
         [string appendFDFName:SKFDFFileIDKey];

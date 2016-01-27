@@ -56,8 +56,7 @@
 
 - (BOOL)isCaseInsensitiveEqual:(NSString *)aString;
 
-- (NSString *)lossyASCIIString;
-- (NSString *)lossyISOLatin1String;
+- (NSString *)lossyStringUsingEncoding:(NSStringEncoding)encoding;
 
 - (NSString *)typeName;
 

@@ -282,12 +282,8 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return [self caseInsensitiveCompare:aString] == NSOrderedSame;
 }
 
-- (NSString *)lossyASCIIString {
-    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
-}
-
-- (NSString *)lossyISOLatin1String {
-    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSISOLatin1StringEncoding allowLossyConversion:YES] encoding:NSISOLatin1StringEncoding] autorelease];
+- (NSString *)lossyStringUsingEncoding:(NSStringEncoding)encoding {
+    return [[[NSString alloc] initWithData:[self dataUsingEncoding:encoding allowLossyConversion:YES] encoding:encoding] autorelease];
 }
 
 #pragma mark Templating support

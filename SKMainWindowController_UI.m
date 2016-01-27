@@ -971,7 +971,7 @@
         NSInteger i, count = [leftSideController.tocOutlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
-            [array addObject:[[(PDFOutline *)[leftSideController.tocOutlineView itemAtRow:i] label] lossyASCIIString]];
+            [array addObject:[[(PDFOutline *)[leftSideController.tocOutlineView itemAtRow:i] label] lossyStringUsingEncoding:NSASCIIStringEncoding]];
         return array;
     }
     return nil;

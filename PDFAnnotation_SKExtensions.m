@@ -159,7 +159,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     [fdfString appendFDFName:SKFDFAnnotationContentsKey];
     [fdfString appendString:@"("];
     if (contents)
-        [fdfString appendString:[[contents lossyISOLatin1String] stringByEscapingParenthesis]];
+        [fdfString appendString:[[contents lossyStringUsingEncoding:NSISOLatin1StringEncoding] stringByEscapingParenthesis]];
     [fdfString appendString:@")"];
     if (modDate) {
         [fdfString appendFDFName:SKFDFAnnotationModificationDateKey];
@@ -167,7 +167,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     }
     if (userName) {
         [fdfString appendFDFName:SKFDFAnnotationUserNameKey];
-        [fdfString appendFormat:@"(%@)", [[userName lossyISOLatin1String] stringByEscapingParenthesis]];
+        [fdfString appendFormat:@"(%@)", [[userName lossyStringUsingEncoding:NSISOLatin1StringEncoding] stringByEscapingParenthesis]];
     }
     return fdfString;
 }
