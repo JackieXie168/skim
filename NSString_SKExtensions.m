@@ -287,7 +287,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 }
 
 - (NSString *)lossyISOLatin1String {
-    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSISOLatin1StringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
+    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSISOLatin1StringEncoding allowLossyConversion:YES] encoding:NSISOLatin1StringEncoding] autorelease];
 }
 
 #pragma mark Templating support
