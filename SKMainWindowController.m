@@ -555,14 +555,6 @@ static char SKMainWindowDefaultsObservationContext;
         if (leftWidth && rightWidth)
             [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
         
-        NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
-        NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
-        PDFPage *page = nil;
-        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
-            page = [[pdfView document] pageAtIndex:pageIndex];
-            [pdfView goToPage:page];
-        }
-        
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
         if ([snapshotSetups count])
             [self showSnapshotsWithSetups:snapshotSetups];
@@ -572,9 +564,15 @@ static char SKMainWindowDefaultsObservationContext;
         else
             [savedNormalSetup addEntriesFromDictionary:setup];
         
-        NSString *pointString = [setup objectForKey:SCROLLPOINT_KEY];
-        if (page && pointString)
-            [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:NSPointFromString(pointString)] autorelease]];
+        NSNumber *pageIndexNumber = [setup objectForKey:PAGEINDEX_KEY];
+        NSUInteger pageIndex = [pageIndexNumber unsignedIntegerValue];
+        if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
+            NSString *pointString = [setup objectForKey:SCROLLPOINT_KEY];
+            if (pointString)
+                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+            else
+                [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        }
     }
 }
 
