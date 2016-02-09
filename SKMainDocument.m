@@ -922,16 +922,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    NSWindow *mainWindow = [[self mainWindowController] window];
-    NSWindow *sheet = nil;
-    
-    if ([mainWindow attachedSheet] == nil) {
-        sheet = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-        [(SKApplication *)NSApp setUserAttentionDisabled:YES];
-        [NSApp beginSheet:sheet modalForWindow:mainWindow modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-        [(SKApplication *)NSApp setUserAttentionDisabled:NO];
-    }
-    
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
     if (success) {
@@ -943,12 +933,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     SKDESTROY(tmpData);
-    
-    if (sheet) {
-        [NSApp endSheet:sheet];
-        [sheet orderOut:nil];
-        [sheet release];
-    }
     
     return success;
 }
