@@ -88,6 +88,7 @@
 #import "SKTemplateManager.h"
 #import "SKExportAccessoryController.h"
 #import "SKAttachmentEmailer.h"
+#import "SKAnimatedBorderlessWindow.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -922,6 +923,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    NSWindow *mainWindow = [[self mainWindowController] window];
+    NSWindow *modalwindow = nil;
+    NSModalSession session;
+    
+    if ([mainWindow attachedSheet] == nil && [mainWindow isMainWindow]) {
+        modalwindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:NSZeroRect];
+        [(SKApplication *)NSApp setUserAttentionDisabled:YES];
+        session = [NSApp beginModalSessionForWindow:modalwindow];
+        [(SKApplication *)NSApp setUserAttentionDisabled:NO];
+    }
+    
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
     if (success) {
@@ -933,6 +945,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     SKDESTROY(tmpData);
+    
+    if (modalwindow) {
+        [NSApp endModalSession:session];
+        [modalwindow orderOut:nil];
+        [modalwindow release];
+    }
     
     return success;
 }
