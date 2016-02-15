@@ -139,7 +139,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [super dealloc];
 }
 
-- (void)awakeFromNib {
+- (void)windowDidLoad {
     [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
     [progressBar setUsesThreadedAnimation:YES];
     [self setButtonTitle:NSLocalizedString(@"Cancel", @"Button title") action:@selector(cancel:)];
