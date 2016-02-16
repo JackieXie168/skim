@@ -1421,7 +1421,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
             [task launch];
         }
         @catch(id exception) {
-            NSLog(@"%@ %@ failed", [task description], [task launchPath]);
+            NSLog(@"command failed: %@: %@", cmdString, exception);
         }
     }
 }
