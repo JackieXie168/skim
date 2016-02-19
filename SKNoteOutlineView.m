@@ -78,19 +78,23 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         return nil;
 }
 
-- (void)awakeFromNib {
-    NSMenu *menu = [NSMenu menu];
-    
-    for (NSTableColumn *tc in [self tableColumns]) {
-        NSString *identifier = [tc identifier];
-        NSString *title = titleForTableColumnIdentifier(identifier);
-        NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
-        [menuItem setRepresentedObject:identifier];
-        if ([tc maxWidth] >= SMALL_COLUMN_WIDTH)
-            [[tc headerCell] setTitle:title];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
+    if (self) {
+        NSMenu *menu = [NSMenu menu];
+        
+        for (NSTableColumn *tc in [self tableColumns]) {
+            NSString *identifier = [tc identifier];
+            NSString *title = titleForTableColumnIdentifier(identifier);
+            NSMenuItem *menuItem = [menu addItemWithTitle:title action:@selector(toggleTableColumn:) target:self];
+            [menuItem setRepresentedObject:identifier];
+            if ([tc maxWidth] >= SMALL_COLUMN_WIDTH)
+                [[tc headerCell] setTitle:title];
+        }
+        
+        [[self headerView] setMenu:menu];
     }
-    
-    [[self headerView] setMenu:menu];
+    return self;
 }
 
 - (void)resizeRow:(NSInteger)row withEvent:(NSEvent *)theEvent {
