@@ -145,36 +145,24 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (void)drawRect:(NSRect)aRect {
-    [super drawRect:aRect];
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
-        NSRange visibleRows = [self rowsInRect:aRect];
+- (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
+    [super drawRow:row clipRect:clipRect];
+    
+    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] &&
+        [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
         
-        if (visibleRows.length == 0)
-            return;
-        
-        NSUInteger row;
-        BOOL isFirstResponder = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
+        BOOL isHighlighted = [[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row];
+        NSRect rect = [self rectOfRow:row];
+        CGFloat x = ceil(NSMidX(rect));
+        CGFloat y = NSMaxY(rect) - 1.5;
         
         [NSGraphicsContext saveGraphicsState];
         [NSBezierPath setDefaultLineWidth:1.0];
         
-        for (row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
-            id item = [self itemAtRow:row];
-            if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
-                continue;
-            
-            BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
-            NSColor *color = [NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7];
-            NSRect rect = [self rectOfRow:row];
-            CGFloat x = ceil(NSMidX(rect));
-            CGFloat y = NSMaxY(rect) - 1.5;
-            
-            [color set];
-            [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
-            y -= 2.0;
-            [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
-        }
+        [[NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7] setStroke];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
+        y -= 2.0;
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
         
         [NSGraphicsContext restoreGraphicsState];
     }
