@@ -96,7 +96,8 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
     // this calculation is roughly the inverse of -[PDFView addAnnotationWithType:selection:event:]
-    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - 1.0, [self lineWidth] - 1.0);
+    CGFloat outset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? 1.0 : 0.0;
+    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - outset, [self lineWidth] - outset);
     CGFloat t, w = NSWidth(bounds), h = NSWidth(bounds);
     if (w <= 0.0 || h <= 0.0)
         return;

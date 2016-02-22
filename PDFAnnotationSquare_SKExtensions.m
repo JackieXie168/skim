@@ -85,7 +85,8 @@
 - (void)autoUpdateString {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
-    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - 1.0, [self lineWidth] - 1.0);
+    CGFloat outset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6 ? 1.0 : 0.0;
+    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - outset, [self lineWidth] - outset);
     if (NSWidth(bounds) <= 0.0 || NSHeight(bounds) <= 0.0)
         return;
     NSString *selString = [[[self page] selectionForRect:bounds] cleanedString];
