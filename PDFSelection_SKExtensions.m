@@ -136,9 +136,12 @@
 
 - (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger n = [self numberOfTextRangesOnPage:page];
-        if (n)
-            return [self rangeAtIndex:0 onPage:page].location;
+        NSInteger i, count = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < count; i++) {
+            NSRange range = [self rangeAtIndex:i onPage:page];
+            if (range.length > 0)
+                return range.location;
+        }
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
         if (indexes)
@@ -149,9 +152,12 @@
 
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger n = [self numberOfTextRangesOnPage:page];
-        if (n)
-            return NSMaxRange([self rangeAtIndex:n - 1 onPage:page]);
+        NSInteger i, count = [self numberOfTextRangesOnPage:page];
+        for (i = count - 1; i >= 0; i--) {
+            NSRange range = [self rangeAtIndex:i onPage:page];
+            if (range.length > 0)
+                return NSMaxRange(range) - 1;
+        }
     } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
         NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
         if (indexes)
