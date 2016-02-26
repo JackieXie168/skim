@@ -47,10 +47,6 @@
 
 #pragma mark Templating support
 
-- (id)firstObject {
-    return [self count] ? [self objectAtIndex:0] : nil;
-}
-
 - (NSArray *)arraySortedByPageIndex {
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease]]];
 }
