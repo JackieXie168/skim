@@ -270,9 +270,8 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
     bounds = [super displayRectForBounds:bounds lineWidth:lineWidth];
     if ([self markupType] == kPDFMarkupTypeHighlight) {
-        CGFloat delta = 0.03 * NSHeight(bounds);
-        bounds.origin.y -= delta;
-        bounds.size.height += delta;
+        CGFloat delta = -0.03 * NSHeight(bounds);
+        bounds = ([[self page] intrinsicRotation] % 180) == 0 ? NSInsetRect(bounds, 0.0, delta) : NSInsetRect(bounds, delta, 0.0);
     }
     return bounds;
 }
