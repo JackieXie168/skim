@@ -50,6 +50,10 @@
 #define CONDITION_TAG_CONTAIN           @"~"
 #define CONDITION_TAG_SMALLER           @"<"
 #define CONDITION_TAG_SMALLER_OR_EQUAL  @"<="
+#define CONDITION_TAG_LARGER            @"!<="
+#define CONDITION_TAG_LARGER_OR_EQUAL   @"!<"
+#define CONDITION_TAG_NOT_EQUAL         @"!="
+#define CONDITION_TAG_NOT_CONTAIN       @"!~"
 
 /*
         value tag: <$key/>
@@ -123,15 +127,27 @@ static inline NSString *compareConditionTagWithKeyPath(NSString *keyPath, SKTemp
     static NSMutableDictionary *containConditionDict = nil;
     static NSMutableDictionary *smallerConditionDict = nil;
     static NSMutableDictionary *smallerOrEqualConditionDict = nil;
+    static NSMutableDictionary *largerConditionDict = nil;
+    static NSMutableDictionary *largerOrEqualConditionDict = nil;
+    static NSMutableDictionary *notEqualConditionDict = nil;
+    static NSMutableDictionary *notContainConditionDict = nil;
     switch (matchType) {
         case SKTemplateTagMatchEqual:
             return templateTagWithKeyPathAndDelims(&equalConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_EQUAL);
         case SKTemplateTagMatchContain:
             return templateTagWithKeyPathAndDelims(&containConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_CONTAIN);
         case SKTemplateTagMatchSmaller:
-            return templateTagWithKeyPathAndDelims(&smallerOrEqualConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_SMALLER_OR_EQUAL);
-        case SKTemplateTagMatchSmallerOrEqual:
             return templateTagWithKeyPathAndDelims(&smallerConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_SMALLER);
+        case SKTemplateTagMatchSmallerOrEqual:
+            return templateTagWithKeyPathAndDelims(&smallerOrEqualConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_SMALLER_OR_EQUAL);
+        case SKTemplateTagMatchLarger:
+            return templateTagWithKeyPathAndDelims(&largerConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_LARGER);
+        case SKTemplateTagMatchLargerOrEqual:
+            return templateTagWithKeyPathAndDelims(&largerOrEqualConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_LARGER_OR_EQUAL);
+        case SKTemplateTagMatchNotEqual:
+            return templateTagWithKeyPathAndDelims(&notEqualConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_NOT_EQUAL);
+        case SKTemplateTagMatchNotContain:
+            return templateTagWithKeyPathAndDelims(&notContainConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_NOT_CONTAIN);
         default:
             return nil;
     }
@@ -194,6 +210,8 @@ static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, S
                 return NO == [keyValue isNotEmpty];
             case SKTemplateTagMatchSmaller:
                 return NO;
+            case SKTemplateTagMatchLargerOrEqual:
+                return YES;
             default:
                 return [keyValue isNotEmpty];
         }
@@ -208,6 +226,14 @@ static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, S
                 return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] == NSOrderedAscending;
             case SKTemplateTagMatchSmallerOrEqual:
                 return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] != NSOrderedDescending;
+            case SKTemplateTagMatchLarger:
+                return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] == NSOrderedDescending;
+            case SKTemplateTagMatchLargerOrEqual:
+                return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] != NSOrderedAscending;
+            case SKTemplateTagMatchNotEqual:
+                return [stringValue isCaseInsensitiveEqual:matchString] == NO;
+            case SKTemplateTagMatchNotContain:
+                return [stringValue rangeOfString:matchString options:NSCaseInsensitiveSearch].location == NSNotFound;
             default:
                 return NO;
         }
@@ -332,6 +358,14 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     matchType = SKTemplateTagMatchSmallerOrEqual;
                 else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:NULL])
                     matchType = SKTemplateTagMatchSmaller;
+                else if ([scanner scanString:CONDITION_TAG_LARGER intoString:NULL])
+                    matchType = SKTemplateTagMatchLarger;
+                else if ([scanner scanString:CONDITION_TAG_LARGER_OR_EQUAL intoString:NULL])
+                    matchType = SKTemplateTagMatchLargerOrEqual;
+                else if ([scanner scanString:CONDITION_TAG_NOT_EQUAL intoString:NULL])
+                    matchType = SKTemplateTagMatchNotEqual;
+                else if ([scanner scanString:CONDITION_TAG_NOT_CONTAIN intoString:NULL])
+                    matchType = SKTemplateTagMatchNotContain;
                 
                 if (matchType != SKTemplateTagMatchOther)
                     [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
@@ -588,6 +622,14 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     matchType = SKTemplateTagMatchSmallerOrEqual;
                 else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:NULL])
                     matchType = SKTemplateTagMatchSmaller;
+                else if ([scanner scanString:CONDITION_TAG_LARGER intoString:NULL])
+                    matchType = SKTemplateTagMatchLarger;
+                else if ([scanner scanString:CONDITION_TAG_LARGER_OR_EQUAL intoString:NULL])
+                    matchType = SKTemplateTagMatchLargerOrEqual;
+                else if ([scanner scanString:CONDITION_TAG_NOT_EQUAL intoString:NULL])
+                    matchType = SKTemplateTagMatchNotEqual;
+                else if ([scanner scanString:CONDITION_TAG_NOT_CONTAIN intoString:NULL])
+                    matchType = SKTemplateTagMatchNotContain;
                 
                 if (matchType != SKTemplateTagMatchOther)
                     [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];

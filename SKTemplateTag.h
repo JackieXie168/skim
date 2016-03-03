@@ -51,6 +51,10 @@ typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {
     SKTemplateTagMatchContain,
     SKTemplateTagMatchSmaller,
     SKTemplateTagMatchSmallerOrEqual,
+    SKTemplateTagMatchLarger,
+    SKTemplateTagMatchLargerOrEqual,
+    SKTemplateTagMatchNotEqual,
+    SKTemplateTagMatchNotContain
 };
 
 @interface SKTemplateTag : NSObject
