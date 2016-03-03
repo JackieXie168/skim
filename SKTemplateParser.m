@@ -69,6 +69,14 @@
                or: <$key<value?> <?$key?> </$key?>
                or: <$key<=value?> </$key?>
                or: <$key<=value?> <?$key?> </$key?>
+               or: <$key!<=value?> </$key?>
+               or: <$key!<=value?> <?$key?> </$key?>
+               or: <$key!<value?> </$key?>
+               or: <$key!<value?> <?$key?> </$key?>
+               or: <$key!=value?> </$key?>
+               or: <$key!=value?> <?$key?> </$key?>
+               or: <$key!~value?> </$key?>
+               or: <$key!~value?> <?$key?> </$key?>
 */
 
 @implementation SKTemplateParser
