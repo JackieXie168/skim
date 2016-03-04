@@ -483,7 +483,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             } else if (type == SKCollectionTemplateTagType) {
                 
                 NSArray *itemTemplate = nil;
-                NSInteger idx = 0;
+                NSInteger idx = 1;
                 id prevItem = nil;
                 
                 if ([keyValue conformsToProtocol:@protocol(NSFastEnumeration)]) {
@@ -491,7 +491,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         if (prevItem) {
                             if (itemTemplate == nil)
                                 itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
-                            keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                            keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:idx++];
                             if (keyValue != nil)
                                 [result appendString:keyValue];
                         }
@@ -499,11 +499,11 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     }
                 } else if ([keyValue isNotEmpty]) {
                     prevItem = keyValue;
-                    idx = -1;
+                    idx = anIndex;
                 }
                 if (prevItem) {
                     itemTemplate = [tag itemTemplate];
-                    keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                    keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:idx];
                     if (keyValue != nil)
                         [result appendString:keyValue];
                 }
@@ -753,7 +753,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             } else if (type == SKCollectionTemplateTagType) {
                 
                 NSArray *itemTemplate = nil;
-                NSInteger idx = 0;
+                NSInteger idx = 1;
                 id prevItem = nil;
                 
                 if ([keyValue conformsToProtocol:@protocol(NSFastEnumeration)]) {
@@ -761,7 +761,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         if (prevItem) {
                             if (itemTemplate == nil)
                                 itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
-                            tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                            tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:idx++];
                             if (tmpAttrStr != nil)
                                 [result appendAttributedString:tmpAttrStr];
                         }
@@ -769,11 +769,11 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     }
                 } else if ([keyValue isNotEmpty]) {
                     prevItem = keyValue;
-                    idx = -1;
+                    idx = anIndex;
                 }
                 if (prevItem) {
                     itemTemplate = [tag itemTemplate];
-                    tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                    tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:idx];
                     if (tmpAttrStr != nil)
                         [result appendAttributedString:tmpAttrStr];
                 }
