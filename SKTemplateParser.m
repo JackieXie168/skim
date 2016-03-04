@@ -177,7 +177,9 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
 }
 
 static id templateValueForKeyPath(id object, NSString *keyPath, NSInteger anIndex) {
-    if ([keyPath hasPrefix:@"#"] && anIndex > 0) {
+    if ([keyPath hasPrefix:@"#"]) {
+        if (anIndex <= 0)
+            return nil;
         object = [NSNumber numberWithInteger:anIndex];
         if ([keyPath length] == 1)
             return object;
