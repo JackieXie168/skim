@@ -846,18 +846,12 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
     NSMutableAttributedString *attributedString = [self mutableCopy];
-    NSUInteger idx = 0, length = [self length];
-    NSRange range = NSMakeRange(0, length);
-    NSDictionary *attrs;
+    NSRange range = NSMakeRange(0, [self length]);
     [attributedString addAttributes:attributes range:range];
-    while (idx < length) {
-        attrs = [self attributesAtIndex:idx effectiveRange:&range];
-        if (range.length > 0) {
-            [attributedString addAttributes:attrs range:range];
-            idx = NSMaxRange(range);
-        } else idx++;
-    }
-    [attributedString fixAttributesInRange:NSMakeRange(0, length)];
+    [self enumerateAttributesInRange:range options:0 usingBlock:^(NSDictionary *attrs, NSRange r, BOOL *stop){
+        [attributedString addAttributes:attrs range:r];
+    }];
+    [attributedString fixAttributesInRange:range];
     return [attributedString autorelease];
 }
 
