@@ -845,9 +845,8 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 @implementation NSAttributedString (SKTemplateParser)
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
-    NSMutableAttributedString *attributedString = [self mutableCopy];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[self string] attributes:attributes];
     NSRange range = NSMakeRange(0, [self length]);
-    [attributedString addAttributes:attributes range:range];
     [self enumerateAttributesInRange:range options:0 usingBlock:^(NSDictionary *attrs, NSRange r, BOOL *stop){
         [attributedString addAttributes:attrs range:r];
     }];
