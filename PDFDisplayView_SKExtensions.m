@@ -104,17 +104,14 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
         attributedString = [selection attributedString];
         if (fabs(scale - 1.0) > 0.0) {
             NSMutableAttributedString *mutableAttrString = [[attributedString mutableCopy] autorelease];
-            NSUInteger i = 0, l = [mutableAttrString length];
-            NSRange r;
-            while (i < l) {
-                NSFont *font = [mutableAttrString attribute:NSFontAttributeName atIndex:i effectiveRange:&r];
+            NSRange range = NSMakeRange(0, [mutableAttrString length]);
+            [mutableAttrString enumerateAttribute:NSFontAttributeName inRange:range options:0 usingBlock:^(id font, NSRange r, BOOL *stop){
                 if (font) {
                     font = [[NSFontManager sharedFontManager] convertFont:font toSize:round(scale * [font pointSize])];
                     [mutableAttrString addAttribute:NSFontAttributeName value:font range:r];
                 }
-                i = NSMaxRange(r);
-            }
-            [mutableAttrString fixFontAttributeInRange:NSMakeRange(0, l)];
+            }];
+            [mutableAttrString fixFontAttributeInRange:range];
             attributedString = mutableAttrString;
         }
     }
