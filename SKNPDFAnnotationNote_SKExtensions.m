@@ -63,6 +63,9 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         [mutableProperties setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
         if (contents) {
             NSRange r = [contents rangeOfString:@"  "];
+            NSRange r1 = [contents rangeOfString:@"\n"];
+            if (r1.location < r.location)
+                r = r1;
             if (NSMaxRange(r) < [contents length]) {
                 NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
                 NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
