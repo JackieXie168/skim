@@ -161,6 +161,32 @@ static inline NSString *compareConditionTagWithKeyPath(NSString *keyPath, SKTemp
     }
 }
 
+static inline BOOL scanConditionTagMatchTypeAndString(NSScanner *scanner, SKTemplateTagMatchType *matchType, NSString **argString) {
+    if ([scanner scanString:CONDITION_TAG_EQUAL intoString:NULL])
+        *matchType = SKTemplateTagMatchEqual;
+    else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:NULL])
+        *matchType = SKTemplateTagMatchContain;
+    else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:NULL])
+        *matchType = SKTemplateTagMatchSmallerOrEqual;
+    else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:NULL])
+        *matchType = SKTemplateTagMatchSmaller;
+    else if ([scanner scanString:CONDITION_TAG_LARGER intoString:NULL])
+        *matchType = SKTemplateTagMatchLarger;
+    else if ([scanner scanString:CONDITION_TAG_LARGER_OR_EQUAL intoString:NULL])
+        *matchType = SKTemplateTagMatchLargerOrEqual;
+    else if ([scanner scanString:CONDITION_TAG_NOT_EQUAL intoString:NULL])
+        *matchType = SKTemplateTagMatchNotEqual;
+    else if ([scanner scanString:CONDITION_TAG_NOT_CONTAIN intoString:NULL])
+        *matchType = SKTemplateTagMatchNotContain;
+    else
+        *matchType = SKTemplateTagMatchOther;
+    
+    if (*matchType == SKTemplateTagMatchOther || [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:argString] == NO)
+        *argString = @"";
+    
+    return [scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:NULL];
+}
+
 static inline NSRange altConditionTagRange(NSString *template, NSString *altTag, NSString **argString) {
     NSRange altTagRange = [template rangeOfString:altTag];
     if (altTagRange.location != NSNotFound) {
@@ -360,27 +386,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 NSString *matchString = @"";
                 SKTemplateTagMatchType matchType = SKTemplateTagMatchOther;
                 
-                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchEqual;
-                else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:NULL])
-                    matchType = SKTemplateTagMatchContain;
-                else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchSmallerOrEqual;
-                else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:NULL])
-                    matchType = SKTemplateTagMatchSmaller;
-                else if ([scanner scanString:CONDITION_TAG_LARGER intoString:NULL])
-                    matchType = SKTemplateTagMatchLarger;
-                else if ([scanner scanString:CONDITION_TAG_LARGER_OR_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchLargerOrEqual;
-                else if ([scanner scanString:CONDITION_TAG_NOT_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchNotEqual;
-                else if ([scanner scanString:CONDITION_TAG_NOT_CONTAIN intoString:NULL])
-                    matchType = SKTemplateTagMatchNotContain;
-                
-                if (matchType != SKTemplateTagMatchOther)
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
-                
-                if ([scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:NULL]) {
+                if (scanConditionTagMatchTypeAndString(scanner, &matchType, &matchString)) {
                     
                     NSMutableArray *subTemplates, *matchStrings;
                     NSString *subTemplate = @"";
@@ -624,27 +630,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 NSString *matchString = @"";
                 SKTemplateTagMatchType matchType = SKTemplateTagMatchOther;
                 
-                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchEqual;
-                else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:NULL])
-                    matchType = SKTemplateTagMatchContain;
-                else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchSmallerOrEqual;
-                else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:NULL])
-                    matchType = SKTemplateTagMatchSmaller;
-                else if ([scanner scanString:CONDITION_TAG_LARGER intoString:NULL])
-                    matchType = SKTemplateTagMatchLarger;
-                else if ([scanner scanString:CONDITION_TAG_LARGER_OR_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchLargerOrEqual;
-                else if ([scanner scanString:CONDITION_TAG_NOT_EQUAL intoString:NULL])
-                    matchType = SKTemplateTagMatchNotEqual;
-                else if ([scanner scanString:CONDITION_TAG_NOT_CONTAIN intoString:NULL])
-                    matchType = SKTemplateTagMatchNotContain;
-                
-                if (matchType != SKTemplateTagMatchOther)
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
-                
-                if ([scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:NULL]) {
+                if (scanConditionTagMatchTypeAndString(scanner, &matchType, &matchString)) {
                     
                     NSMutableArray *subTemplates, *matchStrings;
                     NSString *subTemplateString = nil;
