@@ -404,7 +404,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithKeyPath(keyPath, matchType);
-                            while(findAltConditionTag(subTemplate, altTag, &matchString, &altTagRange)) {
+                            while (findAltConditionTag(subTemplate, altTag, &matchString, &altTagRange)) {
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                                 [matchStrings addObject:matchString];
                                 subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
