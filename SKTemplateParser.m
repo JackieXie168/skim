@@ -187,7 +187,7 @@ static inline BOOL scanConditionTagMatchTypeAndString(NSScanner *scanner, SKTemp
     return [scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:NULL];
 }
 
-static inline NSRange altConditionTagRange(NSString *template, NSString *altTag, NSString **argString) {
+static inline BOOL findAltConditionTag(NSString *template, NSString *altTag, NSString **argString, NSRange *range) {
     NSRange altTagRange = [template rangeOfString:altTag];
     if (altTagRange.location != NSNotFound) {
         // find the end tag and the argument (match string)
@@ -199,7 +199,8 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
             altTagRange = NSMakeRange(NSNotFound, 0);
         }
     }
-    return altTagRange;
+    *range = altTagRange;
+    return altTagRange.location != NSNotFound;
 }
 
 static id templateValueForKeyPath(id object, NSString *keyPath, NSInteger anIndex) {
@@ -403,12 +404,10 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithKeyPath(keyPath, matchType);
-                            altTagRange = altConditionTagRange(subTemplate, altTag, &matchString);
-                            while (altTagRange.location != NSNotFound) {
+                            while(findAltConditionTag(subTemplate, altTag, &matchString, &altTagRange)) {
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                                 [matchStrings addObject:matchString];
                                 subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
-                                altTagRange = altConditionTagRange(subTemplate, altTag, &matchString);
                             }
                         }
                         
@@ -650,12 +649,10 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithKeyPath(keyPath, matchType);
-                            altTagRange = altConditionTagRange([subTemplate string], altTag, &matchString);
-                            while (altTagRange.location != NSNotFound) {
+                            while (findAltConditionTag([subTemplate string], altTag, &matchString, &altTagRange)) {
                                 [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
                                 [matchStrings addObject:matchString];
                                 subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
-                                altTagRange = altConditionTagRange([subTemplate string], altTag, &matchString);
                             }
                         }
                         
