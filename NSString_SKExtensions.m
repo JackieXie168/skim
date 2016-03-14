@@ -441,15 +441,22 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
         imageName = SKImageNameInkNote;
     
     if (imageName) {
-        NSImage *image = [NSImage imageNamed:imageName];
-        NSString *name = [self stringByAppendingPathExtension:@"tiff"];
+        static NSMutableDictionary *typeIconWrappers = nil;
         
-        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-        [wrapper setFilename:name];
-        [wrapper setPreferredFilename:name];
-
+        NSFileWrapper *wrapper = [typeIconWrappers objectForKey:imageName];
+        
+        if (wrapper == nil) {
+            if (typeIconWrappers == nil)
+                typeIconWrappers = [[NSMutableDictionary alloc] init];
+            NSString *name = [self stringByAppendingPathExtension:@"tiff"];
+            wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[[NSImage imageNamed:imageName] TIFFRepresentation]];
+            [wrapper setFilename:name];
+            [wrapper setPreferredFilename:name];
+            [typeIconWrappers setObject:wrapper forKey:imageName];
+            [wrapper release];
+        }
+        
         NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-        [wrapper release];
         attrString = [NSAttributedString attributedStringWithAttachment:attachment];
         [attachment release];
     }
