@@ -420,42 +420,45 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 - (NSAttributedString *)typeIcon {
     NSAttributedString *attrString = nil;
     
-    NSString *imageName = nil;
-    if ([self isEqualToString:SKNFreeTextString])
-        imageName = SKImageNameTextNote;
-    else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
-        imageName = SKImageNameAnchoredNote;
-    else if ([self isEqualToString:SKNCircleString])
-        imageName = SKImageNameCircleNote;
-    else if ([self isEqualToString:SKNSquareString])
-        imageName = SKImageNameSquareNote;
-    else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
-        imageName = SKImageNameHighlightNote;
-    else if ([self isEqualToString:SKNUnderlineString])
-        imageName = SKImageNameUnderlineNote;
-    else if ([self isEqualToString:SKNStrikeOutString])
-        imageName = SKImageNameStrikeOutNote;
-    else if ([self isEqualToString:SKNLineString])
-        imageName = SKImageNameLineNote;
-    else if ([self isEqualToString:SKNInkString])
-        imageName = SKImageNameInkNote;
+    static NSMutableDictionary *typeIconWrappers = nil;
+    NSFileWrapper *wrapper = [typeIconWrappers objectForKey:self];
     
-    if (imageName) {
-        static NSMutableDictionary *typeIconWrappers = nil;
+    if (wrapper == nil) {
         
-        NSFileWrapper *wrapper = [typeIconWrappers objectForKey:imageName];
+        NSString *imageName = nil;
+        if ([self isEqualToString:SKNFreeTextString])
+            imageName = SKImageNameTextNote;
+        else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
+            imageName = SKImageNameAnchoredNote;
+        else if ([self isEqualToString:SKNCircleString])
+            imageName = SKImageNameCircleNote;
+        else if ([self isEqualToString:SKNSquareString])
+            imageName = SKImageNameSquareNote;
+        else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
+            imageName = SKImageNameHighlightNote;
+        else if ([self isEqualToString:SKNUnderlineString])
+            imageName = SKImageNameUnderlineNote;
+        else if ([self isEqualToString:SKNStrikeOutString])
+            imageName = SKImageNameStrikeOutNote;
+        else if ([self isEqualToString:SKNLineString])
+            imageName = SKImageNameLineNote;
+        else if ([self isEqualToString:SKNInkString])
+            imageName = SKImageNameInkNote;
         
-        if (wrapper == nil) {
+        if (imageName) {
             if (typeIconWrappers == nil)
                 typeIconWrappers = [[NSMutableDictionary alloc] init];
             NSString *name = [self stringByAppendingPathExtension:@"tiff"];
             wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[[NSImage imageNamed:imageName] TIFFRepresentation]];
             [wrapper setFilename:name];
             [wrapper setPreferredFilename:name];
-            [typeIconWrappers setObject:wrapper forKey:imageName];
+            [typeIconWrappers setObject:wrapper forKey:self];
             [wrapper release];
         }
-        
+    
+    }
+    
+    if (wrapper) {
         NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
         attrString = [NSAttributedString attributedStringWithAttachment:attachment];
         [attachment release];
