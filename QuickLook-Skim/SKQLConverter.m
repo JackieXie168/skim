@@ -59,11 +59,19 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
 
 static NSAttributedString *imageAttachmentForPath(NSString *path)
 {        
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithPath:path];
-    [wrapper setPreferredFilename:[path lastPathComponent]];
+    static NSMutableDictionary *imageWrappers = nil;
+    NSFileWrapper *wrapper = [imageWrappers objectForKey:path];
+    
+    if (wrapper == nil) {
+        if (imageWrappers == nil)
+            imageWrappers = [[NSMutableDictionary alloc] init];
+        wrapper = [[NSFileWrapper alloc] initWithPath:path];
+        [wrapper setPreferredFilename:[path lastPathComponent]];
+        [imageWrappers setObject:wrapper forKey:path];
+        [wrapper release];
+    }
     
     NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-    [wrapper release];
     NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
     [attachment release];
     
