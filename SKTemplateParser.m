@@ -454,7 +454,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         if ([tag type] != SKTextTemplateTagType) continue;
         
         NSString *string = [(SKTextTemplateTag *)tag text];
-        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
+        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : SKNoTemplateTagType, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : SKNoTemplateTagType, isSubtemplate);
         
         if (range.length == 0)
             [result removeObjectAtIndex:i];
@@ -701,7 +701,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         
         NSAttributedString *attrString = [(SKRichTextTemplateTag *)tag attributedText];
         NSString *string = [attrString string];
-        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
+        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : SKNoTemplateTagType, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : SKNoTemplateTagType, isSubtemplate);
         
         if (range.length == 0)
             [result removeObjectAtIndex:i];
