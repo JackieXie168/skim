@@ -2031,7 +2031,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)goToSelectedFindResults:(id)sender {
-    [self updateFindResultHighlightsForDirection:NSDirectSelection];
+    if ([sender clickedRow] != -1)
+        [self updateFindResultHighlightsForDirection:NSDirectSelection];
 }
 
 - (IBAction)searchNotes:(id)sender {
