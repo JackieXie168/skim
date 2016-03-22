@@ -185,9 +185,9 @@
 }
 
 - (void)selectSelectedNote:(id)sender{
-    if ([pdfView hideNotes]) {
-        NSBeep();
-    } else if ([sender clickedRow] != -1) {
+    if ([sender clickedRow] == -1)
+        return;
+    if ([pdfView hideNotes] == NO) {
         NSArray *selectedNotes = [self selectedNotes];
         if ([selectedNotes count] == 1) {
             PDFAnnotation *annotation = [selectedNotes lastObject];
@@ -200,7 +200,7 @@
             if ([colID isEqualToString:@"color"])
                 [[NSColorPanel sharedColorPanel] orderFront:nil];
         }
-    }
+    } else NSBeep();
 }
 
 - (void)goToSelectedOutlineItem:(id)sender {
