@@ -294,11 +294,6 @@ static NSArray *allMainDocumentPDFViews() {
     [allMainDocumentPDFViews() makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
 }
 
-- (void)pageSheetDidEnd:(SKTextFieldSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton)
-        [self setPageLabel:[controller stringValue]];
-}
-
 - (IBAction)doGoToPage:(id)sender {
     SKTextFieldSheetController *pageSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PageSheet"] autorelease];
     
