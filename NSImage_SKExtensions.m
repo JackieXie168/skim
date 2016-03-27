@@ -1248,28 +1248,26 @@ macro(Ink)
     
     MAKE_IMAGE(SKImageNameToolbarPrint, YES, 27.0, 20.0, 
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(7.5, 5.5)];
-        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 5.5) toPoint:NSMakePoint(3.5, 14.5) radius:2.5];
-        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 14.5) toPoint:NSMakePoint(23.5, 14.5) radius:2.5];
-        [path appendBezierPathWithArcFromPoint:NSMakePoint(23.5, 14.5) toPoint:NSMakePoint(23.5, 5.5) radius:2.5];
-        [path appendBezierPathWithArcFromPoint:NSMakePoint(23.5, 5.5) toPoint:NSMakePoint(3.5, 5.5) radius:2.5];
-        [path lineToPoint:NSMakePoint(19.5, 5.5)];
-        [path appendBezierPathWithRect:NSMakeRect(7.5, 2.5, 12.0, 8.0)];
-        [path appendBezierPathWithRect:NSMakeRect(8.5, 14.5, 10.0, 3.0)];
+        [path moveToPoint:NSMakePoint(7.5, 15.0)];
+        [path lineToPoint:NSMakePoint(7.5, 17.5)];
+        [path lineToPoint:NSMakePoint(19.5, 17.5)];
+        [path lineToPoint:NSMakePoint(19.5, 15.0)];
         [[NSColor blackColor] set];
         [path stroke];
-        path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 10.0, 2.0, 1.0)];
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] set];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(5.0, 14.0)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(24.0, 14.0) toPoint:NSMakePoint(24.0, 4.0) radius:2.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(24.0, 4.0) toPoint:NSMakePoint(20.0, 4.0) radius:1.0];
+        [path lineToPoint:NSMakePoint(20.0, 4.0)];
+        [path lineToPoint:NSMakePoint(20.0, 1.0)];
+        [path lineToPoint:NSMakePoint(7.0, 1.0)];
+        [path lineToPoint:NSMakePoint(7.0, 4.0)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 4.0) toPoint:NSMakePoint(3.0, 14.0) radius:1.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 14.0) toPoint:NSMakePoint(5.0, 14.0) radius:2.0];
+        [path closePath];
+        [path appendBezierPathWithRect:NSMakeRect(8.0, 2.0, 11.0, 8.0)];
+        [path setWindingRule:NSEvenOddWindingRule];
         [path fill];
-        NSUInteger i;
-        NSUInteger j;
-        for (i = 0; i < 22; i++) {
-            for (j = 0; j < 8; j++) {
-                path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0 + 0.5 * i, 3.0 + j - 0.5 * (j % 2), 0.5, 0.5)];
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2 * rand() / RAND_MAX] set];
-                [path fill];
-            }
-        }
     );
     
 #define MAKE_BADGED_TEMPLATE_IMAGES(name) \
