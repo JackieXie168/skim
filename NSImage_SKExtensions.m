@@ -236,7 +236,8 @@ macro(Ink)
 
 + (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    for (CGFloat scale = 1.0; scale <= 2.0; scale++)
+    CGFloat scale;
+    for (scale = 1.0; scale <= 2.0; scale++)
         [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     return image;
 }
