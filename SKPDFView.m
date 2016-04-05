@@ -2839,20 +2839,22 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         *draggedPoint = SKAddPoints(*fixedPoint, diffPoint);
     }
     
-    NSRect newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
-    
-    if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
-        newBounds.size.width = MIN_NOTE_SIZE;
-        newBounds.origin.x = floor(0.5 * ((startPoint.x + endPoint.x) - MIN_NOTE_SIZE));
+    if (NSEqualPoints(startPoint, endPoint) == NO) {
+        NSRect newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
+        
+        if (NSWidth(newBounds) < MIN_NOTE_SIZE) {
+            newBounds.size.width = MIN_NOTE_SIZE;
+            newBounds.origin.x = floor(0.5 * ((startPoint.x + endPoint.x) - MIN_NOTE_SIZE));
+        }
+        if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
+            newBounds.size.height = MIN_NOTE_SIZE;
+            newBounds.origin.y = floor(0.5 * ((startPoint.y + endPoint.y) - MIN_NOTE_SIZE));
+        }
+        
+        [(PDFAnnotationLine *)activeAnnotation setStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
+        [(PDFAnnotationLine *)activeAnnotation setEndPoint:SKSubstractPoints(endPoint, newBounds.origin)];
+        [activeAnnotation setBounds:newBounds];
     }
-    if (NSHeight(newBounds) < MIN_NOTE_SIZE) {
-        newBounds.size.height = MIN_NOTE_SIZE;
-        newBounds.origin.y = floor(0.5 * ((startPoint.y + endPoint.y) - MIN_NOTE_SIZE));
-    }
-    
-    [(PDFAnnotationLine *)activeAnnotation setStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
-    [(PDFAnnotationLine *)activeAnnotation setEndPoint:SKSubstractPoints(endPoint, newBounds.origin)];
-    [activeAnnotation setBounds:newBounds];
 }
 
 - (void)doResizeAnnotationWithEvent:(NSEvent *)theEvent fromPoint:(NSPoint)originalPagePoint originalBounds:(NSRect)originalBounds resizeHandle:(SKRectEdges *)resizeHandlePtr {
