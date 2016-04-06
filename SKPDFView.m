@@ -151,6 +151,16 @@ enum {
     SKNavigationEverywhere,
 };
 
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
+typedef NS_ENUM(NSInteger, NSScrollerStyle) {
+    NSScrollerStyleLegacy,
+    NSScrollerStyleOverlay
+};
+@interface NSScroller (SKLionDeclarations)
++ (NSScrollerStyle)preferredScrollerStyle;
+@end
+#endif
+
 #pragma mark -
 
 @interface SKPDFView (Private)
@@ -181,6 +191,7 @@ enum {
 - (void)doSelectWithEvent:(NSEvent *)theEvent;
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
+- (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent;
 - (void)doNothingWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
@@ -1158,6 +1169,8 @@ enum {
         [self doSelectSnapshotWithEvent:theEvent];
     } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
         [self doPdfsyncWithEvent:theEvent];
+    } else if (modifiers == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self doMarqueeZoomWithEvent:theEvent];
     } else if ((area & SKReadingBarArea) && (area & kPDFLinkArea) == 0) {
         if ((area & (SKResizeUpDownArea | SKResizeLeftRightArea)))
             [self doResizeReadingBarWithEvent:theEvent];
@@ -2178,6 +2191,38 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if ([[self delegate] respondsToSelector:@selector(PDFView:showSnapshotAtPageNumber:forRect:scaleFactor:autoFits:)])
         [[self delegate] PDFView:self showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits];
+}
+
+#pragma mark Zooming
+
+- (void)zoomToRect:(NSRect)rect onPage:(PDFPage *)page {
+    if (NSIsEmptyRect(rect) == NO) {
+        BOOL isLegacy = [NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy;
+        NSRect bounds = [self bounds];
+        CGFloat scale = 1.0;
+        if (isLegacy) {
+            bounds.size.width -= [NSScroller scrollerWidth];
+            bounds.size.height -= [NSScroller scrollerWidth];
+        }
+        if (NSWidth(bounds) * NSHeight(rect) > NSWidth(rect) * NSHeight(bounds))
+            scale = NSHeight(bounds) / NSHeight(rect);
+        else
+            scale = NSWidth(bounds) / NSWidth(rect);
+        [self setScaleFactor:scale];
+        NSScrollView *scrollView = [self scrollView];
+        if (isLegacy && ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO)) {
+            if ([scrollView hasVerticalScroller])
+                bounds.size.width -= [NSScroller scrollerWidth];
+            if ([scrollView hasHorizontalScroller])
+                bounds.size.height -= [NSScroller scrollerWidth];
+            if (NSWidth(bounds) * NSHeight(rect) > NSWidth(rect) * NSHeight(bounds))
+                scale = NSHeight(bounds) / NSHeight(rect);
+            else
+                scale = NSWidth(bounds) / NSWidth(rect);
+            [self setScaleFactor:scale];
+        }
+        [self goToRect:rect onPage:page];
+    }
 }
 
 #pragma mark Notification handling
@@ -3931,6 +3976,90 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [lastMouseEvent release];
 }
 
+- (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseLoc = [theEvent locationInWindow];
+    NSPoint startPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
+    NSPoint	currentPoint;
+    NSRect selRect = {startPoint, NSZeroSize};
+    BOOL dragged = NO;
+    CAShapeLayer *layer = nil;
+    NSWindow *overlay = nil;
+    NSWindow *window = [self window];
+    
+    [[NSCursor zoomInCursor] set];
+    
+    CGRect layerRect = NSRectToCGRect([self visibleContentRect]);
+    layer = [CAShapeLayer layer];
+    [layer setStrokeColor:CGColorGetConstantColor(kCGColorBlack)];
+    [layer setFillColor:NULL];
+    [layer setLineWidth:1.0];
+    [layer setFrame:layerRect];
+    [layer setBounds:layerRect];
+    [layer setMasksToBounds:YES];
+    [layer setZPosition:1.0];
+    
+    if ([self wantsLayer]) {
+        [[self layer] addSublayer:layer];
+    } else {
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
+        [overlay setIgnoresMouseEvents:YES];
+        [[overlay contentView] setWantsLayer:YES];
+        [[[overlay contentView] layer] addSublayer:layer];
+        [window addChildWindow:overlay ordered:NSWindowAbove];
+    }
+    
+    while (YES) {
+        theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
+        
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        
+        if ([theEvent type] == NSLeftMouseDragged) {
+            // change mouseLoc
+            [[[self scrollView] contentView] autoscroll:theEvent];
+            mouseLoc = [theEvent locationInWindow];
+            dragged = YES;
+        }
+        
+        // dragging or flags changed
+        
+        currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
+        
+        // center around startPoint when holding down the Shift key
+        if (([theEvent modifierFlags] & NSShiftKeyMask))
+            selRect = SKRectFromCenterAndPoint(startPoint, currentPoint);
+        else
+            selRect = SKRectFromPoints(startPoint, currentPoint);
+        
+        // intersect with the bounds, project on the bounds if necessary and allow zero width or height
+        selRect = SKIntersectionRect(selRect, [[self documentView] bounds]);
+        
+        CGPathRef path = CGPathCreateWithRect(NSRectToCGRect(NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)), NULL);
+        [layer setPath:path];
+        CGPathRelease(path);
+    }
+    
+    if (overlay) {
+        [window removeChildWindow:overlay];
+        [overlay orderOut:nil];
+        [overlay release];
+    } else {
+        [layer removeFromSuperlayer];
+    }
+    
+    [self setCursorForMouse:theEvent];
+    
+    
+    if (dragged && NSIsEmptyRect(selRect) == NO) {
+        
+        NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
+        PDFPage *page = [self pageForPoint:point nearest:YES];
+        NSRect rect = [self convertRect:[self convertRect:selRect fromView:[self documentView]] toPage:page];
+        
+        [self zoomToRect:rect onPage:page];
+    }
+}
+
 - (void)doNothingWithEvent:(NSEvent *)theEvent {
     // eat up mouseDragged/mouseUp events, so we won't get their event handlers
     while (YES) {
@@ -3967,8 +4096,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         area = kPDFNoArea;
     } else if (interactionMode == SKPresentationMode) {
         area &= (kPDFPageArea | kPDFLinkArea);
-    } else if ((modifiers == NSCommandKeyMask || modifiers == (NSCommandKeyMask | NSShiftKeyMask))) {
-        area &= kPDFPageArea;
+    } else if ((modifiers == NSCommandKeyMask || modifiers == (NSCommandKeyMask | NSShiftKeyMask) || modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
+        area = (area & kPDFPageArea) | SKSpecialToolArea;
     } else {
         
         SKRectEdges resizeHandle = SKNoEdgeMask;
@@ -4021,6 +4150,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
     else if (interactionMode == SKPresentationMode)
+        [[NSCursor arrowCursor] set];
+    else if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))
         [[NSCursor openHandCursor] set];

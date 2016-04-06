@@ -84,7 +84,8 @@ enum {
     SKResizeLeftRightArea = 1 << 18,
     SKResizeDiagonal45Area = 1 << 19,
     SKResizeDiagonal135Area = 1 << 20,
-    SKReadingBarArea = 1 << 21
+    SKReadingBarArea = 1 << 21,
+    SKSpecialToolArea = 1 << 22
 };
 
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
@@ -180,6 +181,7 @@ enum {
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar;
+- (void)zoomToRect:(NSRect)rect onPage:(PDFPage *)page;
 
 - (void)takeSnapshot:(id)sender;
 
