@@ -78,6 +78,16 @@
 
 #define DEFAULT_SPLIT_PDF_FACTOR 0.3
 
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
+typedef NS_ENUM(NSInteger, NSScrollerStyle) {
+    NSScrollerStyleLegacy,
+    NSScrollerStyleOverlay
+};
+@interface NSScroller (SKLionDeclarations)
++ (NSScrollerStyle)preferredScrollerStyle;
+@end
+#endif
+
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
 @end
@@ -350,17 +360,20 @@ static NSArray *allMainDocumentPDFViews() {
 - (IBAction)doZoomToSelection:(id)sender {
     NSRect selRect = [pdfView currentSelectionRect];
     if (NSIsEmptyRect(selRect) == NO) {
+        BOOL isLegacy = [NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy;
         NSRect bounds = [pdfView bounds];
         CGFloat scale = 1.0;
-        bounds.size.width -= [NSScroller scrollerWidth];
-        bounds.size.height -= [NSScroller scrollerWidth];
+        if (isLegacy) {
+            bounds.size.width -= [NSScroller scrollerWidth];
+            bounds.size.height -= [NSScroller scrollerWidth];
+        }
         if (NSWidth(bounds) * NSHeight(selRect) > NSWidth(selRect) * NSHeight(bounds))
             scale = NSHeight(bounds) / NSHeight(selRect);
         else
             scale = NSWidth(bounds) / NSWidth(selRect);
         [pdfView setScaleFactor:scale];
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-        if ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO) {
+        if (isLegacy && ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO)) {
             bounds = [pdfView bounds];
             if ([scrollView hasVerticalScroller])
                 bounds.size.width -= [NSScroller scrollerWidth];
