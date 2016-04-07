@@ -502,7 +502,7 @@ enum {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if (saveOperation == NSAutosaveAsOperation && absoluteURL == nil)
+        if (saveOperation == NSAutosaveOperation && absoluteURL == nil)
             absoluteURL = [self autosavedContentsFileURL];
         
         if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
@@ -521,7 +521,7 @@ enum {
             [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         }
     
-        if ([[self class] isNativeType:typeName] && saveOperation != NSAutosaveAsOperation)
+        if ([[self class] isNativeType:typeName] && saveOperation != NSAutosaveOperation)
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     } else if (saveOperation == NSSaveOperation) {
         NSArray *skimNotes = [info objectForKey:SKIMNOTES_KEY];
@@ -559,7 +559,7 @@ enum {
     } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
         [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
-    } else if (saveOperation == NSAutosaveAsOperation) {
+    } else if (saveOperation == NSAutosaveOperation) {
         [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:didSaveSelector contextInfo:contextInfo];
         return;
     }
@@ -615,7 +615,7 @@ enum {
 - (void)autosaveDocumentWithDelegate:(id)delegate didAutosaveSelector:(SEL)didAutosaveSelector contextInfo:(void *)contextInfo {
     // on 10.7 and later (I think) this does not go through saveToURL:ofType:forSaveOperation:delegate:didSaveSelector:contextInfo:
     // but we still need to call the callback to write the notes
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[self fileType], TYPE_KEY, [NSNumber numberWithUnsignedInteger:NSAutosaveAsOperation], SAVEOPERATION_KEY, nil];
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[self fileType], TYPE_KEY, [NSNumber numberWithUnsignedInteger:NSAutosaveOperation], SAVEOPERATION_KEY, nil];
     if (delegate && didAutosaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didAutosaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
