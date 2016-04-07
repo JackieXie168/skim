@@ -80,7 +80,7 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if !defined(MAC_OS_X_VERSION_10_8) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_8
 @interface NSDocumentController (SKMountainLionDeclarations)
 // this is used in 10.8 and later from the openDocument: action
 - (void)beginOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)types completionHandler:(void (^)(NSInteger result))completionHandler;
