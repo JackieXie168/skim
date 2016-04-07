@@ -559,6 +559,9 @@ enum {
     } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
         [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
+    } else if (saveOperation == NSAutosaveAsOperation) {
+        [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:didSaveSelector contextInfo:contextInfo];
+        return;
     }
     // just to make sure
     if (saveOperation != NSSaveToOperation)
@@ -612,18 +615,13 @@ enum {
 - (void)autosaveDocumentWithDelegate:(id)delegate didAutosaveSelector:(SEL)didAutosaveSelector contextInfo:(void *)contextInfo {
     // on 10.7 and later (I think) this does not go through saveToURL:ofType:forSaveOperation:delegate:didSaveSelector:contextInfo:
     // but we still need to call the callback to write the notes
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6) {
-        NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[self fileType], TYPE_KEY, [NSNumber numberWithUnsignedInteger:NSAutosaveAsOperation], SAVEOPERATION_KEY, nil];
-        if (delegate && didAutosaveSelector) {
-            NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didAutosaveSelector];
-            [invocation setArgument:&contextInfo atIndex:4];
-            [info setObject:invocation forKey:CALLBACK_KEY];
-        }
-        delegate = self;
-        didAutosaveSelector = @selector(document:didSave:contextInfo:);
-        contextInfo = info;
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[self fileType], TYPE_KEY, [NSNumber numberWithUnsignedInteger:NSAutosaveAsOperation], SAVEOPERATION_KEY, nil];
+    if (delegate && didAutosaveSelector) {
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didAutosaveSelector];
+        [invocation setArgument:&contextInfo atIndex:4];
+        [info setObject:invocation forKey:CALLBACK_KEY];
     }
-    [super autosaveDocumentWithDelegate:delegate didAutosaveSelector:didAutosaveSelector contextInfo:contextInfo];
+    [super autosaveDocumentWithDelegate:self didAutosaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
