@@ -619,10 +619,11 @@ enum {
             [invocation setArgument:&contextInfo atIndex:4];
             [info setObject:invocation forKey:CALLBACK_KEY];
         }
+        delegate = self;
         didAutosaveSelector = @selector(document:didSave:contextInfo:);
         contextInfo = info;
     }
-    [super autosaveDocumentWithDelegate:self didAutosaveSelector:didAutosaveSelector contextInfo:contextInfo];
+    [super autosaveDocumentWithDelegate:delegate didAutosaveSelector:didAutosaveSelector contextInfo:contextInfo];
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
