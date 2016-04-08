@@ -506,6 +506,9 @@ enum {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
+        if (absoluteURL == nil && saveOperation == NSAutosaveOperation)
+            absoluteURL = [self autosavedContentsFileURL];
+        
         if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
@@ -553,7 +556,7 @@ enum {
     }
 }
 
-- (NSDictionary *)prepareForSaveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation callback:(NSInvocation *)callback {
+- (NSDictionary *)prepareForSaveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [fileUpdateChecker setEnabled:NO];
     } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
@@ -566,9 +569,16 @@ enum {
     
     NSURL *destURL = [absoluteURL filePathURL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:destURL, URL_KEY, typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, callback, CALLBACK_KEY, nil];
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
+    if (destURL)
+        [info setObject:destURL forKey:URL_KEY];
+    if (delegate && didSaveSelector) {
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
+        [invocation setArgument:&contextInfo atIndex:4];
+        [info setObject:invocation forKey:CALLBACK_KEY];
+    }
     
-    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation) {
+    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && saveOperation != NSAutosaveOperation) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         NSURL *tmpURL = nil;
@@ -604,29 +614,12 @@ enum {
     return info;
 }
 
-// On 10.7+ this method is always used, while the next is not used for autosave
-- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler {
-    
-    NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation callback:nil];
-    
-    [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation completionHandler:^(NSError *errorOrNil){
-        [self document:self didSave:errorOrNil == nil contextInfo:info];
-        if (completionHandler)
-            completionHandler(errorOrNil);
-    }];
-}
-
 // Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDocument needs to ask the user for permission, for instance to override a file lock
-// On 10.7+ we use the method above to prepare and call back, but on 10.6 that does not exist so we use this
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    
-    if ([NSDocument instancesRespondToSelector:@selector(saveToURL:ofType:forSaveOperation:completionHandler:)] == NO) {
-        NSInvocation *callback = nil;
-        if (delegate && didSaveSelector) {
-            callback = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
-            [callback setArgument:&contextInfo atIndex:4];
-        }
-        NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation callback:callback];
+    // Just to be sure, as for autosave we should have already done this
+    // This method probably won't be called anyway in that case, at least on newer systems, but I am not sure for 10.6
+    if (saveOperation != NSAutosaveOperation) {
+        NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
         
         delegate = self;
         didSaveSelector = @selector(document:didSave:contextInfo:);
@@ -634,6 +627,14 @@ enum {
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+}
+
+// Autosaving does not appear to go through saveToURL:..., at least on newer systems
+- (void)autosaveDocumentWithDelegate:(id)delegate didAutosaveSelector:(SEL)didAutosaveSelector contextInfo:(void *)contextInfo {
+    
+    NSDictionary *info = [self prepareForSaveToURL:nil ofType:[self fileType] forSaveOperation:NSAutosaveOperation delegate:delegate didSaveSelector:didAutosaveSelector contextInfo:contextInfo];
+    
+    [super autosaveDocumentWithDelegate:self didAutosaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
