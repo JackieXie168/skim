@@ -632,7 +632,7 @@ enum {
 // Autosaving does not appear to go through saveToURL:..., at least on newer systems
 - (void)autosaveDocumentWithDelegate:(id)delegate didAutosaveSelector:(SEL)didAutosaveSelector contextInfo:(void *)contextInfo {
     
-    NSDictionary *info = [self prepareForSaveToURL:nil ofType:[self fileType] forSaveOperation:NSAutosaveOperation delegate:delegate didSaveSelector:didAutosaveSelector contextInfo:contextInfo];
+    NSDictionary *info = [self prepareForSaveToURL:nil ofType:[self autosavingFileType] forSaveOperation:NSAutosaveOperation delegate:delegate didSaveSelector:didAutosaveSelector contextInfo:contextInfo];
     
     [super autosaveDocumentWithDelegate:self didAutosaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
