@@ -506,9 +506,6 @@ enum {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if (absoluteURL == nil && saveOperation == NSAutosaveOperation)
-            absoluteURL = [self autosavedContentsFileURL];
-        
         if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
@@ -569,9 +566,7 @@ enum {
     
     NSURL *destURL = [absoluteURL filePathURL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, nil];
-    if (destURL)
-        [info setObject:destURL forKey:URL_KEY];
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, destURL, URL_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
