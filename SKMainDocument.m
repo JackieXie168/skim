@@ -614,11 +614,25 @@ enum {
     return info;
 }
 
+// Prepare for saving and use callback to save notes and cleanup
+// On 10.7+ all save operations go through this method, so we use this
+- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler {
+    
+    NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:nil didSaveSelector:NULL contextInfo:NULL];
+    
+    [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation completionHandler:^(NSError *errorOrNil){
+        [self document:self didSave:errorOrNil == nil contextInfo:info];
+        if (completionHandler)
+            completionHandler(errorOrNil);
+    }];
+}
+
+// On 10.6 the above block method does not exist, and instead all save operations should go through this method
+// We can't use this on 10.7+ because autosave doesn't seem to use it
 // Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDocument needs to ask the user for permission, for instance to override a file lock
 - (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    // Just to be sure, as for autosave we should have already done this
-    // This method probably won't be called anyway in that case, at least on newer systems, but I am not sure for 10.6
-    if (saveOperation != NSAutosaveOperation) {
+    
+    if ([NSDocument instancesRespondToSelector:@selector(saveToURL:ofType:forSaveOperation:completionHandler:)] == NO) {
         NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
         
         delegate = self;
@@ -627,14 +641,6 @@ enum {
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
-}
-
-// Autosaving does not appear to go through saveToURL:..., at least on newer systems
-- (void)autosaveDocumentWithDelegate:(id)delegate didAutosaveSelector:(SEL)didAutosaveSelector contextInfo:(void *)contextInfo {
-    
-    NSDictionary *info = [self prepareForSaveToURL:nil ofType:[self autosavingFileType] forSaveOperation:NSAutosaveOperation delegate:delegate didSaveSelector:didAutosaveSelector contextInfo:contextInfo];
-    
-    [super autosaveDocumentWithDelegate:self didAutosaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
