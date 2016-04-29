@@ -882,24 +882,22 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         error = [NSError userCancelledErrorWithUnderlyingError:error];
                     }
                 }
-                if (pdfDoc) {
-                    NSURL *url = [absoluteURL URLReplacingPathExtension:@"skim"];
-                    if ([url checkResourceIsReachableAndReturnError:NULL]) {
-                        NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
-                        if (readOption == SKOptionAsk) {
-                            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-                            [alert setMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") ];
-                            [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]]];
-                            [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
-                            [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
-                            readOption = (NSAlertFirstButtonReturn == [alert runModal]) ? SKOptionAlways : SKOptionNever;
-                        }
-                        if (readOption == SKOptionAlways) {
-                            array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:url error:NULL];
-                            if ([array count]) {
-                                [tmpData setNoteDicts:array];
-                                [self updateChangeCount:NSChangeDone];
-                            }
+                NSURL *url = [absoluteURL URLReplacingPathExtension:@"skim"];
+                if ([url checkResourceIsReachableAndReturnError:NULL]) {
+                    NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
+                    if (readOption == SKOptionAsk) {
+                        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                        [alert setMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") ];
+                        [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]]];
+                        [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+                        [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+                        readOption = (NSAlertFirstButtonReturn == [alert runModal]) ? SKOptionAlways : SKOptionNever;
+                    }
+                    if (readOption == SKOptionAlways) {
+                        array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:url error:NULL];
+                        if ([array count]) {
+                            [tmpData setNoteDicts:array];
+                            [self updateChangeCount:NSChangeDone];
                         }
                     }
                 }
