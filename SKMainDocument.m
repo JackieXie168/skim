@@ -484,7 +484,6 @@ enum {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
         [alert setMessageText:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")];
         [alert setInformativeText:[NSString stringWithFormat:message, [absoluteURL lastPathComponent]]];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
         [alert runModal];
     }
     
@@ -1248,7 +1247,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
         [alert setMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document")];
         [alert setInformativeText:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }
