@@ -266,6 +266,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
     [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]];
     [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label]];
+    [alert addButtonWithTitle:NSLocalizedString(@"Reset", @"Button title")];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
     [alert beginSheetModalForWindow:[self window]
                       modalDelegate:self
