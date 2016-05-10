@@ -553,9 +553,11 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         
         NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
         [props removeObjectForKey:SKNPDFAnnotationTypeKey];
+        if (type == nil && contentsValue)
+            type = SKNHighlightString;
         
         if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
-            id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            id selSpec = contentsValue ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
             [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
@@ -613,8 +615,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
         } else if ([type isEqualToString:SKNLineString]) {
             annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
-        } else if (contentsValue) {
-            annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
         } else {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
             [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
@@ -622,11 +622,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 
         if (annotation) {
             [annotation registerUserName];
-            if (contentsValue) {
-                NSString *contentsKey = [[NSScriptClassDescription classDescriptionForClass:class] defaultSubcontainerAttributeKey];
-                if (contentsKey && [props objectForKey:contentsKey] == nil)
-                    [props setObject:contentsValue forKey:contentsKey];
-            }
             if ([props count])
                 [annotation setScriptingProperties:[annotation coerceValue:props forKey:@"scriptingProperties"]];
         }

@@ -1094,10 +1094,10 @@
                 description="The type of note.">
                 <cocoa key="type"/>
             </property>
-            <contents name="text" code="ctxt" type="rich text"
+            <property name="text" code="ctxt" type="rich text"
                 description="The text of the note. Attributes are ignored.">
                 <cocoa key="textContents"/>
-            </contents>
+            </property>
             <property name="color" code="colr" type="RGBA color"
                 description="The color of the note. Can be given as a list of (red, green, blue, alpha), a standard color (e.g. red), or a default color (e.g. text note color).">
                 <cocoa key="scriptingColor"/>
@@ -1175,11 +1175,11 @@
                 description="The end line style of a line.">
                 <cocoa key="scriptingEndLineStyle"/>
             </property>
-            <property name="selection" code="sele" access="r"
+            <contents name="selection" code="sele" access="r"
                 description="The selection for a highlight, underline, or strike out markup.">
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
-            </property>
+            </contents>
             <property name="path list" code="Pths" access="r"
                 description="The list of paths for a freehand or markup note.">
                 <type type="point list" list="yes"/>
