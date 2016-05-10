@@ -553,11 +553,20 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         
         NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
         [props removeObjectForKey:SKNPDFAnnotationTypeKey];
+        
+        NSString *textContents = nil;
+        id selectionContents = nil;
+        if ([contentsValue isKindOfClass:[NSString class]])
+            textContents = contentsValue;
+        else if ([contentsValue isKindOfClass:[NSAttributedString class]])
+            textContents = [contentsValue string];
+        else if (contentsValue)
+            selectionContents = contentsValue;
         if (type == nil && contentsValue)
-            type = SKNHighlightString;
+            type = textContents ? SKNFreeTextString : SKNHighlightString;
         
         if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
-            id selSpec = contentsValue ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            id selSpec = selectionContents ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
             [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
@@ -622,6 +631,8 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 
         if (annotation) {
             [annotation registerUserName];
+            if (textContents && [props objectForKey:SKPDFAnnotationScriptingTextContentsKey] == nil)
+                [props setObject:textContents forKey:SKPDFAnnotationScriptingTextContentsKey];
             if ([props count])
                 [annotation setScriptingProperties:[annotation coerceValue:props forKey:@"scriptingProperties"]];
         }

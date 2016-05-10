@@ -69,6 +69,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 NSString *SKPDFAnnotationScriptingColorKey = @"scriptingColor";
 NSString *SKPDFAnnotationScriptingModificationDateKey = @"scriptingModificationDate";
 NSString *SKPDFAnnotationScriptingUserNameKey = @"scriptingUserName";
+NSString *SKPDFAnnotationScriptingTextContentsKey = @"textContents";
 
 NSString *SKPDFAnnotationBoundsOrderKey = @"boundsOrder";
 
@@ -382,6 +383,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [customScriptingKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
+        [customScriptingKeys addObject:@"contents"];
         allCustomScriptingKeys = [customScriptingKeys copy];
     }
     // remove all custom properties that are not valid for this class
