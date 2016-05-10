@@ -1090,6 +1090,7 @@
                 description="The contents of the note.">
                 <type type="text"/>
                 <type type="rich text"/>
+                <type type="point list" list="yes"/>
                 <type type="specifier" list="yes"/>
             </contents>
             <property name="id" code="ID  " type="text" access="r"

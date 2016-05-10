@@ -541,6 +541,18 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     }
 }
 
+static BOOL isNestedDataList(id object, NSUInteger depth) {
+    if (depth == 0)
+        return [object isKindOfClass:[NSData class]];
+    if ([object isKindOfClass:[NSArray class]] == NO)
+        return NO;
+    for (id item in object) {
+        if (isNestedDataList(item, depth - 1) == NO)
+            return NO;
+    }
+    return YES;
+}
+
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
@@ -555,15 +567,18 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         [props removeObjectForKey:SKNPDFAnnotationTypeKey];
         
         NSString *textContents = nil;
+        NSArray *pathsContents = nil;
         id selectionContents = nil;
         if ([contentsValue isKindOfClass:[NSString class]])
             textContents = contentsValue;
         else if ([contentsValue isKindOfClass:[NSAttributedString class]])
             textContents = [contentsValue string];
+        else if (isNestedDataList(contentsValue, 2))
+            pathsContents = contentsValue;
         else if (contentsValue)
             selectionContents = contentsValue;
         if (type == nil && contentsValue)
-            type = textContents ? SKNFreeTextString : SKNHighlightString;
+            type = textContents ? SKNFreeTextString : pathsContents ? SKNInkString : SKNHighlightString;
         
         if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
             id selSpec = selectionContents ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
@@ -583,11 +598,11 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
             }
         } else if ([type isEqualToString:SKNInkString]) {
-            NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+            NSArray *pointLists = pathsContents ?: [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
             [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
             if ([pointLists isKindOfClass:[NSArray class]] == NO) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New freehand notes need a path list.", @"Error description")];
             } else {
                 NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
                 for (NSArray *list in pointLists) {
