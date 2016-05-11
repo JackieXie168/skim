@@ -383,7 +383,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [customScriptingKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
-        [customScriptingKeys addObject:@"contents"];
+        [customScriptingKeys addObject:@"contentsValue"];
         allCustomScriptingKeys = [customScriptingKeys copy];
     }
     // remove all custom properties that are not valid for this class
@@ -535,6 +535,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (NSArray *)scriptingPointLists {
     return nil;
+}
+
+- (id)contentsValue {
+    return [self textContents];
 }
 
 - (void)handleEditScriptCommand:(NSScriptCommand *)command {

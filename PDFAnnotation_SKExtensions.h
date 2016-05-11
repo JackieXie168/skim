@@ -136,6 +136,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (PDFLineStyle)scriptingEndLineStyle;
 - (id)selectionSpecifier;
 - (NSArray *)scriptingPointLists;
+- (NSArray *)contentsValue;
 
 - (void)handleEditScriptCommand:(NSScriptCommand *)command;
 
