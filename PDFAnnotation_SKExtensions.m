@@ -375,7 +375,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (NSDictionary *)scriptingProperties {
     static NSSet *allCustomScriptingKeys = nil;
     if (allCustomScriptingKeys == nil) {
-        NSMutableSet *customScriptingKeys = [NSMutableSet set];
+        NSMutableSet *customScriptingKeys = [NSMutableSet setWithObject:@"contentsValue"];
         [customScriptingKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
@@ -383,7 +383,6 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [customScriptingKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
-        [customScriptingKeys addObject:@"contentsValue"];
         allCustomScriptingKeys = [customScriptingKeys copy];
     }
     // remove all custom properties that are not valid for this class
