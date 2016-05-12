@@ -596,6 +596,7 @@ static BOOL isNestedDataList(id object, NSUInteger depth) {
                 else if ([type isEqualToString:SKNStrikeOutString])
                     markupType = kPDFMarkupTypeStrikeOut;
                 annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
+                textContents = [selection cleanedString];
             }
         } else if ([type isEqualToString:SKNInkString]) {
             NSArray *pointLists = pathsContents ?: [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
