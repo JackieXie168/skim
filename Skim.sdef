@@ -1086,14 +1086,6 @@
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
             </element>
-            <contents name="contents value" access="r" hidden="yes"
-                description="The contents of the note.">
-                <type type="text"/>
-                <type type="rich text"/>
-                <type type="point list" list="yes"/>
-                <type type="specifier" list="yes"/>
-                <cocoa key="contentsValue"/>
-            </contents>
             <property name="id" code="ID  " type="text" access="r"
                 description="Unique ID of the note.">
                 <cocoa key="uniqueID"/>
@@ -1183,11 +1175,11 @@
                 description="The end line style of a line.">
                 <cocoa key="scriptingEndLineStyle"/>
             </property>
-            <property name="selection" code="sele" access="r"
+            <contents name="selection" code="sele" access="r"
                 description="The selection for a highlight, underline, or strike out markup.">
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
-            </property>
+            </contents>
             <property name="path list" code="Pths" access="r"
                 description="The list of paths for a freehand or markup note.">
                 <type type="point list" list="yes"/>

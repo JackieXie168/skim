@@ -375,7 +375,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (NSDictionary *)scriptingProperties {
     static NSSet *allCustomScriptingKeys = nil;
     if (allCustomScriptingKeys == nil) {
-        NSMutableSet *customScriptingKeys = [NSMutableSet setWithObject:@"contentsValue"];
+        NSMutableSet *customScriptingKeys = [NSMutableSet set];
         [customScriptingKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
         [customScriptingKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
@@ -534,10 +534,6 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (NSArray *)scriptingPointLists {
     return nil;
-}
-
-- (id)contentsValue {
-    return [self textContents];
 }
 
 - (void)handleEditScriptCommand:(NSScriptCommand *)command {

@@ -565,23 +565,11 @@ static BOOL isNestedDataList(id object, NSUInteger depth) {
         
         NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
         [props removeObjectForKey:SKNPDFAnnotationTypeKey];
-        
-        NSString *textContents = nil;
-        NSArray *pathsContents = nil;
-        id selectionContents = nil;
-        if ([contentsValue isKindOfClass:[NSString class]])
-            textContents = contentsValue;
-        else if ([contentsValue isKindOfClass:[NSAttributedString class]])
-            textContents = [contentsValue string];
-        else if (isNestedDataList(contentsValue, 2))
-            pathsContents = contentsValue;
-        else if (contentsValue)
-            selectionContents = contentsValue;
         if (type == nil && contentsValue)
-            type = textContents ? SKNFreeTextString : pathsContents ? SKNInkString : SKNHighlightString;
+            type = SKNHighlightString;
         
         if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
-            id selSpec = selectionContents ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            id selSpec = contentsValue ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
             [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
@@ -596,10 +584,11 @@ static BOOL isNestedDataList(id object, NSUInteger depth) {
                 else if ([type isEqualToString:SKNStrikeOutString])
                     markupType = kPDFMarkupTypeStrikeOut;
                 annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
-                textContents = [selection cleanedString];
+                if ([props objectForKey:SKPDFAnnotationScriptingTextContentsKey] == nil)
+                    [props setValue:[selection cleanedString] forKey:SKPDFAnnotationScriptingTextContentsKey];
             }
         } else if ([type isEqualToString:SKNInkString]) {
-            NSArray *pointLists = pathsContents ?: [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+            NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
             [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
             if ([pointLists isKindOfClass:[NSArray class]] == NO) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -647,8 +636,6 @@ static BOOL isNestedDataList(id object, NSUInteger depth) {
 
         if (annotation) {
             [annotation registerUserName];
-            if (textContents && [props objectForKey:SKPDFAnnotationScriptingTextContentsKey] == nil)
-                [props setObject:textContents forKey:SKPDFAnnotationScriptingTextContentsKey];
             if ([props count])
                 [annotation setScriptingProperties:[annotation coerceValue:props forKey:@"scriptingProperties"]];
         }

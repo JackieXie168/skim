@@ -1828,11 +1828,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
-        id selSpec = nil;
-        if ([contentsValue isKindOfClass:[NSString class]] == NO && [contentsValue isKindOfClass:[NSAttributedString class]] == NO)
-            selSpec = contentsValue;
-        if (selSpec == nil)
-            selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+        id selSpec = contentsValue ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
         PDFPage *page = selSpec ? [[PDFSelection selectionWithSpecifier:selSpec] safeFirstPage] : nil;
         if (page == nil || [page document] != [self pdfDocument]) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
