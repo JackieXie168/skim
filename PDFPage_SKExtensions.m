@@ -541,18 +541,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     }
 }
 
-static BOOL isNestedDataList(id object, NSUInteger depth) {
-    if (depth == 0)
-        return [object isKindOfClass:[NSData class]];
-    if ([object isKindOfClass:[NSArray class]] == NO)
-        return NO;
-    for (id item in object) {
-        if (isNestedDataList(item, depth - 1) == NO)
-            return NO;
-    }
-    return YES;
-}
-
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
