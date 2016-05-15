@@ -642,6 +642,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 if ([properties count])
                     [copiedAnnotation setScriptingProperties:[copiedAnnotation coerceValue:properties forKey:@"scriptingProperties"]];
                 [copiedValue addObject:copiedAnnotation];
+                [copiedAnnotation release];
             } else {
                 // we don't want to duplicate markup
                 NSScriptCommand *cmd = [NSScriptCommand currentCommand];
