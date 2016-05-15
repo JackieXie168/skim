@@ -545,12 +545,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
         NSMutableDictionary *props = [[properties mutableCopy] autorelease];
-        
-        NSRect bounds = NSZeroRect;
-        bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
-        bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        bounds = NSIntegralRect(SKRectFromCenterAndSize(SKIntegralPoint(SKCenterPoint([self boundsForBox:kPDFDisplayBoxCropBox])), bounds.size));
-        
         NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
         [props removeObjectForKey:SKNPDFAnnotationTypeKey];
         if (type == nil && contentsValue)
@@ -606,22 +600,30 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
                 [paths release];
             }
-        } else if ([type isEqualToString:SKNFreeTextString]) {
-            annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
-        } else if ([type isEqualToString:SKNNoteString]) {
-            bounds.size = SKNPDFAnnotationNoteSize;
-            annotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
-        } else if ([type isEqualToString:SKNCircleString]) {
-            annotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
-        } else if ([type isEqualToString:SKNSquareString]) {
-            annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
-        } else if ([type isEqualToString:SKNLineString]) {
-            annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
         } else {
-            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-            [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+            NSRect bounds = NSZeroRect;
+            bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+            bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+            if ([type isEqualToString:SKNNoteString])
+                bounds.size = SKNPDFAnnotationNoteSize;
+            bounds = NSIntegralRect(SKRectFromCenterAndSize(SKIntegralPoint(SKCenterPoint([self boundsForBox:kPDFDisplayBoxCropBox])), bounds.size));
+            
+            if ([type isEqualToString:SKNFreeTextString]) {
+                annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+            } else if ([type isEqualToString:SKNNoteString]) {
+                annotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
+            } else if ([type isEqualToString:SKNCircleString]) {
+                annotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
+            } else if ([type isEqualToString:SKNSquareString]) {
+                annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
+            } else if ([type isEqualToString:SKNLineString]) {
+                annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+            } else {
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+            }
         }
-
+        
         if (annotation) {
             [annotation registerUserName];
             if ([props count])
