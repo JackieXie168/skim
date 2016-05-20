@@ -108,6 +108,7 @@ extern NSString *SKShowNotesStatusBarKey;
 extern NSString *SKEnableAppleRemoteKey;
 extern NSString *SKAppleRemoteSwitchIndicationTimeoutKey;
 extern NSString *SKReadMissingNotesFromSkimFileOptionKey;
+extern NSString *SKReadNonMissingNotesFromSkimFileOptionKey;
 extern NSString *SKSavePasswordOptionKey;
 extern NSString *SKBlankAllScreensInFullScreenKey;
 extern NSString *SKFullScreenNavigationOptionKey;

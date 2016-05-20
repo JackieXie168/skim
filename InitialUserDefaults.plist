@@ -198,6 +198,8 @@
 		<real>2</real>
 		<key>SKReadMissingNotesFromSkimFileOption</key>
 		<integer>-1</integer>
+		<key>SKReadNonMissingNotesFromSkimFileOption - 2</key>
+		<integer>0</integer>
 		<key>SKSavePasswordOption</key>
 		<integer>-1</integer>
 		<key>SKBlankAllScreensInFullScreen</key>
@@ -323,6 +325,7 @@
 			<string>SKActivateFullScreenNavigationAtBottom</string>
 			<string>SKActivatePresentationNavigationAtBottom</string>
 			<string>SKReadMissingNotesFromSkimFileOption</string>
+			<string>SKReadNonMissingNotesFromSkimFileOption</string>
 			<string>SKEnableAppleRemote</string>
 			<string>SKAppleRemoteSwitchIndicationTimeout</string>
 		</array>
