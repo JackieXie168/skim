@@ -198,7 +198,7 @@
 		<real>2</real>
 		<key>SKReadMissingNotesFromSkimFileOption</key>
 		<integer>-1</integer>
-		<key>SKReadNonMissingNotesFromSkimFileOption - 2</key>
+		<key>SKReadNonMissingNotesFromSkimFileOption</key>
 		<integer>0</integer>
 		<key>SKSavePasswordOption</key>
 		<integer>-1</integer>
