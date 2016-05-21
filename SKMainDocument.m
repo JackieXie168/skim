@@ -1605,7 +1605,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
-    return [[document fileIDStrings] lastObject] ?: [originalData md5String];
+    return [[document fileIDStrings] lastObject] ?: [pdfData md5String];
 }
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
