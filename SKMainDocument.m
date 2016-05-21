@@ -814,7 +814,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
-    BOOL didRead = NO;
     NSData *fileData = nil;
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
@@ -911,7 +910,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     if (data) {
         if (pdfDoc) {
-            didRead = YES;
             [self setPDFData:data];
             [tmpData setPdfDocument:pdfDoc];
             [self setOriginalData:fileData];
@@ -947,13 +945,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     [fileData release];
     
-    if (didRead == NO) {
+    if ([tmpData pdfDocument] == nil) {
         SKDESTROY(tmpData);
         if (outError)
             *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+        return NO;
+    } else {
+        return YES;
     }
-    
-    return didRead;
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
