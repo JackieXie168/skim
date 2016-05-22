@@ -920,14 +920,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             NSArray *array = nil;
             NSNumber *number = nil;
             if ([docType isEqualToString:SKPDFBundleDocumentType]) {
-                NSData *infoData = [NSData dataWithContentsOfURL:[[absoluteURL URLByAppendingPathComponent:BUNDLE_DATA_FILENAME] URLByAppendingPathExtension:@"plist"]];
-                if (infoData) {
-                    NSDictionary *info = [NSPropertyListSerialization propertyListWithData:infoData options:NSPropertyListImmutable format:NULL error:NULL];
-                    if ([info isKindOfClass:[NSDictionary class]]) {
-                        dictionary = [info objectForKey:SKPresentationOptionsKey];
-                        array = [info objectForKey:SKTagsKey];
-                        number = [info objectForKey:SKRatingKey];
-                    }
+                NSDictionary *info = [NSDictionary dictionaryWithContentsOfURL:[[absoluteURL URLByAppendingPathComponent:BUNDLE_DATA_FILENAME] URLByAppendingPathExtension:@"plist"]];
+                if ([info isKindOfClass:[NSDictionary class]]) {
+                    dictionary = [info objectForKey:SKPresentationOptionsKey];
+                    array = [info objectForKey:SKTagsKey];
+                    number = [info objectForKey:SKRatingKey];
                 }
             } else {
                 SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
