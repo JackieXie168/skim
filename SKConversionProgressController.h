@@ -45,6 +45,7 @@
     NSTextField *textField;
     NSString *fileType;
     CGPSConverterRef converter;
+    CGDataProviderRef provider;
     NSTask *task;
     NSURL *outputFileURL;
     NSData *outputData;
@@ -55,9 +56,8 @@
 @property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
 
++ (NSData *)newPDFDataFromURL:(NSURL *)dviURL ofType:(NSString *)aFileType error:(NSError **)outError;
 + (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-+ (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL error:(NSError **)outError;
-+ (NSData *)newPDFDataWithXDVAtURL:(NSURL *)xdvURL error:(NSError **)outError;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;

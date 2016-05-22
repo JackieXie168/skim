@@ -851,12 +851,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 data = [fileData retain];
                 pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else {
-                if ([ws type:docType conformsToType:SKPostScriptDocumentType])
-                    data = [SKConversionProgressController newPDFDataWithPostScriptData:fileData error:&error];
-                else if ([ws type:docType conformsToType:SKDVIDocumentType])
-                    data = [SKConversionProgressController newPDFDataWithDVIAtURL:absoluteURL error:&error];
-                else if ([ws type:docType conformsToType:SKXDVDocumentType])
-                    data = [SKConversionProgressController newPDFDataWithXDVAtURL:absoluteURL error:&error];
+                data = [SKConversionProgressController newPDFDataFromURL:absoluteURL ofType:docType error:&error];
                 if (data)
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }

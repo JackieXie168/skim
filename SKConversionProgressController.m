@@ -63,10 +63,8 @@ enum {
 };
 
 @interface SKConversionProgressController (Private)
-+ (NSString *)dviToolPath;
-+ (NSString *)xdvToolPath;
 - (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-- (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError;
+- (NSData *)newPDFDataFromURL:(NSURL *)dviURL ofType:(NSString *)aFileType error:(NSError **)outError;
 - (void)conversionCompleted;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -106,32 +104,20 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @synthesize cancelButton, progressBar, textField;
 
++ (NSData *)newPDFDataFromURL:(NSURL *)aURL ofType:(NSString *)aFileType error:(NSError **)outError {
+    return [[[[self alloc] init] autorelease] newPDFDataFromURL:aURL ofType:aFileType error:outError];
+}
+
 + (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
     return [[[[self alloc] init] autorelease] newPDFDataWithPostScriptData:psData error:outError];
 }
 
-+ (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL error:(NSError **)outError {
-    NSString *dviToolPath = [self dviToolPath];
-    if (dviToolPath)
-        return [[[[self alloc] init] autorelease] newPDFDataWithDVIAtURL:dviURL toolPath:dviToolPath fileType:SKDVIDocumentType error:outError];
-    else
-        NSBeep();
-    return nil;
-}
-
-+ (NSData *)newPDFDataWithXDVAtURL:(NSURL *)xdvURL error:(NSError **)outError {
-    NSString *xdvToolPath = [self xdvToolPath];
-    if (xdvToolPath)
-        return [[[[self alloc] init] autorelease] newPDFDataWithDVIAtURL:xdvURL toolPath:xdvToolPath fileType:SKXDVDocumentType error:outError];
-    else
-        NSBeep();
-    return nil;
-}
-
 - (void)dealloc {
+    SKCFDESTROY(fileType);
     SKCFDESTROY(converter);
     SKDESTROY(outputFileURL);
     SKDESTROY(outputData);
+    SKCFDESTROY(provider);
     SKDESTROY(task);
     SKDESTROY(cancelButton);
     SKDESTROY(progressBar);
@@ -185,20 +171,18 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     SKAutoSizeButtons([NSArray arrayWithObjects:cancelButton, nil], YES);
 }
 
-#pragma mark PostScript
-
 - (void)stopModalWithResult:(NSNumber *)result {
     [NSApp stopModalWithCode:[result boolValue] ? SKConversionSucceeded : SKConversionFailed];
 }
 
-- (void)convertPostScriptData:(NSData *)psData {
+- (void)convertPostScriptData {
     // pass self as info
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
     NSAssert(converter != NULL, @"unable to create PS converter");
+    NSAssert(provider != NULL, @"no PS data provider");
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        CFMutableDataRef pdfData = CFDataCreateMutable(CFGetAllocator((CFDataRef)psData), 0);
-        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
+        CFMutableDataRef pdfData = CFDataCreateMutable(kCFAllocatorDefault, 0);
         CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
         
         Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
@@ -206,7 +190,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         if (success)
             outputData = [(NSData *)pdfData copy];
         
-        CGDataProviderRelease(provider);
         CGDataConsumerRelease(consumer);
         CFRelease(pdfData);
         
@@ -216,43 +199,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
 }
 
-- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
-    NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
-    
-    fileType = SKPostScriptDocumentType;
-    cancelled = NO;
-    
-    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
-    NSInteger rv = NSRunContinuesResponse;
-    
-    [self convertPostScriptData:psData];
-    
-    while (rv == NSRunContinuesResponse)
-        rv = [NSApp runModalSession:session];
-    [NSApp endModalSession:session];
-    
-    if (rv != SKConversionSucceeded && outError) {
-        if (cancelled)
-            *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
-        else
-            *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
-    }
-    
-    [self close];
-    
-    return [outputData retain];
-}
-
-#pragma mark DVI and XDV
-
-+ (NSString *)newToolPath:(NSString *)commandPath supportedTools:(NSArray *)supportedTools {
+static NSString *createToolPathForCommand(NSString *commandPath, NSArray *supportedTools) {
     NSString *commandName = [commandPath lastPathComponent];
     NSArray *paths = [NSArray arrayWithObjects:@"/Library/TeX/texbin", @"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
     NSInteger i = 0, iMax = [paths count];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSEnumerator *toolEnum = [supportedTools objectEnumerator];
     
-    NSAssert1(commandName == nil || [supportedTools containsObject:commandName], @"converter %@ is not supported", commandName);
     if (commandName == nil || [supportedTools containsObject:commandName] == NO)
         commandName = [toolEnum nextObject];
     do {
@@ -269,80 +222,99 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return [commandPath retain];
 }
 
-+ (NSString *)dviToolPath {
+static NSString *dviToolPath() {
     static NSString *dviToolPath = nil;
     if (dviToolPath == nil) {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
         NSArray *supportedTools = [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil];
-        dviToolPath = [self newToolPath:commandPath supportedTools:supportedTools];
+        dviToolPath = createToolPathForCommand(commandPath, supportedTools);
     }
     return dviToolPath;
 }
 
-+ (NSString *)xdvToolPath {
+static NSString *xdvToolPath() {
     static NSString *xdvToolPath = nil;
     if (xdvToolPath == nil) {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKXdvConversionCommandKey];
         NSArray *supportedTools = [NSArray arrayWithObjects:@"xdvipdfmx", @"xdv2pdf", nil];
-        xdvToolPath = [self newToolPath:commandPath supportedTools:supportedTools];
+        xdvToolPath = createToolPathForCommand(commandPath, supportedTools);
     }
     return xdvToolPath;
 }
 
 - (void)taskFinished:(NSNotification *)notification {
-    NSData *outData = nil;
     BOOL success = [[notification object] terminationStatus] == 0 &&
                    [outputFileURL checkResourceIsReachableAndReturnError:NULL] &&
                    cancelled == NO;
     
     SKDESTROY(task);
     
-    if (success)
-        outData = [NSData dataWithContentsOfURL:outputFileURL];
-    
     if (success && [[outputFileURL pathExtension] isCaseInsensitiveEqual:@"ps"]) {
-        [self convertPostScriptData:outData];
+        provider = CGDataProviderCreateWithURL((CFURLRef)outputFileURL);
+        [self convertPostScriptData];
     } else {
         if (success)
-            outputData = [outData retain];
+            outputData = [[NSData alloc] initWithContentsOfURL:outputFileURL];
         [self conversionCompleted];
         [NSApp stopModalWithCode:success ? SKConversionSucceeded : SKConversionFailed];
     }
 }
 
-- (NSData *)newPDFDataWithDVIAtURL:(NSURL *)dviURL toolPath:(NSString *)toolPath fileType:(NSString *)aFileType error:(NSError **)outError {
-    NSAssert(NULL == converter, @"attempted to reenter SKConversionProgressController, but this is not supported");
+- (NSData *)newPDFDataFromURL:(NSURL *)aURL ofType:(NSString *)aFileType error:(NSError **)outError {
+    NSAssert(NULL == converter && nil == task, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
-    fileType = aFileType;
+    fileType = [aFileType retain];
     cancelled = NO;
     
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *commandName = [toolPath lastPathComponent];
-    NSURL *tmpDirURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:dviURL create:YES error:NULL];
-    BOOL outputPS = [commandName isEqualToString:@"dvips"];
-    NSURL *outFileURL = [tmpDirURL URLByAppendingPathComponent:[dviURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
-    NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:[dviURL path], [outFileURL path], nil] : [NSArray arrayWithObjects:@"-o", [outFileURL path], [dviURL path], nil];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    task = [[NSTask alloc] init];
-    [task setLaunchPath:toolPath];
-    [task setArguments:arguments];
-    [task setCurrentDirectoryPath:[[dviURL URLByDeletingLastPathComponent] path]];
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
-    
-    outputFileURL = [outFileURL retain];
+    if ([ws type:fileType conformsToType:SKPostScriptDocumentType] == NO) {
+        
+        NSString *toolPath = nil;
+        if ([ws type:fileType conformsToType:SKDVIDocumentType])
+            toolPath = dviToolPath();
+        else if ([ws type:fileType conformsToType:SKXDVDocumentType])
+            toolPath = xdvToolPath();
+        if (toolPath) {
+            NSString *commandName = [toolPath lastPathComponent];
+            NSURL *tmpDirURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:aURL create:YES error:NULL];
+            BOOL outputPS = [commandName isEqualToString:@"dvips"];
+            NSURL *outFileURL = [tmpDirURL URLByAppendingPathComponent:[aURL lastPathComponentReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
+            NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:[aURL path], [outFileURL path], nil] : [NSArray arrayWithObjects:@"-o", [outFileURL path], [aURL path], nil];
+            
+            task = [[NSTask alloc] init];
+            [task setLaunchPath:toolPath];
+            [task setArguments:arguments];
+            [task setCurrentDirectoryPath:[[aURL URLByDeletingLastPathComponent] path]];
+            [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+            [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
+            
+            outputFileURL = [outFileURL retain];
+        }
+        
+    } else if (aURL) {
+        
+        provider = CGDataProviderCreateWithURL((CFURLRef)aURL);
+        
+    }
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     NSInteger rv = NSRunContinuesResponse;
     
-    @try {
-        [task launch];
-        [self conversionStarted];
-    }
-    @catch(id exception) {
-        SKDESTROY(task);
+    if (provider) {
+        [self convertPostScriptData];
+    } else if (task) {
+        @try {
+            [task launch];
+            [self conversionStarted];
+        }
+        @catch(id exception) {
+            SKDESTROY(task);
+            [NSApp stopModalWithCode:SKConversionFailed];
+        }
+    } else {
         [NSApp stopModalWithCode:SKConversionFailed];
     }
     
@@ -350,7 +322,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         rv = [NSApp runModalSession:session];
     [NSApp endModalSession:session];
     
-    [fm removeItemAtURL:tmpDirURL error:NULL];
+    if (outputFileURL)
+        [[NSFileManager defaultManager] removeItemAtURL:[outputFileURL URLByDeletingLastPathComponent] error:NULL];
     
     if (rv != SKConversionSucceeded && outError) {
         if (cancelled)
@@ -362,6 +335,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [self close];
     
     return [outputData retain];
+}
+
+- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
+    provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
+    return [self newPDFDataFromURL:nil ofType:SKPostScriptDocumentType error:outError];
 }
 
 @end
