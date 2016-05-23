@@ -848,7 +848,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
     } else  {
-        if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
+        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
             if ([ws type:docType conformsToType:SKPDFDocumentType]) {
                 pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else {
