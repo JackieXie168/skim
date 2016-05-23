@@ -778,15 +778,17 @@ enum {
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError {
-    NSData *inData = data;
+    NSData *inData = nil;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
     [tmpData release];
     tmpData = [[SKTemporaryData alloc] init];
     
-    if ([[NSWorkspace sharedWorkspace] type:docType conformsToType:SKPostScriptDocumentType])
+    if ([[NSWorkspace sharedWorkspace] type:docType conformsToType:SKPostScriptDocumentType]) {
+        inData = data;
         data = [[SKConversionProgressController newPDFDataWithPostScriptData:data error:&error] autorelease];
+    }
     
     if (data)
         pdfDoc = [[SKPDFDocument alloc] initWithData:data];
@@ -848,9 +850,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else  {
         if ((fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
             if ([ws type:docType conformsToType:SKPDFDocumentType]) {
-                data = [fileData retain];
                 pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else {
+                fileData = data;
                 data = [SKConversionProgressController newPDFDataFromURL:absoluteURL ofType:docType error:&error];
                 if (data)
                     pdfDoc = [[SKPDFDocument alloc] initWithData:data];
