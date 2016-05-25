@@ -45,7 +45,6 @@
     NSTextField *textField;
     NSString *fileType;
     CGPSConverterRef converter;
-    CGDataProviderRef provider;
     NSTask *task;
     NSURL *outputFileURL;
     NSData *outputData;

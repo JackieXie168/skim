@@ -63,8 +63,7 @@ enum {
 };
 
 @interface SKConversionProgressController (Private)
-- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
-- (NSData *)newPDFDataFromURL:(NSURL *)dviURL ofType:(NSString *)aFileType error:(NSError **)outError;
+- (NSData *)newPDFDataFromURL:(NSURL *)aURL orData:(NSData *)aData ofType:(NSString *)aFileType error:(NSError **)outError;
 - (void)conversionCompleted;
 - (void)conversionStarted;
 - (void)converterWasStopped;
@@ -105,11 +104,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 @synthesize cancelButton, progressBar, textField;
 
 + (NSData *)newPDFDataFromURL:(NSURL *)aURL ofType:(NSString *)aFileType error:(NSError **)outError {
-    return [[[[self alloc] init] autorelease] newPDFDataFromURL:aURL ofType:aFileType error:outError];
+    return [[[[self alloc] init] autorelease] newPDFDataFromURL:aURL orData:nil ofType:aFileType error:outError];
 }
 
 + (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
-    return [[[[self alloc] init] autorelease] newPDFDataWithPostScriptData:psData error:outError];
+    return [[[[self alloc] init] autorelease] newPDFDataFromURL:nil orData:psData ofType:SKPostScriptDocumentType error:outError];
 }
 
 - (void)dealloc {
@@ -117,7 +116,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     SKCFDESTROY(converter);
     SKDESTROY(outputFileURL);
     SKDESTROY(outputData);
-    SKCFDESTROY(provider);
     SKDESTROY(task);
     SKDESTROY(cancelButton);
     SKDESTROY(progressBar);
@@ -175,11 +173,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [NSApp stopModalWithCode:[result boolValue] ? SKConversionSucceeded : SKConversionFailed];
 }
 
-- (void)convertPostScriptData {
+- (void)convertPostScriptWithProvider:(CGDataProviderRef)provider {
     // pass self as info
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
     NSAssert(converter != NULL, @"unable to create PS converter");
     NSAssert(provider != NULL, @"no PS data provider");
+    CFRetain(provider);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         CFMutableDataRef pdfData = CFDataCreateMutable(kCFAllocatorDefault, 0);
@@ -190,6 +189,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         if (success)
             outputData = [(NSData *)pdfData copy];
         
+        CGDataProviderRelease(provider);
         CGDataConsumerRelease(consumer);
         CFRelease(pdfData);
         
@@ -231,8 +231,9 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
     SKDESTROY(task);
     
     if (success && [[outputFileURL pathExtension] isCaseInsensitiveEqual:@"ps"]) {
-        provider = CGDataProviderCreateWithURL((CFURLRef)outputFileURL);
-        [self convertPostScriptData];
+        CGDataProviderRef provider = CGDataProviderCreateWithURL((CFURLRef)outputFileURL);
+        [self convertPostScriptWithProvider:provider];
+        CGDataProviderRelease(provider);
     } else {
         if (success)
             outputData = [[NSData alloc] initWithContentsOfURL:outputFileURL];
@@ -241,13 +242,14 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
     }
 }
 
-- (NSData *)newPDFDataFromURL:(NSURL *)aURL ofType:(NSString *)aFileType error:(NSError **)outError {
+- (NSData *)newPDFDataFromURL:(NSURL *)aURL orData:(NSData *)aData ofType:(NSString *)aFileType error:(NSError **)outError {
     NSAssert(NULL == converter && nil == task, @"attempted to reenter SKConversionProgressController, but this is not supported");
     
     fileType = [aFileType retain];
     cancelled = NO;
     
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    CGDataProviderRef provider = NULL;
     
     if ([ws type:fileType conformsToType:SKPostScriptDocumentType] == NO) {
         
@@ -286,13 +288,18 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
         
         provider = CGDataProviderCreateWithURL((CFURLRef)aURL);
         
+    } else if (aData) {
+        
+        provider = CGDataProviderCreateWithCFData((CFDataRef)aData);
+        
     }
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     NSInteger rv = NSRunContinuesResponse;
     
     if (provider) {
-        [self convertPostScriptData];
+        [self convertPostScriptWithProvider:provider];
+        CGDataProviderRelease(provider);
     } else if (task) {
         @try {
             [task launch];
@@ -323,11 +330,6 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
     [self close];
     
     return [outputData retain];
-}
-
-- (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError {
-    provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
-    return [self newPDFDataFromURL:nil ofType:SKPostScriptDocumentType error:outError];
 }
 
 @end
