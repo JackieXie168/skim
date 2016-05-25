@@ -199,7 +199,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
 }
 
-static NSString *createToolPathForCommand(NSString *commandPath, NSArray *supportedTools) {
+static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *supportedTools) {
+    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:defaultKey];
     NSString *commandName = [commandPath lastPathComponent];
     NSArray *paths = [NSArray arrayWithObjects:@"/Library/TeX/texbin", @"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
     NSInteger i = 0, iMax = [paths count];
@@ -220,26 +221,6 @@ static NSString *createToolPathForCommand(NSString *commandPath, NSArray *suppor
     } while (commandPath == nil && (commandName = [toolEnum nextObject]));
     
     return [commandPath retain];
-}
-
-static NSString *dviToolPath() {
-    static NSString *dviToolPath = nil;
-    if (dviToolPath == nil) {
-        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
-        NSArray *supportedTools = [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil];
-        dviToolPath = createToolPathForCommand(commandPath, supportedTools);
-    }
-    return dviToolPath;
-}
-
-static NSString *xdvToolPath() {
-    static NSString *xdvToolPath = nil;
-    if (xdvToolPath == nil) {
-        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKXdvConversionCommandKey];
-        NSArray *supportedTools = [NSArray arrayWithObjects:@"xdvipdfmx", @"xdv2pdf", nil];
-        xdvToolPath = createToolPathForCommand(commandPath, supportedTools);
-    }
-    return xdvToolPath;
 }
 
 - (void)taskFinished:(NSNotification *)notification {
@@ -271,10 +252,17 @@ static NSString *xdvToolPath() {
     if ([ws type:fileType conformsToType:SKPostScriptDocumentType] == NO) {
         
         NSString *toolPath = nil;
-        if ([ws type:fileType conformsToType:SKDVIDocumentType])
-            toolPath = dviToolPath();
-        else if ([ws type:fileType conformsToType:SKXDVDocumentType])
-            toolPath = xdvToolPath();
+        if ([ws type:fileType conformsToType:SKDVIDocumentType]) {
+            static NSString *dviToolPath = nil;
+            if (dviToolPath == nil)
+                dviToolPath = createToolPathForCommand(SKDviConversionCommandKey, [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil]);
+            toolPath = dviToolPath;
+        } else if ([ws type:fileType conformsToType:SKXDVDocumentType]) {
+            static NSString *xdvToolPath = nil;
+            if (xdvToolPath == nil)
+                xdvToolPath = createToolPathForCommand(SKXdvConversionCommandKey, [NSArray arrayWithObjects:@"xdvipdfmx", @"xdv2pdf", nil]);
+            toolPath = xdvToolPath;
+        }
         if (toolPath) {
             NSString *commandName = [toolPath lastPathComponent];
             NSURL *tmpDirURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:aURL create:YES error:NULL];
