@@ -55,7 +55,7 @@
 @property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
 
-+ (NSData *)newPDFDataFromURL:(NSURL *)dviURL ofType:(NSString *)aFileType error:(NSError **)outError;
++ (NSData *)newPDFDataFromURL:(NSURL *)aURL ofType:(NSString *)aFileType error:(NSError **)outError;
 + (NSData *)newPDFDataWithPostScriptData:(NSData *)psData error:(NSError **)outError;
 
 - (IBAction)cancel:(id)sender;
