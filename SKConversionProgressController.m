@@ -178,7 +178,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
     NSAssert(converter != NULL, @"unable to create PS converter");
     NSAssert(provider != NULL, @"no PS data provider");
-    CFRetain(provider);
+    CGDataProviderRetain(provider);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         CFMutableDataRef pdfData = CFDataCreateMutable(kCFAllocatorDefault, 0);
