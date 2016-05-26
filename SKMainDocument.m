@@ -847,16 +847,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             }
         }
-    } else  {
-        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
-            if ([ws type:docType conformsToType:SKPDFDocumentType]) {
-                pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
-            } else {
-                fileData = data;
-                data = [SKConversionProgressController newPDFDataFromURL:absoluteURL ofType:docType error:&error];
-                if (data)
-                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
-            }
+    } else if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSDataReadingUncached error:&error])) {
+        if ([ws type:docType conformsToType:SKPDFDocumentType]) {
+            pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
+        } else {
+            fileData = data;
+            if ((data = [SKConversionProgressController newPDFDataFromURL:absoluteURL ofType:docType error:&error]))
+                pdfDoc = [[SKPDFDocument alloc] initWithData:data];
         }
         if (pdfDoc) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
