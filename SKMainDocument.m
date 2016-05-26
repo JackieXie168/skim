@@ -879,7 +879,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             }
             NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:[array count] ? SKReadNonMissingNotesFromSkimFileOptionKey : SKReadMissingNotesFromSkimFileOptionKey];
-            if (readOption != SKOptionNever) {
+            if (pdfDoc && readOption != SKOptionNever) {
                 NSURL *notesURL = [absoluteURL URLReplacingPathExtension:@"skim"];
                 if ([notesURL checkResourceIsReachableAndReturnError:NULL]) {
                     if (readOption == SKOptionAsk) {
