@@ -893,10 +893,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     }
                     if (readOption == SKOptionAlways) {
                         array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:notesURL error:NULL];
-                        if ([array count]) {
+                        if ([array count] && [array isEqualToArray:[tmpData noteDicts]] == NO) {
                             [tmpData setNoteDicts:array];
-                            if (foundEANotes == NO)
-                                [self updateChangeCount:NSChangeDone];
+                            [self updateChangeCount:NSChangeDone];
                         }
                     }
                 }
