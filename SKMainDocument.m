@@ -857,7 +857,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
         if (pdfDoc) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
-            if ([array count]) {
+            BOOL foundEANotes = [array count] > 0;
+            if (foundEANotes) {
                 [tmpData setNoteDicts:array];
             } else {
                 // we found no notes, see if we had an error finding notes. if EAs were not supported we ignore the error, as we may assume there won't be any notes
@@ -875,14 +876,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     }
                 }
             }
-            NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:[array count] ? SKReadNonMissingNotesFromSkimFileOptionKey : SKReadMissingNotesFromSkimFileOptionKey];
+            NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:foundEANotes ? SKReadNonMissingNotesFromSkimFileOptionKey : SKReadMissingNotesFromSkimFileOptionKey];
             if (pdfDoc && readOption != SKOptionNever) {
                 NSURL *notesURL = [absoluteURL URLReplacingPathExtension:@"skim"];
                 if ([notesURL checkResourceIsReachableAndReturnError:NULL]) {
                     if (readOption == SKOptionAsk) {
                         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
                         [alert setMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") ];
-                        if ([array count])
+                        if (foundEANotes)
                             [alert setInformativeText:NSLocalizedString(@"A Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog")];
                         else
                             [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]]];
@@ -894,7 +895,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:notesURL error:NULL];
                         if ([array count]) {
                             [tmpData setNoteDicts:array];
-                            [self updateChangeCount:NSChangeDone];
+                            if (foundEANotes == NO)
+                                [self updateChangeCount:NSChangeDone];
                         }
                     }
                 }
