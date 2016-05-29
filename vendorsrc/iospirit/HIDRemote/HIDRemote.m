@@ -1482,7 +1482,8 @@ static HIDRemote *sHIDRemote = nil;
 	if (queueEventSource!=NULL)
 	{
 		CFRunLoopSourceInvalidate(queueEventSource);
-		queueEventSource=NULL;
+		CFRelease(queueEventSource);
+		queueEventSource = NULL;
 	}
 	
 	if (hidQueueInterface!=NULL)
@@ -1595,7 +1596,9 @@ static HIDRemote *sHIDRemote = nil;
 			CFRunLoopRemoveSource(	CFRunLoopGetCurrent(),
 						queueEventSource,
 						kCFRunLoopCommonModes);
-		}
+			CFRelease(queueEventSource);
+			queueEventSource = NULL;
+        }
 		
 		if ((hidQueueInterface!=NULL) && (cookieButtonMap!=nil))
 		{
