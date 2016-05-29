@@ -1446,6 +1446,12 @@ static HIDRemote *sHIDRemote = nil;
 		[hidAttribsDict release];
 		hidAttribsDict = nil;
 		
+		if (hidElements!=NULL)
+		{
+			CFRelease(hidElements);
+			hidElements = NULL;
+		}
+		
 		return(YES);
 
 	}while(0);
