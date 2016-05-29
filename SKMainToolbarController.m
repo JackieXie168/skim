@@ -164,6 +164,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     SKDESTROY(continuousButton);
     SKDESTROY(displayModeButton);
     SKDESTROY(bookModeButton);
+    SKDESTROY(pageBreaksButton);
     SKDESTROY(displayBoxButton);
     SKDESTROY(infoButton);
     SKDESTROY(colorsButton);
