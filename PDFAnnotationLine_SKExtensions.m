@@ -48,7 +48,8 @@
 #import "NSData_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
-
+#import "SKRuntime.h"
+#import "NSBezierPath_SKExtensions.h"
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
 NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
@@ -57,6 +58,83 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 
 @implementation PDFAnnotationLine (SKExtensions)
+
+static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
+
+static inline void drawLineTip(NSPoint point, CGFloat angle, PDFLineStyle lineStyle, CGFloat lineWidth, NSArray *dashPattern) {
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    switch (lineStyle) {
+        case kPDFLineStyleNone:
+            return;
+        case kPDFLineStyleSquare:
+            [path appendBezierPathWithRect:SKRectFromCenterAndSquareSize(NSZeroPoint, 3.0 * lineWidth)];
+            break;
+        case kPDFLineStyleCircle:
+            [path appendBezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(NSZeroPoint, 3.0 * lineWidth)];
+            break;
+        case kPDFLineStyleDiamond:
+            [path moveToPoint:NSMakePoint(1.5 * lineWidth, 0.0)];
+            [path lineToPoint:NSMakePoint(0.0,  1.5 * lineWidth)];
+            [path lineToPoint:NSMakePoint(-1.5 * lineWidth, 0.0)];
+            [path lineToPoint:NSMakePoint(0.0,  -1.5 * lineWidth)];
+            [path closePath];
+            break;
+        case kPDFLineStyleOpenArrow:
+            [path moveToPoint:NSMakePoint(-3.0 * lineWidth, 1.5 * lineWidth)];
+            [path lineToPoint:NSZeroPoint];
+            [path lineToPoint:NSMakePoint(-3.0 * lineWidth, -1.5 * lineWidth)];
+            break;
+        case kPDFLineStyleClosedArrow:
+            [path moveToPoint:NSMakePoint(-3.0 * lineWidth, 1.5 * lineWidth)];
+            [path lineToPoint:NSZeroPoint];
+            [path lineToPoint:NSMakePoint(-3.0 * lineWidth, -1.5 * lineWidth)];
+            [path closePath];
+            break;
+    }
+    [path setLineWidth:lineWidth];
+    if (dashPattern)
+        [path setDashPattern:dashPattern];
+    NSAffineTransform *t = [NSAffineTransform transform];
+    [t translateXBy:point.x yBy:point.y];
+    [t rotateByRadians:angle];
+    [NSGraphicsContext saveGraphicsState];
+    [t concat];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)replacement_drawWithBox:(PDFDisplayBox)box {
+    if ([self hasAppearanceStream]) {
+        original_drawWithBox(self, _cmd, box);
+    } else {
+        CGFloat lineWidth = [self lineWidth];
+        NSArray *dashPattern = [self borderStyle] == kPDFBorderStyleDashed ? [self dashPattern] : nil;
+        NSPoint origin = [self bounds].origin;
+        NSPoint startPoint = SKAddPoints(origin, [self startPoint]);
+        NSPoint endPoint = SKAddPoints(origin, [self endPoint]);
+        CGFloat angle = atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x);
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:startPoint];
+        [path lineToPoint:endPoint];
+        [path setLineWidth:lineWidth];
+        if (dashPattern)
+            [path setDashPattern:dashPattern];
+        [NSGraphicsContext saveGraphicsState];
+        [[self page] transformContextForBox:box];
+        [[self color] setStroke];
+        [path stroke];
+        if ([self startLineStyle] != kPDFLineStyleNone)
+            drawLineTip(startPoint, angle + M_PI, [self startLineStyle], lineWidth, dashPattern);
+        if ([self endLineStyle] != kPDFLineStyleNone)
+            drawLineTip(endPoint, angle, [self endLineStyle], lineWidth, dashPattern);
+        [NSGraphicsContext restoreGraphicsState];
+    }
+}
+
++ (void)load {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
+        original_drawWithBox = (void (*)(id, SEL, PDFDisplayBox))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:), @selector(replacement_drawWithBox:));
+}
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
     self = [super initSkimNoteWithBounds:bounds];
