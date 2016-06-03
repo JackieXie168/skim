@@ -58,13 +58,6 @@
 NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeNotification";
 
 
-#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
-@interface NSUndoManager (SKLionDeclarations)
-- (void)setActionIsDiscardable:(BOOL)discardable;
-@end
-#endif
-
-
 @implementation NSDocument (SKExtensions)
 
 + (BOOL)isPDFDocument { return NO; }
