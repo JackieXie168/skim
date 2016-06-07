@@ -184,8 +184,18 @@
 
 - (void)webView:sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request frame:frame decisionListener:listener
 {
+    NSURL *requestURL = request.URL;
+    NSString *scheme = requestURL.scheme;
+    BOOL whitelistedSafe = [@"http" isEqualToString:scheme] || [@"https" isEqualToString:scheme] || [@"about:blank" isEqualToString:requestURL.absoluteString];
+
+    // Do not allow redirects to dangerous protocols such as file://
+    if (!whitelistedSafe) {
+        [listener ignore];
+        return;
+    }
+    
     if (webViewFinishedLoading == YES) {
-        [[NSWorkspace sharedWorkspace] openURL:[request URL]];
+        [[NSWorkspace sharedWorkspace] openURL:requestURL];
 		
         [listener ignore];
     }    
