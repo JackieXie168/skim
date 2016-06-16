@@ -188,9 +188,10 @@
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSString *fileType = [ws typeOfFile:[fileURL path] error:NULL];
     
-    if (fileType != nil && [ws type:fileType conformsToType:(NSString *)kUTTypePDF] || 
-        [ws type:fileType conformsToType:@"net.sourceforge.skim-app.pdfd"] || 
-        [ws type:fileType conformsToType:@"net.sourceforge.skim-app.skimnotes"])
+    if (fileType != nil &&
+        ([ws type:fileType conformsToType:(NSString *)kUTTypePDF] ||
+         [ws type:fileType conformsToType:@"net.sourceforge.skim-app.pdfd"] ||
+         [ws type:fileType conformsToType:@"net.sourceforge.skim-app.skimnotes"]))
         return YES;
     
     return NO;
