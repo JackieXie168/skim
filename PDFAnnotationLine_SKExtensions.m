@@ -132,7 +132,7 @@ static inline void drawLineTip(NSPoint point, CGFloat angle, PDFLineStyle lineSt
 }
 
 + (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_11)
         original_drawWithBox = (void (*)(id, SEL, PDFDisplayBox))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:), @selector(replacement_drawWithBox:));
 }
 

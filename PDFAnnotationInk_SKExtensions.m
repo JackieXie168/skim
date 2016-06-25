@@ -58,7 +58,7 @@ static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
     [NSGraphicsContext saveGraphicsState];
     if ([PDFAnnotation currentActiveAnnotation] == self)
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max || [self hasAppearanceStream]) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) != NSAppKitVersionNumber10_11 || [self hasAppearanceStream]) {
         original_drawWithBox(self, _cmd, box);
     } else {
         NSAffineTransform *t = [NSAffineTransform transform];
