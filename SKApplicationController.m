@@ -167,6 +167,8 @@
     if (didCheckReopen == NO) {
         NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
         
+        didCheckReopen = YES;
+        
         if ([sud boolForKey:SKReopenLastOpenFilesKey] || [sud boolForKey:SKIsRelaunchKey]) {
             // just remove this in case opening the last open files crashes the app after a relaunch
             if ([sud objectForKey:SKIsRelaunchKey]) {
@@ -180,8 +182,6 @@
                     [NSApp presentError:error];
             }
         }
-        
-        didCheckReopen = YES;
     }
     return NO;
 }    
