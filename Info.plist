@@ -409,6 +409,8 @@
 				<string>public.file-url</string>
 				<string>public.plain-text</string>
 			</array>
+			<key>NSUserData</key>
+			<string>1</string>
 		</dict>
 	</array>
 	<key>OSAScriptingDefinition</key>
