@@ -1632,18 +1632,18 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && 
-        (([[self document] allowsPrinting] && [types containsObject:NSPasteboardTypePDF]) || [types containsObject:NSPasteboardTypeTIFF])) {
+        (([[self document] allowsPrinting] && ([types containsObject:NSPasteboardTypePDF] || [types containsObject:NSPDFPboardType])) || ([types containsObject:NSPasteboardTypeTIFF] || [types containsObject:NSTIFFPboardType]))) {
         NSMutableArray *writeTypes = [NSMutableArray array];
         NSData *pdfData = nil;
         NSData *tiffData = nil;
         NSRect selRect = NSIntegralRect(selectionRect);
         
-        if ([types containsObject:NSPasteboardTypePDF]  &&
+        if (([types containsObject:NSPasteboardTypePDF] || [types containsObject:NSPDFPboardType])  &&
             [[self document] allowsPrinting] &&
             (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
             [writeTypes addObject:NSPasteboardTypePDF];
         
-        if ([types containsObject:NSPasteboardTypeTIFF] &&
+        if (([types containsObject:NSPasteboardTypeTIFF] || [types containsObject:NSTIFFPboardType]) &&
             (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
             [writeTypes addObject:NSPasteboardTypeTIFF];
         
