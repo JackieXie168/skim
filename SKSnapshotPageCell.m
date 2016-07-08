@@ -82,7 +82,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 + (NSImage *)windowImage {
     static NSImage *windowImage = nil;
     if (windowImage == nil) {
-        windowImage = [[NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) drawingHandler:^(NSRect dstRect){
+        windowImage = [[NSImage imageWithSize:NSMakeSize(12.0, 12.0) drawingHandler:^(NSRect dstRect){
             NSBezierPath *path = [NSBezierPath bezierPath];
             [path moveToPoint:NSMakePoint(1.0, 2.0)];
             [path appendBezierPathWithArcWithCenter:NSMakePoint(3.0, 10.0) radius:2.0 startAngle:180.0 endAngle:90.0 clockwise:YES];
@@ -91,10 +91,9 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
             [path closePath];
             [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 3.0, 8.0, 7.0)]];
             [path setWindingRule:NSEvenOddWindingRule];
-            
             [[NSColor blackColor] setFill];
             [path fill];
-            
+            return YES;
         }] retain];
         [windowImage setTemplate:YES];
     }
