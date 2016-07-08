@@ -471,7 +471,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
         transform = [NSAffineTransform transform];
         [transform translateXBy:shadowBlurRadius yBy:shadowBlurRadius - shadowOffset];
         [transform scaleXBy:(thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds) yBy:(thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds)];
-        [transform concat];
     }
     
     image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
