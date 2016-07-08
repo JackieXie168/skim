@@ -40,6 +40,7 @@
 #import "SKDictionaryFormatter.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 NSString *SKSnapshotPageCellLabelKey = @"label";
 NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
@@ -78,6 +79,28 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
     return size;
 }
 
++ (NSImage *)windowImage {
+    static NSImage *windowImage = nil;
+    if (windowImage == nil) {
+        windowImage = [[NSImage bitmapImageWithSize:NSMakeSize(10.0, 10.0) drawingHandler:^(NSRect dstRect){
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            [path moveToPoint:NSMakePoint(0.0, 0.0)];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(2.0, 8.0) radius:2.0 startAngle:180.0 endAngle:90.0 clockwise:YES];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(8.0, 8.0) radius:2.0 startAngle:90.0 endAngle:0.0 clockwise:YES];
+            [path lineToPoint:NSMakePoint(10.0, 0.0)];
+            [path closePath];
+            [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(1.0, 1.0, 8.0, 7.0)]];
+            [path setWindingRule:NSEvenOddWindingRule];
+            
+            [[NSColor blackColor] setFill];
+            [path fill];
+            
+        }] retain];
+        [windowImage setTemplate:YES];
+    }
+    return windowImage;
+}
+
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSRect textRect, imageRect;
     NSRectEdge topEdge = [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge;
@@ -88,64 +111,11 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
     id obj = [self objectValue];
     BOOL hasWindow = [obj respondsToSelector:@selector(objectForKey:)] ? [[obj objectForKey:SKSnapshotPageCellHasWindowKey] boolValue] : NO;
     if (hasWindow) {
-        CGFloat radius = 2.0, topY, bottomY, topAngle;
-        BOOL clockwise;
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        NSColor *shadowColor;
-        NSColor *fillColor;
-        
-        switch ([self interiorBackgroundStyle]) {
-            case NSBackgroundStyleDark:
-                shadowColor = [NSColor colorWithCalibratedWhite:1.0 alpha:0.2];
-                fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
-                break;
-            case NSBackgroundStyleLowered:
-                shadowColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.3333];
-                fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
-                break;
-            case NSBackgroundStyleRaised:
-                shadowColor = [NSColor colorWithCalibratedWhite:1.0 alpha:0.3];
-                fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
-                break;
-            case NSBackgroundStyleLight:
-            default:
-                shadowColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.2];
-                fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
-                break;
-        }
-        
+        NSImageCell *imageCell = [[NSImageCell alloc] initImageCell:[[self class] windowImage]];
+        [imageCell setBackgroundStyle:[self backgroundStyle]];
         imageRect = NSOffsetRect(SKSliceRect(SKSliceRect(imageRect, 10.0, topEdge), 10.0, NSMinXEdge), 4.0, 0.0);
-        if ([controlView isFlipped]) {
-            topY = NSMinY(imageRect) + radius;
-            bottomY = NSMaxY(imageRect);
-            topAngle = 270.0;
-            clockwise = NO;
-        } else {
-            topY = NSMaxY(imageRect) - radius;
-            bottomY = NSMinY(imageRect);
-            topAngle = 90.0;
-            clockwise = YES;
-        }
-        
-        [path moveToPoint:NSMakePoint(NSMinX(imageRect), bottomY)];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(imageRect) + radius, topY) radius:radius startAngle:180.0 endAngle:topAngle clockwise:clockwise];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(imageRect) - radius, topY) radius:radius startAngle:topAngle endAngle:0.0 clockwise:clockwise];
-        [path lineToPoint:NSMakePoint(NSMaxX(imageRect), bottomY)];
-        [path closePath];
-        
-        imageRect = NSInsetRect(SKShrinkRect(imageRect, 1.0, topEdge), 1.0, 1.0);
-        
-        [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
-        [path setWindingRule:NSEvenOddWindingRule];
-        
-        [NSGraphicsContext saveGraphicsState];
-        
-        [NSShadow setShadowWithColor:shadowColor blurRadius:0.0 yOffset:-1.0];
-        [fillColor setFill];
-
-        [path fill];
-        
-        [NSGraphicsContext restoreGraphicsState];
+        [imageCell drawInteriorWithFrame:imageRect inView:controlView];
+        [imageCell release];
     }
 }
 
