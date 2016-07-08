@@ -82,14 +82,14 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
 + (NSImage *)windowImage {
     static NSImage *windowImage = nil;
     if (windowImage == nil) {
-        windowImage = [[NSImage bitmapImageWithSize:NSMakeSize(10.0, 10.0) drawingHandler:^(NSRect dstRect){
+        windowImage = [[NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) drawingHandler:^(NSRect dstRect){
             NSBezierPath *path = [NSBezierPath bezierPath];
-            [path moveToPoint:NSMakePoint(0.0, 0.0)];
-            [path appendBezierPathWithArcWithCenter:NSMakePoint(2.0, 8.0) radius:2.0 startAngle:180.0 endAngle:90.0 clockwise:YES];
-            [path appendBezierPathWithArcWithCenter:NSMakePoint(8.0, 8.0) radius:2.0 startAngle:90.0 endAngle:0.0 clockwise:YES];
-            [path lineToPoint:NSMakePoint(10.0, 0.0)];
+            [path moveToPoint:NSMakePoint(1.0, 2.0)];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(3.0, 10.0) radius:2.0 startAngle:180.0 endAngle:90.0 clockwise:YES];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(9.0, 10.0) radius:2.0 startAngle:90.0 endAngle:0.0 clockwise:YES];
+            [path lineToPoint:NSMakePoint(11.0, 2.0)];
             [path closePath];
-            [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(1.0, 1.0, 8.0, 7.0)]];
+            [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 3.0, 8.0, 7.0)]];
             [path setWindingRule:NSEvenOddWindingRule];
             
             [[NSColor blackColor] setFill];
@@ -113,7 +113,7 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
     if (hasWindow) {
         NSImageCell *imageCell = [[NSImageCell alloc] initImageCell:[[self class] windowImage]];
         [imageCell setBackgroundStyle:[self backgroundStyle]];
-        imageRect = NSOffsetRect(SKSliceRect(SKSliceRect(imageRect, 10.0, topEdge), 10.0, NSMinXEdge), 4.0, 0.0);
+        imageRect = NSOffsetRect(SKSliceRect(SKSliceRect(imageRect, 12.0, topEdge), 12.0, NSMinXEdge), 3.0, 0.0);
         [imageCell drawInteriorWithFrame:imageRect inView:controlView];
         [imageCell release];
     }
