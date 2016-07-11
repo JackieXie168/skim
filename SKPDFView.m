@@ -1631,38 +1631,40 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 #pragma mark Services
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && 
-        (([[self document] allowsPrinting] && ([types containsObject:NSPasteboardTypePDF] || [types containsObject:NSPDFPboardType])) || ([types containsObject:NSPasteboardTypeTIFF] || [types containsObject:NSTIFFPboardType]))) {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
         NSMutableArray *writeTypes = [NSMutableArray array];
+        NSString *pdfType = nil;
         NSData *pdfData = nil;
+        NSString *tiffType = nil;
         NSData *tiffData = nil;
         NSRect selRect = NSIntegralRect(selectionRect);
         
-        if (([types containsObject:NSPasteboardTypePDF] || [types containsObject:NSPDFPboardType])  &&
-            [[self document] allowsPrinting] &&
-            (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
-            [writeTypes addObject:NSPasteboardTypePDF];
-        
-        if (([types containsObject:NSPasteboardTypeTIFF] || [types containsObject:NSTIFFPboardType]) &&
-            (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
-            [writeTypes addObject:NSPasteboardTypeTIFF];
-        
+        // Unfortunately only old PboardTypes are requested rather than preferred UTIs, even if we only validate and the Service only requests UTIs, so we need to support both
+        if ([[self document] allowsPrinting]) {
+            if ([types containsObject:NSPasteboardTypePDF])
+                pdfType = NSPasteboardTypePDF;
+            else if ([types containsObject:NSPDFPboardType])
+                pdfType = NSPDFPboardType;
+            if (pdfType && (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
+                [writeTypes addObject:pdfType];
+        }
+        if ([types containsObject:NSPasteboardTypeTIFF])
+            tiffType = NSPasteboardTypeTIFF;
+        else if ([types containsObject:NSTIFFPboardType])
+            tiffType = NSTIFFPboardType;
+        if (tiffType && (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
+            [writeTypes addObject:tiffType];
         if ([writeTypes count] > 0) {
             [pboard declareTypes:writeTypes owner:nil];
             if (pdfData)
-                [pboard setData:pdfData forType:NSPasteboardTypePDF];
+                [pboard setData:pdfData forType:pdfType];
             if (tiffData)
-                [pboard setData:tiffData forType:NSPasteboardTypeTIFF];
-            
+                [pboard setData:tiffData forType:tiffType];
             return YES;
-        } else {
-            return NO;
         }
-        
-    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
-        return [super writeSelectionToPasteboard:pboard types:types];
     }
-    return NO;
+    return [[SKPDFView superclass] instancesRespondToSelector:_cmd] &&
+            [super writeSelectionToPasteboard:pboard types:types];
 }
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
