@@ -265,7 +265,7 @@ enum {
     
     if (wasVisible == NO) {
         // currently PDFView on 10.9 and later initially doesn't display the PDF, messing around like this is a workaround for this bug
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_9) {
             [[self mainWindowController] toggleStatusBar:nil];
             [[self mainWindowController] toggleStatusBar:nil];
         }
