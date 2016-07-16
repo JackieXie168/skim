@@ -122,5 +122,9 @@
 - (void)scrollDown:(id)sender;
 - (void)scrollRight:(id)sender;
 - (void)scrollLeft:(id)sender;
+- (void)selectSelectedNote:(id)sender;
+- (void)goToSelectedOutlineItem:(id)sender;
+- (void)goToSelectedFindResults:(id)sender;
+- (void)toggleSelectedSnapshots:(id)sender;
 
 @end

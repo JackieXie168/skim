@@ -90,6 +90,9 @@
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
+    [searchField setAction:@selector(search:)];
+    [searchField setTarget:mainController];
+    
     [tocOutlineView setAutoresizesOutlineColumn: NO];
     
     [tocOutlineView setDelegate:mainController];
@@ -102,6 +105,13 @@
     [[thumbnailTableView menu] setDelegate:mainController];
     [[findTableView menu] setDelegate:mainController];
     [[groupedFindTableView menu] setDelegate:mainController];
+    
+    [tocOutlineView setDoubleAction:@selector(goToSelectedOutlineItem:)];
+    [tocOutlineView setTarget:mainController];
+    [findTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [findTableView setTarget:mainController];
+    [groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [groupedFindTableView setTarget:mainController];
     
     [thumbnailTableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     [tocOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];

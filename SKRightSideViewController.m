@@ -79,6 +79,9 @@
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
+    [searchField setAction:@selector(searchNotes:)];
+    [searchField setTarget:mainController];
+    
     [noteOutlineView setAutoresizesOutlineColumn: NO];
     
     [noteOutlineView setDelegate:mainController];
@@ -87,6 +90,11 @@
     [snapshotTableView setDataSource:mainController];
     [[noteOutlineView menu] setDelegate:mainController];
     [[snapshotTableView menu] setDelegate:mainController];
+    
+    [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
+    [noteOutlineView setTarget:mainController];
+    [snapshotTableView setDoubleAction:@selector(toggleSelectedSnapshots:)];
+    [snapshotTableView setTarget:mainController];
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     

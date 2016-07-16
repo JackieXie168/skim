@@ -190,12 +190,7 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (BOOL)useNativeFullScreen;
 
-- (void)goToSelectedFindResults:(id)sender;
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
-
-- (void)selectSelectedNote:(id)sender;
-- (void)goToSelectedOutlineItem:(id)sender;
-- (void)toggleSelectedSnapshots:(id)sender;
 
 - (void)updateNoteFilterPredicate;
 - (void)updateSnapshotFilterPredicate;
@@ -344,22 +339,6 @@ static char SKMainWindowDefaultsObservationContext;
     [leftSideContentView addSubview:leftSideController.view];
     [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
     [rightSideContentView addSubview:rightSideController.view];
-    
-    [leftSideController.searchField setAction:@selector(search:)];
-    [leftSideController.searchField setTarget:self];
-    [rightSideController.searchField setAction:@selector(searchNotes:)];
-    [rightSideController.searchField setTarget:self];
-    
-    [rightSideController.noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
-    [rightSideController.noteOutlineView setTarget:self];
-    [leftSideController.tocOutlineView setDoubleAction:@selector(goToSelectedOutlineItem:)];
-    [leftSideController.tocOutlineView setTarget:self];
-    [rightSideController.snapshotTableView setDoubleAction:@selector(toggleSelectedSnapshots:)];
-    [rightSideController.snapshotTableView setTarget:self];
-    [leftSideController.findTableView setDoubleAction:@selector(goToSelectedFindResults:)];
-    [leftSideController.findTableView setTarget:self];
-    [leftSideController.groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
-    [leftSideController.groupedFindTableView setTarget:self];
     
     [self updateTableFont];
     
@@ -2030,11 +2009,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     }
 }
 
-- (void)goToSelectedFindResults:(id)sender {
-    if ([sender clickedRow] != -1)
-        [self updateFindResultHighlightsForDirection:NSDirectSelection];
-}
-
 - (IBAction)searchNotes:(id)sender {
     if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
         [self updateNoteFilterPredicate];
@@ -2265,16 +2239,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [[self document] addWindowController:swc];
         [swc release];
     }
-}
-
-- (void)toggleSelectedSnapshots:(id)sender {
-    // there should only be a single snapshot
-    SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController selectedObjects] lastObject];
-    
-    if ([[controller window] isVisible])
-        [controller miniaturize];
-    else
-        [controller deminiaturize];
 }
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {

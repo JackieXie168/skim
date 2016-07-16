@@ -68,6 +68,7 @@
 #import "SKFindController.h"
 #import "PDFView_SKExtensions.h"
 #import "SKGradientView.h"
+#import "SKSnapshotWindowController.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -80,6 +81,7 @@
 
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
+- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
 @end
 
 @implementation SKMainWindowController (Actions)
@@ -209,6 +211,21 @@
         [pdfView goToDestination:[outlineItem destination]];
     else if ([outlineItem action])
         [pdfView performAction:[outlineItem action]];
+}
+
+- (void)goToSelectedFindResults:(id)sender {
+    if ([sender clickedRow] != -1)
+        [self updateFindResultHighlightsForDirection:NSDirectSelection];
+}
+
+- (void)toggleSelectedSnapshots:(id)sender {
+    // there should only be a single snapshot
+    SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController selectedObjects] lastObject];
+    
+    if ([[controller window] isVisible])
+        [controller miniaturize];
+    else
+        [controller deminiaturize];
 }
 
 - (IBAction)editNote:(id)sender{
