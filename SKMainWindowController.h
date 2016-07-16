@@ -205,8 +205,6 @@ enum {
 - (BOOL)canExitPresentation;
 
 - (void)displaySearchResultsForString:(NSString *)string;
-- (IBAction)search:(id)sender;
-- (IBAction)searchNotes:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;

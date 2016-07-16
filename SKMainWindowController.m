@@ -192,9 +192,6 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
 
-- (void)updateNoteFilterPredicate;
-- (void)updateSnapshotFilterPredicate;
-
 - (void)registerForDocumentNotifications;
 - (void)unregisterForDocumentNotifications;
 
@@ -227,7 +224,7 @@ static char SKMainWindowDefaultsObservationContext;
         return [super automaticallyNotifiesObserversForKey:key];
 }
 
-- (id)init {
+- minit {
     self = [super initWithWindowNibName:@"MainWindow"];
     if (self) {
         interactionMode = SKNormalMode;
@@ -1868,53 +1865,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [self performSelector:@selector(search:) withObject:leftSideController.searchField afterDelay:0.0];
 }
 
-- (IBAction)search:(id)sender {
-
-    // cancel any previous find to remove those results, or else they stay around
-    if ([[pdfView document] isFinding])
-        [[pdfView document] cancelFindString];
-    [pdfView setHighlightedSelections:nil];
-    
-    if ([[sender stringValue] isEqualToString:@""]) {
-        
-        if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
-            [self displayThumbnailViewAnimating:YES];
-        else 
-            [self displayTocViewAnimating:YES];
-    } else {
-        NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
-        if (mwcFlags.wholeWordSearch) {
-            NSScanner *scanner = [NSScanner scannerWithString:[sender stringValue]];
-            NSMutableArray *words = [NSMutableArray array];
-            NSString *word;
-            [scanner setCharactersToBeSkipped:nil];
-            while ([scanner isAtEnd] == NO) {
-                if ('"' == [[scanner string] characterAtIndex:[scanner scanLocation]]) {
-                    [scanner setScanLocation:[scanner scanLocation] + 1];
-                    if ([scanner scanUpToString:@"\"" intoString:&word])
-                        [words addObject:word];
-                    if ([scanner isAtEnd] == NO)
-                        [scanner setScanLocation:[scanner scanLocation] + 1];
-                } else if ([scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&word]) {
-                    [words addObject:word];
-                }
-                [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
-            }
-            [[pdfView document] beginFindStrings:words withOptions:options];
-        } else {
-            [[pdfView document] beginFindString:[sender stringValue] withOptions:options];
-        }
-        if (mwcFlags.findPaneState == SKSingularFindPaneState)
-            [self displayFindViewAnimating:YES];
-        else
-            [self displayGroupedFindViewAnimating:YES];
-        
-        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        [findPboard clearContents];
-        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
-    }
-}
-
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward {
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
@@ -2006,18 +1956,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             [pdfView setCurrentSelection:currentSel animate:YES];
         if ([pdfView toolMode] == SKMoveToolMode || [pdfView toolMode] == SKMagnifyToolMode || [pdfView toolMode] == SKSelectToolMode)
             [pdfView setCurrentSelection:nil];
-    }
-}
-
-- (IBAction)searchNotes:(id)sender {
-    if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
-        [self updateNoteFilterPredicate];
-    else
-        [self updateSnapshotFilterPredicate];
-    if ([[sender stringValue] length]) {
-        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-        [findPboard clearContents];
-        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
     }
 }
 

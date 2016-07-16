@@ -82,6 +82,8 @@
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
+- (void)updateNoteFilterPredicate;
+- (void)updateSnapshotFilterPredicate;
 @end
 
 @implementation SKMainWindowController (Actions)
@@ -705,6 +707,65 @@ static NSArray *allMainDocumentPDFViews() {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectLeftSideSearchField:) name:SKSplitViewAnimationDidEndNotification object:splitView];
     else
         [leftSideController.searchField selectText:self];
+}
+
+- (IBAction)search:(id)sender {
+    
+    // cancel any previous find to remove those results, or else they stay around
+    if ([[pdfView document] isFinding])
+        [[pdfView document] cancelFindString];
+    [pdfView setHighlightedSelections:nil];
+    
+    if ([[sender stringValue] isEqualToString:@""]) {
+        
+        if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
+            [self displayThumbnailViewAnimating:YES];
+        else
+            [self displayTocViewAnimating:YES];
+    } else {
+        NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
+        if (mwcFlags.wholeWordSearch) {
+            NSScanner *scanner = [NSScanner scannerWithString:[sender stringValue]];
+            NSMutableArray *words = [NSMutableArray array];
+            NSString *word;
+            [scanner setCharactersToBeSkipped:nil];
+            while ([scanner isAtEnd] == NO) {
+                if ('"' == [[scanner string] characterAtIndex:[scanner scanLocation]]) {
+                    [scanner setScanLocation:[scanner scanLocation] + 1];
+                    if ([scanner scanUpToString:@"\"" intoString:&word])
+                        [words addObject:word];
+                    if ([scanner isAtEnd] == NO)
+                        [scanner setScanLocation:[scanner scanLocation] + 1];
+                } else if ([scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&word]) {
+                    [words addObject:word];
+                }
+                [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
+            }
+            [[pdfView document] beginFindStrings:words withOptions:options];
+        } else {
+            [[pdfView document] beginFindString:[sender stringValue] withOptions:options];
+        }
+        if (mwcFlags.findPaneState == SKSingularFindPaneState)
+            [self displayFindViewAnimating:YES];
+        else
+            [self displayGroupedFindViewAnimating:YES];
+        
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard clearContents];
+        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
+    }
+}
+
+- (IBAction)searchNotes:(id)sender {
+    if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
+        [self updateNoteFilterPredicate];
+    else
+        [self updateSnapshotFilterPredicate];
+    if ([[sender stringValue] length]) {
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard clearContents];
+        [findPboard writeObjects:[NSArray arrayWithObjects:[sender stringValue], nil]];
+    }
 }
 
 - (IBAction)performFit:(id)sender {
