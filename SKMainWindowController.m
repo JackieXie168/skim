@@ -224,7 +224,7 @@ static char SKMainWindowDefaultsObservationContext;
         return [super automaticallyNotifiesObserversForKey:key];
 }
 
-- minit {
+- (id)init {
     self = [super initWithWindowNibName:@"MainWindow"];
     if (self) {
         interactionMode = SKNormalMode;
