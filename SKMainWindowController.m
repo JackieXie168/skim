@@ -217,12 +217,9 @@ static char SKMainWindowDefaultsObservationContext;
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
 }
 
-+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
-    if ([key isEqualToString:PAGENUMBER_KEY] || [key isEqualToString:PAGELABEL_KEY])
-        return NO;
-    else
-        return [super automaticallyNotifiesObserversForKey:key];
-}
++ (BOOL)automaticallyNotifiesObserversOfPageNumber { return NO; }
+
++ (BOOL)automaticallyNotifiesObserversOfPageLabel { return NO; }
 
 - (id)init {
     self = [super initWithWindowNibName:@"MainWindow"];
