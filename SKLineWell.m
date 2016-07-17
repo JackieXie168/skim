@@ -98,6 +98,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         endLineStyle = kPDFLineStyleNone;
         lwFlags.displayStyle = SKLineWellDisplayStyleLine;
         lwFlags.active = 0;
+        lwFlags.canActivate = 0;
+        lwFlags.existsActiveLineWell = 0;
         
         target = nil;
         action = NULL;

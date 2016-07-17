@@ -110,6 +110,7 @@
         pdfDocument = nil;
         rowHeights = [[SKFloatMapTable alloc] init];
         windowRect = NSZeroRect;
+        memset(&ndFlags, 0, sizeof(ndFlags));
         ndFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
     }
     return self;

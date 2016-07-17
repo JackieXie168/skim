@@ -70,6 +70,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     if (self) {
         document = aDocument;
         // hidden pref to always auto update without first asking the user
+        memset(&fucFlags, 0, sizeof(fucFlags));
         fucFlags.autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKFileUpdateCheckerObservationContext];
         [document addObserver:self forKeyPath:@"fileURL" options:0 context:&SKFileUpdateCheckerObservationContext];
