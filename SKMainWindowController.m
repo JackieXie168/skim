@@ -227,6 +227,7 @@ static char SKMainWindowDefaultsObservationContext;
         interactionMode = SKNormalMode;
         searchResults = [[NSMutableArray alloc] init];
         searchResultIndex = 0;
+        memset(&mwcFlags, 0, sizeof(mwcFlags));
         mwcFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveSearchKey];
         mwcFlags.wholeWordSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKWholeWordSearchKey];
         mwcFlags.caseInsensitiveNoteSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
@@ -248,12 +249,8 @@ static char SKMainWindowDefaultsObservationContext;
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
-        mwcFlags.updatingColor = 0;
-        mwcFlags.updatingFont = 0;
-        mwcFlags.updatingLine = 0;
         activityAssertionID = kIOPMNullAssertionID;
     }
-    
     return self;
 }
 
