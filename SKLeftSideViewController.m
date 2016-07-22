@@ -46,9 +46,13 @@
 #import "SKThumbnailTableView.h"
 #import "SKTocOutlineView.h"
 #import "SKSourceListTextFieldCell.h"
+#import "SKGroupedSearchResult.h"
 
-#define PAGE_COLUMNID  @"page"
-#define LABEL_COLUMNID @"label"
+#define PAGE_COLUMNID      @"page"
+#define LABEL_COLUMNID     @"label"
+#define RELEVANCE_COLUMNID @"relevance"
+
+#define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
 @implementation SKLeftSideViewController
 
@@ -118,10 +122,22 @@
     
     [[[findTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[groupedFindTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9) {
         [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
         [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
+    }
+    
+    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
+    [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
+    
+    [thumbnailTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
+    
+    if (NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey]) {
+        [tocOutlineView setHasImageToolTips:YES];
+        [findTableView setHasImageToolTips:YES];
+        [groupedFindTableView setHasImageToolTips:YES];
     }
 }
 

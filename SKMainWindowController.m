@@ -172,8 +172,6 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds"
 
-#define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
-
 #define SKUseSettingsFromPDFKey @"SKUseSettingsFromPDF"
 
 @interface SKMainWindowController (SKPrivate)
@@ -382,16 +380,7 @@ static char SKMainWindowDefaultsObservationContext;
     [self resetThumbnailSizeIfNeeded];
     [self resetSnapshotSizeIfNeeded];
     
-    // this needs to be done before loading the PDFDocument
-    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease];
-    [rightSideController.noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
-    [rightSideController.snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     
-    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
-    [leftSideController.groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
-    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
-        
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
@@ -465,19 +454,6 @@ static char SKMainWindowDefaultsObservationContext;
     NSMenu *menu = [[rightSideController.noteOutlineView headerView] menu];
     [menu addItem:[NSMenuItem separatorItem]];
     [[menu addItemWithTitle:NSLocalizedString(@"Note Type", @"Menu item title") action:NULL keyEquivalent:@""] setSubmenu:[noteTypeSheetController noteTypeMenu]];
-    
-    [rightSideController.noteOutlineView setIndentationPerLevel:1.0];
-    
-    [rightSideController.noteOutlineView registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
-    
-    [leftSideController.thumbnailTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
-    [rightSideController.snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
-    
-    if (NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey]) {
-        [leftSideController.tocOutlineView setHasImageToolTips:YES];
-        [leftSideController.findTableView setHasImageToolTips:YES];
-        [leftSideController.groupedFindTableView setHasImageToolTips:YES];
-    }
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     

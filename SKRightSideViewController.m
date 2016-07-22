@@ -45,6 +45,8 @@
 #import "SKTypeSelectHelper.h"
 #import "SKNoteOutlineView.h"
 #import "NSColor_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
+#import "PDFAnnotation_SKExtensions.h"
 
 #define COLOR_COLUMNID @"color"
 
@@ -99,6 +101,17 @@
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
     [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
+    
+    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease];
+    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
+    [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
+    
+    [noteOutlineView setIndentationPerLevel:1.0];
+    
+    [noteOutlineView registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
+    
+    [snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
 }
 
 @end
