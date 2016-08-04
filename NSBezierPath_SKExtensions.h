@@ -47,4 +47,6 @@
 
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex;
 
+- (CGPathRef)CGPath;
+
 @end

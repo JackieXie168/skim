@@ -143,8 +143,6 @@ static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower);
 
-static inline CGPathRef SKCopyCGPathFromBezierPath(NSBezierPath *bezierPath);
-
 enum {
     SKNavigationNone,
     SKNavigationBottom,
@@ -3273,9 +3271,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
         
-        CGPathRef path = SKCopyCGPathFromBezierPath(bezierPath);
-        [layer setPath:path];
-        CGPathRelease(path);
+        [layer setPath:[bezierPath CGPath]];
     }
     
     if (overlay) {
@@ -4231,31 +4227,4 @@ static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPoi
         }
     }
     return MIN(i, iMax - 1);
-}
-
-static inline CGPathRef SKCopyCGPathFromBezierPath(NSBezierPath *bezierPath)
-{
-    CGMutablePathRef path = CGPathCreateMutable();
-    NSInteger numElements = [bezierPath elementCount];
-    NSPoint points[3];
-    NSInteger i;
-    
-    for (i = 0; i < numElements; i++) {
-        switch ([bezierPath elementAtIndex:i associatedPoints:points]) {
-            case NSMoveToBezierPathElement:
-                CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
-                break;
-            case NSLineToBezierPathElement:
-                CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
-                break;
-            case NSCurveToBezierPathElement:
-                CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,points[1].x, points[1].y, points[2].x, points[2].y);
-                break;
-            case NSClosePathBezierPathElement:
-                CGPathCloseSubpath(path);
-                break;
-        }
-    }
-    
-    return path;
 }

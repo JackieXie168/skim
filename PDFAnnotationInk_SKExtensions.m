@@ -47,44 +47,62 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "SKRuntime.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
+@interface PDFAnnotation (SKPrivateDeclarations)
+- (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
+@end
+
 @implementation PDFAnnotationInk (SKExtensions)
 
-static void (*original_drawWithBox)(id, SEL, PDFDisplayBox) = NULL;
+static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextRef) = NULL;
 
-- (void)replacement_drawWithBox:(PDFDisplayBox)box {
-    [NSGraphicsContext saveGraphicsState];
-    if ([PDFAnnotation currentActiveAnnotation] == self)
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
-    if ((NSInteger)floor(NSAppKitVersionNumber) != NSAppKitVersionNumber10_11 || [self hasAppearanceStream]) {
-        original_drawWithBox(self, _cmd, box);
-    } else {
-        NSAffineTransform *t = [NSAffineTransform transform];
-        [t translateXBy:NSMinX([self bounds]) yBy:NSMinY([self bounds])];
-        [[self page] transformContextForBox:box];
-        [t concat];
-        [[self color] setStroke];
-        for (NSBezierPath *path in [self paths]) {
-            path = [path copy];
-            [path setLineWidth:[self lineWidth]];
-            [path setLineJoinStyle:NSRoundLineJoinStyle];
-            if ([self borderStyle] == kPDFBorderStyleDashed) {
-                [path setDashPattern:[self dashPattern]];
-                [path setLineCapStyle:NSButtLineCapStyle];
-            } else {
-                [path setLineCapStyle:NSRoundLineCapStyle];
-            }
-            [path stroke];
-            [path release];
-        }
+- (void)replacement_drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
+    CGContextSaveGState(context);
+    if ([PDFAnnotation currentActiveAnnotation] == self) {
+        CGColorRef color = CGColorCreateGenericGray(0.0, 0.33333);
+        CGContextSetShadowWithColor(context, CGSizeMake(0.0, -2.0), 2.0, color);
+        CGColorRelease(color);
     }
-    [NSGraphicsContext restoreGraphicsState];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max || [self hasAppearanceStream]) {
+        original_drawWithBox_inContext(self, _cmd, box, context);
+    } else {
+        PDFPage *page = [self page];
+        NSRect bounds = [page boundsForBox:box];
+        bounds.origin = SKSubstractPoints(bounds.origin, [self bounds].origin);
+        CGContextRotateCTM(context, -[page rotation] * M_PI_2 / 90.0);
+        switch ([page rotation]) {
+            case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
+            case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
+            case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
+            case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
+        }
+        CGContextSetStrokeColorWithColor(context, [[self color] CGColor]);
+        CGContextSetLineWidth(context, [self lineWidth]);
+        CGContextSetLineJoin(context, kCGLineJoinRound);
+        if ([self borderStyle] == kPDFBorderStyleDashed) {
+            NSArray *dashPattern = [self dashPattern];
+            NSUInteger i, count = [dashPattern count];
+            CGFloat dash[count];
+            for (i = 0; i < count; i++)
+                dash[i] = [[dashPattern objectAtIndex:i] doubleValue];
+            CGContextSetLineDash(context, 0.0, dash, count);
+            CGContextSetLineCap(context, kCGLineCapButt);
+        } else {
+            CGContextSetLineCap(context, kCGLineCapRound);
+        }
+        for (NSBezierPath *path in [self paths])
+            CGContextAddPath(context, [path CGPath]);
+        CGContextStrokePath(context);
+    }
+    CGContextRestoreGState(context);
 }
 
 + (void)load {
-    original_drawWithBox = (void (*)(id, SEL, PDFDisplayBox))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:), @selector(replacement_drawWithBox:));
+    original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {

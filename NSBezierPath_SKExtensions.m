@@ -92,5 +92,34 @@
     return bounds;
 }
 
+- (CGPathRef)CGPath {
+    CGMutablePathRef mutablePath = CGPathCreateMutable();
+    NSInteger numElements = [self elementCount];
+    NSPoint points[3];
+    NSInteger i;
+    
+    for (i = 0; i < numElements; i++) {
+        switch ([self elementAtIndex:i associatedPoints:points]) {
+            case NSMoveToBezierPathElement:
+                CGPathMoveToPoint(mutablePath, NULL, points[0].x, points[0].y);
+                break;
+            case NSLineToBezierPathElement:
+                CGPathAddLineToPoint(mutablePath, NULL, points[0].x, points[0].y);
+                break;
+            case NSCurveToBezierPathElement:
+                CGPathAddCurveToPoint(mutablePath, NULL, points[0].x, points[0].y,points[1].x, points[1].y, points[2].x, points[2].y);
+                break;
+            case NSClosePathBezierPathElement:
+                CGPathCloseSubpath(mutablePath);
+                break;
+        }
+    }
+    
+    CGPathRef path = CGPathCreateCopy(mutablePath);
+    CGPathRelease(mutablePath);
+    
+    return (CGPathRef)[(id)path autorelease];
+}
+
 @end
 
