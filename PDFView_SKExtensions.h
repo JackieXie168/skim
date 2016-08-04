@@ -46,6 +46,8 @@
 @property (nonatomic, readonly) NSRange displayedPageIndexRange;
 @property (nonatomic, readonly) NSArray *displayedPages;
 
++ (NSColor *)defaultPageBackgroundColor;
+
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
@@ -54,6 +56,8 @@
 - (void)doDragWithEvent:(NSEvent *)theEvent;
 
 - (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest;
+
+- (void)applyDefaultPageBackgroundColor;
 
 @end
 

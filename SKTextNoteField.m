@@ -40,6 +40,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "PDFView_SKExtensions.h"
 
 
 @implementation SKTextNoteField
@@ -49,7 +50,7 @@
 - (BOOL)isOpaque { return YES; }
 
 - (void)drawRect:(NSRect)rect {
-    [([[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor]) setFill];
+    [[PDFView defaultPageBackgroundColor] setFill];
     NSRectFill([self bounds]);
     [super drawRect:rect];
 }

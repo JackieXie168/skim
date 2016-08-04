@@ -37,11 +37,9 @@
  */
 
 #import "SKPDFPage.h"
-#import "SKStringConstants.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "NSUserDefaults_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 
 
@@ -85,18 +83,6 @@
     if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_6)
         return [[super attributedString] retain];
     return [super attributedString];
-}
-
-- (void)drawWithBox:(PDFDisplayBox)box {
-   NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey];
-   if (backgroundColor && [[NSGraphicsContext currentContext] isDrawingToScreen]) {
-       [NSGraphicsContext saveGraphicsState];
-       [self transformContextForBox:box];
-       [backgroundColor setFill];
-       NSRectFillUsingOperation([self boundsForBox:box], NSCompositeSourceOver);
-       [NSGraphicsContext restoreGraphicsState];
-   }
-   [super drawWithBox:box];
 }
 
 @end

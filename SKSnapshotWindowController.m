@@ -279,6 +279,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] floatForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+    [pdfView applyDefaultPageBackgroundColor];
     [pdfView setDocument:pdfDocument];
     
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
@@ -477,7 +478,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         [transform concat];
         [NSGraphicsContext saveGraphicsState];
-        [[NSColor whiteColor] set];
+        [[PDFView defaultPageBackgroundColor] set];
         if (shadowBlurRadius > 0.0)
             [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
         NSRectFill(bounds);
@@ -641,7 +642,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         } else if ([key isEqualToString:SKBackgroundColorKey]) {
             [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
-            [pdfView setNeedsDisplay:YES];
+            [pdfView applyDefaultPageBackgroundColor];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

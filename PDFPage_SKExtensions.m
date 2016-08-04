@@ -58,6 +58,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -184,7 +185,7 @@ static BOOL usesSequentialPageNumbering = NO;
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
         
         [NSGraphicsContext saveGraphicsState];
-        [[NSColor whiteColor] setFill];
+        [[PDFView defaultPageBackgroundColor] setFill];
         if (shadowBlurRadius > 0.0)
             [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
         NSRectFill(pageRect);

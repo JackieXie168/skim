@@ -365,6 +365,7 @@ static char SKMainWindowDefaultsObservationContext;
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
+    [pdfView applyDefaultPageBackgroundColor];
     
     [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
@@ -2299,8 +2300,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                 }
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
-            [pdfView setNeedsDisplay:YES];
-            [secondaryPdfView setNeedsDisplay:YES];
+            [pdfView applyDefaultPageBackgroundColor];
+            [secondaryPdfView applyDefaultPageBackgroundColor];
             [self allThumbnailsNeedUpdate];
             [self allSnapshotsNeedUpdate];
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {

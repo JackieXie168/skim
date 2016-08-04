@@ -45,6 +45,8 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKRuntime.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
@@ -52,6 +54,10 @@
 - (CGFloat)backingScaleFactor;
 @end
 #endif
+
+@interface PDFView (SKHiddenDeclarations)
+- (void)setPageColor:(NSColor *)color;
+@end
 
 @implementation PDFView (SKExtensions)
 
@@ -237,6 +243,15 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     for (i = range.location; i < NSMaxRange(range); i++)
         [displayedPages addObject:[pdfDoc pageAtIndex:i]];
     return displayedPages;
+}
+
++ (NSColor *)defaultPageBackgroundColor {
+    return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
+}
+
+- (void)applyDefaultPageBackgroundColor {
+    if ([self respondsToSelector:@selector(setPageColor:)])
+        [self setPageColor:[[self class] defaultPageBackgroundColor]];
 }
 
 @end

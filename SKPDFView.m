@@ -3908,7 +3908,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     
                     // draw page background, simulate the private method -drawPagePre:
                     [NSGraphicsContext saveGraphicsState];
-                    [[NSColor whiteColor] set];
+                    [[[self class] defaultPageBackgroundColor] set];
                     [NSShadow setShadowWithColor:[aShadow shadowColor] blurRadius:[aShadow shadowBlurRadius] offset:[aShadow shadowOffset]];
                     NSRectFill(SKIntegralRect(pageRect));
                     [NSGraphicsContext restoreGraphicsState];
