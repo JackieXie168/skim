@@ -55,10 +55,6 @@
 @end
 #endif
 
-@interface PDFView (SKHiddenDeclarations)
-- (void)setPageColor:(NSColor *)color;
-@end
-
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages;

@@ -67,4 +67,6 @@
 - (double)maxScaleFactor;
 - (NSInteger)currentHistoryIndex;
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
+- (NSColor *)pageColor;
+- (void)setPageColor:(NSColor *)color;
 @end
