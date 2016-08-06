@@ -62,15 +62,28 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextRef) = NULL;
 
 - (void)replacement_drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
-    CGContextSaveGState(context);
-    if ([PDFAnnotation currentActiveAnnotation] == self) {
+    if ([self hasAppearanceStream] || [PDFAnnotation currentActiveAnnotation] != self) {
+        original_drawWithBox_inContext(self, _cmd, box, context);
+    } else {
+        CGContextSaveGState(context);
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.33333);
         CGContextSetShadowWithColor(context, CGSizeMake(0.0, -2.0), 2.0, color);
         CGColorRelease(color);
+        original_drawWithBox_inContext(self, _cmd, box, context);
+        CGContextRestoreGState(context);
     }
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max || [self hasAppearanceStream]) {
+}
+
+- (void)replacement_ElCapitan_drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
+    if ([self hasAppearanceStream]) {
         original_drawWithBox_inContext(self, _cmd, box, context);
     } else {
+        CGContextSaveGState(context);
+        if ([PDFAnnotation currentActiveAnnotation] == self) {
+            CGColorRef color = CGColorCreateGenericGray(0.0, 0.33333);
+            CGContextSetShadowWithColor(context, CGSizeMake(0.0, -2.0), 2.0, color);
+            CGColorRelease(color);
+        }
         [[self page] transformContext:context forBox:box];
         CGContextTranslateCTM(context, NSMinX([self bounds]), NSMinY([self bounds]));
         CGContextSetStrokeColorWithColor(context, [[self color] CGColor]);
@@ -90,12 +103,15 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         for (NSBezierPath *path in [self paths])
             CGContextAddPath(context, [path CGPath]);
         CGContextStrokePath(context);
+        CGContextRestoreGState(context);
     }
-    CGContextRestoreGState(context);
 }
 
 + (void)load {
-    original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
+        original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_ElCapitan_drawWithBox:inContext:));
+    else
+        original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
