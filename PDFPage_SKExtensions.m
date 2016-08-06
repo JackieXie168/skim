@@ -369,6 +369,17 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return transform;
 }
 
+- (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
+    CGContextRotateCTM(context, -[self rotation] * M_PI_2 / 90.0);
+    switch ([self rotation]) {
+        case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
+        case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
+        case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
+        case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
+    }
+}
+
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
     // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page

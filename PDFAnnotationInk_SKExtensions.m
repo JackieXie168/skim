@@ -49,6 +49,7 @@
 #import "NSShadow_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
@@ -70,16 +71,8 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max || [self hasAppearanceStream]) {
         original_drawWithBox_inContext(self, _cmd, box, context);
     } else {
-        PDFPage *page = [self page];
-        NSRect bounds = [page boundsForBox:box];
-        bounds.origin = SKSubstractPoints(bounds.origin, [self bounds].origin);
-        CGContextRotateCTM(context, -[page rotation] * M_PI_2 / 90.0);
-        switch ([page rotation]) {
-            case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
-            case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
-            case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
-            case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
-        }
+        [[self page] transformContext:context forBox:box];
+        CGContextTranslateCTM(context, NSMinX([self bounds]), NSMinY([self bounds]));
         CGContextSetStrokeColorWithColor(context, [[self color] CGColor]);
         CGContextSetLineWidth(context, [self lineWidth]);
         CGContextSetLineJoin(context, kCGLineJoinRound);

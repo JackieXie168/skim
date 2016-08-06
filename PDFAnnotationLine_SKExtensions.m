@@ -109,16 +109,8 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         CGFloat angle = atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x);
         CGFloat lineWidth = [self lineWidth];
         CGMutablePathRef path = CGPathCreateMutable();
-        PDFPage *page = [self page];
-        NSRect bounds = [page boundsForBox:box];
         CGContextSaveGState(context);
-        CGContextRotateCTM(context, -[page rotation] * M_PI_2 / 90.0);
-        switch ([page rotation]) {
-            case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
-            case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
-            case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
-            case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
-        }
+        [[self page] transformContext:context forBox:box];
         CGContextSetStrokeColorWithColor(context, [[self color] CGColor]);
         CGContextSetLineWidth(context, lineWidth);
         CGContextSetLineJoin(context, kCGLineJoinRound);
