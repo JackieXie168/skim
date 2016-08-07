@@ -70,7 +70,6 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
     CGAffineTransform transform = CGAffineTransformRotate(CGAffineTransformMakeTranslation(point.x, point.y), angle);
     switch (lineStyle) {
         case kPDFLineStyleNone:
-            CGPathRelease(path);
             return;
         case kPDFLineStyleSquare:
             CGPathAddRect(path, &transform, CGRectMake(-1.5 * lineWidth, -1.5 * lineWidth, 3.0 * lineWidth, 3.0 * lineWidth));
