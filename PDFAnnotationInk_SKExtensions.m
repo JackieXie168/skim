@@ -100,6 +100,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         } else {
             CGContextSetLineCap(context, kCGLineCapRound);
         }
+        CGContextBeginPath(context);
         for (NSBezierPath *path in [self paths])
             CGContextAddPath(context, [path CGPath]);
         CGContextStrokePath(context);

@@ -130,6 +130,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
             addLineTipToPath(path, startPoint, angle + M_PI, [self startLineStyle], lineWidth);
         if ([self endLineStyle] != kPDFLineStyleNone)
             addLineTipToPath(path, endPoint, angle, [self endLineStyle], lineWidth);
+        CGContextBeginPath(context);
         CGContextAddPath(context, path);
         CGPathRelease(path);
         CGContextStrokePath(context);
