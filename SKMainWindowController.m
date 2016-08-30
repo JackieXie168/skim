@@ -2626,7 +2626,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     }];
     if (selAnnotation) {
         mwcFlags.updatingNoteSelection = 1;
-        [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
+        NSInteger row = [rightSideController.noteOutlineView rowForItem:selAnnotation];
+        [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [rightSideController.noteOutlineView scrollRowToVisible:row];
         mwcFlags.updatingNoteSelection = 0;
     }
 }
