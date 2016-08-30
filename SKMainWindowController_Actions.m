@@ -189,8 +189,6 @@
 }
 
 - (void)selectSelectedNote:(id)sender{
-    if ([sender clickedRow] == -1)
-        return;
     if ([pdfView hideNotes] == NO) {
         NSArray *selectedNotes = [self selectedNotes];
         if ([selectedNotes count] == 1) {
