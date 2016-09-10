@@ -2008,7 +2008,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
-    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
+    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue] + 1.0];
     if ([pageIndex unsignedIntegerValue] % 50 == 0) {
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];
