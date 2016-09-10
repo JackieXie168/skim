@@ -1855,8 +1855,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if ([selection hasCharacters] == NO && [sel hasCharacters])
         selection = [pdfDoc findString:string fromSelection:nil withOptions:options];
     if (selection) {
-        [pdfView setCurrentSelection:selection];
-		[pdfView scrollSelectionToVisible:self];
+        PDFPage *page = [selection safeFirstPage];
+        [pdfView goToRect:[selection boundsForPage:page] onPage:page];
         [leftSideController.findTableView deselectAll:self];
         [leftSideController.groupedFindTableView deselectAll:self];
         [pdfView setCurrentSelection:selection animate:YES];
