@@ -1932,7 +1932,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 #pragma mark PDFDocument delegate
 
-- (void)didMatchString:(PDFSelection *)instance {
+- (void)documentDidFindMatch:(NSNotification *)note {
+    PDFSelection *instance = [[note userInfo] objectForKey:@"PDFDocumentFoundSelection"];
+    
     if (mwcFlags.wholeWordSearch) {
         PDFSelection *copy = [[instance copy] autorelease];
         NSString *string = [instance string];
