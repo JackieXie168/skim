@@ -1837,16 +1837,20 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward {
+    PDFDocument *pdfDoc = [pdfView document];
+    if ([pdfDoc isFinding]) {
+        NSBeep();
+        return NO;
+    }
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-    PDFDocument *pdfDoc = [pdfView document];
     NSInteger options = 0;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFindKey])
         options |= NSCaseInsensitiveSearch;
     if (forward == NO)
         options |= NSBackwardsSearch;
     while ([sel hasCharacters] == NO && (forward ? pageIndex-- > 0 : ++pageIndex < [pdfDoc pageCount])) {
-        PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+        PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
         NSUInteger length = [[page string] length];
         if (length > 0)
             sel = [page selectionForRange:NSMakeRange(0, length)];
