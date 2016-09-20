@@ -60,4 +60,6 @@
 @property (nonatomic, retain) IBOutlet SKTableView *findTableView;
 @property (nonatomic, retain) IBOutlet SKTableView *groupedFindTableView;
 
+- (void)applySearchTableHeader:(NSString *)message;
+
 @end

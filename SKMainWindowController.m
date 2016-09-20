@@ -1936,9 +1936,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 #pragma mark PDFDocument delegate
 
-- (void)documentDidFindMatch:(NSNotification *)note {
-    PDFSelection *instance = [[note userInfo] objectForKey:@"PDFDocumentFoundSelection"];
-    
+- (void)didMatchString:(PDFSelection *)instance {
     if (mwcFlags.wholeWordSearch) {
         PDFSelection *copy = [[instance copy] autorelease];
         NSString *string = [instance string];
@@ -1959,21 +1957,33 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if (page == nil)
         return;
     
+    NSUInteger pageIndex = [page pageIndex];
     CGFloat order = [instance boundsOrderForPage:page];
     NSInteger i = [searchResults count];
     while (i-- > 0) {
         PDFSelection *prevResult = [searchResults objectAtIndex:i];
         PDFPage *prevPage = [prevResult safeFirstPage];
-        if ([page isEqual:prevPage] == NO || order >= [prevResult boundsOrderForPage:prevPage])
+        NSUInteger prevIndex = [prevPage pageIndex];
+        if (pageIndex > prevIndex || (pageIndex == prevIndex && order >= [prevResult boundsOrderForPage:prevPage]))
             break;
     }
     [searchResults insertObject:instance atIndex:i + 1];
     
-    SKGroupedSearchResult *result = [groupedSearchResults lastObject];
-    NSUInteger maxCount = [result maxCount];
-    if ([[result page] isEqual:page] == NO) {
+    SKGroupedSearchResult *result = nil;
+    NSUInteger maxCount = [[groupedSearchResults lastObject] maxCount];
+    i = [groupedSearchResults count];
+    while (i-- > 0) {
+        SKGroupedSearchResult *prevResult = [groupedSearchResults objectAtIndex:i];
+        NSUInteger prevIndex = [prevResult pageIndex];
+        if (pageIndex >= prevIndex) {
+            if (pageIndex >= prevIndex)
+                result = prevResult;
+            break;
+        }
+    }
+    if (result == nil) {
         result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
-        [groupedSearchResults addObject:result];
+        [groupedSearchResults insertObject:result atIndex:i + 1];
     }
     [result addMatch:instance];
     
@@ -1985,12 +1995,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
-    NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
+    [leftSideController applySearchTableHeader:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
     [self setSearchResults:nil];
-    [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-    [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
-    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-    [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
     [self setGroupedSearchResults:nil];
     [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
     [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
@@ -2001,13 +2007,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
-    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
+    [leftSideController applySearchTableHeader:[NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]]];
     [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
     [self didChangeValueForKey:SEARCHRESULTS_KEY];
-    [[[leftSideController.findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
-    [[leftSideController.findTableView headerView] setNeedsDisplay:YES];
-    [[[leftSideController.groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
-    [[leftSideController.groupedFindTableView headerView] setNeedsDisplay:YES];
     [statusBar stopAnimation:self];
     [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
 }

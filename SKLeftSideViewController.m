@@ -51,6 +51,7 @@
 #define PAGE_COLUMNID      @"page"
 #define LABEL_COLUMNID     @"label"
 #define RELEVANCE_COLUMNID @"relevance"
+#define RESULTS_COLUMNID   @"results"
 
 #define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
@@ -143,6 +144,13 @@
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
     return [findTableView isDescendantOf:aView] || [groupedFindTableView isDescendantOf:aView];
+}
+
+- (void)applySearchTableHeader:(NSString *)message {
+    [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
+    [[findTableView headerView] setNeedsDisplay:YES];
+    [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
+    [[groupedFindTableView headerView] setNeedsDisplay:YES];
 }
 
 @end
