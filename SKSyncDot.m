@@ -98,26 +98,29 @@
     return SKRectFromCenterAndSquareSize(point, 22.0);
 }
 
-- (void)draw {
-    [NSGraphicsContext saveGraphicsState];
+- (void)drawInContext:(CGContextRef)context {
+    CGContextSaveGState(context);
     
+    CGColorRef color;
     CGFloat s = 6.0;
     if (phase < 1.0) {
         s += 8.0 * sin(phase * M_PI);
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
-        [[NSColor redColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
-        [NSGraphicsContext restoreGraphicsState];
-        [NSGraphicsContext saveGraphicsState];
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.3 blue:0.3 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0]] autorelease];
-        [gradient drawInBezierPath:[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] relativeCenterPosition:NSMakePoint(0, 0.7)];
+        CGFloat components[8] = {1.0, 0.3, 0.3, 1.0, 1.0, 0.0, 0.0, 1.0};
+        CGFloat locations[2] = {0.0, 1.0};
+        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 2);
+        CGColorSpaceRelease(colorspace);
+        CGContextDrawRadialGradient(context, gradient, CGPointMake(point.x, point.y + 0.35 * s), 0.0, CGPointMake(point.x, point.y), 0.5 * s, 0);
+        CGGradientRelease(gradient);
     } else {
-        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-        [[NSColor redColor] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:SKRectFromCenterAndSquareSize(point, s)] fill];
+        CGContextSetBlendMode(context, kCGBlendModeMultiply);
+        color = CGColorCreateGenericRGB(1.0, 0.0, 0.0, 1.0);
+        CGContextSetFillColorWithColor(context, color);
+        CGColorRelease(color);
+        CGContextFillEllipseInRect(context, CGRectMake(point.x - 0.5 * s, point.y - 0.5 * s, s, s));
     }
     
-    [NSGraphicsContext restoreGraphicsState];
+    CGContextRestoreGState(context);
 }
 
 @end

@@ -59,6 +59,8 @@
 
 - (void)applyDefaultPageBackgroundColor;
 
+- (void)applyDefaultInterpolationQuality;
+
 @end
 
 

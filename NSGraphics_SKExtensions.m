@@ -41,26 +41,28 @@
 #import "NSColor_SKExtensions.h"
 
 
-void SKDrawResizeHandle(NSPoint point, CGFloat radius, BOOL active)
+void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)
 {
-    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius)];
-    [path setLineWidth:0.25 * radius];
-    [[[(active ? [NSColor selectedControlColor] : [NSColor secondarySelectedControlColor]) colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8] setFill];
-    [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) setStroke];
-    [path fill];
-    [path stroke];
+    CGRect rect = CGRectMake(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius);
+    NSColor *color = [[(active ? [NSColor selectedControlColor] : [NSColor secondarySelectedControlColor]) colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    color = (active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]);
+    CGContextSetStrokeColorWithColor(context, [color CGColor]);
+    CGContextSetLineWidth(context, 0.25 * radius);
+    CGContextFillEllipseInRect(context, rect);
+    CGContextStrokeEllipseInRect(context, rect);
 }
 
-void SKDrawResizeHandles(NSRect rect, CGFloat radius, BOOL active)
+void SKDrawResizeHandles(CGContextRef context, NSRect rect, CGFloat radius, BOOL active)
 {
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, active);
-    SKDrawResizeHandle(NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMinX(rect), NSMidY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMidX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMidX(rect), NSMinY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMaxX(rect), NSMidY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMinX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMinX(rect), NSMinY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMaxX(rect), NSMaxY(rect)), radius, active);
+    SKDrawResizeHandle(context, NSMakePoint(NSMaxX(rect), NSMinY(rect)), radius, active);
 }
 
 #pragma mark -

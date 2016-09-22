@@ -58,6 +58,6 @@ typedef void (^SKSyncDotUpdateBlock)(BOOL finished);
 
 - (void)invalidate;
 
-- (void)draw;
+- (void)drawInContext:(CGContextRef)context;
 
 @end

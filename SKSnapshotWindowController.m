@@ -280,6 +280,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView applyDefaultPageBackgroundColor];
+    [pdfView applyDefaultInterpolationQuality];
     [pdfView setDocument:pdfDocument];
     
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
@@ -637,6 +638,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
                 [self updateWindowLevel];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+            [pdfView applyDefaultInterpolationQuality];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKBackgroundColorKey]) {

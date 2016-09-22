@@ -378,21 +378,20 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     CGContextAddRect(context, NSRectToCGRect(selectionRect));
     CGContextEOFillPath(context);
     if ([pdfPage pageIndex] != selectionPageIndex) {
-        CGColorRef color = CGColorCreateGenericGray(0.0, 0.3);
+        color = CGColorCreateGenericGray(0.0, 0.3);
         CGContextSetFillColorWithColor(context, color);
         CGColorRelease(color);
         CGContextFillRect(context, NSRectToCGRect(selectionRect));
     }
-    SKDrawResizeHandlesInContext(selectionRect, radius, active, context);
+    SKDrawResizeHandles(context, selectionRect, radius, active);
 }
 
 - (void)drawDragHighlightInContext:(CGContextRef)context {
     CGFloat width = 1.0 / [self scaleFactor];
     CGContextSaveGState(context);
     CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-    CGContextSetLineWidth(context, width);
     NSRect rect = [self convertRect:NSIntegralRect([self convertRect:[highlightAnnotation bounds] fromPage:[highlightAnnotation page]]) toPage:[highlightAnnotation page]];
-    CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width));
+    CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width), width);
     CGContextRestoreGState(context);
 }
 
@@ -420,20 +419,12 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 }
 
 - (void)drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
-    CGInterpolationQuality interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
-    // smooth graphics when anti-aliasing
-    if (interpolation == kCGInterpolationDefault)
-        interpolation = [self shouldAntiAlias] ? kCGInterpolationHigh : kCGInterpolationNone;
-    CGContextSetInterpolationQuality(context, interpolation);
-    
     [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
     
     // Let PDFView do most of the hard work.
     [super drawPage:pdfPage toContext:context];
     
     [PDFAnnotation setCurrentActiveAnnotation:nil];
-    
-    CGContextSetInterpolationQuality(context, kCGInterpolationDefault);
     
     [self drawPageHighlights:pdfPage toContext:context];
 }
@@ -443,20 +434,12 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         // on 10.12 this should call drawPage:toContext:
         [super drawPage:pdfPage];
     } else {
-        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
-        // smooth graphics when anti-aliasing
-        if (interpolation == NSImageInterpolationDefault)
-            interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
-        [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
-        
         [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
         
         // Let PDFView do most of the hard work.
         [super drawPage:pdfPage];
         
         [PDFAnnotation setCurrentActiveAnnotation:nil];
-        
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
         
         [self drawPageHighlights:pdfPage toContext:[[NSGraphicsContext currentContext] graphicsPort]];
     }
@@ -3914,6 +3897,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             NSImage *image;
             NSRange pageRange;
             NSAffineTransform *transform = [NSAffineTransform transform];
+            NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
+            
+            // smooth graphics when anti-aliasing
+            if (interpolation == NSImageInterpolationDefault)
+                interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
             
             [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
             [transform scaleBy:1.0 / magnification];
@@ -3961,7 +3949,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     [pageTransform concat];
                     [pageTransform release];
                     [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-                    [self drawPage:page];
+                    [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
+                    if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)])
+                        [self drawPage:page toContext:[[NSGraphicsContext currentContext] graphicsPort]];
+                    else
+                        [self drawPage:page];
+                    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
                     [NSGraphicsContext restoreGraphicsState];
                 }
                 

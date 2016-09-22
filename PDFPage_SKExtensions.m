@@ -203,7 +203,7 @@ static BOOL usesSequentialPageNumbering = NO;
         
         if (readingBar) {
             [self transformContextForBox:box];
-            [readingBar drawForPage:self withBox:box];
+            [readingBar drawForPage:self withBox:box inContext:[[NSGraphicsContext currentContext] graphicsPort]];
         }
         
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];

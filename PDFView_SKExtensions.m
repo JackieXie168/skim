@@ -50,9 +50,24 @@
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+
 @interface NSScreen (SKLionDeclarations)
 - (CGFloat)backingScaleFactor;
 @end
+
+typedef NSInteger PDFInterpolationQuality;
+enum
+{
+    kPDFInterpolationQualityNone = 0,
+    kPDFInterpolationQualityLow = 1,
+    kPDFInterpolationQualityHigh = 2
+};
+
+@interface PDFView (SKLionDeclarations)
+- (void)setInterpolationQuality:(PDFInterpolationQuality)quality;
+- (PDFInterpolationQuality)interpolationQuality;
+@end
+
 #endif
 
 @implementation PDFView (SKExtensions)
@@ -242,12 +257,24 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 + (NSColor *)defaultPageBackgroundColor {
-    return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
+    if ([self respondsToSelector:@selector(setPageColor:)])
+        return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
+    return [NSColor whiteColor];
 }
 
 - (void)applyDefaultPageBackgroundColor {
     if ([self respondsToSelector:@selector(setPageColor:)])
         [self setPageColor:[[self class] defaultPageBackgroundColor]];
+}
+
+- (void)applyDefaultInterpolationQuality {
+    if ([self respondsToSelector:@selector(setInterpolationQuality:)]) {
+        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
+        // smooth graphics when anti-aliasing
+        if (interpolation == NSImageInterpolationDefault)
+            interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
+        [self setInterpolationQuality:interpolation == NSImageInterpolationHigh ? kPDFInterpolationQualityHigh : interpolation == NSImageInterpolationLow ? kPDFInterpolationQualityLow : kPDFInterpolationQualityNone];
+    }
 }
 
 @end

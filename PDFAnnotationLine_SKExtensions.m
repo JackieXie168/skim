@@ -231,16 +231,16 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         return 0;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
     CGFloat delta = 4.0 / [pdfView scaleFactor];
-    SKDrawResizeHandle(point, delta, active);
+    SKDrawResizeHandle(context, point, delta, active);
     point = SKAddPoints(origin, [self endPoint]);
-    SKDrawResizeHandle(point, delta, active);
+    SKDrawResizeHandle(context, point, delta, active);
 }
 
 - (NSString *)colorDefaultKey { return SKLineNoteColorKey; }

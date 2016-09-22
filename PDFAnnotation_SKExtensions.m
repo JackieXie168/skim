@@ -293,18 +293,19 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self isResizable] ? SKResizeHandleForPointFromRect(point, [self bounds], 4.0 / scaleFactor) : 0;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
-    [NSGraphicsContext saveGraphicsState];
     BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];
     CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
-    [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) setFill];
-    NSFrameRectWithWidth(rect, lineWidth);
+    CGContextSaveGState(context);
+    CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
+    CGContextSetStrokeColorWithColor(context, color);
+    CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth), lineWidth);
     if ([self isResizable])
-        SKDrawResizeHandles(rect, 4.0 * lineWidth, active);
-    [NSGraphicsContext restoreGraphicsState];
+        SKDrawResizeHandles(context, rect, 4.0 * lineWidth, active);
+    CGContextRestoreGState(context);
 }
 
 - (void)registerUserName {

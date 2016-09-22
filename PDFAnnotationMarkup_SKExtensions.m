@@ -276,7 +276,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     
@@ -285,12 +285,16 @@ static void (*original_dealloc)(id, SEL) = NULL;
     NSUInteger i, iMax = [lines count];
     CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
     PDFPage *page = [self page];
+    CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
     
-    [NSGraphicsContext saveGraphicsState];
-    [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) setFill];
-    for (i = 0; i < iMax; i++)
-        NSFrameRectWithWidth([pdfView convertRect:NSIntegralRect([pdfView convertRect:[lines rectAtIndex:i] fromPage:page]) toPage:page], lineWidth);
-    [NSGraphicsContext restoreGraphicsState];
+    CGContextSaveGState(context);
+    CGContextSetStrokeColorWithColor(context, color);
+    CGContextSetLineWidth(context, lineWidth);
+    for (i = 0; i < iMax; i++) {
+        NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[lines rectAtIndex:i] fromPage:page]) toPage:page];
+        CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth));
+    }
+    CGContextRestoreGState(context);
 }
 
 - (BOOL)isMarkup { return YES; }

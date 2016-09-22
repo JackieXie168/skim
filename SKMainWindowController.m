@@ -366,6 +366,7 @@ static char SKMainWindowDefaultsObservationContext;
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
     [pdfView applyDefaultPageBackgroundColor];
+    [pdfView applyDefaultInterpolationQuality];
     
     [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
@@ -2320,7 +2321,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+            [pdfView applyDefaultInterpolationQuality];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+            [secondaryPdfView applyDefaultInterpolationQuality];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];

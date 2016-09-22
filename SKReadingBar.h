@@ -63,6 +63,6 @@
 - (BOOL)goToPreviousPage;
 - (BOOL)goToLineForPoint:(NSPoint)point;
 
-- (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box;
+- (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
 
 @end

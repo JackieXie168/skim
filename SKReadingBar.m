@@ -197,30 +197,30 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
     return YES;
 }
 
-- (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box {
+- (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
     NSRect rect = [self currentBoundsForBox:box];
     
-    [NSGraphicsContext saveGraphicsState];
+    CGContextSaveGState(context);
     
-    [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
+    CGContextSetFillColorWithColor(context, [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] CGColor]);
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
         NSRect bounds = [pdfPage boundsForBox:box];
         if (NSEqualRects(rect, NSZeroRect) || [page isEqual:pdfPage] == NO) {
-            [NSBezierPath fillRect:bounds];
+            CGContextFillRect(context, NSRectToCGRect(bounds));
         } else if (([pdfPage intrinsicRotation] % 180)) {
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)];
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)];
+            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
+            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)));
         } else {
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)];
-            [NSBezierPath fillRect:SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)];
+            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
+            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
         }
     } else if ([page isEqual:pdfPage]) {
-        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);        
-        [NSBezierPath fillRect:rect];
+        CGContextSetBlendMode(context, kCGBlendModeMultiply);
+        CGContextFillRect(context, NSRectToCGRect(rect));
     }
     
-    [NSGraphicsContext restoreGraphicsState];
+    CGContextRestoreGState(context);
 }
 
 @end
