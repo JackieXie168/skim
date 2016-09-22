@@ -159,6 +159,12 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @end
 #endif
 
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+@interface PDFView (SKSierraDeclarations)
+- (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
+@end
+#endif
+
 #pragma mark -
 
 @interface SKPDFView (Private)
@@ -360,66 +366,100 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 #pragma mark Drawing
 
-- (void)drawSelectionForPage:(PDFPage *)pdfPage {
+- (void)drawSelectionForPage:(PDFPage *)pdfPage inContext:(CGContextRef)context {
     NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
     CGFloat radius = HANDLE_SIZE / [self scaleFactor];
     BOOL active = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
-    [path appendBezierPathWithRect:selectionRect];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
-    [path setWindingRule:NSEvenOddWindingRule];
-    [path fill];
+    CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
+    CGContextSetFillColorWithColor(context, color);
+    CGColorRelease(color);
+    CGContextBeginPath(context);
+    CGContextAddRect(context, NSRectToCGRect(bounds));
+    CGContextAddRect(context, NSRectToCGRect(selectionRect));
+    CGContextEOFillPath(context);
     if ([pdfPage pageIndex] != selectionPageIndex) {
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setFill];
-        [NSBezierPath fillRect:selectionRect];
+        CGColorRef color = CGColorCreateGenericGray(0.0, 0.3);
+        CGContextSetFillColorWithColor(context, color);
+        CGColorRelease(color);
+        CGContextFillRect(context, NSRectToCGRect(selectionRect));
     }
-    SKDrawResizeHandles(selectionRect, radius, active);
+    SKDrawResizeHandlesInContext(selectionRect, radius, active, context);
 }
 
-- (void)drawDragHighlight {
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor blackColor] setFill];
+- (void)drawDragHighlightInContext:(CGContextRef)context {
+    CGFloat width = 1.0 / [self scaleFactor];
+    CGContextSaveGState(context);
+    CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
+    CGContextSetLineWidth(context, width);
     NSRect rect = [self convertRect:NSIntegralRect([self convertRect:[highlightAnnotation bounds] fromPage:[highlightAnnotation page]]) toPage:[highlightAnnotation page]];
-    NSFrameRectWithWidth(rect, 1.0 / [self scaleFactor]);
-    [NSGraphicsContext restoreGraphicsState];
+    CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width));
+    CGContextRestoreGState(context);
 }
 
-- (void)drawPage:(PDFPage *)pdfPage {
-    NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
+- (void)drawPageHighlights:(PDFPage *)pdfPage toContext:(CGContextRef)context {
+    CGContextSaveGState(context);
+    
+    [pdfPage transformContext:context forBox:[self displayBox]];
+    
+    if ([[activeAnnotation page] isEqual:pdfPage])
+        [activeAnnotation drawSelectionHighlightForView:self inContext:context];
+    
+    if (readingBar)
+        [readingBar drawForPage:pdfPage withBox:[self displayBox] inContext:context];
+    
+    if (selectionPageIndex != NSNotFound)
+        [self drawSelectionForPage:pdfPage inContext:context];
+    
+    if ([[highlightAnnotation page] isEqual:pdfPage])
+        [self drawDragHighlightInContext:context];
+    
+    if ([[syncDot page] isEqual:pdfPage])
+        [syncDot drawInContext:context];
+    
+    CGContextRestoreGState(context);
+}
+
+- (void)drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
+    CGInterpolationQuality interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
     // smooth graphics when anti-aliasing
-    if (interpolation == NSImageInterpolationDefault)
-        interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
-    [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
+    if (interpolation == kCGInterpolationDefault)
+        interpolation = [self shouldAntiAlias] ? kCGInterpolationHigh : kCGInterpolationNone;
+    CGContextSetInterpolationQuality(context, interpolation);
     
     [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
     
     // Let PDFView do most of the hard work.
-    [super drawPage: pdfPage];
+    [super drawPage:pdfPage toContext:context];
     
     [PDFAnnotation setCurrentActiveAnnotation:nil];
-	
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     
-    [NSGraphicsContext saveGraphicsState];
+    CGContextSetInterpolationQuality(context, kCGInterpolationDefault);
     
-    [pdfPage transformContextForBox:[self displayBox]];
-    
-    if ([[activeAnnotation page] isEqual:pdfPage])
-        [activeAnnotation drawSelectionHighlightForView:self];
-    
-    if (readingBar)
-        [readingBar drawForPage:pdfPage withBox:[self displayBox]];
-    
-    if (selectionPageIndex != NSNotFound)
-        [self drawSelectionForPage:pdfPage];
-    
-    if ([[highlightAnnotation page] isEqual:pdfPage])
-        [self drawDragHighlight];
-    
-    if ([[syncDot page] isEqual:pdfPage])
-        [syncDot draw];
-    
-    [NSGraphicsContext restoreGraphicsState];
+    [self drawPageHighlights:pdfPage toContext:context];
+}
+
+- (void)drawPage:(PDFPage *)pdfPage {
+    if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)]) {
+        // on 10.12 this should call drawPage:toContext:
+        [super drawPage:pdfPage];
+    } else {
+        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
+        // smooth graphics when anti-aliasing
+        if (interpolation == NSImageInterpolationDefault)
+            interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
+        [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
+        
+        [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
+        
+        // Let PDFView do most of the hard work.
+        [super drawPage:pdfPage];
+        
+        [PDFAnnotation setCurrentActiveAnnotation:nil];
+        
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+        
+        [self drawPageHighlights:pdfPage toContext:[[NSGraphicsContext currentContext] graphicsPort]];
+    }
 }
 
 #pragma mark Accessors
