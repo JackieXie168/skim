@@ -732,16 +732,19 @@ static char SKMainWindowDefaultsObservationContext;
     if ([pdfView document] != document) {
         
         NSUInteger pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
-        NSRect visibleRect = NSZeroRect, secondaryVisibleRect = NSZeroRect;
+        NSPoint point, secondaryPoint;
+        PDFDestination *dest;
         NSArray *snapshotDicts = nil;
         NSDictionary *openState = nil;
         
         if ([pdfView document]) {
-            pageIndex = [[pdfView currentPage] pageIndex];
-            visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
+            dest = [pdfView currentDestination];
+            pageIndex = [[dest page] pageIndex];
+            point = [dest point];
             if (secondaryPdfView) {
-                secondaryPageIndex = [[secondaryPdfView currentPage] pageIndex];
-                secondaryVisibleRect = [secondaryPdfView convertRect:[secondaryPdfView convertRect:[[secondaryPdfView documentView] visibleRect] fromView:[secondaryPdfView documentView]] toPage:[secondaryPdfView currentPage]];
+                dest = [secondaryPdfView currentDestination];
+                secondaryPageIndex = [[dest page] pageIndex];
+                secondaryPoint = [dest point];
             }
             openState = [self expansionStateForOutline:[[pdfView document] outlineRoot]];
             
@@ -806,12 +809,12 @@ static char SKMainWindowDefaultsObservationContext;
             [[pdfView window] disableFlushWindow];
             if (page) {
                 [pdfView display];
-                [pdfView goToRect:visibleRect onPage:page];
+                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:pageIndex] atPoint:point] autorelease]];
             }
             if (secondaryPage) {
                 if ([secondaryPdfView window])
                     [secondaryPdfView display];
-                [secondaryPdfView goToRect:secondaryVisibleRect onPage:secondaryPage];
+                [secondaryPdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:secondaryPageIndex] atPoint:secondaryPoint] autorelease]];
             }
             [[pdfView window] enableFlushWindow];
             [[pdfView window] flushWindowIfNeeded];
