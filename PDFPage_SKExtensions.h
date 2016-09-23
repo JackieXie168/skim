@@ -84,7 +84,6 @@ extern NSString *SKPDFPageActionRotate;
 - (BOOL)isEditable;
 
 - (NSAffineTransform *)affineTransformForBox:(PDFDisplayBox)box;
-- (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box;
 
 - (CGFloat)sortOrderForBounds:(NSRect)bounds;
 
@@ -108,3 +107,9 @@ extern NSString *SKPDFPageActionRotate;
 - (id)handleGrabScriptCommand:(NSScriptCommand *)command;
 
 @end
+
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+@interface PDFPage (SKSierraDeclarations)
+- (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box;
+@end
+#endif

@@ -59,6 +59,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "SKRuntime.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -72,6 +73,21 @@ NSString *SKPDFPageActionRotate = @"rotate";
 #define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
 
 @implementation PDFPage (SKExtensions) 
+
+- (void)ElCapitan_transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
+    CGContextRotateCTM(context, -[self rotation] * M_PI_2 / 90.0);
+    switch ([self rotation]) {
+        case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
+        case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
+        case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
+        case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
+    }
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(transformContext:forBox:), @selector(ElCapitan_transformContext:forBox:));
+}
 
 static BOOL usesSequentialPageNumbering = NO;
 
@@ -367,17 +383,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         case 270: [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)]; break;
     }
     return transform;
-}
-
-- (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box {
-    NSRect bounds = [self boundsForBox:box];
-    CGContextRotateCTM(context, -[self rotation] * M_PI_2 / 90.0);
-    switch ([self rotation]) {
-        case 0:   CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds)); break;
-        case 90:  CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds)); break;
-        case 180: CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds)); break;
-        case 270: CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds)); break;
-    }
 }
 
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
