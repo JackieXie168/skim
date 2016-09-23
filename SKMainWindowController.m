@@ -733,6 +733,7 @@ static char SKMainWindowDefaultsObservationContext;
         
         NSUInteger pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
         NSPoint point, secondaryPoint;
+        BOOL rotated, secondaryRotated;
         PDFDestination *dest;
         NSArray *snapshotDicts = nil;
         NSDictionary *openState = nil;
@@ -741,10 +742,12 @@ static char SKMainWindowDefaultsObservationContext;
             dest = [pdfView currentDestination];
             pageIndex = [[dest page] pageIndex];
             point = [dest point];
+            rotated = [[dest page] rotation] != [[dest page] intrinsicRotation];
             if (secondaryPdfView) {
                 dest = [secondaryPdfView currentDestination];
                 secondaryPageIndex = [[dest page] pageIndex];
                 secondaryPoint = [dest point];
+                secondaryRotated = [[dest page] rotation] != [[dest page] intrinsicRotation];
             }
             openState = [self expansionStateForOutline:[[pdfView document] outlineRoot]];
             
@@ -798,26 +801,20 @@ static char SKMainWindowDefaultsObservationContext;
                     [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
                 } else {
                     page = [document pageAtIndex:pageIndex];
-                    [pdfView goToPage:page];
+                    if (rotated)
+                        [pdfView goToPage:page];
+                    else
+                        [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease]];
                 }
             }
             if (secondaryPageIndex != NSNotFound) {
                 secondaryPage = [document pageAtIndex:MIN(secondaryPageIndex, [document pageCount] - 1)];
-                [secondaryPdfView goToPage:secondaryPage];
+                if (secondaryRotated)
+                    [secondaryPdfView goToPage:secondaryPage];
+                else
+                    [secondaryPdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:secondaryPageIndex] atPoint:secondaryPoint] autorelease]];
             }
             [pdfView resetHistory];
-            [[pdfView window] disableFlushWindow];
-            if (page) {
-                [pdfView display];
-                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:pageIndex] atPoint:point] autorelease]];
-            }
-            if (secondaryPage) {
-                if ([secondaryPdfView window])
-                    [secondaryPdfView display];
-                [secondaryPdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:secondaryPageIndex] atPoint:secondaryPoint] autorelease]];
-            }
-            [[pdfView window] enableFlushWindow];
-            [[pdfView window] flushWindowIfNeeded];
         }
         
         // the number of pages may have changed
