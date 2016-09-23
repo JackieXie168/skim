@@ -2135,7 +2135,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
-        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
+        NSRect lineRect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
@@ -2153,7 +2153,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
             NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
-            rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+            NSRect rect = NSInsetRect(lineRect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
             if (NSWidth(rect) > NSWidth(visibleRect)) {
                 if (NSMaxX(rect) < point.x + 0.5 * NSWidth(visibleRect))
                     rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
@@ -2161,8 +2161,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
                 rect.size.width = NSWidth(visibleRect);
             }
+            [self goToRect:rect onPage:page];
         }
-        [self goToRect:rect onPage:page];
+        [self goToRect:lineRect onPage:page];
         
         if (syncDot) {
             [syncDot invalidate];
