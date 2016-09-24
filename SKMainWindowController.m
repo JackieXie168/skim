@@ -527,17 +527,16 @@ static char SKMainWindowDefaultsObservationContext;
 
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    PDFPage *page = [pdfView currentPage];
-    PDFDestination *dest = [pdfView currentDestination];
-    NSPoint point = [dest point];
-    if ([page isEqual:[dest page]] == NO)
-        point = [pdfView convertPoint:[pdfView convertPoint:point fromPage:[dest page]] toPage:page];
+    NSPoint point = NSZeroPoint;
+    BOOL rotated = NO;
+    NSUInteger pageIndex = [pdfView currentPageIndexAndPoint:&point rotated:&rotated];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:MAINWINDOWFRAME_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
     [setup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
-    [setup setObject:[NSNumber numberWithUnsignedInteger:[page pageIndex]] forKey:PAGEINDEX_KEY];
-    [setup setObject:NSStringFromPoint(point) forKey:SCROLLPOINT_KEY];
+    [setup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
+    if (rotated == NO)
+        [setup setObject:NSStringFromPoint(point) forKey:SCROLLPOINT_KEY];
     if ([snapshots count])
         [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SNAPSHOTS_KEY];
     if ([self interactionMode] == SKNormalMode) {
@@ -732,23 +731,15 @@ static char SKMainWindowDefaultsObservationContext;
     if ([pdfView document] != document) {
         
         NSUInteger pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
-        NSPoint point, secondaryPoint;
-        BOOL rotated, secondaryRotated;
-        PDFDestination *dest;
+        NSPoint point = NSZeroPoint, secondaryPoint = NSZeroPoint;
+        BOOL rotated = NO, secondaryRotated = NO;
         NSArray *snapshotDicts = nil;
         NSDictionary *openState = nil;
         
         if ([pdfView document]) {
-            dest = [pdfView currentDestination];
-            pageIndex = [[dest page] pageIndex];
-            point = [dest point];
-            rotated = [[dest page] rotation] != [[dest page] intrinsicRotation];
-            if (secondaryPdfView) {
-                dest = [secondaryPdfView currentDestination];
-                secondaryPageIndex = [[dest page] pageIndex];
-                secondaryPoint = [dest point];
-                secondaryRotated = [[dest page] rotation] != [[dest page] intrinsicRotation];
-            }
+            pageIndex = [pdfView currentPageIndexAndPoint:&point rotated:&rotated];
+            if (secondaryPdfView)
+                secondaryPageIndex = [secondaryPdfView currentPageIndexAndPoint:&secondaryPoint rotated:&secondaryRotated];
             openState = [self expansionStateForOutline:[[pdfView document] outlineRoot]];
             
             [[pdfView document] cancelFindString];
