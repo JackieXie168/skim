@@ -2138,7 +2138,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSRect lineRect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
         NSRect rect = lineRect;
         NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
-        NSPoint point;
+        NSPoint p;
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
@@ -2163,8 +2163,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
             rect.size.width = NSWidth(visibleRect);
         }
-        point = [self convertPoint:SKTopLeftPoint([self convertRect:rect fromPage:page]) toPage:page];
-        [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease]];
+        p = [self convertPoint:SKTopLeftPoint([self convertRect:rect fromPage:page]) toPage:page];
+        [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:p] autorelease]];
         
         if (syncDot) {
             [syncDot invalidate];
