@@ -110,6 +110,9 @@
         CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 2);
         CGColorSpaceRelease(colorspace);
+        CGContextBeginPath(context);
+        CGContextAddEllipseInRect(context, CGRectMake(point.x - 0.5 * s, point.y - 0.5 * s, s, s));
+        CGContextClip(context);
         CGContextDrawRadialGradient(context, gradient, CGPointMake(point.x, point.y + 0.35 * s), 0.0, CGPointMake(point.x, point.y), 0.5 * s, 0);
         CGGradientRelease(gradient);
     } else {
