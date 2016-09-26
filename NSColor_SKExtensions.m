@@ -43,10 +43,11 @@
 @implementation NSColor (SKExtensions)
 
 - (CGColorRef)CGColorLion {
-    const NSInteger numberOfComponents = [self numberOfComponents];
+    NSColor *color = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    const NSInteger numberOfComponents = [color numberOfComponents];
     CGFloat components[numberOfComponents];
-    CGColorSpaceRef colorSpace = [[self colorSpace] CGColorSpace];
-    [self getComponents:(CGFloat *)&components];
+    CGColorSpaceRef colorSpace = [[color colorSpace] CGColorSpace];
+    [color getComponents:(CGFloat *)&components];
     return (CGColorRef)[(id)CGColorCreate(colorSpace, components) autorelease];
 }
 
