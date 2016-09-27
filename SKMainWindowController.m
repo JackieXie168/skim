@@ -1968,7 +1968,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         SKGroupedSearchResult *prevResult = [groupedSearchResults objectAtIndex:i];
         NSUInteger prevIndex = [prevResult pageIndex];
         if (pageIndex >= prevIndex) {
-            if (pageIndex >= prevIndex)
+            if (pageIndex == prevIndex)
                 result = prevResult;
             break;
         }
