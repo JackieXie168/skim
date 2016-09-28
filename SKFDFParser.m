@@ -326,14 +326,14 @@ NSString *SKFDFStringFromDate(NSDate *date) {
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationColorKey, &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKNPDFAnnotationColorKey];
+            [dictionary setObject:[NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0] forKey:SKNPDFAnnotationColorKey];
         }
     }
     
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationInteriorColorKey, &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKNPDFAnnotationInteriorColorKey];
+            [dictionary setObject:[NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0] forKey:SKNPDFAnnotationInteriorColorKey];
         }
     }
     
