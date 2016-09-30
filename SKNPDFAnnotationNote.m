@@ -45,6 +45,10 @@ NSString *SKNPDFAnnotationImageKey = @"image";
 NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
 
 
+@interface PDFAnnotation (SKNPrivateDeclarations)
+- (NSMutableDictionary *)genericSkimNoteProperties;
+@end
+
 @interface SKNPDFAnnotationNote () <NSTextStorageDelegate>
 @end
 
@@ -101,7 +105,7 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
 }
 
 - (NSDictionary *)SkimNoteProperties{
-    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
+    NSMutableDictionary *dict = [super genericSkimNoteProperties];
     [dict setValue:[self text] forKey:SKNPDFAnnotationTextKey];
     [dict setValue:[self image] forKey:SKNPDFAnnotationImageKey];
     return dict;
