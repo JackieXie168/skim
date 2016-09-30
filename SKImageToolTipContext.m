@@ -172,6 +172,21 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 @implementation PDFAnnotation (SKImageToolTipContext)
 
 - (NSImage *)toolTipImage {
+    
+    if ([self isLink]) {
+        NSImage *image = [[self destination] toolTipImageWithOffset:NSZeroPoint];
+        if (image == nil) {
+            NSURL *url = [self URL];
+            if (url) {
+                NSAttributedString *attrString = toolTipAttributedString([url absoluteString]);
+                if ([attrString length])
+                    image = [attrString toolTipImage];
+            }
+        }
+        if (image)
+            return image;
+    }
+    
     NSAttributedString *attrString = [self text];
     NSString *string = [attrString string];
     NSUInteger i, l = [string length];
@@ -195,21 +210,6 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     }
     
     return [attrString length] ? [attrString toolTipImage] : nil;
-}
-
-@end
-
-
-@implementation PDFAnnotationLink (SKImageToolTipContext)
-
-- (NSImage *)toolTipImage {
-    NSImage *image = [[self destination] toolTipImageWithOffset:NSZeroPoint];
-    if (image == nil && [self URL]) {
-        NSAttributedString *attrString = toolTipAttributedString([[self URL] absoluteString]);
-        if ([attrString length])
-            image = [attrString toolTipImage];
-    }
-    return image;
 }
 
 @end
