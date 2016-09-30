@@ -219,7 +219,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         } else if ([action isKindOfClass:[NSDictionary class]]) {
             NSString *type = [action objectForKey:@"/S"];
             if ([type isEqualToString:@"/URI"]) {
-                id uri = [action objectForKey:@"URI"];
+                id uri = [action objectForKey:@"/URI"];
                 if ([uri isKindOfClass:[NSURL class]])
                     return (NSURL *)uri;
                 else if ([uri isKindOfClass:[NSString class]])
