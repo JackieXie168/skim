@@ -236,7 +236,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
                     else if ([file isAbsolutePath])
                         return [NSURL fileURLWithPath:file];
                     else
-                        return [[[[[self page] document] documentURL] URLByDeletingLastPathComponent] URLByAppendingPathComponent:file];
+                        return [NSURL URLWithString:file relativeToURL:[[[[self page] document] documentURL] URLByDeletingLastPathComponent]];
                 }
             }
         }
