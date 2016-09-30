@@ -271,7 +271,12 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
 
-- (BOOL)isConvertibleAnnotation { return NO; }
+- (BOOL)isConvertibleAnnotation {
+    static NSSet *convertibleTypes = nil;
+    if (convertibleTypes == nil)
+        convertibleTypes = [[NSSet alloc] initWithObjects:SKNFreeTextString, SKNTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
+    return [convertibleTypes containsObject:[self type]];
+}
 
 - (BOOL)hitTest:(NSPoint)point {
     return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
