@@ -76,6 +76,12 @@ NSString *SKPDFAnnotationBoundsOrderKey = @"boundsOrder";
 NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimnote";
 
 
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+@interface PDFAnnotation (SKSierraDeclarations)
+- (id)valueForAnnotationKey:(NSString *)key;
+@end
+#endif
+
 @implementation PDFAnnotation (SKExtensions)
 
 static PDFAnnotation *currentActiveAnnotation = nil;
@@ -173,10 +179,69 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return fdfString;
 }
 
-- (PDFDestination *)destination{
-    NSRect bounds = [self bounds];
-    NSPoint point = SKTopLeftPoint(bounds);
-    return [[[PDFDestination alloc] initWithPage:[self page] atPoint:point] autorelease];
+- (PDFDestination *)destination {
+    if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
+        id dest = nil;
+        id action = [self valueForAnnotationKey:@"/A"];
+        if ([action isKindOfClass:[PDFActionGoTo class]]) {
+            dest = [(PDFActionGoTo *)action destination];
+        } else if ([action isKindOfClass:[NSDictionary class]]) {
+            if ([[action objectForKey:@"/S"] isEqualToString:@"/GoTo"])
+                dest = [action objectForKey:@"/D"];
+        } else {
+            dest = [self valueForAnnotationKey:@"/Dest"];
+        }
+        if ([dest isKindOfClass:[PDFDestination class]]) {
+            return dest;
+        } else if ([dest isKindOfClass:[NSArray class]] && [dest count] > 1) {
+            PDFPage *page = [dest objectAtIndex:0];
+            if ([page isKindOfClass:[PDFPage class]]) {
+                NSPoint point;
+                NSString *type = [dest objectAtIndex:1];
+                if ([type isEqualToString:@"/XYZ"] && [dest count] > 3)
+                    point = NSMakePoint([[dest objectAtIndex:2] doubleValue], [[dest objectAtIndex:3] doubleValue]);
+                else
+                    point = SKTopLeftPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
+                return [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
+            }
+        }
+    }
+    return nil;
+}
+
+- (NSURL *)URL {
+    if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
+        id action = [self valueForAnnotationKey:@"/A"];
+        if ([action isKindOfClass:[PDFActionURL class]]) {
+            return [(PDFActionURL *)action URL];
+        } else if ([action isKindOfClass:[PDFActionRemoteGoTo class]]) {
+            return [(PDFActionURL *)action URL];
+        } else if ([action isKindOfClass:[NSDictionary class]]) {
+            NSString *type = [action objectForKey:@"/S"];
+            if ([type isEqualToString:@"/URI"]) {
+                id uri = [action objectForKey:@"URI"];
+                if ([uri isKindOfClass:[NSURL class]])
+                    return (NSURL *)uri;
+                else if ([uri isKindOfClass:[NSString class]])
+                    return [NSURL URLWithString:(NSString *)uri];
+            } else if ([type isEqualToString:@"/GoToR"]) {
+                id file = [action objectForKey:@"/F"];
+                if ([file isKindOfClass:[NSDictionary class]])
+                    file = [(NSDictionary *)file objectForKey:@"/F"];
+                if ([file isKindOfClass:[NSURL class]]) {
+                    return (NSURL *)file;
+                } else if ([file isKindOfClass:[NSString class]]) {
+                    if ([file hasPrefix:@"file://"])
+                        return [NSURL URLWithString:file];
+                    else if ([file isAbsolutePath])
+                        return [NSURL fileURLWithPath:file];
+                    else
+                        return [[[[[self page] document] documentURL] URLByDeletingLastPathComponent] URLByAppendingPathComponent:file];
+                }
+            }
+        }
+    }
+    return nil;
 }
 
 - (NSUInteger)pageIndex {
@@ -261,7 +326,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (BOOL)isLine { return NO; }
 
-- (BOOL)isLink { return NO; }
+- (BOOL)isLink { return [[self type] isEqualToString:@"Link"]; }
 
 - (BOOL)isResizable { return NO; }
 

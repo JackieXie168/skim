@@ -60,7 +60,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (NSString *)fdfString;
 
-- (PDFDestination *)destination;
 - (NSUInteger)pageIndex;
 
 - (PDFBorderStyle)borderStyle;
@@ -75,6 +74,9 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (NSAttributedString *)text;
 
 - (NSArray *)texts;
+
+- (PDFDestination *)destination;
+- (NSURL *)URL;
 
 - (BOOL)isMarkup;
 - (BOOL)isNote;
