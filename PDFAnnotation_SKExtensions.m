@@ -215,7 +215,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         if ([action isKindOfClass:[PDFActionURL class]]) {
             return [(PDFActionURL *)action URL];
         } else if ([action isKindOfClass:[PDFActionRemoteGoTo class]]) {
-            return [(PDFActionURL *)action URL];
+            return [(PDFActionRemoteGoTo *)action URL];
         } else if ([action isKindOfClass:[NSDictionary class]]) {
             NSString *type = [action objectForKey:@"/S"];
             if ([type isEqualToString:@"/URI"]) {
