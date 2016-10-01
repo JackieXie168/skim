@@ -231,7 +231,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
                 if ([file isKindOfClass:[NSURL class]]) {
                     return (NSURL *)file;
                 } else if ([file isKindOfClass:[NSString class]]) {
-                    if ([file hasPrefix:@"file://"])
+                    if ([file rangeOfString:@"://"].location != NSNotFound)
                         return [NSURL URLWithString:file];
                     else if ([file isAbsolutePath])
                         return [NSURL fileURLWithPath:file];
