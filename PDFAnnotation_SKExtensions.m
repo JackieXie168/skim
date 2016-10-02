@@ -366,16 +366,25 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
-    BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
-    NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];
-    CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
-    CGContextSaveGState(context);
-    CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
-    CGContextSetStrokeColorWithColor(context, color);
-    CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth), lineWidth);
-    if ([self isResizable])
-        SKDrawResizeHandles(context, rect, 4.0 * lineWidth, active);
-    CGContextRestoreGState(context);
+    if ([self isSkimNote]) {
+        BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
+        NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];
+        CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
+        CGContextSaveGState(context);
+        CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
+        CGContextSetStrokeColorWithColor(context, color);
+        CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth), lineWidth);
+        if ([self isResizable])
+            SKDrawResizeHandles(context, rect, 4.0 * lineWidth, active);
+        CGContextRestoreGState(context);
+    } else if ([self isLink] && [self respondsToSelector:@selector(setHighlighted:)] == NO) {
+        CGContextSaveGState(context);
+        CGColorRef color = CGColorCreateGenericGray(0.0, 0.2);
+        CGContextSetFillColorWithColor(context, color);
+        CGColorRelease(color);
+        CGContextFillRect(context, NSRectToCGRect([self bounds]));
+        CGContextRestoreGState(context);
+    }
 }
 
 - (void)registerUserName {
