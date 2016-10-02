@@ -227,7 +227,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
             } else if ([type isEqualToString:@"/GoToR"]) {
                 id file = [action objectForKey:@"/F"];
                 if ([file isKindOfClass:[NSDictionary class]])
-                    file = [(NSDictionary *)file objectForKey:@"/F"];
+                    file = [(NSDictionary *)file objectForKey:@"/Unix"] ?: [(NSDictionary *)file objectForKey:@"/F"];
                 if ([file isKindOfClass:[NSURL class]]) {
                     return (NSURL *)file;
                 } else if ([file isKindOfClass:[NSString class]]) {
