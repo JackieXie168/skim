@@ -1972,10 +1972,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([activeAnnotation isLink]) {
         
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
-        if ([activeAnnotation destination])
-            [self goToDestination:[(PDFAnnotationLink *)activeAnnotation destination]];
-        else if ([(PDFAnnotationLink *)activeAnnotation URL])
-            [[NSWorkspace sharedWorkspace] openURL:[(PDFAnnotationLink *)activeAnnotation URL]];
+        PDFDestination *dest = [(PDFAnnotationLink *)activeAnnotation destination];
+        NSURL *url;
+        if (dest)
+            [self goToDestination:dest];
+        else if ((url = [(PDFAnnotationLink *)activeAnnotation URL]))
+            [[NSWorkspace sharedWorkspace] openURL:url];
         [self setActiveAnnotation:nil];
         
     } else if (hideNotes == NO && [type isEqualToString:SKNFreeTextString]) {
