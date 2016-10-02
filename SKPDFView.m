@@ -509,7 +509,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         // Will need to redraw old active anotation.
         if (activeAnnotation != nil) {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-            if ([activeAnnotation isLink])
+            if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:NO];
             if (editor)
                 [self commitEditing];
@@ -521,7 +521,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             activeAnnotation = [newAnnotation retain];
             // Force redisplay.
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-            if ([activeAnnotation isLink])
+            if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         } else {
             activeAnnotation = nil;
