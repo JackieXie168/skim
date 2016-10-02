@@ -1961,7 +1961,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         if ([source isKindOfClass:[NSString class]])
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
-            source = [[self fileURL] URLReplacingPathExtension:@"tex"];
+            source = [[self fileURL] URLByDeletingPathExtension];
         [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[source path] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
