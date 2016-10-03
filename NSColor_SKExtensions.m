@@ -245,7 +245,7 @@
 }
 
 - (NSString *)hexString {
-    NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    NSColor *rgbColor = [self colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
     if (rgbColor) {
         CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
         [rgbColor getRed:&r green:&g blue:&b alpha:&a];
@@ -255,7 +255,7 @@
 }
 
 - (NSString *)rgbString {
-    NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    NSColor *rgbColor = [self colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
     if (rgbColor) {
         CGFloat r = 0.0, g = 0.0, b = 0.0, a = 0.0;
         [rgbColor getRed:&r green:&g blue:&b alpha:&a];
