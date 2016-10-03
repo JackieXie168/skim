@@ -134,7 +134,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     NSString *contents = [self contents];
     NSDate *modDate = [self modificationDate];
     NSString *userName = [self userName];
-    [[self color] getRed:&r green:&g blue:&b alpha:&a];
+    [[[self color] colorUsingColorSpaceName:NSDeviceRGBColorSpace] getRed:&r green:&g blue:&b alpha:&a];
     [fdfString appendFDFName:SKFDFTypeKey];
     [fdfString appendFDFName:SKFDFAnnotation];
     [fdfString appendFDFName:SKFDFAnnotationTypeKey];
