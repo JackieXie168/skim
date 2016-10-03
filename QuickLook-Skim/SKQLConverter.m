@@ -82,7 +82,8 @@ static NSString *hexStringWithColor(NSColor *color)
 {
     static unsigned char hexChars[16] = "0123456789abcdef";
     if ([color alphaComponent] < 1.0)
-        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
+        color = [[NSColor whiteColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
+    color = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
     NSInteger red = (NSInteger)round(255 * [color redComponent]);
     NSInteger green = (NSInteger)round(255 * [color greenComponent]);
     NSInteger blue = (NSInteger)round(255 * [color blueComponent]);
