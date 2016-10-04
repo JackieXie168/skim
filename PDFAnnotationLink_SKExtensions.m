@@ -59,4 +59,8 @@ static id (*original_toolTip)(id, SEL) = NULL;
 
 - (BOOL)isLink { return YES; }
 
+- (PDFDestination *)linkDestination { return [self destination]; }
+
+- (NSURL *)linkURL { return [self URL]; }
+
 @end

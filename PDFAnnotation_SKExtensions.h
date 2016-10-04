@@ -75,8 +75,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (NSArray *)texts;
 
-- (PDFDestination *)destination;
-- (NSURL *)URL;
+- (PDFDestination *)linkDestination;
+- (NSURL *)linkURL;
 
 - (BOOL)isMarkup;
 - (BOOL)isNote;

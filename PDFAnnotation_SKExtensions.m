@@ -179,8 +179,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return fdfString;
 }
 
-- (PDFDestination *)destination {
-    if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
+- (PDFDestination *)linkDestination {
+    if ([self respondsToSelector:@selector(destination)]) {
+        return [(PDFAnnotationLink *)self destination];
+    } else if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
         id dest = nil;
         id action = [self valueForAnnotationKey:@"/A"];
         if ([action isKindOfClass:[PDFActionGoTo class]]) {
@@ -209,8 +211,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return nil;
 }
 
-- (NSURL *)URL {
-    if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
+- (NSURL *)linkURL {
+    if ([self respondsToSelector:@selector(URL)]) {
+        return [(PDFAnnotationLink *)self URL];
+    } else if ([self isLink] && [self respondsToSelector:@selector(valueForAnnotationKey:)]) {
         id action = [self valueForAnnotationKey:@"/A"];
         if ([action isKindOfClass:[PDFActionURL class]]) {
             return [(PDFActionURL *)action URL];

@@ -1972,11 +1972,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([activeAnnotation isLink]) {
         
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
-        PDFDestination *dest = [(PDFAnnotationLink *)activeAnnotation destination];
+        PDFDestination *dest = [activeAnnotation linkDestination];
         NSURL *url;
         if (dest)
             [self goToDestination:dest];
-        else if ((url = [(PDFAnnotationLink *)activeAnnotation URL]))
+        else if ((url = [activeAnnotation linkURL]))
             [[NSWorkspace sharedWorkspace] openURL:url];
         [self setActiveAnnotation:nil];
         
@@ -3784,7 +3784,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
         if ([annotation isLink]) {
-            PDFDestination *destination = [annotation destination];
+            PDFDestination *destination = [annotation linkDestination];
             if ([destination page]) {
                 page = [destination page];
                 point = [self convertPoint:[destination point] fromPage:page];
