@@ -202,8 +202,14 @@ static PDFAnnotation *currentActiveAnnotation = nil;
                 NSString *type = [dest objectAtIndex:1];
                 if ([type isEqualToString:@"/XYZ"] && [dest count] > 3)
                     point = NSMakePoint([[dest objectAtIndex:2] doubleValue], [[dest objectAtIndex:3] doubleValue]);
-                else
+                else if ([page rotation] == 0)
                     point = SKTopLeftPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
+                else if ([page rotation] == 90)
+                    point = SKBottomLeftPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
+                else if ([page rotation] == 180)
+                    point = SKBottomRightPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
+                else if ([page rotation] == 270)
+                    point = SKTopRightPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
                 return [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
             }
         }
