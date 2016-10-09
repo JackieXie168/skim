@@ -307,8 +307,8 @@ int main (int argc, const char * argv[]) {
                 exit(EXIT_FAILURE);
             }
             offset = 4;
-            dx = [[args objectAtIndex:3] doubleValue];
-            dy = [[args objectAtIndex:4] doubleValue];
+            dx = [[args objectAtIndex:2] doubleValue];
+            dy = [[args objectAtIndex:3] doubleValue];
         }
         
         NSFileManager *fm = [NSFileManager defaultManager];
