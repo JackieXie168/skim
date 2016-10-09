@@ -316,10 +316,13 @@ int main (int argc, const char * argv[]) {
         NSString *outPath = argc < offset + 2 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 1]);
         BOOL isBundle = NO;
         BOOL isDir = NO;
+        BOOL isStdIn = NO;
         NSError *error = nil;
         
         if (action == SKNActionOffset) {
-            if ([[inPath pathExtension] caseInsensitiveCompare:SKIM_EXTENSION] != NSOrderedSame)
+            if ([inPath isEqualToString:STD_IN_OUT_FILE])
+                isStdIn = YES;
+            else if ([[inPath pathExtension] caseInsensitiveCompare:SKIM_EXTENSION] != NSOrderedSame)
                 inPath = [[inPath stringByDeletingPathExtension] stringByAppendingPathExtension:SKIM_EXTENSION];
         } else if ([[inPath pathExtension] caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
             isBundle = YES;
@@ -337,9 +340,9 @@ int main (int argc, const char * argv[]) {
                 outPath = [outPath stringByAppendingPathExtension:format == SKNFormatText ? TXT_EXTENSION : format == SKNFormatRTF ? RTF_EXTENSION : SKIM_EXTENSION];
         }
         
-        if ([fm fileExistsAtPath:inPath isDirectory:&isDir] == NO || isBundle != isDir) {
+        if ((action != SKNActionOffset || isStdIn == NO) && ([fm fileExistsAtPath:inPath isDirectory:&isDir] == NO || isBundle != isDir)) {
             
-            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:action == SKNActionOffset ? @"Skim file does not exist" : isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
         } else if (action == SKNActionGet) {
             
@@ -446,7 +449,7 @@ int main (int argc, const char * argv[]) {
         } else if (action == SKNActionOffset) {
             
             NSData *data;
-            if ([inPath isEqualToString:STD_IN_OUT_FILE])
+            if (isStdIn)
                 data = [(NSFileHandle *)[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
             else
                 data = [NSData dataWithContentsOfFile:inPath];
