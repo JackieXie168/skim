@@ -74,7 +74,7 @@ static char *convertHelpStr = "skimnotes convert: convert between a PDF file and
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
                               "Uses a file with same base name as IN_PDF_FILE if OUT_PDF_FILE is not provided.";
 static char *offsetHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
-                             "Usage: skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n\n"
+                             "Usage: skimnotes convert IN_PDF_FILE|- [OUT_PDF_FILE|-]\n\n"
                              "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
                              "Writes back to IN_SKIM_FILE if OUT_SKIM_FILE is not provided.";
 static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\n"
@@ -445,7 +445,11 @@ int main (int argc, const char * argv[]) {
             
         } else if (action == SKNActionOffset) {
             
-            NSData *data = [fm SkimNotesAtPath:inPath error:&error];
+            NSData *data;
+            if ([inPath isEqualToString:STD_IN_OUT_FILE])
+                data = [(NSFileHandle *)[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
+            else
+                data = [NSData dataWithContentsOfFile:inPath];
             if (data) {
                 NSArray *inNotes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
                 if ([inNotes isKindOfClass:[NSArray class]]) {
