@@ -1,0 +1,7 @@
+// Base framework only
+
+#include "SkimNotes-Framework.xcconfig"
+
+PRODUCT_NAME = SkimNotesBase
+PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.skim-app.framework.SkimNotesBase
+GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch

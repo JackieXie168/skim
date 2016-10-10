@@ -1,0 +1,10 @@
+//
+// Prefix header for all source files of the 'SkimNotes' target in the 'SkimNotes' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+    #import <Quartz/Quartz.h>
+    
+    #define SKNLocalizedString(key, comment) NSLocalizedStringFromTableInBundle(key, @"SkimNotes", [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.framework.SkimNotes"], comment)
+#endif

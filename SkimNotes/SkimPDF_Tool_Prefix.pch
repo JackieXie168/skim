@@ -1,0 +1,11 @@
+//
+// Prefix header for all source files of the 'skimpdf' target in the 'SkimNotes' project.
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <AppKit/AppKit.h>
+    #import <Quartz/Quartz.h>
+    
+    #define SKNLocalizedString(key, comment) key
+#endif

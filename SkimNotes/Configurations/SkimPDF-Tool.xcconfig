@@ -1,0 +1,10 @@
+// Tool only
+
+INSTALL_PATH = /usr/local/bin
+PRODUCT_NAME = skimpdf
+
+GCC_PRECOMPILE_PREFIX_HEADER = YES
+GCC_PREFIX_HEADER = SkimPDF_Tool_Prefix.pch
+
+// the code for the tool is not GC safe, this should not be relevant anyway
+GCC_ENABLE_OBJC_GC = unsupported
