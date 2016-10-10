@@ -192,6 +192,16 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     return [[file stringByResolvingSymlinksInPath] stringByStandardizingPath];
 }
 
+- (NSString *)defaultSourceFile {
+    NSString *file = [[self fileName] stringByDeletingPathExtension];
+    for (NSString *extension in SKPDFSynchronizerTexExtensions) {
+        NSString *tryFile = [file stringByAppendingPathExtension:extension];
+        if ([fileManager fileExistsAtPath:tryFile])
+            return tryFile;
+    }
+    return [file stringByAppendingPathExtension:[SKPDFSynchronizerTexExtensions firstObject]];
+}
+
 #pragma mark PDFSync
 
 static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger recordIndex) {
@@ -593,6 +603,8 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
 }
 
 - (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options {
+    if (file == nil)
+        file = [self defaultSourceFile];
     dispatch_async([self queue], ^{
         if (file && [self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
             NSUInteger foundPageIndex = NSNotFound;

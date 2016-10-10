@@ -1958,10 +1958,10 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         id source = [args objectForKey:@"Source"];
         BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
         NSInteger options = showBar ? SKPDFSynchronizerShowReadingBarMask : 0;
-        if ([source isKindOfClass:[NSString class]])
+        if ([source isKindOfClass:[NSURL class]])
             source = [NSURL fileURLWithPath:source];
-        if ([source isKindOfClass:[NSURL class]] == NO)
-            source = [[self fileURL] URLByDeletingPathExtension];
+        else if ([source isKindOfClass:[NSURL class]] == NO)
+            source = nil;
         [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[source path] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
