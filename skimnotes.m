@@ -47,7 +47,7 @@ static char *usageStr = "Usage:\n"
                         " skimnotes remove PDF_FILE\n"
                         " skimnotes test PDF_FILE\n"
                         " skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimnotes offset DX DY IN_SKIM_FILE [OUT_SKIM_FILE]\n"
+                        " skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n"
                         " skimnotes agent [SERVER_NAME]\n"
                         " skimnotes protocol\n"
                         " skimnotes help [VERB]\n"
@@ -73,10 +73,10 @@ static char *convertHelpStr = "skimnotes convert: convert between a PDF file and
                               "Usage: skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
                               "Uses a file with same base name as IN_PDF_FILE if OUT_PDF_FILE is not provided.";
-static char *offsetHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
-                             "Usage: skimnotes convert IN_PDF_FILE|- [OUT_PDF_FILE|-]\n\n"
-                             "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
-                             "Writes back to IN_SKIM_FILE if OUT_SKIM_FILE is not provided.";
+static char *offsetHelpStr = "skimnotes offsets: offsets all notes in a SKIM file by a fixed amount\n"
+                             "Usage: skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
+                             "Offsets all notes in IN_SKIM_FILE or standard input by an amount (DX, DY) and writes the result to OUT_SKIM_FILE or standard output.\n"
+                             "Writes back to IN_SKIM_FILE (or standard output) if OUT_SKIM_FILE is not provided.";
 static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\n"
                             "Usage: skimnotes agent [SERVER_NAME]\n\n"
                             "Runs a Skim Notes agent server with server name SERVER_NAME, to which a Cocoa application can connect using DO.\n"
