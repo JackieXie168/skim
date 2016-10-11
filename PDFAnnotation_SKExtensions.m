@@ -208,7 +208,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
                     point = SKBottomLeftPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
                 else if ([page rotation] == 180)
                     point = SKBottomRightPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
-                else if ([page rotation] == 270)
+                else
                     point = SKTopRightPoint([page boundsForBox:kPDFDisplayBoxCropBox]);
                 return [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
             }
