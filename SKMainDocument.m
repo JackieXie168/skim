@@ -1958,7 +1958,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         id source = [args objectForKey:@"Source"];
         BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
         NSInteger options = showBar ? SKPDFSynchronizerShowReadingBarMask : 0;
-        if ([source isKindOfClass:[NSURL class]])
+        if ([source isKindOfClass:[NSString class]])
             source = [NSURL fileURLWithPath:source];
         else if ([source isKindOfClass:[NSURL class]] == NO)
             source = nil;
