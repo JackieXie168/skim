@@ -30,17 +30,16 @@ done
 line=$1
 file="$2"
 shopt -s extglob
-[[ $# -gt 2 ]] && source="$3" || source="${file%.@(pdf|dvi|xdv)}.tex"
+[[ $# -gt 2 ]] && source="$3" || source=""
 
 # expand relative paths
 [[ "${file:0:1}" == "/" ]] || file="${PWD}/${file}"
-[[ "${source:0:1}" == "/" ]] || source="${PWD}/${source}"
+[[ "${source}" == "" || "${source:0:1}" == "/" ]] || source="${PWD}/${source}"
 
 # run AppleScript
 /usr/bin/osascript << EOF
   set theLine to $line as integer
   set theFile to POSIX file "$file"
-  set theSource to POSIX file "$source"
   set thePath to POSIX path of (theFile as alias)
   tell application "Skim"
     if $activate then activate
@@ -51,6 +50,11 @@ shopt -s extglob
       end try
     end if
     open theFile
-    tell front document to go to TeX line theLine from theSource showing reading bar $bar
+    if "$source" is "" then
+      tell front document to go to TeX line theLine showing reading bar $bar
+    else
+      set theSource to POSIX file "$source"
+      tell front document to go to TeX line theLine from theSource showing reading bar $bar
+    end if
   end tell
 EOF
