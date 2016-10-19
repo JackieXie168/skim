@@ -169,6 +169,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
+        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
+    
     [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
     if ([self isNoteType]) {
