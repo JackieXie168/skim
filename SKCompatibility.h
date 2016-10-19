@@ -90,6 +90,10 @@ enum {
     NSWindowCollectionBehaviorFullScreenAuxiliary = 1 << 8
 };
 
+enum {
+    NSFullScreenWindowMask = 1 << 14;
+};
+
 @interface NSWindow (SKLionDeclarations)
 - (NSWindowAnimationBehavior)animationBehavior;
 - (void)setAnimationBehavior:(NSWindowAnimationBehavior)newAnimationBehavior;
@@ -99,5 +103,11 @@ enum {
 #endif
 
 #if !defined(MAC_OS_X_VERSION_10_10) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_10
+
 typedef NSUInteger NSCellHitResult;
+
+enum {
+    NSWindowStyleMaskFullSizeContentView = 1 << 15;
+};
+
 #endif
