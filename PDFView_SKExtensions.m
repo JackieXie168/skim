@@ -154,8 +154,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
         NSView *docView = [self documentView];
-        CGFloat scale = [self scaleFactor];
-        rect = SKIntegralRect(NSInsetRect([self convertRect:rect fromPage:page], -scale, -scale));
+        rect = NSIntegralRect([self convertRect:NSInsetRect(rect, -1.0, -1.0) fromPage:page]);
         rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
         if (NSIsEmptyRect(rect) == NO)
             [docView setNeedsDisplayInRect:rect];
