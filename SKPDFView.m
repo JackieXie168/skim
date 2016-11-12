@@ -4160,6 +4160,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if ((area & SKReadingBarArea) == 0)
                 area |= SKDragArea;
         } else if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+            if (toolMode == SKNoteToolMode)
+                area &= ~kPDFLinkArea;
             if (editor && [[activeAnnotation page] isEqual:page] && NSPointInRect(p, [activeAnnotation bounds])) {
                 area = kPDFTextFieldArea;
             } else if ((area & SKReadingBarArea) == 0) {
