@@ -349,10 +349,6 @@ static char SKMainWindowDefaultsObservationContext;
     if ([self useNativeFullScreen])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    // this is needed for the PDFView to use layers efficiently, especially on Sierra, otherwise scrolling is sluggish
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
-        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
-    
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];
     

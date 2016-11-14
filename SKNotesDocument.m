@@ -180,9 +180,6 @@
     
     [aController setShouldCloseDocument:YES];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
-        [[aController window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
-    
     [self setupToolbarForWindow:[aController window]];
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];

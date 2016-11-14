@@ -121,9 +121,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)windowDidLoad {
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
-    // this is needed for the PDFView to use layers efficiently, especially on Sierra, otherwise scrolling is sluggish
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
-        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
     [self updateWindowLevel];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
