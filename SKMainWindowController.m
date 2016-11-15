@@ -157,6 +157,8 @@
 
 #define WINDOW_KEY @"window"
 
+#define CONTENTLAYOUTRECT_KEY @"contentLayoutRect"
+
 #define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
@@ -166,6 +168,8 @@
 static char SKPDFAnnotationPropertiesObservationContext;
 
 static char SKMainWindowDefaultsObservationContext;
+
+static char SKMainWindowContentLayoutRectObservationContext;
 
 #define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
@@ -253,6 +257,8 @@ static char SKMainWindowDefaultsObservationContext;
 }
 
 - (void)dealloc {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
+        [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [self stopObservingNotes:[self notes]];
     SKDESTROY(undoGroupOldPropertiesPerNote);
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -348,6 +354,16 @@ static char SKMainWindowDefaultsObservationContext;
     
     if ([self useNativeFullScreen])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
+        NSView *view = [[[NSView alloc] initWithFrame:[[self window] contentLayoutRect]] autorelease];
+        [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [[[self window] contentView] addSubview:view];
+        [splitView setFrame:[view bounds]];
+        [view addSubview:splitView];
+        [[self window] addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:NSKeyValueObservingOptionNew context:&SKMainWindowContentLayoutRectObservationContext];
+    }
     
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];
@@ -2325,6 +2341,11 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             [self updatePageColumnWidthForTableView:leftSideController.findTableView];
             [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
         }
+        
+    } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
+        
+        if ([[splitView window] isEqual:mainWindow])
+            [[splitView superview] setFrame:[mainWindow contentLayoutRect]];
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
         

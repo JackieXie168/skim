@@ -110,4 +110,8 @@ enum {
     NSWindowStyleMaskFullSizeContentView = 1 << 15;
 };
 
+@interface NSWindow (SKYosemiteDeclarations)
+- (NSRect)contentLayoutRect;
+@end
+
 #endif
