@@ -355,7 +355,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([self useNativeFullScreen])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_11) {
         [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
         NSView *view = [[[NSView alloc] initWithFrame:[[self window] contentLayoutRect]] autorelease];
         [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
@@ -1712,7 +1712,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max ? 18.0 : 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
-        offset = NSHeight([window frameRectForContentRect:NSZeroRect]);
+        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
