@@ -2346,7 +2346,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
-        if ([[splitView window] isEqual:mainWindow])
+        if ([[splitView window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
             [[splitView superview] setFrame:[mainWindow contentLayoutRect]];
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
