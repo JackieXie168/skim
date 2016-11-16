@@ -349,10 +349,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [toolbarController setupToolbar];
     
     // Set up the window
-    [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
-    
-    [window setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
-    
     if ([self useNativeFullScreen])
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
@@ -366,6 +362,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [view addSubview:splitView];
         [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
     }
+    
+    [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
+    
+    [window setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];
