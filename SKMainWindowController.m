@@ -316,6 +316,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 - (void)windowDidLoad{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     BOOL hasWindowSetup = [savedNormalSetup count] > 0;
+    NSWindow *window = [self window];
     
     mwcFlags.settingUpWindow = 1;
     
@@ -350,19 +351,20 @@ static char SKMainWindowContentLayoutRectObservationContext;
     // Set up the window
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
-    [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
+    [window setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
     if ([self useNativeFullScreen])
-        [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
+        [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_11) {
-        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
-        NSView *view = [[[NSView alloc] initWithFrame:[[self window] contentLayoutRect]] autorelease];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+        [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
+        NSView *view = [[NSView alloc] initWithFrame:[window contentLayoutRect]];
         [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [[[self window] contentView] addSubview:view];
+        [[window contentView] addSubview:view];
         [splitView setFrame:[view bounds]];
+        [view release];
         [view addSubview:splitView];
-        [[self window] addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:NSKeyValueObservingOptionNew context:&SKMainWindowContentLayoutRectObservationContext];
+        [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
     }
     
     if ([sud boolForKey:SKShowStatusBarKey])
@@ -372,9 +374,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (hasWindowSetup) {
         NSString *rectString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
         if (rectString)
-            [[self window] setFrame:NSRectFromString(rectString) display:NO];
+            [window setFrame:NSRectFromString(rectString) display:NO];
     } else if (windowSizeOption == SKMaximizeWindowOption) {
-        [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
+        [window setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     }
     
     // Set up the PDF
@@ -475,8 +477,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [pdfView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
     
-    [[self window] recalculateKeyViewLoop];
-    [[self window] makeFirstResponder:pdfView];
+    [window recalculateKeyViewLoop];
+    [window makeFirstResponder:pdfView];
     
     // Update page states
     [self handlePageChangedNotification:nil];
@@ -487,7 +489,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self registerAsObserver];
     
     if ([[pdfView document] isLocked])
-        [[self window] makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
+        [window makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
     else
         [savedNormalSetup removeAllObjects];
     

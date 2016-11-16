@@ -121,6 +121,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)windowDidLoad {
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+        [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
+        [pdfView setFrame:[[self window] contentLayoutRect]];
+    }
     [self updateWindowLevel];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
@@ -287,7 +291,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     NSView *controlView = [pdfView scalePopUpButton];
     NSRect controlFrame, frame;
-    NSDivideRect([[window contentView] bounds], &controlFrame, &frame, NSHeight([controlView frame]), NSMinYEdge);
+    NSDivideRect([pdfView frame], &controlFrame, &frame, NSHeight([controlView frame]), NSMinYEdge);
     controlFrame.size.width = NSWidth([controlView frame]);
     [controlView setFrame:controlFrame];
     [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
@@ -299,7 +303,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     frame = [pdfView convertRect:rect fromPage:page];
     frame = [pdfView convertRect:frame toView:nil];
     frame.size.height += NSHeight(controlFrame);
-    frame = [window frameRectForContentRect:frame];
+    frame = [NSWindow frameRectForContentRect:frame styleMask:[window styleMask] & ~NSFullSizeContentViewWindowMask];
     frame.origin.x = NSMinX([window frame]);
     frame.origin.y = NSMaxY([window frame]) - NSHeight(frame);
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
