@@ -358,8 +358,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [[window contentView] addSubview:view];
         [splitView setFrame:[view bounds]];
-        [view release];
         [view addSubview:splitView];
+        [view release];
         [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
     }
     
