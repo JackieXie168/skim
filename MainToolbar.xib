@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">14F1021</string>
+		<string key="IBDocument.SystemVersion">15G1108</string>
 		<string key="IBDocument.InterfaceBuilderVersion">851</string>
-		<string key="IBDocument.AppKitVersion">1348.17</string>
-		<string key="IBDocument.HIToolboxVersion">758.70</string>
+		<string key="IBDocument.AppKitVersion">1404.47</string>
+		<string key="IBDocument.HIToolboxVersion">807.20</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">851</string>
@@ -29,7 +29,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomView" id="850098044">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSSegmentedControl" id="948439344">
@@ -37,13 +37,12 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 272}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="150978667">
 							<int key="NSCellFlags">75497472</int>
 							<int key="NSCellFlags2">0</int>
 							<object class="NSFont" key="NSSupport" id="586405658">
-								<string key="NSName">.HelveticaNeueDeskInterface-Regular</string>
+								<string key="NSName">.SFNSText-Regular</string>
 								<double key="NSSize">13</double>
 								<int key="NSfFlags">1040</int>
 							</object>
@@ -80,11 +79,10 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{85, 274}, {50, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="1016195632">
 							<int key="NSCellFlags">-1804599231</int>
-							<int key="NSCellFlags2">272630784</int>
+							<int key="NSCellFlags2">138413056</int>
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="586405658"/>
 							<reference key="NSControlView" ref="694808295"/>
@@ -109,14 +107,13 @@
 							</object>
 						</object>
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						<int key="NSTextFieldAlignmentRectInsetsVersion">1</int>
+						<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 					</object>
 					<object class="NSSegmentedControl" id="574277828">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 45}, {141, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="743163770">
 							<int key="NSCellFlags">75497472</int>
@@ -180,7 +177,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{143, 274}, {50, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="980653423">
 							<int key="NSCellFlags">-1804599231</int>
@@ -229,14 +225,13 @@
 							<reference key="NSTextColor" ref="582378556"/>
 						</object>
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						<int key="NSTextFieldAlignmentRectInsetsVersion">1</int>
+						<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 					</object>
 					<object class="NSCustomView" id="177296294">
 						<reference key="NSNextResponder" ref="850098044"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 19}, {117, 22}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<string key="NSClassName">SKColorSwatch</string>
 						<string key="NSExtension">NSControl</string>
 					</object>
@@ -245,7 +240,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 73}, {225, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="259829563">
 							<int key="NSCellFlags">75497472</int>
@@ -344,7 +338,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{85, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="1040797237">
 							<int key="NSCellFlags">75497472</int>
@@ -384,7 +377,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 241}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="674816434">
 							<int key="NSCellFlags">75497472</int>
@@ -424,7 +416,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{85, 241}, {85, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="706485920">
 							<int key="NSCellFlags">75497472</int>
@@ -467,7 +458,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="863501943">
 							<int key="NSCellFlags">75497472</int>
@@ -504,7 +494,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{178, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="530854302">
 							<int key="NSCellFlags">75497472</int>
@@ -530,7 +519,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{57, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="915255045">
 							<int key="NSCellFlags">75497472</int>
@@ -559,7 +547,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="670966833">
 							<int key="NSCellFlags">75497472</int>
@@ -589,7 +576,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{215, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="593110496">
 							<int key="NSCellFlags">75497472</int>
@@ -618,7 +604,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{252, 241}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="889032406">
 							<int key="NSCellFlags">75497472</int>
@@ -647,7 +632,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="102653450">
 							<int key="NSCellFlags">75497472</int>
@@ -676,7 +660,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{57, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="422472624">
 							<int key="NSCellFlags">75497472</int>
@@ -705,7 +688,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{278, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="514109988">
 							<int key="NSCellFlags">75497472</int>
@@ -734,7 +716,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{237, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="519457297">
 							<int key="NSCellFlags">75497472</int>
@@ -763,7 +744,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{159, 213}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="247618961">
 							<int key="NSCellFlags">75497472</int>
@@ -792,7 +772,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{215, 300}, {113, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="428967591">
 							<int key="NSCellFlags">75497472</int>
@@ -843,7 +822,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{150, 300}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="770942341">
 							<int key="NSCellFlags">75497472</int>
@@ -877,7 +855,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{94, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="335249521">
 							<int key="NSCellFlags">75497472</int>
@@ -906,7 +883,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{131, 185}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="257612657">
 							<int key="NSCellFlags">75497472</int>
@@ -935,7 +911,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="681524580">
 							<int key="NSCellFlags">75497472</int>
@@ -964,7 +939,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{206, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="854787350">
 							<int key="NSCellFlags">75497472</int>
@@ -993,7 +967,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{169, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="476618967">
 							<int key="NSCellFlags">75497472</int>
@@ -1022,7 +995,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{57, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="661405275">
 							<int key="NSCellFlags">75497472</int>
@@ -1051,7 +1023,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{94, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="499875793">
 							<int key="NSCellFlags">75497472</int>
@@ -1080,7 +1051,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{132, 129}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="771996419">
 							<int key="NSCellFlags">75497472</int>
@@ -1109,7 +1079,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{168, 185}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="149920704">
 							<int key="NSCellFlags">75497472</int>
@@ -1147,7 +1116,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="877103443">
 							<int key="NSCellFlags">75497472</int>
@@ -1176,7 +1144,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{57, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="398312503">
 							<int key="NSCellFlags">75497472</int>
@@ -1206,7 +1173,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{94, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="175877116">
 							<int key="NSCellFlags">75497472</int>
@@ -1236,7 +1202,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{132, 101}, {29, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="244067068">
 							<int key="NSCellFlags">75497472</int>
@@ -1263,7 +1228,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{94, 213}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="756369067">
 							<int key="NSCellFlags">75497472</int>
@@ -1296,7 +1260,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{20, 157}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="776110356">
 							<int key="NSCellFlags">75497472</int>
@@ -1334,7 +1297,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{150, 157}, {113, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="305837989">
 							<int key="NSCellFlags">75497472</int>
@@ -1386,7 +1348,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{85, 157}, {57, 25}}</string>
 						<reference key="NSSuperview" ref="850098044"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSegmentedCell" key="NSCell" id="627087466">
 							<int key="NSCellFlags">75497472</int>
@@ -1415,8 +1376,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{350, 344}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
 			</object>
