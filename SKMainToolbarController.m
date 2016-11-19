@@ -106,6 +106,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 
+static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"ToolbarAddAnchoredNoteMenu", @"ToolbarAddCircleNoteMenu", @"ToolbarAddSquareNoteMenu", @"ToolbarAddHighlightNoteMenu", @"ToolbarAddUnderlineNoteMenu", @"ToolbarAddStrikeOutNoteMenu", @"ToolbarAddLineNoteMenu", @"ToolbarAddInkNoteMenu"};
+
 @interface SKToolbar : NSToolbar
 @end
 
@@ -1008,7 +1010,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [mainController.pdfView addAnnotationWithType:type];
         if (type != [button tagForSegment:0]) {
             [button setTag:type forSegment:0];
-            [button setImage:[NSImage imageNamed:noteToolImageNames[type]] forSegment:0];
+            [button setImage:[NSImage imageNamed:addNoteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();
 }
