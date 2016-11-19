@@ -2202,7 +2202,7 @@ static void drawMenuBadge() {
 
 static void drawMenuBadgeTemplate() {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(26.5, 10.5)];
+    [arrowPath moveToPoint:NSMakePoint(25.5, 10.5)];
     [arrowPath relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
     [arrowPath relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
     [[NSColor blackColor] setStroke];
