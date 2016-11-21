@@ -257,7 +257,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
+    if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [self stopObservingNotes:[self notes]];
     SKDESTROY(undoGroupOldPropertiesPerNote);
@@ -352,14 +352,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([self useNativeFullScreen])
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+    if ([window respondsToSelector:@selector(contentLayoutRect)]) {
         [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
-        NSView *view = [[NSView alloc] initWithFrame:[window contentLayoutRect]];
-        [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [[window contentView] addSubview:view];
-        [splitView setFrame:[view bounds]];
-        [view addSubview:splitView];
-        [view release];
+        [[splitView superview] setFrame:[window contentLayoutRect]];
         [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
     }
     

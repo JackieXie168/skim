@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">10K549</string>
+		<string key="IBDocument.SystemVersion">15G1108</string>
 		<string key="IBDocument.InterfaceBuilderVersion">851</string>
-		<string key="IBDocument.AppKitVersion">1038.36</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.AppKitVersion">1404.47</string>
+		<string key="IBDocument.HIToolboxVersion">807.20</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">851</string>
@@ -36,58 +36,76 @@
 				<string key="NSWindowTitle"/>
 				<string key="NSWindowClass">SKMainWindow</string>
 				<string key="NSViewClass">View</string>
-				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<nil key="NSUserInterfaceItemIdentifier"/>
+				<string key="NSWindowContentMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
 				<string key="NSWindowContentMinSize">{250, 86}</string>
 				<object class="NSView" key="NSWindowView" id="454447583">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
-						<object class="NSSplitView" id="943255459">
+						<object class="NSCustomView" id="151232162">
 							<reference key="NSNextResponder" ref="454447583"/>
 							<int key="NSvFlags">274</int>
 							<array class="NSMutableArray" key="NSSubviews">
-								<object class="NSCustomView" id="721255773">
-									<reference key="NSNextResponder" ref="943255459"/>
-									<int key="NSvFlags">256</int>
-									<string key="NSFrameSize">{250, 600}</string>
-									<reference key="NSSuperview" ref="943255459"/>
-									<object class="NSMutableString" key="NSClassName">
-										<characters key="NS.bytes">NSView</characters>
-									</object>
-									<string key="NSExtension">NSResponder</string>
-								</object>
-								<object class="NSCustomView" id="337633153">
-									<reference key="NSNextResponder" ref="943255459"/>
-									<int key="NSvFlags">256</int>
-									<string key="NSFrame">{{251, 0}, {498, 600}}</string>
-									<reference key="NSSuperview" ref="943255459"/>
-									<string key="NSClassName">NSView</string>
-								</object>
-								<object class="NSCustomView" id="648893916">
-									<reference key="NSNextResponder" ref="943255459"/>
-									<int key="NSvFlags">256</int>
-									<string key="NSFrame">{{750, 0}, {250, 600}}</string>
-									<reference key="NSSuperview" ref="943255459"/>
-									<object class="NSMutableString" key="NSClassName">
-										<characters key="NS.bytes">NSView</characters>
-									</object>
-									<string key="NSExtension">NSResponder</string>
+								<object class="NSSplitView" id="943255459">
+									<reference key="NSNextResponder" ref="151232162"/>
+									<int key="NSvFlags">274</int>
+									<array class="NSMutableArray" key="NSSubviews">
+										<object class="NSCustomView" id="721255773">
+											<reference key="NSNextResponder" ref="943255459"/>
+											<int key="NSvFlags">256</int>
+											<string key="NSFrameSize">{250, 600}</string>
+											<reference key="NSSuperview" ref="943255459"/>
+											<reference key="NSWindow"/>
+											<object class="NSMutableString" key="NSClassName">
+												<characters key="NS.bytes">NSView</characters>
+											</object>
+											<string key="NSExtension">NSResponder</string>
+										</object>
+										<object class="NSCustomView" id="337633153">
+											<reference key="NSNextResponder" ref="943255459"/>
+											<int key="NSvFlags">256</int>
+											<string key="NSFrame">{{251, 0}, {498, 600}}</string>
+											<reference key="NSSuperview" ref="943255459"/>
+											<reference key="NSWindow"/>
+											<string key="NSClassName">NSView</string>
+										</object>
+										<object class="NSCustomView" id="648893916">
+											<reference key="NSNextResponder" ref="943255459"/>
+											<int key="NSvFlags">256</int>
+											<string key="NSFrame">{{750, 0}, {250, 600}}</string>
+											<reference key="NSSuperview" ref="943255459"/>
+											<reference key="NSWindow"/>
+											<object class="NSMutableString" key="NSClassName">
+												<characters key="NS.bytes">NSView</characters>
+											</object>
+											<string key="NSExtension">NSResponder</string>
+										</object>
+									</array>
+									<string key="NSFrameSize">{1000, 600}</string>
+									<reference key="NSSuperview" ref="151232162"/>
+									<reference key="NSWindow"/>
+									<bool key="NSIsVertical">YES</bool>
+									<int key="NSDividerStyle">2</int>
 								</object>
 							</array>
 							<string key="NSFrameSize">{1000, 600}</string>
 							<reference key="NSSuperview" ref="454447583"/>
-							<bool key="NSIsVertical">YES</bool>
-							<int key="NSDividerStyle">2</int>
+							<reference key="NSWindow"/>
+							<string key="NSClassName">NSView</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{1000, 600}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{250, 108}</string>
-				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
+				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSSplitView" id="425696215">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="202565042">
@@ -95,13 +113,10 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrameSize">{265, 250}</string>
 						<reference key="NSSuperview" ref="425696215"/>
-						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 				</array>
 				<string key="NSFrameSize">{265, 250}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<int key="NSDividerStyle">3</int>
 			</object>
 			<object class="NSCustomObject" id="441088418">
@@ -292,34 +307,9 @@
 						<int key="objectID">6</int>
 						<reference key="object" ref="454447583"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="943255459"/>
+							<reference ref="151232162"/>
 						</array>
 						<reference key="parent" ref="117035432"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1385</int>
-						<reference key="object" ref="943255459"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="721255773"/>
-							<reference ref="648893916"/>
-							<reference ref="337633153"/>
-						</array>
-						<reference key="parent" ref="454447583"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">769</int>
-						<reference key="object" ref="721255773"/>
-						<reference key="parent" ref="943255459"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">770</int>
-						<reference key="object" ref="648893916"/>
-						<reference key="parent" ref="943255459"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1321</int>
-						<reference key="object" ref="337633153"/>
-						<reference key="parent" ref="943255459"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1543</int>
@@ -348,6 +338,39 @@
 						<int key="objectID">1551</int>
 						<reference key="object" ref="737054772"/>
 						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1555</int>
+						<reference key="object" ref="151232162"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="943255459"/>
+						</array>
+						<reference key="parent" ref="454447583"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1385</int>
+						<reference key="object" ref="943255459"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="337633153"/>
+							<reference ref="648893916"/>
+							<reference ref="721255773"/>
+						</array>
+						<reference key="parent" ref="151232162"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1321</int>
+						<reference key="object" ref="337633153"/>
+						<reference key="parent" ref="943255459"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">770</int>
+						<reference key="object" ref="648893916"/>
+						<reference key="parent" ref="943255459"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">769</int>
+						<reference key="object" ref="721255773"/>
+						<reference key="parent" ref="943255459"/>
 					</object>
 				</array>
 			</object>
@@ -382,7 +405,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1554</int>
+			<int key="maxID">1555</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

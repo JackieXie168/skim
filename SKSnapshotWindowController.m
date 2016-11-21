@@ -121,7 +121,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)windowDidLoad {
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+    if ([[self window] respondsToSelector:@selector(contentLayoutRect)]) {
         [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
         [pdfView setFrame:[[self window] contentLayoutRect]];
     }
