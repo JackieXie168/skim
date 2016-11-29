@@ -398,6 +398,14 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>AlphaCocoa</string>
+			<key>command</key>
+			<string>alphac</string>
+			<key>arguments</key>
+			<string>+%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>AlphaX</string>
 			<key>command</key>
 			<string>alphac</string>
