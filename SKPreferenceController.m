@@ -147,16 +147,13 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [window setFrame:frame display:YES];
         } else {
             NSTimeInterval duration = [window animationResizeTime:frame];
-            [contentView setWantsLayer:YES];
             [contentView displayIfNeeded];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [context setDuration:duration];
                     [[contentView animator] replaceSubview:oldView with:view];
                     [[window animator] setFrame:frame display:YES];
                 }
-                completionHandler:^{
-                    [[[self window] contentView] setWantsLayer:NO];
-            }];
+                completionHandler:^{}];
         }
     }
 }
@@ -171,6 +168,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [toolbar setDelegate:self];
     [window setToolbar:toolbar];
     [window setShowsToolbarButton:NO];
+    
+    [[window contentView] setWantsLayer:YES];
     
     // we want to restore the top of the window, while without the force it restores the bottom position without the size
     [window setFrameUsingName:SKPreferenceWindowFrameAutosaveName force:YES];
