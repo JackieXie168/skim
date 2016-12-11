@@ -709,9 +709,11 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)search:(id)sender {
     
+    PDFDocument *pdfDoc = [pdfView document];
+    
     // cancel any previous find to remove those results, or else they stay around
-    if ([[pdfView document] isFinding])
-        [[pdfView document] cancelFindString];
+    if ([pdfDoc isFinding])
+        [pdfDoc cancelFindString];
     [pdfView setHighlightedSelections:nil];
     
     if ([[sender stringValue] isEqualToString:@""]) {
@@ -743,12 +745,12 @@ static NSArray *allMainDocumentPDFViews() {
             if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
                 searchStrings = words;
             else
-                [[pdfView document] beginFindStrings:words withOptions:options];
+                [pdfDoc beginFindStrings:words withOptions:options];
         } else {
             if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
                 searchStrings = [NSArray arrayWithObject:[sender stringValue]];
             else
-                [[pdfView document] beginFindString:[sender stringValue] withOptions:options];
+                [pdfDoc beginFindString:[sender stringValue] withOptions:options];
         }
         if (mwcFlags.findPaneState == SKSingularFindPaneState)
             [self displayFindViewAnimating:YES];
@@ -762,7 +764,7 @@ static NSArray *allMainDocumentPDFViews() {
             [self willChangeValueForKey:@"searchResults"];
             [self willChangeValueForKey:@"groupedSearchResults"];
             for (NSString *searchString in searchStrings) {
-                NSArray *results = [[pdfView document] findString:searchString withOptions:options];
+                NSArray *results = [pdfDoc findString:searchString withOptions:options];
                 for (PDFSelection *result in results)
                     [self didMatchString:result];
             }
