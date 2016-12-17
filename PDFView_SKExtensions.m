@@ -225,12 +225,9 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (NSUInteger)currentPageIndexAndPoint:(NSPoint *)point rotated:(BOOL *)rotated {
     PDFPage *page = [self currentPage];
-    PDFDestination *dest = [self currentDestination];
     if (point) {
-        if ([page isEqual:[dest page]])
-            *point = [dest point];
-        else
-            *point = [self convertPoint:[self convertPoint:[dest point] fromPage:[dest page]] toPage:page];
+        NSView *docView = [self documentView];
+        *point = [self convertPoint:[self convertPoint:SKTopLeftPoint([docView visibleRect]) fromView:docView] toPage:page];
     }
     if (rotated) *rotated = [page rotation] != [page intrinsicRotation];
     return [page pageIndex];
