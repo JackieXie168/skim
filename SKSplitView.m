@@ -44,13 +44,47 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
 
 @implementation SKSplitView
 
++ (id)defaultAnimationForKey:(NSString *)key {
+    if ([key isEqualToString:@"firstSplitPosition"] || [key isEqualToString:@"secondSplitPosition"])
+        return [CABasicAnimation animation];
+    else
+        return [super defaultAnimationForKey:key];
+}
+
+- (CGFloat)firstSplitPosition {
+    NSView *view = [[self subviews] objectAtIndex:0];
+    if ([self isSubviewCollapsed:view])
+        return [self minPossiblePositionOfDividerAtIndex:0];
+    else if ([self isVertical])
+        return NSMaxX([view frame]);
+    else
+        return NSMaxY([view frame]);
+}
+
+- (void)setFirstSplitPosition:(CGFloat)position {
+    [self setPosition:position ofDividerAtIndex:0];
+}
+
+- (CGFloat)secondSplitPosition {
+    NSView *view = [[self subviews] objectAtIndex:1];
+    if ([self isSubviewCollapsed:view])
+        return [self minPossiblePositionOfDividerAtIndex:1];
+    else if ([self isVertical])
+        return NSMaxX([view frame]);
+    else
+        return NSMaxY([view frame]);
+}
+
+- (void)setSecondSplitPosition:(CGFloat)position {
+    [self setPosition:position ofDividerAtIndex:1];
+}
+
 - (BOOL)isAnimating {
     return animating;
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ||
-        ([[self window] styleMask] & NSFullSizeContentViewWindowMask))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] || dividerIndex > 1)
         animate = NO;
     
     if (animating) {
@@ -60,110 +94,16 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         return;
     }
     
-    NSView *view1 = [[self subviews] objectAtIndex:dividerIndex];
-    NSView *view2 = [[self subviews] objectAtIndex:dividerIndex + 1];
-    NSSize size1 = [view1 frame].size;
-    NSSize size2 = [view2 frame].size;
-    BOOL collapsed1 = [self isSubviewCollapsed:view1];
-    BOOL collapsed2 = [self isSubviewCollapsed:view2];
-    CGFloat min = dividerIndex == 0 ? 0.0 : [self minPossiblePositionOfDividerAtIndex:dividerIndex];
-    CGFloat thickness = [self dividerThickness];
-    BOOL canHide = [[self delegate] respondsToSelector:@selector(splitView:shouldHideDividerAtIndex:)] &&
-                   [[self delegate] splitView:self shouldHideDividerAtIndex:dividerIndex];
-    
-    if (collapsed1 && collapsed2)
-        return;
-    
-    if ([self isVertical]) {
-        if (collapsed1) {
-            size1.width = 0.0;
-            size1.height = size2.height;
-            if (canHide && dividerIndex == 0) {
-                size2.width -= thickness;
-                if (size2.width < 0.0) {
-                    [self setPosition:position ofDividerAtIndex:dividerIndex];
-                    return;
-                }
-            }
-            [view1 setFrameSize:size1];
-            [view1 setHidden:NO];
-            [view2 setFrameSize:size2];
-            [self adjustSubviews];
-        } else if (collapsed2) {
-            size2.width = 0.0;
-            size2.height = size1.height;
-            if (canHide && dividerIndex == (NSInteger)[[self subviews] count] - 2) {
-                size1.width -= thickness;
-                if (size1.width < 0.0) {
-                    [self setPosition:position ofDividerAtIndex:dividerIndex];
-                    return;
-                }
-            }
-            [view2 setFrameSize:size2];
-            [view2 setHidden:NO];
-            [view1 setFrameSize:size1];
-            [self adjustSubviews];
-        }
-        size2.width -= position - min - size1.width;
-        size1.width = position - min;
-        if (size2.width < 0.0) {
-            size1.width += size2.width;
-            size2.width = 0.0;
-        }
-        if (size1.width < 0.0) {
-            size2.width += size1.width;
-            size1.width = 0.0;
-        }
-    } else {
-        if (collapsed1) {
-            size1.height = 0.0;
-            size1.width = size2.width;
-            if (canHide && dividerIndex == 0) {
-                size2.height -= thickness;
-                if (size2.height < 0.0) {
-                    [self setPosition:position ofDividerAtIndex:dividerIndex];
-                    return;
-                }
-            }
-            [view1 setFrameSize:size1];
-            [view1 setHidden:NO];
-            [view2 setFrameSize:size2];
-            [self adjustSubviews];
-        } else if (collapsed2) {
-            size2.height = 0.0;
-            size2.width = size1.width;
-            if (canHide && dividerIndex == (NSInteger)[[self subviews] count] - 2) {
-                size1.height -= thickness;
-                if (size1.height < 0.0) {
-                    [self setPosition:position ofDividerAtIndex:dividerIndex];
-                    return;
-                }
-            }
-            [view2 setFrameSize:size2];
-            [view2 setHidden:NO];
-            [view1 setFrameSize:size1];
-            [self adjustSubviews];
-        }
-        size2.height -= position - min - size1.height;
-        size1.height = position - min;
-        if (size2.height < 0.0) {
-            size1.height += size2.height;
-            size2.height = 0.0;
-        }
-        if (size1.height < 0.0) {
-            size2.height += size1.height;
-            size1.height = 0.0;
-        }
-    }
-    
     animating = YES;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-            [[view1 animator] setFrameSize:size1];
-            [[view2 animator] setFrameSize:size2];
+            if (dividerIndex == 0)
+                [[self animator] setFirstSplitPosition:position];
+            else if (dividerIndex == 1)
+                [[self animator] setSecondSplitPosition:position];
+            else
+                [self setPosition:position ofDividerAtIndex:dividerIndex];
         }
         completionHandler:^{
-            [self setPosition:position ofDividerAtIndex:dividerIndex];
-            [self adjustSubviews];
             animating = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
     }];

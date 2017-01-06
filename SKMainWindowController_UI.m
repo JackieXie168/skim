@@ -1448,7 +1448,9 @@
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex {
-    if ([sender isEqual:splitView] && dividerIndex == 1)
+    if ([sender respondsToSelector:@selector(isAnimating)] && [(SKSplitView *)sender isAnimating])
+        return proposedMax;
+    else if ([sender isEqual:splitView] && dividerIndex == 1)
         return proposedMax - MIN_SIDE_PANE_WIDTH;
     else if ([sender isEqual:pdfSplitView])
         return proposedMax - MIN_SPLIT_PANE_HEIGHT;
@@ -1456,7 +1458,9 @@
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
-    if ([sender isEqual:splitView] && dividerIndex == 0)
+    if ([sender respondsToSelector:@selector(isAnimating)] && [(SKSplitView *)sender isAnimating])
+        return proposedMin;
+    else if ([sender isEqual:splitView] && dividerIndex == 0)
         return proposedMin + MIN_SIDE_PANE_WIDTH;
     return proposedMin;
 }
