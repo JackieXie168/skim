@@ -1709,7 +1709,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max ? 18.0 : 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
-        offset = NSHeight([window frame]) - NSHeight(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? [window contentLayoutRect] : [[window contentView] frame]);
+        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
@@ -2341,7 +2341,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
-        if ([[splitView window] isEqual:mainWindow] && floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
+        if ([[splitView window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
             [[splitView superview] setFrame:[mainWindow contentLayoutRect]];
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
