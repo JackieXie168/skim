@@ -49,7 +49,8 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ||
+        ([[self window] styleMask] & NSFullSizeContentViewWindowMask))
         animate = NO;
     
     if (animating) {
@@ -162,6 +163,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         }
         completionHandler:^{
             [self setPosition:position ofDividerAtIndex:dividerIndex];
+            [self adjustSubviews];
             animating = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
     }];

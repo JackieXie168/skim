@@ -257,7 +257,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
-    if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [self stopObservingNotes:[self notes]];
     SKDESTROY(undoGroupOldPropertiesPerNote);
@@ -352,7 +352,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([self useNativeFullScreen])
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if ([window respondsToSelector:@selector(contentLayoutRect)]) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
         [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
         [[splitView superview] setFrame:[window contentLayoutRect]];
         [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
@@ -1709,7 +1709,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max ? 18.0 : 14.0;
     if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
-        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
+        offset = NSHeight([window frame]) - NSHeight(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? [window contentLayoutRect] : [[window contentView] frame]);
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
@@ -2341,7 +2341,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
-        if ([[splitView window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
+        if ([[splitView window] isEqual:mainWindow] && floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
             [[splitView superview] setFrame:[mainWindow contentLayoutRect]];
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
