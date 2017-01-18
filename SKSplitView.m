@@ -44,6 +44,8 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
 
 @implementation SKSplitView
 
+@synthesize animating;
+
 + (id)defaultAnimationForKey:(NSString *)key {
     if ([key isEqualToString:@"firstSplitPosition"] || [key isEqualToString:@"secondSplitPosition"])
         return [CABasicAnimation animation];
@@ -77,10 +79,6 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
 
 - (void)setSecondSplitPosition:(CGFloat)position {
     [self setPosition:position ofDividerAtIndex:1];
-}
-
-- (BOOL)isAnimating {
-    return animating;
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
