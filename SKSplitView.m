@@ -88,25 +88,24 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         animate = NO;
     
     if (animating) {
-        return;
+        // do nothing
     } else if (animate == NO) {
         [self setPosition:position ofDividerAtIndex:dividerIndex];
-        return;
+    } else {
+        animating = YES;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                if (dividerIndex == 0)
+                    [[self animator] setFirstSplitPosition:position];
+                else if (dividerIndex == 1)
+                    [[self animator] setSecondSplitPosition:position];
+                else
+                    [self setPosition:position ofDividerAtIndex:dividerIndex];
+            }
+            completionHandler:^{
+                animating = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
+        }];
     }
-    
-    animating = YES;
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-            if (dividerIndex == 0)
-                [[self animator] setFirstSplitPosition:position];
-            else if (dividerIndex == 1)
-                [[self animator] setSecondSplitPosition:position];
-            else
-                [self setPosition:position ofDividerAtIndex:dividerIndex];
-        }
-        completionHandler:^{
-            animating = NO;
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
-    }];
 }
 
 @end
