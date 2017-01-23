@@ -5,7 +5,7 @@
 //  This code is licensed under a BSD license. Please see the file LICENSE for details.
 //
 //  Created by Michael McCracken on 12/5/06.
-//  Copyright Michael O. McCracken 2006-2016. All rights reserved.
+//  Copyright Michael O. McCracken 2006-2017. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
