@@ -45,12 +45,60 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKNoteText.h"
+#import "PDFPage_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 
+@interface PDFAnnotation (SKPrivateDeclarations)
+- (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
+@end
+
 @implementation SKNPDFAnnotationNote (SKExtensions)
+
+- (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
+    if ((NSInteger)floor(NSAppKitVersionNumber) != NSAppKitVersionNumber10_12 || [self hasAppearanceStream]) {
+        [super drawWithBox:box inContext:context];
+    } else {
+        NSRect bounds = [self bounds];
+        bounds = NSInsetRect(bounds, 0.08 * NSWidth(bounds) + 0.5, 0.5);
+        CGContextSaveGState(context);
+        [[self page] transformContext:context forBox:box];
+        CGContextSetLineWidth(context, 1.0);
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, NSMinX(bounds), NSMinY(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMinX(bounds), NSMaxY(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMaxX(bounds), NSMaxY(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMaxX(bounds), NSMinY(bounds) + 0.25 * NSHeight(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMaxX(bounds) - 0.25 * NSWidth(bounds), NSMinY(bounds));
+        CGPathCloseSubpath(path);
+        CGContextBeginPath(context);
+        CGContextAddPath(context, path);
+        CGContextSetFillColorWithColor(context, [[self color] CGColor]);
+        CGContextFillPath(context);
+        CGContextBeginPath(context);
+        CGPathMoveToPoint(path, NULL, NSMaxX(bounds), NSMinY(bounds) + 0.25 * NSHeight(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMaxX(bounds) - 0.25 * NSWidth(bounds), NSMinY(bounds) + 0.25 * NSHeight(bounds));
+        CGPathAddLineToPoint(path, NULL, NSMaxX(bounds) - 0.25 * NSWidth(bounds), NSMinY(bounds));
+        CGContextAddPath(context, path);
+        CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
+        CGContextStrokePath(context);
+        CGPathRelease(path);
+        path = CGPathCreateMutable();
+        bounds = NSInsetRect(bounds, 0.5, 0.5);
+        CGPathAddRect(path, NULL, CGRectMake(NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMaxY(bounds) - 0.2 * NSHeight(bounds), 0.8 * NSWidth(bounds), 0.1 * NSHeight(bounds)));
+        CGPathAddRect(path, NULL, CGRectMake(NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMaxY(bounds) - 0.4 * NSHeight(bounds), 0.8 * NSWidth(bounds), 0.1 * NSHeight(bounds)));
+        CGPathAddRect(path, NULL, CGRectMake(NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMaxY(bounds) - 0.6 * NSHeight(bounds), 0.7 * NSWidth(bounds) - 1.0, 0.1 * NSHeight(bounds)));
+        CGContextSetFillColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
+        CGContextBeginPath(context);
+        CGContextAddPath(context, path);
+        CGContextFillPath(context);
+        CGPathRelease(path);
+        CGContextRestoreGState(context);
+    }
+}
 
 + (NSDictionary *)textToNoteSkimNoteProperties:(NSDictionary *)properties {
     if ([[properties objectForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNTextString]) {

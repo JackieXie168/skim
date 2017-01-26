@@ -57,7 +57,10 @@
     #define NSAppKitVersionNumber10_10_Max 1349
 #endif
 #ifndef NSAppKitVersionNumber10_11
-#define NSAppKitVersionNumber10_11 1404
+    #define NSAppKitVersionNumber10_11 1404
+#endif
+#ifndef NSAppKitVersionNumber10_12
+    #define NSAppKitVersionNumber10_12 1504
 #endif
 
 #ifndef NS_ENUM
