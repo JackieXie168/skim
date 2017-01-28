@@ -153,7 +153,9 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
-        NSView *docView = [self documentView];
+        // for some versions we need to dirty the documentView, otherwise it won't redisplay when scrolled out of view,
+        // for 10.12 dirtying the documentView dioes not do anything
+        NSView *docView = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
         rect = NSIntegralRect([self convertRect:NSInsetRect(rect, -1.0, -1.0) fromPage:page]);
         rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
         if (NSIsEmptyRect(rect) == NO)
