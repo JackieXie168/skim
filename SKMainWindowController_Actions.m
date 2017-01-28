@@ -742,15 +742,9 @@ static NSArray *allMainDocumentPDFViews() {
                 }
                 [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
             }
-            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
-                searchStrings = words;
-            else
-                [pdfDoc beginFindStrings:words withOptions:options];
+            [pdfDoc beginFindStrings:words withOptions:options];
         } else {
-            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
-                searchStrings = [NSArray arrayWithObject:[sender stringValue]];
-            else
-                [pdfDoc beginFindString:[sender stringValue] withOptions:options];
+            [pdfDoc beginFindString:[sender stringValue] withOptions:options];
         }
         if (mwcFlags.findPaneState == SKSingularFindPaneState)
             [self displayFindViewAnimating:YES];
