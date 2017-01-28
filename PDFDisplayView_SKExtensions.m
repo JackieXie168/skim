@@ -47,6 +47,8 @@
 @interface NSView (SKPDFDisplayViewPrivateDeclarations)
 - (NSRange)accessibilityRangeForSelection:(id)selection;
 - (id)selectionForAccessibilityRange:(NSRange)range;
+- (id)pdfView;
+- (id)getPDFView;
 @end
 
 @interface NSView (SKPDFDisplayViewAdditionalAccessibility)
@@ -60,8 +62,14 @@
 
 static id SKGetPDFView(id self) {
     id pdfView = nil;
-    @try { pdfView = [self valueForKey:@"pdfView"]; }
-    @catch (id exception) {}
+    if ([self respondsToSelector:@selector(getPDFView)]) {
+        pdfView = [self getPDFView];
+    } else if ([self respondsToSelector:@selector(pdfView)]) {
+        [self pdfView];
+    } else {
+        @try { pdfView = [self valueForKey:@"pdfView"]; }
+        @catch (id exception) {}
+    }
     return pdfView;
 }
 
@@ -184,7 +192,7 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
 void SKSwizzlePDFDisplayViewMethods() {
-    Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
+    Class PDFDisplayViewClass = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
     if (PDFDisplayViewClass == Nil)
         return;
     
