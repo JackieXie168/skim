@@ -4228,6 +4228,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self setCursorForAreaOfInterest:[self areaOfInterestForMouse:theEvent]];
 }
 
+- (id <SKPDFViewDelegate>)delegate {
+    return (id <SKPDFViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKPDFViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+
 @end
 
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page) {

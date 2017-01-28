@@ -88,6 +88,8 @@ enum {
     SKSpecialToolArea = 1 << 22
 };
 
+@protocol SKPDFViewDelegate;
+
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
 
 @interface SKPDFView : PDFView {
@@ -190,11 +192,15 @@ enum {
 
 - (void)resetHistory;
 
+- (id <SKPDFViewDelegate>)delegate;
+- (void)setDelegate:(id <SKPDFViewDelegate>)newDelegate;
+
 @end
 
 #pragma mark -
 
-@interface NSObject (SKPDFViewDelegate)
+@protocol SKPDFViewDelegate <PDFViewDelegate>
+@optional
 - (void)PDFViewDidBeginEditing:(PDFView *)sender;
 - (void)PDFViewDidEndEditing:(PDFView *)sender;
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;

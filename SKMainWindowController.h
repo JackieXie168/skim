@@ -41,6 +41,7 @@
 #import "SKThumbnail.h"
 #import "SKFindController.h"
 #import "NSDocument_SKExtensions.h"
+#import "SKPDFView.h"
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
 typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
@@ -68,7 +69,7 @@ enum {
 @class SKPDFView, SKSecondaryPDFView, SKStatusBar, SKFindController, SKSplitView, SKFieldEditor, SKSideWindow;
 @class SKLeftSideViewController, SKRightSideViewController, SKMainToolbarController, SKProgressController, SKPresentationOptionsSheetController, SKNoteTypeSheetController;
 
-@interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate, SKFindControllerDelegate> {
+@interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate, SKFindControllerDelegate, SKPDFViewDelegate> {
     SKSplitView                         *splitView;
     
     NSView                              *centerContentView;
