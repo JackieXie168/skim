@@ -139,7 +139,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 }
 
 + (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_11)
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
