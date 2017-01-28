@@ -125,7 +125,7 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9)
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
 }
 
