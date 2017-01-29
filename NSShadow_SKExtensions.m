@@ -52,9 +52,6 @@ static CGFloat currentScale = 1.0;
 }
 
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius offset:(NSSize)offset {
-    blurRadius *= [self currentScale];
-    offset.width *= [self currentScale];
-    offset.height *= [self currentScale];
     NSShadow *aShadow = [[self alloc] init];
     [aShadow setShadowColor:color];
     [aShadow setShadowBlurRadius:blurRadius];
