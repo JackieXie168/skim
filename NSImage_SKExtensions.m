@@ -1048,8 +1048,8 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(14.0, 7.0)];
         [path lineToPoint:NSMakePoint(11.0, 10.0)];
         [path closePath];
-        [path moveToPoint:NSMakePoint(16.0, 13.0)];
-        [path lineToPoint:NSMakePoint(13.0, 13.0)];
+        [path moveToPoint:NSMakePoint(16.0, 12.0)];
+        [path lineToPoint:NSMakePoint(13.0, 12.0)];
         [path lineToPoint:NSMakePoint(16.0, 9.0)];
         [path closePath];
         [path fill];
