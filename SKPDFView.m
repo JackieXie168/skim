@@ -445,7 +445,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 - (void)drawPage:(PDFPage *)pdfPage {
     if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)]) {
-        // on 10.12 this should call drawPage:toContext:
+        // on 10.12 this should be called from drawPage:toContext:
         [super drawPage:pdfPage];
     } else {
         [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
