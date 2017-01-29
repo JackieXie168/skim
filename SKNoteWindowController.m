@@ -86,7 +86,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if (noteIcons[0]) return;
     
     NSRect bounds = {NSZeroPoint, SKNPDFAnnotationNoteSize};
-    PDFAnnotationText *annotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
+    PDFAnnotationText *annotation = [[SKNPDFAnnotationNote alloc] initWithBounds:bounds];
+    [annotation setColor:[NSColor clearColor]];
     PDFPage *page = [[PDFPage alloc] init];
     [page setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
     [page addAnnotation:annotation];
@@ -96,7 +97,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     for (i = 0; i < 7; i++) {
         [annotation setIconType:i];
         noteIcons[i] = [[NSImage bitmapImageWithSize:SKNPDFAnnotationNoteSize drawingHandler:^(NSRect rect){
-                [annotation drawWithBox:kPDFDisplayBoxMediaBox];
+                [page drawWithBox:kPDFDisplayBoxMediaBox];
             }] retain];
     }
     [page release];
