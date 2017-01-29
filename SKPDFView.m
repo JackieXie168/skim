@@ -207,6 +207,8 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
+- (void)requiresDisplay;
+
 @end
 
 #pragma mark -
@@ -429,7 +431,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     [super drawPage:pdfPage toContext:context];
     
     // On Sierra note annotations don't draw at all
-    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12 && hideNotes == NO) {
         for (PDFAnnotation *annotation in [pdfPage annotations]) {
             if ([annotation isNote])
                 [annotation drawWithBox:[self displayBox] inContext:context];
@@ -602,7 +604,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)setCurrentSelectionRect:(NSRect)rect {
     if (toolMode == SKSelectToolMode) {
         if (NSEqualRects(selectionRect, rect) == NO)
-            [[self documentView] setNeedsDisplay:YES];
+            [self requiresDisplay];
         if (NSIsEmptyRect(rect)) {
             selectionRect = NSZeroRect;
             selectionPageIndex = NSNotFound;
@@ -621,7 +623,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)setCurrentSelectionPage:(PDFPage *)page {
     if (toolMode == SKSelectToolMode) {
         if (selectionPageIndex != [page pageIndex] || (page == nil && selectionPageIndex != NSNotFound))
-            [[self documentView] setNeedsDisplay:YES];
+            [self requiresDisplay];
         if (page == nil) {
             selectionPageIndex = NSNotFound;
             selectionRect = NSZeroRect;
@@ -638,7 +640,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         hideNotes = flag;
         if (hideNotes)
             [self setActiveAnnotation:nil];
-        [[self documentView] setNeedsDisplay:YES];
+        [self requiresDisplay];
     }
 }
 
@@ -684,7 +686,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, nil];
     }
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey])
-        [[self documentView] setNeedsDisplay:YES];
+        [self requiresDisplay];
     else
         [self setNeedsDisplayInRect:bounds ofPage:page];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
@@ -922,7 +924,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         selectionRect = NSIntersectionRect(NSUnionRect([page foregroundBox], selectionRect), [page boundsForBox:[self displayBox]]);
         selectionPageIndex = [page pageIndex];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-        [[self documentView] setNeedsDisplay:YES];
+        [self requiresDisplay];
     }
 }
 
@@ -2143,6 +2145,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self annotationsChangedOnPage:page];
 }
 
+- (void)requiresDisplay {
+    NSView *docView = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
+    [docView setNeedsDisplay:YES];
+}
+
 #pragma mark Sync
 
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
@@ -2161,7 +2168,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     [self toggleReadingBar];
                 [readingBar setPage:page];
                 [readingBar goToLineForPoint:point];
-                [[self documentView] setNeedsDisplay:YES];
+                [self requiresDisplay];
                 [userInfo setObject:page forKey:SKPDFViewNewPageKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             } else if ([sel hasCharacters] && [self toolMode] == SKTextToolMode) {
@@ -2388,7 +2395,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
             if (readingBar) {
                 if ([key isEqualToString:SKReadingBarInvertKey] || [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey])
-                    [[self documentView] setNeedsDisplay:YES];
+                    [self requiresDisplay];
                 else
                     [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
@@ -2842,7 +2849,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
         }
         [self goToRect:rect onPage:newPage];
-        [[self documentView] setNeedsDisplay:YES];
+        [self requiresDisplay];
         [self setNeedsDisplayInRect:oldBounds ofPage:oldPage];
         [self setNeedsDisplayInRect:newBounds ofPage:newPage];
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, newPage, SKPDFViewNewPageKey, nil];
@@ -3403,7 +3410,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         selectionRect.size = NSZeroSize;
         resizeHandle = SKMaxXEdgeMask | SKMinYEdgeMask;
         if (didSelect)
-            [[self documentView] setNeedsDisplay:YES];
+            [self requiresDisplay];
     }
     
 	NSRect initialRect = selectionRect;
@@ -3536,7 +3543,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             for (PDFPage *p in [self displayedPages])
                 [self setNeedsDisplayInRect:dirtyRect ofPage:p];
         } else {
-            [[self documentView] setNeedsDisplay:YES];
+            [self requiresDisplay];
             didSelect = YES;
         }
         selectionRect = newRect;
@@ -3547,7 +3554,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         selectionRect = NSZeroRect;
         selectionPageIndex = NSNotFound;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-        [[self documentView] setNeedsDisplay:YES];
+        [self requiresDisplay];
     } else if (resizeHandle) {
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
@@ -3670,7 +3677,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [readingBar setNumberOfLines:numberOfLines];
             [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
-            [[self documentView] setNeedsDisplay:YES];
+            [self requiresDisplay];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
     }
