@@ -433,7 +433,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     // On Sierra note annotations don't draw at all
     if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12 && hideNotes == NO) {
         for (PDFAnnotation *annotation in [pdfPage annotations]) {
-            if ([annotation isNote])
+            if ([annotation isNote] && [annotation shouldDisplay]on)
                 [annotation drawWithBox:[self displayBox] inContext:context];
         }
     }
