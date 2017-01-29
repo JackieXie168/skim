@@ -909,9 +909,9 @@ macro(Ink)
     MAKE_IMAGE(SKImageNameToolbarBack, YES, 27.0, 17.0, 
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(14.0, 4.0)];
-        [path lineToPoint:NSMakePoint(8.5, 9.5)];
-        [path lineToPoint:NSMakePoint(14.0, 15.0)];
+        [path moveToPoint:NSMakePoint(14.0, 3.0)];
+        [path lineToPoint:NSMakePoint(8.5, 8.5)];
+        [path lineToPoint:NSMakePoint(14.0, 14.0)];
         [path setLineCapStyle:NSRoundLineCapStyle];
         [path stroke];
     );
@@ -919,9 +919,9 @@ macro(Ink)
     MAKE_IMAGE(SKImageNameToolbarForward, YES, 27.0, 17.0, 
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(13.0, 4.0)];
-        [path lineToPoint:NSMakePoint(18.5, 9.5)];
-        [path lineToPoint:NSMakePoint(13.0, 15.0)];
+        [path moveToPoint:NSMakePoint(13.0, 3.0)];
+        [path lineToPoint:NSMakePoint(18.5, 8.5)];
+        [path lineToPoint:NSMakePoint(13.0, 14.0)];
         [path setLineCapStyle:NSRoundLineCapStyle];
         [path stroke];
     );
@@ -1041,28 +1041,28 @@ macro(Ink)
     
     MAKE_IMAGE(SKImageNameToolbarFullScreen, YES, 27.0, 19.0, 
         [[NSColor blackColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSMakeRect(5.5, 4.5, 16.0, 12.0) xRadius:3.0 yRadius:3.0];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSMakeRect(5.5, 3.5, 16.0, 12.0) xRadius:3.0 yRadius:3.0];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(11.0, 8.0)];
-        [path lineToPoint:NSMakePoint(14.0, 8.0)];
-        [path lineToPoint:NSMakePoint(11.0, 11.0)];
+        [path moveToPoint:NSMakePoint(11.0, 7.0)];
+        [path lineToPoint:NSMakePoint(14.0, 7.0)];
+        [path lineToPoint:NSMakePoint(11.0, 10.0)];
         [path closePath];
         [path moveToPoint:NSMakePoint(16.0, 13.0)];
         [path lineToPoint:NSMakePoint(13.0, 13.0)];
-        [path lineToPoint:NSMakePoint(16.0, 10.0)];
+        [path lineToPoint:NSMakePoint(16.0, 9.0)];
         [path closePath];
         [path fill];
     );
     
     MAKE_IMAGE(SKImageNameToolbarPresentation, YES, 27.0, 19.0, 
         [[NSColor blackColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSMakeRect(5.5, 4.5, 16.0, 12.0) xRadius:3.0 yRadius:3.0];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSMakeRect(5.5, 3.5, 16.0, 12.0) xRadius:3.0 yRadius:3.0];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(12.0, 7.0)];
-        [path lineToPoint:NSMakePoint(15.5, 10.5)];
-        [path lineToPoint:NSMakePoint(12.0, 14.0)];
+        [path moveToPoint:NSMakePoint(12.0, 6.0)];
+        [path lineToPoint:NSMakePoint(15.5, 9.5)];
+        [path lineToPoint:NSMakePoint(12.0, 13.0)];
         [path setLineCapStyle:NSRoundLineCapStyle];
         [path stroke];
     );
@@ -1181,10 +1181,10 @@ macro(Ink)
         NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
         NSGlyph glyph = [font glyphWithName:@"A"];
         [[NSColor blackColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.5, 4.5, 12.0, 12.0)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.5, 3.5, 12.0, 12.0)];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(13.5 - NSMidX([font boundingRectForGlyph:glyph]), 6.0)];
+        [path moveToPoint:NSMakePoint(13.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
         [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
     );
@@ -1221,26 +1221,26 @@ macro(Ink)
     MAKE_IMAGE(SKImageNameToolbarSelectTool, YES, 27.0, 19.0, 
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(7.5, 14.0)];
-        [path lineToPoint:NSMakePoint(7.5, 16.5)];
-        [path lineToPoint:NSMakePoint(10.0, 16.5)];
-        [path moveToPoint:NSMakePoint(12.0, 16.5)];
-        [path lineToPoint:NSMakePoint(15.0, 16.5)];
-        [path moveToPoint:NSMakePoint(17.0, 16.5)];
-        [path lineToPoint:NSMakePoint(19.5, 16.5)];
-        [path lineToPoint:NSMakePoint(19.5, 14.0)];
-        [path moveToPoint:NSMakePoint(19.5, 12.0)];
-        [path lineToPoint:NSMakePoint(19.5, 9.0)];
-        [path moveToPoint:NSMakePoint(19.5, 7.0)];
-        [path lineToPoint:NSMakePoint(19.5, 4.5)];
-        [path lineToPoint:NSMakePoint(17.0, 4.5)];
-        [path moveToPoint:NSMakePoint(15.0, 4.5)];
-        [path lineToPoint:NSMakePoint(12.0, 4.5)];
-        [path moveToPoint:NSMakePoint(10.0, 4.5)];
-        [path lineToPoint:NSMakePoint(7.5, 4.5)];
-        [path lineToPoint:NSMakePoint(7.5, 7.0)];
-        [path moveToPoint:NSMakePoint(7.5, 9.0)];
-        [path lineToPoint:NSMakePoint(7.5, 12.0)];
+        [path moveToPoint:NSMakePoint(7.5, 13.0)];
+        [path lineToPoint:NSMakePoint(7.5, 15.5)];
+        [path lineToPoint:NSMakePoint(10.0, 15.5)];
+        [path moveToPoint:NSMakePoint(12.0, 15.5)];
+        [path lineToPoint:NSMakePoint(15.0, 15.5)];
+        [path moveToPoint:NSMakePoint(17.0, 15.5)];
+        [path lineToPoint:NSMakePoint(19.5, 15.5)];
+        [path lineToPoint:NSMakePoint(19.5, 13.0)];
+        [path moveToPoint:NSMakePoint(19.5, 11.0)];
+        [path lineToPoint:NSMakePoint(19.5, 8.0)];
+        [path moveToPoint:NSMakePoint(19.5, 6.0)];
+        [path lineToPoint:NSMakePoint(19.5, 3.5)];
+        [path lineToPoint:NSMakePoint(17.0, 3.5)];
+        [path moveToPoint:NSMakePoint(15.0, 3.5)];
+        [path lineToPoint:NSMakePoint(12.0, 3.5)];
+        [path moveToPoint:NSMakePoint(10.0, 3.5)];
+        [path lineToPoint:NSMakePoint(7.5, 3.5)];
+        [path lineToPoint:NSMakePoint(7.5, 6.0)];
+        [path moveToPoint:NSMakePoint(7.5, 8.0)];
+        [path lineToPoint:NSMakePoint(7.5, 11.0)];
         [path stroke];
     );
     
