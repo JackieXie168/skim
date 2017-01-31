@@ -250,7 +250,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
         pageLabel = nil;
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
+        markedPagePoint = NSZeroPoint;
         beforeMarkedPageIndex = NSNotFound;
+        beforeMarkedPagePoint = NSZeroPoint;
         activityAssertionID = kIOPMNullAssertionID;
     }
     return self;

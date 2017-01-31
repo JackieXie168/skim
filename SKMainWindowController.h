@@ -136,7 +136,9 @@ enum {
     NSUInteger                          pageNumber;
     
     NSUInteger                          markedPageIndex;
+    NSPoint                             markedPagePoint;
     NSUInteger                          beforeMarkedPageIndex;
+    NSPoint                             beforeMarkedPagePoint;
     
     NSPointerArray                      *lastViewedPages;
     
