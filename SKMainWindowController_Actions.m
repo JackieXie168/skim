@@ -724,7 +724,6 @@ static NSArray *allMainDocumentPDFViews() {
             [self displayTocViewAnimating:YES];
     } else {
         NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
-        NSArray *searchStrings = nil;
         if (mwcFlags.wholeWordSearch) {
             NSScanner *scanner = [NSScanner scannerWithString:[sender stringValue]];
             NSMutableArray *words = [NSMutableArray array];
@@ -750,22 +749,6 @@ static NSArray *allMainDocumentPDFViews() {
             [self displayFindViewAnimating:YES];
         else
             [self displayGroupedFindViewAnimating:YES];
-        
-        if (searchStrings) {
-            [leftSideController applySearchTableHeader:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
-            [self setSearchResults:nil];
-            [self setGroupedSearchResults:nil];
-            [self willChangeValueForKey:@"searchResults"];
-            [self willChangeValueForKey:@"groupedSearchResults"];
-            for (NSString *searchString in searchStrings) {
-                NSArray *results = [pdfDoc findString:searchString withOptions:options];
-                for (PDFSelection *result in results)
-                    [self didMatchString:result];
-            }
-            [self didChangeValueForKey:@"groupedSearchResults"];
-            [self didChangeValueForKey:@"searchResults"];
-            [leftSideController applySearchTableHeader:[NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]]];
-        }
         
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard clearContents];
