@@ -103,6 +103,20 @@ enum {
 - (void)toggleFullScreen:(id)sender;
 @end
 
+typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
+    NSEventPhaseNone = 0,
+    NSEventPhaseBegan = 0x1 << 0,
+    NSEventPhaseStationary = 0x1 << 1,
+    NSEventPhaseChanged = 0x1 << 2,
+    NSEventPhaseEnded = 0x1 << 3,
+    NSEventPhaseCancelled = 0x1 << 4,
+    NSEventPhaseMayBegin = 0x1 << 5,
+};
+
+@interface NSEvent (SKLionDeclarations)
+- (NSEventPhase)phase;
+@end
+
 #endif
 
 #if !defined(MAC_OS_X_VERSION_10_10) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_10
