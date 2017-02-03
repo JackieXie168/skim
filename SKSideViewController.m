@@ -63,18 +63,11 @@
     [super dealloc];
 }
 
-- (void)handleFrameChanged:(NSNotification *)note {
-    [gradientView setFrame:SKSliceRect([[self view] bounds], NSHeight([gradientView frame]), NSMaxYEdge)];
-}
-
 - (void)loadView {
     [super loadView];
     
     [gradientView setAutoTransparent:YES];
     [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
-    
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFrameChanged:) name:NSViewFrameDidChangeNotification object:[self view]];
 }
 
 #pragma mark View animation
