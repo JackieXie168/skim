@@ -135,7 +135,7 @@ enum {
 
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 
-typedef NSWindowStyleMask NSUInteger;
+typedef NSUInteger NSWindowStyleMask;
 
 @protocol PDFViewDelegate <NSObject> @end
 
