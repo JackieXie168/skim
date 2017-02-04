@@ -29,7 +29,7 @@
  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS ORd SERVICES; LOSS OF USE,
  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
@@ -46,7 +46,14 @@
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 
+
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+@interface PDFView (SKSierraDeclarations)
+- (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
+@end
+#endif
 
 @interface SKSnapshotPDFView (SKPrivate)
 
@@ -117,6 +124,19 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(scalePopUpButton);
     [super dealloc];
+}
+
+- (void)drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
+    // Let PDFView do most of the hard work.
+    [super drawPage:pdfPage toContext:context];
+    
+    // On Sierra note annotations don't draw at all
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12) {
+        for (PDFAnnotation *annotation in [pdfPage annotations]) {
+            if ([annotation isNote] && [annotation shouldDisplay])
+                [annotation drawWithBox:[self displayBox] inContext:context];
+        }
+    }
 }
 
 - (NSPopUpButton *)scalePopUpButton {

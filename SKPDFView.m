@@ -166,7 +166,6 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
 @end
-
 #endif
 
 #pragma mark -
