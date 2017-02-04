@@ -240,9 +240,7 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, NSInteger x, 
     [bmpImageRep setSize:size];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:bmpImageRep]];
-    [NSShadow setCurrentScale:scale];
     if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
-    [NSShadow setCurrentScale:1.0];
     [NSGraphicsContext restoreGraphicsState];
     return bmpImageRep;
 

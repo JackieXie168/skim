@@ -41,9 +41,6 @@
 
 @interface NSShadow (SKExtensions)
 
-+ (CGFloat)currentScale;
-+ (void)setCurrentScale:(CGFloat)newScale;
-
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius offset:(NSSize)offset;
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset;
 
