@@ -70,11 +70,20 @@ enum
 
 #endif
 
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+
+@interface PDFView (SKSierraDeclarations)
+- (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
+@end
+
+#endif
+
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages;
 
 static void (*original_keyDown)(id, SEL, id) = NULL;
+static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 
 // on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
 - (void)replacement_keyDown:(NSEvent *)theEvent {
@@ -124,9 +133,23 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
     }
 }
 
+- (void)replacement_drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
+    original_drawPage_toContext(self, _cmd, pdfPage, context);
+    
+    // On Sierra note annotations don't draw at all
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12) {
+        for (PDFAnnotation *annotation in [pdfPage annotations]) {
+            if ([annotation isNote] && [annotation shouldDisplay])
+                [annotation drawWithBox:[self displayBox] inContext:context];
+        }
+    }
+}
+
 + (void)load {
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
+    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12)
+        original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
 }
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {

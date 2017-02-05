@@ -429,14 +429,6 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     // Let PDFView do most of the hard work.
     [super drawPage:pdfPage toContext:context];
     
-    // On Sierra note annotations don't draw at all
-    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12 && hideNotes == NO) {
-        for (PDFAnnotation *annotation in [pdfPage annotations]) {
-            if ([annotation isNote] && [annotation shouldDisplay])
-                [annotation drawWithBox:[self displayBox] inContext:context];
-        }
-    }
-    
     [PDFAnnotation setCurrentActiveAnnotation:nil];
     
     [self drawPageHighlights:pdfPage toContext:context];
