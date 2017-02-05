@@ -165,7 +165,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)redisplay {
-    [pdfView setNeedsDisplay:YES];
+    [pdfView requiresDisplay];
 }
 
 - (void)updateString {

@@ -206,8 +206,6 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
-- (void)requiresDisplay;
-
 @end
 
 #pragma mark -
@@ -2142,11 +2140,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     [self setNeedsDisplayInRect:rect ofPage:page];
     [self annotationsChangedOnPage:page];
-}
-
-- (void)requiresDisplay {
-    NSView *docView = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
-    [docView setNeedsDisplay:YES];
 }
 
 #pragma mark Sync

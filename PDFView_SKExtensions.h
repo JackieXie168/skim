@@ -51,6 +51,7 @@
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
+- (void)requiresDisplay;
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;

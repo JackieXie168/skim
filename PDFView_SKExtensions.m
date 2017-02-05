@@ -178,11 +178,11 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
         // for some versions we need to dirty the documentView, otherwise it won't redisplay when scrolled out of view,
         // for 10.12 dirtying the documentView dioes not do anything
-        NSView *docView = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
+        NSView *view = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
         rect = NSIntegralRect([self convertRect:NSInsetRect(rect, -1.0, -1.0) fromPage:page]);
-        rect = NSIntersectionRect([docView bounds], [self convertRect:rect toView:docView]);
+        rect = NSIntersectionRect([view bounds], [self convertRect:rect toView:view]);
         if (NSIsEmptyRect(rect) == NO)
-            [docView setNeedsDisplayInRect:rect];
+            [view setNeedsDisplayInRect:rect];
     }
 }
 
@@ -193,6 +193,11 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
     [self setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
+}
+
+- (void)requiresDisplay {
+    NSView *view = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
+    [view setNeedsDisplay:YES];
 }
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {

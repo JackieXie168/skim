@@ -1383,7 +1383,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [[fadeWindow contentView] addSubview:view];
     [fadeWindow setAlphaValue:0.0];
     [pdfView layoutDocumentView];
-    [pdfView setNeedsDisplay:YES];
+    [pdfView requiresDisplay];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow fadeInBlocking];
     [[fullScreenWindow contentView] addSubview:view];
@@ -1505,7 +1505,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [secondaryPdfView setBackgroundColor:backgroundColor];
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup];
         [pdfView layoutDocumentView];
-        [pdfView setNeedsDisplay:YES];
+        [pdfView requiresDisplay];
     } else {
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel];
         
@@ -1563,7 +1563,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [[self window] setBackgroundColor:backgroundColor];
         [[self window] setLevel:level];
         [pdfView layoutDocumentView];
-        [pdfView setNeedsDisplay:YES];
+        [pdfView requiresDisplay];
         
         [self forceSubwindowsOnTop:NO];
         
@@ -1634,7 +1634,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup removeAllObjects];
     
     [pdfView layoutDocumentView];
-    [pdfView setNeedsDisplay:YES];
+    [pdfView requiresDisplay];
     
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
         [[self pdfView] goToPage:page];
@@ -2094,7 +2094,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             [self allThumbnailsNeedUpdate];
     }
     
-    [secondaryPdfView setNeedsDisplay:YES];
+    [secondaryPdfView requiresDisplay];
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {

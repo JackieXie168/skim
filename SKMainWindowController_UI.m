@@ -275,7 +275,7 @@
             }
         }
         [pdfView layoutDocumentView];
-        [pdfView setNeedsDisplay:YES];
+        [pdfView requiresDisplay];
     }
 }
 
@@ -292,7 +292,7 @@
                 [rightSideWindow attachToWindow:[self window]];
             }
             [pdfView layoutDocumentView];
-            [pdfView setNeedsDisplay:YES];
+            [pdfView requiresDisplay];
         }
     }
 }
@@ -1898,9 +1898,9 @@ static NSArray *allMainDocumentPDFViews() {
             if ([wc isPageVisible:oldPage] || [wc isPageVisible:newPage])
                 [self snapshotNeedsUpdate:wc];
         }
-        [secondaryPdfView setNeedsDisplay:YES];
+        [secondaryPdfView requiresDisplay];
         if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_9)
-            [pdfView setNeedsDisplay:YES];
+            [pdfView requiresDisplay];
     }
     
     [rightSideController.noteArrayController rearrangeObjects];
