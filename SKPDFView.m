@@ -453,8 +453,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 #pragma mark Accessors
 
 - (void)setDocument:(PDFDocument *)document {
-    [readingBar release];
-    readingBar = nil;
+    SKDESTROY(readingBar);
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
     [syncDot invalidate];
