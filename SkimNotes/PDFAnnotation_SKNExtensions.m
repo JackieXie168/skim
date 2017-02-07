@@ -87,10 +87,6 @@ NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
 NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
-#ifndef NSAppKitVersionNumber10_11
-#define NSAppKitVersionNumber10_11 1404
-#endif
-
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 @interface PDFAnnotation (SKNSierraDeclarations)
 - (id)valueForAnnotationKey:(NSString *)key;
@@ -187,13 +183,9 @@ static void replacement_dealloc(id self, SEL _cmd) {
                 if ([borderStyle respondsToSelector:@selector(integerValue)])
                     [[self border] setStyle:[borderStyle integerValue]];
             } else if ([self border]) {
-                if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11){
-                    [[self border] setDashPattern:nil];
-                    [[self border] setStyle:kPDFBorderStyleSolid];
-                    [[self border] setLineWidth:0.0];
-                } else {
-                    [self setBorder:nil];
-                }
+                [self setBorder:nil];
+                // On 10.12 a border with lineWith 1 is inserted, so set its lineWidth to 0
+                [[self border] setLineWidth:0.0];
             }
         }
         
