@@ -87,6 +87,10 @@ NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
 NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
+#ifndef NSAppKitVersionNumber10_11
+#define NSAppKitVersionNumber10_11 1404
+#endif
+
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 @interface PDFAnnotation (SKNSierraDeclarations)
 - (id)valueForAnnotationKey:(NSString *)key;
@@ -173,10 +177,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
                 [self setModificationDate:modificationDate];
             if ([userName isKindOfClass:stringClass] && [self respondsToSelector:@selector(setUserName:)])
                 [self setUserName:userName];
-            if (lineWidth == nil && borderStyle == nil && dashPattern == nil) {
-                if ([self border])
-                    [self setBorder:nil];
-            } else {
+            if (lineWidth || borderStyle || dashPattern) {
                 if ([self border] == nil)
                     [self setBorder:[[[PDFBorder alloc] init] autorelease]];
                 if ([lineWidth respondsToSelector:@selector(floatValue)])
@@ -185,6 +186,14 @@ static void replacement_dealloc(id self, SEL _cmd) {
                     [[self border] setDashPattern:dashPattern];
                 if ([borderStyle respondsToSelector:@selector(integerValue)])
                     [[self border] setStyle:[borderStyle integerValue]];
+            } else if ([self border]) {
+                if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11){
+                    [[self border] setDashPattern:nil];
+                    [[self border] setStyle:kPDFBorderStyleSolid];
+                    [[self border] setLineWidth:0.0];
+                } else {
+                    [self setBorder:nil];
+                }
             }
         }
         
@@ -205,7 +214,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
         [dict setValue:[self userName] forKey:SKNPDFAnnotationUserNameKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
     [dict setValue:[NSNumber numberWithUnsignedInteger:pageIndex == NSNotFound ? 0 : pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
-    if ([self border]) {
+    if ([self border] && [[self border] lineWidth] > 0.0) {
         [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:SKNPDFAnnotationLineWidthKey];
         [dict setValue:[NSNumber numberWithInteger:[[self border] style]] forKey:SKNPDFAnnotationBorderStyleKey];
         [dict setValue:[[self border] dashPattern] forKey:SKNPDFAnnotationDashPatternKey];
