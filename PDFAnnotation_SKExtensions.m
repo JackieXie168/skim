@@ -151,7 +151,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     }
     [fdfString appendFDFName:SKFDFAnnotationBorderStylesKey];
     [fdfString appendString:@"<<"];
-    if (border) {
+    if (border && [border lineWidth] > 0.0) {
         [fdfString appendFDFName:SKFDFAnnotationLineWidthKey];
         [fdfString appendFormat:@" %f", [border lineWidth]];
         [fdfString appendFDFName:SKFDFAnnotationBorderStyleKey];
@@ -267,13 +267,14 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     if ([self isEditable]) {
         PDFBorder *oldBorder = [self border];
         PDFBorder *border = nil;
-        if (oldBorder || style)
+        if (oldBorder || style || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
             border = [[PDFBorder allocWithZone:[self zone]] init];
         if (oldBorder) {
             [border setLineWidth:[oldBorder lineWidth]];
             [border setDashPattern:[oldBorder dashPattern]];
         }
-        [border setStyle:style];
+        if (border && [border lineWidth] > 0.0)
+            [border setStyle:style];
         [self setBorder:border];
         [border release];
     }
@@ -286,10 +287,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (void)setLineWidth:(CGFloat)width {
     if ([self isEditable]) {
         PDFBorder *border = nil;
-        if (width > 0.0) {
+        if (width > 0.0 || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
             PDFBorder *oldBorder = [self border];
             border = [[PDFBorder allocWithZone:[self zone]] init];
-            if (oldBorder) {
+            if (oldBorder && [oldBorder lineWidth] > 0.0) {
                 [border setDashPattern:[oldBorder dashPattern]];
                 [border setStyle:[oldBorder style]];
             }
@@ -308,13 +309,14 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     if ([self isEditable]) {
         PDFBorder *oldBorder = [self border];
         PDFBorder *border = nil;
-        if (oldBorder || [pattern count])
+        if (oldBorder || [pattern count] || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
             border = [[PDFBorder allocWithZone:[self zone]] init];
         if (oldBorder) {
             [border setLineWidth:[oldBorder lineWidth]];
             [border setStyle:[oldBorder style]];
         }
-        [border setDashPattern:pattern];
+        if (border && [border lineWidth] > 0.0)
+            [border setDashPattern:pattern];
         [self setBorder:border];
         [border release];
     }

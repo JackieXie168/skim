@@ -63,7 +63,7 @@ NSString *SKPDFAnnotationScriptingAlignmentKey = @"scriptingAlignment";
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKFreeTextNoteDashPatternKey]];
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineStyleKey]];
-        [self setBorder:[border lineWidth] > 0.0 ? border : nil];
+        [self setBorder:[border lineWidth] > 0.0 || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? border : nil];
         [border release];
     }
     return self;
