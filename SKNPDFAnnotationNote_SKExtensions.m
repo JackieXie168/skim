@@ -288,7 +288,7 @@ static inline void drawIconHelp(CGContextRef context, NSRect bounds) {
     CGContextReplacePathWithStrokedPath(context);
     CGContextSetLineWidth(context, 1.0);
     CGContextAddEllipseInRect(context, CGRectMake(x + 0.425 * w, y + 0.1 * h, 0.15 * w, 0.15 * h));
-    CGContextAddEllipseInRect(context, NSRectToCGRect(NSInsetRect(bounds, 0, 0)));
+    CGContextAddEllipseInRect(context, NSRectToCGRect(bounds));
     CGContextClosePath(context);
     CGContextDrawPath(context, kCGPathEOFillStroke);
 }
