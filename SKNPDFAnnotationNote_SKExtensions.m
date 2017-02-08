@@ -337,7 +337,7 @@ static inline void drawIconParagraph(CGContextRef context, NSRect bounds) {
 }
 
 static inline void drawIconInsert(CGContextRef context, NSRect bounds) {
-    bounds = NSInsetRect(bounds, 0.075 * NSWidth(bounds) + 0.5, 0.5);
+    bounds = NSInsetRect(bounds, 0.5, 0.5);
     CGFloat x = NSMinX(bounds), y = NSMinY(bounds), w = NSWidth(bounds), h = NSHeight(bounds);
     CGContextSetLineJoin(context, kCGLineJoinRound);
     CGContextMoveToPoint(context, x, y);
