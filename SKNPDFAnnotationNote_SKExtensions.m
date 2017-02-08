@@ -256,10 +256,10 @@ static inline void drawIconNote(CGContextRef context, NSRect bounds) {
         {x, y + h},
         {x + w, y + h},
         {x + w, y + 0.25 * h},
-        {x + w - 0.25 * w, y}};
-    CGPoint points2[3] = {{x + w, y + 0.25 * h},
-        {x + w - 0.25 * w, y + 0.25 * h},
-        {x + w - 0.25 * w, y}};
+        {x + 0.75 * w, y}};
+    CGPoint points2[3] = {{x + 0.75 * w, y},
+        {x + 0.75 * w, y + 0.25 * h},
+        {x + w, y + 0.25 * h}};
     CGContextAddLines(context, points1, 5);
     CGContextClosePath(context);
     CGContextAddLines(context, points2, 3);
@@ -300,7 +300,7 @@ static inline void drawIconNewParagraph(CGContextRef context, NSRect bounds) {
     CGContextSetLineJoin(context, kCGLineJoinRound);
     CGPoint points1[3] = {{x + 0.1 * w, y + 0.5 * h},
         {x + 0.5 * w, y + h},
-        {x + w - 0.1 * w, y + 0.5 * h}};
+        {x + 0.9 * w, y + 0.5 * h}};
     CGContextAddLines(context, points1, 3);
     CGContextClosePath(context);
     CGContextDrawPath(context, kCGPathFillStroke);
