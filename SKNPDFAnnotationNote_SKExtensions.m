@@ -291,6 +291,7 @@ static inline void drawIconHelp(CGContextRef context, NSRect bounds) {
 
 static inline void drawIconNewParagraph(CGContextRef context, NSRect bounds) {
     bounds = NSInsetRect(bounds, 0.08 * NSWidth(bounds), 0.5);
+    CGFloat r = fmin(0.3 * NSWidth(bounds), 0.1 * NSHeight(bounds));
     CGContextSetLineJoin(context, kCGLineJoinRound);
     CGPoint points1[3] = {{NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMinY(bounds) + 0.5 * NSHeight(bounds)},
         {NSMidX(bounds), NSMaxY(bounds)},
@@ -305,14 +306,16 @@ static inline void drawIconNewParagraph(CGContextRef context, NSRect bounds) {
     CGContextAddLines(context, points2, 4);
     CGContextMoveToPoint(context, NSMinX(bounds) + 0.6 * NSWidth(bounds), NSMinY(bounds) - 0.5);
     CGContextAddLineToPoint(context, NSMinX(bounds) + 0.6 * NSWidth(bounds), NSMinY(bounds) + 0.4 * NSHeight(bounds));
-    CGContextAddArc(context, NSMinX(bounds) + 0.9 * NSWidth(bounds) - 0.1 * NSHeight(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds), 0.1 * NSHeight(bounds), M_PI_2, -M_PI_2, 1);
+    CGContextAddArcToPoint(context, NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMinY(bounds) + 0.4 * NSHeight(bounds), NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMinY(bounds) + 0.2 * NSHeight(bounds), r);
+    CGContextAddArcToPoint(context, NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMinY(bounds) + 0.2 * NSHeight(bounds), NSMinX(bounds) + 0.6 * NSWidth(bounds), NSMinY(bounds) + 0.2 * NSHeight(bounds), r);
     CGContextAddLineToPoint(context, NSMinX(bounds) + 0.6 * NSWidth(bounds), NSMinY(bounds) + 0.2 * NSHeight(bounds));
     CGContextStrokePath(context);
 }
 
 static inline void drawIconParagraph(CGContextRef context, NSRect bounds) {
     bounds = NSInsetRect(bounds, 0.08 * NSWidth(bounds), 0.5);
-    CGPoint points[8] = {{NSMaxX(bounds) - 0.1 * NSWidth(bounds), NSMaxY(bounds)},
+    CGFloat r = fmin(0.4 * NSWidth(bounds), 0.25 * NSHeight(bounds));
+    CGPoint points[8] = {{NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMaxY(bounds)},
         {NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMinY(bounds)},
         {NSMinX(bounds) + 0.76 * NSWidth(bounds), NSMinY(bounds)},
         {NSMinX(bounds) + 0.76 * NSWidth(bounds), NSMinY(bounds) + 0.8 * NSHeight(bounds)},
@@ -321,7 +324,8 @@ static inline void drawIconParagraph(CGContextRef context, NSRect bounds) {
         {NSMinX(bounds) + 0.5 * NSWidth(bounds), NSMinY(bounds)},
         {NSMinX(bounds) + 0.5 * NSWidth(bounds), NSMinY(bounds) + 0.5 * NSHeight(bounds)}};
     CGContextAddLines(context, points, 8);
-    CGContextAddArc(context, NSMinX(bounds) + 0.1 * NSWidth(bounds) + 0.25 * NSHeight(bounds), NSMinY(bounds) + 0.75 * NSHeight(bounds), 0.25 * NSHeight(bounds), 3.0 * M_PI_2, M_PI_2, 1);
+    CGContextAddArcToPoint(context, NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMinY(bounds) + 0.5 * NSHeight(bounds), NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMaxY(bounds), r);
+    CGContextAddArcToPoint(context, NSMinX(bounds) + 0.1 * NSWidth(bounds), NSMaxY(bounds), NSMinX(bounds) + 0.9 * NSWidth(bounds), NSMaxY(bounds), r);
     CGContextClosePath(context);
     CGContextDrawPath(context, kCGPathFillStroke);
 }
