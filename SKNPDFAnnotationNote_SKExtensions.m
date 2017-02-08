@@ -276,19 +276,19 @@ static inline void drawIconNote(CGContextRef context, NSRect bounds) {
 }
 
 static inline void drawIconHelp(CGContextRef context, NSRect bounds) {
+    bounds = NSInsetRect(bounds, 0.5, 0.5);
     if (NSWidth(bounds) < NSHeight(bounds))
         bounds = NSInsetRect(bounds, 0.0, 0.5 * (NSWidth(bounds) - NSHeight(bounds)));
     else if (NSHeight(bounds) < NSWidth(bounds))
         bounds = NSInsetRect(bounds, 0.5 * (NSHeight(bounds) - NSWidth(bounds)), 0.0);
     CGFloat x = NSMinX(bounds), y = NSMinY(bounds), w = NSWidth(bounds), h = NSHeight(bounds);
     CGContextSetLineWidth(context, 0.1 * w);
-    CGContextAddArc(context, x + 0.5 * w, y + 0.65 * h, 0.15 * w, M_PI, -M_PI_4, 1);
-    CGContextAddArc(context, x + 0.65 * w, y + (0.8 - 0.3 * M_SQRT2) * h, 0.15 * w, 3.0 * M_PI_4, M_PI, 0);
-    CGContextAddLineToPoint(context, x + 0.5 * w, y + 0.35 * h);
+    CGContextAddArc(context, x + 0.5 * w, y + 0.65 * h, 0.175 * w, M_PI, -M_PI_4, 1);
+    CGContextAddArc(context, x + 0.675 * w, y + (0.825 - 0.35 * M_SQRT2) * h, 0.175 * w, 3.0 * M_PI_4, M_PI, 0);
     CGContextReplacePathWithStrokedPath(context);
     CGContextSetLineWidth(context, 1.0);
-    CGContextAddEllipseInRect(context, CGRectMake(x + 0.425 * w, y + 0.125 * h, 0.15 * w, 0.15 * h));
-    CGContextAddEllipseInRect(context, NSRectToCGRect(NSInsetRect(bounds, 0.5, 0.5)));
+    CGContextAddEllipseInRect(context, CGRectMake(x + 0.425 * w, y + 0.1 * h, 0.15 * w, 0.15 * h));
+    CGContextAddEllipseInRect(context, NSRectToCGRect(NSInsetRect(bounds, 0, 0)));
     CGContextClosePath(context);
     CGContextDrawPath(context, kCGPathEOFillStroke);
 }
