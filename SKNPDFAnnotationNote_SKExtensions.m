@@ -85,9 +85,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     if (self) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
-        textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
-        [textStorage setDelegate:self];
-        text = [[NSAttributedString alloc] init];
+        [texts release];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithNote:self] autorelease], nil];
     }
     return self;
