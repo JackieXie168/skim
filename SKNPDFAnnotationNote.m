@@ -83,8 +83,8 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
     [self setContents:contents];
 }
 
-- (id)initSkimNoteWithBounds:(NSRect)bounds {
-    if (self = [super initSkimNoteWithBounds:bounds]) {
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
