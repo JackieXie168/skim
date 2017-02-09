@@ -78,7 +78,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
             CGContextSetLineWidth(context, 1.0);
             CGContextSetLineCap(context, kCGLineCapButt);
             CGContextSetLineJoin(context, kCGLineJoinMiter);
-            CGContextClipToRect(context, bounds);
+            CGContextClipToRect(context, NSRectToCGRect(bounds));
             switch ([self iconType]) {
                 case kPDFTextAnnotationIconComment:      drawIconComment(context, bounds);      break;
                 case kPDFTextAnnotationIconKey:          drawIconKey(context, bounds);          break;
@@ -91,7 +91,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
             }
         } else {
             CGContextSetFillColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-            CGContextFillRect(context, bounds);
+            CGContextFillRect(context, NSRectToCGRect(bounds));
         }
         CGContextRestoreGState(context);
     }
