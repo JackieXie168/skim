@@ -47,6 +47,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKStringConstants.h"
+#import <SkimNotes/SkimNotes.h>
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
@@ -139,7 +140,7 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
     // On Sierra note annotations don't draw at all
     if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12) {
         for (PDFAnnotation *annotation in [pdfPage annotations]) {
-            if ([annotation isNote] && [annotation shouldDisplay])
+            if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
                 [annotation drawWithBox:[self displayBox] inContext:context];
         }
     }
