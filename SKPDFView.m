@@ -1585,9 +1585,8 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             location = [self convertPoint:location toPage:page];
             while (i-- > 0) {
                 annotation = [annotations objectAtIndex:i];
-                NSString *type = [annotation type];
-                if ([annotation isSkimNote] && [annotation hitTest:location] && 
-                    ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
+                if ([annotation isSkimNote] && [annotation hitTest:location] &&
+                    ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]] || [annotation hasBorder])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation) {
                             [self setNeedsDisplayForAnnotation:highlightAnnotation];
@@ -1628,13 +1627,12 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     NSPasteboard *pboard = [sender draggingPasteboard];
     if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]]) {
         if (highlightAnnotation) {
-            NSString *type = [highlightAnnotation type];
             if ([pboard canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, nil]]) {
                 BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
                 BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
                 [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard] alternate:isAlt updateDefaults:isShift];
                 performedDrag = YES;
-            } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
+            } else if ([highlightAnnotation hasBorder]) {
                 [pboard types];
                 NSDictionary *dict = [pboard propertyListForType:SKPasteboardTypeLineStyle];
                 NSNumber *number;
@@ -1643,7 +1641,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
                 [highlightAnnotation setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
                 if ((number = [dict objectForKey:SKLineWellStyleKey]))
                     [highlightAnnotation setBorderStyle:[number integerValue]];
-                if ([type isEqualToString:SKNLineString]) {
+                if ([highlightAnnotation isLine]) {
                     if ((number = [dict objectForKey:SKLineWellStartLineStyleKey]))
                         [(PDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number integerValue]];
                     if ((number = [dict objectForKey:SKLineWellEndLineStyleKey]))
