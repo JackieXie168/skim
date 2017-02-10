@@ -45,8 +45,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKNoteText.h"
-#import "PDFPage_SKExtensions.h"
-#import "NSColor_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationRichTextKey = @"richText";
