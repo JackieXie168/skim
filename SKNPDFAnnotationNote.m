@@ -84,7 +84,8 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 }
 
 - (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+    self = [super initWithBounds:bounds];
+    if (self) {
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
@@ -93,7 +94,8 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 }
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class attrStringClass = [NSAttributedString class];
         Class stringClass = [NSString class];
         Class imageClass = [NSImage class];

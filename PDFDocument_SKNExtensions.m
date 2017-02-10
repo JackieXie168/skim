@@ -50,7 +50,8 @@
     BOOL isPDFBundle = [[[url path] pathExtension] caseInsensitiveCompare:@"pdfd"] == NSOrderedSame;
     if (isPDFBundle)
         pdfURL = [fm bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:url error:NULL];
-    if (self = [self initWithURL:pdfURL]) {
+    self = [self initWithURL:pdfURL];
+    if (self) {
         NSArray *noteDicts = nil;
         NSArray *annotations = nil;
         if (isPDFBundle)

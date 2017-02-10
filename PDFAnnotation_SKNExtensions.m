@@ -112,7 +112,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
-    if (self = [self initWithBounds:bounds]) {
+    self = [self initWithBounds:bounds];
+    if (self) {
         [self setShouldPrint:YES];
         [self setSkimNote:YES];
     }
@@ -153,7 +154,8 @@ static void replacement_dealloc(id self, SEL _cmd) {
         // called from the initialization of a subclass
         NSString *boundsString = [dict objectForKey:SKNPDFAnnotationBoundsKey];
         NSRect bounds = [boundsString isKindOfClass:stringClass] ? NSRectFromString(boundsString) : NSZeroRect;
-        if (self = [self initSkimNoteWithBounds:bounds]) {
+        self = [self initSkimNoteWithBounds:bounds];
+        if (self) {
             Class colorClass = [NSColor class];
             Class arrayClass = [NSArray class];
             Class dateClass = [NSDate class];
@@ -462,7 +464,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationCircle (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class colorClass = [NSColor class];
         NSColor *interiorColor = [dict objectForKey:SKNPDFAnnotationInteriorColorKey];
         if ([interiorColor isKindOfClass:colorClass])
@@ -484,7 +487,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationSquare (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class colorClass = [NSColor class];
         NSColor *interiorColor = [dict objectForKey:SKNPDFAnnotationInteriorColorKey];
         if ([interiorColor isKindOfClass:colorClass])
@@ -506,7 +510,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationLine (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class stringClass = [NSString class];
         Class colorClass = [NSColor class];
         NSString *startPoint = [dict objectForKey:SKNPDFAnnotationStartPointKey];
@@ -554,7 +559,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationFreeText (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class fontClass = [NSFont class];
         Class colorClass = [NSColor class];
         NSFont *font = [dict objectForKey:SKNPDFAnnotationFontKey];
@@ -591,7 +597,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationMarkup (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class stringClass = [NSString class];
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
         if ([type isKindOfClass:stringClass]) {
@@ -650,7 +657,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 @implementation PDFAnnotationText (SKNExtensions)
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         NSNumber *iconType = [dict objectForKey:SKNPDFAnnotationIconTypeKey];
         if ([iconType respondsToSelector:@selector(integerValue)])
             [self setIconType:[iconType integerValue]];
@@ -724,7 +732,8 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 }
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initSkimNoteWithProperties:dict]) {
+    self = [super initSkimNoteWithProperties:dict];
+    if (self) {
         Class arrayClass = [NSArray class];
         Class stringClass = [NSString class];
         NSArray *pointLists = [dict objectForKey:SKNPDFAnnotationPointListsKey];
