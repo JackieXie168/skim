@@ -60,6 +60,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainDocument.h"
+#import "NSView_SKExtensions.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -387,7 +388,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         return;
     if ([self isSkimNote]) {
         BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
-        NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];
+        NSRect rect = [pdfView convertRect:[pdfView backingAlignedRect:[pdfView convertRect:[self bounds] fromPage:[self page]]] toPage:[self page]];
         CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
         CGContextSaveGState(context);
         CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];

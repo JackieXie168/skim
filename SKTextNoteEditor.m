@@ -41,6 +41,7 @@
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 static char SKPDFAnnotationPropertiesObservationContext;
@@ -103,7 +104,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateFrame {
-    NSRect frame = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[annotation bounds] fromPage:[annotation page]]) toView:[pdfView documentView]];
+    NSRect frame = [pdfView convertRect:[pdfView backingAlignedRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]]] toView:[pdfView documentView]];
     [textField setFrame:frame];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
         frame.origin = NSZeroPoint;

@@ -42,8 +42,37 @@
 
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
+    NSAlignMinXInward   = 1ULL << 0,
+    NSAlignMinYInward   = 1ULL << 1,
+    NSAlignMaxXInward   = 1ULL << 2,
+    NSAlignMaxYInward   = 1ULL << 3,
+    NSAlignWidthInward  = 1ULL << 4,
+    NSAlignHeightInward = 1ULL << 5,
+    
+    NSAlignMinXOutward   = 1ULL << 8,
+    NSAlignMinYOutward   = 1ULL << 9,
+    NSAlignMaxXOutward   = 1ULL << 10,
+    NSAlignMaxYOutward   = 1ULL << 11,
+    NSAlignWidthOutward  = 1ULL << 12,
+    NSAlignHeightOutward = 1ULL << 13,
+    
+    NSAlignMinXNearest   = 1ULL << 16,
+    NSAlignMinYNearest   = 1ULL << 17,
+    NSAlignMaxXNearest   = 1ULL << 18,
+    NSAlignMaxYNearest   = 1ULL << 19,
+    NSAlignWidthNearest  = 1ULL << 20,
+    NSAlignHeightNearest = 1ULL << 21,
+    
+    NSAlignRectFlipped = 1ULL << 63,
+    
+    NSAlignAllEdgesInward = NSAlignMinXInward|NSAlignMaxXInward|NSAlignMinYInward|NSAlignMaxYInward,
+    NSAlignAllEdgesOutward = NSAlignMinXOutward|NSAlignMaxXOutward|NSAlignMinYOutward|NSAlignMaxYOutward,
+    NSAlignAllEdgesNearest = NSAlignMinXNearest|NSAlignMaxXNearest|NSAlignMinYNearest|NSAlignMaxYNearest,
+};
 @interface NSView (SKLionDeclarations)
 - (NSSize)convertSizeToBacking:(NSSize)size;
+- (NSRect)backingAlignedRect:(NSRect)rect options:(NSAlignmentOptions)options;
 @end
 #endif
 
@@ -79,6 +108,13 @@
     if ([self respondsToSelector:@selector(convertSizeToBacking:)])
         return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
     return 1.0;
+}
+
+- (NSRect)backingAlignedRect:(NSRect)rect {
+    if ([self respondsToSelector:@selector(backingAlignedRect:options:)])
+        return [self backingAlignedRect:rect options:NSAlignAllEdgesOutward];
+    else
+        return [self convertRect:NSIntegralRect([self convertRect:rect toView:nil]) fromView:nil];
 }
 
 - (NSRect)convertRectToScreen:(NSRect)rect {

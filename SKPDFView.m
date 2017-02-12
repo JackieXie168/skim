@@ -393,7 +393,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     CGFloat width = 1.0 / [self scaleFactor];
     CGContextSaveGState(context);
     CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-    NSRect rect = [self convertRect:NSIntegralRect([self convertRect:[highlightAnnotation bounds] fromPage:[highlightAnnotation page]]) toPage:[highlightAnnotation page]];
+    NSRect rect = [self convertRect:[self backingAlignedRect:[self convertRect:[highlightAnnotation bounds] fromPage:[highlightAnnotation page]]] toPage:[highlightAnnotation page]];
     CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width), width);
     CGContextRestoreGState(context);
 }
