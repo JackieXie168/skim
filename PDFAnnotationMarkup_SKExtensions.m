@@ -320,6 +320,17 @@ static void (*original_dealloc)(id, SEL) = NULL;
         [self setString:selString];
 }
 
+- (NSSet *)keysForValuesToObserveForUndo {
+    static NSSet *markupKeys = nil;
+    if (markupKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys removeObject:SKNPDFAnnotationBorderKey];
+        markupKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return markupKeys;
+}
+
 #pragma mark Scripting support
 
 + (NSSet *)customScriptingKeys {

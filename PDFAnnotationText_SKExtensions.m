@@ -74,6 +74,7 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     if (textKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
         [mutableKeys addObject:SKNPDFAnnotationIconTypeKey];
+        [mutableKeys removeObject:SKNPDFAnnotationBorderKey];
         textKeys = [mutableKeys copy];
         [mutableKeys release];
     }
