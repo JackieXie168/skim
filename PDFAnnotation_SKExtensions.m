@@ -282,7 +282,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 }
 
 - (CGFloat)lineWidth {
-    return [self border] ? [[self border] lineWidth] : 0.0;
+    PDFBorder *border = [self border];
+    return border ? [border lineWidth] : 0.0;
 }
 
 - (void)setLineWidth:(CGFloat)width {
