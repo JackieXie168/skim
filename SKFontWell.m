@@ -369,24 +369,11 @@ static char SKFontWellFontSizeObservationContext;
 
 #pragma mark NSDraggingDestination protocol 
 
-- (void)drawDragHighlight {
-    [[self window] cacheImageInRect:[self convertRect:[self bounds] toView:nil]];
-    if ([self lockFocusIfCanDraw]) {
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
-        NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
-        [self unlockFocus];
-    }
-    [[self window] flushWindow];
-}
-
-- (void)clearDragHighlight {
-    [[self window] restoreCachedImage];
-    [[self window] flushWindow];
-}
-
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
-        [self drawDragHighlight];
+        [[self cell] setHighlighted:YES];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
         return NSDragOperationGeneric;
     } else
         return NSDragOperationNone;
@@ -394,7 +381,9 @@ static char SKFontWellFontSizeObservationContext;
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
-        [self clearDragHighlight];
+        [[self cell] setHighlighted:NO];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
     }
 }
 
@@ -445,7 +434,9 @@ static char SKFontWellFontSizeObservationContext;
         [self sendAction:[self action] to:[self target]];
     }
     
-    [self clearDragHighlight];
+    [[self cell] setHighlighted:NO];
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self setNeedsDisplay:YES];
     
 	return droppedFont != nil || droppedColor != nil;
 }
@@ -509,6 +500,10 @@ static char SKFontWellFontSizeObservationContext;
         [[NSColor selectedControlColor] setFill];
         NSRectFillUsingOperation(frame, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
+    }
+    if ([self isHighlighted]) {
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        NSFrameRectWithWidthUsingOperation(frame, 1.0, NSCompositePlusDarker);
     }
     
     if ([self showsFirstResponder]) {

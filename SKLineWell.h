@@ -66,6 +66,7 @@ typedef NS_ENUM(NSInteger, SKLineWellDisplayStyle) {
         unsigned int active:1;
         unsigned int canActivate:1;
         unsigned int existsActiveLineWell:1;
+        unsigned int highlighted:1;
     } lwFlags;
     
     id target;

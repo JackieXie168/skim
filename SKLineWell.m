@@ -262,6 +262,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         NSRectFillUsingOperation(bounds, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
+    if ([self isHighlighted]) {
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
+        [NSGraphicsContext restoreGraphicsState];
+    }
     
     if (lineWidth > 0.0) {
         [NSGraphicsContext saveGraphicsState];
@@ -457,6 +463,16 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
 }
 
+- (BOOL)isHighlighted {
+    return lwFlags.highlighted;
+}
+
+- (void)setHighlighted:(BOOL)flag {
+    if (lwFlags.highlighted != flag) {
+        lwFlags.highlighted = flag;
+    }
+}
+
 - (SKLineWellDisplayStyle)displayStyle {
     return lwFlags.displayStyle;
 }
@@ -554,24 +570,11 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark NSDraggingDestination protocol 
 
-- (void)drawDragHighlight {
-    [[self window] cacheImageInRect:[self convertRect:[self bounds] toView:nil]];
-    if ([self lockFocusIfCanDraw]) {
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
-        NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
-        [self unlockFocus];
-    }
-    [[self window] flushWindow];
-}
-
-- (void)clearDragHighlight {
-    [[self window] restoreCachedImage];
-    [[self window] flushWindow];
-}
-
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
-        [self drawDragHighlight];
+        [self setHighlighted:YES];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
         return NSDragOperationEvery;
     } else
         return NSDragOperationNone;
@@ -579,7 +582,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
-        [self clearDragHighlight];
+        [self setHighlighted:NO];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
     }
 }
 
@@ -607,7 +612,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
     [self sendAction:[self action] to:[self target]];
     
-    [self clearDragHighlight];
+    [self setHighlighted:NO];
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self setNeedsDisplay:YES];
     
 	return dict != nil;
 }
