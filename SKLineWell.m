@@ -338,7 +338,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                     [pboard setPropertyList:dict forType:SKPasteboardTypeLineStyle];
                     
                     NSRect bounds = [self bounds];
-                    NSPoint imageLoc = NSMakePoint(NSMinX(bounds) + 1.0, NSMinY(bounds) + 1.0);
+                    NSPoint imageLoc = NSMakePoint(NSMinX(bounds), NSMinY(bounds));
                     [self dragImage:[self dragImage] at:imageLoc offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
                     
                     keepOn = NO;
