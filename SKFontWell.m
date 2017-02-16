@@ -502,8 +502,10 @@ static char SKFontWellFontSizeObservationContext;
         [NSGraphicsContext restoreGraphicsState];
     }
     if ([self isHighlighted]) {
+        [NSGraphicsContext saveGraphicsState];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
         NSFrameRectWithWidthUsingOperation(frame, 1.0, NSCompositePlusDarker);
+        [NSGraphicsContext restoreGraphicsState];
     }
     
     if ([self showsFirstResponder]) {
