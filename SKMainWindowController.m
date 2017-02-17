@@ -1323,7 +1323,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     // Set up presentation mode
-    [pdfView setBackgroundColor:[NSColor blackColor]];
+    [pdfView setBackgroundColor:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? [NSColor blackColor] : [NSColor clearColor]];
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
