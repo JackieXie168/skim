@@ -253,7 +253,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             value = [CIVector vectorWithX:CGRectGetMinX(extent) Y:CGRectGetMinY(extent) Z:CGRectGetWidth(extent) W:CGRectGetHeight(extent)];
         } else if ([key isEqualToString:kCIInputAngleKey]) {
             CGFloat angle = forward ? 0.0 : M_PI;
-            if ([filterName isEqualToString:@"CIPageCurlTransition"])
+            if ([filterName isEqualToString:@"CIPageCurlTransition"] || [filterName isEqualToString:@"CIPageCurlWithShadowTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
         } else if ([key isEqualToString:kCIInputCenterKey]) {
