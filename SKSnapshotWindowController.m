@@ -124,6 +124,8 @@ static char SKSnapshotWindowContentLayoutRectObservationContext;
 }
 
 - (void)windowDidLoad {
+    if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
+        [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     if ([[self window] respondsToSelector:@selector(contentLayoutRect)]) {

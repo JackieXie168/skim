@@ -167,6 +167,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     [[self window] setContentBorderThickness:NSHeight([statusBar frame]) forEdge:NSMinYEdge];
     
+    if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
+        [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
+    
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
