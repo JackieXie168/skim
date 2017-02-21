@@ -78,10 +78,7 @@ NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 #define SKSnapshotWindowFrameAutosaveName @"SKSnapshotWindow"
 #define SKSnapshotViewChangedNotification @"SKSnapshotViewChangedNotification"
 
-#define CONTENTLAYOUTRECT_KEY @"contentLayoutRect"
-
 static char SKSnaphotWindowDefaultsObservationContext;
-static char SKSnapshotWindowContentLayoutRectObservationContext;
 
 @interface SKSnapshotWindowController () 
 @property (nonatomic, copy) NSString *pageLabel;
@@ -98,8 +95,6 @@ static char SKSnapshotWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
-    if ([[self window] respondsToSelector:@selector(contentLayoutRect)])
-        [[self window] removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [pdfView setDelegate:nil];
     delegate = nil;
@@ -131,7 +126,6 @@ static char SKSnapshotWindowContentLayoutRectObservationContext;
     if ([[self window] respondsToSelector:@selector(contentLayoutRect)]) {
         [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
         [pdfView setFrame:[[self window] contentLayoutRect]];
-        [[self window] addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKSnapshotWindowContentLayoutRectObservationContext];
     }
     [self updateWindowLevel];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
@@ -657,13 +651,6 @@ static char SKSnapshotWindowContentLayoutRectObservationContext;
             [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];
-        }
-    } else if (context == &SKSnapshotWindowContentLayoutRectObservationContext) {
-        if ([[self window] respondsToSelector:@selector(contentLayoutRect)]) {
-            NSRect frame = [[self window] contentLayoutRect];
-            if ([[[pdfView superview] subviews] count] > 1)
-                frame = SKShrinkRect(frame, NSHeight([[pdfView scalePopUpButton] frame]), NSMinYEdge);
-            [pdfView setFrame:frame];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
