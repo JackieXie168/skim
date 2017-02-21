@@ -139,4 +139,8 @@ typedef NSUInteger NSWindowStyleMask;
 
 @protocol PDFViewDelegate <NSObject> @end
 
+@interface NSWindow (SKSierraDeclarations)
+- (NSArray *)tabbedWindows;
+@end
+
 #endif
