@@ -137,10 +137,18 @@ enum {
 
 typedef NSUInteger NSWindowStyleMask;
 
-@protocol PDFViewDelegate <NSObject> @end
+typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
+    NSWindowTabbingModeAutomatic,
+    NSWindowTabbingModePreferred,
+    NSWindowTabbingModeDisallowed
+};
 
 @interface NSWindow (SKSierraDeclarations)
 - (NSArray *)tabbedWindows;
+- (NSWindowTabbingMode)tabbingMode;
+- (void)setTabbingMode:(NSWindowTabbingMode)mode;
 @end
+
+@protocol PDFViewDelegate <NSObject> @end
 
 #endif

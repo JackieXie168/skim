@@ -103,6 +103,9 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)windowDidLoad {
+    if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
+        [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
+    
     [[prefButton cell] accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
     
     [clearButton sizeToFit];

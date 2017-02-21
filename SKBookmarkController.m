@@ -176,6 +176,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)windowDidLoad {
     [self setupToolbar];
     
+    if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
+        [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
+    
     [self setWindowFrameAutosaveName:SKBookmarksWindowFrameAutosaveName];
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
