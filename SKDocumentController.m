@@ -178,6 +178,12 @@ static BOOL isEncapsulatedPostScriptData(NSData *data) {
     return [self documentClassForType:[self typeForContentsOfURL:inAbsoluteURL error:NULL]];
 }
 
+- (id)openUntitledDocumentAndDisplay:(BOOL)displayDocument error:(NSError **)outError {
+    if (outError)
+        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+    return nil;
+}
+
 static NSData *convertTIFFDataToPDF(NSData *tiffData)
 {
     // this should accept any image data types we're likely to run across, but PICT returns a zero size image
