@@ -87,6 +87,12 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 @end
 #endif
 
+#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+@interface NSResponder(NSWindowTabbing)
+- (IBAction)newWindowForTab:(id)sender;
+@end
+#endif
+
 @interface NSDocumentController (SKDeprecated)
 // we don't want this to be flagged as deprecated, because Apple's replacement using UTIs is too buggy, and there's no replacement for this method
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName;
@@ -176,12 +182,6 @@ static BOOL isEncapsulatedPostScriptData(NSData *data) {
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL {
     return [self documentClassForType:[self typeForContentsOfURL:inAbsoluteURL error:NULL]];
-}
-
-- (id)openUntitledDocumentAndDisplay:(BOOL)displayDocument error:(NSError **)outError {
-    if (outError)
-        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
-    return nil;
 }
 
 static NSData *convertTIFFDataToPDF(NSData *tiffData)
@@ -418,6 +418,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
     
     return document;
+}
+
+// By not responding to newWindowForTab: no "+" button is shown in the tab bar
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return aSelector != @selector(newWindowForTab:) && [super respondsToSelector:aSelector];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
