@@ -62,6 +62,8 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 }
 
 - (void)windowDidLoad {
+    if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
+        [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
                                withRTF:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ReleaseNotes" withExtension:@"rtf"]]];
