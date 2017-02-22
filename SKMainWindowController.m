@@ -1712,9 +1712,13 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
-    CGFloat offset = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max ? 18.0 : 14.0;
-    if ([[window toolbar] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
+    CGFloat offset = 18.0;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
+    else if ([[window toolbar] isVisible] == NO)
+        offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
+    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max)
+        offset = 14.0;
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
