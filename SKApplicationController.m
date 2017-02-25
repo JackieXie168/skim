@@ -240,15 +240,6 @@
 
 #pragma mark Updater
 
-- (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(SUUpdater *)updater {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:SUScheduledCheckIntervalKey]) {
-        // the user already used an older version of Skim and Sparkle
-        [updater setAutomaticallyChecksForUpdates:[[NSUserDefaults standardUserDefaults] integerForKey:SUScheduledCheckIntervalKey] > 0];
-        return NO;
-    }
-    return YES;
-}
-
 - (void)updaterWillRelaunchApplication:(SUUpdater *)updater {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:SKIsRelaunchKey];
 }
