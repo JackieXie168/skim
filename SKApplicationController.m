@@ -92,8 +92,6 @@
 #define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
 #define SKSpotlightLastSysVersionKey        @"lastSysVersion"
 
-#define SUScheduledCheckIntervalKey         @"SUScheduledCheckInterval"
-
 #define SKCircleInteriorString  @"CircleInterior"
 #define SKSquareInteriorString  @"SquareInterior"
 #define SKLineInteriorString    @"LineInterior"
