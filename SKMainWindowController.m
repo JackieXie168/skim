@@ -1666,13 +1666,13 @@ static char SKMainWindowContentLayoutRectObservationContext;
     else
         return [[self pdfDocument] isLocked] == NO &&
                 ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) &&
-                ([[self window] respondsToSelector:@selector(tabbedWindows)] == NO || [[[self window] tabbedWindows] count] == 1);
+                ([[self window] respondsToSelector:@selector(tabbedWindows)] == NO || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canEnterPresentation {
     return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
             ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode) &&
-            ([[self window] respondsToSelector:@selector(tabbedWindows)] == NO || [[[self window] tabbedWindows] count] == 1);
+            ([[self window] respondsToSelector:@selector(tabbedWindows)] == NO || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canExitFullscreen {
