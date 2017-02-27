@@ -1379,20 +1379,17 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
-    [view setFrame:NSInsetRect([[fadeWindow contentView] bounds], inset, 0.0)];
-    [[fadeWindow contentView] addSubview:view];
-    [fadeWindow setAlphaValue:0.0];
+    [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
+    [view setFrame:NSInsetRect([[fullScreenWindow contentView] bounds], inset, 0.0)];
+    [[fullScreenWindow contentView] addSubview:view];
     [pdfView layoutDocumentView];
     [pdfView requiresDisplay];
-    [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
-    [fadeWindow fadeInBlocking];
-    [[fullScreenWindow contentView] addSubview:view];
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
     if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_7)
         [fullScreenWindow display];
-    [fadeWindow orderOut:nil];
+    [fadeWindow fadeOutBlocking];
     [fadeWindow release];
 }
 
@@ -1400,13 +1397,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
-    [[fadeWindow contentView] addSubview:view];
+    [fadeWindow setAlphaValue:0.0];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
-    [fadeWindow display];
+    [fadeWindow fadeInBlocking];
+    [view removeFromSuperview];
     [fullScreenWindow display];
     [fullScreenWindow setDelegate:nil];
     [fullScreenWindow makeFirstResponder:nil];
-    [fadeWindow fadeOutBlocking];
+    [fadeWindow orderOut:nil];
     [fadeWindow release];
 }
 
