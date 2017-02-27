@@ -39,7 +39,7 @@
 #import "SKFullScreenWindow.h"
 #import "SKStringConstants.h"
 
-#define DURATION 0.25
+#define DURATION 0.3
 
 @implementation SKFullScreenWindow
 
