@@ -1377,7 +1377,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (void)fadeInFullScreenView:(NSView *)view inset:(CGFloat)inset {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
-    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
+    SKFullScreenWindow *fadeWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO] autorelease];
     
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [view setFrame:NSInsetRect([[fullScreenWindow contentView] bounds], inset, 0.0)];
@@ -1389,8 +1389,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [fullScreenWindow setDelegate:self];
     if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_7)
         [fullScreenWindow display];
-    [fadeWindow fadeOutBlocking];
-    [fadeWindow release];
+    [fadeWindow fadeOut];
 }
 
 - (void)fadeOutFullScreenView:(NSView *)view {
