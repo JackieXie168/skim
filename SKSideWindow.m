@@ -158,10 +158,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     }
 }
 
-- (void)makeTransparent {
-    [self setAlphaValue:0.0];
-}
-
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
@@ -171,7 +167,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                     [[self parentWindow] makeKeyAndOrderFront:self];
                 state = NSDrawerClosedState;
                 if (hideWhenClosed != SKClosedSidePanelCollapse)
-                    [self makeTransparent];
+                    [self setAlphaValue:0.0];
             }];
     }
 }
