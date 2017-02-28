@@ -105,6 +105,7 @@
 #define COLUMN_INDENTATION 16.0
 #define EXTRA_ROW_HEIGHT 2.0
 #define DEFAULT_TEXT_ROW_HEIGHT 85.0
+#define DEFAULT_MARKUP_ROW_HEIGHT 50.0
 
 @interface SKMainWindowController (SKPrivateMain)
 
@@ -838,7 +839,7 @@
                 rowHeight = fmax(rowHeight, [ov rowHeight]) + EXTRA_ROW_HEIGHT;
                 [rowHeights setFloat:rowHeight forKey:item];
             } else {
-                rowHeight = [(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : DEFAULT_TEXT_ROW_HEIGHT;
+                rowHeight = [(PDFAnnotation *)item type] ? [ov rowHeight] + EXTRA_ROW_HEIGHT : ([[(SKNoteText *)item note] isNote] ? DEFAULT_TEXT_ROW_HEIGHT : DEFAULT_MARKUP_ROW_HEIGHT);
             }
         }
         return rowHeight;
