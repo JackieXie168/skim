@@ -83,8 +83,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     if (self) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
-        [texts release];
-        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithNote:self] autorelease], nil];
     }
     return self;
 }
@@ -100,7 +98,15 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (PDFAnnotationPopup *)popup { return nil; }
 
-- (NSArray *)texts { return texts; }
+- (BOOL)hasNoteText { return YES; }
+
+- (SKNoteText *)noteText {
+    return [[[SKNoteText alloc] initWithNote:self] autorelease];
+}
+
+- (NSString *)textString {
+    return [[self text] string];
+}
 
 - (NSString *)colorDefaultKey { return SKAnchoredNoteColorKey; }
 

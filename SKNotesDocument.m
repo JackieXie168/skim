@@ -524,22 +524,25 @@
     NSInteger row;
     
     if (items == nil) {
-        items = [[self notes] arrayByAddingObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
-        rowIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])];
+        NSMutableArray *tmpItems = [NSMutableArray array];
+        for (PDFAnnotation *note in items) {
+            [tmpItems addObject:note];
+            if ([note hasNoteText])
+                [tmpItems addObject:[note noteText]];
+        }
+        items = tmpItems;
     } else {
         rowIndexes = [NSMutableIndexSet indexSet];
     }
     
     for (id item in items) {
-        if ([(PDFAnnotation *)item type]) {
-            [cell setObjectValue:[item string]];
+        [cell setObjectValue:[item objectValue]];
+        if ([(PDFAnnotation *)item type])
             height = [cell cellSizeForBounds:rect].height;
-        } else if ([tableColumn isHidden] == NO) {
-            [cell setObjectValue:[item text]];
+        else if ([tableColumn isHidden] == NO)
             height = [cell cellSizeForBounds:fullRect].height;
-        } else {
+        else
             height = 0.0;
-        }
         [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
         if (rowIndexes) {
             row = [outlineView rowForItem:item];
@@ -634,28 +637,26 @@
     if (item == nil)
         return [[arrayController arrangedObjects] count];
     else
-        return [[item texts] count];
+        return [item hasNoteText] ? 1 : 0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
-    return [[item texts] count] > 0;
+    return [item hasNoteText];
 }
 
 - (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item {
     if (item == nil) {
         return [[arrayController arrangedObjects] objectAtIndex:anIndex];
     } else {
-        return [[item texts] lastObject];
+        return [item noteText];
     }
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     PDFAnnotation *note = item;
-    if (tableColumn == nil) {
-        return [note text];
-    } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
-        return [note type] ? (id)[note string] : (id)[note text];
+    if (tableColumn == nil || [tcID isEqualToString:NOTE_COLUMNID]) {
+        return [item objectValue];
     } else if([tcID isEqualToString:TYPE_COLUMNID]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil];
     } else if([tcID isEqualToString:COLOR_COLUMNID]) {
@@ -747,11 +748,11 @@
     for (item in items) {
         if ([attrString length])
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-        if ([item type]) {
-            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
-        } else {
+        if ([item type] == nil && [[(SKNoteText *)item note] isNote]) {
             [attrString appendAttributedString:[(SKNoteText *)item text]];
             isAttributed = YES;
+        } else {
+            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string] ?: @""];
         }
     }
     
@@ -774,11 +775,10 @@
         if (ndFlags.autoResizeRows) {
             NSTableColumn *tableColumn = [ov tableColumnWithIdentifier:NOTE_COLUMNID];
             id cell = [tableColumn dataCell];
+            [cell setObjectValue:[item objectValue]];
             if ([(PDFAnnotation *)item type] == nil) {
-                [cell setObjectValue:[item text]];
                 rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, fmax(10.0, NSWidth([ov frame]) - COLUMN_INDENTATION - [ov indentationPerLevel]), CGFLOAT_MAX)].height;
             } else if ([tableColumn isHidden] == NO) {
-                [cell setObjectValue:[item string]];
                 rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX)].height;
             }
             rowHeight = fmax(rowHeight, [ov rowHeight]) + EXTRA_ROW_HEIGHT;

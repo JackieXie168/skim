@@ -598,7 +598,7 @@
         if (item == nil)
             return [[rightSideController.noteArrayController arrangedObjects] count];
         else
-            return [[item texts] count];
+            return [item hasNoteText];
     }
     return 0;
 }
@@ -613,7 +613,7 @@
         if (item == nil)
             return [[rightSideController.noteArrayController arrangedObjects] objectAtIndex:anIndex];
         else
-            return [[item texts] lastObject];
+            return [item noteText];
     }
     return nil;
 }
@@ -624,7 +624,7 @@
             item = [[pdfView document] outlineRoot];
         return ([(PDFOutline *)item numberOfChildren] > 0);
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
-        return [[item texts] count] > 0;
+        return [item hasNoteText];
     }
     return NO;
 }
@@ -641,14 +641,12 @@
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         PDFAnnotation *note = item;
-        if (tableColumn == nil)
-            return [note text];
-        else if ([tcID isEqualToString:NOTE_COLUMNID])
-            return [note type] ? (id)[note string] : (id)[note text];
+        if (tableColumn == nil || [tcID isEqualToString:NOTE_COLUMNID])
+            return [note objectValue];
         else if([tcID isEqualToString:TYPE_COLUMNID])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:note == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [note type], SKAnnotationTypeImageCellTypeKey, nil];
         else if([tcID isEqualToString:COLOR_COLUMNID])
-            return [note type] ? [item color] : nil;
+            return [note type] ? [note color] : nil;
         else if([tcID isEqualToString:PAGE_COLUMNID])
             return [[note page] displayLabel];
         else if([tcID isEqualToString:AUTHOR_COLUMNID])
@@ -718,7 +716,7 @@
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         if (tableColumn == nil) {
-            if ([pdfView hideNotes] == NO) {
+            if ([pdfView hideNotes] == NO && [[(SKNoteText *)item note] isNote]) {
                 PDFAnnotation *annotation = [(SKNoteText *)item note];
                 [pdfView scrollAnnotationToVisible:annotation];
                 [pdfView setActiveAnnotation:annotation];
@@ -831,11 +829,10 @@
             if (mwcFlags.autoResizeNoteRows) {
                 NSTableColumn *tableColumn = [ov tableColumnWithIdentifier:NOTE_COLUMNID];
                 id cell = [tableColumn dataCell];
+                [cell setObjectValue:[item objectValue]];
                 if ([(PDFAnnotation *)item type] == nil) {
-                    [cell setObjectValue:[item text]];
                     rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, fmax(10.0, NSWidth([ov frame]) - COLUMN_INDENTATION - [ov indentationPerLevel]), CGFLOAT_MAX)].height;
                 } else if ([tableColumn isHidden] == NO) {
-                    [cell setObjectValue:[item string]];
                     rowHeight = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - COLUMN_INDENTATION, CGFLOAT_MAX)].height;
                 }
                 rowHeight = fmax(rowHeight, [ov rowHeight]) + EXTRA_ROW_HEIGHT;
@@ -903,11 +900,11 @@
         for (item in items) {
             if ([attrString length])
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-            if ([(PDFAnnotation *)item type]) {
-                [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
-            } else {
+            if ([(PDFAnnotation *)item type] == nil && [[(SKNoteText *)item note] isNote]) {
                 [attrString appendAttributedString:[(SKNoteText *)item text]];
                 isAttributed = YES;
+            } else {
+                [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string] ?: @""];
             }
         }
         
@@ -1087,21 +1084,26 @@
     NSArray *items = [sender representedObject];
     NSInteger row;
     
-    if (items == nil)
-        items = [[self notes] arrayByAddingObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
-    else
+    if (items == nil) {
+        NSMutableArray *tmpItems = [NSMutableArray array];
+        for (PDFAnnotation *note in items) {
+            [tmpItems addObject:note];
+            if ([note hasNoteText])
+                [tmpItems addObject:[note noteText]];
+        }
+        items = tmpItems;
+    } else {
         rowIndexes = [NSMutableIndexSet indexSet];
+    }
     
     for (id item in items) {
-        if ([(PDFAnnotation *)item type] == nil) {
-            [cell setObjectValue:[item text]];
+        [cell setObjectValue:[item objectValue]];
+        if ([(PDFAnnotation *)item type] == nil)
             height = [cell cellSizeForBounds:fullRect].height;
-        } else if ([tableColumn isHidden] == NO) {
-            [cell setObjectValue:[item string]];
+        else if ([tableColumn isHidden] == NO)
             height = [cell cellSizeForBounds:rect].height;
-        } else {
+        else
             height = 0.0;
-        }
         [rowHeights setFloat:fmax(height, rowHeight) + EXTRA_ROW_HEIGHT forKey:item];
         if (rowIndexes) {
             row = [rightSideController.noteOutlineView rowForItem:item];
@@ -1216,8 +1218,10 @@
                 PDFAnnotation *annotation = [[self noteItems:items] lastObject];
                 if ([annotation isEditable]) {
                     if ([(PDFAnnotation *)[items lastObject] type] == nil) {
-                        item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editNoteTextFromTable:) target:self];
-                        [item setRepresentedObject:annotation];
+                        if ([[(SKNoteText *)[items lastObject] note] isNote]) {
+                            item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editNoteTextFromTable:) target:self];
+                            [item setRepresentedObject:annotation];
+                        }
                     } else if ([[rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] isHidden]) {
                         item = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
                         [item setRepresentedObject:annotation];

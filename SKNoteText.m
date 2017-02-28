@@ -43,31 +43,51 @@
 @implementation SKNoteText
 
 @synthesize note;
-@dynamic texts, type, page, pageIndex, string, text;
+@dynamic hasNoteText, noteText, type, page, pageIndex, string, text, objectValue;
 
 - (id)initWithNote:(id)aNote {
     self = [super init];
     if (self) {
-        note = aNote;
+        note = [aNote retain];
     }
     return self;
 }
 
 - (void)dealloc {
-    note = nil;
+    SKDESTROY(note);
     [super dealloc];
 }
 
-- (NSArray *)texts { return nil; }
+- (NSUInteger)hash {
+    return [note hash] + (1 << 4);
+}
+
+- (BOOL)isEqual:(id)otherObject {
+    if ([otherObject isMemberOfClass:[self class]] == NO)
+        return NO;
+    return [[self note] isEqual:[otherObject note]];
+}
+
+- (BOOL)hasNoteText { return NO; }
+
+- (SKNoteText *)noteText { return nil; }
 
 - (NSString *)type { return nil; }
 
 - (PDFPage *)page { return nil; }
 
-- (NSString *)string { return [[self text] string]; }
+- (NSString *)string {
+    return [note textString];
+}
 
 - (NSUInteger)pageIndex { return [note pageIndex]; }
 
-- (NSAttributedString *)text { return [note text]; }
+- (NSAttributedString *)text {
+    return [note isNote] ? [note text] :  nil;
+}
+
+- (id)objectValue {
+    return [note isNote] ? (id)[note text] : (id)[note textString];
+}
 
 @end

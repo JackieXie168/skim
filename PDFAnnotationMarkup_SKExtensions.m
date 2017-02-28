@@ -54,6 +54,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "SKNoteText.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -303,6 +304,16 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (BOOL)hasBorder { return NO; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
+
+- (BOOL)hasNoteText { return [self isEditable]; }
+
+- (SKNoteText *)noteText {
+    return [self isEditable] ? [[[SKNoteText alloc] initWithNote:self] autorelease] : nil;
+}
+
+- (NSString *)textString {
+    return [self isEditable] ? [[self selection] cleanedString] : nil;
+}
 
 - (NSString *)colorDefaultKey {
     switch ([self markupType]) {

@@ -1040,8 +1040,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [[self windowControllerForNote:note] close];
     
-    if ([[note texts] count])
-        [rowHeights removeFloatForKey:[[note texts] lastObject]];
+    if ([note hasNoteText])
+        [rowHeights removeFloatForKey:[note noteText]];
     [rowHeights removeFloatForKey:note];
     
     // Stop observing the removed notes
@@ -2449,7 +2449,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                     if ([keyPath isEqualToString:SKNPDFAnnotationStringKey])
                         [rowHeights removeFloatForKey:note];
                     if ([keyPath isEqualToString:SKNPDFAnnotationTextKey])
-                        [rowHeights removeFloatForKey:[[note texts] lastObject]];
+                        [rowHeights removeFloatForKey:[note noteText]];
                 }
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];

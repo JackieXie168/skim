@@ -61,6 +61,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "NSView_SKExtensions.h"
+#import "SKNoteText.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -337,7 +338,13 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (NSAttributedString *)text { return nil; }
 
-- (NSArray *)texts { return nil; }
+- (BOOL)hasNoteText { return NO; }
+
+- (SKNoteText *)noteText { return nil; }
+
+- (id)objectValue { return [self string]; }
+
+- (NSString *)textString { return nil; }
 
 - (NSColor *)interiorColor { return nil; }
 

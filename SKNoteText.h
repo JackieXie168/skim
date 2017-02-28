@@ -48,12 +48,14 @@
 
 @property (nonatomic, readonly) PDFAnnotation *note;
 
-@property (nonatomic, readonly) NSArray *texts;
+@property (nonatomic, readonly) BOOL hasNoteText;
+@property (nonatomic, readonly) SKNoteText *noteText;
 
 @property (nonatomic, readonly) NSString *type;
 @property (nonatomic, readonly) PDFPage *page;
 @property (nonatomic, readonly) NSUInteger pageIndex;
 @property (nonatomic, readonly) NSString *string;
 @property (nonatomic, readonly) NSAttributedString *text;
+@property (nonatomic, readonly) id objectValue;
 
 @end

@@ -128,7 +128,7 @@
         if (caseInsensitive)
             options |= NSCaseInsensitivePredicateOption;
         NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
-        rhs = [NSExpression expressionForKeyPath:@"text.string"];
+        rhs = [NSExpression expressionForKeyPath:@"textString"];
         NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
         searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
     }

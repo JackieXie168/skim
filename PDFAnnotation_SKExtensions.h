@@ -51,7 +51,7 @@ extern NSString *SKPDFAnnotationBoundsOrderKey;
 
 extern NSString *SKPasteboardTypeSkimNote;
 
-@class SKPDFView;
+@class SKPDFView, SKNoteText;
 
 @interface PDFAnnotation (SKExtensions) <NSPasteboardReading, NSPasteboardWriting>
 
@@ -73,7 +73,12 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
-- (NSArray *)texts;
+- (BOOL)hasNoteText;
+- (SKNoteText *)noteText;
+
+- (id)objectValue;
+
+- (NSString *)textString;
 
 - (PDFDestination *)linkDestination;
 - (NSURL *)linkURL;
