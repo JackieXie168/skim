@@ -133,6 +133,16 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return nil;
 }
 
+- (SKPDFAnnotationMarkupExtraIvars *)extraIvars {
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    if (extraIvars == nil) {
+        extraIvars = [[SKPDFAnnotationMarkupExtraIvars alloc] init];
+        [extraIvarsTable setObject:extraIvars forKey:self];
+        [extraIvars release];
+    }
+    return extraIvars;
+}
+
 - (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(NSInteger)type {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
@@ -141,10 +151,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
         NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:type];
         if (color)
             [self setColor:color];
-        
-        SKPDFAnnotationMarkupExtraIvars *extraIvars = [[SKPDFAnnotationMarkupExtraIvars alloc] init];
-        [extraIvarsTable setObject:extraIvars forKey:self];
-        [extraIvars release];
     }
     return self;
 }
@@ -185,7 +191,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                     addQuadPointsWithBounds(quadPoints, [lines rectAtIndex:i], newBounds.origin, rotation);
                 [self setBounds:newBounds];
                 [self setQuadrilateralPoints:quadPoints];
-                [[extraIvarsTable objectForKey:self] setLineRects:lines];
+                [[self extraIvars] setLineRects:lines];
                 [quadPoints release];
                 [lines release];
             }
@@ -209,7 +215,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (NSPointerArray *)lineRects {
-    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [self extraIvars];
     NSPointerArray *lineRects = [extraIvars lineRects];
     if (lineRects == nil) {
         lineRects = [[NSPointerArray alloc] initForRectPointers];
@@ -329,7 +335,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (SKNoteText *)noteText {
     if ([self isEditable] == NO)
         return nil;
-    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [self extraIvars];
     SKNoteText *noteText = [extraIvars noteText];
     if (noteText == nil) {
         noteText = [[SKNoteText alloc] initWithNote:self];
@@ -342,7 +348,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (NSString *)textString {
     if ([self isEditable] == NO)
         return nil;
-    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [self extraIvars];
     NSString *textString = [extraIvars textString];
     if (textString == nil) {
         textString = [[self selection] cleanedString] ?: @"";
