@@ -58,16 +58,6 @@
     [super dealloc];
 }
 
-- (NSUInteger)hash {
-    return [note hash] + (1 << 4);
-}
-
-- (BOOL)isEqual:(id)otherObject {
-    if ([otherObject isMemberOfClass:[self class]] == NO)
-        return NO;
-    return [[self note] isEqual:[otherObject note]];
-}
-
 - (BOOL)hasNoteText { return NO; }
 
 - (SKNoteText *)noteText { return nil; }
