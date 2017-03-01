@@ -227,13 +227,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
                     self = nil;
                 } else {
                     [self setBounds:newBounds];
-                    [[extraIvarsTable objectForKey:self] setLineRects:lines];
                     iMax = [lines count];
                     for (i = 0; i < iMax; i++) {
                         NSArray *quadLine = createQuadPointsWithBounds([lines rectAtIndex:i], [self bounds].origin, rotation);
                         [quadPoints addObjectsFromArray:quadLine];
                         [quadLine release];
                     }
+                    [[extraIvarsTable objectForKey:self] setLineRects:lines];
+                    [lines release];
                 }
             }
             [self setQuadrilateralPoints:quadPoints];
