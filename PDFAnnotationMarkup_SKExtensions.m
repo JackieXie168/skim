@@ -92,7 +92,7 @@ NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
   | 2  3 |
   --------
  */        
-static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin, NSInteger rotation)
+static void addQuadPointsWithBounds(NSMutableArray *quadPoints, const NSRect bounds, const NSPoint origin, NSInteger rotation)
 {
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
     NSInteger offset = rotation / 90;
@@ -102,7 +102,8 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     p[(++offset)%4] = SKTopRightPoint(r);
     p[(++offset)%4] = SKBottomRightPoint(r);
     p[(++offset)%4] = SKBottomLeftPoint(r);
-    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p[0]], [NSValue valueWithPoint:p[1]], [NSValue valueWithPoint:p[3]], [NSValue valueWithPoint:p[2]], nil];
+    for (offset = 0; offset < 4; offset++)
+        [quadPoints addObject:[NSValue valueWithPoint:p[offset]]];
 }
 
 static NSMapTable *extraIvarsTable = nil;
@@ -228,11 +229,8 @@ static void (*original_dealloc)(id, SEL) = NULL;
                 } else {
                     [self setBounds:newBounds];
                     iMax = [lines count];
-                    for (i = 0; i < iMax; i++) {
-                        NSArray *quadLine = createQuadPointsWithBounds([lines rectAtIndex:i], [self bounds].origin, rotation);
-                        [quadPoints addObjectsFromArray:quadLine];
-                        [quadLine release];
-                    }
+                    for (i = 0; i < iMax; i++)
+                        addQuadPointsWithBounds(quadPoints, [lines rectAtIndex:i], newBounds.origin, rotation);
                     [[extraIvarsTable objectForKey:self] setLineRects:lines];
                     [lines release];
                 }
