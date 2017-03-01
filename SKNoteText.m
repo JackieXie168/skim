@@ -48,13 +48,13 @@
 - (id)initWithNote:(id)aNote {
     self = [super init];
     if (self) {
-        note = [aNote retain];
+        note = aNote;
     }
     return self;
 }
 
 - (void)dealloc {
-    SKDESTROY(note);
+    note = nil;
     [super dealloc];
 }
 

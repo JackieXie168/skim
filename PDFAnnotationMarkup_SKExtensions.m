@@ -60,6 +60,28 @@
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 
+@interface SKPDFAnnotationMarkupExtraIvars : NSObject {
+    NSPointerArray *lineRects;
+    NSString *textString;
+    SKNoteText *noteText;
+}
+@property (nonatomic, retain) NSPointerArray *lineRects;
+@property (nonatomic, retain) NSString *textString;
+@property (nonatomic, retain) SKNoteText *noteText;
+@end
+
+@implementation SKPDFAnnotationMarkupExtraIvars
+@synthesize lineRects, textString, noteText;
+- (void)dealloc {
+    SKDESTROY(lineRects);
+    SKDESTROY(textString);
+    SKDESTROY(noteText);
+    [super dealloc];
+}
+@end
+
+#pragma mark -
+
 @implementation PDFAnnotationMarkup (SKExtensions)
 
 /*
@@ -83,27 +105,28 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p[0]], [NSValue valueWithPoint:p[1]], [NSValue valueWithPoint:p[3]], [NSValue valueWithPoint:p[2]], nil];
 }
 
-static NSMapTable *lineRectsTable = nil;
+static NSMapTable *extraIvarsTable = nil;
 
 static void (*original_dealloc)(id, SEL) = NULL;
 
 - (void)replacement_dealloc {
-    [lineRectsTable removeObjectForKey:self];
+    [extraIvarsTable removeObjectForKey:self];
     original_dealloc(self, _cmd);
 }
 
 + (void)load {
     original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
-    lineRectsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
+    extraIvarsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
 - (NSPointerArray *)lineRects:(BOOL *)created {
-    NSPointerArray *lineRects = [lineRectsTable objectForKey:self];
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    NSPointerArray *lineRects = [extraIvars lineRects];
     if (created) *created = (lineRects == NULL);
-    if (lineRects == NULL) {
+    if (lineRects == nil) {
         lineRects = [[NSPointerArray alloc] initForRectPointers];
-        [lineRectsTable setObject:lineRects forKey:self];
-        [lineRects release];;
+        [extraIvars setLineRects:lineRects];
+        [lineRects release];
     }
     return lineRects;
 }
@@ -129,6 +152,10 @@ static void (*original_dealloc)(id, SEL) = NULL;
         NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:type];
         if (color)
             [self setColor:color];
+        
+        SKPDFAnnotationMarkupExtraIvars *extraIvars = [[SKPDFAnnotationMarkupExtraIvars alloc] init];
+        [extraIvarsTable setObject:extraIvars forKey:self];
+        [extraIvars release];
     }
     return self;
 }
@@ -308,11 +335,28 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (BOOL)hasNoteText { return [self isEditable]; }
 
 - (SKNoteText *)noteText {
-    return [self isEditable] ? [[[SKNoteText alloc] initWithNote:self] autorelease] : nil;
+    if ([self isEditable] == NO)
+        return nil;
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    SKNoteText *noteText = [extraIvars noteText];
+    if (noteText == nil) {
+        noteText = [[SKNoteText alloc] initWithNote:self];
+        [extraIvars setNoteText:noteText];
+        [noteText release];
+    }
+    return noteText;
 }
 
 - (NSString *)textString {
-    return [self isEditable] ? [[self selection] cleanedString] : nil;
+    if ([self isEditable] == NO)
+        return nil;
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    NSString *textString = [extraIvars textString];
+    if (textString == nil) {
+        textString = [[self selection] cleanedString] ?: @"";
+        [extraIvars setTextString:textString];
+    }
+    return textString;
 }
 
 - (NSString *)colorDefaultKey {
