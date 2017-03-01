@@ -120,50 +120,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
     extraIvarsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
-- (NSPointerArray *)lineRects {
-    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
-    NSPointerArray *lineRects = [extraIvars lineRects];
-    if (lineRects == nil) {
-        lineRects = [[NSPointerArray alloc] initForRectPointers];
-        
-        // archived annotations (or annotations we didn't create) won't have these
-        NSArray *quadPoints = [self quadrilateralPoints];
-        NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
-        
-        NSUInteger j = [lineRects count], jMax = [quadPoints count] / 4;
-        NSPoint origin = [self bounds].origin;
-        
-        while ([lineRects count])
-            [lineRects removePointerAtIndex:0];
-        
-        for (j = 0; j < jMax; j++) {
-            
-            NSRange range = NSMakeRange(4 * j, 4);
-            
-            NSValue *values[4];
-            [quadPoints getObjects:values range:range];
-            
-            NSPoint point;
-            NSUInteger i;
-            CGFloat minX = CGFLOAT_MAX, maxX = -CGFLOAT_MAX, minY = CGFLOAT_MAX, maxY = -CGFLOAT_MAX;
-            for (i = 0; i < 4; i++) {
-                point = [values[i] pointValue];
-                minX = fmin(minX, point.x);
-                maxX = fmax(maxX, point.x);
-                minY = fmin(minY, point.y);
-                maxY = fmax(maxY, point.y);
-            }
-            
-            NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);
-            [lineRects addPointer:&lineRect];
-        }
-        
-        [extraIvars setLineRects:lineRects];
-        [lineRects release];
-    }
-    return lineRects;
-}
-
 + (NSColor *)defaultSkimNoteColorForMarkupType:(NSInteger)markupType
 {
     switch (markupType) {
@@ -250,6 +206,51 @@ static void (*original_dealloc)(id, SEL) = NULL;
     }
     [fdfString appendString:@"]"];
     return fdfString;
+}
+
+- (NSPointerArray *)lineRects {
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
+    NSPointerArray *lineRects = [extraIvars lineRects];
+    if (lineRects == nil) {
+        lineRects = [[NSPointerArray alloc] initForRectPointers];
+        
+        // archived annotations (or annotations we didn't create) won't have these
+        NSArray *quadPoints = [self quadrilateralPoints];
+        NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
+        
+        NSUInteger j, jMax = [quadPoints count] / 4;
+        NSPoint origin = [self bounds].origin;
+        NSRange range = NSMakeRange(0, 4);
+        
+        while ([lineRects count])
+            [lineRects removePointerAtIndex:0];
+        
+        for (j = 0; j < jMax; j++) {
+            
+            range.location = 4 * j;
+            
+            NSValue *values[4];
+            [quadPoints getObjects:values range:range];
+            
+            NSPoint point;
+            NSUInteger i;
+            CGFloat minX = CGFLOAT_MAX, maxX = -CGFLOAT_MAX, minY = CGFLOAT_MAX, maxY = -CGFLOAT_MAX;
+            for (i = 0; i < 4; i++) {
+                point = [values[i] pointValue];
+                minX = fmin(minX, point.x);
+                maxX = fmax(maxX, point.x);
+                minY = fmin(minY, point.y);
+                maxY = fmax(maxY, point.y);
+            }
+            
+            NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);
+            [lineRects addPointer:&lineRect];
+        }
+        
+        [extraIvars setLineRects:lineRects];
+        [lineRects release];
+    }
+    return lineRects;
 }
 
 - (PDFSelection *)selection {
