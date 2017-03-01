@@ -162,15 +162,15 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
+- (void)expandItem:(id)item expandChildren:(BOOL)expandChildren {
     // NSOutlineView does not call resetCursorRect when expanding
-    [super expandItem:item expandChildren:collapseChildren];
+    [super expandItem:expandChildren ? nil : item expandChildren:expandChildren];
     [[self window] invalidateCursorRectsForView:self];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when collapsing
-    [super collapseItem:item collapseChildren:collapseChildren];
+    [super collapseItem:collapseChildren ? nil : item collapseChildren:collapseChildren];
     [[self window] invalidateCursorRectsForView:self];
 }
 
