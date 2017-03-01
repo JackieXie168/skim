@@ -208,35 +208,31 @@ static void (*original_dealloc)(id, SEL) = NULL;
         if (self) {
             PDFPage *page = [selection safeFirstPage];
             NSInteger rotation = [page intrinsicRotation];
-            NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
             NSRect newBounds = NSZeroRect;
-            if (selection) {
-                NSUInteger i, iMax;
-                NSRect lineRect = NSZeroRect;
-                NSPointerArray *lines = nil;
-                for (PDFSelection *sel in [selection selectionsByLine]) {
-                    lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                        if (lines == nil)
-                            lines = [[NSPointerArray alloc] initForRectPointers];
-                        [lines addPointer:&lineRect];
-                        newBounds = NSUnionRect(lineRect, newBounds);
-                    }
-                } 
-                if (lines) {
-                    [self release];
-                    self = nil;
-                } else {
-                    [self setBounds:newBounds];
-                    iMax = [lines count];
-                    for (i = 0; i < iMax; i++)
-                        addQuadPointsWithBounds(quadPoints, [lines rectAtIndex:i], newBounds.origin, rotation);
-                    [[extraIvarsTable objectForKey:self] setLineRects:lines];
-                    [lines release];
+            NSPointerArray *lines = nil;
+            for (PDFSelection *sel in [selection selectionsByLine]) {
+                NSRect lineRect = [sel boundsForPage:page];
+                if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                    if (lines == nil)
+                        lines = [[NSPointerArray alloc] initForRectPointers];
+                    [lines addPointer:&lineRect];
+                    newBounds = NSUnionRect(lineRect, newBounds);
                 }
+            } 
+            if (lines == nil) {
+                [self release];
+                self = nil;
+            } else {
+                NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
+                NSUInteger i, iMax = [lines count];
+                for (i = 0; i < iMax; i++)
+                    addQuadPointsWithBounds(quadPoints, [lines rectAtIndex:i], newBounds.origin, rotation);
+                [self setBounds:newBounds];
+                [self setQuadrilateralPoints:quadPoints];
+                [[extraIvarsTable objectForKey:self] setLineRects:lines];
+                [quadPoints release];
+                [lines release];
             }
-            [self setQuadrilateralPoints:quadPoints];
-            [quadPoints release];
         }
     }
     return self;
@@ -366,7 +362,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (void)autoUpdateString {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
-    NSString *selString = [[self selection] cleanedString];
+    NSString *selString = [self textString];
     if ([selString length])
         [self setString:selString];
 }
