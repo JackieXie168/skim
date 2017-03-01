@@ -1091,6 +1091,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
                 PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
                 if (newAnnotation) {
+                    PDFAnnotation *popup = [annotation popup];
+                    if (popup)
+                        [pdfView removeAnnotation:popup];
                     [pdfView removeAnnotation:annotation];
                     [pdfView addAnnotation:newAnnotation toPage:page];
                     if ([[newAnnotation contents] length] == 0)
