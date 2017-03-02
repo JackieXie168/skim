@@ -595,6 +595,20 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 #pragma mark -
 
 @implementation PDFAnnotationMarkup (SKNExtensions)
+/*
+ http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
+ The docs are wrong (as is Adobe's spec).  The ordering on the rotated page is:
+ --------
+ | 0  1 |
+ | 2  3 |
+ --------
+ */
+
+static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
+    NSPoint tmp = p[i];
+    p[i] = p[j];
+    p[j] = tmp;
+}
 
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict{
     self = [super initSkimNoteWithProperties:dict];
@@ -620,13 +634,28 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
         Class arrayClass = [NSArray class];
         NSArray *pointStrings = [dict objectForKey:SKNPDFAnnotationQuadrilateralPointsKey];
         if ([pointStrings isKindOfClass:arrayClass]) {
-            NSUInteger i, iMax = [pointStrings count];
-            NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:iMax];
+            // fix the order, as we have done it wrong for a long time
+            NSUInteger i, iMax = [pointStrings count] / 4;
+            NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:4 * iMax];
             for (i = 0; i < iMax; i++) {
-                NSPoint p = NSPointFromString([pointStrings objectAtIndex:i]);
-                NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
-                [quadPoints addObject:value];
-                [value release];
+                NSPoint p[4];
+                NSUInteger j;
+                for (j = 0; j < 4; j++)
+                    p[j] = NSPointFromString([pointStrings objectAtIndex:4 * i + j]);
+                // p[0]-p[1] should be in the same direction as p[2]-p[3]
+                if ((p[1].x - p[0].x) * (p[3].x - p[2].x) + (p[1].y - p[0].y) * (p[3].y - p[2].y) < 0.0) {
+                    swapPoints(p, 2, 3);
+                }
+                // p[0], p[1], p[2] should be ordered clockwise
+                if ((p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y) < 0.0) {
+                    swapPoints(p, 0, 2);
+                    swapPoints(p, 1, 3);
+                }
+                for (j = 0; j < 4; j++) {
+                    NSValue *value = [[NSValue alloc] initWithBytes:&p[j] objCType:@encode(NSPoint)];
+                    [quadPoints addObject:value];
+                    [value release];
+                }
             }
             [self setQuadrilateralPoints:quadPoints];
             [quadPoints release];
