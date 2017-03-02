@@ -93,20 +93,19 @@ NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
  --------
  */
 
-static inline NSInteger quadPointOrder(NSInteger i) { return (i & 2) ? 3 - (i & 1) : (i & 1); }
-
 static void addQuadPointsWithBounds(NSMutableArray *quadPoints, const NSRect bounds, const NSPoint origin, NSInteger rotation)
 {
+    static NSInteger offset[4] = {0, 1, 3, 2};
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
-    NSInteger offset = rotation / 90;
+    NSInteger i = rotation / 90;
     NSPoint p[4];
     memset(&p, 0, 4 * sizeof(NSPoint));
-    p[quadPointOrder(offset)] = SKTopLeftPoint(r);
-    p[quadPointOrder(++offset)] = SKTopRightPoint(r);
-    p[quadPointOrder(++offset)] = SKBottomRightPoint(r);
-    p[quadPointOrder(++offset)] = SKBottomLeftPoint(r);
-    for (offset = 0; offset < 4; offset++)
-        [quadPoints addObject:[NSValue valueWithPoint:p[offset]]];
+    p[offset[i]] = SKTopLeftPoint(r);
+    p[offset[++i%4]] = SKTopRightPoint(r);
+    p[offset[++i%4]] = SKBottomRightPoint(r);
+    p[offset[++i%4]] = SKBottomLeftPoint(r);
+    for (i = 0; i < 4; i++)
+        [quadPoints addObject:[NSValue valueWithPoint:p[i]]];
 }
 
 static NSMapTable *extraIvarsTable = nil;
