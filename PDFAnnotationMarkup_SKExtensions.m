@@ -86,22 +86,25 @@ NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 /*
  http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
-  The docs are wrong (as is Adobe's spec).  The ordering at zero rotation is:
-  --------
-  | 0  1 |
-  | 2  3 |
-  --------
- */        
+  The docs are wrong (as is Adobe's spec).  The ordering on the rotated page is:
+ --------
+ | 0  1 |
+ | 2  3 |
+ --------
+ */
+
+static inline NSInteger quadPointOrder(NSInteger i) { return (i & 2) ? 3 - (i & 1) : (i & 1); }
+
 static void addQuadPointsWithBounds(NSMutableArray *quadPoints, const NSRect bounds, const NSPoint origin, NSInteger rotation)
 {
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
     NSInteger offset = rotation / 90;
     NSPoint p[4];
     memset(&p, 0, 4 * sizeof(NSPoint));
-    p[offset] = SKTopLeftPoint(r);
-    p[(++offset)%4] = SKTopRightPoint(r);
-    p[(++offset)%4] = SKBottomRightPoint(r);
-    p[(++offset)%4] = SKBottomLeftPoint(r);
+    p[quadPointOrder(offset)] = SKTopLeftPoint(r);
+    p[quadPointOrder(++offset)] = SKTopRightPoint(r);
+    p[quadPointOrder(++offset)] = SKBottomRightPoint(r);
+    p[quadPointOrder(++offset)] = SKBottomLeftPoint(r);
     for (offset = 0; offset < 4; offset++)
         [quadPoints addObject:[NSValue valueWithPoint:p[offset]]];
 }
