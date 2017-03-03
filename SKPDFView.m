@@ -220,6 +220,8 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     SKINITIALIZE;
     
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, nil];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
+        sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, NSPasteboardTypeString, NSPasteboardTypeRTF, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:[NSArray array]];
     
     NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
@@ -1693,6 +1695,17 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             return YES;
         }
     }
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 && [[self currentSelection] hasCharacters]) {
+        if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
+            return YES;
+        } else if ([types containsObject:NSPasteboardTypeString] || [types containsObject:NSStringPboardType]) {
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] string], nil]];
+            return YES;
+        }
+    }
     return [[SKPDFView superclass] instancesRespondToSelector:_cmd] &&
             [super writeSelectionToPasteboard:pboard types:types];
 }
@@ -1700,6 +1713,9 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && 
         (([[self document] allowsPrinting] && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
+        return self;
+    }
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
