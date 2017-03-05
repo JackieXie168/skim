@@ -43,7 +43,7 @@
 
 @implementation SKGradientView
 
-@synthesize contentView, gradient, alternateGradient, minSize, maxSize, edges, clipEdges, autoTransparent;
+@synthesize contentView, gradient, alternateGradient, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -56,12 +56,14 @@
         autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11) {
+        if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_10) {
             gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
             alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
+            edgeColor = [[NSColor colorWithDeviceWhite:0.55 alpha:1.0] retain];
         } else {
             gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.85 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
             alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
+            edgeColor = [[NSColor colorWithDeviceWhite:0.7 alpha:1.0] retain];
         }
     }
     return self;
@@ -74,6 +76,7 @@
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
         gradient = [[decoder decodeObjectForKey:@"gradient"] retain];
         alternateGradient = [[decoder decodeObjectForKey:@"alternateGradient"] retain];
+        edgeColor = [[decoder decodeObjectForKey:@"edgeColor"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		maxSize.width = [decoder decodeDoubleForKey:@"maxSize.width"];
@@ -140,10 +143,7 @@
 	
     [NSGraphicsContext saveGraphicsState];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
-        [[NSColor colorWithDeviceWhite:0.55 alpha:1.0] set];
-    else
-        [[NSColor colorWithDeviceWhite:0.7 alpha:1.0] set];
+    [[self edgeColor] set];
 	while (--edge >= 0) {
 		if ((edges & (1 << edge)) == 0)
 			continue;

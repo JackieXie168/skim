@@ -43,6 +43,7 @@
 	id contentView;
     NSGradient *gradient;
     NSGradient *alternateGradient;
+    NSColor *edgeColor;
     NSSize minSize;
     NSSize maxSize;
 	SKRectEdges edges;
@@ -52,6 +53,7 @@
 
 @property (nonatomic, retain) id contentView;
 @property (nonatomic, retain) NSGradient *gradient, *alternateGradient;
+@property (nonatomic, retain) NSColor *edgeColor;
 @property (nonatomic, readonly) NSRect contentRect;
 @property (nonatomic) NSSize minSize, maxSize;
 @property (nonatomic) SKRectEdges edges, clipEdges;
