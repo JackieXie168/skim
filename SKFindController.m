@@ -88,8 +88,10 @@
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
-    [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
-    [gradientView setAlternateGradient:nil];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11) {
+        [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
+        [gradientView setAlternateGradient:nil];
+    }
     
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];

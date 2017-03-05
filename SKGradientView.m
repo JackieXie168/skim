@@ -56,8 +56,13 @@
         autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
-        gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
-        alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11) {
+            gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+            alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
+        } else {
+            gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.85 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+            alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
+        }
     }
     return self;
 }
@@ -135,7 +140,10 @@
 	
     [NSGraphicsContext saveGraphicsState];
     
-    [[NSColor colorWithDeviceWhite:0.55 alpha:1.0] set];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
+        [[NSColor colorWithDeviceWhite:0.55 alpha:1.0] set];
+    else
+        [[NSColor colorWithDeviceWhite:0.7 alpha:1.0] set];
 	while (--edge >= 0) {
 		if ((edges & (1 << edge)) == 0)
 			continue;
