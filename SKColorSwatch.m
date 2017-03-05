@@ -159,7 +159,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     bounds.size.width = fmin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-    CGFloat grays[4] = {0.5, 0.75, 0.75, 0.75};
+    static CGFloat defaultGrays[10] = {0.7, 0.85, 0.85, 0.85, 0.75, 0.5, 0.75, 0.75, 0.75, 0.66667};
+    CGFloat *grays = floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_10 ? defaultGrays + 5 : defaultGrays;
     
     rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
     
@@ -168,7 +169,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     NSRect r = NSMakeRect(1.0, 1.0, NSHeight(rect), NSHeight(rect));
     NSInteger i;
     for (i = 0; i < count; i++) {
-        NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.66667 alpha:1.0];
+        NSColor *borderColor = [NSColor colorWithCalibratedWhite:grays[4] alpha:1.0];
         [borderColor set];
         [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(r, 0.5, 0.5)];
