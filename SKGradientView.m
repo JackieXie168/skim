@@ -63,7 +63,7 @@
         } else {
             gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.85 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
             alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
-            edgeColor = [[NSColor colorWithDeviceWhite:0.7 alpha:1.0] retain];
+            edgeColor = [[NSColor colorWithDeviceWhite:0.75 alpha:1.0] retain];
         }
     }
     return self;
