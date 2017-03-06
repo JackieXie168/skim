@@ -1209,12 +1209,27 @@ macro(Ink)
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameToolbarMagnifyTool, YES, 27.0, 19.0, 
+#define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
+    
+    MAKE_IMAGE(SKImageNameToolbarMagnifyTool, YES, 27.0, 19.0,
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path appendBezierPathWithOvalInRect:NSMakeRect(6.5, 6.5, 10.0, 10.0)];
-        [path moveToPoint:NSMakePoint(15.0, 8.0)];
-        [path lineToPoint:NSMakePoint(20.0, 3.0)];
+        [path moveToPoint:NSMakePoint(8.5, 11.5)];
+        [path curveToPoint:NSMakePoint(13.5, 9.5) controlPoint1:NSMakePoint(8.5, 11.5 - 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 - 5.0 * KAPPA, 9.5)];
+        [path curveToPoint:NSMakePoint(18.5, 11.5) controlPoint1:NSMakePoint(13.5 + 5.0 * KAPPA, 9.5) controlPoint2:NSMakePoint(18.5, 11.5 - 2.0 * KAPPA)];
+        [path lineToPoint:NSMakePoint(18.5, 13.5)];
+        [path curveToPoint:NSMakePoint(13.5, 11.5) controlPoint1:NSMakePoint(18.5, 11.5 + 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 + 5.0 * KAPPA, 11.5)];
+        [path curveToPoint:NSMakePoint(8.5, 13.5) controlPoint1:NSMakePoint(13.5 - 5.0 * KAPPA, 11.5) controlPoint2:NSMakePoint(8.5, 13.5 - 2.0 * KAPPA)];
+        [path closePath];
+        [path fill];
+        [path moveToPoint:NSMakePoint(18.5, 13.5)];
+        [path curveToPoint:NSMakePoint(13.5, 15.5) controlPoint1:NSMakePoint(18.5, 13.5 + 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 + 5.0 * KAPPA, 15.5)];
+        [path curveToPoint:NSMakePoint(8.5, 13.5) controlPoint1:NSMakePoint(13.5 - 5.0 * KAPPA, 15.5) controlPoint2:NSMakePoint(8.5, 13.5 + 2.0 * KAPPA)];
+        [path moveToPoint:NSMakePoint(9.5, 10.5)];
+        [path curveToPoint:NSMakePoint(7.5, 6.0) controlPoint1:NSMakePoint(8.0, 9.0) controlPoint2:NSMakePoint(7.5, 7.5)];
+        [path curveToPoint:NSMakePoint(13.5, 3.5) controlPoint1:NSMakePoint(7.5, 6.0 - 2.5 * KAPPA) controlPoint2:NSMakePoint(13.5 - 6.0 * KAPPA, 3.5)];
+        [path curveToPoint:NSMakePoint(19.5, 6.0) controlPoint1:NSMakePoint(13.5 + 6.0 * KAPPA, 3.5) controlPoint2:NSMakePoint(19.5, 6.0 - 2.5 * KAPPA)];
+        [path curveToPoint:NSMakePoint(17.5, 10.5) controlPoint1:NSMakePoint(19.5, 7.5) controlPoint2:NSMakePoint(19.0, 9.0)];
         [path stroke];
     );
     
