@@ -208,6 +208,9 @@ macro(StrikeOut); \
 macro(Line); \
 macro(Ink)
 
+// distance ratio for control points to approximate a quarter ellipse by a cubic bezier curve
+#define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
+
 #if !defined(MAC_OS_X_VERSION_10_8) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_8
 @interface NSImage (SKMountainLionDeclarations)
 + (NSImage *)imageWithSize:(NSSize)size flipped:(BOOL)drawingHandlerShouldBeCalledWithFlippedContext drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
@@ -1209,8 +1212,6 @@ macro(Ink)
         [path stroke];
     );
     
-#define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
-    
     MAKE_IMAGE(SKImageNameToolbarMagnifyTool, YES, 27.0, 19.0,
         [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -2112,8 +2113,8 @@ static void drawAnchoredNoteTemplate() {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(12.0, 6.5)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(16.5, 6.5) toPoint:NSMakePoint(16.5, 15.5) radius:4.5];
-    [path curveToPoint:NSMakePoint(10.0, 15.5) controlPoint1:NSMakePoint(16.5, 13.5) controlPoint2:NSMakePoint(13.5, 15.5)];
-    [path curveToPoint:NSMakePoint(3.5, 11.0) controlPoint1:NSMakePoint(6.5, 15.5) controlPoint2:NSMakePoint(3.5, 13.5)];
+    [path curveToPoint:NSMakePoint(10.0, 15.5) controlPoint1:NSMakePoint(16.5, 11.0 + 4.5 * KAPPA) controlPoint2:NSMakePoint(10.0 + 6.5 * KAPPA, 15.5)];
+    [path curveToPoint:NSMakePoint(3.5, 11.0) controlPoint1:NSMakePoint(10.0 - 6.5 * KAPPA, 15.5) controlPoint2:NSMakePoint(3.5, 11.0 + 4.5 * KAPPA)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 6.5) toPoint:NSMakePoint(16.5, 6.5) radius:4.5];
     [path lineToPoint:NSMakePoint(8.5, 4.5)];
     [path closePath];
