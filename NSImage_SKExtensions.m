@@ -1212,7 +1212,7 @@ macro(Ink)
 #define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
     
     MAKE_IMAGE(SKImageNameToolbarMagnifyTool, YES, 27.0, 19.0,
-        [[NSColor blackColor] setStroke];
+        [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(8.5, 11.5)];
         [path curveToPoint:NSMakePoint(13.5, 9.5) controlPoint1:NSMakePoint(8.5, 11.5 - 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 - 5.0 * KAPPA, 9.5)];
