@@ -46,6 +46,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 
 @interface SKSnapshotPDFView (SKPrivate)
@@ -348,6 +349,10 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [self setScaleFactor:1.0];
 }
 
+- (void)doPhysicalSize:(id)sender {
+    [self setPhysicalScaleFactor:1.0];
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
@@ -374,8 +379,12 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     if (i != -1)
         [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
     i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
-    if (i != -1)
+    if (i != -1) {
         [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
+        NSMenuItem *item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(doPhysicalSize:) target:self atIndex:i + 1];
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        [item setAlternate:YES];
+    }
     
     return menu;
 }
@@ -386,6 +395,9 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         return YES;
     } else if ([menuItem action] == @selector(doActualSize:)) {
         [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
+        return YES;
+    } else if ([menuItem action] == @selector(doPhysicalSize:)) {
+        [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
         return YES;
     } else if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];

@@ -48,6 +48,7 @@
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 
 @interface SKSecondaryPDFView (SKPrivate)
@@ -434,6 +435,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self setScaleFactor:1.0];
 }
 
+- (void)doPhysicalSize:(id)sender {
+    [self setPhysicalScaleFactor:1.0];
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
@@ -471,8 +476,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [item setTarget:self];
     }
     i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
-    if (i != -1)
+    if (i != -1) {
         [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(doPhysicalSize:) target:self atIndex:i + 1];
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        [item setAlternate:YES];
+    }
     
     return menu;
 }
@@ -486,6 +495,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         return YES;
     } else if ([menuItem action] == @selector(doActualSize:)) {
         [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
+        return YES;
+    } else if ([menuItem action] == @selector(doPhysicalSize:)) {
+        [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
         return YES;
     } else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];

@@ -982,6 +982,10 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     isZooming = NO;
 }
 
+- (void)zoomToPhysicalSize:(id)sender {
+    [self setPhysicalScaleFactor:1.0];
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
@@ -1301,13 +1305,20 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     if (interactionMode == SKPresentationMode)
         return menu;
     
-    NSInteger copyIdx = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
-    if (copyIdx != -1) {
-        [menu removeItemAtIndex:copyIdx];
-        if ([menu numberOfItems] > copyIdx && [[menu itemAtIndex:copyIdx] isSeparatorItem] && (copyIdx == 0 || [[menu itemAtIndex:copyIdx - 1] isSeparatorItem]))
-            [menu removeItemAtIndex:copyIdx];
-        if (copyIdx > 0 && copyIdx == [menu numberOfItems] && [[menu itemAtIndex:copyIdx - 1] isSeparatorItem])
-            [menu removeItemAtIndex:copyIdx - 1];
+    NSInteger i = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
+    if (i != -1) {
+        [menu removeItemAtIndex:i];
+        if ([menu numberOfItems] > i && [[menu itemAtIndex:i] isSeparatorItem] && (i == 0 || [[menu itemAtIndex:i - 1] isSeparatorItem]))
+            [menu removeItemAtIndex:i];
+        if (i > 0 && i == [menu numberOfItems] && [[menu itemAtIndex:i - 1] isSeparatorItem])
+            [menu removeItemAtIndex:i - 1];
+    }
+    
+    i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
+    if (i != -1) {
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(zoomToPhysicalSize:) target:self atIndex:i + 1];
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        [item setAlternate:YES];
     }
     
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -2384,6 +2395,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return toolMode == SKSelectToolMode;
     } else if (action == @selector(takeSnapshot:)) {
         return [[self document] isLocked] == NO;
+    } else if (action == @selector(zoomToPhysicalSize:)) {
+        [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
+        return YES;
     } else {
         return [super validateMenuItem:menuItem];
     }
