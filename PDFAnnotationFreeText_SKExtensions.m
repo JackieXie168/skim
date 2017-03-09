@@ -98,6 +98,8 @@ static inline NSString *alignmentStyleKeyword(NSTextAlignment alignment) {
     return fdfString;
 }
 
+- (BOOL)isText { return YES; }
+
 - (BOOL)isResizable { return [self isSkimNote]; }
 
 - (BOOL)isMovable { return [self isSkimNote]; }

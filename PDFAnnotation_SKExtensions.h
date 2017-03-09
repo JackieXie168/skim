@@ -85,6 +85,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (BOOL)isMarkup;
 - (BOOL)isNote;
+- (BOOL)isText;
 - (BOOL)isLine;
 - (BOOL)isLink;
 - (BOOL)isResizable;

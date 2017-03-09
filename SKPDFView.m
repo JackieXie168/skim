@@ -1406,7 +1406,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         
         if (annotation) {
             if ((annotation != activeAnnotation || [NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
-                [[annotation type] isEqualToString:SKNFreeTextString]) {
+                [annotation isText]) {
                 item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) target:self atIndex:0];
                 [item setRepresentedObject:annotation];
             }
@@ -1431,7 +1431,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             [item setRepresentedObject:annotation];
         } else if ([activeAnnotation isSkimNote]) {
             if (([NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
-                [[activeAnnotation type] isEqualToString:SKNFreeTextString]) {
+                [activeAnnotation isText]) {
                 item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) target:self atIndex:0];
             }
             
@@ -2003,8 +2003,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [self commitEditing];
     
-    NSString *type = [activeAnnotation type];
-    
     if ([activeAnnotation isLink]) {
         
         [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2016,7 +2014,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [[NSWorkspace sharedWorkspace] openURL:url];
         [self setActiveAnnotation:nil];
         
-    } else if (hideNotes == NO && [type isEqualToString:SKNFreeTextString]) {
+    } else if (hideNotes == NO && [activeAnnotation isText]) {
         
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
         [[self window] makeFirstResponder:self];
@@ -3258,7 +3256,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 newActiveAnnotation = newAnnotation;
             }
-        } else if (newActiveAnnotation == activeAnnotation && [[activeAnnotation type] isEqualToString:SKNFreeTextString] && [theEvent clickCount] == 1 && [NSApp willDragMouse] == NO) {
+        } else if (newActiveAnnotation == activeAnnotation && [activeAnnotation isText] && [theEvent clickCount] == 1 && [NSApp willDragMouse] == NO) {
             [self editActiveAnnotation:self];
         }
     }

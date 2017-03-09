@@ -352,6 +352,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 
 - (BOOL)isNote { return NO; }
 
+- (BOOL)isText { return NO; }
+
 - (BOOL)isLine { return NO; }
 
 - (BOOL)isLink { return [[self type] isEqualToString:@"Link"]; }
