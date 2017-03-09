@@ -3258,6 +3258,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 newActiveAnnotation = newAnnotation;
             }
+        } else if (newActiveAnnotation == activeAnnotation && [[activeAnnotation type] isEqualToString:SKNFreeTextString] && [theEvent clickCount] == 1 && [NSApp willDragMouse] == NO) {
+            [self editActiveAnnotation:self];
         }
     }
     
