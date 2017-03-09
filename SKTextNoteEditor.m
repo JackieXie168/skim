@@ -172,9 +172,12 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (void)discardEditing {
     [annotation setShouldDisplay:[annotation shouldPrint]];
     
+    BOOL wasFirstResponder = ([textField currentEditor] != nil);
     [textField abortEditing];
     [textField removeFromSuperview];
     [[pdfView window] recalculateKeyViewLoop];
+    if (wasFirstResponder)
+        [[pdfView window] makeFirstResponder:pdfView];
     
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
