@@ -1852,9 +1852,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
 	}
     
-    if (page != nil)
+    if (page != nil) {
         [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds];
-    else NSBeep();
+        if (annotationType == SKAnchoredNote || annotationType == SKFreeTextNote)
+            [self editActiveAnnotation:self];
+    } else NSBeep();
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
@@ -1870,13 +1872,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     switch (annotationType) {
         case SKFreeTextNote:
             newAnnotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
-            if ([text length] == 0)
-                text = [[NSUserDefaults standardUserDefaults] stringForKey:SKDefaultFreeTextNoteContentsKey];
             break;
         case SKAnchoredNote:
             newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
-            if ([text length] == 0)
-                text = [[NSUserDefaults standardUserDefaults] stringForKey:SKDefaultAnchoredNoteContentsKey];
             break;
         case SKCircleNote:
             newAnnotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
@@ -1912,8 +1910,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
         [self setActiveAnnotation:newAnnotation];
         [newAnnotation release];
-        if (annotationType == SKAnchoredNote && [[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
-            [[self delegate] PDFView:self editAnnotation:activeAnnotation];
     } else NSBeep();
 }
 
@@ -3144,7 +3140,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (draggedAnnotation)
             [activeAnnotation autoUpdateString];
         
-        if (shouldAddAnnotation && toolMode == SKNoteToolMode && annotationMode == SKFreeTextNote)
+        if (shouldAddAnnotation && toolMode == SKNoteToolMode && (annotationMode == SKAnchoredNote || annotationMode == SKFreeTextNote))
             [self editActiveAnnotation:self]; 	 
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
