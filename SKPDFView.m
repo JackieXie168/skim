@@ -1994,7 +1994,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)editActiveAnnotation:(id)sender {
-    if (nil == activeAnnotation)
+    if (nil == activeAnnotation || [self isEditingAnnotation:activeAnnotation])
         return;
     
     [self commitEditing];
