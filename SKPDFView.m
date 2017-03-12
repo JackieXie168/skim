@@ -1462,7 +1462,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         
         if (([activeAnnotation isSkimNote] && [activeAnnotation isMovable]) || [[self currentSelection] hasCharacters]) {
             if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
-                item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
+                item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(cut:) keyEquivalent:@"" atIndex:0];
             item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
         }
         
