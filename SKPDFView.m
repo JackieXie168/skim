@@ -172,7 +172,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 @interface SKPDFView (Private)
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection event:(NSEvent *)event;
+- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection point:(NSValue *)pointValue;
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
@@ -1305,6 +1305,8 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     if (interactionMode == SKPresentationMode)
         return menu;
     
+    NSValue *pointValue = [NSValue valueWithPoint:[theEvent locationInView:self]];
+    
     NSInteger i = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
     if (i != -1) {
         [menu removeItemAtIndex:i];
@@ -1357,7 +1359,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) target:self atIndex:0];
-    [item setRepresentedObject:theEvent];
+    [item setRepresentedObject:pointValue];
     
     if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
         
@@ -1367,30 +1369,30 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         submenu = [item submenu];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKFreeTextNote];
-        [item setRepresentedObject:theEvent];
+        [item setRepresentedObject:pointValue];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKAnchoredNote];
-        [item setRepresentedObject:theEvent];
+        [item setRepresentedObject:pointValue];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKCircleNote];
-        [item setRepresentedObject:theEvent];
+        [item setRepresentedObject:pointValue];
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKSquareNote];
-        [item setRepresentedObject:theEvent];
+        [item setRepresentedObject:pointValue];
         
         if ([[self currentSelection] hasCharacters]) {
             item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKHighlightNote];
-            [item setRepresentedObject:theEvent];
+            [item setRepresentedObject:pointValue];
             
             item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKUnderlineNote];
-            [item setRepresentedObject:theEvent];
+            [item setRepresentedObject:pointValue];
             
             item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKStrikeOutNote];
-            [item setRepresentedObject:theEvent];
+            [item setRepresentedObject:pointValue];
         }
         
         item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKLineNote];
-        [item setRepresentedObject:theEvent];
+        [item setRepresentedObject:pointValue];
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1452,8 +1454,10 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         }
         
         if ([[NSPasteboard generalPasteboard] canReadObjectForClasses:[NSArray arrayWithObjects:[PDFAnnotation class], [NSString class], nil] options:[NSDictionary dictionary]]) {
-            SEL selector = ([theEvent modifierFlags] & NSAlternateKeyMask) ? @selector(alternatePaste:) : @selector(paste:);
-            item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@"" atIndex:0];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(paste:) keyEquivalent:@"" atIndex:0];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:@selector(alternatePaste:) keyEquivalent:@"" atIndex:0];
+            [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+            [item setAlternate:YES];
         }
         
         if (([activeAnnotation isSkimNote] && [activeAnnotation isMovable]) || [[self currentSelection] hasCharacters]) {
@@ -1735,15 +1739,15 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 #pragma mark Annotation management
 
 - (void)addAnnotation:(id)sender {
-    [self addAnnotationWithType:[sender tag] selection:nil event:[sender representedObject]];
+    [self addAnnotationWithType:[sender tag] selection:nil point:[sender representedObject]];
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType {
-    [self addAnnotationWithType:annotationType selection:nil event:nil];
+    [self addAnnotationWithType:annotationType selection:nil point:nil];
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection {
-    [self addAnnotationWithType:annotationType selection:selection event:nil];
+    [self addAnnotationWithType:annotationType selection:selection point:nil];
 }
 
 // y=primaryOutset(x) approximately solves x*secondaryOutset(y)=y
@@ -1759,7 +1763,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return (x + 1.0) / sqrt(x * (x + 2.0)) - 1.0;
 }
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection event:(NSEvent *)event {
+- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection point:(NSValue *)pointValue {
 	PDFPage *page = nil;
 	NSRect bounds = NSZeroRect;
     BOOL noSelection = selection == nil;
@@ -1822,7 +1826,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	} else {
         
 		// First try the current mouse position
-        NSPoint center = event ? [event locationInView:self] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        NSPoint center = pointValue ? [pointValue pointValue] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
         page = NSMouseInRect(center, [self visibleContentRect], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
@@ -2213,7 +2217,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 #pragma mark Snapshots
 
 - (void)takeSnapshot:(id)sender {
-    NSEvent *event;
     NSPoint point;
     PDFPage *page = nil;
     NSRect rect = NSZeroRect;
@@ -2225,10 +2228,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         autoFits = YES;
 	}
     if (NSIsEmptyRect(rect)) {
-        // First try the current mouse position
-        event = [sender representedObject] ?: [NSApp currentEvent];
-        point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
-        point = [self convertPoint:point fromView:nil];
+        // the represented object should be the location for the menu event
+        point = [sender representedObject] ? [[sender representedObject] pointValue] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         page = [self pageForPoint:point nearest:NO];
         if (page == nil) {
             // Get the center
