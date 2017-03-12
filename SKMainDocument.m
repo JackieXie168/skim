@@ -89,6 +89,7 @@
 #import "SKExportAccessoryController.h"
 #import "SKAttachmentEmailer.h"
 #import "SKAnimatedBorderlessWindow.h"
+#import "PDFOutline_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -1134,6 +1135,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [offsets release];
     }
     
+    [[pdfDocWithoutNotes outlineRoot] clearDocument];
+    
     [[self mainWindowController] dismissProgressSheet];
 }
 
@@ -1150,6 +1153,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 } else {
                     [self convertNotesUsingPDFDocument:[pdfDoc autorelease]];
                 }
+            } else {
+                [[pdfDoc outlineRoot] clearDocument];
             }
         }];
 }
