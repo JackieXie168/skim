@@ -190,7 +190,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)doEditActiveAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)doClickLinkWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent;
@@ -199,7 +199,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent;
-- (void)doNothingWithEvent:(NSEvent *)theEvent;
+- (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
@@ -1192,7 +1192,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
-            [self doNothingWithEvent:theEvent];
+            [self doDragMouseWithEvent:theEvent];
         }
     } else if (modifiers == NSCommandKeyMask) {
         [self doSelectSnapshotWithEvent:theEvent];
@@ -1222,12 +1222,16 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     } else if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSEraserPointingDevice)) {
         [self doEraseAnnotationsWithEvent:theEvent];
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
-        if ([activeAnnotation isLink] || ([theEvent clickCount] == 2 && [activeAnnotation isEditable]))
-            [self doEditActiveAnnotationWithEvent:theEvent];
-        else if ([activeAnnotation isMovable])
+        if ([activeAnnotation isLink]) {
+            [self doClickLinkWithEvent:theEvent];
+        } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
+            if ([self doDragMouseWithEvent:theEvent] == NO)
+                [self editActiveAnnotation:nil];
+        } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent];
-        else
-            [self doNothingWithEvent:theEvent];
+        } else {
+            [self doDragMouseWithEvent:theEvent];
+        }
     } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
         if (annotationMode == SKInkNote) {
             [self doDrawFreehandNoteWithEvent:theEvent];
@@ -3151,11 +3155,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self performSelector:@selector(setCursorForMouse:) withObject:theEvent afterDelay:0];
 }
 
-- (void)doEditActiveAnnotationWithEvent:(NSEvent *)theEvent {
+- (void)doClickLinkWithEvent:(NSEvent *)theEvent {
 	PDFAnnotation *annotation = activeAnnotation;
     PDFPage *annotationPage = [annotation page];
     NSRect bounds = [annotation bounds];
-    BOOL didDrag = NO, isLink = [annotation isLink];
     
     while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -3163,19 +3166,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([theEvent type] == NSLeftMouseUp)
             break;
         
-        didDrag = YES;
-        
-        if (isLink) {
-            NSPoint point = NSZeroPoint;
-            PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:NO];
-            if (page == annotationPage && NSPointInRect(point, bounds))
-                [self setActiveAnnotation:annotation];
-            else
-                [self setActiveAnnotation:nil];
-        }
+        NSPoint point = NSZeroPoint;
+        PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:NO];
+        if (page == annotationPage && NSPointInRect(point, bounds))
+            [self setActiveAnnotation:annotation];
+        else
+            [self setActiveAnnotation:nil];
 	}
     
-    if ((didDrag == NO || isLink) && activeAnnotation)
+    if (activeAnnotation)
         [self editActiveAnnotation:nil];
 }
 
@@ -3405,7 +3404,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = [self pageAndPoint:&initialPoint forEvent:theEvent nearest:NO];
     if (page == nil) {
         // should never get here, see mouseDown:
-        [self doNothingWithEvent:theEvent];
+        [self doDragMouseWithEvent:theEvent];
         return;
     }
     
@@ -4131,12 +4130,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
-- (void)doNothingWithEvent:(NSEvent *)theEvent {
+- (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent {
+    BOOL didDrag = NO;;
     // eat up mouseDragged/mouseUp events, so we won't get their event handlers
     while (YES) {
         if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
             break;
+        didDrag = YES;
     }
+    return didDrag;
 }
 
 - (NSCursor *)cursorForNoteToolMode {
