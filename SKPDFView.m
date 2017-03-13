@@ -1224,7 +1224,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink] || ([theEvent clickCount] == 2 && [activeAnnotation isEditable]))
             [self doEditActiveAnnotationWithEvent:theEvent];
-        else if ([activeAnnotation isMovable] && editor == nil)
+        else if ([activeAnnotation isMovable])
             [self doDragAnnotationWithEvent:theEvent];
         else
             [self doNothingWithEvent:theEvent];
