@@ -3237,9 +3237,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
                 NSMutableArray *paths = [[(PDFAnnotationInk *)activeAnnotation pagePaths] mutableCopy];
                 [paths addObjectsFromArray:[(PDFAnnotationInk *)newActiveAnnotation pagePaths]];
+                NSString *string1 = [activeAnnotation string];
+                NSString *string2 = [newActiveAnnotation string];
                 
                 newAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
-                [newAnnotation setString:[activeAnnotation string]];
+                [newAnnotation setString:[string2 length] == 0 ? string1 : [string1 length] == 0 ? string2 : [NSString stringWithFormat:@"%@ %@", string1, string2]];
                 [newAnnotation setBorder:[activeAnnotation border]];
                 
                 [paths release];
