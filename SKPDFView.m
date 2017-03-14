@@ -3189,9 +3189,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         PDFAnnotation *linkAnnotation = nil;
         BOOL foundCoveringAnnotation = NO;
+        id annotations = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [[page annotations] reverseObjectEnumerator] : [page annotations];
         
         // Hit test for annotation.
-        for (PDFAnnotation *annotation in [[page annotations] reverseObjectEnumerator]) {
+        for (PDFAnnotation *annotation in annotations) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 newActiveAnnotation = annotation;
                 break;
