@@ -3386,11 +3386,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         NSPoint point = NSZeroPoint;
         PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
-        NSArray *annotations = [page annotations];
-        NSInteger i = [annotations count];
+        id annotations = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [[page annotations] reverseObjectEnumerator] : [page annotations];
         
-        while (i-- > 0) {
-            PDFAnnotation *annotation = [annotations objectAtIndex:i];
+        for (PDFAnnotation *annotation in annotations) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
                 [self removeAnnotation:annotation];
                 [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
