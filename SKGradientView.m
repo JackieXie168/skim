@@ -105,6 +105,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0
     SKDESTROY(contentView);
     SKDESTROY(gradient);
     SKDESTROY(alternateGradient);
+    SKDESTROY(edgeColor);
 	[super dealloc];
 }
 
