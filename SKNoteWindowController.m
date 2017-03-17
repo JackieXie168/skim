@@ -343,9 +343,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
-        NSString *name = [note string];
-        if ([name length] == 0)
-            name = @"NoteImage";
         [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSPasteboardTypeTIFF, nil] owner:nil];
         [pasteboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
         [pasteboard setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
