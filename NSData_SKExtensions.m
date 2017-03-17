@@ -92,7 +92,7 @@ static unsigned char hexDecodeTable[256] =
     size_t i = 0, j = 0;
     while (i < length) {
 		// Accumulate 2 valid characters (ignore everything else)
-		unsigned char accumulated[2];
+        unsigned char accumulated[2] = {0, 0};
 		size_t accumulateIndex = 0;
 		while (i < length) {
 			unsigned char decode = hexDecodeTable[inputBuffer[i++]];
