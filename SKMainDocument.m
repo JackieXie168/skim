@@ -566,7 +566,7 @@ enum {
     
     NSURL *destURL = [absoluteURL filePathURL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, destURL, URL_KEY, nil];
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, destURL, URL_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
@@ -616,7 +616,7 @@ enum {
     NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:nil didSaveSelector:NULL contextInfo:NULL];
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation completionHandler:^(NSError *errorOrNil){
-        [self document:self didSave:errorOrNil == nil contextInfo:info];
+        [self document:self didSave:errorOrNil == nil contextInfo:[info retain]];
         if (completionHandler)
             completionHandler(errorOrNil);
     }];
@@ -632,7 +632,7 @@ enum {
         
         delegate = self;
         didSaveSelector = @selector(document:didSave:contextInfo:);
-        contextInfo = info;
+        contextInfo = [info retain];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
