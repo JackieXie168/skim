@@ -676,16 +676,15 @@
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
+    NSTableColumn *newTableColumn = ([NSEvent modifierFlags] & NSCommandKeyMask) ? nil : [ov highlightedTableColumn];
     NSMutableArray *sortDescriptors = nil;
     BOOL ascending = YES;
-    if ([NSEvent modifierFlags] & NSCommandKeyMask)
-        tableColumn = nil;
-    if ([oldTableColumn isEqual:tableColumn]) {
+    if ([oldTableColumn isEqual:newTableColumn]) {
         sortDescriptors = [[[arrayController sortDescriptors] mutableCopy] autorelease];
         [sortDescriptors replaceObjectAtIndex:0 withObject:[[sortDescriptors firstObject] reversedSortDescriptor]];
         ascending = [[sortDescriptors firstObject] ascending];
     } else {
-        NSString *tcID = [tableColumn identifier];
+        NSString *tcID = [newTableColumn identifier];
         NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
         NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:ascending selector:@selector(compare:)] autorelease];
         sortDescriptors = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
@@ -705,12 +704,12 @@
         }
         if (oldTableColumn)
             [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
-        [ov setHighlightedTableColumn:tableColumn]; 
+        [ov setHighlightedTableColumn:newTableColumn];
     }
     [arrayController setSortDescriptors:sortDescriptors];
-    if (tableColumn)
+    if (newTableColumn)
         [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
-                inTableColumn:tableColumn];
+                inTableColumn:newTableColumn];
     [ov reloadData];
 }
 
