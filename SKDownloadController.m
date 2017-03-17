@@ -440,7 +440,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
-    NSString *toolTip = nil;
+    NSString *toolTip = @"";
     if ([[tableColumn identifier] isEqualToString:CANCEL_COLUMNID]) {
         if ([[self objectInDownloadsAtIndex:row] canCancel])
             toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");

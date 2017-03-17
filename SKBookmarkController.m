@@ -418,17 +418,16 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     if (menu == [outlineView menu]) {
-        NSMenuItem *menuItem;
         NSInteger row = [outlineView clickedRow];
         [menu removeAllItems];
         if (row != -1) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(deleteBookmarks:) target:self];
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
+            [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(deleteBookmarks:) target:self];
+            [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
+            [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
             [menu addItem:[NSMenuItem separatorItem]];
         }
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"New Separator", @"Menu item title") action:@selector(insertBookmarkSeparator:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
+        [menu addItemWithTitle:NSLocalizedString(@"New Separator", @"Menu item title") action:@selector(insertBookmarkSeparator:) target:self];
     } else {
         NSMenu *supermenu = [menu supermenu];
         NSInteger idx = [supermenu indexOfItemWithSubmenu:menu]; 
@@ -775,7 +774,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [[item pageNumber] stringValue];
     }
-    return nil;
+    return @"";
 }
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {

@@ -389,7 +389,7 @@
                 return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }
     }
-    return nil;
+    return [NSArray array];
 }
 
 - (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
@@ -788,7 +788,7 @@
         (tableColumn == nil || [[tableColumn identifier] isEqualToString:NOTE_COLUMNID])) {
         return [item string];
     }
-    return nil;
+    return @"";
 }
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
@@ -1252,11 +1252,11 @@
             [item setRepresentedObject:items];
             [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
             [item setAlternate:YES];
-            item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+            [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
             item = [menu addItemWithTitle:NSLocalizedString(@"Undo Auto Size All", @"Menu item title") action:@selector(resetHeightOfNoteRows:) target:self];
             [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
             [item setAlternate:YES];
-            item = [menu addItemWithTitle:NSLocalizedString(@"Automatically Resize", @"Menu item title") action:@selector(toggleAutoResizeNoteRows:) target:self];
+            [menu addItemWithTitle:NSLocalizedString(@"Automatically Resize", @"Menu item title") action:@selector(toggleAutoResizeNoteRows:) target:self];
         }
     }
 }
