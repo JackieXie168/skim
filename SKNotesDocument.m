@@ -71,6 +71,7 @@
 #import "SKCenteredTextFieldCell.h"
 #import "NSArray_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
+#import "NSInvocation_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -261,14 +262,27 @@
     return success;
 }
 
-- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo { 
+- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     ndFlags.exportUsingPanel = NO;
+    NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
+    if (invocation) {
+        [invocation setArgument:&didSave atIndex:3];
+        [invocation invoke];
+    }
 }
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
+    if (delegate && didSaveSelector) {
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
+        [invocation setArgument:&self atIndex:2];
+        [invocation setArgument:&contextInfo atIndex:4];
+        contextInfo = [invocation retain];
+    } else {
+        contextInfo = NULL;
+    }
     ndFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:NULL];
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:contextInfo];
 }
 
 // This method is not used for autosave, but that does not matter because we don't need to do anything special there
