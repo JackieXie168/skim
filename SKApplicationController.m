@@ -419,17 +419,13 @@
         
         NSURL *theURL = [NSURL URLWithString:theURLString] ?: [NSURL URLWithString:[(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)theURLString, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease]];
         
-        if (theURL) {
-            id document = nil;
+        if ([theURL isFileURL]) {
             NSError *error = nil;
-            
-            if ([theURL isFileURL]) {
-                document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:&error];
-                if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
-                    [NSApp presentError:error];
-            } else {
-                document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
-            }
+            id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:&error];
+            if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        } else if (theURL) {
+            [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
         }
     }
 }
