@@ -2432,12 +2432,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
                 }
                 
                 if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey]) {
-                    NSRect oldBounds = NSZeroRect, newBounds = NSZeroRect;
-                    if ([oldValue isEqual:[NSNull null]] == NO)
-                        oldBounds = [oldValue rectValue];
-                    if ([newValue isEqual:[NSNull null]] == NO)
-                        newBounds = [newValue rectValue];
-                    
                     if ([note isNote]) {
                         [pdfView annotationsChangedOnPage:[note page]];
                         [pdfView resetPDFToolTipRects];
