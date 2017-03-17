@@ -72,6 +72,11 @@
     return self;
 }
 
+- (void)dealloc {
+    SKDESTROY(dashPattern);
+    [super dealloc];
+}
+
 - (void)setScaleFactor:(CGFloat)newScaleFactor {
     scaleFactor = newScaleFactor;
     [(NSControl *)[self controlView] updateCell:self];
