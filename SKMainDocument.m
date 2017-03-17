@@ -1050,6 +1050,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [readNotesAccessoryView addSubview:replaceNotesCheckButton];
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];
+        [readNotesAccessoryView release];
     }
     
     [oPanel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
