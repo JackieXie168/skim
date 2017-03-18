@@ -2893,9 +2893,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doMoveAnnotationWithEvent:(NSEvent *)theEvent offset:(NSPoint)offset {
-    PDFPage *page = [activeAnnotation page];
-    NSRect currentBounds = [activeAnnotation bounds];
-    
     // Move annotation.
     [[[self scrollView] contentView] autoscroll:theEvent];
     
@@ -2903,12 +2900,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *newActivePage = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     
     if (newActivePage) { // newActivePage should never be nil, but just to be sure
-        if (newActivePage != page) {
+        if (newActivePage != [activeAnnotation page]) {
             // move the annotation to the new page
             [self moveAnnotation:activeAnnotation toPage:newActivePage];
         }
         
-        NSRect newBounds = currentBounds;
+        NSRect newBounds = [activeAnnotation bounds];
         newBounds.origin = SKIntegralPoint(SKSubstractPoints(point, offset));
         // constrain bounds inside page bounds
         newBounds = SKConstrainRect(newBounds, [newActivePage  boundsForBox:[self displayBox]]);
