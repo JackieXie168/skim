@@ -2906,7 +2906,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (newActivePage != page) {
             // move the annotation to the new page
             [self moveAnnotation:activeAnnotation toPage:newActivePage];
-            page = newActivePage;
         }
         
         NSRect newBounds = currentBounds;
@@ -3129,6 +3128,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [self addAnnotationWithType:annotationMode selection:nil page:page bounds:SKRectFromCenterAndSquareSize(originalBounds.origin, 0.0)];
             lastMouseEvent = theEvent;
             draggedAnnotation = YES;
+        } else if (activeAnnotation == nil) {
+            continue;
         }
         if (resizeHandle == 0)
             [self doMoveAnnotationWithEvent:lastMouseEvent offset:offset];
