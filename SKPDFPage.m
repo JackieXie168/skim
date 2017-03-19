@@ -52,7 +52,7 @@
 
 // On Sierra the PDFView is set on the PDFPage, but we don't want the secondary or snapshot PDFView to steal us away
 - (void)setView:(PDFView *)view {
-    if ([PDFPage instancesRespondToSelector:_cmd] && [view isKindOfClass:[SKPDFView class]])
+    if ([PDFPage instancesRespondToSelector:_cmd] && (view == nil || [view isKindOfClass:[SKPDFView class]]))
         [super setView:view];
 }
 
