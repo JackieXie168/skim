@@ -41,9 +41,20 @@
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKPDFView.h"
 
+
+@interface PDFPage (SKPrivateDeclarations)
+- (void)setView:(PDFView *)view;
+@end
 
 @implementation SKPDFPage
+
+// On Sierra the PDFView is set on the PDFPage, but we don't want the secondary or snapshot PDFView to steal us away
+- (void)setView:(PDFView *)view {
+    if ([PDFPage instancesRespondToSelector:_cmd] && [view isKindOfClass:[SKPDFView class]])
+        [super setView:view];
+}
 
 - (BOOL)isEditable { return YES; }
 
