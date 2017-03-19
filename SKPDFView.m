@@ -1301,7 +1301,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
                 return [[wc pdfView] menuForEvent:theEvent];
         } else if (NSPointInRect([theEvent locationInView:self], [self bounds]) == NO && [wc respondsToSelector:@selector(secondaryPdfView)]) {
             PDFView *secondaryPdfView = [wc secondaryPdfView];
-            if (secondaryPdfView && [secondaryPdfView isHidden] == NO && NSPointInRect([theEvent locationInView:secondaryPdfView], [secondaryPdfView bounds]))
+            if (secondaryPdfView && [secondaryPdfView window] && NSPointInRect([theEvent locationInView:secondaryPdfView], [secondaryPdfView bounds]))
                 return [secondaryPdfView menuForEvent:theEvent];
         }
     }
