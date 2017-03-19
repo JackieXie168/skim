@@ -217,6 +217,7 @@ enum {
 
 @property (nonatomic, readonly) SKPDFView *pdfView;
 @property (nonatomic, retain) PDFDocument *pdfDocument;
+@property (nonatomic, readonly) PDFView *secondaryPdfView;
 
 - (NSArray *)notes;
 - (NSUInteger)countOfNotes;

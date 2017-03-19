@@ -77,6 +77,8 @@
 #import "NSPointerArray_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "SKSnapshotWindowController.h"
+#import "SKMainWindowController.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -1287,6 +1289,23 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+        // On Sierra menuForEvent: for is forwarded to the PDFView of the PDFPage rather than the actual PDFView,
+        // which due to the setView: override in SKPDFPage is us.
+        // So send it back to the correct PDFView if it isn't ours
+        NSWindow *window = [theEvent window];
+        id wc = [window windowController];
+        if ([window isEqual:[self window]] == NO) {
+            if ([wc respondsToSelector:@selector(pdfView)])
+                return [[wc pdfView] menuForEvent:theEvent];
+        } else if (NSPointInRect([theEvent locationInView:self], [self bounds]) == NO && [wc respondsToSelector:@selector(secondaryPdfView)]) {
+            PDFView *secondaryPdfView = [wc secondaryPdfView];
+            if (secondaryPdfView && [secondaryPdfView isHidden] == NO && NSPointInRect([theEvent locationInView:secondaryPdfView], [secondaryPdfView bounds]))
+                return [secondaryPdfView menuForEvent:theEvent];
+        }
+    }
+    
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
     NSMenuItem *item;
