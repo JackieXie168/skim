@@ -292,13 +292,13 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 + (NSColor *)defaultPageBackgroundColor {
-    if ([self instancesRespondToSelector:@selector(setPageColor:)])
+    if ([self instancesRespondToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
         return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
     return [NSColor whiteColor];
 }
 
 - (void)applyDefaultPageBackgroundColor {
-    if ([self respondsToSelector:@selector(setPageColor:)])
+    if ([self respondsToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
         [self setPageColor:[[self class] defaultPageBackgroundColor]];
 }
 
