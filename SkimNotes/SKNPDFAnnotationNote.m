@@ -208,7 +208,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
         CGContextSaveGState(context);
         [[self page] transformContext:context forBox:box];
         if (NSWidth(bounds) > 2.0 && NSHeight(bounds) > 2.0) {
-            CGContextSetFillColorWithColor(context, [[self color] CGColor]);
+            CGContextSetFillColorWithColor(context, [[(id)self color] CGColor]);
             CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
             CGContextSetLineWidth(context, 1.0);
             CGContextSetLineCap(context, kCGLineCapButt);
