@@ -109,7 +109,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
 }
 
 + (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_10_Max)
+    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_11 && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_ElCapitan_drawWithBox:inContext:));
     else
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
