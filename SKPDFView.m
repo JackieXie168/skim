@@ -1979,9 +1979,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
     [self annotationsChangedOnPage:page];
-    if ([wasAnnotation isNote])
+    if ([wasAnnotation isNote]) {
+        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12 && [[page annotations] containsObject:wasAnnotation])
+            [page removeAnnotation:wasAnnotation];
         [self resetPDFToolTipRects];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
     [wasAnnotation release];
     [page release];
