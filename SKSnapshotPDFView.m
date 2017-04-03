@@ -98,7 +98,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
                                                  name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFContentViewFrameChangedDelayedNotification:)
                                                  name:SKPDFContentViewChangedNotification object:self];
-    if ([PDFView respondsToSelector:@selector(magnifyWithEvent:)] == NO || [PDFView methodForSelector:@selector(magnifyWithEvent:)] == [NSView methodForSelector:@selector(magnifyWithEvent:)])
+    if ([PDFView instancesRespondToSelector:@selector(magnifyWithEvent:)] == NO || [PDFView instanceMethodForSelector:@selector(magnifyWithEvent:)] == [NSView instanceMethodForSelector:@selector(magnifyWithEvent:)])
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewScaleChangedNotification:)
                                                      name:PDFViewScaleChangedNotification object:self];
 }
