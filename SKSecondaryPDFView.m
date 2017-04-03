@@ -68,6 +68,7 @@
 - (void)handleSynchronizedScaleChangedNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
+- (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification;
 
 @end
 
@@ -94,6 +95,9 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:)
                                                  name:PDFViewPageChangedNotification object:self];
+    if ([PDFView respondsToSelector:@selector(magnifyWithEvent:)] == NO || [PDFView methodForSelector:@selector(magnifyWithEvent:)] == [NSView methodForSelector:@selector(magnifyWithEvent:)])
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewScaleChangedNotification:)
+                                                     name:PDFViewScaleChangedNotification object:self];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -522,8 +526,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
+        if ([theEvent respondsToSelector:@selector(phase)] && [theEvent phase] == NSEventPhaseBegan)
+            startScale = [self scaleFactor];
         CGFloat magnifyFactor = (1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification])));
         [super setScaleFactor:magnifyFactor * [self scaleFactor]];
+        if ([theEvent respondsToSelector:@selector(phase)] && ([theEvent phase] == NSEventPhaseEnded || [theEvent phase] == NSEventPhaseCancelled) && fabs(startScale - [self scaleFactor]) > 0.001)
+            [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
     }
 }
 
@@ -595,6 +603,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [self reloadPagePopUpButton];
+}
+
+- (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification {
+    if ([self autoScales] == NO && [self synchronizeZoom] == NO)
+        [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
 }
 
 @end
