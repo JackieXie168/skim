@@ -59,7 +59,7 @@
     BOOL allowedCopying = [self allowsCopying];
     if ([super unlockWithPassword:password]) {
         if ([[self delegate] respondsToSelector:@selector(document:didUnlockWithPassword:)] &&
-            ([self isLocked] > wasLocked || [self allowsPrinting] > allowedPrinting || [self allowsCopying] > allowedCopying)) {
+            ([self isLocked] < wasLocked || [self allowsPrinting] > allowedPrinting || [self allowsCopying] > allowedCopying)) {
             [[self delegate] document:self didUnlockWithPassword:password];
         }
         return YES;
