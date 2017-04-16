@@ -3714,7 +3714,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [readingBar setNumberOfLines:numberOfLines];
             [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
-            [self requiresDisplay];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
     }
