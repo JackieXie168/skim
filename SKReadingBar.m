@@ -250,28 +250,33 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
 }
 
 - (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
-    NSRect rect = [self currentBoundsForBox:box];
-    BOOL isCurrentPage = [[self page] isEqual:pdfPage];
+    BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
     
     CGContextSaveGState(context);
     
     CGContextSetFillColorWithColor(context, [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] CGColor]);
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
-        NSRect bounds = [pdfPage boundsForBox:box];
-        if (NSEqualRects(rect, NSZeroRect) || isCurrentPage == NO) {
-            CGContextFillRect(context, NSRectToCGRect(bounds));
-        } else if (([pdfPage intrinsicRotation] % 180)) {
-            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
-            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)));
+    if ([[self page] isEqual:pdfPage]) {
+        NSRect rect = [self currentBoundsForBox:box];
+        if (invert) {
+            NSRect bounds = [pdfPage boundsForBox:box];
+            if (NSEqualRects(rect, NSZeroRect)) {
+                CGContextFillRect(context, NSRectToCGRect(bounds));
+            } else if (([pdfPage intrinsicRotation] % 180)) {
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)));
+            } else {
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
+            }
         } else {
-            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
-            CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
+            CGContextSetBlendMode(context, kCGBlendModeMultiply);
+            CGContextFillRect(context, NSRectToCGRect(rect));
         }
-    } else if (isCurrentPage) {
-        CGContextSetBlendMode(context, kCGBlendModeMultiply);
-        CGContextFillRect(context, NSRectToCGRect(rect));
+    } else if (invert) {
+        CGContextFillRect(context, NSRectToCGRect([pdfPage boundsForBox:box]));
     }
+    
     
     CGContextRestoreGState(context);
 }
