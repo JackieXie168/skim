@@ -47,7 +47,7 @@
 @implementation SKReadingBar
 
 @synthesize currentLine, numberOfLines;
-@dynamic page, currentLastLine, currentBounds;
+@dynamic page, currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage {
     self = [super init];
@@ -91,15 +91,11 @@
     }
 }
 
-- (NSInteger)currentLastLine {
-    return MIN([lineRects count], currentLine + numberOfLines) - 1;
-}
-
 - (void)updateCurrentBounds {
     NSRect rect = NSZeroRect;
     if (currentLine >= 0) {
-        NSInteger i, lastLine = [self currentLastLine];
-        for (i = currentLine; i <= lastLine; i++)
+        NSInteger i, endLine = MIN([lineRects count], currentLine + numberOfLines);
+        for (i = currentLine; i < endLine; i++)
             rect = NSUnionRect(rect, [lineRects rectAtIndex:i]);
     }
     @synchronized (self) {

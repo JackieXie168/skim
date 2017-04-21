@@ -50,7 +50,6 @@
 
 @property (retain) PDFPage *page;
 @property (nonatomic) NSInteger currentLine;
-@property (nonatomic, readonly) NSInteger currentLastLine;
 @property (nonatomic) NSUInteger numberOfLines;
 @property (readonly) NSRect currentBounds;
 
