@@ -3641,7 +3641,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
     
-    [[NSCursor closedHandBarCursor] push];
+    [[NSCursor closedHandCursor] push];
     
     [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     
@@ -4294,7 +4294,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     else if ((area & SKResizeDiagonal135Area))
         [[NSCursor resizeDiagonal135Cursor] set];
     else if ((area & SKReadingBarArea))
-        [[NSCursor openHandBarCursor] set];
+        [[NSCursor openHandCursor] set];
     else if (area == kPDFTextFieldArea)
         [[NSCursor IBeamCursor] set];
     else if (toolMode == SKNoteToolMode && (area & kPDFPageArea))
