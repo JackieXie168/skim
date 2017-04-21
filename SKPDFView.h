@@ -145,7 +145,7 @@ enum {
 @property (nonatomic, readonly) CGFloat currentMagnification;
 @property (nonatomic) BOOL hideNotes;
 @property (nonatomic, readonly) BOOL hasReadingBar;
-@property (nonatomic, readonly) SKReadingBar *readingBar;
+@property (readonly) SKReadingBar *readingBar;
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 

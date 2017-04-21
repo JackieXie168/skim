@@ -46,8 +46,8 @@
 
 @implementation SKReadingBar
 
-@synthesize page, currentLine, numberOfLines;
-@dynamic currentLastLine, currentBounds;
+@synthesize currentLine, numberOfLines;
+@dynamic page, currentLastLine, currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage {
     self = [super init];
@@ -70,36 +70,72 @@
     [super dealloc];
 }
 
+- (PDFPage *)page {
+    PDFPage *aPage = nil;
+    @synchronized (self) {
+        aPage = [page retain];
+    }
+    return [aPage autorelease];
+}
+
 - (void)setPage:(PDFPage *)newPage {
-    if (page != newPage) {
-        [page release];
-        page = [newPage retain];
-        [lineRects release];
-        lineRects = [[page lineRects] retain];
-        currentLine = -1;
-    } 
+    @synchronized (self) {
+        if (page != newPage) {
+            [page release];
+            page = [newPage retain];
+            [lineRects release];
+            lineRects = [[page lineRects] retain];
+            currentLine = -1;
+            currentBounds = NSZeroRect;
+        }
+    }
 }
 
 - (NSInteger)currentLastLine {
     return MIN([lineRects count], currentLine + numberOfLines) - 1;
 }
 
-- (NSRect)currentBounds {
-    if (page == nil || currentLine == -1)
-        return NSZeroRect;
+- (void)updateCurrentBounds {
     NSRect rect = NSZeroRect;
-    NSInteger i, lastLine = [self currentLastLine];
-    for (i = currentLine; i <= lastLine; i++)
-        rect = NSUnionRect(rect, [lineRects rectAtIndex:i]);
-    return rect;
+    if (currentLine >= 0) {
+        NSInteger i, lastLine = [self currentLastLine];
+        for (i = currentLine; i <= lastLine; i++)
+            rect = NSUnionRect(rect, [lineRects rectAtIndex:i]);
+    }
+    @synchronized (self) {
+        currentBounds = page == nil ? NSZeroRect : rect;
+    }
+}
+
+- (void)setCurrentLine:(NSInteger)line {
+    currentLine = line;
+    [self updateCurrentBounds];
+}
+
+- (void)setNumberOfLines:(NSUInteger)number {
+    numberOfLines = number;
+    [self updateCurrentBounds];
+}
+
+- (NSRect)currentBounds {
+    NSRect bounds;
+    @synchronized (self) {
+        bounds = currentBounds;
+    }
+    return bounds;
 }
 
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box {
-    if (page == nil || currentLine == -1)
+    NSRect rect, bounds;
+    BOOL rotated;
+    @synchronized (self) {
+        rect = currentBounds;
+        bounds = [page boundsForBox:box];
+        rotated = ([page intrinsicRotation] % 180) != 0;
+    }
+    if (NSEqualRects(rect, NSZeroRect))
         return NSZeroRect;
-    NSRect rect = [self currentBounds];
-    NSRect bounds = [page boundsForBox:box];
-    if (([page intrinsicRotation] % 180)) {
+    if (rotated) {
         rect.origin.y = NSMinY(bounds);
         rect.size.height = NSHeight(bounds);
     } else {
@@ -109,12 +145,61 @@
     return rect;
 }
 
+- (BOOL)goToNextPageAtTop:(BOOL)atTop {
+    BOOL didMove = NO;
+    PDFDocument *doc = [page document];
+    NSInteger i = [page pageIndex], iMax = [doc pageCount];
+    
+    while (++i < iMax) {
+        PDFPage *nextPage = [doc pageAtIndex:i];
+        NSPointerArray *lines = [nextPage lineRects];
+        if ([lines count]) {
+            @synchronized (self) {
+                [page release];
+                page = [nextPage retain];
+            }
+            [lineRects release];
+            lineRects = [lines retain];
+            currentLine = atTop ? 0 : MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
+            [self updateCurrentBounds];
+            didMove = YES;
+            break;
+        }
+    }
+    return didMove;
+}
+
+- (BOOL)goToPreviousPageAtTop:(BOOL)atTop {
+    BOOL didMove = NO;
+    PDFDocument *doc = [page document];
+    NSInteger i = [doc indexForPage:page];
+    
+    while (i-- > 0) {
+        PDFPage *prevPage = [doc pageAtIndex:i];
+        NSPointerArray *lines = [prevPage lineRects];
+        if ([lines count]) {
+            @synchronized (self) {
+                [page release];
+                page = [prevPage retain];
+            }
+            [lineRects release];
+            lineRects = [lines retain];
+            currentLine = atTop ? 0 : MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
+            [self updateCurrentBounds];
+            didMove = YES;
+            break;
+        }
+    }
+    return didMove;
+}
+
 - (BOOL)goToNextLine {
     BOOL didMove = NO;
     if (currentLine < (NSInteger)[lineRects count] - (NSInteger)numberOfLines) {
         ++currentLine;
+        [self updateCurrentBounds];
         didMove = YES;
-    } else if ([self goToNextPage]) {
+    } else if ([self goToNextPageAtTop:YES]) {
         didMove = YES;
     }
     return didMove;
@@ -126,54 +211,20 @@
         currentLine = [lineRects count];
     if (currentLine > 0) {
         --currentLine;
+        [self updateCurrentBounds];
         didMove =  YES;
-    } else if ([self goToPreviousPage]) {
-        currentLine = MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
+    } else if ([self goToPreviousPageAtTop:NO]) {
         didMove = YES;
     }
     return didMove;
 }
 
 - (BOOL)goToNextPage {
-    BOOL didMove = NO;
-    PDFDocument *doc = [page document];
-    NSInteger i = [page pageIndex], iMax = [doc pageCount];
-    
-    while (++i < iMax) {
-        PDFPage *nextPage = [doc pageAtIndex:i];
-        NSPointerArray *lines = [nextPage lineRects];
-        if ([lines count]) {
-            [page release];
-            page = [nextPage retain];
-            [lineRects release];
-            lineRects = [lines retain];
-            currentLine = 0;
-            didMove = YES;
-            break;
-        }
-    }
-    return didMove;
+    return [self goToNextPageAtTop:YES];
 }
 
 - (BOOL)goToPreviousPage {
-    BOOL didMove = NO;
-    PDFDocument *doc = [page document];
-    NSInteger i = [doc indexForPage:page];
-    
-    while (i-- > 0) {
-        PDFPage *prevPage = [doc pageAtIndex:i];
-        NSPointerArray *lines = [prevPage lineRects];
-        if ([lines count]) {
-            [page release];
-            page = [prevPage retain];
-            [lineRects release];
-            lineRects = [lines retain];
-            currentLine = 0;
-            didMove = YES;
-            break;
-        }
-    }
-    return didMove;
+    return [self goToPreviousPageAtTop:YES];
 }
 
 static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation) {
@@ -194,11 +245,13 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
     while (--i >= 0)
         if (topAbovePoint([lineRects rectAtIndex:i], point, rotation)) break;
     currentLine = MAX(0, i);
+    [self updateCurrentBounds];
     return YES;
 }
 
 - (void)drawForPage:(PDFPage *)pdfPage withBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
     NSRect rect = [self currentBoundsForBox:box];
+    BOOL isCurrentPage = [[self page] isEqual:pdfPage];
     
     CGContextSaveGState(context);
     
@@ -206,7 +259,7 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
         NSRect bounds = [pdfPage boundsForBox:box];
-        if (NSEqualRects(rect, NSZeroRect) || [page isEqual:pdfPage] == NO) {
+        if (NSEqualRects(rect, NSZeroRect) || isCurrentPage == NO) {
             CGContextFillRect(context, NSRectToCGRect(bounds));
         } else if (([pdfPage intrinsicRotation] % 180)) {
             CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
@@ -215,7 +268,7 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
             CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
             CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
         }
-    } else if ([page isEqual:pdfPage]) {
+    } else if (isCurrentPage) {
         CGContextSetBlendMode(context, kCGBlendModeMultiply);
         CGContextFillRect(context, NSRectToCGRect(rect));
     }

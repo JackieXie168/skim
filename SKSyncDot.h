@@ -46,7 +46,7 @@ typedef void (^SKSyncDotUpdateBlock)(BOOL finished);
     NSPoint point;
     PDFPage *page;
     NSTimer *timer;
-    CGFloat phase;
+    volatile int32_t phase;
     SKSyncDotUpdateBlock handler;
 }
 

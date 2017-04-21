@@ -39,6 +39,7 @@
 #import "SKSyncDot.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import <libkern/OSAtomic.h>
 
 
 @interface SKSyncDot (SKPrivate)
@@ -57,7 +58,7 @@
     if (self) {
         point = aPoint;
         page = [aPage retain];
-        phase = 0.0;
+        phase = 0;
         timer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(animate:) userInfo:NULL repeats:YES] retain];
         handler = [aHandler copy];
     }
@@ -79,8 +80,7 @@
 }
 
 - (void)animate:(NSTimer *)aTimer {
-    phase += 0.1;
-    if (phase >= 1.0) {
+    if (OSAtomicIncrement32Barrier(&phase) >= 1) {
         [timer invalidate];
         [timer release];
         timer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finish:) userInfo:NULL repeats:NO] retain];
@@ -103,8 +103,9 @@
     
     CGColorRef color;
     CGFloat s = 6.0;
-    if (phase < 1.0) {
-        s += 8.0 * sin(phase * M_PI);
+    OSMemoryBarrier();
+    if (phase < 1) {
+        s += 8.0 * sin(phase * 0.1 * M_PI);
         CGFloat components[8] = {1.0, 0.3, 0.3, 1.0, 1.0, 0.0, 0.0, 1.0};
         CGFloat locations[2] = {0.0, 1.0};
         CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();

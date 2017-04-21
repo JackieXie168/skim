@@ -45,13 +45,14 @@
     NSPointerArray *lineRects;
     NSInteger currentLine;
     NSUInteger numberOfLines;
+    NSRect currentBounds;
 }
 
-@property (nonatomic, retain) PDFPage *page;
+@property (retain) PDFPage *page;
 @property (nonatomic) NSInteger currentLine;
 @property (nonatomic, readonly) NSInteger currentLastLine;
 @property (nonatomic) NSUInteger numberOfLines;
-@property (nonatomic, readonly) NSRect currentBounds;
+@property (readonly) NSRect currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage;
 
