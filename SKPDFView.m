@@ -3627,8 +3627,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
-    PDFPage *currentPage = [readingBar page];
-    PDFPage *page = currentPage;
+    PDFPage *readingBarPage = [readingBar page];
+    PDFPage *page = readingBarPage;
     NSPointerArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     NSInteger rotation = [page intrinsicRotation];
@@ -3680,7 +3680,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFPage *mousePage = [self pageForPoint:mouseLoc nearest:YES];
         NSPoint mouseLocInPage = [self convertPoint:mouseLoc toPage:mousePage];
         NSPoint mouseLocInDocument = [self convertPoint:mouseLoc toView:[self documentView]];
-        NSInteger mouseLine;
+        NSInteger currentLine;
         
         if ([mousePage isEqual:page] == NO) {
             page = mousePage;
@@ -3691,18 +3691,25 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([lineRects count] == 0)
             continue;
         
-        mouseLine = SKIndexOfRectAtPointInOrderedRects(mouseLocInPage, lineRects, rotation, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
-        mouseLine = MIN((NSInteger)[lineRects count] - (NSInteger)[readingBar numberOfLines], mouseLine);
-        mouseLine = MAX(0, mouseLine);
+        currentLine = SKIndexOfRectAtPointInOrderedRects(mouseLocInPage, lineRects, rotation, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
+        currentLine = MIN((NSInteger)[lineRects count] - (NSInteger)[readingBar numberOfLines], currentLine);
+        currentLine = MAX(0, currentLine);
         
-        if ([page isEqual:currentPage] == NO || mouseLine != [readingBar currentLine]) {
-            [userInfo setObject:currentPage forKey:SKPDFViewOldPageKey];
-            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:currentPage];
-            [readingBar setPage:mousePage];
-            [readingBar setCurrentLine:mouseLine];
-            currentPage = mousePage;
-            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:currentPage];
-            [userInfo setObject:currentPage forKey:SKPDFViewNewPageKey];
+        if ([page isEqual:readingBarPage] == NO || currentLine != [readingBar currentLine]) {
+            NSRect newRect, oldRect = [readingBar currentBoundsForBox:[self displayBox]];
+            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:readingBarPage];
+            [readingBar setPage:page];
+            [readingBar setCurrentLine:currentLine];
+            newRect = [readingBar currentBoundsForBox:[self displayBox]];
+            if ([page isEqual:readingBarPage]) {
+                [self setNeedsDisplayInRect:NSUnionRect(oldRect, newRect) ofPage:page];
+            } else {
+                [self setNeedsDisplayInRect:oldRect ofPage:readingBarPage];
+                [self setNeedsDisplayInRect:newRect ofPage:page];
+            }
+            [userInfo setObject:readingBarPage forKey:SKPDFViewOldPageKey];
+            [userInfo setObject:page forKey:SKPDFViewNewPageKey];
+            readingBarPage = page;
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             lastMouseLoc = mouseLocInDocument;
         }
@@ -3738,10 +3745,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSInteger numberOfLines = MAX(0, SKIndexOfRectAtPointInOrderedRects(point, lineRects, rotation, YES)) - firstLine + 1;
         
         if (numberOfLines > 0 && numberOfLines != (NSInteger)[readingBar numberOfLines]) {
-            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
+            NSRect oldRect = [readingBar currentBoundsForBox:[self displayBox]];
             [readingBar setNumberOfLines:numberOfLines];
             [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
-            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
+            [self setNeedsDisplayInRect:NSUnionRect(oldRect, [readingBar currentBoundsForBox:[self displayBox]]) ofPage:page];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
     }
