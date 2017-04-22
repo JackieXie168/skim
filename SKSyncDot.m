@@ -80,7 +80,7 @@
 }
 
 - (void)animate:(NSTimer *)aTimer {
-    if (OSAtomicIncrement32Barrier(&phase) >= 1) {
+    if (OSAtomicIncrement32Barrier(&phase) >= 10) {
         [timer invalidate];
         [timer release];
         timer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(finish:) userInfo:NULL repeats:NO] retain];
@@ -104,7 +104,7 @@
     CGColorRef color;
     CGFloat s = 6.0;
     OSMemoryBarrier();
-    if (phase < 1) {
+    if (phase < 10) {
         s += 8.0 * sin(phase * 0.1 * M_PI);
         CGFloat components[8] = {1.0, 0.3, 0.3, 1.0, 1.0, 0.0, 0.0, 1.0};
         CGFloat locations[2] = {0.0, 1.0};
