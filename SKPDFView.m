@@ -2241,17 +2241,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [self setCurrentSelection:sel];
             }
         }
-        if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous)
-            rect = NSInsetRect(lineRect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
-        if (NSWidth(rect) > NSWidth(visibleRect)) {
-            if (NSMaxX(rect) < point.x + 0.5 * NSWidth(visibleRect))
-                rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
-            else if (NSMinX(rect) < point.x - 0.5 * NSWidth(visibleRect))
-                rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
-            rect.size.width = NSWidth(visibleRect);
+        if ([[self currentPage] isEqual:page] == NO || NSContainsRect(visibleRect, lineRect) == NO) {
+            if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous)
+                rect = NSInsetRect(lineRect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+            if (NSWidth(rect) > NSWidth(visibleRect)) {
+                if (NSMaxX(rect) < point.x + 0.5 * NSWidth(visibleRect))
+                    rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
+                else if (NSMinX(rect) < point.x - 0.5 * NSWidth(visibleRect))
+                    rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
+                rect.size.width = NSWidth(visibleRect);
+            }
+            p = [self convertPoint:SKTopLeftPoint([self convertRect:rect fromPage:page]) toPage:page];
+            [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:p] autorelease]];
         }
-        p = [self convertPoint:SKTopLeftPoint([self convertRect:rect fromPage:page]) toPage:page];
-        [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:p] autorelease]];
         
         [syncDot invalidate];
         [self setSyncDot:[[[SKSyncDot alloc] initWithPoint:point page:page updateHandler:^(BOOL finished){
