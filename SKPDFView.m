@@ -2226,8 +2226,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSRect rect = lineRect;
         NSRect visibleRect;
         NSPoint p;
+        BOOL wasPageDisplayed = NSLocationInRange(pageIndex, [self displayedPageIndexRange]);
         
-        if (NSLocationInRange(pageIndex, [self displayedPageIndexRange]) == NO)
+        if (wasPageDisplayed == NO)
             [self goToPage:page];
         
         if (interactionMode != SKPresentationMode) {
@@ -2247,7 +2248,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
         
-        if (NSContainsRect(visibleRect, lineRect) == NO) {
+        if (wasPageDisplayed == NO || NSContainsRect(visibleRect, lineRect) == NO) {
             if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous)
                 rect = NSInsetRect(lineRect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
             if (NSWidth(rect) > NSWidth(visibleRect)) {
