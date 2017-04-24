@@ -2224,8 +2224,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect lineRect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
         NSRect rect = lineRect;
-        NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
+        NSRect visibleRect;
         NSPoint p;
+        
+        if (NSLocationInRange(pageIndex, [self displayedPageIndexRange]) == NO)
+            [self goToPage:page];
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
@@ -2241,6 +2244,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [self setCurrentSelection:sel];
             }
         }
+        
+        visibleRect = [self convertRect:[self visibleContentRect] toPage:page];
+        
         if ([[self currentPage] isEqual:page] == NO || NSContainsRect(visibleRect, lineRect) == NO) {
             if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous)
                 rect = NSInsetRect(lineRect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
