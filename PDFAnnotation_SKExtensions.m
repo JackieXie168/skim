@@ -89,13 +89,19 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 static PDFAnnotation *currentActiveAnnotation = nil;
 
 + (PDFAnnotation *)currentActiveAnnotation {
-    return currentActiveAnnotation;
+    PDFAnnotation *annotation = nil;
+    @synchronized (self) {
+        annotation = [currentActiveAnnotation retain];
+    }
+    return [annotation autorelease];
 }
 
 + (void)setCurrentActiveAnnotation:(PDFAnnotation *)annotation {
-    if (currentActiveAnnotation != annotation) {
-        [currentActiveAnnotation release];
-        currentActiveAnnotation = [annotation retain];
+    @synchronized (self) {
+        if (currentActiveAnnotation != annotation) {
+            [currentActiveAnnotation release];
+            currentActiveAnnotation = [annotation retain];
+        }
     }
 }
 
