@@ -860,6 +860,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
         if ((annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict])) {
+            // this is only to make sure markup annotations generate the lineRects, for thread safety
+            [annotation boundsOrder];
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
