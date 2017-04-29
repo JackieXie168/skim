@@ -1094,7 +1094,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
                 if (newAnnotation) {
                     // this is only to make sure markup annotations generate the lineRects, for thread safety
-                    [newAnnotationm boundsOrder];
+                    [newAnnotation boundsOrder];
                     PDFAnnotation *popup = [annotation popup];
                     if (popup)
                         [pdfView removeAnnotation:popup];
