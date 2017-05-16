@@ -2526,26 +2526,30 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 #pragma mark Thumbnails
 
-- (void)makeImageForThumbnail:(SKThumbnail *)thumbnail {
-    NSSize newSize, oldSize = [thumbnail size];
-    PDFDocument *pdfDoc = [pdfView document];
-    NSUInteger pageIndex = [thumbnail pageIndex];
-    PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-    SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
-    NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBar:readingBar];
-    
-    [thumbnail setImage:image];
-    
-    newSize = [image size];
-    if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
-        [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
-    [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
-}
-
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
     if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
         return NO;
-    [self performSelector:@selector(makeImageForThumbnail:) withObject:thumbnail afterDelay:0.0];
+    
+    NSSize oldSize = [thumbnail size];
+    NSUInteger pageIndex = [thumbnail pageIndex];
+    PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+    SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
+    PDFDisplayBox box = [pdfView displayBox];
+    dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
+    
+    dispatch_async(queue, ^{
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:box readingBar:readingBar];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [thumbnail setImage:image];
+            
+            NSSize newSize = [image size];
+            if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
+                [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
+            [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
+        });
+    });
+    
     return YES;
 }
 
