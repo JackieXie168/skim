@@ -1101,8 +1101,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (void)removeAllObjectsFromThumbnails {
     if ([thumbnails count]) {
-        // cancel all delayed perform requests for makeImageForThumbnail:
-        [[self class] cancelPreviousPerformRequestsWithTarget:self];
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
         [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
         [thumbnails removeAllObjects];
@@ -2563,9 +2561,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)resetThumbnails {
-    // cancel all delayed perform requests for makeImageForThumbnail:
-    for (SKThumbnail *tn in thumbnails)
-        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if ([pageLabels count] > 0) {
