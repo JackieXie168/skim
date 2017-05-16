@@ -2545,7 +2545,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             
             [thumbnail setImage:image];
             
-            if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
+            if (NSEqualSizes(oldSize, newSize) == NO)
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
             [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
         });
