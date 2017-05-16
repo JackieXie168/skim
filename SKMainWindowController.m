@@ -2530,9 +2530,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
         return NO;
     
-    NSSize oldSize = [thumbnail size];
-    NSUInteger pageIndex = [thumbnail pageIndex];
-    PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+    PDFPage *page = [[pdfView document] pageAtIndex:[thumbnail pageIndex]];
     SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
     PDFDisplayBox box = [pdfView displayBox];
     dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
@@ -2541,9 +2539,12 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:box readingBar:readingBar];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger pageIndex = [thumbnail pageIndex];
+            NSSize oldSize = [thumbnail size];
+            NSSize newSize = [image size];
+            
             [thumbnail setImage:image];
             
-            NSSize newSize = [image size];
             if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
             [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
