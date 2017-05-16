@@ -2613,17 +2613,12 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
-    SKThumbnail *tn = [self objectInThumbnailsAtIndex:anIndex];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
-    [tn setDirty:YES];
+    [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
     [leftSideController.thumbnailTableView reloadData];
 }
 
 - (void)allThumbnailsNeedUpdate {
-    for (SKThumbnail *tn in thumbnails) {
-        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
-        [tn setDirty:YES];
-    }
+    [thumbnails setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
     [leftSideController.thumbnailTableView reloadData];
 }
 
