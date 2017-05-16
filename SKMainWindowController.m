@@ -2540,12 +2540,11 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSUInteger pageIndex = [thumbnail pageIndex];
-            NSSize oldSize = [thumbnail size];
-            NSSize newSize = [image size];
+            BOOL sameSize = NSEqualSizes([image size], [thumbnail size]);
             
             [thumbnail setImage:image];
             
-            if (NSEqualSizes(oldSize, newSize) == NO)
+            if (sameSize == NO)
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
             [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
         });
