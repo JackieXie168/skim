@@ -196,35 +196,37 @@ static BOOL usesSequentialPageNumbering = NO;
         pageRect.origin.y -= shadowOffset;
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
-        
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        
-        [NSGraphicsContext saveGraphicsState];
-        [[PDFView defaultPageBackgroundColor] setFill];
+    image = [[[NSImage alloc] initWithSize:thumbnailSize] autorelease];
+    
+    [image lockFocus];
+    
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[PDFView defaultPageBackgroundColor] setFill];
+    if (shadowBlurRadius > 0.0)
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
+    NSRectFill(pageRect);
+    [NSGraphicsContext restoreGraphicsState];
+    
+    if (fabs(scale - 1.0) > 0.0 || shadowBlurRadius > 0.0) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
         if (shadowBlurRadius > 0.0)
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
-        NSRectFill(pageRect);
-        [NSGraphicsContext restoreGraphicsState];
-        
-        if (fabs(scale - 1.0) > 0.0 || shadowBlurRadius > 0.0) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            if (shadowBlurRadius > 0.0)
-                [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
-            [transform scaleBy:scale];
-            [transform concat];
-        }
-        
-        [self drawWithBox:box]; 
-        
-        if (readingBar) {
-            [self transformContextForBox:box];
-            [readingBar drawForPage:self withBox:box inContext:[[NSGraphicsContext currentContext] graphicsPort]];
-        }
-        
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-        
-    }];
+            [transform translateXBy:NSMinX(pageRect) yBy:NSMinY(pageRect)];
+        [transform scaleBy:scale];
+        [transform concat];
+    }
+    
+    [self drawWithBox:box]; 
+    
+    if (readingBar) {
+        [self transformContextForBox:box];
+        [readingBar drawForPage:self withBox:box inContext:[[NSGraphicsContext currentContext] graphicsPort]];
+    }
+    
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+    
+    [image unlockFocus];
     
     return image;
 }
@@ -294,10 +296,13 @@ static BOOL usesSequentialPageNumbering = NO;
     
     NSAffineTransform *transform = [self affineTransformForBox:box];
     NSRect sourceRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(rect)], [transform transformPoint:SKTopRightPoint(rect)]);
+    NSRect destRect = sourceRect;
+    destRect.origin = NSZeroPoint;
     
-    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect destRect){
-        [pageImage drawInRect:destRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-    }];
+    NSImage *image = [[[NSImage alloc] initWithSize:destRect.size] autorelease];
+    [image lockFocus];
+    [pageImage drawInRect:destRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+    [image unlockFocus];
     
     return [image TIFFRepresentation];
 }

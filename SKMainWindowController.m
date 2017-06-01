@@ -2571,18 +2571,19 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [emptyPage setRotation:[firstPage rotation]];
         NSImage *pageImage = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
-        NSImage *image = [NSImage bitmapImageWithSize:[pageImage size] drawingHandler:^(NSRect rect){
-            NSRect imgRect = rect;
-            CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
-            imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
-            [pageImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-            [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
-            if (isLocked)
-                [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
-        }];
+        NSRect rect = NSZeroRect;
+        rect.size = [pageImage size];
+        CGFloat width = 0.8 * fmin(NSWidth(rect), NSHeight(rect));
+        rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - width), 0.5 * (NSHeight(rect) - width));
+        
+        [pageImage lockFocus];
+        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        if (isLocked)
+            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        [pageImage unlockFocus];
         
         [pageLabels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
-            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:label pageIndex:i];
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:pageImage label:label pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];

@@ -481,18 +481,20 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [transform scaleXBy:(thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds) yBy:(thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds)];
     }
     
-    image = [NSImage bitmapImageWithSize:thumbnailSize drawingHandler:^(NSRect rect){
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [transform concat];
-        [NSGraphicsContext saveGraphicsState];
-        [[PDFView defaultPageBackgroundColor] set];
-        if (shadowBlurRadius > 0.0)
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
-        NSRectFill(bounds);
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-        [NSGraphicsContext restoreGraphicsState];
-        [imageRep drawInRect:bounds];
-    }];
+    image = [[[NSImage alloc] initWithSize:thumbnailSize] autorelease];
+    
+    [image lockFocus];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    [transform concat];
+    [NSGraphicsContext saveGraphicsState];
+    [[PDFView defaultPageBackgroundColor] set];
+    if (shadowBlurRadius > 0.0)
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
+    NSRectFill(bounds);
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+    [NSGraphicsContext restoreGraphicsState];
+    [imageRep drawInRect:bounds];
+    [image unlockFocus];
     
     return image;
 }
