@@ -2610,7 +2610,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
     [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
-    [leftSideController.thumbnailTableView reloadData];
+    [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:anIndex]];
 }
 
 - (void)allThumbnailsNeedUpdate {
