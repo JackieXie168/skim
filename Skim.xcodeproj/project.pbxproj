@@ -979,6 +979,9 @@
 		CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSValueTransformer_SKExtensions.m; sourceTree = "<group>"; };
 		CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorCell.h; sourceTree = "<group>"; };
 		CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorCell.m; sourceTree = "<group>"; };
+		CEE7B7441F7A84E800004238 /* synctex_parser_c-auto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "synctex_parser_c-auto.h"; sourceTree = "<group>"; };
+		CEE7B7451F7A84E800004238 /* synctex_parser_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_local.h; sourceTree = "<group>"; };
+		CEE7B7461F7A84E800004238 /* synctex_parser_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_private.h; sourceTree = "<group>"; };
 		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
 		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
 		CEEB32811AC30ECA00BDB4E8 /* SKScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScroller.h; sourceTree = "<group>"; };
@@ -1751,6 +1754,9 @@
 		CE33639E0E26E086005F99E6 /* SyncTeX */ = {
 			isa = PBXGroup;
 			children = (
+				CEE7B7441F7A84E800004238 /* synctex_parser_c-auto.h */,
+				CEE7B7451F7A84E800004238 /* synctex_parser_local.h */,
+				CEE7B7461F7A84E800004238 /* synctex_parser_private.h */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
 				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE94D179125535DE0053A520 /* synctex_parser_utils.h */,
