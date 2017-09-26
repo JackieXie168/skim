@@ -6249,7 +6249,7 @@ SYNCTEX_INLINE static synctex_point_s _synctex_data_set_point(synctex_node_p nod
     return old;
 }
 SYNCTEX_INLINE static synctex_box_s _synctex_data_box(synctex_node_p node) {
-    synctex_box_s box = {0,0,0,0};
+    synctex_box_s box = {{0,0},{0,0}};
     int n;
     n = synctex_node_width(node);
     if (n<0) {
@@ -6265,7 +6265,7 @@ SYNCTEX_INLINE static synctex_box_s _synctex_data_box(synctex_node_p node) {
     return box;
 }
 SYNCTEX_INLINE static synctex_box_s _synctex_data_xob(synctex_node_p node) {
-    synctex_box_s box = {0,0,0,0};
+    synctex_box_s box = {{0,0},{0,0}};
     int n;
     n = synctex_node_width(node);
     if (n>0) {
@@ -6281,7 +6281,7 @@ SYNCTEX_INLINE static synctex_box_s _synctex_data_xob(synctex_node_p node) {
     return box;
 }
 SYNCTEX_INLINE static synctex_box_s _synctex_data_box_V(synctex_node_p node) {
-    synctex_box_s box = {0,0,0,0};
+    synctex_box_s box = {{0,0},{0,0}};
     int n;
     n = _synctex_node_width_V(node);
     if (n<0) {
