@@ -64,7 +64,7 @@ enum {
     NSMapTable *lines;
     
     NSMapTable *filenames;
-    synctex_scanner_t scanner;
+    synctex_scanner_p scanner;
     
     volatile int32_t shouldKeepRunning;
 }

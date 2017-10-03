@@ -481,7 +481,7 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
             NSPointerFunctions *valuePointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCStringPersonality | NSPointerFunctionsCopyIn];
             filenames = [[NSMapTable alloc] initWithKeyPointerFunctions:keyPointerFunctions valuePointerFunctions:valuePointerFunctions capacity:0];
         }
-        synctex_node_t node = synctex_scanner_input(scanner);
+        synctex_node_p node = synctex_scanner_input(scanner);
         do {
             if ((fileRep = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
                 NSMapInsert(filenames, [self sourceFileForFileName:[NSString stringWithUTF8String:fileRep] isTeX:YES removeQuotes:NO], fileRep);
@@ -496,7 +496,7 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
 - (BOOL)synctexFindFileLine:(NSInteger *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
     BOOL rv = NO;
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
-        synctex_node_t node;
+        synctex_node_p node;
         const char *file;
         while (rv == NO && (node = synctex_next_result(scanner))) {
             if ((file = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
@@ -524,8 +524,8 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
         if (filename == NULL)
             filename = (char *)[[file lastPathComponent] UTF8String];
     }
-    if (synctex_display_query(scanner, filename, (int)line + 1, 0) > 0) {
-        synctex_node_t node = synctex_next_result(scanner);
+    if (synctex_display_query(scanner, filename, (int)line + 1, 0, -1) > 0) {
+        synctex_node_p node = synctex_next_result(scanner);
         if (node) {
             NSUInteger page = synctex_node_page(node);
             *pageIndexPtr = MAX(page, 1ul) - 1;
