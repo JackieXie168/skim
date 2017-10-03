@@ -41,7 +41,7 @@ authorization from the copyright holder.
 
 /*  In this file, we find all the functions that may depend on the operating system. */
 
-#include <synctex_parser_utils.h>
+#include "synctex_parser_utils.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
