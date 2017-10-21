@@ -138,7 +138,7 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
     original_drawPage_toContext(self, _cmd, pdfPage, context);
     
     // On Sierra note annotations don't draw at all
-    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12) {
         for (PDFAnnotation *annotation in [[[pdfPage annotations] copy] autorelease]) {
             if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
                 [annotation drawWithBox:[self displayBox] inContext:context];
@@ -149,7 +149,7 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 + (void)load {
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
-    if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12)
+    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12)
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
 }
 

@@ -1903,7 +1903,7 @@ static NSArray *allMainDocumentPDFViews() {
                 [self snapshotNeedsUpdate:wc];
         }
         [secondaryPdfView requiresDisplay];
-        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_9)
+        if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_9)
             [pdfView requiresDisplay];
     }
     

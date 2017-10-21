@@ -38,6 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+
 #ifndef NSAppKitVersionNumber10_6
     #define NSAppKitVersionNumber10_6 1038
 #endif
@@ -61,6 +63,8 @@
 #endif
 #ifndef NSAppKitVersionNumber10_12
     #define NSAppKitVersionNumber10_12 1504
+#endif
+
 #endif
 
 #ifndef NS_ENUM

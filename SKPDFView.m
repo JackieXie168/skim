@@ -2005,7 +2005,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [page removeAnnotation:wasAnnotation];
     [self annotationsChangedOnPage:page];
     if ([wasAnnotation isNote]) {
-        if ((NSInteger)floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_12 && [[page annotations] containsObject:wasAnnotation])
+        if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[page annotations] containsObject:wasAnnotation])
             [page removeAnnotation:wasAnnotation];
         [self resetPDFToolTipRects];
     }
