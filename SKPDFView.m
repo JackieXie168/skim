@@ -2258,8 +2258,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     rect.origin.x = floor( point.x - 0.5 * NSWidth(visibleRect) );
                 rect.size.width = NSWidth(visibleRect);
             }
-            p = [self convertPoint:SKTopLeftPoint([self convertRect:rect fromPage:page]) toPage:page];
-            [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:p] autorelease]];
+            rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
+            [[self documentView] scrollRectToVisible:rect];
         }
         
         [syncDot invalidate];
