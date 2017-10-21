@@ -73,8 +73,8 @@
 - (void)loadView {
     [super loadView];
     
-    [button setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
-    [button setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
+    [button setHelp:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
+    [button setHelp:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:mainController];

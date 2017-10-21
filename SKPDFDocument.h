@@ -39,12 +39,18 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+@protocol SKPDFDocumentDelegate;
 
 @interface SKPDFDocument : PDFDocument {
     CFLocaleLanguageDirection languageDirection;
 }
+- (id <SKPDFDocumentDelegate>)delegate;
+- (void)setDelegate:(id <SKPDFDocumentDelegate>)newDelegate;
 @end
 
-@interface NSObject (SKPDFDocumentDelegate)
+#pragma mark -
+
+@protocol SKPDFDocumentDelegate <PDFDocumentDelegate>
+@optional
 - (void)document:(PDFDocument *)document didUnlockWithPassword:(NSString *)password;
 @end

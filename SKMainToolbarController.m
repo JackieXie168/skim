@@ -228,8 +228,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Previous/Next", @"Tool tip message")];
-            [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
-            [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
+            [previousNextPageButton setHelp:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
+            [previousNextPageButton setHelp:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:previousNextPageButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -242,8 +242,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Previous", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
-            [previousPageButton setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
-            [previousPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
+            [previousPageButton setHelp:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
+            [previousPageButton setHelp:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:previousPageButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -256,8 +256,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Next", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
-            [nextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
-            [nextPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
+            [nextPageButton setHelp:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
+            [nextPageButton setHelp:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:nextPageButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -272,10 +272,10 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Go To First, Previous, Next or Last Page", @"Tool tip message")];
-            [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
-            [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
-            [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:2];
-            [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:3];
+            [previousNextFirstLastPageButton setHelp:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
+            [previousNextFirstLastPageButton setHelp:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
+            [previousNextFirstLastPageButton setHelp:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:2];
+            [previousNextFirstLastPageButton setHelp:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:3];
             [item setViewWithSizes:previousNextFirstLastPageButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -288,8 +288,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
-            [backForwardButton setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
-            [backForwardButton setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
+            [backForwardButton setHelp:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
+            [backForwardButton setHelp:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:backForwardButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -352,8 +352,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Zoom", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
-            [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
-            [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
+            [zoomInOutButton setHelp:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
+            [zoomInOutButton setHelp:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:zoomInOutButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -367,9 +367,9 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Zoom", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
-            [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
-            [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
-            [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
+            [zoomInActualOutButton setHelp:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
+            [zoomInActualOutButton setHelp:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
+            [zoomInActualOutButton setHelp:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
             [item setViewWithSizes:zoomInActualOutButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -508,14 +508,14 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Text Note", @"Tool tip message") forSegment:SKFreeTextNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Anchored Note", @"Tool tip message") forSegment:SKAnchoredNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Circle", @"Tool tip message") forSegment:SKCircleNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Box", @"Tool tip message") forSegment:SKSquareNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Highlight", @"Tool tip message") forSegment:SKHighlightNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
-            [noteButton setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Text Note", @"Tool tip message") forSegment:SKFreeTextNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Anchored Note", @"Tool tip message") forSegment:SKAnchoredNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Circle", @"Tool tip message") forSegment:SKCircleNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Box", @"Tool tip message") forSegment:SKSquareNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Highlight", @"Tool tip message") forSegment:SKHighlightNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
+            [noteButton setHelp:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
             [item setViewWithSizes:noteButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -552,11 +552,11 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Tool Mode", @"Tool tip message")];
-            [toolModeButton setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
-            [toolModeButton setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
-            [toolModeButton setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
-            [toolModeButton setToolTip:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
-            [toolModeButton setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
+            [toolModeButton setHelp:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
+            [toolModeButton setHelp:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
+            [toolModeButton setHelp:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
+            [toolModeButton setHelp:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
+            [toolModeButton setHelp:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
             [item setViewWithSizes:toolModeButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -569,8 +569,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Single/Two Pages", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Single/Two Pages", @"Tool tip message")];
-            [singleTwoUpButton setToolTip:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:0];
-            [singleTwoUpButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:1];
+            [singleTwoUpButton setHelp:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:0];
+            [singleTwoUpButton setHelp:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:singleTwoUpButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -583,8 +583,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Continuous", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message")];
-            [continuousButton setToolTip:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:0];
-            [continuousButton setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:1];
+            [continuousButton setHelp:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:0];
+            [continuousButton setHelp:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:1];
             [item setViewWithSizes:continuousButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -599,10 +599,10 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             
             [item setLabels:NSLocalizedString(@"Display Mode", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Display Mode", @"Tool tip message")];
-            [displayModeButton setToolTip:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:kPDFDisplaySinglePage];
-            [displayModeButton setToolTip:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
-            [displayModeButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
-            [displayModeButton setToolTip:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
+            [displayModeButton setHelp:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:kPDFDisplaySinglePage];
+            [displayModeButton setHelp:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
+            [displayModeButton setHelp:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
+            [displayModeButton setHelp:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
             [item setViewWithSizes:displayModeButton];
             [item setMenuFormRepresentation:menuItem];
             

@@ -150,5 +150,6 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 @end
 
 @protocol PDFViewDelegate <NSObject> @end
+@protocol PDFDocumentDelegate <NSObject> @end
 
 #endif

@@ -37,9 +37,23 @@
  */
 
 #import "NSSegmentedControl_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation NSSegmentedControl (SKExtensions)
+
+- (NSInteger)Sierra_tagForSegment:(NSInteger)segment {
+    return [[self cell] tagForSegment:segment];
+}
+
+- (void)Sierra_setTag:(NSInteger)tag forSegment:(NSInteger)segment {
+    [[self cell] setTag:tag forSegment:segment];
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(tagForSegment:), @selector(Sierra_tagForSegment:));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(setTag:forSegment:), @selector(Sierra_setTag:forSegment:));
+}
 
 - (NSInteger)selectedTag {
     return [[self cell] tagForSegment:[self selectedSegment]];
@@ -51,18 +65,10 @@
         [self setEnabled:enabled forSegment:i];
 }
 
-- (void)setToolTip:(NSString *)toolTip forSegment:(NSInteger)segment {
+- (void)setHelp:(NSString *)toolTip forSegment:(NSInteger)segment {
     [[self cell] setToolTip:toolTip forSegment:segment];
     NSArray *accessibilitySegments = [NSAccessibilityUnignoredDescendant(self) accessibilityAttributeValue:NSAccessibilityChildrenAttribute];
     [[accessibilitySegments objectAtIndex:segment] accessibilitySetOverrideValue:toolTip forAttribute:NSAccessibilityDescriptionAttribute];
-}
-
-- (NSInteger)tagForSegment:(NSInteger)segment {
-    return [[self cell] tagForSegment:segment];
-}
-
-- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment {
-    [[self cell] setTag:tag forSegment:segment];
 }
 
 @end

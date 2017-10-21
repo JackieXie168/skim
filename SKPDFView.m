@@ -2225,7 +2225,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSRect lineRect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSquareSize(point, 10.0);
         NSRect rect = lineRect;
         NSRect visibleRect;
-        NSPoint p;
         BOOL wasPageDisplayed = NSLocationInRange(pageIndex, [self displayedPageIndexRange]);
         
         if (wasPageDisplayed == NO)

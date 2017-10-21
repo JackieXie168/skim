@@ -39,12 +39,19 @@
 #import <Cocoa/Cocoa.h>
 
 
+#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+
+@interface NSSegmentedControl (SKHighSierraDeclarations)
+- (NSInteger)tagForSegment:(NSInteger)segment;
+- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment;
+@end
+
+#endif
+
 @interface NSSegmentedControl (SKExtensions)
 
 - (NSInteger)selectedTag;
 - (void)setEnabledForAllSegments:(BOOL)enabled;
-- (void)setToolTip:(NSString *)toolTip forSegment:(NSInteger)segment;
-- (NSInteger)tagForSegment:(NSInteger)segment;
-- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment;
+- (void)setHelp:(NSString *)toolTip forSegment:(NSInteger)segment;
 
 @end

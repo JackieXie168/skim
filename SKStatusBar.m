@@ -394,8 +394,8 @@
         [progressIndicator setAutoresizingMask:NSViewMinXMargin | NSViewMinYMargin | NSViewMaxYMargin];
 		[progressIndicator setStyle:style];
 		[progressIndicator setControlSize:NSSmallControlSize];
-		[progressIndicator setIndeterminate:style == NSProgressIndicatorSpinningStyle];
-		[progressIndicator setDisplayedWhenStopped:style == NSProgressIndicatorBarStyle];
+		[progressIndicator setIndeterminate:style == (SKProgressIndicatorStyle)NSProgressIndicatorSpinningStyle];
+		[progressIndicator setDisplayedWhenStopped:style == (SKProgressIndicatorStyle)NSProgressIndicatorBarStyle];
         [progressIndicator setUsesThreadedAnimation:YES];
 		[progressIndicator sizeToFit];
 		

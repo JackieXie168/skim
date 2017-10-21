@@ -435,7 +435,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
         pointString = [savedNormalSetup objectForKey:SCROLLPOINT_KEY];
     } else if ([sud boolForKey:SKRememberLastPageViewedKey]) {
-        pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtURL:[[self document] fileURL]];
+        pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtURL:[(NSDocument *)[self document] fileURL]];
     }
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex) {
         if ([[pdfView document] isLocked]) {
@@ -460,7 +460,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (hasWindowSetup)
         snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
-        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtURL:[[self document] fileURL]];
+        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsForRecentDocumentAtURL:[(NSDocument *)[self document] fileURL]];
     if ([snapshotSetups count]) {
         if ([[pdfView document] isLocked])
             [savedNormalSetup setObject:snapshotSetups forKey:SNAPSHOTS_KEY];
