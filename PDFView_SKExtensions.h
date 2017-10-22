@@ -68,8 +68,10 @@
 
 
 @interface PDFView (SKPrivateDeclarations)
-- (double)minScaleFactor;
-- (double)maxScaleFactor;
+#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+- (CGFloat)minScaleFactor;
+- (CGFloat)maxScaleFactor;
+#endif
 - (NSInteger)currentHistoryIndex;
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
 - (NSColor *)pageColor;
