@@ -442,7 +442,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
         } else if ([[pdfView currentPage] pageIndex] != pageIndex || pointString) {
             if (pointString)
-                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+                [pdfView goToPageAtIndex:pageIndex point:NSPointFromString(pointString)];
             else
                 [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
             [lastViewedPages setCount:0];
@@ -536,7 +536,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         if (pageIndexNumber && pageIndex != NSNotFound && pageIndex != [[pdfView currentPage] pageIndex]) {
             NSString *pointString = [setup objectForKey:SCROLLPOINT_KEY];
             if (pointString)
-                [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+                [pdfView goToPageAtIndex:pageIndex point:NSPointFromString(pointString)];
             else
                 [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         }
@@ -803,27 +803,25 @@ static char SKMainWindowContentLayoutRectObservationContext;
         }
         
         if ([document pageCount] && (pageIndex != NSNotFound || secondaryPageIndex != NSNotFound)) {
-            PDFPage *page = nil;
-            PDFPage *secondaryPage = nil;
             if (pageIndex != NSNotFound) {
                 if (pageIndex >= [document pageCount])
                     pageIndex = [document pageCount] - 1;
                 if ([document isLocked] && ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode)) {
                     [savedNormalSetup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
                 } else {
-                    page = [document pageAtIndex:pageIndex];
                     if (rotated)
-                        [pdfView goToPage:page];
+                        [pdfView goToPage:[document pageAtIndex:pageIndex]];
                     else
-                        [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease]];
+                        [pdfView goToPageAtIndex:pageIndex point:point];
                 }
             }
             if (secondaryPageIndex != NSNotFound) {
-                secondaryPage = [document pageAtIndex:MIN(secondaryPageIndex, [document pageCount] - 1)];
+                if (secondaryPageIndex >= [document pageCount])
+                    secondaryPageIndex = [document pageCount] - 1;
                 if (secondaryRotated)
-                    [secondaryPdfView goToPage:secondaryPage];
+                    [secondaryPdfView goToPage:[document pageAtIndex:secondaryPageIndex]];
                 else
-                    [secondaryPdfView goToDestination:[[[PDFDestination alloc] initWithPage:[document pageAtIndex:secondaryPageIndex] atPoint:secondaryPoint] autorelease]];
+                    [secondaryPdfView goToPageAtIndex:secondaryPageIndex point:secondaryPoint];
             }
             [pdfView resetHistory];
         }
@@ -2052,7 +2050,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if (pageIndex != NSNotFound) {
         NSString *pointString = [savedNormalSetup objectForKey:SCROLLPOINT_KEY];
         if (pointString)
-            [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:[[pdfView document] pageAtIndex:pageIndex] atPoint:NSPointFromString(pointString)] autorelease]];
+            [pdfView goToPageAtIndex:pageIndex point:NSPointFromString(pointString)];
         else
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         [lastViewedPages setCount:0];

@@ -262,6 +262,17 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     return [page pageIndex];
 }
 
+- (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point {
+    PDFPage *page = [[self document] pageAtIndex:pageIndex];
+    NSView *docView = [self documentView];
+    if (NSLocationInRange(pageIndex, [self displayedPageIndexRange]) == NO)
+        [self goToPage:page];
+    point = [self convertPoint:[self convertPoint:point fromPage:page] toView:docView];
+    if ([[[docView enclosingScrollView] contentView] isFlipped] == NO)
+        point.y -= [docView isFlipped] ? -NSHeight([docView visibleRect]) : NSHeight([docView visibleRect]);
+    [docView scrollPoint:point];
+}
+
 - (NSRange)displayedPageIndexRange {
     NSUInteger pageCount = [[self document] pageCount];
     PDFDisplayMode displayMode = [self displayMode];

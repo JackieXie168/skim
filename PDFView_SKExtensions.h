@@ -59,6 +59,7 @@
 - (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest;
 
 - (NSUInteger)currentPageIndexAndPoint:(NSPoint *)point rotated:(BOOL *)rotated;
+- (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point;
 
 - (void)applyDefaultPageBackgroundColor;
 

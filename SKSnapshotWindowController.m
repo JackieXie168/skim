@@ -241,7 +241,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)goToDestination:(PDFDestination *)destination {
-    [pdfView goToDestination:destination];
+    [pdfView goToPageAtIndex:[[destination page] pageIndex] point:[destination point]];
     [pdfView resetHistory];
     
     [self updateString];

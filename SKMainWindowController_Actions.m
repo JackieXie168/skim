@@ -337,12 +337,10 @@ static NSArray *allMainDocumentPDFViews() {
     if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0) {
         NSBeep();
     } else if (beforeMarkedPageIndex != NSNotFound) {
-        PDFPage *page = [pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)];
-        [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:beforeMarkedPagePoint] autorelease]];
+        [pdfView goToPageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1) point:beforeMarkedPagePoint];
     } else if (currentPageIndex != markedPageIndex) {
         beforeMarkedPageIndex = [pdfView currentPageIndexAndPoint:&beforeMarkedPagePoint rotated:NULL];
-        PDFPage *page = [pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)];
-        [pdfView goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:markedPagePoint] autorelease]];
+        [pdfView goToPageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1) point:markedPagePoint];
     }
 }
 
