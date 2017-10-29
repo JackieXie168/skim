@@ -2575,7 +2575,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - width), 0.5 * (NSHeight(rect) - width));
         
         [pageImage lockFocus];
-        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        [[NSImage imageNamed:NSImageNameApplicationIcon] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         if (isLocked)
             [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [pageImage unlockFocus];
