@@ -73,6 +73,7 @@
     popupFrame.origin.y = NSMaxY(matrixFrame) + MARGIN_Y;
     frame.size.width = fmax(NSMaxX(popupFrame) + MARGIN_X - POPUP_MATRIX_OFFSET, NSMaxX(matrixFrame) + MARGIN_X);
     
+    [popupButton setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     [popupButton setFrame:popupFrame];
     [view setFrame:frame];
     [view addSubview:popupButton];
