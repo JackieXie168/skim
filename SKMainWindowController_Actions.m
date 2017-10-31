@@ -347,6 +347,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)markPage:(id)sender {
     markedPageIndex = [pdfView currentPageIndexAndPoint:&markedPagePoint rotated:NULL];
+    beforeMarkedPageIndex = NSNotFound;
 }
 
 - (IBAction)doZoomIn:(id)sender {
