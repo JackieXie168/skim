@@ -4863,7 +4863,7 @@ content_loop:
 #       pragma mark + SCAN KERN
 #   endif
             ns = _synctex_parse_new_kern(scanner);
-        continue_scan:
+//        continue_scan:
             if (ns.status == SYNCTEX_STATUS_OK) {
                 if (child) {
                     _synctex_node_set_sibling(child,ns.node);
