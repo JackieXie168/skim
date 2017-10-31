@@ -339,8 +339,9 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (beforeMarkedPageIndex != NSNotFound) {
         [pdfView goToPageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1) point:beforeMarkedPagePoint];
     } else if (currentPageIndex != markedPageIndex) {
-        beforeMarkedPageIndex = [pdfView currentPageIndexAndPoint:&beforeMarkedPagePoint rotated:NULL];
+        NSUInteger lastPageIndex = [pdfView currentPageIndexAndPoint:&beforeMarkedPagePoint rotated:NULL];
         [pdfView goToPageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1) point:markedPagePoint];
+        beforeMarkedPageIndex = lastPageIndex;
     }
 }
 
