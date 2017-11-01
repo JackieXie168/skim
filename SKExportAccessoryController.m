@@ -64,6 +64,23 @@
 }
 
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
+    // find the largest item and size popup to fit
+    CGFloat width = 0.0, maxWidth = 0.0;
+    NSSize size = NSMakeSize(1000.0, 1000.0);
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[popupButton font], NSFontAttributeName, nil];
+    NSUInteger i, iNum = [popupButton numberOfItems], iMax = 0;
+    for (i = 0; i < iNum; i++) {
+        width = NSWidth([[popupButton itemTitleAtIndex:i] boundingRectWithSize:size options:0 attributes:attrs]);
+        if (width > maxWidth) {
+            width = maxWidth;
+            iMax = i;
+        }
+    }
+    i = [popupButton indexOfSelectedItem];
+    [popupButton selectItemAtIndex:iMax];
+    [popupButton sizeToFit];
+    [popupButton selectItemAtIndex:i];
+
     NSView *view = [self view];
     NSRect frame = [view frame];
     NSRect matrixFrame = [matrix frame];
