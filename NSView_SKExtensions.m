@@ -72,7 +72,6 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
 };
 @interface NSView (SKLionDeclarations)
 - (NSSize)convertSizeToBacking:(NSSize)size;
-- (NSRect)backingAlignedRect:(NSRect)rect options:(NSAlignmentOptions)options;
 @end
 #endif
 
@@ -108,15 +107,6 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     if ([self respondsToSelector:@selector(convertSizeToBacking:)])
         return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
     return 1.0;
-}
-
-- (NSRect)backingAlignedRect:(NSRect)rect {
-    if ([NSThread isMainThread] == NO)
-        return NSIntegralRect(rect);
-    if ([self respondsToSelector:@selector(backingAlignedRect:options:)])
-        return [self backingAlignedRect:rect options:NSAlignAllEdgesOutward];
-    else
-        return [self convertRect:NSIntegralRect([self convertRect:rect toView:nil]) fromView:nil];
 }
 
 - (NSRect)convertRectToScreen:(NSRect)rect {

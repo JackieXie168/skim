@@ -302,6 +302,11 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     return displayedPages;
 }
 
+- (NSRect)integralRect:(NSRect)rect onPage:(PDFPage *)page {
+    // we'd like to use backingAlignedRect, but that is not thread safe, and we need this for drawing
+    return [self convertRect:[self convertRect:rect fromPage:page] toPage:page];
+}
+
 + (NSColor *)defaultPageBackgroundColor {
     if ([self instancesRespondToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
         return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];

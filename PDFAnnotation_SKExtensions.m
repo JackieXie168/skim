@@ -62,6 +62,7 @@
 #import "SKMainDocument.h"
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
+#import "PDFView_SKExtensions.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -404,7 +405,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         return;
     if ([self isSkimNote]) {
         BOOL active = [pdfView isKey];
-        NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[self bounds] fromPage:[self page]]) toPage:[self page]];
+        NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
         CGFloat lineWidth = NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
         CGContextSaveGState(context);
         CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];

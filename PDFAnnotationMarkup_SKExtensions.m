@@ -56,6 +56,7 @@
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
 #import "SKPDFView.h"
+#import "PDFView_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -321,7 +322,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     CGContextSetStrokeColorWithColor(context, color);
     CGContextSetLineWidth(context, lineWidth);
     for (i = 0; i < iMax; i++) {
-        NSRect rect = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[lines rectAtIndex:i] fromPage:page]) toPage:page];
+        NSRect rect = [pdfView integralRect:[lines rectAtIndex:i] onPage:page];
         CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth));
     }
     CGContextRestoreGState(context);
