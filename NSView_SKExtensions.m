@@ -112,7 +112,7 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
 
 - (NSRect)backingAlignedRect:(NSRect)rect {
     if ([NSThread isMainThread] == NO)
-        return rect;
+        return NSIntegralRect(rect);
     if ([self respondsToSelector:@selector(backingAlignedRect:options:)])
         return [self backingAlignedRect:rect options:NSAlignAllEdgesOutward];
     else
