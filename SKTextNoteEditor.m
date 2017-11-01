@@ -104,7 +104,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)updateFrame {
-    NSRect frame = [pdfView convertRect:[pdfView backingAlignedRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]]] toView:[pdfView documentView]];
+    NSRect frame = [pdfView convertRect:NSIntegralRect([pdfView convertRect:[annotation bounds] fromPage:[annotation page]]) toView:[pdfView documentView]];
     [textField setFrame:frame];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
         frame.origin = NSZeroPoint;
