@@ -314,7 +314,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     BOOL active = [pdfView isKey];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
-    CGFloat lineWidth = NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
+    CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
     PDFPage *page = [self page];
     CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
     

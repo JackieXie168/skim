@@ -307,6 +307,10 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     return [self convertRect:[self convertRect:rect fromPage:page] toPage:page];
 }
 
+- (CGFloat)unitWidthOnPage:(PDFPage *)page {
+    return NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:page]);
+}
+
 + (NSColor *)defaultPageBackgroundColor {
     if ([self instancesRespondToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
         return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];

@@ -406,7 +406,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     if ([self isSkimNote]) {
         BOOL active = [pdfView isKey];
         NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
-        CGFloat lineWidth = NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
+        CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
         CGContextSaveGState(context);
         CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
         CGContextSetStrokeColorWithColor(context, color);

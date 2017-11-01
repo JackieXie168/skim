@@ -390,7 +390,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     }
     if (pageIndex != NSNotFound) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-        CGFloat radius = HANDLE_SIZE * NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:pdfPage]);
+        CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
         CGContextSetFillColorWithColor(context, color);
         CGColorRelease(color);
@@ -412,7 +412,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     PDFAnnotation *annotation = [self highlightAnnotation];
     if (annotation) {
         PDFPage *page = [annotation page];
-        CGFloat width = NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:page]);
+        CGFloat width = [self unitWidthOnPage:page];
         CGContextSaveGState(context);
         CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
         NSRect rect = [self integralRect:[annotation bounds] onPage:page];

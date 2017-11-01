@@ -52,6 +52,7 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "SKPDFView.h"
+#import "PDFView_SKExtensions.h"
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
 NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
@@ -238,7 +239,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
     BOOL active = [pdfView isKey];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
-    CGFloat delta = 4.0 * NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
+    CGFloat delta = 4.0 * [pdfView unitWidthOnPage:[self page]];
     SKDrawResizeHandle(context, point, delta, active);
     point = SKAddPoints(origin, [self endPoint]);
     SKDrawResizeHandle(context, point, delta, active);
