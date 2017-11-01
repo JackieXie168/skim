@@ -55,7 +55,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
-#import "SKPDFView.h"
 #import "PDFView_SKExtensions.h"
 
 
@@ -307,11 +306,11 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightForView:(SKPDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     
-    BOOL active = [pdfView isKey];
+    BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
     CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];

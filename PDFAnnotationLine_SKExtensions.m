@@ -51,7 +51,6 @@
 #import "SKRuntime.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
-#import "SKPDFView.h"
 #import "PDFView_SKExtensions.h"
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
@@ -233,10 +232,10 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         return 0;
 }
 
-- (void)drawSelectionHighlightForView:(SKPDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
-    BOOL active = [pdfView isKey];
+    BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
     CGFloat delta = 4.0 * [pdfView unitWidthOnPage:[self page]];

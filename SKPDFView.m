@@ -176,7 +176,6 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @property (retain) SKReadingBar *readingBar;
 @property (retain) SKSyncDot *syncDot;
 @property (retain) PDFAnnotation *highlightAnnotation;
-@property (getter=isKey) BOOL key;
 @end
 
 @interface SKPDFView (Private)
@@ -222,7 +221,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @implementation SKPDFView
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
-@synthesize currentMagnification=magnification, isZooming, key;
+@synthesize currentMagnification=magnification, isZooming;
 @dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect;
 
 + (void)initialize {
@@ -389,6 +388,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         rect = selectionRect;
     }
     if (pageIndex != NSNotFound) {
+        BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
@@ -404,7 +404,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             CGColorRelease(color);
             CGContextFillRect(context, NSRectToCGRect(rect));
         }
-        SKDrawResizeHandles(context, rect, radius,  [self isKey]);
+        SKDrawResizeHandles(context, rect, radius, active);
     }
 }
 
@@ -2354,7 +2354,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
-    [self setKey:[[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self]];
     if (selectionPageIndex != NSNotFound) {
         CGFloat margin = HANDLE_SIZE / [self scaleFactor];
         for (PDFPage *page in [self displayedPages])
@@ -2370,15 +2369,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (editor && [self commitEditing] == NO)
         [self discardEditing];
     
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    NSWindow *oldWindow = [self window];
-    if (oldWindow) {
-        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
-    }
-    if (newWindow) {
-        [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
-        [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        NSWindow *oldWindow = [self window];
+        if (oldWindow) {
+            [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
+            [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
+        }
+        if (newWindow) {
+            [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
+            [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
+        }
     }
     
     [super viewWillMoveToWindow:newWindow];
@@ -2388,12 +2389,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
     if ([textField isEditable]) {
         [textField selectText:nil];
-        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+            [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     
     if ([super becomeFirstResponder]) {
-        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+            [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     return NO;
@@ -2401,7 +2404,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+            [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     return NO;

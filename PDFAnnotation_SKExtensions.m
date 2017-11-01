@@ -400,11 +400,11 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self isResizable] ? SKResizeHandleForPointFromRect(point, [self bounds], 4.0 / scaleFactor) : 0;
 }
 
-- (void)drawSelectionHighlightForView:(SKPDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     if ([self isSkimNote]) {
-        BOOL active = [pdfView isKey];
+        BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
         NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
         CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
         CGContextSaveGState(context);
