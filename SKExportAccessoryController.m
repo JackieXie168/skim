@@ -71,8 +71,11 @@
     
     popupFrame.origin.x = NSMinX(matrixFrame) - POPUP_MATRIX_OFFSET;
     popupFrame.origin.y = NSMaxY(matrixFrame) + MARGIN_Y;
+    popupFrame.size.width = fmax(NSWidth(popupFrame), NSWidth(matrixFrame) + 2.0 * POPUP_MATRIX_OFFSET);
     frame.size.width = fmax(NSMaxX(popupFrame) + MARGIN_X - POPUP_MATRIX_OFFSET, NSMaxX(matrixFrame) + MARGIN_X);
     
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_7)
+        [popupButton setValue:[NSNumber numberWithBool:NO] forKeyPath:@"constraints.active"];
     [popupButton setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     [popupButton setFrame:popupFrame];
     [view setFrame:frame];
