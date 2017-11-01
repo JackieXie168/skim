@@ -2393,7 +2393,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     
     if ([super becomeFirstResponder]) {
-        [self handleKeyStateChangedNotification:nil];
+        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
         return YES;
     }
     return NO;
