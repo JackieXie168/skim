@@ -2388,7 +2388,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
     if ([textField isEditable]) {
         [textField selectText:nil];
-        [self handleKeyStateChangedNotification:nil];
+        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
         return YES;
     }
     
