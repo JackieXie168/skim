@@ -390,7 +390,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     }
     if (pageIndex != NSNotFound) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-        CGFloat radius = HANDLE_SIZE / [self scaleFactor];
+        CGFloat radius = HANDLE_SIZE * NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:pdfPage]);
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
         CGContextSetFillColorWithColor(context, color);
         CGColorRelease(color);
@@ -411,10 +411,11 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 - (void)drawDragHighlightInContext:(CGContextRef)context {
     PDFAnnotation *annotation = [self highlightAnnotation];
     if (annotation) {
-        CGFloat width = 1.0 / [self scaleFactor];
+        PDFPage *page = [annotation page];
+        CGFloat width = NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:page]);
         CGContextSaveGState(context);
         CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-        NSRect rect = [self convertRect:[self backingAlignedRect:[self convertRect:[annotation bounds] fromPage:[annotation page]]] toPage:[annotation page]];
+        NSRect rect = [self convertRect:[self backingAlignedRect:[self convertRect:[annotation bounds] fromPage:page]] toPage:page];
         CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width), width);
         CGContextRestoreGState(context);
     }
