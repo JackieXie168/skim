@@ -137,8 +137,8 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 - (void)replacement_drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
     original_drawPage_toContext(self, _cmd, pdfPage, context);
     
-    // On Sierra note annotations don't draw at all
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12) {
+    // On (High) Sierra note annotations don't draw at all
+    if (floor(NSAppKitVersionNumber) >=NSAppKitVersionNumber10_12) {
         for (PDFAnnotation *annotation in [[[pdfPage annotations] copy] autorelease]) {
             if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
                 [annotation drawWithBox:[self displayBox] inContext:context];
