@@ -176,6 +176,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @property (retain) SKReadingBar *readingBar;
 @property (retain) SKSyncDot *syncDot;
 @property (retain) PDFAnnotation *highlightAnnotation;
+@property (getter=isKey) BOOL key;
 @end
 
 @interface SKPDFView (Private)
@@ -221,7 +222,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @implementation SKPDFView
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
-@synthesize currentMagnification=magnification, isZooming;
+@synthesize currentMagnification=magnification, isZooming, key;
 @dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect;
 
 + (void)initialize {
@@ -390,7 +391,6 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     if (pageIndex != NSNotFound) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE / [self scaleFactor];
-        BOOL active = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
         CGContextSetFillColorWithColor(context, color);
         CGColorRelease(color);
@@ -404,7 +404,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             CGColorRelease(color);
             CGContextFillRect(context, NSRectToCGRect(rect));
         }
-        SKDrawResizeHandles(context, rect, radius, active);
+        SKDrawResizeHandles(context, rect, radius,  [self isKey]);
     }
 }
 
@@ -2353,6 +2353,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
+    [self setKey:[[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self]];
     if (selectionPageIndex != NSNotFound) {
         CGFloat margin = HANDLE_SIZE / [self scaleFactor];
         for (PDFPage *page in [self displayedPages])
@@ -2399,7 +2400,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        [self handleKeyStateChangedNotification:nil];
+        [self performSelector:@selector(handleKeyStateChangedNotification:) withObject:nil afterDelay:0.0];
         return YES;
     }
     return NO;

@@ -127,6 +127,8 @@ enum {
     
     BOOL isSelectingMarkup;
     
+    BOOL key;
+    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;
@@ -148,6 +150,7 @@ enum {
 @property (readonly) SKReadingBar *readingBar;
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
+@property (getter=isKey, readonly) BOOL key;
 
 - (void)toggleReadingBar;
 

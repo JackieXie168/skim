@@ -399,13 +399,13 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     return [self isResizable] ? SKResizeHandleForPointFromRect(point, [self bounds], 4.0 / scaleFactor) : 0;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(SKPDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     if ([self isSkimNote]) {
-        BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
+        BOOL active = [pdfView isKey];
         NSRect rect = [pdfView convertRect:[pdfView backingAlignedRect:[pdfView convertRect:[self bounds] fromPage:[self page]]] toPage:[self page]];
-        CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
+        CGFloat lineWidth = NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
         CGContextSaveGState(context);
         CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
         CGContextSetStrokeColorWithColor(context, color);

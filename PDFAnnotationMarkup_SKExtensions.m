@@ -55,6 +55,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
+#import "SKPDFView.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -305,14 +306,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(SKPDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
     
-    BOOL active = [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
+    BOOL active = [pdfView isKey];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
-    CGFloat lineWidth = 1.0 / [pdfView scaleFactor];
+    CGFloat lineWidth = NSWidth([pdfView convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:[self page]]);
     PDFPage *page = [self page];
     CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
     
