@@ -69,7 +69,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)pattern;
 
-- (PDFTextAnnotationIconType)iconType;
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
@@ -147,4 +146,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (void)handleEditScriptCommand:(NSScriptCommand *)command;
 
+@end
+
+@interface PDFAnnotation (SKDefaultExtensions)
+- (PDFTextAnnotationIconType)iconType;
 @end

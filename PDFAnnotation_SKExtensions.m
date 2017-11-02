@@ -63,6 +63,7 @@
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
 #import "PDFView_SKExtensions.h"
+#import "SKRuntime.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -86,6 +87,12 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 #endif
 
 @implementation PDFAnnotation (SKExtensions)
+
+- (PDFTextAnnotationIconType)replacement_iconType { return kPDFTextAnnotationIconNote; }
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(replacement_iconType));
+}
 
 static PDFAnnotation *currentActiveAnnotation = nil;
 
@@ -338,8 +345,6 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         [border release];
     }
 }
-
-- (PDFTextAnnotationIconType)iconType { return kPDFTextAnnotationIconNote; }
 
 - (NSImage *)image { return nil; }
 
