@@ -90,10 +90,6 @@ static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\
 #define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
 #define WRITE_ERROR            fprintf(stderr, "%s\n%s\n", usageStr, versionStr)
 
-#ifndef NSAppKitVersionNumber10_8
-    #define NSAppKitVersionNumber10_8 1187
-#endif
-
 enum {
     SKNActionUnknown,
     SKNActionEmbed,
