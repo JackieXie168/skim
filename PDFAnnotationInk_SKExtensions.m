@@ -266,10 +266,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         NSIsEmptyRect([self bounds]) == NO &&
         [self isSkimNote]) {
         CGFloat scale = ceil(1.0 / [pdfView unitWidthOnPage:[self page]]);
-        NSRect rect = [self bounds];
-        rect.origin = NSZeroPoint;
-        rect.size.width *= scale;
-        rect.size.height *= scale;
+        NSRect rect = NSMakeRect(0.0, 0.0, scale * NSWidth([self bounds]), scale * NSHeight([self bounds]));
         NSImage *image = [[NSImage alloc] initWithSize:rect.size];
         [image lockFocus];
         NSAffineTransform *transform = [NSAffineTransform transform];
