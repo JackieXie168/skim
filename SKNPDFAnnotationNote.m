@@ -52,8 +52,10 @@ static inline void drawIconNewParagraph(CGContextRef context, NSRect bounds);
 static inline void drawIconParagraph(CGContextRef context, NSRect bounds);
 static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 
+#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
 #ifndef NSAppKitVersionNumber10_12
 #define NSAppKitVersionNumber10_12 1504
+#endif
 #endif
 
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
