@@ -266,11 +266,14 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         NSIsEmptyRect([self bounds]) == NO &&
         [self isSkimNote]) {
         CGFloat scale = ceil(1.0 / [pdfView unitWidthOnPage:[self page]]);
-        NSRect rect = NSMakeRect(0.0, 0.0, scale * NSWidth([self bounds]), scale * NSHeight([self bounds]));
+        NSRect b = [self bounds];
+        NSRect bounds = NSIntegralRect(b);
+        NSRect rect = NSMakeRect(0.0, 0.0, scale * NSWidth(bounds), scale * NSHeight(bounds));
         NSImage *image = [[NSImage alloc] initWithSize:rect.size];
         [image lockFocus];
         NSAffineTransform *transform = [NSAffineTransform transform];
         [transform scaleBy:scale];
+        [transform translateXBy:NSMinX(b) - NSMinX(bounds) yBy:NSMinY(b) - NSMinY(bounds)];
         [transform concat];
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -293,7 +296,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         [image unlockFocus];
         CGImageRef cgImage = [image CGImageForProposedRect:&rect context:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO] hints:nil];
         [image release];
-        CGContextDrawImage(context, NSRectToCGRect([self bounds]), cgImage);
+        CGContextDrawImage(context, NSRectToCGRect(bounds), cgImage);
     }
 }
 
