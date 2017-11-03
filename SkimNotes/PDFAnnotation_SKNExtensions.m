@@ -842,7 +842,7 @@ static NSArray *replacement_dashPattern(id self, SEL _cmd) {
     Class cls = NSClassFromString(@"PDFBorderPrivateVars");
     if (cls) {
         Ivar dashCountIvar = class_getInstanceVariable(cls, "dashCount");
-        if (dashCountIvar && 0 != strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(NSUInteger)))
+        if (dashCountIvar && 0 == strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(unsigned int)))
             class_replaceMethod(self, @selector(dashPattern), (IMP)replacement_dashPattern, "@@:");
     }
 }
