@@ -818,7 +818,7 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
 
 #if __LP64__
 
-// the implementation of -[PDFBorder dashPattern] is currently badly broken in the 64-bit binary, probably due to the wrong type for _pdfPriv.dashCount
+// the implementation of -[PDFBorder dashPattern] is badly broken on 10.4 and 10.5 in the 64-bit binary, probably due to the wrong type for _pdfPriv.dashCount or _pdfPriv.dashPattern
 
 @implementation PDFBorder (SKNExtensions)
 
@@ -842,7 +842,8 @@ static NSArray *replacement_dashPattern(id self, SEL _cmd) {
     Class cls = NSClassFromString(@"PDFBorderPrivateVars");
     if (cls) {
         Ivar dashCountIvar = class_getInstanceVariable(cls, "dashCount");
-        if (dashCountIvar && 0 != strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(NSUInteger)) && 0 != strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(NSInteger)))
+        Ivar dashPatternIvar = class_getInstanceVariable(cls, "dashPattern");
+        if (dashCountIvar && 0 == strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(unsigned int)) && dashPatternIvar && 0 == strcmp(ivar_getTypeEncoding(dashPatternIvar), @encode(float *)))
             class_replaceMethod(self, @selector(dashPattern), (IMP)replacement_dashPattern, "@@:");
     }
 }
