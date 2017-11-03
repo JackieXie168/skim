@@ -825,13 +825,18 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
 static NSArray *replacement_dashPattern(id self, SEL _cmd) {
     NSMutableArray *pattern = [NSMutableArray array];
     @try {
-        id vars = [self valueForKey:@"pdfPriv"];
-        NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntValue];
-        Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
-        if (ivar != NULL) {
-            float *dashPattern = *(float **)((void *)vars + ivar_getOffset(ivar));
-            for (i = 0; i < count; i++)
-                [pattern addObject:[NSNumber numberWithFloat:dashPattern[i]]];
+        id vars = nil;
+        if (NULL != object_getInstanceVariable(vars, "_pdfPriv", (void **)&vars)) {
+            Ivar countIvar = object_getInstanceVariable(vars, "dashCount", NULL);
+            if (countIvar != NULL) {
+                NSUInteger i, count = *(unsigned int *)((void *)vars + ivar_getOffset(countIvar));
+                Ivar patternIvar = object_getInstanceVariable(vars, "dashPattern", NULL);
+                if (patternIvar != NULL) {
+                    float *dashPattern = *(float **)((void *)vars + ivar_getOffset(patternIvar));
+                    for (i = 0; i < count; i++)
+                        [pattern addObject:[NSNumber numberWithFloat:dashPattern[i]]];
+                }
+            }
         }
     }
     @catch (id e) {}
@@ -839,12 +844,14 @@ static NSArray *replacement_dashPattern(id self, SEL _cmd) {
 }
 
 + (void)load {
-    Class cls = NSClassFromString(@"PDFBorderPrivateVars");
-    if (cls) {
-        Ivar dashCountIvar = class_getInstanceVariable(cls, "dashCount");
-        Ivar dashPatternIvar = class_getInstanceVariable(cls, "dashPattern");
-        if (dashCountIvar && 0 == strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(unsigned int)) && dashPatternIvar && 0 == strcmp(ivar_getTypeEncoding(dashPatternIvar), @encode(float *)))
-            class_replaceMethod(self, @selector(dashPattern), (IMP)replacement_dashPattern, "@@:");
+    if (class_getInstanceVariable(self, "_pdfPriv")) {
+        Class cls = NSClassFromString(@"PDFBorderPrivateVars");
+        if (cls) {
+            Ivar dashCountIvar = class_getInstanceVariable(cls, "dashCount");
+            Ivar dashPatternIvar = class_getInstanceVariable(cls, "dashPattern");
+            if (dashCountIvar && 0 == strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(unsigned int)) && dashPatternIvar && 0 == strcmp(ivar_getTypeEncoding(dashPatternIvar), @encode(float *)))
+                class_replaceMethod(self, @selector(dashPattern), (IMP)replacement_dashPattern, "@@:");
+        }
     }
 }
 
