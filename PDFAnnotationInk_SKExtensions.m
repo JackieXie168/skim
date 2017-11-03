@@ -50,6 +50,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFView_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
@@ -111,7 +112,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
 + (void)load {
     if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_11)
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_ElCapitan_drawWithBox:inContext:));
-    else
+    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
@@ -257,6 +258,46 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         rect = NSUnionRect(rect, NSInsetRect([path nonEmptyBounds], -lineWidth, -lineWidth));
     rect.origin = SKAddPoints(rect.origin, bounds.origin);
     return NSUnionRect([super displayRectForBounds:bounds lineWidth:lineWidth], NSIntegralRect(rect));
+}
+
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
+    [super drawSelectionHighlightForView:pdfView inContext:context];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 &&
+        NSIsEmptyRect([self bounds]) == NO &&
+        [self isSkimNote]) {
+        CGFloat scale = ceil(1.0 / [pdfView unitWidthOnPage:[self page]]);
+        NSRect rect = [self bounds];
+        rect.origin = NSZeroPoint;
+        rect.size.width *= scale;
+        rect.size.height *= scale;
+        NSImage *image = [[NSImage alloc] initWithSize:rect.size];
+        [image lockFocus];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform scaleBy:scale];
+        [transform concat];
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        for (NSBezierPath *aPath in [self paths])
+            [path appendBezierPath:aPath];
+        [path setLineWidth:[self lineWidth]];
+        [path setLineJoinStyle:NSRoundLineJoinStyle];
+        if ([self borderStyle] == kPDFBorderStyleDashed) {
+            [path setDashPattern:[self dashPattern]];
+            [path setLineCapStyle:NSButtLineCapStyle];
+        } else {
+            [path setLineCapStyle:NSRoundLineCapStyle];
+        }
+        [NSGraphicsContext saveGraphicsState];
+        [NSShadow setShadowWithColor:[NSColor colorWithWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
+        [path stroke];
+        [NSGraphicsContext restoreGraphicsState];
+        [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeClear];
+        [path stroke];
+        [image unlockFocus];
+        CGImageRef cgImage = [image CGImageForProposedRect:&rect context:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO] hints:nil];
+        [image release];
+        CGContextDrawImage(context, NSRectToCGRect([self bounds]), cgImage);
+    }
 }
 
 - (NSArray *)pointLists {
