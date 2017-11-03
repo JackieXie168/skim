@@ -826,12 +826,12 @@ static NSArray *replacement_dashPattern(id self, SEL _cmd) {
     NSMutableArray *pattern = [NSMutableArray array];
     @try {
         id vars = [self valueForKey:@"pdfPriv"];
-        NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntegerValue];
+        NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntValue];
         Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
         if (ivar != NULL) {
-            CGFloat *dashPattern = *(CGFloat **)((void *)vars + ivar_getOffset(ivar));
+            float *dashPattern = *(float **)((void *)vars + ivar_getOffset(ivar));
             for (i = 0; i < count; i++)
-                [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
+                [pattern addObject:[NSNumber numberWithFloat:dashPattern[i]]];
         }
     }
     @catch (id e) {}
