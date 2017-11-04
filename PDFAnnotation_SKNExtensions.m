@@ -816,7 +816,7 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
 
 #pragma mark -
 
-#if __LP64__
+#if __LP64__ && MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_5
 
 // the implementation of -[PDFBorder dashPattern] is badly broken on 10.4 and 10.5 in the 64-bit binary, probably due to the wrong type for _pdfPriv.dashCount or _pdfPriv.dashPattern
 
