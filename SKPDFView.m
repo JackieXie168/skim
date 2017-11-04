@@ -164,6 +164,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 @interface PDFView (SKSierraDeclarations)
 - (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
+- (void)drawPagePost:(PDFPage *)page toContext:(CGContextRef)context;
 @end
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
@@ -455,13 +456,18 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     [super drawPage:pdfPage toContext:context];
     
     [PDFAnnotation setCurrentActiveAnnotation:nil];
+}
+
+- (void)drawPagePost:(PDFPage *)pdfPage toContext:(CGContextRef)context {
+    // Let PDFView do most of the hard work.
+    [super drawPagePost:pdfPage toContext:context];
     
     [self drawPageHighlights:pdfPage toContext:context];
 }
 
 - (void)drawPage:(PDFPage *)pdfPage {
     if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)]) {
-        // on 10.12 this should be called from drawPage:toContext:
+        // on 10.12 and later drawPage:toContext: and drawPagePost:toContext: are used
         [super drawPage:pdfPage];
     } else {
         [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
@@ -471,6 +477,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         
         [PDFAnnotation setCurrentActiveAnnotation:nil];
         
+        // Don't do this in drawPagePost: because that uses an inconsistent and always varying coordinate system
         [self drawPageHighlights:pdfPage toContext:[[NSGraphicsContext currentContext] graphicsPort]];
     }
 }
