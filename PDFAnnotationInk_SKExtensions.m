@@ -288,7 +288,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         }
         [NSGraphicsContext saveGraphicsState];
         [NSShadow setShadowWithColor:[NSColor colorWithWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
-        [[self color] setStroke];
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:[[self color] alphaComponent]] setStroke];
         [path stroke];
         [NSGraphicsContext restoreGraphicsState];
         [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeClear];
