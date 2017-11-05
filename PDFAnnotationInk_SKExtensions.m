@@ -275,7 +275,6 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         [transform scaleBy:scale];
         [transform translateXBy:NSMinX(b) - NSMinX(bounds) yBy:NSMinY(b) - NSMinY(bounds)];
         [transform concat];
-        [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         for (NSBezierPath *aPath in [self paths])
             [path appendBezierPath:aPath];
@@ -289,9 +288,11 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         }
         [NSGraphicsContext saveGraphicsState];
         [NSShadow setShadowWithColor:[NSColor colorWithWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
+        [[self color] setStroke];
         [path stroke];
         [NSGraphicsContext restoreGraphicsState];
         [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeClear];
+        [[NSColor blackColor] setStroke];
         [path stroke];
         [image unlockFocus];
         CGImageRef cgImage = [image CGImageForProposedRect:&rect context:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO] hints:nil];
