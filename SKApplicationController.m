@@ -76,7 +76,7 @@
 #import "SKAnimatedBorderlessWindow.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
-#define WIKI_URL    @"http://sourceforge.net/p/skim-app/wiki/"
+#define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
 
 #define INITIAL_USER_DEFAULTS_FILENAME  @"InitialUserDefaults"
 #define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
