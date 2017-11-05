@@ -67,9 +67,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         original_drawWithBox_inContext(self, _cmd, box, context);
     } else {
         CGContextSaveGState(context);
-        CGColorRef color = CGColorCreateGenericGray(0.0, 0.33333);
-        CGContextSetShadowWithColor(context, CGSizeMake(0.0, -2.0), 2.0, color);
-        CGColorRelease(color);
+        CGContextSetShadow(context, CGSizeMake(0.0, -2.0), 2.0);
         original_drawWithBox_inContext(self, _cmd, box, context);
         CGContextRestoreGState(context);
     }
