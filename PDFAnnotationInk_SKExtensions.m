@@ -276,7 +276,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
         NSBezierPath *path = [NSBezierPath bezierPath];
         for (NSBezierPath *aPath in [self paths])
             [path appendBezierPath:aPath];
-        [path setLineWidth:[self lineWidth]];
+        [path setLineWidth:fmax(1.0, [self lineWidth])];
         [path setLineJoinStyle:NSRoundLineJoinStyle];
         if ([self borderStyle] == kPDFBorderStyleDashed) {
             [path setDashPattern:[self dashPattern]];
