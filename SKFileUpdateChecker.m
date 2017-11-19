@@ -45,8 +45,6 @@
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 
-#define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
-
 #define PATH_KEY @"path"
 
 static char SKFileUpdateCheckerObservationContext;

@@ -139,6 +139,8 @@
 		<array/>
 		<key>SKAutoCheckFileUpdate</key>
 		<false/>
+		<key>SKAutoReloadFileUpdate</key>
+		<false/>
 		<key>SKTeXEditorPreset</key>
 		<string>TextMate</string>
 		<key>SKTeXEditorCommand</key>
@@ -312,6 +314,7 @@
 		<key>SyncPreferences</key>
 		<array>
 			<string>SKAutoCheckFileUpdate</string>
+			<string>SKAutoReloadFileUpdate</string>
 			<string>SKTeXEditorPreset</string>
 			<string>SKTeXEditorCommand</string>
 			<string>SKTeXEditorArguments</string>

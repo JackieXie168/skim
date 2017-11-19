@@ -38,6 +38,7 @@
 
 
 extern NSString *SKAutoCheckFileUpdateKey;
+extern NSString *SKAutoReloadFileUpdateKey;
 extern NSString *SKTeXEditorPresetKey;
 extern NSString *SKTeXEditorArgumentsKey;
 extern NSString *SKTeXEditorCommandKey;
