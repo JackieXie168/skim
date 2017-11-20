@@ -73,7 +73,7 @@
 						<reference key="NSNextResponder" ref="1005"/>
 						<nil key="NSNibTouchBar"/>
 						<int key="NSvFlags">258</int>
-						<string key="NSFrame">{{17, 169}, {394, 14}}</string>
+						<string key="NSFrame">{{17, 189}, {394, 14}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
@@ -342,7 +342,7 @@
 						<reference key="NSNextResponder" ref="1005"/>
 						<nil key="NSNibTouchBar"/>
 						<int key="NSvFlags">258</int>
-						<string key="NSFrame">{{18, 189}, {392, 18}}</string>
+						<string key="NSFrame">{{18, 165}, {392, 18}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
@@ -364,7 +364,7 @@
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 				</array>
-				<string key="NSFrameSize">{428, 225}</string>
+				<string key="NSFrameSize">{428, 223}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<string key="NSClassName">NSView</string>
@@ -836,7 +836,7 @@
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1.IBEditorWindowLastContentRect">{{97, 530}, {428, 225}}</string>
+				<string key="1.IBEditorWindowLastContentRect">{{97, 532}, {428, 223}}</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1.WindowOrigin">{628, 654}</string>
 				<string key="1.editorWindowContentRectSynchronizationRect">{{217, 442}, {480, 272}}</string>
