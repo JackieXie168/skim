@@ -181,6 +181,7 @@ enum {
         unsigned int isEditingPDF:1;
         unsigned int isEditingTable:1;
         unsigned int isSwitchingFullScreen:1;
+        unsigned int wantsPresentation:1;
     } mwcFlags;
 }
 

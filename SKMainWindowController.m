@@ -1468,11 +1468,15 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([self canEnterFullscreen] == NO)
         return;
     
+    if (wasInteractionMode == SKPresentationMode) {
+        [self exitFullscreen];
+    }
+    
     if ([self useNativeFullScreen]) {
         [[self window] toggleFullScreen:nil];
         return;
     }
-    
+
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
@@ -1534,6 +1538,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if ([self canEnterPresentation] == NO)
         return;
+    
+    if (wasInteractionMode == SKFullScreenMode) {
+        mwcFlags.wantsPresentation = 1;
+        [[self window] toggleFullScreen:nil];
+        return;
+    }
     
     NSColor *backgroundColor = [NSColor blackColor];
     NSInteger level = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSNormalWindowLevel : NSPopUpMenuWindowLevel;
@@ -1662,7 +1672,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (mwcFlags.isSwitchingFullScreen)
         return NO;
     if ([self useNativeFullScreen])
-        return [self interactionMode] == SKNormalMode;
+        return [self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode;
     else
         return [[self pdfDocument] isLocked] == NO &&
                 ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) &&
@@ -1671,7 +1681,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (BOOL)canEnterPresentation {
     return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
-            ([self interactionMode] == SKNormalMode || [self interactionMode] == SKLegacyFullScreenMode) &&
+            ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) &&
             ((NSInteger)floor(NSAppKitVersionNumber) != (NSInteger)NSAppKitVersionNumber10_12 || [[[self window] tabbedWindows] count] < 2);
 }
 
@@ -1810,6 +1820,10 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if ([[pdfView document] isLocked] == NO || [savedNormalSetup count] == 1)
         [savedNormalSetup removeAllObjects];
     mwcFlags.isSwitchingFullScreen = 0;
+    if (mwcFlags.wantsPresentation) {
+        mwcFlags.wantsPresentation = 0;
+        [self enterPresentation];
+    }
 }
 
 #pragma mark Swapping tables
