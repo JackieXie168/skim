@@ -1826,6 +1826,23 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     }
 }
 
+- (void)windowDidFailToExitFullScreen:(NSWindow *)window {
+    if (interactionMode == SKNormalMode) {
+        interactionMode = SKFullScreenMode;
+        NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+        NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+        [pdfView setInteractionMode:SKFullScreenMode];
+        [pdfView setBackgroundColor:backgroundColor];
+        [secondaryPdfView setBackgroundColor:backgroundColor];
+        if ([[pdfView document] isLocked] == NO)
+            [self applyPDFSettings:fullScreenSetup];
+        [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
+        [self forceSubwindowsOnTop:YES];
+    }
+    mwcFlags.isSwitchingFullScreen = 0;
+    mwcFlags.wantsPresentation = 0;
+}
+
 #pragma mark Swapping tables
 
 - (void)displayTocViewAnimating:(BOOL)animate {
