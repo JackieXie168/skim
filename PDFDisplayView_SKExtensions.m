@@ -126,7 +126,7 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
     return attributedString;
 }
 
-static id replacement_accessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id fallback_accessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView) {
         NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
@@ -143,7 +143,7 @@ static id replacement_accessibilityRangeForPositionAttributeForParameter(id self
     return nil;
 }
 
-static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id fallback_accessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]);
@@ -152,7 +152,7 @@ static id replacement_accessibilityRTFForRangeAttributeForParameter(id self, SEL
     return nil;
 }
 
-static id replacement_accessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id fallback_accessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         return [attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]) accessibilityAttributedString];
@@ -160,7 +160,7 @@ static id replacement_accessibilityAttributedStringForRangeAttributeForParameter
     return nil;
 }
 
-static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
     PDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
         // make sure the accessibility table is generated
@@ -207,8 +207,8 @@ void SKSwizzlePDFDisplayViewMethods() {
     original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
     original_accessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacement_accessibilityParameterizedAttributeNames);
     
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacement_accessibilityRangeForPositionAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacement_accessibilityRTFForRangeAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacement_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)replacement_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)fallback_accessibilityRangeForPositionAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)fallback_accessibilityRTFForRangeAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)fallback_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)fallback_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
 }

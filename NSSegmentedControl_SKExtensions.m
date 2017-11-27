@@ -42,17 +42,17 @@
 
 @implementation NSSegmentedControl (SKExtensions)
 
-- (NSInteger)Sierra_tagForSegment:(NSInteger)segment {
+- (NSInteger)fallback_tagForSegment:(NSInteger)segment {
     return [[self cell] tagForSegment:segment];
 }
 
-- (void)Sierra_setTag:(NSInteger)tag forSegment:(NSInteger)segment {
+- (void)fallback_setTag:(NSInteger)tag forSegment:(NSInteger)segment {
     [[self cell] setTag:tag forSegment:segment];
 }
 
 + (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(tagForSegment:), @selector(Sierra_tagForSegment:));
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(setTag:forSegment:), @selector(Sierra_setTag:forSegment:));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(tagForSegment:), @selector(fallback_tagForSegment:));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(setTag:forSegment:), @selector(fallback_setTag:forSegment:));
 }
 
 - (NSInteger)selectedTag {

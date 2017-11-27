@@ -88,10 +88,10 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 
 @implementation PDFAnnotation (SKExtensions)
 
-- (PDFTextAnnotationIconType)replacement_iconType { return kPDFTextAnnotationIconNote; }
+- (PDFTextAnnotationIconType)fallback_iconType { return kPDFTextAnnotationIconNote; }
 
 + (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(replacement_iconType));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(fallback_iconType));
 }
 
 static PDFAnnotation *currentActiveAnnotation = nil;

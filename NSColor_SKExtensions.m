@@ -42,7 +42,7 @@
 
 @implementation NSColor (SKExtensions)
 
-- (CGColorRef)CGColorLion {
+- (CGColorRef)fallback_CGColor {
     NSColor *color = self;
     static NSSet *componentColorSpaces = nil;
     if (componentColorSpaces == nil)
@@ -57,7 +57,7 @@
 }
 
 + (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(CGColorLion));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
 }
 
 + (NSColor *)keySourceListHighlightColor {

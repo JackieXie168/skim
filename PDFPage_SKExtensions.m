@@ -74,7 +74,7 @@ NSString *SKPDFPageActionRotate = @"rotate";
 
 @implementation PDFPage (SKExtensions) 
 
-- (void)ElCapitan_transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box {
+- (void)fallback_transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box {
     NSRect bounds = [self boundsForBox:box];
     CGContextRotateCTM(context, -[self rotation] * M_PI_2 / 90.0);
     switch ([self rotation]) {
@@ -86,7 +86,7 @@ NSString *SKPDFPageActionRotate = @"rotate";
 }
 
 + (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(transformContext:forBox:), @selector(ElCapitan_transformContext:forBox:));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(transformContext:forBox:), @selector(fallback_transformContext:forBox:));
 }
 
 static BOOL usesSequentialPageNumbering = NO;

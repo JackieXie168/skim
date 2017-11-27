@@ -46,7 +46,7 @@
     completionHandler();
 }
 
-+ (void)SnowLeopard_runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler {
++ (void)fallback_runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler {
     [self beginGrouping];
     NSAnimationContext *context = [self currentContext];
     changes(context);
@@ -57,7 +57,7 @@
 }
 
 + (void)load {
-    SKAddClassMethodImplementationFromSelector(self, @selector(runAnimationGroup:completionHandler:), @selector(SnowLeopard_runAnimationGroup:completionHandler:));
+    SKAddClassMethodImplementationFromSelector(self, @selector(runAnimationGroup:completionHandler:), @selector(fallback_runAnimationGroup:completionHandler:));
 }
 
 @end
