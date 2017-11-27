@@ -61,8 +61,6 @@
 
 #pragma mark -
 
-static id (*SKGetPDFView)(id self) = NULL;
-
 static id SKGetPDFView_method_getPDFView(id self) {
     return [self getPDFView];
 }
@@ -86,8 +84,11 @@ static id SKGetPDFView_ivar_private_pdfView(id self) {
 }
 
 static id SKGetPDFView_fallback(id self) {
-    return nil;
+    id pdfView = [[self enclosingScrollView] superview];
+    return [pdfView isKindOfClass:[PDFView class]] ? pdfView : nil;
 }
+
+static id (*SKGetPDFView)(id self) = SKGetPDFView_fallback;
 
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
@@ -220,8 +221,6 @@ void SKSwizzlePDFDisplayViewMethods() {
         SKGetPDFView = SKGetPDFView_ivar_pdfView;
     else if (class_getInstanceVariable(PDFDisplayViewClass, "_private") || class_getInstanceVariable(PDFDisplayViewClass, "private"))
         SKGetPDFView = SKGetPDFView_ivar_private_pdfView;
-    else
-        SKGetPDFView = SKGetPDFView_fallback;
 
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
