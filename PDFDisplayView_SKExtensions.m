@@ -61,34 +61,19 @@
 
 #pragma mark -
 
-static id SKGetPDFView_method_getPDFView(id self) {
-    return [self getPDFView];
-}
+static NSString *pdfViewIvarKeyPath = @"private.pdfView";
 
-static id SKGetPDFView_method_pdfView(id self) {
-    return [self pdfView];
-}
-
-static id SKGetPDFView_ivar_pdfView(id self) {
+static id fallback_ivar_getPDFView(id self, SEL _cmd) {
     id pdfView = nil;
-    @try { pdfView = [self valueForKey:@"pdfView"]; }
+    @try { pdfView = [self valueForKeyPath:pdfViewIvarKeyPath]; }
     @catch (id exception) {}
     return pdfView;
 }
 
-static id SKGetPDFView_ivar_private_pdfView(id self) {
-    id pdfView = nil;
-    @try { pdfView = [self valueForKeyPath:@"private.pdfView"]; }
-    @catch (id exception) {}
-    return pdfView;
-}
-
-static id SKGetPDFView_fallback(id self) {
+static id fallback_getPDFView(id self, SEL _cmd) {
     id pdfView = [[self enclosingScrollView] superview];
     return [pdfView isKindOfClass:[PDFView class]] ? pdfView : nil;
 }
-
-static id (*SKGetPDFView)(id self) = SKGetPDFView_fallback;
 
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
@@ -99,7 +84,7 @@ static id (*original_accessibilityAttributeValue)(id, SEL, id) = NULL;
 
 static void replacement_updateTrackingAreas(id self, SEL _cmd) {
 	original_updateTrackingAreas(self, _cmd);
-    id pdfView = SKGetPDFView(self);
+    id pdfView = [self getPDFView];
     if ([pdfView respondsToSelector:@selector(resetPDFToolTipRects)])
         [pdfView resetPDFToolTipRects];
 }
@@ -144,7 +129,7 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
 }
 
 static id fallback_accessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
-    id pdfView = SKGetPDFView(self);
+    id pdfView = [self getPDFView];
     if (pdfView) {
         NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
         PDFPage *page = [pdfView pageForPoint:point nearest:NO];
@@ -161,7 +146,7 @@ static id fallback_accessibilityRangeForPositionAttributeForParameter(id self, S
 }
 
 static id fallback_accessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
-    PDFView *pdfView = SKGetPDFView(self);
+    PDFView *pdfView = [self getPDFView];
     if (pdfView) {
         NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]);
         return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:[NSDictionary dictionaryWithObjectsAndKeys:NSRTFTextDocumentType, NSDocumentTypeDocumentAttribute, nil]];
@@ -170,7 +155,7 @@ static id fallback_accessibilityRTFForRangeAttributeForParameter(id self, SEL _c
 }
 
 static id fallback_accessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
-    PDFView *pdfView = SKGetPDFView(self);
+    PDFView *pdfView = [self getPDFView];
     if (pdfView) {
         return [attributedStringForAccessibilityRange(self, [parameter rangeValue], [pdfView scaleFactor]) accessibilityAttributedString];
     }
@@ -178,7 +163,7 @@ static id fallback_accessibilityAttributedStringForRangeAttributeForParameter(id
 }
 
 static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
-    PDFView *pdfView = SKGetPDFView(self);
+    PDFView *pdfView = [self getPDFView];
     if (pdfView) {
         // make sure the accessibility table is generated
         [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
@@ -212,16 +197,20 @@ void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
     if (PDFDisplayViewClass == Nil)
         return;
-    
-    if (class_getInstanceMethod(PDFDisplayViewClass, @selector(getPDFView)))
-        SKGetPDFView = SKGetPDFView_method_getPDFView;
-    else if (class_getInstanceMethod(PDFDisplayViewClass, @selector(pdfView)))
-        SKGetPDFView = SKGetPDFView_method_pdfView;
-    else if (class_getInstanceVariable(PDFDisplayViewClass, "_pdfView") || class_getInstanceVariable(PDFDisplayViewClass, "pdfView"))
-        SKGetPDFView = SKGetPDFView_ivar_pdfView;
-    else if (class_getInstanceVariable(PDFDisplayViewClass, "_private") || class_getInstanceVariable(PDFDisplayViewClass, "private"))
-        SKGetPDFView = SKGetPDFView_ivar_private_pdfView;
 
+    if ([PDFDisplayViewClass instancesRespondToSelector:@selector(getPDFView)] == NO) {
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(pdfView)]) {
+            SKAddInstanceMethodImplementationFromSelector(PDFDisplayViewClass, @selector(getPDFView), @selector(pdfView));
+        } else if (class_getInstanceVariable(PDFDisplayViewClass, "_pdfView")) {
+            pdfViewIvarKeyPath = @"pdfView";
+            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
+        } else if (class_getInstanceVariable(PDFDisplayViewClass, "_private")) {
+            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
+        } else {
+            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_getPDFView, "@@:");
+        }
+    }
+    
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ||
