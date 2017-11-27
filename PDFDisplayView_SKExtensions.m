@@ -41,6 +41,7 @@
 #import "SKPDFView.h"
 #import "NSAttributedString_SKExtensions.h"
 #import "SKRuntime.h"
+#import <objc/objc-runtime.h>
 
 #define SKDisableExtendedPDFViewAccessibilityKey @"SKDisableExtendedPDFViewAccessibility"
 
@@ -60,17 +61,32 @@
 
 #pragma mark -
 
-static id SKGetPDFView(id self) {
+static id (*SKGetPDFView)(id self) = NULL;
+
+static id SKGetPDFView_method_getPDFView(id self) {
+    return [self getPDFView];
+}
+
+static id SKGetPDFView_method_pdfView(id self) {
+    return [self pdfView];
+}
+
+static id SKGetPDFView_ivar_pdfView(id self) {
     id pdfView = nil;
-    if ([self respondsToSelector:@selector(getPDFView)]) {
-        pdfView = [self getPDFView];
-    } else if ([self respondsToSelector:@selector(pdfView)]) {
-        pdfView = [self pdfView];
-    } else {
-        @try { pdfView = [self valueForKeyPath:@"private.pdfView"] ?: [self valueForKey:@"pdfView"]; }
-        @catch (id exception) {}
-    }
+    @try { pdfView = [self valueForKey:@"pdfView"]; }
+    @catch (id exception) {}
     return pdfView;
+}
+
+static id SKGetPDFView_ivar_private_pdfView(id self) {
+    id pdfView = nil;
+    @try { pdfView = [self valueForKeyPath:@"private.pdfView"]; }
+    @catch (id exception) {}
+    return pdfView;
+}
+
+static id SKGetPDFView_fallback(id self) {
+    return nil;
 }
 
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
@@ -196,6 +212,17 @@ void SKSwizzlePDFDisplayViewMethods() {
     if (PDFDisplayViewClass == Nil)
         return;
     
+    if (class_getInstanceMethod(PDFDisplayViewClass, @selector(getPDFView)))
+        SKGetPDFView = SKGetPDFView_method_getPDFView;
+    else if (class_getInstanceMethod(PDFDisplayViewClass, @selector(pdfView)))
+        SKGetPDFView = SKGetPDFView_method_pdfView;
+    else if (class_getInstanceVariable(PDFDisplayViewClass, "_pdfView") || class_getInstanceVariable(PDFDisplayViewClass, "pdfView"))
+        SKGetPDFView = SKGetPDFView_ivar_pdfView;
+    else if (class_getInstanceVariable(PDFDisplayViewClass, "_private") || class_getInstanceVariable(PDFDisplayViewClass, "private"))
+        SKGetPDFView = SKGetPDFView_ivar_private_pdfView;
+    else
+        SKGetPDFView = SKGetPDFView_fallback;
+
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ||
