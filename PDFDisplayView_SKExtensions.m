@@ -67,7 +67,7 @@ static id SKGetPDFView(id self) {
     } else if ([self respondsToSelector:@selector(pdfView)]) {
         pdfView = [self pdfView];
     } else {
-        @try { pdfView = [self valueForKey:@"pdfView"] ?: [self valueForKeyPath:@"private.pdfView"]; }
+        @try { pdfView = [self valueForKeyPath:@"private.pdfView"] ?: [self valueForKey:@"pdfView"]; }
         @catch (id exception) {}
     }
     return pdfView;
