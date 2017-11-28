@@ -132,3 +132,6 @@ extern NSString *SKCaseInsensitiveNoteSearchKey;
 extern NSString *SKCaseInsensitiveFindKey;
 extern NSString *SKDownloadsDirectoryKey;
 extern NSString *SKDisableSearchAfterSpotlighKey;
+extern NSString *SKDisplayNoteBoundsKey;
+extern NSString *SKDisplayPageBoundsKey;
+

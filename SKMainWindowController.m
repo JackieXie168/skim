@@ -175,8 +175,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
 #define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
-#define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds"
-
 #define SKUseSettingsFromPDFKey @"SKUseSettingsFromPDF"
 
 @interface SKMainWindowController (SKPrivate)
@@ -614,6 +612,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey] && NSEqualRects(rect, NSZeroRect) && [pdfView activeAnnotation])
         rect = [[pdfView activeAnnotation] bounds];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey] && NSEqualRects(rect, NSZeroRect))
+        rect = [[pdfView currentPage] boundsForBox:[pdfView displayBox]];
+
     if (NSEqualRects(rect, NSZeroRect) == NO) {
         if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
@@ -2133,6 +2134,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     }
     
     [secondaryPdfView requiresDisplay];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey])
+        [self updateRightStatus];
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {

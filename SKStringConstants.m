@@ -133,3 +133,6 @@ NSString *SKCaseInsensitiveNoteSearchKey = @"SKCaseInsensitiveNoteSearch";
 NSString *SKCaseInsensitiveFindKey = @"SKCaseInsensitiveFind";
 NSString *SKDownloadsDirectoryKey = @"SKDownloadsDirectory";
 NSString *SKDisableSearchAfterSpotlighKey = @"SKDisableSearchAfterSpotligh";
+NSString *SKDisplayNoteBoundsKey = @"SKDisplayNoteBounds";
+NSString *SKDisplayPageBoundsKey = @"SKDisplayPageBounds";
+

@@ -1796,13 +1796,17 @@ static NSArray *allMainDocumentPDFViews() {
     
     [self synchronizeWindowTitleWithDocumentName];
     [self updateLeftStatus];
-    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey])
+        [self updateRightStatus];
+
     if ([self interactionMode] == SKPresentationMode)
         [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[page pageIndex]]];
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
     [self resetThumbnails];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey])
+        [self updateRightStatus];
 }
 
 - (void)handleSelectionOrMagnificationChangedNotification:(NSNotification *)notification {
@@ -1839,7 +1843,8 @@ static NSArray *allMainDocumentPDFViews() {
         [rightSideController.noteOutlineView deselectAll:self];
     }
     [rightSideController.noteOutlineView reloadData];
-    [self updateRightStatus];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey])
+        [self updateRightStatus];
 }
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
