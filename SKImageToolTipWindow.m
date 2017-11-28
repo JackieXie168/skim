@@ -40,12 +40,13 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
 
-#define WINDOW_OFFSET           20.0
+#define WINDOW_OFFSET           18.0
 #define ALPHA_VALUE             0.95
 #define CRITICAL_ALPHA_VALUE    0.9
-#define AUTO_HIDE_TIME_INTERVAL 7.0
-#define DEFAULT_SHOW_DELAY      1.0
-#define ALT_SHOW_DELAY          0.1
+#define AUTO_HIDE_TIME_INTERVAL 10.0
+#define DEFAULT_SHOW_DELAY      1.5
+#define ALT_SHOW_DELAY          0.2
+#define WINDOW_LEVEL            ((NSWindowLevel)104)
 
 
 @implementation SKImageToolTipWindow
@@ -69,7 +70,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         [self setOpaque:YES];
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
-        [self setLevel:NSStatusWindowLevel];
+        [self setLevel:WINDOW_LEVEL];
         [self setDefaultAlphaValue:ALPHA_VALUE];
         [self setAutoHideTimeInterval:AUTO_HIDE_TIME_INTERVAL];
         
