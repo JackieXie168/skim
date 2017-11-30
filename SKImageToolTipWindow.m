@@ -97,17 +97,19 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)showDelayed {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect contentRect = NSZeroRect;
+    NSRect contentRect = NSZeroRect, screenRect = [[NSScreen screenForPoint:thePoint] frame];
     NSImage *image = [context toolTipImage];
     
     if (image) {
         [self setBackgroundImage:image];
         
         contentRect.size = [image size];
-        contentRect.origin.x = thePoint.x;
+        contentRect.origin.x = fmin(thePoint.x, NSMaxX(screenRect) - NSWidth(contentRect));
         contentRect.origin.y = thePoint.y - WINDOW_OFFSET - NSHeight(contentRect);
-        contentRect = [self constrainFrameRect:contentRect toScreen:[NSScreen screenForPoint:thePoint]];
-        [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
+        contentRect = [self frameRectForContentRect:contentRect];
+        if (NSMinY(contentRect) < NSMinX(screenRect))
+            contentRect.origin.y = thePoint.y + WINDOW_OFFSET;
+        [self setFrame:contentRect display:NO];
         
         if ([self isVisible] && [self alphaValue] > CRITICAL_ALPHA_VALUE)
             [self orderFront:self];
