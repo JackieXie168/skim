@@ -48,7 +48,7 @@
 static id (*original_toolTip)(id, SEL) = NULL;
 
 - (NSString *)replacement_toolTip {
-    return ([self URL] || [self destination] || original_toolTip == NULL) ? @"" : original_toolTip(self, _cmd);
+    return ([self destination] || original_toolTip == NULL) ? @"" : original_toolTip(self, _cmd);
 }
 
 + (void)load {

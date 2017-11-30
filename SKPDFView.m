@@ -362,7 +362,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         
         for (PDFPage *page in [self visiblePages]) {
             for (PDFAnnotation *annotation in [page annotations]) {
-                if ([annotation isNote] || (hasLinkToolTips && [annotation isLink])) {
+                if ([annotation isNote] || (hasLinkToolTips && [annotation linkDestination])) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:docView];
