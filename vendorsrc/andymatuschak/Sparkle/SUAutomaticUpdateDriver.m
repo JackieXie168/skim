@@ -15,6 +15,7 @@
 
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua
 {
+    if (ua) { CFRelease(ua); }
 	alert = [[SUAutomaticUpdateAlert alloc] initWithAppcastItem:updateItem host:host delegate:self];
 	if ([NSApp isActive])
 		[[alert window] makeKeyAndOrderFront:self];
