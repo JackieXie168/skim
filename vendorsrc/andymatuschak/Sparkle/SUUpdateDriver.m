@@ -36,7 +36,7 @@ NSString *SUUpdateDriverFinishedNotification = @"SUUpdateDriverFinished";
 
 - (void)dealloc
 {
-    [host release];
+	[host release];
 	[appcastURL release];
     [super dealloc];
 }

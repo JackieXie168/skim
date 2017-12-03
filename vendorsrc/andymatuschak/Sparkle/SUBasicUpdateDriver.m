@@ -208,7 +208,6 @@
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua
 {
 	if (ua) { CFRelease(ua); }
-	[self installUpdate];
 }
 
 - (void)unarchiverDidFail:(SUUnarchiver *)ua

@@ -15,7 +15,7 @@
 
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua
 {
-    if (ua) { CFRelease(ua); }
+	[super unarchiverDidFinish:ua];
 	alert = [[SUAutomaticUpdateAlert alloc] initWithAppcastItem:updateItem host:host delegate:self];
 	if ([NSApp isActive])
 		[[alert window] makeKeyAndOrderFront:self];
@@ -31,6 +31,7 @@
 
 - (void)automaticUpdateAlert:(SUAutomaticUpdateAlert *)aua finishedWithChoice:(SUAutomaticInstallationChoice)choice;
 {
+    [alert release]; alert = nil;
 	switch (choice)
 	{
 		case SUInstallNowChoice:

@@ -132,7 +132,7 @@
 
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua
 {
-    if (ua) { CFRelease(ua); }
+	[super unarchiverDidFinish:ua];
 	[statusController beginActionWithTitle:SULocalizedString(@"Ready to Install", nil) maxProgressValue:1 statusText:nil];
 	[statusController setProgressValue:1]; // Fill the bar.
 	[statusController setButtonEnabled:YES];
