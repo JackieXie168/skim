@@ -1134,10 +1134,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [self setPDFData:[pdfDocWithoutNotes dataRepresentation] pageOffsets:offsets];
         
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
-        
-        [offsets release];
     }
     
+    [offsets release];
+
     [[pdfDocWithoutNotes outlineRoot] clearDocument];
     
     [[self mainWindowController] dismissProgressSheet];
