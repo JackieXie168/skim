@@ -1079,7 +1079,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
     NSMapTable *offsets = nil;
-    SKPDFView *pdfView = [self pdfView];
     NSMutableArray *annotations = nil;
     
     for (i = 0; i < count; i++) {
@@ -1130,6 +1129,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 
+                SKPDFView *pdfView = [self pdfView];
                 for (PDFAnnotation *annotation in annotations) {
                     NSDictionary *properties = [annotation SkimNoteProperties];
                     if ([[annotation type] isEqualToString:SKNTextString])
