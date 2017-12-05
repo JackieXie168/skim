@@ -236,9 +236,9 @@
 
 - (IBAction)toggleHideNotes:(id)sender{
     NSNumber *wasHidden = [NSNumber numberWithBool:[pdfView hideNotes]];
-    [pdfView setHideNotes:[pdfView hideNotes] == NO];
     [notes setValue:wasHidden forKey:@"shouldDisplay"];
     [notes setValue:wasHidden forKey:@"shouldPrint"];
+    [pdfView setHideNotes:[pdfView hideNotes] == NO];
 }
 
 - (IBAction)takeSnapshot:(id)sender{
