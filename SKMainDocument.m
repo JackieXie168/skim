@@ -1118,48 +1118,29 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     if (didConvert) {
-        
         // if pdfDocWithoutNotes was nil, the document was not encrypted, so no need to try to unlock
         if (pdfDocWithoutNotes == nil)
             pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
-        
-        dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
-
-        dispatch_async(queue, ^(){
-        
-            NSInteger i, count = [pdfDocWithoutNotes pageCount];
-            for (i = 0; i < count; i++) {
-                PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
-                
-                for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
-                    if ([annotation isConvertibleAnnotation])
-                        [page removeAnnotation:annotation];
-                }
+        count = [pdfDocWithoutNotes pageCount];
+        for (i = 0; i < count; i++) {
+            PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
+            
+            for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
+                if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
+                    [page removeAnnotation:annotation];
             }
-            
-            NSData *pdfData = [pdfDocWithoutNotes dataRepresentation];
-            
-            dispatch_async(dispatch_get_main_queue(), ^(){
-                [self setPDFData:pdfData pageOffsets:offsets];
-            
-                [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
-                
-                [offsets release];
-                
-                [[pdfDocWithoutNotes outlineRoot] clearDocument];
-                
-                [[self mainWindowController] dismissProgressSheet];
-            });
-        });
+        }
         
-    } else {
+        [self setPDFData:[pdfDocWithoutNotes dataRepresentation] pageOffsets:offsets];
+        
+        [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
         
         [offsets release];
-
-        [[pdfDocWithoutNotes outlineRoot] clearDocument];
-        
-        [[self mainWindowController] dismissProgressSheet];
     }
+    
+    [[pdfDocWithoutNotes outlineRoot] clearDocument];
+    
+    [[self mainWindowController] dismissProgressSheet];
 }
 
 - (void)beginConvertNotesPasswordSheetForPDFDocument:(PDFDocument *)pdfDoc {
