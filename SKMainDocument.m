@@ -1078,9 +1078,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     PDFDocument *pdfDoc = [self pdfDocument];
     NSInteger i, count = [pdfDoc pageCount];
-    BOOL didConvert = NO;
     NSMapTable *offsets = nil;
     SKPDFView *pdfView = [self pdfView];
+    NSMutableArray *annotations = nil;
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
@@ -1088,23 +1088,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         
         for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
-                NSDictionary *properties = [annotation SkimNoteProperties];
-                if ([[annotation type] isEqualToString:SKNTextString])
-                    properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
-                PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
-                if (newAnnotation) {
-                    // this is only to make sure markup annotations generate the lineRects, for thread safety
-                    [newAnnotation boundsOrder];
-                    PDFAnnotation *popup = [annotation popup];
-                    if (popup)
-                        [pdfView removeAnnotation:popup];
-                    [pdfView removeAnnotation:annotation];
-                    [pdfView addAnnotation:newAnnotation toPage:page];
-                    if ([[newAnnotation contents] length] == 0)
-                        [newAnnotation autoUpdateString];
-                    [newAnnotation release];
-                    didConvert = YES;
-                }
+                if (annotations == nil)
+                    annotations = [[NSMutableArray alloc] init];
+                [annotations addObject:annotation];
             }
         }
         
@@ -1117,30 +1103,71 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
     }
     
-    if (didConvert) {
+    if (annotations) {
+        
         // if pdfDocWithoutNotes was nil, the document was not encrypted, so no need to try to unlock
         if (pdfDocWithoutNotes == nil)
             pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
-        count = [pdfDocWithoutNotes pageCount];
-        for (i = 0; i < count; i++) {
-            PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
+        
+        dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
+        
+        dispatch_async(queue, ^{
             
-            for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
-                if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
-                    [page removeAnnotation:annotation];
+            NSInteger i, count = [pdfDocWithoutNotes pageCount];
+            
+            for (i = 0; i < count; i++) {
+                PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
+                
+                for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
+                    if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
+                        [page removeAnnotation:annotation];
+                }
             }
-        }
-        
-        [self setPDFData:[pdfDocWithoutNotes dataRepresentation] pageOffsets:offsets];
-        
-        [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
-    }
-    
-    [offsets release];
+            
+            NSData *pdfData = [pdfDocWithoutNotes dataRepresentation];
+            
+            [[pdfDocWithoutNotes outlineRoot] clearDocument];
 
-    [[pdfDocWithoutNotes outlineRoot] clearDocument];
-    
-    [[self mainWindowController] dismissProgressSheet];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                for (PDFAnnotation *annotation in annotations) {
+                    NSDictionary *properties = [annotation SkimNoteProperties];
+                    if ([[annotation type] isEqualToString:SKNTextString])
+                        properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
+                    PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
+                    if (newAnnotation) {
+                        // this is only to make sure markup annotations generate the lineRects, for thread safety
+                        [newAnnotation boundsOrder];
+                        PDFAnnotation *popup = [annotation popup];
+                        if (popup)
+                            [pdfView removeAnnotation:popup];
+                        [pdfView addAnnotation:newAnnotation toPage:[annotation page]];
+                        [pdfView removeAnnotation:annotation];
+                        if ([[newAnnotation contents] length] == 0)
+                            [newAnnotation autoUpdateString];
+                        [newAnnotation release];
+                    }
+                }
+
+                [self setPDFData:pdfData pageOffsets:offsets];
+                
+                [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
+                
+                [offsets release];
+                [annotations release];
+                
+                [[self mainWindowController] dismissProgressSheet];
+            });
+        });
+        
+    } else {
+        
+        [offsets release];
+
+        [[pdfDocWithoutNotes outlineRoot] clearDocument];
+        
+        [[self mainWindowController] dismissProgressSheet];
+    }
 }
 
 - (void)beginConvertNotesPasswordSheetForPDFDocument:(PDFDocument *)pdfDoc {
