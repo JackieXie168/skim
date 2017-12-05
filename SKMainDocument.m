@@ -1138,6 +1138,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [offsets release];
     }
     
+    [offsets release];
+
     [[pdfDocWithoutNotes outlineRoot] clearDocument];
     
     [[self mainWindowController] dismissProgressSheet];
