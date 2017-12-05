@@ -309,7 +309,7 @@ enum {
 - (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
 
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace;
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate;
 
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;

@@ -836,7 +836,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     }
 }
     
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace {
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate {
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
@@ -845,13 +845,22 @@ static char SKMainWindowContentLayoutRectObservationContext;
     // we want to do this in bulk as binding can be very slow and there are potentially many notes
     mwcFlags.addOrRemoveNotesInBulk = 1;
     
-    if (replace) {
-        [pdfView removePDFToolTipRects];
-        // remove the current annotations
-        [pdfView setActiveAnnotation:nil];
-        for (annotation in [[notes copy] autorelease])
+    if ([notesToRemove count]) {
+        // notesToRemove is either all notes, no notes, or non Skim notes
+        BOOL removeAllNotes = [[notesToRemove firstObject] isSkimNote];
+        if (removeAllNotes) {
+            [pdfView removePDFToolTipRects];
+            // remove the current annotations
+            [pdfView setActiveAnnotation:nil];
+        }
+        for (annotation in [[notesToRemove copy] autorelease]) {
+            PDFAnnotation *popup = [annotation popup];
+            if (popup)
+                [pdfView removeAnnotation:popup];
             [pdfView removeAnnotation:annotation];
-        [self removeAllObjectsFromNotes];
+        }
+        if (removeAllNotes)
+            [self removeAllObjectsFromNotes];
     }
     
     // create new annotations from the dictionary and add them to their page and to the document
@@ -867,6 +876,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page];
+            if (autoUpdate && [[annotation contents] length] == 0)
+                [annotation autoUpdateString];
             [notesToAdd addObject:annotation];
             [annotation release];
         }

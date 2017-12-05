@@ -207,7 +207,7 @@ enum {
     [self tryToUnlockDocument:pdfDoc];
     [[self mainWindowController] setPdfDocument:pdfDoc];
     
-    [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES];
+    [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] removeAnnotations:[self notes] autoUpdate:NO];
     
     if ([tmpData presentationOptions])
         [[self mainWindowController] setPresentationOptions:[tmpData presentationOptions]];
@@ -1025,7 +1025,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     if (array) {
-        [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace];
+        [[self mainWindowController] addAnnotationsFromDictionaries:array removeAnnotations:replace ? [self notes] : nil autoUpdate:NO];
         [[self undoManager] setActionName:replace ? NSLocalizedString(@"Replace Notes", @"Undo action name") : NSLocalizedString(@"Add Notes", @"Undo action name")];
     } else
         NSBeep();
@@ -1080,7 +1080,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSInteger i, count = [pdfDoc pageCount];
     NSMapTable *offsets = nil;
     NSMutableArray *annotations = nil;
-    
+    NSMutableArray *noteDicts = nil;
+
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
         NSPoint pageOrigin = [page boundsForBox:kPDFDisplayBoxMediaBox].origin;
@@ -1090,6 +1091,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if (annotations == nil)
                     annotations = [[NSMutableArray alloc] init];
                 [annotations addObject:annotation];
+                NSDictionary *properties = [annotation SkimNoteProperties];
+                if ([[annotation type] isEqualToString:SKNTextString])
+                    properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
+                if (noteDicts == nil)
+                    noteDicts = [[NSMutableArray alloc] init];
+                [noteDicts addObject:properties];
             }
         }
         
@@ -1129,33 +1136,16 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                SKPDFView *pdfView = [self pdfView];
-                for (PDFAnnotation *annotation in annotations) {
-                    NSDictionary *properties = [annotation SkimNoteProperties];
-                    if ([[annotation type] isEqualToString:SKNTextString])
-                        properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
-                    PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
-                    if (newAnnotation) {
-                        // this is only to make sure markup annotations generate the lineRects, for thread safety
-                        [newAnnotation boundsOrder];
-                        PDFAnnotation *popup = [annotation popup];
-                        if (popup)
-                            [pdfView removeAnnotation:popup];
-                        [pdfView addAnnotation:newAnnotation toPage:[annotation page]];
-                        [pdfView removeAnnotation:annotation];
-                        if ([[newAnnotation contents] length] == 0)
-                            [newAnnotation autoUpdateString];
-                        [newAnnotation release];
-                    }
-                }
-
+                [[self mainWindowController] addAnnotationsFromDictionaries:noteDicts removeAnnotations:annotations autoUpdate:YES];
+                
                 [self setPDFData:pdfData pageOffsets:offsets];
                 
                 [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
                 
                 [offsets release];
+                [noteDicts release];
                 [annotations release];
-                
+
                 [[self mainWindowController] dismissProgressSheet];
             });
         });
