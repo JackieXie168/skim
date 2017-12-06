@@ -319,6 +319,9 @@ int main (int argc, const char * argv[]) {
                             [mutableNote setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
                             if (contents) {
                                 NSRange r = [contents rangeOfString:@"  "];
+                                NSRange r1 = [contents rangeOfString:@"\n"];
+                                if (r1.location < r.location)
+                                    r = r1;
                                 if (NSMaxRange(r) < [contents length]) {
                                     NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]] autorelease];
                                     [mutableNote setObject:attrString forKey:SKNPDFAnnotationTextKey];
