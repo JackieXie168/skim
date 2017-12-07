@@ -3249,7 +3249,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         PDFAnnotation *linkAnnotation = nil;
         BOOL foundCoveringAnnotation = NO;
-        id annotations = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [[page annotations] reverseObjectEnumerator] : [page annotations];
+        id annotations = (NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 ? [page annotations] : [[page annotations] reverseObjectEnumerator];
         
         // Hit test for annotation.
         for (PDFAnnotation *annotation in annotations) {
