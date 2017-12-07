@@ -228,7 +228,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     SKINITIALIZE;
     
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, nil];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11)
+    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12)
         sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, NSPasteboardTypeString, NSPasteboardTypeRTF, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:[NSArray array]];
     
@@ -1759,7 +1759,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             return YES;
         }
     }
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 && [[self currentSelection] hasCharacters]) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[self currentSelection] hasCharacters]) {
         if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
             [pboard clearContents];
             [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
@@ -1779,7 +1779,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         (([[self document] allowsPrinting] && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
