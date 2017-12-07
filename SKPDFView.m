@@ -2209,8 +2209,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
     NSRect rect = [annotation displayRect];
-    if (annotation == activeAnnotation && [annotation isResizable]) {
-        CGFloat margin = HANDLE_SIZE / [self scaleFactor];
+    if (annotation == activeAnnotation) {
+        CGFloat margin = ([annotation isResizable] ? HANDLE_SIZE  : 1.0) / [self scaleFactor];
         rect = NSInsetRect(rect, -margin, -margin);
     }
     [self setNeedsDisplayInRect:rect ofPage:page];

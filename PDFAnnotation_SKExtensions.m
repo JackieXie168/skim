@@ -415,7 +415,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         CGContextSaveGState(context);
         CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
         CGContextSetStrokeColorWithColor(context, color);
-        CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth), lineWidth);
+        CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), -0.5 * lineWidth, -0.5 * lineWidth), lineWidth);
         if ([self isResizable])
             SKDrawResizeHandles(context, rect, 4.0 * lineWidth, active);
         CGContextRestoreGState(context);

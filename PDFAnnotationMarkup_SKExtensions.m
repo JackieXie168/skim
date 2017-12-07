@@ -322,7 +322,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     CGContextSetLineWidth(context, lineWidth);
     for (i = 0; i < iMax; i++) {
         NSRect rect = [pdfView integralRect:[lines rectAtIndex:i] onPage:page];
-        CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), 0.5 * lineWidth, 0.5 * lineWidth));
+        CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), -0.5 * lineWidth, -0.5 * lineWidth));
     }
     CGContextRestoreGState(context);
 }
