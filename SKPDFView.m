@@ -3448,7 +3448,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         NSPoint point = NSZeroPoint;
         PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
-        id annotations = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [[page annotations] reverseObjectEnumerator] : [page annotations];
+        id annotations = (NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 ? [page annotations] : [[page annotations] reverseObjectEnumerator];
         
         for (PDFAnnotation *annotation in annotations) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
