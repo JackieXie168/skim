@@ -68,12 +68,12 @@
 }
 
 // don't send out delegate methods during a synchronous find
-// don't warn when using 10.3 SDK for different type
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmismatched-parameter-types"
+#if SDK_BEFORE(10_13)
+#define NSStringCompareOptions NSUInteger
+#endif
 
-- (NSArray *)findString:(NSString *)string withOptions:(NSUInteger)options {
+- (NSArray *)findString:(NSString *)string withOptions:(NSStringCompareOptions)options {
     id delegate = [self delegate];
     [self setDelegate:nil];
     NSArray *array = [super findString:string withOptions:options];
@@ -81,15 +81,13 @@
     return array;
 }
 
-- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSUInteger)options {
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSStringCompareOptions)options {
     id delegate = [self delegate];
     [self setDelegate:nil];
     selection = [super findString:string fromSelection:selection withOptions:options];
     [self setDelegate:delegate];
     return selection;
 }
-
-#pragma clang diagnostic pop
 
 - (id <SKPDFDocumentDelegate>)delegate {
     return (id <SKPDFDocumentDelegate>)[super delegate];
