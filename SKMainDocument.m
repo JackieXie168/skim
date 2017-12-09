@@ -1119,10 +1119,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         
         dispatch_async(queue, ^{
             
-            NSInteger i, count = [pdfDocWithoutNotes pageCount];
+            NSInteger j, jMax = [pdfDocWithoutNotes pageCount];
             
-            for (i = 0; i < count; i++) {
-                PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
+            for (j = 0; j < jMax; j++) {
+                PDFPage *page = [pdfDocWithoutNotes pageAtIndex:j];
                 
                 for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
                     if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
@@ -1130,7 +1130,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             }
             
-            NSData *pdfData = [pdfDocWithoutNotes dataRepresentation];
+            NSData *data = [pdfDocWithoutNotes dataRepresentation];
             
             [[pdfDocWithoutNotes outlineRoot] clearDocument];
 
@@ -1138,7 +1138,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 
                 [[self mainWindowController] addAnnotationsFromDictionaries:noteDicts removeAnnotations:annotations autoUpdate:YES];
                 
-                [self setPDFData:pdfData pageOffsets:offsets];
+                [self setPDFData:data pageOffsets:offsets];
                 
                 [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
                 
