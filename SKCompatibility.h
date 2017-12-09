@@ -77,7 +77,7 @@
 #define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if SDK_BEFORE(10_7)
 
 @protocol NSURLDownloadDelegate <NSObject> @end
 
