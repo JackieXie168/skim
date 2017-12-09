@@ -228,7 +228,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     SKINITIALIZE;
     
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, nil];
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12)
+    if (RUNNING(10_12))
         sendTypes = [NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, NSPasteboardTypeString, NSPasteboardTypeRTF, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:[NSArray array]];
     
@@ -388,7 +388,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         rect = selectionRect;
     }
     if (pageIndex != NSNotFound) {
-        BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
+        BOOL active = RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
@@ -1318,7 +1318,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11) {
+    if (RUNNING_AFTER(10_11)) {
         // On Sierra menuForEvent: for is forwarded to the PDFView of the PDFPage rather than the actual PDFView,
         // which due to the setView: override in SKPDFPage is us.
         // So send it back to the correct PDFView if it isn't ours
@@ -1759,7 +1759,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             return YES;
         }
     }
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[self currentSelection] hasCharacters]) {
+    if (RUNNING(10_12) && [[self currentSelection] hasCharacters]) {
         if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
             [pboard clearContents];
             [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
@@ -1779,7 +1779,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         (([[self document] allowsPrinting] && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
+    if (RUNNING(10_12) && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
@@ -2006,7 +2006,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [page removeAnnotation:wasAnnotation];
     [self annotationsChangedOnPage:page];
     if ([wasAnnotation isNote]) {
-        if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 && [[page annotations] containsObject:wasAnnotation])
+        if (RUNNING(10_12) && [[page annotations] containsObject:wasAnnotation])
             [page removeAnnotation:wasAnnotation];
         [self resetPDFToolTipRects];
     }
@@ -2369,7 +2369,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (editor && [self commitEditing] == NO)
         [self discardEditing];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12) {
+    if (!RUNNING_AFTER(10_12)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         NSWindow *oldWindow = [self window];
         if (oldWindow) {
@@ -2389,13 +2389,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
     if ([textField isEditable]) {
         [textField selectText:nil];
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+        if (!RUNNING_AFTER(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     
     if ([super becomeFirstResponder]) {
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+        if (!RUNNING_AFTER(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
@@ -2404,7 +2404,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+        if (!RUNNING_AFTER(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
@@ -3249,7 +3249,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         PDFAnnotation *linkAnnotation = nil;
         BOOL foundCoveringAnnotation = NO;
-        id annotations = (NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 ? [page annotations] : [[page annotations] reverseObjectEnumerator];
+        id annotations = RUNNING(10_12) ? [page annotations] : [[page annotations] reverseObjectEnumerator];
         
         // Hit test for annotation.
         for (PDFAnnotation *annotation in annotations) {
@@ -3448,7 +3448,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         NSPoint point = NSZeroPoint;
         PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
-        id annotations = (NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 ? [page annotations] : [[page annotations] reverseObjectEnumerator];
+        id annotations = RUNNING(10_12) ? [page annotations] : [[page annotations] reverseObjectEnumerator];
         
         for (PDFAnnotation *annotation in annotations) {
             if ([annotation isSkimNote] && [annotation hitTest:point] && [self isEditingAnnotation:annotation] == NO) {
@@ -3952,7 +3952,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if ([self displaysPageBreaks]) {
         aShadow = [[[NSShadow alloc] init] autorelease];
-        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 ? 0.3 : 1.0]];
+        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
     }
     
     [theEvent retain];
@@ -3970,7 +3970,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
             [self setCursorForMouse:theEvent];
-            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8) {
+            if (RUNNING_AFTER(10_8)) {
                 [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -1.0 * magnification * [self scaleFactor])];
             } else {

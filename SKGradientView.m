@@ -58,7 +58,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0
         autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
-        CGFloat *grays = floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_10 ? defaultGrays + 5 : defaultGrays;
+        CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 5 : defaultGrays;
         gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[0] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[1] alpha:1.0]];
         alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[2] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[3] alpha:1.0]];
         edgeColor = [[NSColor colorWithDeviceWhite:grays[4] alpha:1.0] retain];

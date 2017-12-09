@@ -138,7 +138,7 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
     original_drawPage_toContext(self, _cmd, pdfPage, context);
     
     // On (High) Sierra note annotations don't draw at all
-    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_12) {
+    if (RUNNING_AFTER(10_11)) {
         for (PDFAnnotation *annotation in [[[pdfPage annotations] copy] autorelease]) {
             if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
                 [annotation drawWithBox:[self displayBox] inContext:context];
@@ -147,9 +147,9 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 }
 
 + (void)load {
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 && floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
+    if (RUNNING(10_10) || RUNNING(10_11))
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
-    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_12)
+    if (RUNNING_AFTER(10_11))
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
 }
 
@@ -179,7 +179,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
         // for some versions we need to dirty the documentView, otherwise it won't redisplay when scrolled out of view,
         // for 10.12 dirtying the documentView dioes not do anything
-        NSView *view = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
+        NSView *view = RUNNING_BEFORE(10_12) ? [self documentView] : self;
         rect = NSIntegralRect([self convertRect:NSInsetRect(rect, -1.0, -1.0) fromPage:page]);
         rect = NSIntersectionRect([view bounds], [self convertRect:rect toView:view]);
         if (NSIsEmptyRect(rect) == NO)
@@ -197,7 +197,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (void)requiresDisplay {
-    NSView *view = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? [self documentView] : self;
+    NSView *view = RUNNING_BEFORE(10_12) ? [self documentView] : self;
     [view setNeedsDisplay:YES];
 }
 
@@ -264,7 +264,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point {
     PDFPage *page = [[self document] pageAtIndex:pageIndex];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12) {
+    if (RUNNING_AFTER(10_12)) {
         NSView *docView = [self documentView];
         if (NSLocationInRange(pageIndex, [self displayedPageIndexRange]) == NO)
             [self goToPage:page];
@@ -316,13 +316,13 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 + (NSColor *)defaultPageBackgroundColor {
-    if ([self instancesRespondToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
+    if ([self instancesRespondToSelector:@selector(setPageColor:)] && RUNNING_BEFORE(10_12))
         return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];
     return [NSColor whiteColor];
 }
 
 - (void)applyDefaultPageBackgroundColor {
-    if ([self respondsToSelector:@selector(setPageColor:)] && floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11)
+    if ([self respondsToSelector:@selector(setPageColor:)] && RUNNING_BEFORE(10_12))
         [self setPageColor:[[self class] defaultPageBackgroundColor]];
 }
 

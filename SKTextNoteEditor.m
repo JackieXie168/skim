@@ -107,7 +107,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     NSRect frame = [pdfView integralRect:[annotation bounds] onPage:[annotation page]];
     frame = [pdfView convertRect:[pdfView convertRect:frame fromPage:[annotation page]] toView:[pdfView documentView]];
     [textField setFrame:frame];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_8) {
+    if (RUNNING_BEFORE(10_9)) {
         frame.origin = NSZeroPoint;
         frame.size.width /= [pdfView scaleFactor];
         frame.size.height /= [pdfView scaleFactor];

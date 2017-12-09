@@ -266,7 +266,7 @@ enum {
     
     if (wasVisible == NO) {
         // currently PDFView on 10.9 and later initially doesn't display the PDF, messing around like this is a workaround for this bug
-        if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_9) {
+        if (RUNNING(10_9)) {
             [[self mainWindowController] toggleStatusBar:nil];
             [[self mainWindowController] toggleStatusBar:nil];
         }
@@ -591,7 +591,7 @@ enum {
     }
     
     // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_8 && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
+    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         NSArray *skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
@@ -1115,7 +1115,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (pdfDocWithoutNotes == nil)
             pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         
-        dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
+        dispatch_queue_t queue = RUNNING_AFTER(10_11) ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
         
         dispatch_async(queue, ^{
             

@@ -66,7 +66,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 - (NSImage *)toolTipImage {
     static NSColor *backgroundColor = nil;
     if (backgroundColor == nil)
-        backgroundColor = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ? [[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
+        backgroundColor = RUNNING_AFTER(10_9) ? [[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey] - 2.0 * TEXT_MARGIN_X;
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey] - 2.0 * TEXT_MARGIN_Y;

@@ -194,7 +194,7 @@ static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self,
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
 void SKSwizzlePDFDisplayViewMethods() {
-    Class PDFDisplayViewClass = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_11 ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
+    Class PDFDisplayViewClass = RUNNING_BEFORE(10_12) ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
     if (PDFDisplayViewClass == Nil)
         return;
 
@@ -213,7 +213,7 @@ void SKSwizzlePDFDisplayViewMethods() {
     
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_9 ||
+    if (RUNNING_AFTER(10_9) ||
         [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey] ||
         [PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForSelection:)] == NO ||
         [PDFDisplayViewClass instancesRespondToSelector:@selector(selectionForAccessibilityRange:)] == NO)

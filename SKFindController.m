@@ -88,7 +88,7 @@
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
-    if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_10) {
+    if (RUNNING_BEFORE(10_10)) {
         [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
         [gradientView setAlternateGradient:nil];
     }

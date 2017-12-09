@@ -1338,7 +1338,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     // Set up presentation mode
-    [pdfView setBackgroundColor:(NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_12 ? [NSColor blackColor] : [NSColor clearColor]];
+    [pdfView setBackgroundColor:RUNNING(10_12) ? [NSColor blackColor] : [NSColor clearColor]];
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
@@ -1402,7 +1402,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
-    if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_7)
+    if (RUNNING_BEFORE(10_7))
         [fullScreenWindow display];
     [fadeWindow fadeOut];
 }
@@ -1688,13 +1688,13 @@ static char SKMainWindowContentLayoutRectObservationContext;
     else
         return [[self pdfDocument] isLocked] == NO &&
                 ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) &&
-                ((NSInteger)floor(NSAppKitVersionNumber) != (NSInteger)NSAppKitVersionNumber10_12 || [[[self window] tabbedWindows] count] < 2);
+                (!RUNNING(10_12) || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canEnterPresentation {
     return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
             ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) &&
-            ((NSInteger)floor(NSAppKitVersionNumber) != (NSInteger)NSAppKitVersionNumber10_12 || [[[self window] tabbedWindows] count] < 2);
+            (!RUNNING(10_12) || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canExitFullscreen {
@@ -1739,7 +1739,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
-    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_10_Max)
+    else if (RUNNING_BEFORE(10_11))
         offset = 13.0;
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
@@ -2575,7 +2575,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     PDFPage *page = [[pdfView document] pageAtIndex:[thumbnail pageIndex]];
     SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
     PDFDisplayBox box = [pdfView displayBox];
-    dispatch_queue_t queue = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_11 ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
+    dispatch_queue_t queue = RUNNING_AFTER(10_11) ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
     
     dispatch_async(queue, ^{
         NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:box readingBar:readingBar];

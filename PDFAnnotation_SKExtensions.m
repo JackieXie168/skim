@@ -409,7 +409,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     if (NSIsEmptyRect([self bounds]))
         return;
     if ([self isSkimNote]) {
-        BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
+        BOOL active = RUNNING_AFTER(10_12) ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
         NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
         CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
         CGContextSaveGState(context);

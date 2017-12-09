@@ -140,7 +140,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 }
 
 + (void)load {
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_11)
+    if (RUNNING(10_11))
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
@@ -235,7 +235,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     if (NSIsEmptyRect([self bounds]))
         return;
-    BOOL active = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
+    BOOL active = RUNNING_AFTER(10_12) ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPoint origin = [self bounds].origin;
     NSPoint point = SKAddPoints(origin, [self startPoint]);
     CGFloat delta = 4.0 * [pdfView unitWidthOnPage:[self page]];

@@ -108,9 +108,9 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
 }
 
 + (void)load {
-    if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_11)
+    if (RUNNING(10_11))
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_ElCapitan_drawWithBox:inContext:));
-    else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_12)
+    else if (!RUNNING_AFTER(10_12))
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
 }
 
@@ -118,7 +118,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
         // PDFAnnotationInk over-retains the initial PDFBorder ivar on 10.6.x
-        if ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber10_6)
+        if (RUNNING(10_6))
             [[self border] release];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]];
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
@@ -260,9 +260,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
 
 - (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
     [super drawSelectionHighlightForView:pdfView inContext:context];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_12 &&
-        NSIsEmptyRect([self bounds]) == NO &&
-        [self isSkimNote]) {
+    if (RUNNING_AFTER(10_12) && NSIsEmptyRect([self bounds]) == NO && [self isSkimNote]) {
         CGFloat scale = ceil(1.0 / [pdfView unitWidthOnPage:[self page]]);
         NSRect b = [self bounds];
         NSRect bounds = NSIntegralRect(b);
