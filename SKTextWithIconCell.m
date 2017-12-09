@@ -141,6 +141,10 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
     return hit;
 }
 
+#if SDK_BEFORE(10_10)
+#undef NSCellHitResult
+#endif
+
 - (void)setObjectValue:(id <NSCopying>)obj {
     [super setObjectValue:obj];
     if ([(id)obj respondsToSelector:@selector(objectForKey:)])

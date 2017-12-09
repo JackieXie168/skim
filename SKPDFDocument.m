@@ -89,6 +89,10 @@
     return selection;
 }
 
+#if SDK_BEFORE(10_13)
+#undef NSStringCompareOptions
+#endif
+
 - (id <SKPDFDocumentDelegate>)delegate {
     return (id <SKPDFDocumentDelegate>)[super delegate];
 }

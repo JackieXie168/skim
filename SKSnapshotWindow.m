@@ -62,6 +62,10 @@
     return self;
 }
 
+#if SDK_BEFORE(10_12)
+#undef NSWindowStyleMask
+#endif
+
 - (id)_updateButtonsForModeChanged {
     id rv = [super _updateButtonsForModeChanged];
     [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
