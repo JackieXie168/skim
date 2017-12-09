@@ -37,23 +37,9 @@
  */
 
 #import "NSSegmentedControl_SKExtensions.h"
-#import "SKRuntime.h"
 
 
 @implementation NSSegmentedControl (SKExtensions)
-
-- (NSInteger)fallback_tagForSegment:(NSInteger)segment {
-    return [[self cell] tagForSegment:segment];
-}
-
-- (void)fallback_setTag:(NSInteger)tag forSegment:(NSInteger)segment {
-    [[self cell] setTag:tag forSegment:segment];
-}
-
-+ (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(tagForSegment:), @selector(fallback_tagForSegment:));
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(setTag:forSegment:), @selector(fallback_setTag:forSegment:));
-}
 
 - (NSInteger)selectedTag {
     return [[self cell] tagForSegment:[self selectedSegment]];

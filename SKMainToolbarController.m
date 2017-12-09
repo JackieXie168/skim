@@ -311,10 +311,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             [item setViewWithSizes:scaleField];
             [item setMenuFormRepresentation:menuItem];
             
-            if ([mainController.pdfView respondsToSelector:@selector(minScaleFactor)])
-                [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView minScaleFactor]]];
-            if ([mainController.pdfView respondsToSelector:@selector(maxScaleFactor)])
-                [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView maxScaleFactor]]];
+            [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView minimumScaleFactor]]];
+            [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView maximumScaleFactor]]];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
             
@@ -853,13 +851,13 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
     } else if (action == @selector(zoomActualPhysical:)) {
         return [mainController.pdfView.document isLocked] == NO;
     } else if (action == @selector(createNewTextNote:)) {
-        [menuItem setState:[textNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[[textNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     } else if (action == @selector(createNewCircleNote:)) {
-        [menuItem setState:[circleNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[[circleNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     } else if (action == @selector(createNewMarkupNote:)) {
-        [menuItem setState:[markupNoteButton tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[[markupNoteButton cell] tagForSegment:0] == [menuItem tag] ? NSOnState : NSOffState];
         return [mainController interactionMode] != SKPresentationMode && [mainController.pdfView.document isLocked] == NO && ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO && [[mainController.pdfView currentSelection] hasCharacters];
     } else if (action == @selector(toggleFullScreen:)) {
         return [mainController canEnterFullscreen] || [mainController canExitFullscreen];
@@ -1008,8 +1006,8 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 - (void)createNewNoteWithType:(NSInteger)type forButton:(NSSegmentedControl *)button {
     if ([mainController.pdfView hideNotes] == NO) {
         [mainController.pdfView addAnnotationWithType:type];
-        if (type != [button tagForSegment:0]) {
-            [button setTag:type forSegment:0];
+        if (type != [[button cell] tagForSegment:0]) {
+            [[button cell] setTag:type forSegment:0];
             [button setImage:[NSImage imageNamed:addNoteToolImageNames[type]] forSegment:0];
         }
     } else NSBeep();

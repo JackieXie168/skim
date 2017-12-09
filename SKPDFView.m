@@ -536,7 +536,10 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation {
 	if (newAnnotation != activeAnnotation) {
-	
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
         // Will need to redraw old active anotation.
         if (activeAnnotation != nil) {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
@@ -557,7 +560,9 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
             if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         }
-        
+
+#pragma clang diagnostic pop
+
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
     }
 }

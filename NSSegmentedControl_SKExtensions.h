@@ -39,15 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-#if SDK_BEFORE(10_13)
-
-@interface NSSegmentedControl (SKHighSierraDeclarations)
-- (NSInteger)tagForSegment:(NSInteger)segment;
-- (void)setTag:(NSInteger)tag forSegment:(NSInteger)segment;
-@end
-
-#endif
-
 @interface NSSegmentedControl (SKExtensions)
 
 - (NSInteger)selectedTag;

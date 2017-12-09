@@ -45,6 +45,8 @@
 @property (nonatomic, readonly) NSScrollView *scrollView;
 @property (nonatomic, readonly) NSRange displayedPageIndexRange;
 @property (nonatomic, readonly) NSArray *displayedPages;
+@property (nonatomic, readonly) CGFloat minimumScaleFactor;
+@property (nonatomic, readonly) CGFloat maximumScaleFactor;
 
 + (NSColor *)defaultPageBackgroundColor;
 
@@ -72,10 +74,6 @@
 
 
 @interface PDFView (SKPrivateDeclarations)
-#if SDK_BEFORE(10_13)
-- (CGFloat)minScaleFactor;
-- (CGFloat)maxScaleFactor;
-#endif
 - (NSInteger)currentHistoryIndex;
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
 - (NSColor *)pageColor;

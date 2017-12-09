@@ -79,9 +79,18 @@ enum
 
 #endif
 
+#if SDK_BEFORE(10_13)
+
+@interface PDFView (SKHighSierraDeclarations)
+- (CGFloat)minScaleFactor;
+- (CGFloat)maxScaleFactor;
+@end
+
+#endif
+
 @implementation PDFView (SKExtensions)
 
-@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages;
+@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages, minimumScaleFactor, maximumScaleFactor;
 
 static void (*original_keyDown)(id, SEL, id) = NULL;
 static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
@@ -305,6 +314,23 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         [displayedPages addObject:[pdfDoc pageAtIndex:i]];
     return displayedPages;
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
+- (CGFloat)minimumScaleFactor {
+    if ([self respondsToSelector:@selector(minScaleFactor)])
+        return [self minScaleFactor];
+    return 0.1;
+}
+
+- (CGFloat)maximumScaleFactor {
+    if ([self respondsToSelector:@selector(maxScaleFactor)])
+        return [self maxScaleFactor];
+    return 20.0;
+}
+
+#pragma clang diagnostic pop
 
 - (NSRect)integralRect:(NSRect)rect onPage:(PDFPage *)page {
     // we'd like to use backingAlignedRect, but that is not thread safe, and we need this for drawing
