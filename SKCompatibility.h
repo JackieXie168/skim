@@ -127,8 +127,6 @@ typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
 
 #if SDK_BEFORE(10_10)
 
-typedef NSUInteger NSCellHitResult;
-
 enum {
     NSWindowStyleMaskFullSizeContentView = 1 << 15;
 };
@@ -140,8 +138,6 @@ enum {
 #endif
 
 #if SDK_BEFORE(10_12)
-
-typedef NSUInteger NSWindowStyleMask;
 
 typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
     NSWindowTabbingModeAutomatic,

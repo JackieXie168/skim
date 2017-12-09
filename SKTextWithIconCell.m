@@ -126,6 +126,10 @@ static SKDictionaryFormatter *textWithIconCellFormatter = nil;
     [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
+#if SDK_BEFORE(10_10)
+#define NSCellHitResult NSUInteger
+#endif
+
 - (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
     NSRect textRect = [self textRectForBounds:cellFrame];
     NSPoint mouseLoc = [event locationInView:controlView];
