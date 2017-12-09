@@ -80,14 +80,14 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
-#if !defined(MAC_OS_X_VERSION_10_8) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_8
+#if SDK_BEFORE(10_8)
 @interface NSDocumentController (SKMountainLionDeclarations)
 // this is used in 10.8 and later from the openDocument: action
 - (void)beginOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)types completionHandler:(void (^)(NSInteger result))completionHandler;
 @end
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+#if SDK_BEFORE(10_12)
 @interface NSResponder(NSWindowTabbing)
 - (IBAction)newWindowForTab:(id)sender;
 @end

@@ -211,7 +211,7 @@ macro(Ink)
 // distance ratio for control points to approximate a quarter ellipse by a cubic bezier curve
 #define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
 
-#if !defined(MAC_OS_X_VERSION_10_8) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_8
+#if SDK_BEFORE(10_8)
 @interface NSImage (SKMountainLionDeclarations)
 + (NSImage *)imageWithSize:(NSSize)size flipped:(BOOL)drawingHandlerShouldBeCalledWithFlippedContext drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
 @end

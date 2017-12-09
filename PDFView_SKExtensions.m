@@ -50,7 +50,7 @@
 #import <SkimNotes/SkimNotes.h>
 
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if SDK_BEFORE(10_7)
 
 @interface NSScreen (SKLionDeclarations)
 - (CGFloat)backingScaleFactor;
@@ -71,7 +71,7 @@ enum
 
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+#if SDK_BEFORE(10_12)
 
 @interface PDFView (SKSierraDeclarations)
 - (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;

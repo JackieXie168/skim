@@ -41,7 +41,7 @@
 #import "SKFontWell.h"
 
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if SDK_BEFORE(10_6)
 typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     NSAlignMinXInward   = 1ULL << 0,
     NSAlignMinYInward   = 1ULL << 1,

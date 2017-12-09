@@ -42,7 +42,7 @@
 @interface NSAnimationContext (SKExtensions)
 @end
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if SDK_BEFORE(10_7)
 @interface NSAnimationContext (SKLionDeclarations)
 + (void)runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler;
 @end

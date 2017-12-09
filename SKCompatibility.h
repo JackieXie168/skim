@@ -38,7 +38,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+#define SDK_BEFORE(_version) (!defined(MAC_OS_X_VERSION_ ## _version) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_ ## _version)
+
+#if SDK_BEFORE(10_13)
 
 #ifndef NSAppKitVersionNumber10_6
     #define NSAppKitVersionNumber10_6 1038
@@ -123,7 +125,7 @@ typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
 
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_10) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_10
+#if SDK_BEFORE(10_10)
 
 typedef NSUInteger NSCellHitResult;
 
@@ -137,7 +139,7 @@ enum {
 
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+#if SDK_BEFORE(10_12)
 
 typedef NSUInteger NSWindowStyleMask;
 
@@ -157,7 +159,7 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+#if SDK_BEFORE(10_13)
 
 @protocol PDFDocumentDelegate <NSObject> @end
 

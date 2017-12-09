@@ -108,7 +108,7 @@ extern NSString *SKPDFPageActionRotate;
 
 @end
 
-#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+#if SDK_BEFORE(12)
 @interface PDFPage (SKSierraDeclarations)
 - (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box;
 @end

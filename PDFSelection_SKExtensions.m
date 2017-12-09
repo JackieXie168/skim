@@ -55,7 +55,7 @@
 - (NSIndexSet *)indexOfCharactersOnPage:(PDFPage *)page;
 @end
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_6
+#if SDK_BEFORE(10_6)
 @interface PDFSelection (SKLionDeclarations)
 - (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
 - (NSInteger)numberOfTextRangesOnPage:(PDFPage *)page;

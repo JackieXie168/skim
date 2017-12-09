@@ -151,7 +151,7 @@ enum {
     SKNavigationEverywhere,
 };
 
-#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
+#if SDK_BEFORE(10_7)
 typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     NSScrollerStyleLegacy,
     NSScrollerStyleOverlay
@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 @end
 #endif
 
-#if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+#if SDK_BEFORE(10_12)
 @interface PDFView (SKSierraDeclarations)
 - (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
 @end
