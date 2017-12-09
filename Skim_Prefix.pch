@@ -42,6 +42,10 @@
     #define SKZONEDESTROY(variable) do { if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; } while (0)
     #define SKDISPATCHDESTROY(variable) do { if (variable) dispatch_release(variable); variable = nil; } while (0)
 
+    #define RUNNING(_version) ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber ## _version)
+    #define RUNNING_BEFORE(_version) (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber ## _version)
+    #define RUNNING_AFTER(_version) (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber ## _version)
+
 #else
 
 /* this should work for C or C++ */

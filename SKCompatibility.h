@@ -69,10 +69,6 @@
 
 #endif
 
-#define RUNNING(_version) ((NSInteger)floor(NSAppKitVersionNumber) == (NSInteger)NSAppKitVersionNumber ## _version)
-#define RUNNING_BEFORE(_version) (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber ## _version)
-#define RUNNING_AFTER(_version) (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber ## _version)
-
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
