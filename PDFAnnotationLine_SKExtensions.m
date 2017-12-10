@@ -58,10 +58,12 @@ NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
 NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
 NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
-
-@interface PDFAnnotation (SKPrivateDeclarations)
+#if SDK_BEFORE(10_12)
+@interface PDFAnnotation (SKSierraDeclarations)
+// before 10.12 this was a private method, called by drawWithBox:
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
 @end
+#endif
 
 @implementation PDFAnnotationLine (SKExtensions)
 
