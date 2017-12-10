@@ -56,8 +56,7 @@
 - (CGFloat)backingScaleFactor;
 @end
 
-typedef NSInteger PDFInterpolationQuality;
-enum
+typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
 {
     kPDFInterpolationQualityNone = 0,
     kPDFInterpolationQualityLow = 1,
