@@ -155,10 +155,10 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 }
 
 + (void)load {
-    if (RUNNING(10_10) || RUNNING(10_11))
-        original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
     if (RUNNING_AFTER(10_11))
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
+    else if (RUNNING_AFTER(10_9))
+        original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
 }
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {
