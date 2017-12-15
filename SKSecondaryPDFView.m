@@ -535,12 +535,13 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [item setAlternate:YES];
     }
     
-    [menu addItem:[NSMenuItem separatorItem]];
+    i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"goToNextPage:")];
+    i = i == NSNotFound || i == 0 ? [menu numberOfItems] : i - 1;
     
-    [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:1];
-    
-    [menu addItemWithTitle:NSLocalizedString(@"Scroll Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:0];
-    
+    [menu insertItemWithTitle:NSLocalizedString(@"Scroll Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:0 atIndex:i];
+    [menu insertItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:1 atIndex:i];
+    [menu insertItem:[NSMenuItem separatorItem]atIndex:i];
+
     return menu;
 }
 
