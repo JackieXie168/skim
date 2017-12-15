@@ -57,6 +57,7 @@ extern NSString *SKSnapshotThumbnailSizeKey;
 extern NSString *SKThumbnailSizeKey;
 extern NSString *SKLastToolModeKey;
 extern NSString *SKLastAnnotationModeKey;
+extern NSString *SKLastSecondarySelectsTextKey;
 extern NSString *SKShouldAntiAliasKey;
 extern NSString *SKImageInterpolationKey;
 extern NSString *SKGreekingThresholdKey;

@@ -129,6 +129,7 @@ NSString *SKImageNameNoteViewAdorn = @"NoteViewAdorn";
 NSString *SKImageNameSnapshotViewAdorn = @"SnapshotViewAdorn";
 NSString *SKImageNameFindViewAdorn = @"FindViewAdorn";
 NSString *SKImageNameGroupedFindViewAdorn = @"GroupedFindViewAdorn";
+NSString *SKImageNameTextToolAdorn = @"TextToolAdorn";
 
 NSString *SKImageNameTextAlignLeft = @"TextAlignLeft";
 NSString *SKImageNameTextAlignCenter = @"TextAlignCenter";
@@ -1519,6 +1520,18 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(18.0, 11.0)];
         [path setLineWidth:2.0];
         [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTextToolAdorn, YES, 15.0, 15.0,
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
+        NSGlyph glyph = [font glyphWithName:@"A"];
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.5, 1.5, 12.0, 12.0)];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(7.5 - NSMidX([font boundingRectForGlyph:glyph]), 3.0)];
+        [path appendBezierPathWithGlyph:glyph inFont:font];
+        [path fill];
     );
     
 }

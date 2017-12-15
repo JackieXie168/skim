@@ -58,6 +58,7 @@ NSString *SKSnapshotThumbnailSizeKey = @"SKSnapshotThumbnailSize";
 NSString *SKThumbnailSizeKey = @"SKThumbnailSize";
 NSString *SKLastToolModeKey = @"SKLastToolMode";
 NSString *SKLastAnnotationModeKey = @"SKLastAnnotationMode";
+NSString *SKLastSecondarySelectsTextKey = @"SKLastSecondarySelectsText";
 NSString *SKShouldAntiAliasKey = @"SKShouldAntiAlias";
 NSString *SKImageInterpolationKey = @"SKImageInterpolation";
 NSString *SKGreekingThresholdKey = @"SKGreekingThreshold";

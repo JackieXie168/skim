@@ -49,7 +49,8 @@
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-
+#import "NSImage_SKExtensions.h"
+#import "SKPDFView.h"
 
 @interface SKSecondaryPDFView (SKPrivate)
 
@@ -57,6 +58,7 @@
 
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
+- (void)toolModeButtonAction:(id)sender;
 
 - (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag;
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
@@ -74,7 +76,7 @@
 
 @implementation SKSecondaryPDFView
 
-@synthesize synchronizedPDFView, synchronizeZoom;
+@synthesize synchronizedPDFView, synchronizeZoom, selectsText;
 @dynamic controlView;
 
 static NSString *SKDefaultScaleMenuLabels[] = {@"=", @"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%", @"1000%", @"1200%", @"1400%", @"1700%", @"2000%"};
@@ -92,6 +94,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     pagePopUpButton = nil;
     synchronizedPDFView = nil;
     synchronizeZoom = NO;
+    selectsText = [[NSUserDefaults standardUserDefaults] boolForKey:SKLastSecondarySelectsTextKey];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:)
                                                  name:PDFViewPageChangedNotification object:self];
@@ -121,6 +124,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     SKDESTROY(synchronizedPDFView);
     SKDESTROY(scalePopUpButton);
     SKDESTROY(pagePopUpButton);
+    SKDESTROY(toolModeButton);
     SKDESTROY(controlView);
     [super dealloc];
 }
@@ -174,7 +178,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             [controlView setFrameSize:NSMakeSize(NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
     }
 }
-
 
 - (NSView *)controlView {
     
@@ -248,31 +251,56 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 		
         [self reloadPagePopUpButton];
 
-		// don't let it become first responder
-		[pagePopUpButton setRefusesFirstResponder:YES];
-        
+        // don't let it become first responder
+        [pagePopUpButton setRefusesFirstResponder:YES];
+
         // hook it up
         [pagePopUpButton setTarget:self];
         [pagePopUpButton setAction:@selector(pagePopUpAction:)];
         
     }
     
+    if (toolModeButton == nil) {
+        
+        // create it
+        toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, CONTROL_HEIGHT, CONTROL_HEIGHT)];
+        
+        [toolModeButton setButtonType:NSOnOffButton];
+        [toolModeButton setBezelStyle:NSBezelStyleTexturedSquare];
+        [toolModeButton setImageScaling:NSImageScaleProportionallyDown];
+        [toolModeButton setImage:[NSImage imageNamed:SKImageNameTextToolAdorn]];
+        
+        [toolModeButton setState:[self selectsText]];
+        
+        // don't let it become first responder
+        [toolModeButton setRefusesFirstResponder:YES];
+        
+        // hook it up
+        [toolModeButton setTarget:self];
+        [toolModeButton setAction:@selector(toolModeButtonAction:)];
+        
+    }
+    
     if (controlView == nil) {
         
-        NSRect pageRect = [pagePopUpButton frame], scaleRect = [scalePopUpButton frame];
+        NSRect toolRect = [toolModeButton frame], pageRect = [pagePopUpButton frame], scaleRect = [scalePopUpButton frame], tmpRect;
         
-        controlView = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth(pageRect) + NSWidth(scaleRect), CONTROL_HEIGHT)];
+        controlView = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth(toolRect) + NSWidth(pageRect) + NSWidth(scaleRect), CONTROL_HEIGHT)];
         
+        [toolModeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
         [pagePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
         [scalePopUpButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxYMargin];
-        NSDivideRect([controlView bounds], &pageRect, &scaleRect, NSWidth(pageRect), NSMinXEdge);
+        NSDivideRect([controlView bounds], &toolRect, &tmpRect, NSWidth(toolRect), NSMinXEdge);
+        NSDivideRect(tmpRect, &pageRect, &scaleRect, NSWidth(pageRect), NSMinXEdge);
+        [toolModeButton setFrame:toolRect];
         [pagePopUpButton setFrame:pageRect];
         [scalePopUpButton setFrame:scaleRect];
+        [controlView addSubview:toolModeButton];
         [controlView addSubview:pagePopUpButton];
         [controlView addSubview:scalePopUpButton];
         
     }
-    
+
     return controlView;
 }
 
@@ -288,6 +316,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)pagePopUpAction:(id)sender {
     [self goToPage:[[self document] pageAtIndex:[sender indexOfSelectedItem]]];
+}
+
+- (void)toolModeButtonAction:(id)sender {
+    [self setSelectsText:[(NSButton *)sender state]];
 }
 
 - (void)setSynchronizedPDFView:(PDFView *)newSynchronizedPDFView {
@@ -397,6 +429,16 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     switching = savedSwitching;
 }
 
+- (void)setSelectsText:(BOOL)newSelectsText {
+    if (newSelectsText != selectsText) {
+        selectsText = newSelectsText;
+        if (selectsText == NO)
+            [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
+        [toolModeButton setState:selectsText];
+        [[NSUserDefaults standardUserDefaults] setBool:selectsText forKey:SKLastSecondarySelectsTextKey];
+    }
+}
+
 - (IBAction)zoomIn:(id)sender{
     NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
     NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
@@ -443,6 +485,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [self setPhysicalScaleFactor:1.0];
 }
 
+- (void)changeToolMode:(id)sender {
+    [self setSelectsText:[sender tag]];
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
@@ -453,17 +499,19 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenuItem *item;
     
-    [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
-    while ([menu numberOfItems]) {
-        item = [menu itemAtIndex:0];
-        if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
-            [menu removeItemAtIndex:0];
-        else
-            break;
+    if ([self selectsText] == NO) {
+        [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
+        while ([menu numberOfItems]) {
+            item = [menu itemAtIndex:0];
+            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
+                [menu removeItemAtIndex:0];
+            else
+                break;
+        }
     }
     
     NSInteger i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
@@ -487,6 +535,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [item setAlternate:YES];
     }
     
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:1];
+    
+    [menu addItemWithTitle:NSLocalizedString(@"Scroll Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:0];
+    
     return menu;
 }
 
@@ -502,6 +556,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         return YES;
     } else if ([menuItem action] == @selector(doPhysicalSize:)) {
         [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
+        return YES;
+    } else if ([menuItem action] == @selector(changeToolMode:)) {
+        [menuItem setState:((NSInteger)[self selectsText] == [menuItem tag]) ? NSOnState : NSOffState];
         return YES;
     } else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
@@ -565,18 +622,48 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         [self doPdfsyncWithEvent:theEvent];
         
-    } else {
+    } else if ([self selectsText] == NO) {
         
         [self doDragWithEvent:theEvent];
+        
+    } else if (([self areaOfInterestForMouse:theEvent] & SKDragArea)) {
+        
+        [self doDragWithEvent:theEvent];
+        
+    } else {
+        
+        [super mouseDown:theEvent];
         
     }
 }
 
+#define TEXT_SELECT_MARGIN_SIZE ((NSSize){80.0, 100.0})
+
+- (PDFAreaOfInterest)areaOfInterestForMouse:(NSEvent *)theEvent {
+    PDFAreaOfInterest area = [super areaOfInterestForMouse:theEvent];
+    NSInteger modifiers = [theEvent standardModifierFlags];
+    
+    if ((modifiers & ~NSShiftKeyMask) == NSCommandKeyMask) {
+        area = (area & kPDFPageArea) | SKSpecialToolArea;
+    } else if ([self selectsText] == NO) {
+        area = (area & kPDFPageArea) | SKDragArea;
+    } else if ((area & kPDFPageArea) && (area & kPDFTextArea) == 0 && modifiers == 0) {
+        NSPoint p = [theEvent locationInWindow];
+        PDFPage *page = [self pageAndPoint:&p forEvent:theEvent nearest:YES];
+        if ([[page selectionForRect:SKRectFromCenterAndSize(p, TEXT_SELECT_MARGIN_SIZE)] hasCharacters] == NO)
+            area |= SKDragArea;
+    }
+    
+    return area;
+}
+
 - (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {
-    if (([NSEvent standardModifierFlags] & ~NSShiftKeyMask) == NSCommandKeyMask)
+    if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
-    else
+    else if ((area & SKDragArea))
         [[NSCursor openHandCursor] set];
+    else
+        [super setCursorForAreaOfInterest:area];
 }
 
 #pragma mark Notification handling

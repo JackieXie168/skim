@@ -55,6 +55,8 @@
 		<integer>0</integer>
 		<key>SKLastAnnotationMode</key>
 		<integer>0</integer>
+		<key>SKLastSecondarySelectsText</key>
+		<false/>
 		<key>SKTableFontSize</key>
 		<real>12</real>
 		<key>SKGreekingThreshold</key>
@@ -324,6 +326,7 @@
 			<string>SKLastOpenFileNames</string>
 			<string>SKLastToolMode</string>
 			<string>SKLastAnnotationMode</string>
+			<string>SKLastSecondarySelectsText</string>
 			<string>SKBlankAllScreensInFullScreen</string>
 			<string>SKActivateFullScreenNavigationAtBottom</string>
 			<string>SKActivatePresentationNavigationAtBottom</string>
