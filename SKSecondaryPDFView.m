@@ -457,7 +457,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenuItem *item;
     
-    [self setCurrentSelection:nil];
+    [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
     while ([menu numberOfItems]) {
         item = [menu itemAtIndex:0];
         if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
