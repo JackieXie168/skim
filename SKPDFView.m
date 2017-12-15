@@ -612,8 +612,10 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
 }
 
 - (void)setCurrentSelection:(PDFSelection *)selection {
-    if (isSelectingMarkup && annotationMode == SKHighlightNote)
+    if (toolMode == SKNoteToolMode && annotationMode == SKHighlightNote)
         [selection setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKHighlightNoteColorKey]];
+    if (selection == nil && RUNNING_AFTER(10_12))
+        selection = [[[PDFSelection alloc] initWithDocument:[self document]] autorelease];
     [super setCurrentSelection:selection];
 }
 
@@ -1279,13 +1281,10 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
         [self doDragWithEvent:theEvent];
     } else {
         [self setActiveAnnotation:nil];
-        isSelectingMarkup = (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP);
         [super mouseDown:theEvent];
-        if (isSelectingMarkup) {
-            if ([[self currentSelection] hasCharacters])
-                [self addAnnotationWithType:annotationMode];
+        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
+            [self addAnnotationWithType:annotationMode];
             [self setCurrentSelection:nil];
-            isSelectingMarkup = NO;
         }
     }
 }
