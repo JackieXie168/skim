@@ -57,7 +57,7 @@
 - (void)setViewWithSizes:(NSView *)view {
     if ([view isKindOfClass:[NSSegmentedControl class]]) {
         if (RUNNING_BEFORE(10_7))
-            A[(NSSegmentedControl *)view setSegmentStyle:NSSegmentStyleCapsule];
+            [(NSSegmentedControl *)view setSegmentStyle:NSSegmentStyleCapsule];
         [(NSSegmentedControl *)view sizeToFit];
     }
     [self setView:view];
