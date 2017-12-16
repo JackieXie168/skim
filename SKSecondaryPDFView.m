@@ -434,7 +434,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         selectsText = newSelectsText;
         if (selectsText == NO)
             [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
-        [toolModeButton setState:selectsText];
+        [toolModeButton setState:selectsText ? NSOnState : NSOffState];
         [[NSUserDefaults standardUserDefaults] setBool:selectsText forKey:SKLastSecondarySelectsTextKey];
     }
 }
@@ -486,7 +486,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)changeToolMode:(id)sender {
-    [self setSelectsText:[sender tag]];
+    [self setSelectsText:(BOOL)[sender tag]];
 }
 
 // we don't want to steal the printDocument: action from the responder chain
@@ -559,7 +559,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
         return YES;
     } else if ([menuItem action] == @selector(changeToolMode:)) {
-        [menuItem setState:((NSInteger)[self selectsText] == [menuItem tag]) ? NSOnState : NSOffState];
+        [menuItem setState:[self selectsText] == (BOOL)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
