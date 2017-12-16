@@ -175,7 +175,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
         
         if (controlView)
-            [controlView setFrameSize:NSMakeSize(NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
+            [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
     }
 }
 
