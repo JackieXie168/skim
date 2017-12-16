@@ -796,6 +796,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     PDFPage *page = [[self pdfView] currentPage];
     PDFDisplayBox box = [[self pdfView] displayBox];
+    CGFloat margin = [[self pdfView] displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     
     // Calculate the new size for the pdfView
     size.width = NSWidth(documentRect);
@@ -804,10 +805,9 @@ static NSArray *allMainDocumentPDFViews() {
     if (isSingleRow) {
         size.height = NSHeight(documentRect);
     } else {
-        size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]);
-        if ([[self pdfView] displaysPageBreaks])
-            size.height += PAGE_BREAK_MARGIN * scaleFactor;
-        size.width += [NSScroller scrollerWidth];
+        size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor;
+        if ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
+            size.width += [NSScroller scrollerWidth];
     }
     if (autoScales)
         size.height /= scaleFactor;
@@ -822,8 +822,13 @@ static NSArray *allMainDocumentPDFViews() {
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
     
-    if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous)
-        [[self pdfView] goToRect:[page boundsForBox:box] onPage:page];
+    if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous) {
+        NSPoint point = SKTopLeftPoint([pdfView convertRect:[page boundsForBox:box] fromPage:page]);
+        point.x -= 0.5 * scaleFactor * margin;
+        point.y += 0.5 * scaleFactor * margin;
+        point = [[self pdfView] convertPoint:point toPage:page];
+        [[self pdfView] goToPageAtIndex:[page pageIndex] point:point];
+    }
 }
 
 - (IBAction)password:(id)sender {
