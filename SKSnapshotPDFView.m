@@ -191,12 +191,13 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([self autoFits]) {
         NSView *clipView = [[self scrollView] contentView];
-        NSRect rect = [self convertRect:[clipView visibleRect] fromView:clipView];
-        BOOL scaleWidth = NSWidth(rect) / NSHeight(rect) < NSWidth(autoFitRect) / NSHeight(autoFitRect);
-        CGFloat factor = scaleWidth ? NSWidth(rect) / NSWidth(autoFitRect) : NSHeight(rect) / NSHeight(autoFitRect);
-        NSRect viewRect = scaleWidth ? NSInsetRect(autoFitRect, 0.0, 0.5 * (NSHeight(autoFitRect) - NSHeight(rect) / factor)) : NSInsetRect(autoFitRect, 0.5 * (NSWidth(autoFitRect) - NSWidth(rect) / factor), 0.0);
-        [super setScaleFactor:factor];
-        [self goToRect:viewRect onPage:autoFitPage];
+        NSRect clipRect = [self convertRect:[clipView visibleRect] fromView:clipView];
+        NSRect rect = [self convertRect:autoFitRect fromPage:autoFitPage];
+        CGFloat factor = fmin(NSWidth(clipRect) / NSWidth(rect), NSHeight(clipRect) / NSHeight(rect));
+        rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - NSWidth(clipRect) / factor), 0.5 * (NSHeight(rect) - NSHeight(clipRect) / factor));
+        NSPoint point = [self convertPoint:SKTopLeftPoint(rect) toPage:autoFitPage];
+        [super setScaleFactor:factor * [self scaleFactor]];
+        [self goToPageAtIndex:[autoFitPage pageIndex] point:point];
     }
 }
 
