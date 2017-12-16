@@ -1346,7 +1346,7 @@ typedef NS_ENUM(NSInteger, NSScrollerStyle) {
     if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [self currentSelection])) {
         static NSSet *selectionActions = nil;
         if (selectionActions == nil)
-            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
+            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
         [self setCurrentSelection:nil];
         while ([menu numberOfItems]) {
             item = [menu itemAtIndex:0];
