@@ -123,6 +123,15 @@ typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
 - (NSEventPhase)phase;
 @end
 
+typedef NS_ENUM(NSInteger, NSScrollerStyle) {
+    NSScrollerStyleLegacy,
+    NSScrollerStyleOverlay
+};
+
+@interface NSScroller (SKLionDeclarations)
++ (NSScrollerStyle)preferredScrollerStyle;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_10)

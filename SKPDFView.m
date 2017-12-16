@@ -151,16 +151,6 @@ enum {
     SKNavigationEverywhere,
 };
 
-#if SDK_BEFORE(10_7)
-typedef NS_ENUM(NSInteger, NSScrollerStyle) {
-    NSScrollerStyleLegacy,
-    NSScrollerStyleOverlay
-};
-@interface NSScroller (SKLionDeclarations)
-+ (NSScrollerStyle)preferredScrollerStyle;
-@end
-#endif
-
 #if SDK_BEFORE(10_12)
 @interface PDFView (SKSierraDeclarations)
 - (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;

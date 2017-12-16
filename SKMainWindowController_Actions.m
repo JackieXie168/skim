@@ -384,6 +384,7 @@ static NSArray *allMainDocumentPDFViews() {
     NSRect frame = [pdfView frame];
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
+    NSPoint point;
     CGFloat scrollerWidth = 0.0;
     CGFloat margin = [pdfView displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     CGFloat scaleFactor;
@@ -391,24 +392,26 @@ static NSArray *allMainDocumentPDFViews() {
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
         NSUInteger numCols = (displayMode == kPDFDisplayTwoUp && pageCount > 1 && ([pdfView displaysAsBook] == NO || pageCount > 2)) ? 2 : 1;
-        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ) )
-            scrollerWidth = [NSScroller scrollerWidth];
+        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ) && ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy))
+            scrollerWidth =  [NSScroller scrollerWidth];
         scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( margin + NSWidth(pageRect) );
     } else {
         // zoom to height
         NSUInteger numRows = pageCount;
         if (displayMode == kPDFDisplayTwoUpContinuous)
             numRows = [pdfView displaysAsBook] ? (1 + pageCount) / 2 : 1 + pageCount / 2;
-        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ) )
+        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ) && ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy))
             scrollerWidth = [NSScroller scrollerWidth];
         scaleFactor = ( NSHeight(frame) - scrollerWidth ) / ( margin + NSHeight(pageRect) );
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
-    pageRect = [page boundsForBox:[pdfView displayBox]];
     if ([[pdfView currentPage] isEqual:page] == NO)
         [pdfView goToPage:page];
-    [pdfView goToRect:[pdfView convertRect:SKSliceRect([pdfView convertRect:pageRect fromPage:page], 1.0, NSMaxYEdge) toPage:page] onPage:page];
+    point = SKTopLeftPoint([pdfView convertRect:pageRect fromPage:page]);
+    point.x -= 0.5 * scaleFactor * margin;
+    point.y += 0.5 * scaleFactor * margin;
+    [pdfView goToPageAtIndex:[page pageIndex] point:[pdfView convertPoint:point toPage:page]];
 }
 
 - (IBAction)doAutoScale:(id)sender {
