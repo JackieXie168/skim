@@ -1522,14 +1522,14 @@ macro(Ink)
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameTextToolAdorn, YES, 15.0, 15.0,
-        NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
+    MAKE_IMAGE(SKImageNameTextToolAdorn, YES, 11.0, 11.0,
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:8.0];
         NSGlyph glyph = [font glyphWithName:@"A"];
         [[NSColor blackColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.5, 1.5, 12.0, 12.0)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.5, 1.5, 8.0, 8.0)];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(7.5 - NSMidX([font boundingRectForGlyph:glyph]), 3.0)];
+        [path moveToPoint:NSMakePoint(5.5 - NSMidX([font boundingRectForGlyph:glyph]), 2.5)];
         [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
     );
