@@ -2211,6 +2211,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self annotationsChangedOnPage:page];
 }
 
+- (void)goToRect:(NSRect)rect onPage:(PDFPage *)page {
+    if (RUNNING(10_13)) {
+        NSView *docView = [self documentView];
+        if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange]) == NO)
+            [self goToPage:page];
+        [docView scrollRectToVisible:[self convertRect:[self convertRect:rect fromPage:page] toView:docView]];
+    } else {
+        [super goToRect:rect onPage:page];
+    }
+}
+
 #pragma mark Sync
 
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {

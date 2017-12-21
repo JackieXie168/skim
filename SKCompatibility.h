@@ -66,6 +66,13 @@
 #ifndef NSAppKitVersionNumber10_12
     #define NSAppKitVersionNumber10_12 1504
 #endif
+#ifndef NSAppKitVersionNumber10_13
+    #define NSAppKitVersionNumber10_13 1561
+#endif
+
+#elif SDK_BEFORE(10_14)
+
+static const NSAppKitVersion NSAppKitVersionNumber10_13 = 1561;
 
 #endif
 
