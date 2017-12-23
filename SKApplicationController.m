@@ -133,7 +133,7 @@
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
 
-- (void)awakeFromNib {NSLog(@"%f",NSAppKitVersionNumber);
+- (void)awakeFromNib {
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
