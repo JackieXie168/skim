@@ -604,7 +604,7 @@ enum {
 - (void)setCurrentSelection:(PDFSelection *)selection {
     if (toolMode == SKNoteToolMode && annotationMode == SKHighlightNote)
         [selection setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKHighlightNoteColorKey]];
-    if (selection == nil && RUNNING_AFTER(10_12))
+    if (selection == nil && RUNNING_AFTER(10_11))
         selection = [[[PDFSelection alloc] initWithDocument:[self document]] autorelease];
     [super setCurrentSelection:selection];
 }
