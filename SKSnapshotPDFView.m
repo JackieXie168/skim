@@ -194,10 +194,14 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         NSRect clipRect = [self convertRect:[clipView visibleRect] fromView:clipView];
         NSRect rect = [self convertRect:autoFitRect fromPage:autoFitPage];
         CGFloat factor = fmin(NSWidth(clipRect) / NSWidth(rect), NSHeight(clipRect) / NSHeight(rect));
-        rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - NSWidth(clipRect) / factor), 0.5 * (NSHeight(rect) - NSHeight(clipRect) / factor));
-        NSPoint point = [self convertPoint:SKTopLeftPoint(rect) toPage:autoFitPage];
+        rect = [self convertRect:NSInsetRect(rect, 0.5 * (NSWidth(rect) - NSWidth(clipRect) / factor), 0.5 * (NSHeight(rect) - NSHeight(clipRect) / factor)) toPage:autoFitPage];
         [super setScaleFactor:factor * [self scaleFactor]];
-        [self goToPageAtIndex:[autoFitPage pageIndex] point:point];
+        if (RUNNING(10_13)) {
+            NSView *docView = [self documentView];
+            [docView scrollRectToVisible:[self convertRect:[self convertRect:rect fromPage:autoFitPage] toView:docView]];
+        } else {
+            [self goToRect:rect onPage:autoFitPage];
+        }
     }
 }
 
