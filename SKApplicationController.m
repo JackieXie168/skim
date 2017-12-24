@@ -106,6 +106,14 @@
 
 @dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultAlignment, defaultIconType, favoriteColors;
 
+static id (*original_objectForInfoDictionaryKey)(id, SEL, id) = NULL;
+
+static id replacement_objectForInfoDictionaryKey(id self, SEL _cmd, NSString *key) {
+    if ([key isEqualToString:@"NSAppTransportSecurity"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"NSAllowsArbitraryLoads", nil];
+    return original_objectForInfoDictionaryKey(self, _cmd, key);
+}
+
 + (void)initialize{
     SKINITIALIZE;
     
@@ -131,6 +139,11 @@
     
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
+    
+    // Dirty hack to allow any insecure download on El Capitan
+    // There is a bug in ATS for forwards, which are used by the update downloads on sf.net
+    if (RUNNING(10_11))
+        original_objectForInfoDictionaryKey = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation([NSBundle class], @selector(objectForInfoDictionaryKey:), (IMP)replacement_objectForInfoDictionaryKey);
 }
 
 - (void)awakeFromNib {
