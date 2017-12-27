@@ -75,7 +75,7 @@
 #import "NSValueTransformer_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
 
-#define WEBSITE_URL @"http://skim-app.sourceforge.net/"
+#define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
 
 #define INITIAL_USER_DEFAULTS_FILENAME  @"InitialUserDefaults"

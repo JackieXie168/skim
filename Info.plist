@@ -422,7 +422,7 @@
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>http://skim-app.sourceforge.net/skim.xml</string>
+	<string>https://skim-app.sourceforge.io/skim.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUScheduledCheckInterval</key>
