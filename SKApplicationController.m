@@ -143,13 +143,13 @@
 
 - (void)awakeFromNib {
     [[NSApp mainMenu] localizeStringsFromTable:@"MainMenu"];
-
+    
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
     for (NSMenuItem *menuItem in [viewMenu itemArray]) {
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:))
             [menuItem setIndentationLevel:1];
     }
-
+    
     // this creates the script menu if needed
     (void)[NSApp scriptMenu];
 }
