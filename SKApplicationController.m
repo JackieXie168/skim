@@ -141,10 +141,6 @@
     }
 }
 
-- (void)awakeFromNib {
-    [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
-}
-
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] setObject:[[NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
@@ -218,6 +214,8 @@
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
+    
+    [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
 // we don't want to reopen last open files when re-activating the app
