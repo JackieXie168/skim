@@ -93,6 +93,7 @@ typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
 
 static void (*original_keyDown)(id, SEL, id) = NULL;
 static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
+static void (*original_goToRect_onPage)(id, SEL, NSRect, id) = NULL;
 
 // on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
 - (void)replacement_keyDown:(NSEvent *)theEvent {
@@ -146,12 +147,17 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
     original_drawPage_toContext(self, _cmd, pdfPage, context);
     
     // On (High) Sierra note annotations don't draw at all
-    if (RUNNING_AFTER(10_11)) {
-        for (PDFAnnotation *annotation in [[[pdfPage annotations] copy] autorelease]) {
-            if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
-                [annotation drawWithBox:[self displayBox] inContext:context];
-        }
+    for (PDFAnnotation *annotation in [[[pdfPage annotations] copy] autorelease]) {
+        if ([annotation shouldDisplay] && ([annotation isNote] || [[annotation type] isEqualToString:SKNTextString]))
+            [annotation drawWithBox:[self displayBox] inContext:context];
     }
+}
+
+- (void)replacement_goToRect:(NSRect)rect onPage:(PDFPage *)page {
+    NSView *docView = [self documentView];
+    if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange]) == NO)
+        [self goToPage:page];
+    [docView scrollRectToVisible:[self convertRect:[self convertRect:rect fromPage:page] toView:docView]];
 }
 
 + (void)load {
@@ -159,6 +165,8 @@ static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
     else if (RUNNING_AFTER(10_9))
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
+    if (RUNNING(10_13))
+        original_goToRect_onPage = (void (*)(id, SEL, NSRect,  id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToRect:onPage:), @selector(replacement_goToRect:onPage:));
 }
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {

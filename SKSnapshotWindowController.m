@@ -240,8 +240,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [[self delegate] snapshotControllerDidFinishSetup:self];
 }
 
-- (void)goToDestination:(PDFDestination *)destination {
-    [pdfView goToPageAtIndex:[[destination page] pageIndex] point:[destination point]];
+- (void)goToRect:(NSValue *)rectValue {
+    [pdfView goToRect:[rectValue rectValue] onPage:[pdfView currentPage]];
     [pdfView resetHistory];
     
     [self updateString];
@@ -312,18 +312,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     [pdfView goToPage:page];
     
-    NSPoint point;
-    point.x = ([page rotation] == 0 || [page rotation] == 90) ? NSMinX(rect) : NSMaxX(rect);
-    point.y = ([page rotation] == 90 || [page rotation] == 180) ? NSMinY(rect) : NSMaxY(rect);
-    
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
-    
     if (autoFits)
         [pdfView setAutoFits:autoFits];
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
-    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:SMALL_DELAY];
+    [self performSelector:@selector(goToRect:) withObject:[NSValue valueWithRect:rect] afterDelay:SMALL_DELAY];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
