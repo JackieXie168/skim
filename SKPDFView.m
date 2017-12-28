@@ -1062,7 +1062,7 @@ enum {
     PDFPage *page;
     NSUInteger idx, i, first, iMax = [[self document] pageCount];
     BOOL didWrap = NO;
-    NSRange range = NSMakeRange(NSNotFound, 0);
+    NSRange range;
     
     if ([selection hasCharacters]) {
         page = [selection safeLastPage];

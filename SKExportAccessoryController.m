@@ -72,7 +72,7 @@
     for (i = 0; i < iNum; i++) {
         width = NSWidth([[popupButton itemTitleAtIndex:i] boundingRectWithSize:size options:0 attributes:attrs]);
         if (width > maxWidth) {
-            width = maxWidth;
+            maxWidth = width;
             iMax = i;
         }
     }
