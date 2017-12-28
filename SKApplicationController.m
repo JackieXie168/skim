@@ -135,7 +135,7 @@
     if (RUNNING(10_11)) {
         // Disable ATS on El Capitan, as forwarding is blocked, even if it is an htpps address
         @try{
-            [(NSMutableDictionary *)[[NSBundle mainBundle] infoDictionary] setObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"NSAllowsArbitraryLoads", nil] forKey:@"NSAppTransportSecurity"];
+            [(NSMutableDictionary *)[[NSBundle mainBundle] infoDictionary] setObject:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"NSAllowsArbitraryLoads"] forKey:@"NSAppTransportSecurity"];
         }
         @catch(id e) {}
     }
