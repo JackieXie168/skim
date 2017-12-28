@@ -1272,10 +1272,8 @@ enum {
     } else {
         [self setActiveAnnotation:nil];
         [super mouseDown:theEvent];
-        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
+        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters])
             [self addAnnotationWithType:annotationMode];
-            [self setCurrentSelection:nil];
-        }
     }
 }
 
@@ -1903,6 +1901,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds];
         if (annotationType == SKAnchoredNote || annotationType == SKFreeTextNote)
             [self editActiveAnnotation:self];
+        else if ((annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) && noSelection)
+            [self setCurrentSelection:nil];
     } else NSBeep();
 }
 
