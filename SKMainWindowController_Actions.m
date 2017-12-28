@@ -384,7 +384,6 @@ static NSArray *allMainDocumentPDFViews() {
     NSRect frame = [pdfView frame];
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
-    NSPoint point;
     CGFloat scrollerWidth = 0.0;
     CGFloat margin = [pdfView displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     CGFloat scaleFactor;
@@ -406,12 +405,7 @@ static NSArray *allMainDocumentPDFViews() {
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
-    if ([[pdfView currentPage] isEqual:page] == NO)
-        [pdfView goToPage:page];
-    point = SKTopLeftPoint([pdfView convertRect:pageRect fromPage:page]);
-    point.x -= 0.5 * scaleFactor * margin;
-    point.y += 0.5 * scaleFactor * margin;
-    [pdfView goToPageAtIndex:[page pageIndex] point:[pdfView convertPoint:point toPage:page]];
+    [pdfView goToRect:NSInsetRect(pageRect, -0.5 * margin, -0.5 * margin) onPage:page];
 }
 
 - (IBAction)doAutoScale:(id)sender {
@@ -822,13 +816,8 @@ static NSArray *allMainDocumentPDFViews() {
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
     
-    if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous) {
-        NSPoint point = SKTopLeftPoint([pdfView convertRect:[page boundsForBox:box] fromPage:page]);
-        point.x -= 0.5 * scaleFactor * margin;
-        point.y += 0.5 * scaleFactor * margin;
-        point = [[self pdfView] convertPoint:point toPage:page];
-        [[self pdfView] goToPageAtIndex:[page pageIndex] point:point];
-    }
+    if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous)
+        [[self pdfView] goToRect:NSInsetRect([page boundsForBox:box], -0.5 * margin, -0.5 * margin) onPage:page];
 }
 
 - (IBAction)password:(id)sender {
