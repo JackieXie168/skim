@@ -3320,12 +3320,45 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return newActiveAnnotation != nil;
 }
 
+static void addLineToPath(NSBezierPath *path, NSPoint point) {
+    NSInteger eltCount = [path elementCount];
+    if (eltCount > 1) {
+        NSPoint lastPoint = [path associatedPointForElementAtIndex:eltCount - 1];
+        if (NSEqualPoints(lastPoint, [path associatedPointForElementAtIndex:eltCount - 2]) == NO)
+            [PDFAnnotationInk addPoint:lastPoint toSkimNotesPath:path];
+    }
+    [PDFAnnotationInk addPoint:point toSkimNotesPath:path];
+}
+
+static void endLineFromPath(NSBezierPath *path) {
+    NSInteger eltCount = [path elementCount];
+    if (eltCount > 1) {
+        NSPoint lastPoint = [path associatedPointForElementAtIndex:eltCount - 1];
+        if (NSEqualPoints(lastPoint, [path associatedPointForElementAtIndex:eltCount - 2]) == NO)
+            [PDFAnnotationInk addPoint:lastPoint toSkimNotesPath:path];
+    }
+}
+
+static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
+    NSInteger eltCount = [path elementCount];
+    NSPoint points[3];
+    NSBezierPathElement elt = [path elementAtIndex:eltCount - 1 associatedPoints:points];
+    if (elt == NSLineToBezierPathElement) {
+        points[0] = point;
+    } else {
+        points[1] = points[2] = point;
+    }
+    [path setAssociatedPoints:points atIndex:eltCount - 1];
+}
+
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
     NSPoint point = NSZeroPoint;
     PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     NSWindow *window = [self window];
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
+    enum { SKDrawCurve, SKDrawLine, SKDrawKink, SKDrawLineAndKink } drawState = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0 ? SKDrawLineAndKink : SKDrawCurve;
     NSBezierPath *bezierPath = nil;
+    NSInteger eltCount;
     CAShapeLayer *layer = nil;
     NSWindow *overlay = nil;
     
@@ -3373,24 +3406,51 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [window addChildWindow:overlay ordered:NSWindowAbove];
     }
     
-    // don't coalesce mouse event from mouse while drawing, 
+    // don't coalesce mouse event from mouse while drawing,
     // but not from tablets because those fire very rapidly and lead to serious delays
     if ([NSEvent currentPointingDeviceType] == NSUnknownPointingDevice)
         [NSEvent setMouseCoalescingEnabled:NO];
     
     while (YES) {
-        theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-        if ([theEvent type] == NSLeftMouseUp)
+        theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
+        
+        if ([theEvent type] == NSLeftMouseUp) {
+            
             break;
-        
-        if (bezierPath == nil) {
-            bezierPath = [NSBezierPath bezierPath];
-            [bezierPath moveToPoint:point];
+            
+        } else if ([theEvent type] == NSLeftMouseDragged) {
+            
+            if (bezierPath == nil) {
+                bezierPath = [NSBezierPath bezierPath];
+                [bezierPath moveToPoint:point];
+            } else if ((drawState & SKDrawKink) != 0 &&
+                       NSEqualPoints(point, [bezierPath associatedPointForElementAtIndex:[bezierPath elementCount] - 2]) == NO) {
+                [PDFAnnotationInk addPoint:point toSkimNotesPath:bezierPath];
+            }
+            
+            point = [self convertPoint:[theEvent locationInView:self] toPage:page];
+            
+            if (drawState == SKDrawLine) {
+                eltCount = [bezierPath elementCount];
+                NSPoint points[3];
+                if (NSCurveToBezierPathElement == [bezierPath elementAtIndex:eltCount - 1 associatedPoints:points])
+                    points[1] = points[2] = point;
+                else
+                    points[0] = point;
+                [bezierPath setAssociatedPoints:points atIndex:eltCount - 1];
+            } else {
+                [PDFAnnotationInk addPoint:point toSkimNotesPath:bezierPath];
+            }
+            
+            drawState = (drawState & SKDrawLine);
+            
+            [layer setPath:[bezierPath CGPath]];
+            
+        } else if ((([theEvent modifierFlags] & NSAlternateKeyMask) == 0) != ((drawState & SKDrawLine) == 0)) {
+            
+            drawState = (drawState & SKDrawLine) == 0 ? SKDrawLineAndKink : bezierPath ? SKDrawKink : SKDrawCurve;
+            
         }
-        
-        [PDFAnnotationInk addPoint:[self convertPoint:[theEvent locationInView:self] toPage:page] toSkimNotesPath:bezierPath];
-        
-        [layer setPath:[bezierPath CGPath]];
     }
     
     if (overlay) {
