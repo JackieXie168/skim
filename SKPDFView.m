@@ -3356,7 +3356,9 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
     NSWindow *window = [self window];
     BOOL wasMouseCoalescingEnabled = [NSEvent isMouseCoalescingEnabled];
-    enum { SKDrawCurve, SKDrawLine, SKDrawKink, SKDrawLineAndKink } drawState = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0 ? SKDrawLineAndKink : SKDrawCurve;
+    BOOL isOption = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0;
+    BOOL wasOption = NO;
+    BOOL wantsBreak = isOption;
     NSBezierPath *bezierPath = nil;
     NSInteger eltCount;
     CAShapeLayer *layer = nil;
@@ -3423,14 +3425,13 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
             if (bezierPath == nil) {
                 bezierPath = [NSBezierPath bezierPath];
                 [bezierPath moveToPoint:point];
-            } else if ((drawState & SKDrawKink) != 0 &&
-                       NSEqualPoints(point, [bezierPath associatedPointForElementAtIndex:[bezierPath elementCount] - 2]) == NO) {
+            } else if (wantsBreak && NO == NSEqualPoints(point, [bezierPath associatedPointForElementAtIndex:[bezierPath elementCount] - 2])) {
                 [PDFAnnotationInk addPoint:point toSkimNotesPath:bezierPath];
             }
             
             point = [self convertPoint:[theEvent locationInView:self] toPage:page];
             
-            if (drawState == SKDrawLine) {
+            if (isOption && wantsBreak == NO) {
                 eltCount = [bezierPath elementCount];
                 NSPoint points[3];
                 if (NSCurveToBezierPathElement == [bezierPath elementAtIndex:eltCount - 1 associatedPoints:points])
@@ -3442,13 +3443,15 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
                 [PDFAnnotationInk addPoint:point toSkimNotesPath:bezierPath];
             }
             
-            drawState = (drawState & SKDrawLine);
+            wasOption = isOption;
+            wantsBreak = NO;
             
             [layer setPath:[bezierPath CGPath]];
             
-        } else if ((([theEvent modifierFlags] & NSAlternateKeyMask) == 0) != ((drawState & SKDrawLine) == 0)) {
+        } else if ((([theEvent modifierFlags] & NSAlternateKeyMask) != 0) != isOption) {
             
-            drawState = (drawState & SKDrawLine) == 0 ? SKDrawLineAndKink : bezierPath ? SKDrawKink : SKDrawCurve;
+            isOption = isOption == NO;
+            wantsBreak = isOption || wasOption;
             
         }
     }
@@ -3463,7 +3466,7 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
-    if (bezierPath) {
+    if (bezierPath) {NSLog(@"%ld",[bezierPath elementCount]);
         NSMutableArray *paths = [[NSMutableArray alloc] init];
         if (activeAnnotation)
             [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
