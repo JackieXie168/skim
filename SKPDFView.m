@@ -3360,7 +3360,6 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     BOOL wasOption = NO;
     BOOL wantsBreak = isOption;
     NSBezierPath *bezierPath = nil;
-    NSInteger eltCount;
     CAShapeLayer *layer = nil;
     NSWindow *overlay = nil;
     
@@ -3432,12 +3431,13 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
             point = [self convertPoint:[theEvent locationInView:self] toPage:page];
             
             if (isOption && wantsBreak == NO) {
-                eltCount = [bezierPath elementCount];
-                NSPoint points[3];
-                if (NSCurveToBezierPathElement == [bezierPath elementAtIndex:eltCount - 1 associatedPoints:points])
-                    points[1] = points[2] = point;
-                else
-                    points[0] = point;
+                NSInteger eltCount = [bezierPath elementCount];
+                NSPoint points[3] = {point, point, point};
+                if (NSCurveToBezierPathElement == [bezierPath elementAtIndex:eltCount - 1]) {
+                    points[0] = [bezierPath associatedPointForElementAtIndex:eltCount - 2];
+                    points[0].x += ( point.x - points[0].x ) / 3.0;
+                    points[0].y += ( point.y - points[0].y ) / 3.0;
+                }
                 [bezierPath setAssociatedPoints:points atIndex:eltCount - 1];
             } else {
                 [PDFAnnotationInk addPoint:point toSkimNotesPath:bezierPath];
@@ -3466,7 +3466,7 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
-    if (bezierPath) {NSLog(@"%ld",[bezierPath elementCount]);
+    if (bezierPath) {
         NSMutableArray *paths = [[NSMutableArray alloc] init];
         if (activeAnnotation)
             [paths addObjectsFromArray:[(PDFAnnotationInk *)activeAnnotation pagePaths]];
