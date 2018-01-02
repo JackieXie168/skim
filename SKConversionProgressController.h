@@ -4,7 +4,7 @@
 //
 //  Created by Adam Maxwell on 12/6/06.
 /*
- This software is Copyright (c) 2006-2017
+ This software is Copyright (c) 2006-2018
  Adam Maxwell. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
