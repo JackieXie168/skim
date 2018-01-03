@@ -1764,7 +1764,8 @@ macro(Ink)
     );
     
     MAKE_IMAGE(SKImageNameCameraCursor, NO, 16.0, 16.0, 
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+        if (RUNNING_AFTER(10_11))
+            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSColor whiteColor] set];
         [[NSBezierPath bezierPathWithRect:NSMakeRect(0.0, 2.0, 16.0, 11.0)] fill];
         [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.7, 6.7, 8.6, 8.6)] fill];
