@@ -1593,8 +1593,9 @@ macro(Ink)
 
 + (void)makeCursorImages {
     
-    MAKE_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0, 
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+    MAKE_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0,
+        if (RUNNING_AFTER(10_11))
+            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
         [[NSColor whiteColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -1621,7 +1622,11 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(4.0, 8.0)];
         [path lineToPoint:NSMakePoint(2.0, 8.0)];
         [path closePath];
+        [[NSGraphicsContext currentContext] saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
         [path fill];
+        [[NSGraphicsContext currentContext] saveGraphicsState];
         [[NSColor blackColor] setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(3.0, 3.0)];
@@ -1648,7 +1653,8 @@ macro(Ink)
     );
     
     MAKE_IMAGE(SKImageNameResizeDiagonal135Cursor, NO, 16.0, 16.0, 
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+        if (RUNNING_AFTER(10_11))
+            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
         [[NSColor whiteColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -1675,7 +1681,11 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(8.0, 4.0)];
         [path lineToPoint:NSMakePoint(8.0, 2.0)];
         [path closePath];
+        [[NSGraphicsContext currentContext] saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
         [path fill];
+        [[NSGraphicsContext currentContext] saveGraphicsState];
         [[NSColor blackColor] setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(13.0, 3.0)];
