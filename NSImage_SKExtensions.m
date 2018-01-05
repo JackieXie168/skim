@@ -245,7 +245,7 @@ macro(Ink)
 + (NSImage *)bitmapImageWithSize:(NSSize)size minimumScale:(CGFloat)minScale maximumScale:(CGFloat)maxScale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
     CGFloat scale;
-    for (scale = minScale; scale <= maxScale; scale++)
+    for (scale = minScale; scale <= maxScale; scale *= 2.0)
         [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     return image;
 }
@@ -259,7 +259,7 @@ macro(Ink)
 }
 
 + (NSImage *)cursorBitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:4.0 drawingHandler:drawingHandler];
+    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:8.0 drawingHandler:drawingHandler];
 }
 
 + (void)makeToolbarImages {
