@@ -242,26 +242,24 @@ macro(Ink)
     }
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
++ (NSImage *)bitmapImageWithSize:(NSSize)size minimumScale:(CGFloat)minScale maximumScale:(CGFloat)maxScale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
+    CGFloat scale;
+    for (scale = minScale; scale <= maxScale; scale++)
+        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     return image;
+}
+
++ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    return [self bitmapImageWithSize:size minimumScale:scale maximumScale:scale drawingHandler:drawingHandler];
 }
 
 + (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    CGFloat scale;
-    for (scale = 1.0; scale <= 2.0; scale++)
-        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
-    return image;
+    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:2.0 drawingHandler:drawingHandler];
 }
 
 + (NSImage *)cursorBitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    CGFloat scale;
-    for (scale = 1.0; scale <= 4.0; scale++)
-        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
-    return image;
+    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:4.0 drawingHandler:drawingHandler];
 }
 
 + (void)makeToolbarImages {
