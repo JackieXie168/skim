@@ -201,7 +201,7 @@ instructions \
 #define MAKE_CURSOR_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
-image = [[NSImage cursorBitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+image = [[NSImage cursorImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
 instructions \
 }] retain]; \
 [image setTemplate:isTemplate]; \
@@ -242,24 +242,45 @@ macro(Ink)
     }
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size minimumScale:(CGFloat)minScale maximumScale:(CGFloat)maxScale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
++ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
+    [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
+    return image;
+}
+
++ (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
     CGFloat scale;
-    for (scale = minScale; scale <= maxScale; scale *= 2.0)
+    for (scale = 1.0; scale <= 2.0; scale++)
         [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     return image;
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size minimumScale:scale maximumScale:scale drawingHandler:drawingHandler];
++ (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSImage *image = nil;
+    CFMutableDataRef pdfData = CFDataCreateMutable(NULL, 0);
+    CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
+    CGRect rect = CGRectMake(0.0, 0.0, size.width, size.height);
+    CGContextRef context = CGPDFContextCreate(consumer, &rect, NULL);
+    CGDataConsumerRelease(consumer);
+    CGPDFContextBeginPage(context, NULL);
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
+    if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
+    [NSGraphicsContext restoreGraphicsState];
+    CGPDFContextEndPage(context);
+    CGContextFlush(context);
+    CGPDFContextClose(context);
+    CGContextRelease(context);
+    image = [[[NSImage alloc] initWithData:(NSData *)pdfData] autorelease];
+    CFRelease(pdfData);
+    return image;
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:2.0 drawingHandler:drawingHandler];
-}
-
-+ (NSImage *)cursorBitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size minimumScale:1.0 maximumScale:8.0 drawingHandler:drawingHandler];
++ (NSImage *)cursorImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    if (RUNNING_BEFORE(10_11))
+        return [self bitmapImageWithSize:size drawingHandler:drawingHandler];
+    return [self PDFImageWithSize:size drawingHandler:drawingHandler];
 }
 
 + (void)makeToolbarImages {
