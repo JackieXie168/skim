@@ -3716,7 +3716,7 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
     
-    [[NSCursor closedHandCursor] push];
+    [[NSCursor closedHandBarCursor] push];
     
     [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
     
@@ -4369,7 +4369,7 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     else if ((area & SKResizeDiagonal135Area))
         [[NSCursor resizeDiagonal135Cursor] set];
     else if ((area & SKReadingBarArea))
-        [[NSCursor openHandCursor] set];
+        [[NSCursor openHandBarCursor] set];
     else if (area == kPDFTextFieldArea)
         [[NSCursor IBeamCursor] set];
     else if (toolMode == SKNoteToolMode && (area & kPDFPageArea))

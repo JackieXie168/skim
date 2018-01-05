@@ -1803,17 +1803,45 @@ macro(Ink)
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, 16.0, 16.0,
+    NSSize size = [[[NSCursor openHandCursor] image] size];
+    
+    if (NSEqualSizes(size, NSMakeSize(32.0, 32.0))) {
+    
+    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, 32.0, 32.0,
         [[NSColor blackColor] setFill];
-        [NSBezierPath fillRect:NSMakeRect(0.0, 9.0, 16.0, 3.0)];
-        [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [NSGraphicsContext saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+        [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
+        [NSGraphicsContext restoreGraphicsState];
+        [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    );
+        
+    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, 32.0, 32.0,
+        [[NSColor blackColor] setFill];
+        [NSGraphicsContext saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+        [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
+        [NSGraphicsContext restoreGraphicsState];
+        [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, 16.0, 16.0,
+    } else {
+    
+    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, size.width, size.width,
         [[NSColor blackColor] setFill];
-        [NSBezierPath fillRect:NSMakeRect(0.0, 6.0, 16.0, 3.0)];
-        [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [NSBezierPath fillRect:NSMakeRect(0.0, 9.0 / 16.0 * size.height, size.width, 3.0 / 16.0 * size.height)];
+        [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, size.width, size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
+    
+    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, size.width, size.width,
+        [[NSColor blackColor] setFill];
+        [NSBezierPath fillRect:NSMakeRect(0.0, 6.0 / 16.0 * size.height, size.width, 3.0 / 16.0 * size.height)];
+        [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, size.width, size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    );
+    
+    }
     
 #define MAKE_NOTE_CURSOR_IMAGE(name) \
     MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, NO, 24.0, 40.0, \
