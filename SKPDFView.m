@@ -3977,7 +3977,7 @@ static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
     NSRect magRect;
     NSInteger mouseInside = -1;
 	NSInteger currentLevel = 0;
-    NSInteger originalLevel = [theEvent clickCount]; // this should be at least 1
+    NSInteger originalLevel = ([theEvent modifierFlags] & NSAlternateKeyMask) ? 2 : [theEvent clickCount]; // this should be at least 1
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]));
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]));
