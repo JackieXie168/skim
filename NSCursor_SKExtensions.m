@@ -46,7 +46,7 @@
     static NSCursor *zoomInCursor = nil;
     if (nil == zoomInCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameZoomInCursor] copy] autorelease];
-        zoomInCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
+        zoomInCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(7.0, 6.0)];
     }
     return zoomInCursor;
 }
@@ -55,7 +55,7 @@
     static NSCursor *zoomOutCursor = nil;
     if (nil == zoomOutCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameZoomOutCursor] copy] autorelease];
-        zoomOutCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
+        zoomOutCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(7.0, 6.0)];
     }
     return zoomOutCursor;
 }
@@ -82,7 +82,7 @@
     static NSCursor *cameraCursor = nil;
     if (nil == cameraCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameCameraCursor] copy] autorelease];
-        cameraCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+        cameraCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(9.0, 8.0)];
     }
     return cameraCursor;
 }

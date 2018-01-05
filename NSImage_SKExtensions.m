@@ -190,12 +190,22 @@ static void drawAddBadgeAtPoint(NSPoint point);
 
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
-    static NSImage *image = nil; \
-    image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
-        instructions \
-    }] retain]; \
-    [image setTemplate:isTemplate]; \
-    [image setName:name]; \
+static NSImage *image = nil; \
+image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+instructions \
+}] retain]; \
+[image setTemplate:isTemplate]; \
+[image setName:name]; \
+} while (0)
+
+#define MAKE_CURSOR_IMAGE(name, isTemplate, width, height, instructions) \
+do { \
+static NSImage *image = nil; \
+image = [[NSImage cursorBitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+instructions \
+}] retain]; \
+[image setTemplate:isTemplate]; \
+[image setName:name]; \
 } while (0)
 
 #define APPLY_NOTE_TYPES(macro) \
@@ -242,6 +252,14 @@ macro(Ink)
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
     CGFloat scale;
     for (scale = 1.0; scale <= 2.0; scale++)
+        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
+    return image;
+}
+
++ (NSImage *)cursorBitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
+    CGFloat scale;
+    for (scale = 1.0; scale <= 4.0; scale++)
         [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     return image;
 }
@@ -1593,48 +1611,44 @@ macro(Ink)
 
 + (void)makeCursorImages {
     
-    MAKE_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0,
+    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
         [[NSColor whiteColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(2.0, 2.0)];
-        [path lineToPoint:NSMakePoint(8.0, 2.0)];
-        [path lineToPoint:NSMakePoint(8.0, 4.0)];
-        [path lineToPoint:NSMakePoint(7.0, 5.0)];
-        [path lineToPoint:NSMakePoint(8.0, 6.0)];
-        [path lineToPoint:NSMakePoint(13.0, 1.0)];
-        [path lineToPoint:NSMakePoint(15.0, 3.0)];
-        [path lineToPoint:NSMakePoint(10.0, 8.0)];
-        [path lineToPoint:NSMakePoint(11.0, 9.0)];
-        [path lineToPoint:NSMakePoint(12.0, 8.0)];
-        [path lineToPoint:NSMakePoint(14.0, 8.0)];
+        [path lineToPoint:NSMakePoint(9.5, 2.0)];
+        [path lineToPoint:NSMakePoint(7.0, 4.5)];
+        [path lineToPoint:NSMakePoint(8.0, 5.5)];
+        [path lineToPoint:NSMakePoint(12.5, 1.0)];
+        [path lineToPoint:NSMakePoint(15.0, 3.5)];
+        [path lineToPoint:NSMakePoint(10.5, 8.0)];
+        [path lineToPoint:NSMakePoint(11.5, 9.0)];
+        [path lineToPoint:NSMakePoint(14.0, 6.5)];
         [path lineToPoint:NSMakePoint(14.0, 14.0)];
-        [path lineToPoint:NSMakePoint(8.0, 14.0)];
-        [path lineToPoint:NSMakePoint(8.0, 12.0)];
-        [path lineToPoint:NSMakePoint(9.0, 11.0)];
-        [path lineToPoint:NSMakePoint(8.0, 10.0)];
-        [path lineToPoint:NSMakePoint(3.0, 15.0)];
-        [path lineToPoint:NSMakePoint(1.0, 13.0)];
-        [path lineToPoint:NSMakePoint(6.0, 8.0)];
-        [path lineToPoint:NSMakePoint(5.0, 7.0)];
-        [path lineToPoint:NSMakePoint(4.0, 8.0)];
-        [path lineToPoint:NSMakePoint(2.0, 8.0)];
+        [path lineToPoint:NSMakePoint(6.5, 14.0)];
+        [path lineToPoint:NSMakePoint(9.0, 11.5)];
+        [path lineToPoint:NSMakePoint(8.0, 10.5)];
+        [path lineToPoint:NSMakePoint(3.5, 15.0)];
+        [path lineToPoint:NSMakePoint(1.0, 12.5)];
+        [path lineToPoint:NSMakePoint(5.5, 8.0)];
+        [path lineToPoint:NSMakePoint(4.5, 7.0)];
+        [path lineToPoint:NSMakePoint(2.0, 9.5)];
         [path closePath];
-        [[NSGraphicsContext currentContext] saveGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
         [path fill];
-        [[NSGraphicsContext currentContext] saveGraphicsState];
+        [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(3.0, 3.0)];
         [path lineToPoint:NSMakePoint(7.0, 3.0)];
         [path lineToPoint:NSMakePoint(5.5, 4.5)];
         [path lineToPoint:NSMakePoint(8.0, 7.0)];
-        [path lineToPoint:NSMakePoint(13.0, 2.0)];
-        [path lineToPoint:NSMakePoint(14.0, 3.0)];
+        [path lineToPoint:NSMakePoint(12.5, 2.5)];
+        [path lineToPoint:NSMakePoint(13.5, 3.5)];
         [path lineToPoint:NSMakePoint(9.0, 8.0)];
         [path lineToPoint:NSMakePoint(11.5, 10.5)];
         [path lineToPoint:NSMakePoint(13.0, 9.0)];
@@ -1642,8 +1656,8 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(9.0, 13.0)];
         [path lineToPoint:NSMakePoint(10.5, 11.5)];
         [path lineToPoint:NSMakePoint(8.0, 9.0)];
-        [path lineToPoint:NSMakePoint(3.0, 14.0)];
-        [path lineToPoint:NSMakePoint(2.0, 13.0)];
+        [path lineToPoint:NSMakePoint(3.5, 13.5)];
+        [path lineToPoint:NSMakePoint(2.5, 12.5)];
         [path lineToPoint:NSMakePoint(7.0, 8.0)];
         [path lineToPoint:NSMakePoint(4.5, 5.5)];
         [path lineToPoint:NSMakePoint(3.0, 7.0)];
@@ -1652,48 +1666,44 @@ macro(Ink)
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_IMAGE(SKImageNameResizeDiagonal135Cursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal135Cursor, NO, 16.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
         [[NSColor whiteColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(14.0, 2.0)];
-        [path lineToPoint:NSMakePoint(14.0, 8.0)];
-        [path lineToPoint:NSMakePoint(12.0, 8.0)];
-        [path lineToPoint:NSMakePoint(11.0, 7.0)];
-        [path lineToPoint:NSMakePoint(10.0, 8.0)];
-        [path lineToPoint:NSMakePoint(15.0, 13.0)];
-        [path lineToPoint:NSMakePoint(13.0, 15.0)];
-        [path lineToPoint:NSMakePoint(8.0, 10.0)];
-        [path lineToPoint:NSMakePoint(7.0, 11.0)];
-        [path lineToPoint:NSMakePoint(8.0, 12.0)];
-        [path lineToPoint:NSMakePoint(8.0, 14.0)];
+        [path lineToPoint:NSMakePoint(14.0, 9.5)];
+        [path lineToPoint:NSMakePoint(11.5, 7.0)];
+        [path lineToPoint:NSMakePoint(10.5, 8.0)];
+        [path lineToPoint:NSMakePoint(15.0, 12.5)];
+        [path lineToPoint:NSMakePoint(12.5, 15.0)];
+        [path lineToPoint:NSMakePoint(8.0, 10.5)];
+        [path lineToPoint:NSMakePoint(7.0, 11.5)];
+        [path lineToPoint:NSMakePoint(9.5, 14.0)];
         [path lineToPoint:NSMakePoint(2.0, 14.0)];
-        [path lineToPoint:NSMakePoint(2.0, 8.0)];
-        [path lineToPoint:NSMakePoint(4.0, 8.0)];
-        [path lineToPoint:NSMakePoint(5.0, 9.0)];
-        [path lineToPoint:NSMakePoint(6.0, 8.0)];
-        [path lineToPoint:NSMakePoint(1.0, 3.0)];
-        [path lineToPoint:NSMakePoint(3.0, 1.0)];
-        [path lineToPoint:NSMakePoint(8.0, 6.0)];
-        [path lineToPoint:NSMakePoint(9.0, 5.0)];
-        [path lineToPoint:NSMakePoint(8.0, 4.0)];
-        [path lineToPoint:NSMakePoint(8.0, 2.0)];
+        [path lineToPoint:NSMakePoint(2.0, 6.5)];
+        [path lineToPoint:NSMakePoint(4.5, 9.0)];
+        [path lineToPoint:NSMakePoint(5.5, 8.0)];
+        [path lineToPoint:NSMakePoint(1.0, 3.5)];
+        [path lineToPoint:NSMakePoint(3.5, 1.0)];
+        [path lineToPoint:NSMakePoint(8.0, 5.5)];
+        [path lineToPoint:NSMakePoint(9.0, 4.5)];
+        [path lineToPoint:NSMakePoint(6.5, 2.0)];
         [path closePath];
-        [[NSGraphicsContext currentContext] saveGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
         [path fill];
-        [[NSGraphicsContext currentContext] saveGraphicsState];
+        [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setFill];
         path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(13.0, 3.0)];
         [path lineToPoint:NSMakePoint(13.0, 7.0)];
         [path lineToPoint:NSMakePoint(11.5, 5.5)];
         [path lineToPoint:NSMakePoint(9.0, 8.0)];
-        [path lineToPoint:NSMakePoint(14.0, 13.0)];
-        [path lineToPoint:NSMakePoint(13.0, 14.0)];
+        [path lineToPoint:NSMakePoint(13.5, 12.5)];
+        [path lineToPoint:NSMakePoint(12.5, 13.5)];
         [path lineToPoint:NSMakePoint(8.0, 9.0)];
         [path lineToPoint:NSMakePoint(5.5, 11.5)];
         [path lineToPoint:NSMakePoint(7.0, 13.0)];
@@ -1701,8 +1711,8 @@ macro(Ink)
         [path lineToPoint:NSMakePoint(3.0, 9.0)];
         [path lineToPoint:NSMakePoint(4.5, 10.5)];
         [path lineToPoint:NSMakePoint(7.0, 8.0)];
-        [path lineToPoint:NSMakePoint(2.0, 3.0)];
-        [path lineToPoint:NSMakePoint(3.0, 2.0)];
+        [path lineToPoint:NSMakePoint(2.5, 3.5)];
+        [path lineToPoint:NSMakePoint(3.5, 2.5)];
         [path lineToPoint:NSMakePoint(8.0, 7.0)];
         [path lineToPoint:NSMakePoint(10.5, 4.5)];
         [path lineToPoint:NSMakePoint(9.0, 3.0)];
@@ -1711,90 +1721,104 @@ macro(Ink)
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_IMAGE(SKImageNameZoomInCursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameZoomInCursor, NO, 18.0, 18.0,
         [[NSColor whiteColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 3.0, 13.0, 13.0)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(1.0, 5.0, 13.0, 13.0)];
+        [path moveToPoint:NSMakePoint(14.5, 1.5)];
+        [path lineToPoint:NSMakePoint(17.5, 4.5)];
+        [path lineToPoint:NSMakePoint(12.5, 9.5)];
+        [path lineToPoint:NSMakePoint(9.5, 6.5)];
+        [path closePath];
+        [NSGraphicsContext saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
         [path fill];
-        path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(15.5, 0.5)];
-        [path lineToPoint:NSMakePoint(10.0, 6.0)];
-        [path setLineWidth:4.5];
-        [path stroke];
+        [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setStroke];
-        path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 5.0, 9.0, 9.0)];
+        path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.0, 7.0, 9.0, 9.0)];
         [path setLineWidth:2.0];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(14.5, 1.5)];
-        [path lineToPoint:NSMakePoint(9.5, 6.5)];
+        [path moveToPoint:NSMakePoint(15.5, 3.5)];
+        [path lineToPoint:NSMakePoint(10.5, 8.5)];
         [path setLineWidth:2.5];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(4.0, 9.5)];
-        [path lineToPoint:NSMakePoint(9.0, 9.5)];
-        [path moveToPoint:NSMakePoint(6.5, 7.0)];
-        [path lineToPoint:NSMakePoint(6.5, 12.0)];
+        [path moveToPoint:NSMakePoint(5.0, 11.5)];
+        [path lineToPoint:NSMakePoint(10.0, 11.5)];
+        [path moveToPoint:NSMakePoint(7.5, 9.0)];
+        [path lineToPoint:NSMakePoint(7.5, 14.0)];
         [path setLineWidth:1.0];
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameZoomOutCursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameZoomOutCursor, NO, 18.0, 18.0,
         [[NSColor whiteColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 3.0, 13.0, 13.0)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(1.0, 5.0, 13.0, 13.0)];
+        [path moveToPoint:NSMakePoint(14.5, 1.5)];
+        [path lineToPoint:NSMakePoint(17.5, 4.5)];
+        [path lineToPoint:NSMakePoint(12.5, 9.5)];
+        [path lineToPoint:NSMakePoint(9.5, 6.5)];
+        [path closePath];
+        [NSGraphicsContext saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
         [path fill];
-        path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(15.5, 0.5)];
-        [path lineToPoint:NSMakePoint(10.0, 6.0)];
-        [path setLineWidth:4.5];
-        [path stroke];
+        [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setStroke];
-        path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 5.0, 9.0, 9.0)];
+        path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.0, 7.0, 9.0, 9.0)];
         [path setLineWidth:2.0];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(14.5, 1.5)];
-        [path lineToPoint:NSMakePoint(9.5, 6.5)];
+        [path moveToPoint:NSMakePoint(15.5, 3.5)];
+        [path lineToPoint:NSMakePoint(10.5, 8.5)];
         [path setLineWidth:2.5];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(4.0, 9.5)];
-        [path lineToPoint:NSMakePoint(9.0, 9.5)];
+        [path moveToPoint:NSMakePoint(5.0, 11.5)];
+        [path lineToPoint:NSMakePoint(10.0, 11.5)];
         [path setLineWidth:1.0];
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameCameraCursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameCameraCursor, NO, 18.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSColor whiteColor] set];
-        [[NSBezierPath bezierPathWithRect:NSMakeRect(0.0, 2.0, 16.0, 11.0)] fill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.7, 6.7, 8.6, 8.6)] fill];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.0, 2.0, 16.0, 11.0)];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(4.7, 6.7, 8.6, 8.6)];
+        [NSGraphicsContext saveGraphicsState];
+        if (RUNNING_AFTER(10_11))
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+        [path fill];
+        [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] set];
-        [[NSBezierPath bezierPathWithRect:NSMakeRect(1.0, 3.0, 14.0, 9.0)] fill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(5, 8, 6, 6)] fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 3.0, 14.0, 9.0)];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(6.0, 8.0, 6.0, 6.0)];
+        [path fill];
         [[NSColor whiteColor] set];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.3, 4.3, 7.4, 7.4)] stroke];
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(8.0, 8.0) radius:1.8 startAngle:45.0 endAngle:225.0];
+        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(5.3, 4.3, 7.4, 7.4)] stroke];
+        path = [NSBezierPath bezierPath];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(9.0, 8.0) radius:1.8 startAngle:45.0 endAngle:225.0];
         [path closePath];
         [path fill];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_IMAGE(SKImageNameOpenHandBarCursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, 16.0, 16.0,
         [[NSColor blackColor] setFill];
         [NSBezierPath fillRect:NSMakeRect(0.0, 9.0, 16.0, 3.0)];
         [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     
-    MAKE_IMAGE(SKImageNameClosedHandBarCursor, NO, 16.0, 16.0, 
+    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, 16.0, 16.0,
         [[NSColor blackColor] setFill];
         [NSBezierPath fillRect:NSMakeRect(0.0, 6.0, 16.0, 3.0)];
         [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     
 #define MAKE_NOTE_CURSOR_IMAGE(name) \
-    MAKE_IMAGE(SKImageName ## name ## NoteCursor, NO, 24.0, 40.0, \
+    MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, NO, 24.0, 40.0, \
         drawArrowCursor(); \
         translate(3.0); \
         draw ## name ## NoteTemplate(); \
