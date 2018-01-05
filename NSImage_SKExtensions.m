@@ -269,7 +269,6 @@ macro(Ink)
     if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
     [NSGraphicsContext restoreGraphicsState];
     CGPDFContextEndPage(context);
-    CGContextFlush(context);
     CGPDFContextClose(context);
     CGContextRelease(context);
     image = [[[NSImage alloc] initWithData:(NSData *)pdfData] autorelease];
