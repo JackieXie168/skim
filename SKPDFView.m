@@ -3321,37 +3321,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return newActiveAnnotation != nil;
 }
 
-static void addLineToPath(NSBezierPath *path, NSPoint point) {
-    NSInteger eltCount = [path elementCount];
-    if (eltCount > 1) {
-        NSPoint lastPoint = [path associatedPointForElementAtIndex:eltCount - 1];
-        if (NSEqualPoints(lastPoint, [path associatedPointForElementAtIndex:eltCount - 2]) == NO)
-            [PDFAnnotationInk addPoint:lastPoint toSkimNotesPath:path];
-    }
-    [PDFAnnotationInk addPoint:point toSkimNotesPath:path];
-}
-
-static void endLineFromPath(NSBezierPath *path) {
-    NSInteger eltCount = [path elementCount];
-    if (eltCount > 1) {
-        NSPoint lastPoint = [path associatedPointForElementAtIndex:eltCount - 1];
-        if (NSEqualPoints(lastPoint, [path associatedPointForElementAtIndex:eltCount - 2]) == NO)
-            [PDFAnnotationInk addPoint:lastPoint toSkimNotesPath:path];
-    }
-}
-
-static void changeLineFromPath(NSBezierPath *path, NSPoint point) {
-    NSInteger eltCount = [path elementCount];
-    NSPoint points[3];
-    NSBezierPathElement elt = [path elementAtIndex:eltCount - 1 associatedPoints:points];
-    if (elt == NSLineToBezierPathElement) {
-        points[0] = point;
-    } else {
-        points[1] = points[2] = point;
-    }
-    [path setAssociatedPoints:points atIndex:eltCount - 1];
-}
-
 - (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
     NSPoint point = NSZeroPoint;
     PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:YES];
