@@ -2186,18 +2186,15 @@ static void drawTextNoteTemplate() {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(5.0, 5.0)];
     [path lineToPoint:NSMakePoint(9.0, 6.5)];
-    [path lineToPoint:NSMakePoint(9.0, 7.5)];
-    [path lineToPoint:NSMakePoint(7.5, 9.0)];
-    [path lineToPoint:NSMakePoint(6.5, 9.0)];
+    [path curveToPoint:NSMakePoint(8.25, 8.25) controlPoint1:NSMakePoint(9.0 + 0.5 * KAPPA, 6.5 + 0.5 * KAPPA) controlPoint2:NSMakePoint(8.25 + 1.25 * KAPPA, 8.25 - 1.25 * KAPPA)];
+    [path curveToPoint:NSMakePoint(6.5, 9.0) controlPoint1:NSMakePoint(8.25 - 1.25 * KAPPA, 8.25 + 1.25 * KAPPA) controlPoint2:NSMakePoint(6.5 + 0.5 * KAPPA, 9.0 + 0.5 * KAPPA)];
     [path closePath];
-    [path moveToPoint:NSMakePoint(10.0, 7.0)];
-    [path lineToPoint:NSMakePoint(16.0, 13.0)];
-    [path lineToPoint:NSMakePoint(16.0, 14.0)];
-    [path lineToPoint:NSMakePoint(14.0, 16.0)];
-    [path lineToPoint:NSMakePoint(13.0, 16.0)];
+    [path moveToPoint:NSMakePoint(16.0, 13.0)];
+    [path curveToPoint:NSMakePoint(15.1, 15.1) controlPoint1:NSMakePoint(16.0 + 0.6 * KAPPA, 13.0 + 0.6 * KAPPA) controlPoint2:NSMakePoint(15.1 + 1.5 * KAPPA, 15.1 - 1.5 * KAPPA)];
+    [path curveToPoint:NSMakePoint(13.0, 16.0) controlPoint1:NSMakePoint(15.1 - 1.5 * KAPPA, 15.1 + 1.5 * KAPPA) controlPoint2:NSMakePoint(13.0 + 0.6 * KAPPA, 16.0 + 0.6 * KAPPA)];
     [path lineToPoint:NSMakePoint(7.0, 10.0)];
-    [path lineToPoint:NSMakePoint(8.0, 10.0)];
-    [path lineToPoint:NSMakePoint(10.0, 8.0)];
+    [path curveToPoint:NSMakePoint(9.1, 9.1) controlPoint1:NSMakePoint(7.0 + 0.6 * KAPPA, 10.0 + 0.6 * KAPPA) controlPoint2:NSMakePoint(9.1 - 1.5 * KAPPA, 9.1 + 1.5 * KAPPA)];
+    [path curveToPoint:NSMakePoint(10.0, 7.0) controlPoint1:NSMakePoint(9.1 + 1.5 * KAPPA, 9.1 - 1.5 * KAPPA) controlPoint2:NSMakePoint(10.0 + 0.6 * KAPPA, 7.0 + 0.6 * KAPPA)];
     [path closePath];
     [path fill];
 }
