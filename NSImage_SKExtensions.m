@@ -198,13 +198,12 @@ instructions \
 [image setName:name]; \
 } while (0)
 
-#define MAKE_CURSOR_IMAGE(name, isTemplate, width, height, instructions) \
+#define MAKE_CURSOR_IMAGE(name, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
 image = [[NSImage cursorImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
 instructions \
 }] retain]; \
-[image setTemplate:isTemplate]; \
 [image setName:name]; \
 } while (0)
 
@@ -1629,7 +1628,7 @@ macro(Ink)
 
 + (void)makeCursorImages {
     
-    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal45Cursor, NO, 16.0, 16.0,
+    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal45Cursor, 16.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
@@ -1684,7 +1683,7 @@ macro(Ink)
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal135Cursor, NO, 16.0, 16.0,
+    MAKE_CURSOR_IMAGE(SKImageNameResizeDiagonal135Cursor, 16.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
@@ -1739,7 +1738,7 @@ macro(Ink)
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameZoomInCursor, NO, 18.0, 18.0,
+    MAKE_CURSOR_IMAGE(SKImageNameZoomInCursor, 18.0, 18.0,
         [[NSColor whiteColor] set];
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(1.0, 5.0, 13.0, 13.0)];
         [path moveToPoint:NSMakePoint(14.5, 1.5)];
@@ -1770,7 +1769,7 @@ macro(Ink)
         [path stroke];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameZoomOutCursor, NO, 18.0, 18.0,
+    MAKE_CURSOR_IMAGE(SKImageNameZoomOutCursor, 18.0, 18.0,
         [[NSColor whiteColor] set];
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(1.0, 5.0, 13.0, 13.0)];
         [path moveToPoint:NSMakePoint(14.5, 1.5)];
@@ -1799,7 +1798,7 @@ macro(Ink)
         [path stroke];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameCameraCursor, NO, 18.0, 16.0,
+    MAKE_CURSOR_IMAGE(SKImageNameCameraCursor, 18.0, 16.0,
         if (RUNNING_AFTER(10_11))
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSColor whiteColor] set];
@@ -1827,7 +1826,7 @@ macro(Ink)
     
     if (NSEqualSizes(size, NSMakeSize(32.0, 32.0))) {
     
-    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, 32.0, 32.0,
+    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, 32.0, 32.0,
         [[NSColor blackColor] setFill];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
@@ -1837,7 +1836,7 @@ macro(Ink)
         [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
         
-    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, 32.0, 32.0,
+    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, 32.0, 32.0,
         [[NSColor blackColor] setFill];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
@@ -1849,13 +1848,13 @@ macro(Ink)
     
     } else {
     
-    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, NO, size.width, size.width,
+    MAKE_CURSOR_IMAGE(SKImageNameOpenHandBarCursor, size.width, size.width,
         [[NSColor blackColor] setFill];
         [NSBezierPath fillRect:NSMakeRect(0.0, 9.0 / 16.0 * size.height, size.width, 3.0 / 16.0 * size.height)];
         [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, size.width, size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, NO, size.width, size.width,
+    MAKE_CURSOR_IMAGE(SKImageNameClosedHandBarCursor, size.width, size.width,
         [[NSColor blackColor] setFill];
         [NSBezierPath fillRect:NSMakeRect(0.0, 6.0 / 16.0 * size.height, size.width, 3.0 / 16.0 * size.height)];
         [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, size.width, size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
@@ -1864,7 +1863,7 @@ macro(Ink)
     }
     
 #define MAKE_NOTE_CURSOR_IMAGE(name) \
-    MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, NO, 24.0, 40.0, \
+    MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, 24.0, 40.0, \
         drawArrowCursor(); \
         translate(3.0); \
         draw ## name ## NoteTemplate(); \
