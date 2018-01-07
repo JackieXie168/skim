@@ -1546,6 +1546,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKLegacyFullScreenMode)];
+        [[NSCursor arrowCursor] set];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
