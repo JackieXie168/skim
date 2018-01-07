@@ -49,4 +49,6 @@
 
 - (CGPathRef)CGPath;
 
+- (void)halfEllipseFromPoint:(NSPoint)halfwayPoint toPoint:(NSPoint)endPoint;
+
 @end

@@ -121,5 +121,16 @@
     return (CGPathRef)[(id)path autorelease];
 }
 
+// distance ratio for control points to approximate a quarter ellipse by a cubic bezier curve
+#define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
+
+- (void)halfEllipseFromPoint:(NSPoint)halfwayPoint toPoint:(NSPoint)endPoint {
+    NSPoint startPoint = [self currentPoint];
+    NSPoint diff1 = NSMakePoint(KAPPA * (halfwayPoint.x - 0.5 * (endPoint.x + startPoint.x)), KAPPA * (halfwayPoint.y - 0.5 * (endPoint.y + startPoint.y)));
+    NSPoint diff2 = NSMakePoint(KAPPA * 0.5 * (endPoint.x - startPoint.x), KAPPA * 0.5 * (endPoint.y - startPoint.y));
+    [self curveToPoint:halfwayPoint controlPoint1:SKAddPoints(startPoint, diff1) controlPoint2:SKSubstractPoints(halfwayPoint, diff2)];
+    [self curveToPoint:endPoint controlPoint1:SKAddPoints(halfwayPoint, diff2) controlPoint2:SKAddPoints(endPoint, diff1)];
+}
+
 @end
 

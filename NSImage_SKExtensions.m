@@ -39,6 +39,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 
 NSString *SKImageNameTextNote = @"TextNote";
@@ -217,9 +218,6 @@ macro(Underline); \
 macro(StrikeOut); \
 macro(Line); \
 macro(Ink)
-
-// distance ratio for control points to approximate a quarter ellipse by a cubic bezier curve
-#define KAPPA (4.0 * (M_SQRT2 - 1.0) / 3.0)
 
 #if SDK_BEFORE(10_8)
 @interface NSImage (SKMountainLionDeclarations)
@@ -1252,20 +1250,15 @@ macro(Ink)
         [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(8.5, 11.5)];
-        [path curveToPoint:NSMakePoint(13.5, 9.5) controlPoint1:NSMakePoint(8.5, 11.5 - 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 - 5.0 * KAPPA, 9.5)];
-        [path curveToPoint:NSMakePoint(18.5, 11.5) controlPoint1:NSMakePoint(13.5 + 5.0 * KAPPA, 9.5) controlPoint2:NSMakePoint(18.5, 11.5 - 2.0 * KAPPA)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 9.5) toPoint:NSMakePoint(18.5, 11.5)];
         [path lineToPoint:NSMakePoint(18.5, 13.5)];
-        [path curveToPoint:NSMakePoint(13.5, 11.5) controlPoint1:NSMakePoint(18.5, 11.5 + 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 + 5.0 * KAPPA, 11.5)];
-        [path curveToPoint:NSMakePoint(8.5, 13.5) controlPoint1:NSMakePoint(13.5 - 5.0 * KAPPA, 11.5) controlPoint2:NSMakePoint(8.5, 13.5 - 2.0 * KAPPA)];
-        [path closePath];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 11.5) toPoint:NSMakePoint(8.5, 13.5)];        [path closePath];
         [path fill];
         [path moveToPoint:NSMakePoint(18.5, 13.5)];
-        [path curveToPoint:NSMakePoint(13.5, 15.5) controlPoint1:NSMakePoint(18.5, 13.5 + 2.0 * KAPPA) controlPoint2:NSMakePoint(13.5 + 5.0 * KAPPA, 15.5)];
-        [path curveToPoint:NSMakePoint(8.5, 13.5) controlPoint1:NSMakePoint(13.5 - 5.0 * KAPPA, 15.5) controlPoint2:NSMakePoint(8.5, 13.5 + 2.0 * KAPPA)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 15.5) toPoint:NSMakePoint(8.5, 13.5)];
         [path moveToPoint:NSMakePoint(9.5, 10.5)];
         [path curveToPoint:NSMakePoint(7.5, 6.0) controlPoint1:NSMakePoint(8.0, 9.0) controlPoint2:NSMakePoint(7.5, 7.5)];
-        [path curveToPoint:NSMakePoint(13.5, 3.5) controlPoint1:NSMakePoint(7.5, 6.0 - 2.5 * KAPPA) controlPoint2:NSMakePoint(13.5 - 6.0 * KAPPA, 3.5)];
-        [path curveToPoint:NSMakePoint(19.5, 6.0) controlPoint1:NSMakePoint(13.5 + 6.0 * KAPPA, 3.5) controlPoint2:NSMakePoint(19.5, 6.0 - 2.5 * KAPPA)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 3.5) toPoint:NSMakePoint(19.5, 6.0)];
         [path curveToPoint:NSMakePoint(17.5, 10.5) controlPoint1:NSMakePoint(19.5, 7.5) controlPoint2:NSMakePoint(19.0, 9.0)];
         [path stroke];
     );
@@ -2185,15 +2178,12 @@ static void drawTextNoteTemplate() {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(5.0, 5.0)];
     [path lineToPoint:NSMakePoint(9.0, 6.5)];
-    [path curveToPoint:NSMakePoint(8.25, 8.25) controlPoint1:NSMakePoint(9.0 + 0.5 * KAPPA, 6.5 + 0.5 * KAPPA) controlPoint2:NSMakePoint(8.25 + 1.25 * KAPPA, 8.25 - 1.25 * KAPPA)];
-    [path curveToPoint:NSMakePoint(6.5, 9.0) controlPoint1:NSMakePoint(8.25 - 1.25 * KAPPA, 8.25 + 1.25 * KAPPA) controlPoint2:NSMakePoint(6.5 + 0.5 * KAPPA, 9.0 + 0.5 * KAPPA)];
+    [path halfEllipseFromPoint:NSMakePoint(8.25, 8.25) toPoint:NSMakePoint(6.5, 9.0)];
     [path closePath];
     [path moveToPoint:NSMakePoint(16.0, 13.0)];
-    [path curveToPoint:NSMakePoint(15.1, 15.1) controlPoint1:NSMakePoint(16.0 + 0.6 * KAPPA, 13.0 + 0.6 * KAPPA) controlPoint2:NSMakePoint(15.1 + 1.5 * KAPPA, 15.1 - 1.5 * KAPPA)];
-    [path curveToPoint:NSMakePoint(13.0, 16.0) controlPoint1:NSMakePoint(15.1 - 1.5 * KAPPA, 15.1 + 1.5 * KAPPA) controlPoint2:NSMakePoint(13.0 + 0.6 * KAPPA, 16.0 + 0.6 * KAPPA)];
+    [path halfEllipseFromPoint:NSMakePoint(15.1, 15.1) toPoint:NSMakePoint(13.0, 16.0)];
     [path lineToPoint:NSMakePoint(7.0, 10.0)];
-    [path curveToPoint:NSMakePoint(9.1, 9.1) controlPoint1:NSMakePoint(7.0 + 0.6 * KAPPA, 10.0 + 0.6 * KAPPA) controlPoint2:NSMakePoint(9.1 - 1.5 * KAPPA, 9.1 + 1.5 * KAPPA)];
-    [path curveToPoint:NSMakePoint(10.0, 7.0) controlPoint1:NSMakePoint(9.1 + 1.5 * KAPPA, 9.1 - 1.5 * KAPPA) controlPoint2:NSMakePoint(10.0 + 0.6 * KAPPA, 7.0 + 0.6 * KAPPA)];
+    [path halfEllipseFromPoint:NSMakePoint(9.1, 9.1) toPoint:NSMakePoint(10.0, 7.0)];
     [path closePath];
     [path fill];
 }
@@ -2203,8 +2193,7 @@ static void drawAnchoredNoteTemplate() {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(12.0, 6.5)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(16.5, 6.5) toPoint:NSMakePoint(16.5, 15.5) radius:4.5];
-    [path curveToPoint:NSMakePoint(10.0, 15.5) controlPoint1:NSMakePoint(16.5, 11.0 + 4.5 * KAPPA) controlPoint2:NSMakePoint(10.0 + 6.5 * KAPPA, 15.5)];
-    [path curveToPoint:NSMakePoint(3.5, 11.0) controlPoint1:NSMakePoint(10.0 - 6.5 * KAPPA, 15.5) controlPoint2:NSMakePoint(3.5, 11.0 + 4.5 * KAPPA)];
+    [path halfEllipseFromPoint:NSMakePoint(10.0, 15.5) toPoint:NSMakePoint(3.5, 11.0)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(3.5, 6.5) toPoint:NSMakePoint(16.5, 6.5) radius:4.5];
     [path lineToPoint:NSMakePoint(8.5, 4.5)];
     [path closePath];
