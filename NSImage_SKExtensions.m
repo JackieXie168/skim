@@ -1249,14 +1249,13 @@ macro(Ink)
     MAKE_IMAGE(SKImageNameToolbarMagnifyTool, YES, 27.0, 19.0,
         [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(8.5, 11.5)];
+        [path moveToPoint:NSMakePoint(8.5, 13.5)];
+        [path lineToPoint:NSMakePoint(8.5, 11.5)];
         [path halfEllipseFromPoint:NSMakePoint(13.5, 9.5) toPoint:NSMakePoint(18.5, 11.5)];
         [path lineToPoint:NSMakePoint(18.5, 13.5)];
         [path halfEllipseFromPoint:NSMakePoint(13.5, 11.5) toPoint:NSMakePoint(8.5, 13.5)];
-        [path closePath];
         [path fill];
-        [path moveToPoint:NSMakePoint(18.5, 13.5)];
-        [path halfEllipseFromPoint:NSMakePoint(13.5, 15.5) toPoint:NSMakePoint(8.5, 13.5)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 15.5) toPoint:NSMakePoint(18.5, 13.5)];
         [path moveToPoint:NSMakePoint(9.5, 10.5)];
         [path curveToPoint:NSMakePoint(7.5, 6.0) controlPoint1:NSMakePoint(8.0, 9.0) controlPoint2:NSMakePoint(7.5, 7.5)];
         [path halfEllipseFromPoint:NSMakePoint(13.5, 3.5) toPoint:NSMakePoint(19.5, 6.0)];
