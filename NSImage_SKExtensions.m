@@ -1252,7 +1252,8 @@ macro(Ink)
         [path moveToPoint:NSMakePoint(8.5, 11.5)];
         [path halfEllipseFromPoint:NSMakePoint(13.5, 9.5) toPoint:NSMakePoint(18.5, 11.5)];
         [path lineToPoint:NSMakePoint(18.5, 13.5)];
-        [path halfEllipseFromPoint:NSMakePoint(13.5, 11.5) toPoint:NSMakePoint(8.5, 13.5)];        [path closePath];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 11.5) toPoint:NSMakePoint(8.5, 13.5)];
+        [path closePath];
         [path fill];
         [path moveToPoint:NSMakePoint(18.5, 13.5)];
         [path halfEllipseFromPoint:NSMakePoint(13.5, 15.5) toPoint:NSMakePoint(8.5, 13.5)];
