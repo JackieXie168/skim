@@ -1388,7 +1388,7 @@ macro(Ink)
         [clippingImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
     );
     
-    NSImage *refreshImageRep = [NSImage bitmapImageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
+    NSImage *refreshImage = [NSImage bitmapImageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
         [[NSColor colorWithCalibratedRed:0.25 green:0.35 blue:0.6 alpha:1.0] set];
         NSRectFill(NSMakeRect(0.0, 0.0, 10.0, 12.0));
         [[NSImage imageNamed:NSImageNameRefreshTemplate] drawInRect:NSMakeRect(0.0, 0.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
@@ -1398,7 +1398,7 @@ macro(Ink)
         NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
         [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
         [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
-        [refreshImageRep drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     
     MAKE_IMAGE(SKImageNameNewFolder, NO, 32.0, 32.0, 
