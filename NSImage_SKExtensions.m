@@ -174,6 +174,15 @@ static void drawUnderlineNoteTemplate();
 static void drawStrikeOutNoteTemplate();
 static void drawLineNoteTemplate();
 static void drawInkNoteTemplate();
+static void drawTextNoteBackground();
+static void drawAnchoredNoteBackground();
+static void drawCircleNoteBackground();
+static void drawSquareNoteBackground();
+static void drawHighlightNoteBackground();
+static void drawUnderlineNoteBackground();
+static void drawStrikeOutNoteBackground();
+static void drawLineNoteBackground();
+static void drawInkNoteBackground();
 
 static void drawMenuBadge();
 static void drawAddBadge();
@@ -1859,6 +1868,7 @@ macro(Ink)
     MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, 24.0, 40.0, \
         drawArrowCursor(); \
         translate(3.0); \
+        draw ## name ## NoteBackground(); \
         draw ## name ## NoteTemplate(); \
     );\
     
@@ -2283,6 +2293,126 @@ static void drawInkNoteTemplate() {
     [path curveToPoint:NSMakePoint(10.5, 10.0) controlPoint1:NSMakePoint(10.0, 5.0) controlPoint2:NSMakePoint(13.0, 5.0)];
     [path curveToPoint:NSMakePoint(17.0, 11.0) controlPoint1:NSMakePoint(8.0, 15.0) controlPoint2:NSMakePoint(11.0, 15.0)];
     [path stroke];
+}
+
+static void drawTextNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(3.22, 3.22)];
+    [path lineToPoint:NSMakePoint(10.1, 5.7)];
+    [path lineToPoint:NSMakePoint(16.7, 12.3)];
+    [path halfEllipseFromPoint:NSMakePoint(15.8, 15.8) toPoint:NSMakePoint(12.3, 16.7)];
+    [path lineToPoint:NSMakePoint(5.7, 10.1)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawAnchoredNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(12.0, 5.0)];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(18.0, 5.0) toPoint:NSMakePoint(18.0, 15.5) radius:6.0];
+    [path halfEllipseFromPoint:NSMakePoint(10.0, 17.0) toPoint:NSMakePoint(2.0, 11.0)];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(2.0, 5.0) toPoint:NSMakePoint(18.0, 5.0) radius:5.0];
+    [path lineToPoint:NSMakePoint(7.625, 2.5)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawCircleNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.0, 3.0, 15.0, 14.0)];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawSquareNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 3.0, 15.0, 14.0)];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawHighlightNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 1.0, 17.0, 18.0)];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawUnderlineNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setStroke];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSGlyph glyph = [font glyphWithName:@"U"];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 6.0)];
+    [path appendBezierPathWithGlyph:glyph inFont:font];
+    [path appendBezierPathWithRect:NSMakeRect(2.0, 4.0, 17.0, 1.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawStrikeOutNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setStroke];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSGlyph glyph = [font glyphWithName:@"S"];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
+    [path appendBezierPathWithGlyph:glyph inFont:font];
+    [path appendBezierPathWithRect:NSMakeRect(2.0, 9.0, 17.0, 1.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawLineNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setFill];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(2.0, 9.0)];
+    [path lineToPoint:NSMakePoint(14.0, 9.0)];
+    [path lineToPoint:NSMakePoint(14.0, 5.5)];
+    [path lineToPoint:NSMakePoint(20.5, 10.5)];
+    [path lineToPoint:NSMakePoint(14.0, 15.5)];
+    [path lineToPoint:NSMakePoint(14.0, 12.0)];
+    [path lineToPoint:NSMakePoint(2.0, 12.0)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawInkNoteBackground() {
+    [NSGraphicsContext saveGraphicsState];
+    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [[NSColor whiteColor] setStroke];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(4.0, 9.0)];
+    [path curveToPoint:NSMakePoint(10.5, 10.0) controlPoint1:NSMakePoint(10.0, 5.0) controlPoint2:NSMakePoint(13.0, 5.0)];
+    [path curveToPoint:NSMakePoint(17.0, 11.0) controlPoint1:NSMakePoint(8.0, 15.0) controlPoint2:NSMakePoint(11.0, 15.0)];
+    [path setLineWidth:3.0];
+    [path setLineCapStyle:NSSquareLineCapStyle];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 static void drawMenuBadge() {
