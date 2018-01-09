@@ -2358,7 +2358,6 @@ static void drawUnderlineNoteBackground() {
     [[NSColor whiteColor] setStroke];
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
     NSGlyph glyph = [font glyphWithName:@"U"];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 6.0)];
     [path appendBezierPathWithGlyph:glyph inFont:font];
@@ -2374,7 +2373,6 @@ static void drawStrikeOutNoteBackground() {
     [[NSColor whiteColor] setStroke];
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
     NSGlyph glyph = [font glyphWithName:@"S"];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
     [path appendBezierPathWithGlyph:glyph inFont:font];
