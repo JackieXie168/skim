@@ -156,34 +156,6 @@ NSString *SKImageNameClosedHandBarCursor = @"ClosedHandBarCursor";
 NSString *SKImageNameRemoteStateResize = @"RemoteStateResize";
 NSString *SKImageNameRemoteStateScroll = @"RemoteStateScroll";
 
-static void drawTextNote();
-static void drawAnchoredNote();
-static void drawCircleNote();
-static void drawSquareNote();
-static void drawHighlightNote();
-static void drawUnderlineNote();
-static void drawStrikeOutNote();
-static void drawLineNote();
-static void drawInkNote();
-static void drawTextNoteTemplate();
-static void drawAnchoredNoteTemplate();
-static void drawCircleNoteTemplate();
-static void drawSquareNoteTemplate();
-static void drawHighlightNoteTemplate();
-static void drawUnderlineNoteTemplate();
-static void drawStrikeOutNoteTemplate();
-static void drawLineNoteTemplate();
-static void drawInkNoteTemplate();
-static void drawTextNoteBackground();
-static void drawAnchoredNoteBackground();
-static void drawCircleNoteBackground();
-static void drawSquareNoteBackground();
-static void drawHighlightNoteBackground();
-static void drawUnderlineNoteBackground();
-static void drawStrikeOutNoteBackground();
-static void drawLineNoteBackground();
-static void drawInkNoteBackground();
-
 static void drawMenuBadge();
 static void drawAddBadge();
 static void drawMenuBadgeTemplate();
@@ -227,6 +199,13 @@ macro(Underline); \
 macro(StrikeOut); \
 macro(Line); \
 macro(Ink)
+
+#define DECLARE_NOTE_FUNCTIONS(name) \
+static void draw ## name ## Note(); \
+static void draw ## name ## NoteTemplate(); \
+static void draw ## name ## NoteBackground()
+
+APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 #if SDK_BEFORE(10_8)
 @interface NSImage (SKMountainLionDeclarations)
