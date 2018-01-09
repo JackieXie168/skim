@@ -189,7 +189,7 @@ static void drawAddBadge();
 static void drawMenuBadgeTemplate();
 static void drawAddBadgeTemplate();
 
-static inline void translate(CGFloat delta);
+static inline void translate(CGFloat dx, CGFloat dy);
 
 static inline void drawPageBackgroundInRect(NSRect rect);
 static inline void drawPageBackgroundTemplateInRect(NSRect rect);
@@ -864,18 +864,18 @@ macro(Ink)
     
 #define MAKE_BADGED_IMAGES(name) \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## Note, NO, 27.0, 19.0, \
-        translate(3.0); \
+        translate(3.0, 0.0); \
         draw ## name ## Note(); \
         drawAddBadge(); \
     ); \
     MAKE_IMAGE(SKImageNameToolbar ## name ## NoteMenu, NO, 27.0, 19.0, \
         drawMenuBadge(); \
-        translate(1.0); \
+        translate(1.0, 0.0); \
         draw ## name ## Note(); \
     ); \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## NoteMenu, NO, 27.0, 19.0, \
         drawMenuBadge(); \
-        translate(1.0); \
+        translate(1.0, 0.0); \
         draw ## name ## Note(); \
         drawAddBadge(); \
     );
@@ -1324,18 +1324,18 @@ macro(Ink)
     
 #define MAKE_BADGED_TEMPLATE_IMAGES(name) \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## Note, YES, 27.0, 19.0, \
-        translate(3.0); \
+        translate(3.0, 0.0); \
         draw ## name ## NoteTemplate(); \
         drawAddBadgeTemplate(); \
     ); \
     MAKE_IMAGE(SKImageNameToolbar ## name ## NoteMenu, YES, 27.0, 19.0, \
         drawMenuBadgeTemplate(); \
-        translate(1.0); \
+        translate(1.0, 0.0); \
         draw ## name ## NoteTemplate(); \
     ); \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## NoteMenu, YES, 27.0, 19.0, \
         drawMenuBadgeTemplate(); \
-        translate(1.0); \
+        translate(1.0, 0.0); \
         draw ## name ## NoteTemplate(); \
         drawAddBadgeTemplate(); \
     );
@@ -1865,9 +1865,9 @@ macro(Ink)
     }
     
 #define MAKE_NOTE_CURSOR_IMAGE(name) \
-    MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, 24.0, 40.0, \
+    MAKE_CURSOR_IMAGE(SKImageName ## name ## NoteCursor, 24.0, 42.0, \
         drawArrowCursor(); \
-        translate(3.0); \
+        translate(2.0, 2.0); \
         draw ## name ## NoteBackground(); \
         draw ## name ## NoteTemplate(); \
     );\
@@ -2315,11 +2315,11 @@ static void drawAnchoredNoteBackground() {
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(12.0, 5.0)];
+    [path moveToPoint:NSMakePoint(12.15, 5.0)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(18.0, 5.0) toPoint:NSMakePoint(18.0, 15.5) radius:6.0];
     [path halfEllipseFromPoint:NSMakePoint(10.0, 17.0) toPoint:NSMakePoint(2.0, 11.0)];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(2.0, 5.0) toPoint:NSMakePoint(18.0, 5.0) radius:5.0];
-    [path lineToPoint:NSMakePoint(7.625, 2.5)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(8.0, 11.0) radius:6.0 startAngle:180.0 endAngle:260.0];
+    [path lineToPoint:NSMakePoint(7.6, 2.4)];
     [path closePath];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
@@ -2456,9 +2456,9 @@ static void drawAddBadgeTemplate() {
     [NSGraphicsContext restoreGraphicsState];
 }
 
-static inline void translate(CGFloat delta) {
+static inline void translate(CGFloat dx, CGFloat dy) {
     NSAffineTransform *t = [NSAffineTransform transform];
-    [t translateXBy:delta yBy:0.0];
+    [t translateXBy:dx yBy:dy];
     [t concat];
 }
 
@@ -2483,7 +2483,7 @@ static inline void drawPageBackgroundTemplateInRect(NSRect rect) {
 
 static inline void drawArrowCursor() {
     NSImage *arrowCursor = [[NSCursor arrowCursor] image];
-    [arrowCursor drawAtPoint:NSMakePoint(0.0, 40.0 - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [arrowCursor drawAtPoint:NSMakePoint(0.0, 42.0 - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 }
 
 static void drawAddBadgeAtPoint(NSPoint point) {
