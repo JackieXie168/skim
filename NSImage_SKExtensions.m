@@ -2383,11 +2383,12 @@ static void drawInkNoteBackground() {
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
     NSBezierPath *path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(4.0, 9.0)];
+    [path moveToPoint:NSMakePoint(3.24, 9.52)];
+    [path lineToPoint:NSMakePoint(4.0, 9.0)];
     [path curveToPoint:NSMakePoint(10.5, 10.0) controlPoint1:NSMakePoint(10.0, 5.0) controlPoint2:NSMakePoint(13.0, 5.0)];
     [path curveToPoint:NSMakePoint(17.0, 11.0) controlPoint1:NSMakePoint(8.0, 15.0) controlPoint2:NSMakePoint(11.0, 15.0)];
+    [path lineToPoint:NSMakePoint(17.76, 10.48)];
     [path setLineWidth:3.0];
-    [path setLineCapStyle:NSSquareLineCapStyle];
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
 }
