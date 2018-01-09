@@ -878,7 +878,7 @@ macro(Ink)
         translate(1.0, 0.0); \
         draw ## name ## Note(); \
         drawAddBadge(); \
-    );
+    )
     
     APPLY_NOTE_TYPES(MAKE_BADGED_IMAGES);
     
@@ -1338,7 +1338,7 @@ macro(Ink)
         translate(1.0, 0.0); \
         draw ## name ## NoteTemplate(); \
         drawAddBadgeTemplate(); \
-    );
+    )
     
     APPLY_NOTE_TYPES(MAKE_BADGED_TEMPLATE_IMAGES);
     
@@ -1447,7 +1447,7 @@ macro(Ink)
 #define MAKE_NOTE_IMAGE(name) \
     MAKE_IMAGE(SKImageName ## name ## Note, NO, 21.0, 19.0, \
         draw ## name ## Note(); \
-    );
+    )
     
     APPLY_NOTE_TYPES(MAKE_NOTE_IMAGE);
     
@@ -1458,7 +1458,7 @@ macro(Ink)
 #define MAKE_NOTE_TEMPLATE_IMAGE(name) \
     MAKE_IMAGE(SKImageName ## name ## Note, YES, 21.0, 19.0, \
         draw ## name ## NoteTemplate(); \
-    );
+    )
     
     APPLY_NOTE_TYPES(MAKE_NOTE_TEMPLATE_IMAGE);
     
@@ -1870,7 +1870,7 @@ macro(Ink)
         translate(2.0, 2.0); \
         draw ## name ## NoteBackground(); \
         draw ## name ## NoteTemplate(); \
-    );\
+    )
     
     APPLY_NOTE_TYPES(MAKE_NOTE_CURSOR_IMAGE);
     
