@@ -88,13 +88,20 @@ static char *SKTransitionPropertiesObservationContext;
     return self;
 }
 
-- (void)dealloc {
+- (void)cleanup {
     [self stopObservingTransitions:[NSArray arrayWithObject:transition]];
     [self stopObservingTransitions:transitions];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[self window] setDelegate:nil];
     [tableView setDelegate:nil];
     [tableView setDataSource:nil];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(transition);
     SKDESTROY(transitions);
     SKDESTROY(undoManager);

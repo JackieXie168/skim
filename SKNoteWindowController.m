@@ -129,7 +129,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return self;
 }
 
-- (void)dealloc {
+- (void)cleanup {
     @try { [textView unbind:[self isNoteType] ? @"attributedString" : @"value"]; }
     @catch (id e) {}
     [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
@@ -141,6 +141,13 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setDelegate:nil];
     [imageView setDelegate:nil];
     [textView setDelegate:nil];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);

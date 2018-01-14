@@ -94,12 +94,19 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return [NSSet setWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil];
 }
 
-- (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+- (void)cleanup {
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     [pdfView setDelegate:nil];
     delegate = nil;
     // Yosemite seems to have a retain cycle when we leave the PDFView with a document
     [pdfView setDocument:nil];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(thumbnail);
     SKDESTROY(pageLabel);
     SKDESTROY(pdfView);

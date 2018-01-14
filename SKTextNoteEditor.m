@@ -91,12 +91,19 @@ static char SKPDFAnnotationPropertiesObservationContext;
     return self;
 }
 
-- (void)dealloc {
+- (void)cleanup {
     for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil]) {
         @try { [annotation removeObserver:self forKeyPath:key]; }
         @catch(id e) {}
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     pdfView = nil;
     SKDESTROY(annotation);
     SKDESTROY(textField);

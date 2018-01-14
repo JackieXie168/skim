@@ -134,8 +134,15 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 }
 
 - (void)dealloc {
-    @try { [colorSwatch unbind:@"colors"]; }
-    @catch (id e) {}
+    if ([NSThread isMainThread]) {
+        @try { [colorSwatch unbind:@"colors"]; }
+        @catch (id e) {}
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            @try { [colorSwatch unbind:@"colors"]; }
+            @catch (id e) {}
+        });
+    }
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     mainController = nil;
     SKDESTROY(toolbarItems);

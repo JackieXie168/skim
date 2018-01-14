@@ -118,8 +118,15 @@
 }
 
 - (void)dealloc {
-    [outlineView setDelegate:nil];
-    [outlineView setDataSource:nil];
+    if ([NSThread isMainThread]) {
+        [outlineView setDelegate:nil];
+        [outlineView setDataSource:nil];
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [outlineView setDelegate:nil];
+            [outlineView setDataSource:nil];
+        });
+    }
     SKDESTROY(notes);
     SKDESTROY(pdfDocument);
     SKDESTROY(sourceFileURL);

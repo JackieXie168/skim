@@ -295,10 +295,10 @@ enum {
     return self;
 }
 
-- (void)dealloc {
+- (void)cleanup {
     [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
+     [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [transitionController removeObserver:self forKeyPath:@"transitionStyle"];
     [transitionController removeObserver:self forKeyPath:@"duration"];
@@ -309,6 +309,13 @@ enum {
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     [syncDot invalidate];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(syncDot);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);

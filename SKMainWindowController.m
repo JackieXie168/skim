@@ -257,12 +257,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return self;
 }
 
-- (void)dealloc {
+- (void)cleanup {
     if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [self stopObservingNotes:[self notes]];
     SKDESTROY(undoGroupOldPropertiesPerNote);
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [mainWindow setDelegate:nil];
     [splitView setDelegate:nil];
@@ -277,6 +277,13 @@ static char SKMainWindowContentLayoutRectObservationContext;
     // Yosemite seems to have a retain cycle when we leave the PDFView with a document
     [pdfView setDocument:nil];
     [secondaryPdfView setDocument:nil];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);

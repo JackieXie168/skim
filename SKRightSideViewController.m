@@ -54,11 +54,18 @@
 
 @synthesize noteArrayController, noteOutlineView, snapshotArrayController, snapshotTableView;
 
-- (void)dealloc {
+- (void)cleanup {
     [snapshotTableView setDelegate:nil];
     [snapshotTableView setDataSource:nil];
     [noteOutlineView setDelegate:nil];
     [noteOutlineView setDataSource:nil];
+}
+
+- (void)dealloc {
+    if ([NSThread isMainThread])
+        [self cleanup];
+    else
+        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(noteArrayController);
     SKDESTROY(snapshotArrayController);
     SKDESTROY(noteOutlineView);
