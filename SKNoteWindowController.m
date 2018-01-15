@@ -103,6 +103,10 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [page release];
 }
 
++ (NSArray *)fontKeysToObserve {
+    return [NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil];
+}
+
 + (void)initialize {
     SKINITIALIZE;
     [self makeNoteIcons];
@@ -124,27 +128,25 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKNoteWindowNoteObservationContext];
         [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:&SKNoteWindowNoteObservationContext];
         if ([self isNoteType])
-            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:&SKNoteWindowDefaultsObservationContext];
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[[self class] fontKeysToObserve] context:&SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
 
-- (void)cleanup {
-    @try { [textView unbind:[self isNoteType] ? @"attributedString" : @"value"]; }
-    @catch (id e) {}
-    [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
-    [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
-    [note removeObserver:self forKeyPath:SKNPDFAnnotationStringKey];
-    if ([self isNoteType])
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[self window] setDelegate:nil];
-    [imageView setDelegate:nil];
-    [textView setDelegate:nil];
-}
-
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD( [self cleanup]; );
+    SKENSURE_MAIN_THREAD(
+        @try { [textView unbind:[self isNoteType] ? @"attributedString" : @"value"]; }
+        @catch (id e) {}
+        [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
+        [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
+        [note removeObserver:self forKeyPath:SKNPDFAnnotationStringKey];
+        if ([self isNoteType])
+            [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[[self class] fontKeysToObserve]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[self window] setDelegate:nil];
+        [imageView setDelegate:nil];
+        [textView setDelegate:nil];
+    );
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);

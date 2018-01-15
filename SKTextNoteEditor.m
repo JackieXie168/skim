@@ -65,6 +65,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 @synthesize textField;
 
++ (NSArray *)keysToObserve {
+    return [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil];
+}
+
 - (id)initWithPDFView:(PDFView *)aPDFView annotation:(PDFAnnotationFreeText *)anAnnotation {
     self = [super init];
     if (self) {
@@ -83,7 +87,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self updateAlignment];
         [self updateBorder];
         [self updateScaleFactor];
-        for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil])
+        for (NSString *key in [[self class] keysToObserve])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageBoundsChangedNotification:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
@@ -91,15 +95,13 @@ static char SKPDFAnnotationPropertiesObservationContext;
     return self;
 }
 
-- (void)cleanup {
-    for (NSString *key in [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil]) {
-        @try { [annotation removeObserver:self forKeyPath:key]; }
-        @catch(id e) {}
-    }
-}
-
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD( [self cleanup]; );
+    SKENSURE_MAIN_THREAD(
+        for (NSString *key in [[self class] keysToObserve]) {
+            @try { [annotation removeObserver:self forKeyPath:key]; }
+            @catch(id e) {}
+        }
+    );
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     pdfView = nil;
     SKDESTROY(annotation);

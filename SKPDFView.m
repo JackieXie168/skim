@@ -237,6 +237,10 @@ enum {
     SKSwizzlePDFDisplayViewMethods();
 }
 
++ (NSArray *)defaultKeysToObserve {
+    return [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil];
+}
+
 - (void)commonInitialization {
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
@@ -274,9 +278,7 @@ enum {
                                                  name:PDFViewPageChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                  name:PDFViewScaleChangedNotification object:self];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
-        context:&SKPDFViewDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[[self class] defaultKeysToObserve] context:&SKPDFViewDefaultsObservationContext];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -295,24 +297,21 @@ enum {
     return self;
 }
 
-- (void)cleanup {
-    [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-     [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [transitionController removeObserver:self forKeyPath:@"transitionStyle"];
-    [transitionController removeObserver:self forKeyPath:@"duration"];
-    [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
-    [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
-    [self showNavWindow:NO];
-    [self doAutohide:NO];
-    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
-    [self removePDFToolTipRects];
-    [syncDot invalidate];
-}
-
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD( [self cleanup]; );
+    SKENSURE_MAIN_THREAD(
+        [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[[self class] defaultKeysToObserve]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [transitionController removeObserver:self forKeyPath:@"transitionStyle"];
+        [transitionController removeObserver:self forKeyPath:@"duration"];
+        [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
+        [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
+        [self showNavWindow:NO];
+        [self doAutohide:NO];
+        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
+        [self removePDFToolTipRects];
+        [syncDot invalidate];
+    );
     SKDESTROY(syncDot);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
