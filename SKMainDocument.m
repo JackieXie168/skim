@@ -184,8 +184,10 @@ enum {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // shouldn't need this here, but better be safe
     [fileUpdateChecker terminate];
+    SKDESTROY(fileUpdateChecker);
     [synchronizer terminate];
     [synchronizer setDelegate:nil];
+    SKDESTROY(synchronizer);
 }
 
 - (void)dealloc {
@@ -193,9 +195,7 @@ enum {
         [self cleanup];
     else
         dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
-    SKDESTROY(fileUpdateChecker);
     SKDESTROY(mainWindowController);
-    SKDESTROY(synchronizer);
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
     SKDESTROY(tmpData);
