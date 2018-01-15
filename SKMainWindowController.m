@@ -257,33 +257,28 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return self;
 }
 
-- (void)cleanup {
-    if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
-        [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
-    [self stopObservingNotes:[self notes]];
-    SKDESTROY(undoGroupOldPropertiesPerNote);
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    [self unregisterAsObserver];
-    [mainWindow setDelegate:nil];
-    [splitView setDelegate:nil];
-    [pdfSplitView setDelegate:nil];
-    [pdfView setDelegate:nil];
-    [[pdfView document] setDelegate:nil];
-    [leftSideDrawer setDelegate:nil];
-    [rightSideDrawer setDelegate:nil];
-    [noteTypeSheetController setDelegate:nil];
-    // Sierra seems to have a retain cycle when the document has an outlineRoot
-    [[[pdfView document] outlineRoot] clearDocument];
-    // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-    [pdfView setDocument:nil];
-    [secondaryPdfView setDocument:nil];
-}
-
 - (void)dealloc {
-    if ([NSThread isMainThread])
-        [self cleanup];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
+    SKENSURE_MAIN_THREAD(
+        if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
+            [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
+        [self stopObservingNotes:[self notes]];
+        SKDESTROY(undoGroupOldPropertiesPerNote);
+        [[NSNotificationCenter defaultCenter] removeObserver: self];
+        [self unregisterAsObserver];
+        [mainWindow setDelegate:nil];
+        [splitView setDelegate:nil];
+        [pdfSplitView setDelegate:nil];
+        [pdfView setDelegate:nil];
+        [[pdfView document] setDelegate:nil];
+        [leftSideDrawer setDelegate:nil];
+        [rightSideDrawer setDelegate:nil];
+        [noteTypeSheetController setDelegate:nil];
+        // Sierra seems to have a retain cycle when the document has an outlineRoot
+        [[[pdfView document] outlineRoot] clearDocument];
+        // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
+        [pdfView setDocument:nil];
+        [secondaryPdfView setDocument:nil];
+    );
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);

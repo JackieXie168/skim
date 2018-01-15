@@ -37,6 +37,15 @@
             hasBeenInitialized = YES;\
         } while (0)
 
+    #define SKENSURE_MAIN_THREAD(code) \
+        do { \
+            if ([NSThread isMainThread]) { \
+                code \
+            } else { \
+                dispatch_sync(dispatch_get_main_queue(), ^{ code }); \
+            } \
+        } while (0)
+
     #define SKDESTROY(variable) do { [variable release]; variable = nil; } while (0)
     #define SKCFDESTROY(variable) do { if (variable) CFRelease(variable); variable = NULL; } while (0)
     #define SKZONEDESTROY(variable) do { if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; } while (0)

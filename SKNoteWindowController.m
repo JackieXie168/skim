@@ -144,10 +144,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)dealloc {
-    if ([NSThread isMainThread])
-        [self cleanup];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
+    SKENSURE_MAIN_THREAD( [self cleanup]; );
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);

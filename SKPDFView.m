@@ -312,10 +312,7 @@ enum {
 }
 
 - (void)dealloc {
-    if ([NSThread isMainThread])
-        [self cleanup];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
+    SKENSURE_MAIN_THREAD( [self cleanup]; );
     SKDESTROY(syncDot);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
