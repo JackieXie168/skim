@@ -180,21 +180,13 @@ enum {
 
 + (BOOL)isPDFDocument { return YES; }
 
-- (void)cleanup {
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // shouldn't need this here, but better be safe
     [fileUpdateChecker terminate];
     SKDESTROY(fileUpdateChecker);
     [synchronizer terminate];
-    [synchronizer setDelegate:nil];
     SKDESTROY(synchronizer);
-}
-
-- (void)dealloc {
-    if ([NSThread isMainThread])
-        [self cleanup];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(mainWindowController);
     SKDESTROY(pdfData);
     SKDESTROY(originalData);
