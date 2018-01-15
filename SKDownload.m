@@ -117,10 +117,8 @@ static NSSet *infoKeys = nil;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    if ([NSThread isMainThread])
-        [self cancel];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cancel]; });
+    if ([self canCancel])
+        [URLDownload cancel];
     SKDESTROY(URL);
     SKDESTROY(URLDownload);
     SKDESTROY(fileURL);

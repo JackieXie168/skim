@@ -96,7 +96,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
         @try { [annotation removeObserver:self forKeyPath:key]; }
         @catch(id e) {}
     }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)dealloc {
@@ -104,6 +103,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self cleanup];
     else
         dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     pdfView = nil;
     SKDESTROY(annotation);
     SKDESTROY(textField);

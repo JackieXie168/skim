@@ -59,7 +59,7 @@
 
 @synthesize tocOutlineView, thumbnailArrayController, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
 
-- (void)cleanup {
+- (void)dealloc {
     [thumbnailTableView setDelegate:nil];
     [thumbnailTableView setDataSource:nil];
     [findTableView setDelegate:nil];
@@ -67,13 +67,6 @@
     [groupedFindTableView setDataSource:nil];
     [tocOutlineView setDelegate:nil];
     [tocOutlineView setDataSource:nil];
-}
-
-- (void)dealloc {
-    if ([NSThread isMainThread])
-        [self cleanup];
-    else
-        dispatch_sync(dispatch_get_main_queue(), ^{ [self cleanup]; });
     SKDESTROY(thumbnailArrayController);
     SKDESTROY(findArrayController);
     SKDESTROY(groupedFindArrayController);
