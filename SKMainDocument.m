@@ -182,18 +182,10 @@ enum {
 
 - (void)cleanup {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    if ([NSThread isMainThread]) {
-        // shouldn't need this here, but better be safe
-        [fileUpdateChecker terminate];
-        [synchronizer terminate];
-        [synchronizer setDelegate:nil];
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [fileUpdateChecker terminate];
-            [synchronizer terminate];
-            [synchronizer setDelegate:nil];
-        });
-    }
+    // shouldn't need this here, but better be safe
+    [fileUpdateChecker terminate];
+    [synchronizer terminate];
+    [synchronizer setDelegate:nil];
 }
 
 - (void)dealloc {
