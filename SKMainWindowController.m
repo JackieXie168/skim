@@ -262,9 +262,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
             [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
         [self stopObservingNotes:[self notes]];
-        SKDESTROY(undoGroupOldPropertiesPerNote);
-        [[NSNotificationCenter defaultCenter] removeObserver: self];
         [self unregisterAsObserver];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
         [mainWindow setDelegate:nil];
         [splitView setDelegate:nil];
         [pdfSplitView setDelegate:nil];
@@ -276,9 +275,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
         // Sierra seems to have a retain cycle when the document has an outlineRoot
         [[[pdfView document] outlineRoot] clearDocument];
         // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-        [pdfView setDocument:nil];
-        [secondaryPdfView setDocument:nil];
+        if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12)) {
+            [pdfView setDocument:nil];
+            [secondaryPdfView setDocument:nil];
+        }
     );
+    SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);
