@@ -49,7 +49,8 @@
 @dynamic selectedItems, canDelete, canCopy, canPaste;
 
 - (void)dealloc {
-    [typeSelectHelper setDelegate:nil];
+    if (typeSelectHelper)
+        SKENSURE_MAIN_THREAD( [typeSelectHelper setDelegate:nil]; );
     SKDESTROY(typeSelectHelper);
     [super dealloc];
 }

@@ -144,11 +144,12 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)dealloc {
-    [self unbind:FONTNAME_KEY];
-    [self unbind:FONTSIZE_KEY];
+    SKENSURE_MAIN_THREAD(
+        [self unbind:FONTNAME_KEY];
+        [self unbind:FONTSIZE_KEY];
+    );
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(bindingInfo);
-    if ([self isActive])
-        [self deactivate];
     [super dealloc];
 }
 

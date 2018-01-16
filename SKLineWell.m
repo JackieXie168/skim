@@ -140,13 +140,14 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)dealloc {
-    [self unbind:SKLineWellLineWidthKey];
-    [self unbind:SKLineWellStyleKey];
-    [self unbind:SKLineWellDashPatternKey];
-    [self unbind:SKLineWellStartLineStyleKey];
-    [self unbind:SKLineWellEndLineStyleKey];
-    if (lwFlags.active)
-        [self deactivate];
+    SKENSURE_MAIN_THREAD(
+        [self unbind:SKLineWellLineWidthKey];
+        [self unbind:SKLineWellStyleKey];
+        [self unbind:SKLineWellDashPatternKey];
+        [self unbind:SKLineWellStartLineStyleKey];
+        [self unbind:SKLineWellEndLineStyleKey];
+    );
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(dashPattern);
     [super dealloc];
 }

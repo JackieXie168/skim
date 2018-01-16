@@ -55,10 +55,11 @@
 @dynamic canDelete, canCopy, canPaste, hasImageToolTips;
 
 - (void)dealloc {
-    SKDESTROY(trackingAreas);
-    [typeSelectHelper setDelegate:nil];
+    if (typeSelectHelper)
+        SKENSURE_MAIN_THREAD( [typeSelectHelper setDelegate:nil]; );
     SKDESTROY(typeSelectHelper);
-    [super dealloc];
+    SKDESTROY(trackingAreas);
+        [super dealloc];
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {

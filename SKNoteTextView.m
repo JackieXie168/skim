@@ -49,7 +49,7 @@ static char SKNoteTextViewDefaultsObservationContext;
 
 - (void)dealloc {
     if (usesDefaultFontSize)
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKNoteTextFontSizeKey];
+        SKENSURE_MAIN_THREAD( [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKNoteTextFontSizeKey]; );
     [super dealloc];
 }
 
