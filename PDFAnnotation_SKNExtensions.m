@@ -100,7 +100,9 @@ static NSHashTable *SkimNotes = nil;
 static IMP original_dealloc = NULL;
 
 static void replacement_dealloc(id self, SEL _cmd) {
-    [SkimNotes removeObject:self];
+    @synchronized([PDFAnnotation self]) {
+        [SkimNotes removeObject:self];
+    }
     original_dealloc(self, _cmd);
 }
 
@@ -441,12 +443,18 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
 }
 
 - (BOOL)isSkimNote {
-    return [SkimNotes containsObject:self];
+    BOOL isSkimNote;
+    @synchronized([PDFAnnotation self]) {
+        isSkimNote = [SkimNotes containsObject:self];
+    }
+    return isSkimNote;
 }
 
 - (void)setSkimNote:(BOOL)flag {
-    if (flag) [SkimNotes addObject:self];
-    else [SkimNotes removeObject:self];
+    @synchronized([PDFAnnotation self]) {
+        if (flag) [SkimNotes addObject:self];
+        else [SkimNotes removeObject:self];
+    }
 }
 
 - (NSString *)string {
