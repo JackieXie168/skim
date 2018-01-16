@@ -114,13 +114,17 @@ static NSMapTable *extraIvarsTable = nil;
 static void (*original_dealloc)(id, SEL) = NULL;
 
 - (void)replacement_dealloc {
-    [extraIvarsTable removeObjectForKey:self];
+    @synchronized([self class]) {
+        [extraIvarsTable removeObjectForKey:self];
+    }
     original_dealloc(self, _cmd);
 }
 
 + (void)load {
     original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
-    extraIvarsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
+    @synchronized(self) {
+        extraIvarsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
+    }
 }
 
 + (NSColor *)defaultSkimNoteColorForMarkupType:(NSInteger)markupType
@@ -137,11 +141,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (SKPDFAnnotationMarkupExtraIvars *)extraIvars {
-    SKPDFAnnotationMarkupExtraIvars *extraIvars = [extraIvarsTable objectForKey:self];
-    if (extraIvars == nil) {
-        extraIvars = [[SKPDFAnnotationMarkupExtraIvars alloc] init];
-        [extraIvarsTable setObject:extraIvars forKey:self];
-        [extraIvars release];
+    SKPDFAnnotationMarkupExtraIvars *extraIvars = nil;
+    @synchronized([self class]) {
+        extraIvars = [extraIvarsTable objectForKey:self];
+        if (extraIvars == nil) {
+            extraIvars = [[SKPDFAnnotationMarkupExtraIvars alloc] init];
+            [extraIvarsTable setObject:extraIvars forKey:self];
+            [extraIvars release];
+        }
     }
     return extraIvars;
 }
