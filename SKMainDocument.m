@@ -185,6 +185,7 @@ enum {
     // shouldn't need this here, but better be safe
     if (fileUpdateChecker)
         SKENSURE_MAIN_THREAD( [fileUpdateChecker terminate]; );
+    SKDESTROY(fileUpdateChecker);
     [synchronizer terminate];
     SKDESTROY(synchronizer);
     SKDESTROY(mainWindowController);
