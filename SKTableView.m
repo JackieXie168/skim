@@ -59,7 +59,7 @@
         SKENSURE_MAIN_THREAD( [typeSelectHelper setDelegate:nil]; );
     SKDESTROY(typeSelectHelper);
     SKDESTROY(trackingAreas);
-        [super dealloc];
+    [super dealloc];
 }
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
