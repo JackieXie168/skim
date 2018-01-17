@@ -71,7 +71,7 @@
 
 @implementation SKTypeSelectHelper
 
-@synthesize delegate, matchOption;
+@dynamic delegate, matchOption;
 
 static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
@@ -115,11 +115,25 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 #pragma mark Accessors
 
-- (void)setDelegate:(id)newDelegate {
-    if (delegate != newDelegate) {
-        delegate = newDelegate;
-        [self rebuildTypeSelectSearchCache];
+- (id)delegate {
+    id del = nil;
+    @synchronized(self) {
+        del = delegate;
     }
+    return del;
+}
+
+- (void)setDelegate:(id)newDelegate {
+    @synchronized(self) {
+        if (delegate != newDelegate) {
+            delegate = newDelegate;
+            SKDESTROY(searchCache);
+        }
+    }
+}
+
+- (SKTypeSelectMatchOption)matchOption {
+    return matchOption;
 }
 
 #pragma mark API
@@ -146,6 +160,12 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 #pragma mark Private methods
 
+- (void)updateSearchString:(NSString *)string {
+    id del = [self delegate];
+    if ([del respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
+        [del typeSelectHelper:self updateSearchString:string];
+}
+
 - (void)searchWithEvent:(NSEvent *)keyEvent {
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
@@ -164,8 +184,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     [searchString release];
     searchString = [[fieldEditor string] retain];
     
-    if ([delegate respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
-        [delegate typeSelectHelper:self updateSearchString:searchString];
+    [self updateSearchString:searchString];
     
     // Reset the timer if it hasn't expired yet
     [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
@@ -179,8 +198,8 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 - (void)repeatSearch {
     [self searchWithStickyMatch:NO];
     
-    if ([searchString length] && [delegate respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
-        [delegate typeSelectHelper:self updateSearchString:searchString];
+    if ([searchString length])
+        [self updateSearchString:searchString];
     
     [self startTimerForSelector:@selector(typeSelectCleanTimeout:)];
     
@@ -219,9 +238,13 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (NSArray *)searchCache {
-    if (searchCache == nil)
-        searchCache = [[delegate typeSelectHelperSelectionStrings:self] retain];
-    return searchCache;
+    NSArray *cache = nil;
+    @synchronized(self) {
+        if (searchCache == nil)
+            searchCache = [[delegate typeSelectHelperSelectionStrings:self] retain];
+        cache = [[searchCache retain] autorelease];
+    }
+    return cache;
 }
 
 - (void)stopTimer {
@@ -243,8 +266,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (void)typeSelectCleanTimeout:(id)sender {
-    if ([delegate respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
-        [delegate typeSelectHelper:self updateSearchString:nil];
+    [self updateSearchString:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     isProcessing = NO;
@@ -273,7 +295,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
         NSUInteger selectedIndex, startIndex, foundIndex;
         
         if (matchOption != SKFullStringMatch) {
-            selectedIndex = [delegate typeSelectHelperCurrentlySelectedIndex:self];
+            selectedIndex = [[self delegate] typeSelectHelperCurrentlySelectedIndex:self];
             if (selectedIndex >= [[self searchCache] count])
                 selectedIndex = NSNotFound;
         } else {
@@ -287,11 +309,12 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
         foundIndex = [self indexOfMatchedItemAfterIndex:startIndex];
         
         if (foundIndex == NSNotFound) {
-            if ([delegate respondsToSelector:@selector(typeSelectHelper:didFailToFindMatchForSearchString:)])
-                [delegate typeSelectHelper:self didFailToFindMatchForSearchString:searchString];
+            id del = [self delegate];
+            if ([del respondsToSelector:@selector(typeSelectHelper:didFailToFindMatchForSearchString:)])
+                [del typeSelectHelper:self didFailToFindMatchForSearchString:searchString];
         } else if (foundIndex != selectedIndex) {
             // Avoid flashing a selection all over the place while you're still typing the thing you have selected
-            [delegate typeSelectHelper:self selectItemAtIndex:foundIndex];
+            [[self delegate] typeSelectHelper:self selectItemAtIndex:foundIndex];
         }
     }
 }

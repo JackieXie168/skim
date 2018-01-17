@@ -56,8 +56,8 @@ typedef NS_ENUM(NSInteger, SKTypeSelectMatchOption) {
     NSTimer *timer;
 }
 
-@property (nonatomic, assign) id <SKTypeSelectDelegate> delegate;
-@property (nonatomic) SKTypeSelectMatchOption matchOption;
+@property (assign) id <SKTypeSelectDelegate> delegate;
+@property SKTypeSelectMatchOption matchOption;
 
 + (id)typeSelectHelper;
 + (id)typeSelectHelperWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;
