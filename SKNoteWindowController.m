@@ -142,6 +142,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [note removeObserver:self forKeyPath:SKNPDFAnnotationStringKey];
         if ([self isNoteType])
             [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[[self class] fontKeysToObserve]];
+        else
+            [textView setUsesDefaultFontSize:NO];
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[self window] setDelegate:nil];
         [imageView setDelegate:nil];
