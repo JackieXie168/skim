@@ -96,9 +96,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-    if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12))
-        SKENSURE_MAIN_THREAD( [pdfView setDocument:nil]; );
     delegate = nil;
     SKDESTROY(thumbnail);
     SKDESTROY(pageLabel);
@@ -234,6 +231,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerWillClose:)])
         [[self delegate] snapshotControllerWillClose:self];
     [self setDelegate:nil];
+    // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
+    if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12))
+        [pdfView setDocument:nil];
 }
 
 - (void)notifiyDidFinishSetup {
