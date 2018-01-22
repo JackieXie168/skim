@@ -84,10 +84,10 @@
 - (void)loadView {
     [super loadView];
     
-    [button setHelp:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
-    [button setHelp:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
-    [alternateButton setHelp:NSLocalizedString(@"Separate search results", @"Tool tip message") forSegment:SKSingularFindPaneState];
-    [alternateButton setHelp:NSLocalizedString(@"Group search results by page", @"Tool tip message") forSegment:SKGroupedFindPaneState];
+    [button setHelp:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKSidePaneStateThumbnail];
+    [button setHelp:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKSidePaneStateOutline];
+    [alternateButton setHelp:NSLocalizedString(@"Separate search results", @"Tool tip message") forSegment:SKFindPaneStateSingular];
+    [alternateButton setHelp:NSLocalizedString(@"Group search results by page", @"Tool tip message") forSegment:SKFindPaneStateGrouped];
     
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Whole Words Only", @"Menu item title") action:@selector(toggleWholeWordSearch:) target:mainController];

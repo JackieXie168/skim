@@ -44,11 +44,11 @@ extern NSString *SKLineInspectorLineAttributeDidChangeNotification;
 
 typedef NS_ENUM(NSUInteger, SKLineChangeAction) {
     SKNoLineChangeAction,
-    SKLineWidthLineChangeAction,
-    SKStyleLineChangeAction,
-    SKDashPatternLineChangeAction,
-    SKStartLineStyleLineChangeAction,
-    SKEndLineStyleLineChangeAction
+    SKLineChangeActionLineWidth,
+    SKLineChangeActionStyle,
+    SKLineChangeActionDashPattern,
+    SKLineChangeActionStartLineStyle,
+    SKLineChangeActionEndLineStyle
 };
 
 @class SKLineWell;

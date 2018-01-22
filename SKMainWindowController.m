@@ -245,9 +245,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
         lastViewedPages = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
         rowHeights = [[SKFloatMapTable alloc] init];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
-        mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
-        mwcFlags.rightSidePaneState = SKNoteSidePaneState;
-        mwcFlags.findPaneState = SKSingularFindPaneState;
+        mwcFlags.leftSidePaneState = SKSidePaneStateThumbnail;
+        mwcFlags.rightSidePaneState = SKSidePaneStateNote;
+        mwcFlags.findPaneState = SKFindPaneStateSingular;
         pageLabel = nil;
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
@@ -387,7 +387,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         NSString *rectString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
         if (rectString)
             [window setFrame:NSRectFromString(rectString) display:NO];
-    } else if (windowSizeOption == SKMaximizeWindowOption) {
+    } else if (windowSizeOption == SKWindowOptionMaximize) {
         [window setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     }
     
@@ -422,9 +422,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] != hasOutline)
         [self toggleLeftSidePane:nil];
     if (hasOutline)
-        [self setLeftSidePaneState:SKOutlineSidePaneState];
+        [self setLeftSidePaneState:SKSidePaneStateOutline];
     else
-        [leftSideController.button setEnabled:NO forSegment:SKOutlineSidePaneState];
+        [leftSideController.button setEnabled:NO forSegment:SKSidePaneStateOutline];
     
     // Due to a bug in Leopard we should only resize and swap in the PDFView after loading the PDFDocument
     [pdfView setFrame:[pdfContentView bounds]];
@@ -436,7 +436,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         if (initialSettings) {
             [self applyPDFSettings:initialSettings];
             if ([initialSettings objectForKey:@"fitWindow"])
-                windowSizeOption = [[initialSettings objectForKey:@"fitWindow"] boolValue] ? SKFitWindowOption : SKDefaultWindowOption;
+                windowSizeOption = [[initialSettings objectForKey:@"fitWindow"] boolValue] ? SKWindowOptionFit : SKWindowOptionDefault;
         }
     }
     
@@ -464,7 +464,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     }
     
     // We can fit only after the PDF has been loaded
-    if (windowSizeOption == SKFitWindowOption && hasWindowSetup == NO)
+    if (windowSizeOption == SKWindowOptionFit && hasWindowSetup == NO)
         [self performFit:self];
     
     // Open snapshots?
@@ -748,9 +748,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     // handle the case as above where the outline has disappeared in a reload situation
     if (nil == outlineRoot)
-        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        [self setLeftSidePaneState:SKSidePaneStateThumbnail];
 
-    [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKOutlineSidePaneState];
+    [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKSidePaneStateOutline];
 }
 
 #pragma mark Accessors
@@ -971,9 +971,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [leftSideController.searchField setStringValue:@""];
         }
         
-        if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
+        if (mwcFlags.leftSidePaneState == SKSidePaneStateThumbnail)
             [self displayThumbnailViewAnimating:NO];
-        else if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState)
+        else if (mwcFlags.leftSidePaneState == SKSidePaneStateOutline)
             [self displayTocViewAnimating:NO];
     }
 }
@@ -992,9 +992,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         mwcFlags.rightSidePaneState = newRightSidePaneState;
         
-        if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
+        if (mwcFlags.rightSidePaneState == SKSidePaneStateNote)
             [self displayNoteViewAnimating:NO];
-        else if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState)
+        else if (mwcFlags.rightSidePaneState == SKSidePaneStateSnapshot)
             [self displaySnapshotViewAnimating:NO];
     }
 }
@@ -1007,10 +1007,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (mwcFlags.findPaneState != newFindPaneState) {
         mwcFlags.findPaneState = newFindPaneState;
         
-        if (mwcFlags.findPaneState == SKSingularFindPaneState) {
+        if (mwcFlags.findPaneState == SKFindPaneStateSingular) {
             if ([leftSideController.groupedFindTableView window])
                 [self displayFindViewAnimating:NO];
-        } else if (mwcFlags.findPaneState == SKGroupedFindPaneState) {
+        } else if (mwcFlags.findPaneState == SKFindPaneStateGrouped) {
             if ([leftSideController.findTableView window])
                 [self displayGroupedFindViewAnimating:NO];
         }
@@ -1280,7 +1280,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
-        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        [self setLeftSidePaneState:SKSidePaneStateThumbnail];
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
@@ -1957,9 +1957,9 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction {
     NSArray *findResults = nil;
     
-    if (mwcFlags.findPaneState == SKSingularFindPaneState && [leftSideController.findTableView window])
+    if (mwcFlags.findPaneState == SKFindPaneStateSingular && [leftSideController.findTableView window])
         findResults = [leftSideController.findArrayController selectedObjects];
-    else if (mwcFlags.findPaneState == SKGroupedFindPaneState && [leftSideController.groupedFindTableView window])
+    else if (mwcFlags.findPaneState == SKFindPaneStateGrouped && [leftSideController.groupedFindTableView window])
         findResults = [[leftSideController.groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     
     if ([findResults count] == 0) {
@@ -2245,7 +2245,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller {
     [self snapshotNeedsUpdate:controller];
-    if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState && [[rightSideController.searchField stringValue] length] > 0)
+    if (mwcFlags.rightSidePaneState == SKSidePaneStateSnapshot && [[rightSideController.searchField stringValue] length] > 0)
         [rightSideController.snapshotArrayController rearrangeObjects];
 }
 
@@ -2262,7 +2262,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
             [rightSideWindow expand];
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
         }
-        [self setRightSidePaneState:SKSnapshotSidePaneState];
+        [self setRightSidePaneState:SKSidePaneStateSnapshot];
         if (row != NSNotFound)
             [rightSideController.snapshotTableView scrollRowToVisible:row];
     }
@@ -2780,7 +2780,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)updateSnapshotFilterPredicate {
     NSString *searchString = [rightSideController.searchField stringValue];
     NSPredicate *filterPredicate = nil;
-    if (mwcFlags.rightSidePaneState == SKSnapshotSidePaneState && [searchString length] > 0) {
+    if (mwcFlags.rightSidePaneState == SKSidePaneStateSnapshot && [searchString length] > 0) {
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
         NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
         NSUInteger options = NSDiacriticInsensitivePredicateOption;

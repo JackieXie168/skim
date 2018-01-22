@@ -39,10 +39,10 @@
 #import <Cocoa/Cocoa.h>
 
 typedef NS_ENUM(NSInteger, SKTemplateTagType) {
-    SKValueTemplateTagType,
-    SKCollectionTemplateTagType,
-    SKConditionTemplateTagType,
-    SKTextTemplateTagType
+    SKTemplateTagValue,
+    SKTemplateTagCollection,
+    SKTemplateTagCondition,
+    SKTemplateTagText
 };
 
 typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {

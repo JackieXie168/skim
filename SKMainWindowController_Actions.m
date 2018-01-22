@@ -150,20 +150,20 @@
     if (mwcFlags.updatingLine == 0 && [annotation hasBorder]) {
         mwcFlags.updatingLine = 1;
         switch (action) {
-            case SKLineWidthLineChangeAction:
+            case SKLineChangeActionLineWidth:
                 [annotation setLineWidth:[sender lineWidth]];
                 break;
-            case SKStyleLineChangeAction:
+            case SKLineChangeActionStyle:
                 [annotation setBorderStyle:[(SKLineInspector *)sender style]];
                 break;
-            case SKDashPatternLineChangeAction:
+            case SKLineChangeActionDashPattern:
                 [annotation setDashPattern:[sender dashPattern]];
                 break;
-            case SKStartLineStyleLineChangeAction:
+            case SKLineChangeActionStartLineStyle:
                 if ([annotation isLine])
                     [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
                 break;
-            case SKEndLineStyleLineChangeAction:
+            case SKLineChangeActionEndLineStyle:
                 if ([annotation isLine])
                     [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
                 break;
@@ -717,7 +717,7 @@ static NSArray *allMainDocumentPDFViews() {
     
     if ([[sender stringValue] isEqualToString:@""]) {
         
-        if (mwcFlags.leftSidePaneState == SKThumbnailSidePaneState)
+        if (mwcFlags.leftSidePaneState == SKSidePaneStateThumbnail)
             [self displayThumbnailViewAnimating:YES];
         else
             [self displayTocViewAnimating:YES];
@@ -744,7 +744,7 @@ static NSArray *allMainDocumentPDFViews() {
         } else {
             [pdfDoc beginFindString:[sender stringValue] withOptions:options];
         }
-        if (mwcFlags.findPaneState == SKSingularFindPaneState)
+        if (mwcFlags.findPaneState == SKFindPaneStateSingular)
             [self displayFindViewAnimating:YES];
         else
             [self displayGroupedFindViewAnimating:YES];
@@ -756,7 +756,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)searchNotes:(id)sender {
-    if (mwcFlags.rightSidePaneState == SKNoteSidePaneState)
+    if (mwcFlags.rightSidePaneState == SKSidePaneStateNote)
         [self updateNoteFilterPredicate];
     else
         [self updateSnapshotFilterPredicate];

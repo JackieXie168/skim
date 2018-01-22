@@ -46,24 +46,24 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
 typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
-    SKThumbnailSidePaneState,
-    SKOutlineSidePaneState
+    SKSidePaneStateThumbnail,
+    SKSidePaneStateOutline
 };
 
 typedef NS_ENUM(NSInteger, SKRightSidePaneState) {
-    SKNoteSidePaneState,
-    SKSnapshotSidePaneState
+    SKSidePaneStateNote,
+    SKSidePaneStateSnapshot
 };
 
 typedef NS_ENUM(NSInteger, SKFindPaneState) {
-    SKSingularFindPaneState,
-    SKGroupedFindPaneState
+    SKFindPaneStateSingular,
+    SKFindPaneStateGrouped
 };
 
 enum {
-    SKDefaultWindowOption,
-    SKMaximizeWindowOption,
-    SKFitWindowOption
+    SKWindowOptionDefault,
+    SKWindowOptionMaximize,
+    SKWindowOptionFit
 };
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;

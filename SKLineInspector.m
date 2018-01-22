@@ -420,14 +420,14 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)setLineWidth:(CGFloat)width {
     if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
-        [self notifyChangeAction:SKLineWidthLineChangeAction];
+        [self notifyChangeAction:SKLineChangeActionLineWidth];
     }
 }
 
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
-        [self notifyChangeAction:SKStyleLineChangeAction];
+        [self notifyChangeAction:SKLineChangeActionStyle];
     }
 }
 
@@ -435,21 +435,21 @@ static SKLineInspector *sharedLineInspector = nil;
     if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
-        [self notifyChangeAction:SKDashPatternLineChangeAction];
+        [self notifyChangeAction:SKLineChangeActionDashPattern];
     }
 }
 
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
-        [self notifyChangeAction:SKStartLineStyleLineChangeAction];
+        [self notifyChangeAction:SKLineChangeActionStartLineStyle];
     }
 }
 
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != endLineStyle) {
         endLineStyle = newStyle;
-        [self notifyChangeAction:SKEndLineStyleLineChangeAction];
+        [self notifyChangeAction:SKLineChangeActionEndLineStyle];
     }
 }
 

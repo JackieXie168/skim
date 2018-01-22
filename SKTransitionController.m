@@ -161,15 +161,15 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
     if (transitionNames == nil) {
         transitionNames = [NSArray arrayWithObjects:
             @"", 
-            @"CoreGraphics SKFadeTransition", 
-            @"CoreGraphics SKZoomTransition", 
-            @"CoreGraphics SKRevealTransition", 
-            @"CoreGraphics SKSlideTransition", 
-            @"CoreGraphics SKWarpFadeTransition", 
-            @"CoreGraphics SKSwapTransition", 
-            @"CoreGraphics SKCubeTransition", 
-            @"CoreGraphics SKWarpSwitchTransition", 
-            @"CoreGraphics SKWarpFlipTransition", nil];
+            @"CoreGraphics SKTransitionFade", 
+            @"CoreGraphics SKTransitionZoom", 
+            @"CoreGraphics SKTransitionReveal", 
+            @"CoreGraphics SKTransitionSlide", 
+            @"CoreGraphics SKTransitionWarpFade", 
+            @"CoreGraphics SKTransitionSwap", 
+            @"CoreGraphics SKTransitionCube", 
+            @"CoreGraphics SKTransitionWarpSwitch", 
+            @"CoreGraphics SKTransitionWarpFlip", nil];
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
         transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]] copy];
@@ -193,15 +193,15 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
     switch (style) {
         case SKNoTransition:         return NSLocalizedString(@"No Transition", @"Transition name");
-        case SKFadeTransition:       return NSLocalizedString(@"Fade", @"Transition name");
-        case SKZoomTransition:       return NSLocalizedString(@"Zoom", @"Transition name");
-        case SKRevealTransition:     return NSLocalizedString(@"Reveal", @"Transition name");
-        case SKSlideTransition:      return NSLocalizedString(@"Slide", @"Transition name");
-        case SKWarpFadeTransition:   return NSLocalizedString(@"Warp Fade", @"Transition name");
-        case SKSwapTransition:       return NSLocalizedString(@"Swap", @"Transition name");
-        case SKCubeTransition:       return NSLocalizedString(@"Cube", @"Transition name");
-        case SKWarpSwitchTransition: return NSLocalizedString(@"Warp Switch", @"Transition name");
-        case SKWarpFlipTransition:   return NSLocalizedString(@"Flip", @"Transition name");
+        case SKTransitionFade:       return NSLocalizedString(@"Fade", @"Transition name");
+        case SKTransitionZoom:       return NSLocalizedString(@"Zoom", @"Transition name");
+        case SKTransitionReveal:     return NSLocalizedString(@"Reveal", @"Transition name");
+        case SKTransitionSlide:      return NSLocalizedString(@"Slide", @"Transition name");
+        case SKTransitionWarpFade:   return NSLocalizedString(@"Warp Fade", @"Transition name");
+        case SKTransitionSwap:       return NSLocalizedString(@"Swap", @"Transition name");
+        case SKTransitionCube:       return NSLocalizedString(@"Cube", @"Transition name");
+        case SKTransitionWarpSwitch: return NSLocalizedString(@"Warp Switch", @"Transition name");
+        case SKTransitionWarpFlip:   return NSLocalizedString(@"Flip", @"Transition name");
         default:                     return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
     };
 }

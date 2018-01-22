@@ -282,7 +282,7 @@ static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, S
 static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateTagType typeBefore, SKTemplateTagType typeAfter, BOOL isSubtemplate) {
     NSRange range = NSMakeRange(0, [string length]);
     
-    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType || (isSubtemplate && typeAfter == SKNoTemplateTagType)) {
+    if (typeAfter == SKTemplateTagCollection || typeAfter == SKTemplateTagCondition || (isSubtemplate && typeAfter == SKNoTemplateTagType)) {
         // remove whitespace at the end, just before the collection or condition tag
         NSRange lastCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:NSBackwardsSearch range:range];
         if (lastCharRange.location != NSNotFound) {
@@ -294,7 +294,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             range.length = 0;
         }
     }
-    if (typeBefore == SKCollectionTemplateTagType || typeBefore == SKConditionTemplateTagType || (isSubtemplate && typeBefore == SKNoTemplateTagType)) {
+    if (typeBefore == SKTemplateTagCollection || typeBefore == SKTemplateTagCondition || (isSubtemplate && typeBefore == SKNoTemplateTagType)) {
         // remove whitespace and a newline at the start, just after the collection or condition tag
         NSRange firstCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:0 range:range];
         if (firstCharRange.location != NSNotFound) {
@@ -337,7 +337,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         NSInteger start;
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
-            if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
+            if (currentTag && [(SKTemplateTag *)currentTag type] == SKTemplateTagText) {
                 [(SKTextTemplateTag *)currentTag appendText:beforeText];
             } else {
                 currentTag = [[SKTextTemplateTag alloc] initWithText:beforeText];
@@ -430,7 +430,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 } else {
                     
                     // an open delimiter without a close delimiter, so no template tag. Rewind
-                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
+                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTemplateTagText) {
                         [(SKTextTemplateTag *)currentTag appendText:START_TAG_OPEN_DELIM];
                     } else {
                         currentTag = [[SKTextTemplateTag alloc] initWithText:START_TAG_OPEN_DELIM];
@@ -451,7 +451,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     for (i = count - 1; i >= 0; i--) {
         SKTemplateTag *tag = [result objectAtIndex:i];
         
-        if ([tag type] != SKTextTemplateTagType) continue;
+        if ([tag type] != SKTemplateTagText) continue;
         
         NSString *string = [(SKTextTemplateTag *)tag text];
         NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : SKNoTemplateTagType, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : SKNoTemplateTagType, isSubtemplate);
@@ -471,7 +471,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     for (id tag in template) {
         SKTemplateTagType type = [(SKTemplateTag *)tag type];
         
-        if (type == SKTextTemplateTagType) {
+        if (type == SKTemplateTagText) {
             
             [result appendString:[(SKTextTemplateTag *)tag text]];
             
@@ -480,12 +480,12 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             NSString *keyPath = [tag keyPath];
             id keyValue = templateValueForKeyPath(object, keyPath, anIndex);
             
-            if (type == SKValueTemplateTagType) {
+            if (type == SKTemplateTagValue) {
                 
                 if (keyValue)
                     [result appendString:[keyValue templateStringValue]];
                 
-            } else if (type == SKCollectionTemplateTagType) {
+            } else if (type == SKTemplateTagCollection) {
                 
                 NSArray *itemTemplate = nil;
                 NSInteger idx = 1;
@@ -571,7 +571,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         start = [scanner scanLocation];
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
-            if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
+            if (currentTag && [(SKTemplateTag *)currentTag type] == SKTemplateTagText) {
                 [(SKRichTextTemplateTag *)currentTag appendAttributedText:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
             } else {
                 currentTag = [[SKRichTextTemplateTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
@@ -675,7 +675,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 } else {
                     
                     // a START_TAG_OPEN_DELIM without COLLECTION_TAG_CLOSE_DELIM, so no template tag. Rewind
-                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
+                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTemplateTagText) {
                         [(SKRichTextTemplateTag *)currentTag appendAttributedText:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
                     } else {
                         currentTag = [[SKRichTextTemplateTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
@@ -697,7 +697,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     for (i = count - 1; i >= 0; i--) {
         SKTemplateTag *tag = [result objectAtIndex:i];
         
-        if ([tag type] != SKTextTemplateTagType) continue;
+        if ([tag type] != SKTemplateTagText) continue;
         
         NSAttributedString *attrString = [(SKRichTextTemplateTag *)tag attributedText];
         NSString *string = [attrString string];
@@ -719,7 +719,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         SKTemplateTagType type = [(SKTemplateTag *)tag type];
         NSAttributedString *tmpAttrStr = nil;
         
-        if (type == SKTextTemplateTagType) {
+        if (type == SKTemplateTagText) {
             
             [result appendAttributedString:[(SKRichTextTemplateTag *)tag attributedText]];
             
@@ -728,12 +728,12 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             NSString *keyPath = [tag keyPath];
             id keyValue = templateValueForKeyPath(object, keyPath, anIndex);
             
-            if (type == SKValueTemplateTagType) {
+            if (type == SKTemplateTagValue) {
                 
                 if (keyValue)
                     [result appendAttributedString:[keyValue templateAttributedStringValueWithAttributes:[(SKRichValueTemplateTag *)tag attributes]]];
                 
-            } else if (type == SKCollectionTemplateTagType) {
+            } else if (type == SKTemplateTagCollection) {
                 
                 NSArray *itemTemplate = nil;
                 NSInteger idx = 1;

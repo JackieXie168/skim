@@ -67,7 +67,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKValueTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagValue; }
 
 @end
 
@@ -117,7 +117,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagCollection; }
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateString)
@@ -158,7 +158,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagCollection; }
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateAttributedString)
@@ -196,7 +196,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKConditionTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagCondition; }
 
 - (NSUInteger)countOfSubtemplates {
     return [subtemplates count];
@@ -247,7 +247,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKTextTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagText; }
 
 - (void)appendText:(NSString *)newText {
     [self setText:[text stringByAppendingString:newText]];
@@ -274,7 +274,7 @@
     [super dealloc];
 }
 
-- (SKTemplateTagType)type { return SKTextTemplateTagType; }
+- (SKTemplateTagType)type { return SKTemplateTagText; }
 
 - (void)appendAttributedText:(NSAttributedString *)newAttributedText {
     NSMutableAttributedString *newAttrText = [attributedText mutableCopy];

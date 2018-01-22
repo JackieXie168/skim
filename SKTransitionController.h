@@ -46,15 +46,15 @@ extern NSString *SKShouldRestrictKey;
 typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 	SKNoTransition,
     // Core Graphics transitions
-	SKFadeTransition,
-	SKZoomTransition,
-	SKRevealTransition,
-	SKSlideTransition,
-	SKWarpFadeTransition,
-	SKSwapTransition,
-	SKCubeTransition,
-	SKWarpSwitchTransition,
-	SKWarpFlipTransition,
+	SKTransitionFade,
+	SKTransitionZoom,
+	SKTransitionReveal,
+	SKTransitionSlide,
+	SKTransitionWarpFade,
+	SKTransitionSwap,
+	SKTransitionCube,
+	SKTransitionWarpSwitch,
+	SKTransitionWarpFlip,
     // Core Image transitions
     SKCoreImageTransition
 };

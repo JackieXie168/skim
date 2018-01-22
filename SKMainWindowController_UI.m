@@ -1679,7 +1679,7 @@ static NSArray *allMainDocumentPDFViews() {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:mwcFlags.leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([leftSideController.findTableView window] || [leftSideController.groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
-        return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || [[pdfView document] outlineRoot];
+        return (SKLeftSidePaneState)[menuItem tag] == SKSidePaneStateThumbnail || [[pdfView document] outlineRoot];
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:mwcFlags.rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode;

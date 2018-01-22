@@ -536,20 +536,20 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     SKLineInspector *inspector = [notification object];
     NSString *key = nil;
     switch ([inspector currentLineChangeAction]) {
-        case SKLineWidthLineChangeAction:
+        case SKLineChangeActionLineWidth:
             key = SKLineWellLineWidthKey;
             break;
-        case SKStyleLineChangeAction:
+        case SKLineChangeActionStyle:
             key = SKLineWellStyleKey;
             break;
-        case SKDashPatternLineChangeAction:
+        case SKLineChangeActionDashPattern:
             key = SKLineWellDashPatternKey;
             break;
-        case SKStartLineStyleLineChangeAction:
+        case SKLineChangeActionStartLineStyle:
             if ([self displayStyle] == SKLineWellDisplayStyleLine)
                 key = SKLineWellStartLineStyleKey;
             break;
-        case SKEndLineStyleLineChangeAction:
+        case SKLineChangeActionEndLineStyle:
             if ([self displayStyle] == SKLineWellDisplayStyleLine)
                 key = SKLineWellEndLineStyleKey;
             break;
