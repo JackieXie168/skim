@@ -258,28 +258,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD(
-        if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
-            [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
-        [self stopObservingNotes:[self notes]];
-        [self unregisterAsObserver];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [mainWindow setDelegate:nil];
-        [splitView setDelegate:nil];
-        [pdfSplitView setDelegate:nil];
-        [pdfView setDelegate:nil];
-        [[pdfView document] setDelegate:nil];
-        [leftSideDrawer setDelegate:nil];
-        [rightSideDrawer setDelegate:nil];
-        [noteTypeSheetController setDelegate:nil];
-        // Sierra seems to have a retain cycle when the document has an outlineRoot
-        [[[pdfView document] outlineRoot] clearDocument];
-        // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-        if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12)) {
-            [pdfView setDocument:nil];
-            [secondaryPdfView setDocument:nil];
-        }
-    );
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
@@ -318,6 +297,33 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(rightSideContentView);
     SKDESTROY(fieldEditor);
     [super dealloc];
+}
+
+// this is called from windowWillClose:
+- (void)cleanup {
+    if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
+        [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
+    [self stopObservingNotes:[self notes]];
+    [self unregisterAsObserver];
+    [mainWindow setDelegate:nil];
+    [splitView setDelegate:nil];
+    [pdfSplitView setDelegate:nil];
+    [leftSideController setMainController:nil];
+    [rightSideController setMainController:nil];
+    [toolbarController setMainController:nil];
+    [findController setDelegate:nil]; // this breaks the retain loop from binding
+    [pdfView setDelegate:nil]; // this cleans up the pdfview
+    [[pdfView document] setDelegate:nil];
+    [leftSideDrawer setDelegate:nil];
+    [rightSideDrawer setDelegate:nil];
+    [noteTypeSheetController setDelegate:nil];
+    // Sierra seems to have a retain cycle when the document has an outlineRoot
+    [[[pdfView document] outlineRoot] clearDocument];
+    // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
+    if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12)) {
+        [pdfView setDocument:nil];
+        [secondaryPdfView setDocument:nil];
+    }
 }
 
 - (void)windowDidLoad{

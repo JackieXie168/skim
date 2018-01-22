@@ -298,20 +298,7 @@ enum {
 }
 
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD(
-        [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[[self class] defaultKeysToObserve]];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [transitionController removeObserver:self forKeyPath:@"transitionStyle"];
-        [transitionController removeObserver:self forKeyPath:@"duration"];
-        [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
-        [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
-        [self showNavWindow:NO];
-        [self doAutohide:NO];
-        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
-        [self removePDFToolTipRects];
-        [syncDot invalidate];
-    );
+    // we should have been cleaned up in setDelegate:nil which is called from windowWillClose:
     SKDESTROY(syncDot);
     SKDESTROY(trackingArea);
     SKDESTROY(activeAnnotation);
@@ -322,6 +309,22 @@ enum {
     SKDESTROY(editor);
     SKDESTROY(highlightAnnotation);
     [super dealloc];
+}
+
+- (void)cleanup {
+    [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[[self class] defaultKeysToObserve]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [transitionController removeObserver:self forKeyPath:@"transitionStyle"];
+    [transitionController removeObserver:self forKeyPath:@"duration"];
+    [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
+    [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
+    [self showNavWindow:NO];
+    [self doAutohide:NO];
+    [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
+    [self removePDFToolTipRects];
+    [syncDot invalidate];
+    SKDESTROY(syncDot);
 }
 
 - (NSRect)visibleContentRect {
@@ -4374,6 +4377,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)setDelegate:(id <SKPDFViewDelegate>)newDelegate {
+    if ([self delegate] && newDelegate == nil)
+        [self cleanup];
     [super setDelegate:newDelegate];
 }
 

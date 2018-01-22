@@ -109,6 +109,8 @@
 
 @interface SKMainWindowController (SKPrivateMain)
 
+- (void)cleanup;
+
 - (void)goToSelectedOutlineItem:(id)sender;
 
 - (void)updatePageNumber;
@@ -246,11 +248,7 @@
             [[pdfView document] cancelFindString];
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
-        
-        [leftSideController setMainController:nil];
-        [rightSideController setMainController:nil];
-        [toolbarController setMainController:nil];
-        [findController setDelegate:nil]; // this breaks the retain loop from binding
+        [self cleanup]; // clean up everything
     }
 }
 

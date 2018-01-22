@@ -96,12 +96,13 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD(
-        for (NSString *key in [[self class] keysToObserve]) {
-            @try { [annotation removeObserver:self forKeyPath:key]; }
-            @catch(id e) {}
-        }
-    );
+    if (annotation)
+        SKENSURE_MAIN_THREAD(
+            for (NSString *key in [[self class] keysToObserve]) {
+                @try { [annotation removeObserver:self forKeyPath:key]; }
+                @catch(id e) {}
+            }
+        );
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     pdfView = nil;
     SKDESTROY(annotation);
@@ -176,11 +177,11 @@ static char SKPDFAnnotationPropertiesObservationContext;
     }
 }
 
-- (void)discardEditing {
-    [annotation setShouldDisplay:[annotation shouldPrint]];
-    
-    BOOL wasFirstResponder = ([textField currentEditor] != nil);
-    [textField abortEditing];
+- (void)endEditingTransferringFirstResponder:(BOOL)wasFirstResponder {
+    for (NSString *key in [[self class] keysToObserve])
+        [annotation removeObserver:self forKeyPath:key];
+    SKDESTROY(annotation);
+
     [textField removeFromSuperview];
     [[pdfView window] recalculateKeyViewLoop];
     if (wasFirstResponder)
@@ -188,6 +189,16 @@ static char SKPDFAnnotationPropertiesObservationContext;
     
     if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
         [pdfView textNoteEditorDidEndEditing:self];
+    
+    pdfView = nil;
+}
+
+- (void)discardEditing {
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
+    BOOL wasFirstResponder = ([textField currentEditor] != nil);
+    [textField abortEditing];
+    [self endEditingTransferringFirstResponder:wasFirstResponder];
 }
 
 - (BOOL)commitEditing {
@@ -201,14 +212,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if ([newValue isEqualToString:[annotation string]] == NO)
         [annotation setString:newValue];
     
-    [textField removeFromSuperview];
-    [[pdfView window] recalculateKeyViewLoop];
-    
-    if (wasFirstResponder)
-        [[pdfView window] makeFirstResponder:pdfView];
-    
-    if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
-        [pdfView textNoteEditorDidEndEditing:self];
+    [self endEditingTransferringFirstResponder:wasFirstResponder];
     
     return YES;
 }
