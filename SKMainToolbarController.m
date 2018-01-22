@@ -134,10 +134,6 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 }
 
 - (void)dealloc {
-    SKENSURE_MAIN_THREAD(
-        @try { [colorSwatch unbind:@"colors"]; }
-        @catch (id e) {}
-    );
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     mainController = nil;
     SKDESTROY(toolbarItems);
@@ -185,6 +181,12 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 
 - (NSString *)nibName {
     return @"MainToolbar";
+}
+
+- (void)setMainController:(SKMainWindowController *)newMainController {
+    if (mainController != nil && newMainController == nil)
+        [colorSwatch unbind:@"colors"];
+    mainController = newMainController;
 }
 
 - (void)setupToolbar {
