@@ -179,6 +179,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 @interface SKMainWindowController (SKPrivate)
 
+- (void)cleanup;
+
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
 
 - (void)setupToolbar;
@@ -258,6 +260,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
+    if ([[self window] delegate])
+        SKENSURE_MAIN_THREAD( [self cleanup]; );
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
@@ -305,7 +309,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [self stopObservingNotes:[self notes]];
     [self unregisterAsObserver];
-    [mainWindow setDelegate:nil];
+    [[self window] setDelegate:nil];
     [splitView setDelegate:nil];
     [pdfSplitView setDelegate:nil];
     [leftSideController setMainController:nil];
