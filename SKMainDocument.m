@@ -186,7 +186,6 @@ enum {
     if (fileUpdateChecker)
         SKENSURE_MAIN_THREAD( [fileUpdateChecker terminate]; );
     SKDESTROY(fileUpdateChecker);
-    [synchronizer terminate];
     SKDESTROY(synchronizer);
     SKDESTROY(mainWindowController);
     SKDESTROY(pdfData);
@@ -1359,6 +1358,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if ([window isEqual:[[window windowController] window]]) {
         [fileUpdateChecker terminate];
         SKDESTROY(fileUpdateChecker);
+        [synchronizer terminate];
         [self saveRecentDocumentInfo];
     }
 }
