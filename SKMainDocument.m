@@ -1170,7 +1170,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     ([pdfDoc unlockWithPassword:[passwordSheetController stringValue]] == NO || [pdfDoc allowsPrinting] == NO)) {
                     [self beginConvertNotesPasswordSheetForPDFDocument:pdfDoc];
                 } else {
-                    [self convertNotesUsingPDFDocument:[pdfDoc autorelease]];
+                    [self convertNotesUsingPDFDocument:pdfDoc];
                 }
             } else {
                 [[pdfDoc outlineRoot] clearDocument];
