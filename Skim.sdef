@@ -587,7 +587,7 @@
                 description="The document(s) for which to convert notes."/>
             <parameter name="waiting" code="Wait" type="boolean" optional="yes"
                 description="Whether to wait for the conversion to finish. Default is true">
-                <cocoa key="Waiting"/>
+                <cocoa key="Wait"/>
             </parameter>
         </command>
 
