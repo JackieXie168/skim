@@ -585,9 +585,9 @@
             description="Convert in a document PDF annotations to Skim notes.">
             <direct-parameter type="document"
                 description="The document(s) for which to convert notes."/>
-            <parameter name="synchronous" code="Sync" type="boolean" optional="yes"
-                description="Whether to run the command synchronously. Default is true">
-                <cocoa key="Synchronous"/>
+            <parameter name="waiting" code="Wait" type="boolean" optional="yes"
+                description="Whether to wait for the conversion to finish. Default is true">
+                <cocoa key="Waiting"/>
             </parameter>
         </command>
 

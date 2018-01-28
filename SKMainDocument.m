@@ -2070,9 +2070,9 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         [command setScriptErrorNumber:NSInternalScriptError];
     } else if ([self hasConvertibleAnnotations]) {
         NSDictionary *args = [command evaluatedArguments];
-        NSNumber *synchronous = [args objectForKey:@"Synchronous"];
+        NSNumber *waiting = [args objectForKey:@"Waiting"];
         [self convertNotesSheetDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
-        if (synchronous == nil || [synchronous boolValue])
+        if (waiting == nil || [waiting boolValue])
             while (mdFlags.convertingNotes == 1 && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
     }
 }
