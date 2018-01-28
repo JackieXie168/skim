@@ -108,7 +108,7 @@
         s += 8.0 * sin(phase * 0.1 * M_PI);
         CGFloat components[8] = {1.0, 0.3, 0.3, 1.0, 1.0, 0.0, 0.0, 1.0};
         CGFloat locations[2] = {0.0, 1.0};
-        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+        CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 2);
         CGColorSpaceRelease(colorspace);
         CGContextBeginPath(context);
