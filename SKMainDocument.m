@@ -1146,6 +1146,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 [annotations release];
 
                 [[self mainWindowController] dismissProgressSheet];
+                
+                mdFlags.convertingNotes = 0;
             });
         });
         
@@ -1156,6 +1158,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [[pdfDocWithoutNotes outlineRoot] clearDocument];
         
         [[self mainWindowController] dismissProgressSheet];
+        
+        mdFlags.convertingNotes = 0;
     }
 }
 
@@ -1174,6 +1178,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             } else {
                 [[pdfDoc outlineRoot] clearDocument];
+                mdFlags.convertingNotes = 0;
             }
         }];
 }
@@ -1186,6 +1191,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     // remove the sheet, to make place for either the password or progress sheet
     [[alert window] orderOut:nil];
+    
+    mdFlags.convertingNotes = 1;
     
     if ([[self pdfDocument] allowsPrinting] == NO) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
@@ -2057,10 +2064,17 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 }
 
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
-    if ([[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO)
+    if ([[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-    else if ([self hasConvertibleAnnotations])
+    } else if (mdFlags.convertingNotes) {
+        [command setScriptErrorNumber:NSInternalScriptError];
+    } else if ([self hasConvertibleAnnotations]) {
+        NSDictionary *args = [command evaluatedArguments];
+        NSNumber *synchronous = [args objectForKey:@"Synchronous"];
         [self convertNotesSheetDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
+        if (synchronous == nil || [synchronous boolValue])
+            while (mdFlags.convertingNotes == 1 && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    }
 }
 
 - (void)handleReadNotesScriptCommand:(NSScriptCommand *)command {
