@@ -1629,8 +1629,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         NSString *fileID = [self fileIDStringForDocument:document];
         if (fileID) {
             NSString *password = nil;
-            [self getPDFPassword:&password item:NULL forFileID:fileID];
-            if (password)
+            if (SKPasswordStatusFound == [self getPDFPassword:&password item:NULL forFileID:fileID])
                 [document unlockWithPassword:password];
         }
     }
