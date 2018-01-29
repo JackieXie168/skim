@@ -42,13 +42,13 @@
 
 @implementation SKKeyChain
 
-+ (SKPasswordStatus)getPassword:(NSString **)password item:(id *)itemRef forService:(NSString *)service account:(NSString *)account {
++ (SKPasswordStatus)getPassword:(NSString **)password item:(id *)itemPtr forService:(NSString *)service account:(NSString *)account {
     void *passwordData = NULL;
     UInt32 passwordLength = 0;
     const char *serviceData = [service UTF8String];
     const char *accountData = [account UTF8String];
     
-    OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(serviceData), serviceData, strlen(accountData), accountData, password ? &passwordLength : NULL, password ? &passwordData : NULL, (SecKeychainItemRef *)itemRef);
+    OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(serviceData), serviceData, strlen(accountData), accountData, password ? &passwordLength : NULL, password ? &passwordData : NULL, (SecKeychainItemRef *)itemPtr);
     
     if (err == noErr && password) {
         *password = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSUTF8StringEncoding] autorelease];
@@ -70,7 +70,7 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     return attr;
 }
 
-+ (void)setPassword:(NSString *)password item:(id)itemRef forService:(NSString *)service account:(NSString *)account label:(NSString *)label comment:(NSString *)comment {
++ (void)setPassword:(NSString *)password item:(id)item forService:(NSString *)service account:(NSString *)account label:(NSString *)label comment:(NSString *)comment {
     const void *passwordData = [password UTF8String];
     UInt32 passwordLength = password ? strlen(passwordData) : 0;
     NSUInteger attrCount = 2;
@@ -88,9 +88,9 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     attributes.count = attrCount;
     attributes.attr = attrs;
     
-    if (itemRef) {
+    if (item) {
         // password was on keychain, so modify the keychain
-        err = SecKeychainItemModifyAttributesAndData((SecKeychainItemRef)itemRef, &attributes, passwordLength, passwordData);
+        err = SecKeychainItemModifyAttributesAndData((SecKeychainItemRef)item, &attributes, passwordLength, passwordData);
         if (err != noErr)
             NSLog(@"Error %d occurred modifying password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     } else if (password) {

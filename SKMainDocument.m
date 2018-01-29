@@ -1559,31 +1559,31 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 
 #pragma mark Passwords
 
-- (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemRef forFileID:(NSString *)fileID {
-    NSInteger status = [SKKeyChain getPassword:password item:itemRef forService:SKPDFPasswordServiceName account:fileID];
+- (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemPtr forFileID:(NSString *)fileID {
+    NSInteger status = [SKKeyChain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
     if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
-        id oldItemRef = NULL;
-        status = [SKKeyChain getPassword:password item:&oldItemRef forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
+        id oldItem = NULL;
+        status = [SKKeyChain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
         if (status == SKPasswordStatusFound) {
             // update to new format, unless password == NULL, when this is called from setPDFPassword:...
             if (password)
-                [self setPDFPassword:*password item:oldItemRef forFileID:fileID];
-            if (itemRef)
-                *itemRef = oldItemRef;
+                [self setPDFPassword:*password item:oldItem forFileID:fileID];
+            if (itemPtr)
+                *itemPtr = oldItem;
         }
     }
     return status;
 }
 
-- (void)setPDFPassword:(NSString *)password item:(id)itemRef forFileID:(NSString *)fileID {
-    if (itemRef == NULL) {
+- (void)setPDFPassword:(NSString *)password item:(id)item forFileID:(NSString *)fileID {
+    if (item == NULL) {
         // if we find an old item we should modify that
-        SKPasswordStatus status = [self getPDFPassword:NULL item:&itemRef forFileID:fileID];
+        SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
         if (status == SKPasswordStatusError)
             return;
     }
-    [SKKeyChain setPassword:password item:itemRef forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
+    [SKKeyChain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
