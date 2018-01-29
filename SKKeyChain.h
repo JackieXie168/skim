@@ -36,7 +36,7 @@ Christiaan Hofman. All rights reserved.
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa>
+#import <Cocoa/Cocoa.h>
 
 
 typedef NS_ENUM(NSInteger, SKPasswordStatus) {
