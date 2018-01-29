@@ -165,7 +165,7 @@ enum {
 
 @interface SKMainDocument (SKPrivate)
 
-- (BOOL)tryToUnlockDocument:(PDFDocument *)document;
+- (void)tryToUnlockDocument:(PDFDocument *)document;
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
@@ -203,7 +203,11 @@ enum {
 
 - (void)setDataFromTmpData {
     PDFDocument *pdfDoc = [tmpData pdfDocument];
+    
+    mdFlags.needsPasswordToPrint = [pdfDoc allowsPrinting] == NO;
+    
     [self tryToUnlockDocument:pdfDoc];
+    
     [[self mainWindowController] setPdfDocument:pdfDoc];
     
     [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] removeAnnotations:[self notes] autoUpdate:NO];
@@ -1187,16 +1191,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (returnCode == NSAlertSecondButtonReturn)
         return;
     
-    PDFDocument *pdfDocWithoutNotes = nil;
-    
     // remove the sheet, to make place for either the password or progress sheet
     [[alert window] orderOut:nil];
     
     mdFlags.convertingNotes = 1;
     
-    if ([[self pdfDocument] allowsPrinting] == NO) {
+    PDFDocument *pdfDocWithoutNotes = nil;
+    
+    if (mdFlags.needsPasswordToPrint) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
-        if ([self tryToUnlockDocument:pdfDocWithoutNotes] == NO || [pdfDocWithoutNotes allowsPrinting] == NO) {
+        [self tryToUnlockDocument:pdfDocWithoutNotes];
+        if ([pdfDocWithoutNotes allowsPrinting] == NO) {
             [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
             return;
         }
@@ -1674,25 +1679,21 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     }
 }
 
-- (BOOL)tryToUnlockDocument:(PDFDocument *)document {
-    BOOL didUnlock = NO;
-    if ([document isLocked] == NO) {
-        didUnlock = YES;
-    } else if (SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
+- (void)tryToUnlockDocument:(PDFDocument *)document {
+    if (([document isLocked] == NO || [document allowsPrinting] == NO || [document allowsCopying] == NO) &&
+        SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         NSString *fileID = [self fileIDStringForDocument:document];
         if (fileID) {
             NSString *password = nil;
             SecKeychainItemRef itemRef = NULL;
             NSInteger status = [self getPDFPassword:&password item:&itemRef forFileID:fileID];
             
-            if (password) {
-                didUnlock = [document unlockWithPassword:password];
-                if (status == SKPDFPasswordStatusFoundOldFormat && didUnlock)
-                    [self setPDFPassword:nil item:itemRef forFileID:fileID];
-            }
+            if (password &&
+                [document unlockWithPassword:password] &&
+                status == SKPDFPasswordStatusFoundOldFormat)
+                [self setPDFPassword:nil item:itemRef forFileID:fileID];
         }
     }
-    return didUnlock;
 }
 
 #pragma mark Scripting support
