@@ -1563,7 +1563,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     NSInteger status = [SKKeyChain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
     if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
-        id oldItem = NULL;
+        id oldItem = nil;
         status = [SKKeyChain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
         if (status == SKPasswordStatusFound) {
             // update to new format, unless password == NULL, when this is called from setPDFPassword:...
@@ -1577,7 +1577,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)setPDFPassword:(NSString *)password item:(id)item forFileID:(NSString *)fileID {
-    if (item == NULL) {
+    if (item == nil) {
         // if we find an old item we should modify that
         SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
         if (status == SKPasswordStatusError)
@@ -1593,7 +1593,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 - (void)doSavePasswordInKeychain:(NSString *)password {
     NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
     if (fileID)
-        [self setPDFPassword:password item:NULL forFileID:fileID];
+        [self setPDFPassword:password item:nil forFileID:fileID];
 }
 
 - (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
