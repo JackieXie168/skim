@@ -1564,7 +1564,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
         id oldItem = nil;
-        status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
+        status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:fileID] account:NSUserName()];
         if (status == SKPasswordStatusFound) {
             // update to new format, unless password == NULL, when this is called from setPDFPassword:...
             if (password)
