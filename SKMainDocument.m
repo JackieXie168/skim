@@ -65,7 +65,7 @@
 #import "NSData_SKExtensions.h"
 #import "SKProgressController.h"
 #import "NSView_SKExtensions.h"
-#import <Security/Security.h>
+#import "SKKeyChain.h"
 #import "SKBookmarkController.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
@@ -162,12 +162,14 @@ enum {
 - (void)changeSaveType:(id)sender;
 @end
 
-
 @interface SKMainDocument (SKPrivate)
 
 - (void)tryToUnlockDocument:(PDFDocument *)document;
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
+
+- (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemRef forFileID:(NSString *)fileID;
+- (void)setPDFPassword:(NSString *)password item:(id)itemRef forFileID:(NSString *)fileID;
 
 @end
 
@@ -1557,83 +1559,31 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 
 #pragma mark Passwords
 
-enum {
-    SKPDFPasswordStatusFound,
-    SKPDFPasswordStatusFoundOldFormat,
-    SKPDFPasswordStatusNotFound,
-    SKPDFPasswordStatusError,
-};
-
-- (NSInteger)getPDFPassword:(NSString **)password item:(SecKeychainItemRef *)itemRef forFileID:(NSString *)fileID {
-    void *passwordData = NULL;
-    UInt32 passwordLength = 0;
-    const char *service = [SKPDFPasswordServiceName UTF8String];
-    const char *account = [fileID UTF8String];
-    NSInteger status = 0;
-    
-    OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : NULL, password ? &passwordData : NULL, itemRef);
-    
-    if (err == errSecItemNotFound) {
+- (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemRef forFileID:(NSString *)fileID {
+    NSInteger status = [SKKeyChain getPassword:password item:itemRef forService:SKPDFPasswordServiceName account:fileID];
+    if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
-        service = [[@"Skim - " stringByAppendingString:fileID] UTF8String];
-        account = [NSUserName() UTF8String];
-        
-        err = SecKeychainFindGenericPassword(NULL, strlen(service), service, strlen(account), account, password ? &passwordLength : NULL, password ? &passwordData : NULL, itemRef);
-        
-        status = (err == noErr ? SKPDFPasswordStatusFoundOldFormat : err == errSecItemNotFound ? SKPDFPasswordStatusNotFound : SKPDFPasswordStatusError);
-    } else {
-        status = (err == noErr ? SKPDFPasswordStatusFound : SKPDFPasswordStatusError);
+        id oldItemRef = NULL;
+        status = [SKKeyChain getPassword:password item:&oldItemRef forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
+        if (status == SKPasswordStatusFound) {
+            // update to new format, unless password == NULL, when this is called from setPDFPassword:...
+            if (password)
+                [self setPDFPassword:*password item:oldItemRef forFileID:fileID];
+            if (itemRef)
+                *itemRef = oldItemRef;
+        }
     }
-    
-    if (err == noErr && password) {
-        *password = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSUTF8StringEncoding] autorelease];
-        SecKeychainItemFreeContent(NULL, passwordData);
-    }
-    
-    if (err != noErr && err != errSecItemNotFound)
-        NSLog(@"Error %d occurred finding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
-    
     return status;
 }
 
-static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag, NSString *string) {
-    const char *data = [string UTF8String];
-    SecKeychainAttribute attr;
-    attr.tag = tag;
-    attr.length = strlen(data);
-    attr.data = (void *)data;
-    return attr;
-}
-
-- (void)setPDFPassword:(NSString *)password item:(SecKeychainItemRef)itemRef forFileID:(NSString *)fileID {
-    const void *passwordData = [password UTF8String];
-    UInt32 passwordLength = password ? strlen(passwordData) : 0;
-    NSString *comment = [[self fileURL] path];
-    NSUInteger attrCount = comment ? 4 : 3;
-    SecKeychainAttributeList attributes;
-    SecKeychainAttribute attrs[attrCount];
-    OSStatus err;
-    
-    attrs[0] = makeKeychainAttribute(kSecServiceItemAttr, SKPDFPasswordServiceName);
-    attrs[1] = makeKeychainAttribute(kSecAccountItemAttr, fileID);
-    attrs[2] = makeKeychainAttribute(kSecLabelItemAttr, [@"Skim: " stringByAppendingString:[self displayName]]);
-    if (comment)
-        attrs[3] = makeKeychainAttribute(kSecCommentItemAttr, comment);
-    
-    attributes.count = attrCount;
-    attributes.attr = attrs;
-    
-    if (itemRef) {
-        // password was on keychain, so modify the keychain
-        err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, passwordLength, passwordData);
-        if (err != noErr)
-            NSLog(@"Error %d occurred modifying password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
-    } else if (password) {
-        // password not on keychain, so add it
-        err = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass, &attributes, passwordLength, passwordData, NULL, NULL, NULL);
-        if (err != noErr)
-            NSLog(@"Error %d occurred adding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+- (void)setPDFPassword:(NSString *)password item:(id)itemRef forFileID:(NSString *)fileID {
+    if (itemRef == NULL) {
+        // if we find an old item we should modify that
+        SKPasswordStatus status = [self getPDFPassword:NULL item:&itemRef forFileID:fileID];
+        if (status == SKPasswordStatusError)
+            return;
     }
+    [SKKeyChain setPassword:password item:itemRef forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
@@ -1642,14 +1592,8 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
     NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
-    if (fileID) {
-        // first see if the password exists in the keychain
-        SecKeychainItemRef itemRef = NULL;
-        NSInteger status = [self getPDFPassword:nil item:&itemRef forFileID:fileID];
-        
-        if (status != SKPDFPasswordStatusError)
-            [self setPDFPassword:password item:itemRef forFileID:fileID];
-    }
+    if (fileID)
+        [self setPDFPassword:password item:NULL forFileID:fileID];
 }
 
 - (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
@@ -1685,13 +1629,9 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
         NSString *fileID = [self fileIDStringForDocument:document];
         if (fileID) {
             NSString *password = nil;
-            SecKeychainItemRef itemRef = NULL;
-            NSInteger status = [self getPDFPassword:&password item:&itemRef forFileID:fileID];
-            
-            if (password &&
-                [document unlockWithPassword:password] &&
-                status == SKPDFPasswordStatusFoundOldFormat)
-                [self setPDFPassword:nil item:itemRef forFileID:fileID];
+            [self getPDFPassword:&password item:NULL forFileID:fileID];
+            if (password)
+                [document unlockWithPassword:password];
         }
     }
 }

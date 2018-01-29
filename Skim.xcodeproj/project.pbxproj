@@ -152,6 +152,7 @@
 		CE5347141645DD3000737191 /* SKAttachmentEmailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5347131645DD3000737191 /* SKAttachmentEmailer.m */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
+		CE5751FB201FA2BF00CB77EF /* SKKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5751FA201FA2BF00CB77EF /* SKKeyChain.m */; };
 		CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */; };
 		CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */; };
 		CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0D210515D3100161B87 /* SKPDFPage.m */; };
@@ -801,6 +802,8 @@
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
 		CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
+		CE5751F9201FA2BF00CB77EF /* SKKeyChain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKKeyChain.h; sourceTree = "<group>"; };
+		CE5751FA201FA2BF00CB77EF /* SKKeyChain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKKeyChain.m; sourceTree = "<group>"; };
 		CE5A822E0E6C429D008C0AA9 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Italian; path = Italian.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE5A822F0E6C42A7008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE5A82300E6C42B1008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1535,6 +1538,9 @@
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
 				CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */,
 				CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */,
+				CEF60F26114C53B40074ACC4 /* SKGeneralPreferences.h */,
+				CE5751F9201FA2BF00CB77EF /* SKKeyChain.h */,
+				CE5751FA201FA2BF00CB77EF /* SKKeyChain.m */,
 				CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */,
 				CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */,
 				CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */,
@@ -1573,7 +1579,6 @@
 				CEF60CF8114C08350074ACC4 /* SKViewController.m */,
 				CEF60CF0114C07D90074ACC4 /* SKWindowController.h */,
 				CEF60CF1114C07D90074ACC4 /* SKWindowController.m */,
-				CEF60F26114C53B40074ACC4 /* SKGeneralPreferences.h */,
 				CEF60F27114C53B40074ACC4 /* SKGeneralPreferences.m */,
 				CEF60F2A114C53DC0074ACC4 /* SKDisplayPreferences.h */,
 				CEF60F2B114C53DC0074ACC4 /* SKDisplayPreferences.m */,
@@ -2382,6 +2387,7 @@
 				CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */,
 				CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */,
 				CEA575FD0B9208B60003D2E7 /* SKTocOutlineView.m in Sources */,
+				CE5751FB201FA2BF00CB77EF /* SKKeyChain.m in Sources */,
 				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,
 				CE4A8BA20BB15980004AD07D /* NSWindowController_SKExtensions.m in Sources */,
 				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,
