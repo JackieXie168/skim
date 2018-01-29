@@ -1560,7 +1560,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 #pragma mark Passwords
 
 - (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemPtr forFileID:(NSString *)fileID {
-    NSInteger status = [SKKeyChain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
+    SKPasswordStatus status = [SKKeyChain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
     if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
         id oldItem = nil;
