@@ -1,5 +1,5 @@
 //
-//  SKKeyChain.m
+//  SKKeychain.m
 //  Skim
 //
 //  Created by Christiaan on 29/01/2018.
@@ -36,11 +36,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKKeyChain.h"
+#import "SKKeychain.h"
 #import <Security/Security.h>
 
 
-@implementation SKKeyChain
+@implementation SKKeychain
 
 + (SKPasswordStatus)getPassword:(NSString **)password item:(id *)itemPtr forService:(NSString *)service account:(NSString *)account {
     void *passwordData = NULL;

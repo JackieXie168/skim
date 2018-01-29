@@ -65,7 +65,7 @@
 #import "NSData_SKExtensions.h"
 #import "SKProgressController.h"
 #import "NSView_SKExtensions.h"
-#import "SKKeyChain.h"
+#import "SKKeychain.h"
 #import "SKBookmarkController.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
@@ -1560,11 +1560,11 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 #pragma mark Passwords
 
 - (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemPtr forFileID:(NSString *)fileID {
-    SKPasswordStatus status = [SKKeyChain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
+    SKPasswordStatus status = [SKKeychain getPassword:password item:itemPtr forService:SKPDFPasswordServiceName account:fileID];
     if (status == SKPasswordStatusNotFound) {
         // try to find an item in the old format
         id oldItem = nil;
-        status = [SKKeyChain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
+        status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:NSUserName()] account:fileID];
         if (status == SKPasswordStatusFound) {
             // update to new format, unless password == NULL, when this is called from setPDFPassword:...
             if (password)
@@ -1583,7 +1583,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         if (status == SKPasswordStatusError)
             return;
     }
-    [SKKeyChain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
+    [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
