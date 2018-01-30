@@ -808,7 +808,15 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [[[pdfView document] outlineRoot] clearDocument];
         }
         
-        [pdfView setDocument:document];
+        if ([document isLocked] && [pdfView window]) {
+            // PDFView has the annoying habit for the password view to force a full window display
+            CGFloat leftWidth = [self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0;
+            CGFloat rightWidth = [self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0;
+            [pdfView setDocument:document];
+            [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
+        } else {
+            [pdfView setDocument:document];
+        }
         [[pdfView document] setDelegate:self];
         
         [secondaryPdfView setDocument:document];
