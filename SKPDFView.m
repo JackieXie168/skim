@@ -171,7 +171,7 @@ enum {
 @interface SKPDFView (Private)
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection point:(NSValue *)pointValue;
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
+- (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
@@ -489,10 +489,10 @@ enum {
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
-        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) {
-            if (activeAnnotation)
+        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode) {
+            if (newToolMode != SKNoteToolMode && activeAnnotation)
                 [self setActiveAnnotation:nil];
-            if ([self currentSelection])
+            if ([[self currentSelection] hasCharacters])
                 [self setCurrentSelection:nil];
         } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             [self setCurrentSelectionRect:NSZeroRect];
@@ -1278,8 +1278,10 @@ enum {
     } else {
         [self setActiveAnnotation:nil];
         [super mouseDown:theEvent];
-        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters])
+        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
             [self addAnnotationWithType:annotationMode];
+            [self setCurrentSelection:nil];
+        }
     }
 }
 
@@ -1337,7 +1339,7 @@ enum {
     NSMenuItem *item;
     
     // On Leopard the selection is automatically set. In some cases we never want a selection though.
-    if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [self currentSelection])) {
+    if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [[self currentSelection] hasCharacters])) {
         static NSSet *selectionActions = nil;
         if (selectionActions == nil)
             selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
@@ -1904,8 +1906,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
 	}
     
-    if (page != nil) {
-        [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds];
+    if (page != nil && [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds]) {
         if (annotationType == SKAnchoredNote || annotationType == SKFreeTextNote)
             [self editActiveAnnotation:self];
         else if ((annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) && noSelection)
@@ -1913,7 +1914,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     } else NSBeep();
 }
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
+- (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
     PDFAnnotation *newAnnotation = nil;
     NSString *text = [selection cleanedString];
     BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize) && selection == nil;
@@ -1964,7 +1965,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
         [self setActiveAnnotation:newAnnotation];
         [newAnnotation release];
-    } else NSBeep();
+        
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
