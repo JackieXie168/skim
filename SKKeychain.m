@@ -50,15 +50,20 @@
     
     OSStatus err = SecKeychainFindGenericPassword(NULL, strlen(serviceData), serviceData, strlen(accountData), accountData, password ? &passwordLength : NULL, password ? &passwordData : NULL, (SecKeychainItemRef *)itemPtr);
     
-    if (err == noErr && password) {
-        *password = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSUTF8StringEncoding] autorelease];
-        SecKeychainItemFreeContent(NULL, passwordData);
-    }
-    
-    if (err != noErr && err != errSecItemNotFound)
+    if (err == noErr) {
+        if (password) {
+            *password = [[[NSString alloc] initWithBytes:passwordData length:passwordLength encoding:NSUTF8StringEncoding] autorelease];
+            SecKeychainItemFreeContent(NULL, passwordData);
+        }
+        if (itemPtr)
+            [*itemPtr autorelease];
+        return SKPasswordStatusFound;
+    } else if (err == errSecItemNotFound) {
+        return SKPasswordStatusNotFound;
+    } else {
         NSLog(@"Error %d occurred finding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
-    
-    return err == noErr ? SKPasswordStatusFound : err == errSecItemNotFound ? SKPasswordStatusNotFound : SKPasswordStatusError;
+        return SKPasswordStatusError;
+    }
 }
 
 static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag, NSString *string) {
