@@ -377,6 +377,8 @@ static NSArray *allMainDocumentPDFViews() {
 - (IBAction)doZoomToFit:(id)sender {
     [pdfView setAutoScales:YES];
     [pdfView setAutoScales:NO];
+    if (RUNNING(10_12) && 0 == ([pdfView displayMode] & kPDFDisplaySinglePageContinuous) && [pdfView displaysPageBreaks])
+        [pdfView setScaleFactor:fmax([pdfView minimumScaleFactor], [pdfView scaleFactor] * (1.0 - PAGE_BREAK_MARGIN / NSHeight([pdfView frame])))];
 }
 
 - (IBAction)alternateZoomToFit:(id)sender {

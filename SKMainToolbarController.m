@@ -944,8 +944,7 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 }
 
 - (IBAction)zoomToFit:(id)sender {
-    [mainController.pdfView setAutoScales:YES];
-    [mainController.pdfView setAutoScales:NO];
+    [mainController doZoomToFit:sender];
 }
 
 - (IBAction)zoomToSelection:(id)sender {
