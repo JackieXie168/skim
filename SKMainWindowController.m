@@ -402,11 +402,11 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [pdfView setDelegate:self];
     
-    NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
-    NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
+    NSNumber *leftWidthNumber = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
+    NSNumber *rightWidthNumber = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
-    if (leftWidth && rightWidth)
-        [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
+    if (leftWidthNumber && rightWidthNumber)
+        [self applyLeftSideWidth:[leftWidthNumber doubleValue] rightSideWidth:[rightWidthNumber doubleValue]];
     
     // this needs to be done before loading the PDFDocument
     [self resetThumbnailSizeIfNeeded];
@@ -428,7 +428,15 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     // Due to a bug in Leopard we should only resize and swap in the PDFView after loading the PDFDocument
     [pdfView setFrame:[pdfContentView bounds]];
-    [pdfContentView addSubview:pdfView];
+    if ([[pdfView document] isLocked]) {
+        // PDFView has the annoying habit for the password view to force a full window display
+        CGFloat leftWidth = [self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0;
+        CGFloat rightWidth = [self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0;
+        [pdfContentView addSubview:pdfView];
+        [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
+    } else {
+        [pdfContentView addSubview:pdfView];
+    }
     
     // get the initial display mode from the PDF if present and not overridden by an explicit setup
     if (hasWindowSetup == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseSettingsFromPDFKey]) {
