@@ -1624,7 +1624,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)tryToUnlockDocument:(PDFDocument *)document {
-    if (([document isLocked] == NO || [document allowsPrinting] == NO || [document allowsCopying] == NO) &&
+    if (([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO) &&
         SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         NSString *fileID = [self fileIDStringForDocument:document];
         if (fileID) {
