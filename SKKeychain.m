@@ -61,7 +61,8 @@
     } else if (err == errSecItemNotFound) {
         return SKPasswordStatusNotFound;
     } else {
-        NSLog(@"Error %d occurred finding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
+        if (err != errSecUserCanceled)
+            NSLog(@"Error %d occurred finding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
         return SKPasswordStatusError;
     }
 }
