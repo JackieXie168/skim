@@ -1759,13 +1759,13 @@
 		CE33639E0E26E086005F99E6 /* SyncTeX */ = {
 			isa = PBXGroup;
 			children = (
-				CE2EF6852022753D004A73D8 /* synctex_parser_advanced.h */,
-				CE2EF68D2022753D004A73D8 /* synctex_version.h */,
-				CEE7B7451F7A84E800004238 /* synctex_parser_local.h */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
 				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE94D179125535DE0053A520 /* synctex_parser_utils.h */,
 				CE94D17A125535DE0053A520 /* synctex_parser_utils.m */,
+				CE2EF6852022753D004A73D8 /* synctex_parser_advanced.h */,
+				CE2EF68D2022753D004A73D8 /* synctex_version.h */,
+				CEE7B7451F7A84E800004238 /* synctex_parser_local.h */,
 			);
 			name = SyncTeX;
 			path = "jeromelaurens/synctex-parser";
