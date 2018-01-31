@@ -1,16 +1,15 @@
 /* 
-Copyright (c) 2008, 2009, 2010, 2011 jerome DOT laurens AT u-bourgogne DOT fr
+ Copyright (c) 2008-2017 jerome DOT laurens AT u-bourgogne DOT fr
+ 
+ This file is part of the __SyncTeX__ package.
+ 
+ [//]: # (Latest Revision: Fri Jul 14 16:20:41 UTC 2017)
+ [//]: # (Version: 1.21)
+ 
+ See `synctex_parser_readme.md` for more details
+ 
+ ## License
 
-This file is part of the SyncTeX package.
-
-Latest Revision: Tue Jun 14 08:23:30 UTC 2011
-
-Version: 1.18
-
-See synctex_parser_readme.txt for more details
-
-License:
---------
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
 files (the "Software"), to deal in the Software without
@@ -39,10 +38,15 @@ authorization from the copyright holder.
 
 */
 
+#ifndef SYNCTEX_PARSER_UTILS_H
+#define SYNCTEX_PARSER_UTILS_H
+
 /*  The utilities declared here are subject to conditional implementation.
  *  All the operating system special stuff goes here.
  *  The problem mainly comes from file name management: path separator, encoding...
  */
+
+#include "synctex_version.h"
 
 typedef int synctex_bool_t;
 #	define synctex_YES (0==0)
@@ -93,7 +97,8 @@ void _synctex_free(void * ptr);
 /*  This is used to log some informational message to the standard error stream.
  *  On Windows, the stderr stream is not exposed and another method is used.
  *	The return value is the number of characters printed.	*/
-int _synctex_error(const char * reason,...);
+    int _synctex_error(const char * reason,...);
+    int _synctex_debug(const char * reason,...);
 
 /*  strip the last extension of the given string, this string is modified!
  *  This function depends on the OS because the path separator may differ.
@@ -155,3 +160,4 @@ synctex_bool_t synctex_ignore_leading_dot_slash_in_path(const char ** name);
 #endif
 
 #endif
+#endif /* SYNCTEX_PARSER_UTILS_H */

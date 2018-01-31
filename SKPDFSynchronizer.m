@@ -498,7 +498,7 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_p node;
         const char *file;
-        while (rv == NO && (node = synctex_next_result(scanner))) {
+        while (rv == NO && (node = synctex_scanner_next_result(scanner))) {
             if ((file = synctex_scanner_get_name(scanner, synctex_node_tag(node)))) {
                 *linePtr = MAX(synctex_node_line(node), 1) - 1;
                 *filePtr = [self sourceFileForFileName:[NSString stringWithUTF8String:file] isTeX:YES removeQuotes:NO];
@@ -525,7 +525,7 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
             filename = (char *)[[file lastPathComponent] UTF8String];
     }
     if (synctex_display_query(scanner, filename, (int)line + 1, 0, -1) > 0) {
-        synctex_node_p node = synctex_next_result(scanner);
+        synctex_node_p node = synctex_scanner_next_result(scanner);
         if (node) {
             NSUInteger page = synctex_node_page(node);
             *pageIndexPtr = MAX(page, 1ul) - 1;

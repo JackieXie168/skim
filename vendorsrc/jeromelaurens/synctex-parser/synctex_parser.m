@@ -1,16 +1,15 @@
 /*
- Copyright (c) 2008-2018 jerome DOT laurens AT u-bourgogne DOT fr
+ Copyright (c) 2008-2017 jerome DOT laurens AT u-bourgogne DOT fr
  
- This file is part of the SyncTeX package.
+ This file is part of the __SyncTeX__ package.
  
- Latest Revision: Thu Mar  9 21:26:27 UTC 2017
+ [//]: # (Latest Revision: Sun Oct 15 15:09:55 UTC 2017)
+ [//]: # (Version: 1.21)
  
- Version: 1.19
+ See `synctex_parser_readme.md` for more details
  
- See synctex_parser_readme.txt for more details
+ ## License
  
- License:
- --------
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
  files (the "Software"), to deal in the Software without
@@ -60,8 +59,8 @@
  *  \file synctex_parser.c
  *  \brief SyncTeX file parser and controller.
  *  - author: Jérôme LAURENS
- *  \version 1.19
- *  \date Mon Apr 24 07:08:56 UTC 2017
+ *  \version 1.21
+ *  \date Sun Oct 15 15:09:55 UTC 2017
  *
  *  Reads and parse *.synctex[.gz] files,
  *  performs edit and display queries.
@@ -72,8 +71,8 @@
  *  - synctex_scanner_free
  *  - synctex_display_query
  *  - synctex_edit_query
- *  - synctex_next_result
- *  - synctex_reset_result
+ *  - synctex_scanner_next_result
+ *  - synctex_scanner_reset_result
  *
  *  The data is organized in a graph with multiple entries.
  *  The root object is a scanner, it is created with the contents on a synctex file.
@@ -97,6 +96,7 @@
 #   endif
 
 #include <stdlib.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -106,7 +106,15 @@
 #include <locale.h>
 #endif
 
-#include "synctex_parser_private.h"
+/* Mark unused paramters, so that there will be no compile warnings. */
+#ifdef __DARWIN_UNIX03
+#   define SYNCTEX_UNUSED(x) SYNCTEX_PRAGMA(unused(x))
+#   define SYNCTEX_PRAGMA(x) _Pragma ( #x )
+#else
+#   define SYNCTEX_UNUSED(x) (void)(x);
+#endif
+
+#include "synctex_parser_advanced.h"
 
 SYNCTEX_INLINE static int _synctex_abs(int x) {
     return x>0? x: -x;
@@ -126,14 +134,14 @@ typedef char *(*synctex_node_str_f)(synctex_node_p);
  *  Each nodes has a class, it is therefore called an object.
  *  Each class has a unique scanner.
  *  Each class has a type which is a unique identifier.
- *  Each class has a node mask which identifies node's attributes.
- *  Each class has an info mask which info's attributes.
  *  The class points to various methods,
  *  each of them vary amongst objects.
- *  The navigator records the offsets of the tree members getters.
- *  The modelator records the offsets of the data members getters, relative to the last navigator getter.
+ *  Each class has a data model which stores node's attributes.
+ *  Each class has an tree model which stores children and parent.
+ *  Inspectors give access to data and tree elements.
  */
 
+/*  8 fields + size: spcflnat */
 typedef struct synctex_tree_model_t {
     int sibling;
     int parent;
@@ -168,26 +176,6 @@ typedef struct synctex_data_model_t {
     int size;
 } synctex_data_model_s;
 
-static const synctex_data_model_s synctex_data_model_none = {
-    -1, /* tag */
-    -1, /* line */
-    -1, /* column */
-    -1, /* h */
-    -1, /* v */
-    -1, /* width */
-    -1, /* height */
-    -1, /* depth */
-    -1, /* mean_line */
-    -1, /* weight */
-    -1, /* h_V */
-    -1, /* v_V */
-    -1, /* width_V */
-    -1, /* height_V */
-    -1, /* depth_V */
-    -1, /* name */
-    -1, /* page */
-    0
-};
 typedef const synctex_data_model_s * synctex_data_model_p;
 
 typedef int (*synctex_int_getter_f)(synctex_node_p);
@@ -198,9 +186,7 @@ typedef struct synctex_tlcpector_t {
 } synctex_tlcpector_s;
 typedef const synctex_tlcpector_s * synctex_tlcpector_p;
 static int _synctex_int_none(synctex_node_p node) {
-#	ifdef __DARWIN_UNIX03
-#       pragma unused(node)
-#   endif
+    SYNCTEX_UNUSED(node)
     return 0;
 }
 static const synctex_tlcpector_s synctex_tlcpector_none = {
@@ -234,9 +220,7 @@ typedef struct synctex_vispector_t {
     synctex_float_getter_f depth;
 } synctex_vispector_s;
 static float _synctex_float_none(synctex_node_p node) {
-#	ifdef __DARWIN_UNIX03
-#       pragma unused(node)
-#   endif
+    SYNCTEX_UNUSED(node)
     return 0;
 }
 static const synctex_vispector_s synctex_vispector_none = {
@@ -251,7 +235,6 @@ typedef const synctex_vispector_s * synctex_vispector_p;
 struct synctex_class_t {
     synctex_scanner_p scanner;
     synctex_node_type_t type;
-    synctex_node_mask_t node_mask;
     synctex_node_new_f new;
     synctex_node_fld_f free;
     synctex_node_fld_f log;
@@ -264,67 +247,96 @@ struct synctex_class_t {
     synctex_vispector_p vispector;
 };
 
+/**
+ *  Nota bene: naming convention.
+ *  For static API, when the name contains "proxy", it applies to proxies.
+ *  When the name contains "noxy", it applies to non proxies only.
+ *  When the name contains "node", well it depends...
+ */
+
+typedef synctex_node_p synctex_proxy_p;
+typedef synctex_node_p synctex_noxy_p;
+
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Abstract OBJECTS and METHODS
 #   endif
 
 /**
- *  \def SYNCTEX_TYPE
- *  \brief Get the type of the argument.
- *  - parameter NODE: of type synctex_node_p
- *  - returns: A synctex_node_type_t, synctex_node_type_none for NULL param
- */
-#   define SYNCTEX_TYPE(NODE) ((NODE)?(((NODE)->class)->type):synctex_node_type_none)
-
-/**
- *  \def SYNCTEX_NODE_MASK
- *  \brief Get the node mask of the argument.
- *  - parameter NODE: of type synctex_node_p
- *  - returns: A synctex_node_mask_t, 0 for NULL param
- */
-#   define SYNCTEX_NODE_MASK(NODE) ((NODE)?(((NODE)->class)->node_mask):0)
-
-#   define SYNCTEX_IS_BOX(NODE)\
-    ((SYNCTEX_NODE_MASK(NODE)&synctex_mask_box)!=0)
-#   define SYNCTEX_IS_PROXY(NODE)\
-    (SYNCTEX_NODE_MASK(NODE)&synctex_mask_proxy)
-
-/**
- *  Checks if a message can be sent to a node.
- *  - parameter NODE: of type synctex_node_p
- *  - parameter SELECTOR: one of the class pointer properties
- *  - returns: yorn
- */
-#   define SYNCTEX_CAN_PERFORM(NODE,SELECTOR)\
-((NODE) && ((((NODE)->class))->SELECTOR))
-#   define SYNCTEX_NAV_CAN_PERFORM(NODE,SELECTOR)\
-((NODE) && (((((NODE)->class)->navigator))->SELECTOR>=0))
-#   define SYNCTEX_DATA_CAN_PERFORM(NODE,SELECTOR)\
-((NODE) && (((((NODE)->class)->modelator))->SELECTOR>=0))
-
-/**
  *  \def SYNCTEX_MSG_SEND
  *  \brief Takes care of sending the given message if possible.
  *  - parameter NODE: of type synctex_node_p
- *  - parameter SELECTOR: one of the class pointer properties
+ *  - parameter SELECTOR: one of the class_ pointer properties
  */
 #   define SYNCTEX_MSG_SEND(NODE,SELECTOR) do {\
     synctex_node_p N__ = NODE;\
-    if (N__ && SYNCTEX_CAN_PERFORM(N__,SELECTOR)) {\
-        (*(((N__)->class)->SELECTOR))(N__);\
+    if (N__ && N__->class_->SELECTOR) {\
+        (*(N__->class_->SELECTOR))(N__);\
     }\
-} while (0)
+} while (synctex_NO)
 
 /**
  *  Free the given node by sending the free message.
  *  - parameter NODE: of type synctex_node_p
  */
-void synctex_node_free(synctex_node_p node) {
+static void synctex_node_free(synctex_node_p node) {
     SYNCTEX_MSG_SEND(node,free);
 }
+#   if defined(SYNCTEX_TESTING)
+#       if !defined(SYNCTEX_USE_HANDLE)
+#           define SYNCTEX_USE_HANDLE 1
+#       endif
+#       if !defined(SYNCTEX_USE_CHARINDEX)
+#           define SYNCTEX_USE_CHARINDEX 1
+#       endif
+#   endif
+SYNCTEX_INLINE static synctex_node_p _synctex_new_handle_with_target(synctex_node_p target);
+#   if defined(SYNCTEX_USE_HANDLE)
+#       define SYNCTEX_SCANNER_FREE_HANDLE(SCANR) \
+__synctex_scanner_free_handle(SCANR)
+#       define SYNCTEX_SCANNER_REMOVE_HANDLE_TO(WHAT) \
+__synctex_scanner_remove_handle_to(WHAT)
+#       define SYNCTEX_REGISTER_HANDLE_TO(NODE) \
+__synctex_scanner_register_handle_to(NODE)
+#   else
+#       define SYNCTEX_SCANNER_FREE_HANDLE(SCANR)
+#       define SYNCTEX_SCANNER_REMOVE_HANDLE_TO(WHAT)
+#       define SYNCTEX_REGISTER_HANDLE_TO(NODE)
+#   endif
 
-#define synctex_NON_NULL_node_p synctex_node_p
+#   if defined(SYNCTEX_USE_CHARINDEX)
+#       define SYNCTEX_CHARINDEX(NODE) (NODE->char_index)
+#       define SYNCTEX_LINEINDEX(NODE) (NODE->line_index)
+#       define SYNCTEX_PRINT_CHARINDEX_FMT "#%i"
+#       define SYNCTEX_PRINT_CHARINDEX_WHAT ,SYNCTEX_CHARINDEX(node)
+#       define SYNCTEX_PRINT_CHARINDEX \
+            printf(SYNCTEX_PRINT_CHARINDEX_FMT SYNCTEX_PRINT_CHARINDEX_WHAT)
+#       define SYNCTEX_PRINT_LINEINDEX_FMT "L#%i"
+#       define SYNCTEX_PRINT_LINEINDEX_WHAT ,SYNCTEX_LINEINDEX(node)
+#       define SYNCTEX_PRINT_LINEINDEX \
+            printf(SYNCTEX_PRINT_LINEINDEX_FMT SYNCTEX_PRINT_LINEINDEX_WHAT)
+#       define SYNCTEX_PRINT_CHARINDEX_NL \
+            printf(SYNCTEX_PRINT_CHARINDEX_FMT "\n" SYNCTEX_PRINT_CHARINDEX_WHAT)
+#       define SYNCTEX_PRINT_LINEINDEX_NL \
+            printf(SYNCTEX_PRINT_CHARINDEX_FMT "\n"SYNCTEX_PRINT_LINEINDEX_WHAT)
+#       define SYNCTEX_IMPLEMENT_CHARINDEX(NODE,CORRECTION)\
+            NODE->char_index = (synctex_charindex_t)(scanner->reader->charindex_offset+SYNCTEX_CUR-SYNCTEX_START+(CORRECTION)); \
+            NODE->line_index = scanner->reader->line_number;
+#   else
+#       define SYNCTEX_CHARINDEX(NODE) 0
+#       define SYNCTEX_LINEINDEX(NODE) 0
+#       define SYNCTEX_PRINT_CHARINDEX_FMT
+#       define SYNCTEX_PRINT_CHARINDEX_WHAT
+#       define SYNCTEX_PRINT_CHARINDEX
+#       define SYNCTEX_PRINT_CHARINDEX
+#       define SYNCTEX_PRINT_LINEINDEX_FMT
+#       define SYNCTEX_PRINT_LINEINDEX_WHAT
+#       define SYNCTEX_PRINT_LINEINDEX
+#       define SYNCTEX_PRINT_CHARINDEX_NL printf("\n")
+#       define SYNCTEX_PRINT_LINEINDEX_NL printf("\n")
+#       define SYNCTEX_IMPLEMENT_CHARINDEX(NODE,CORRECTION)
+#   endif
+
 /**
  *  The next macros are used to access the node tree info
  *  SYNCTEX_DATA(node) points to the first synctex integer or pointer data of node
@@ -339,27 +351,34 @@ void synctex_node_free(synctex_node_p node) {
 #   endif
 
 #if SYNCTEX_DEBUG > 1000
+#define SYNCTEX_PARAMETER_ASSERT(WHAT) \
+    do { \
+        if (!(WHAT)) { \
+            printf("! Parameter failure: %s\n",#WHAT); \
+        } \
+    } while (synctex_NO)
 #define DEFINE_SYNCTEX_TREE_HAS(WHAT)\
 static synctex_bool_t _synctex_tree_has_##WHAT(synctex_node_p node) {\
     if (node) {\
-        if (node->class->navigator->WHAT>=0) {\
-            return  (0==0); \
+        if (node->class_->navigator->WHAT>=0) {\
+            return  synctex_YES; \
         } else {\
             printf("WARNING: NO tree %s for %s\n", #WHAT, synctex_node_isa(node));\
         }\
     }\
-    return 0 == 1;\
+    return synctex_NO;\
 }
 #else
+#define SYNCTEX_PARAMETER_ASSERT(WHAT)
 #define DEFINE_SYNCTEX_TREE_HAS(WHAT) \
 static synctex_bool_t _synctex_tree_has_##WHAT(synctex_node_p node) {\
-    return (node && (node->class->navigator->WHAT>=0));\
+    return (node && (node->class_->navigator->WHAT>=0));\
 }
 #endif
 
 #   define DEFINE_SYNCTEX_TREE__GET(WHAT) \
-SYNCTEX_INLINE static synctex_node_p __synctex_tree_##WHAT(synctex_NON_NULL_node_p node) {\
-    return node->data[node->class->navigator->WHAT].as_node;\
+SYNCTEX_INLINE static synctex_node_p __synctex_tree_##WHAT(synctex_non_null_node_p node) {\
+    return node->data[node->class_->navigator->WHAT].as_node;\
 }
 #   define DEFINE_SYNCTEX_TREE_GET(WHAT) \
 DEFINE_SYNCTEX_TREE__GET(WHAT) \
@@ -370,23 +389,21 @@ static synctex_node_p _synctex_tree_##WHAT(synctex_node_p node) {\
     return 0;\
 }
 #   define DEFINE_SYNCTEX_TREE__RESET(WHAT) \
-SYNCTEX_INLINE static synctex_node_p __synctex_tree_reset_##WHAT(synctex_NON_NULL_node_p node) {\
-    synctex_node_p old = node->data[node->class->navigator->WHAT].as_node;\
-    node->data[node->class->navigator->WHAT].as_node=NULL;\
+SYNCTEX_INLINE static synctex_node_p __synctex_tree_reset_##WHAT(synctex_non_null_node_p node) {\
+    synctex_node_p old = node->data[node->class_->navigator->WHAT].as_node;\
+    node->data[node->class_->navigator->WHAT].as_node=NULL;\
     return old;\
 }
 #   define DEFINE_SYNCTEX_TREE_RESET(WHAT) \
 DEFINE_SYNCTEX_TREE__RESET(WHAT) \
 SYNCTEX_INLINE static synctex_node_p _synctex_tree_reset_##WHAT(synctex_node_p node) {\
-    if (_synctex_tree_has_##WHAT(node)) {\
-        return __synctex_tree_reset_##WHAT(node);\
-    }\
-    return NULL;\
+        return _synctex_tree_has_##WHAT(node)? \
+            __synctex_tree_reset_##WHAT(node): NULL; \
 }
 #   define DEFINE_SYNCTEX_TREE__SET(WHAT) \
-SYNCTEX_INLINE static synctex_node_p __synctex_tree_set_##WHAT(synctex_NON_NULL_node_p node, synctex_node_p new_value) {\
+SYNCTEX_INLINE static synctex_node_p __synctex_tree_set_##WHAT(synctex_non_null_node_p node, synctex_node_p new_value) {\
     synctex_node_p old = __synctex_tree_##WHAT(node);\
-    node->data[node->class->navigator->WHAT].as_node=new_value;\
+    node->data[node->class_->navigator->WHAT].as_node=new_value;\
     return old;\
 }
 #   define DEFINE_SYNCTEX_TREE_SET(WHAT) \
@@ -416,6 +433,11 @@ DEFINE_SYNCTEX_TREE_GET(WHAT) \
 DEFINE_SYNCTEX_TREE_SET(WHAT) \
 DEFINE_SYNCTEX_TREE_RESET(WHAT)
 
+/*
+ *  _synctex_tree_set_... methods return the old value.
+ *  The return value of _synctex_tree_set_child and 
+ *  _synctex_tree_set_sibling must be released somehown.
+ */
 DEFINE_SYNCTEX_TREE__GETSETRESET(sibling)
 DEFINE_SYNCTEX_TREE_GETSETRESET(parent)
 DEFINE_SYNCTEX_TREE_GETSETRESET(child)
@@ -423,70 +445,347 @@ DEFINE_SYNCTEX_TREE_GETSETRESET(friend)
 DEFINE_SYNCTEX_TREE_GETSET(last)
 DEFINE_SYNCTEX_TREE_GETSET(next_hbox)
 DEFINE_SYNCTEX_TREE_GETSET(arg_sibling)
-DEFINE_SYNCTEX_TREE_GETSET(target)
+DEFINE_SYNCTEX_TREE_GETSETRESET(target)
 
-SYNCTEX_INLINE static synctex_node_p _synctex_tree_setup_target(synctex_node_p node, synctex_node_p target) {
-    synctex_node_p old = _synctex_tree_target(node);
-    synctex_node_p beyond = _synctex_tree_target(target);
-    _synctex_tree_set_target(node,beyond?beyond:target);
-    return old;
-}
+#if SYNCTEX_DEBUG>1000
+#   undef SYNCTEX_USE_NODE_COUNT
+#   define SYNCTEX_USE_NODE_COUNT 1
+#endif
+#if SYNCTEX_USE_NODE_COUNT>0
+#   define SYNCTEX_DECLARE_NODE_COUNT int node_count;
+#   define SYNCTEX_INIT_NODE_COUNT \
+        do { node_count = 0; } while(synctex_NO)
+#else
+#   define SYNCTEX_DECLARE_NODE_COUNT
+#   define SYNCTEX_INIT_NODE_COUNT
+#endif
 
-/**
- *  Free the given node.
- *  - parameter node: of type synctex_node_p
- *  - note: a node is meant to own its child and sibling.
- *  It is not owned by its parent, unless it is its first child.
- *  This destructor is for all nodes with children.
- */
-static void _synctex_free_node(synctex_node_p node) {
-    if (node) {
-        synctex_node_free(__synctex_tree_sibling(node));
-        synctex_node_free(_synctex_tree_child(node));
-        _synctex_free(node);
-    }
-    return;
-}
+#if SYNCTEX_USE_NODE_COUNT>10
+#   define SYNCTEX_DID_NEW(N)   _synctex_did_new(N)
+#   define SYNCTEX_WILL_FREE(N) _synctex_will_free(N)
+#else
+#   define SYNCTEX_DID_NEW(N)
+#   define SYNCTEX_WILL_FREE(N)
+#endif
 
 #define SYNCTEX_HAS_CHILDREN(NODE) (NODE && _synctex_tree_child(NODE))
-/**
- *  Free the given node.
- *  - parameter node: of type synctex_node_p
- *  - note: a node is meant to own its child and sibling.
- *  It is not owned by its parent, unless it is its first child.
- *  This destructor is for all nodes with no children.
- */
-static void _synctex_free_leaf(synctex_node_p node) {
-    if (node) {
-        synctex_node_free(__synctex_tree_sibling(node));
-        _synctex_free(node);
-    }
-    return;
-}
-#	ifdef	__SYNCTEX_WORK__
+#	ifdef	_X_SYNCTEX_WORK__
 #		include "/usr/include/zlib.h"
 #	else
 #		include <zlib.h>
 #	endif
 
-#ifdef NOTHING
-#pragma mark -
-#pragma mark SCANNER
+#	ifdef SYNCTEX_NOTHING
+#       pragma mark -
+#       pragma mark STATUS
+#   endif
+/*  When the end of the synctex file has been reached: */
+#   define SYNCTEX_STATUS_EOF 0
+/*  When the function could not return the value it was asked for: */
+#   define SYNCTEX_STATUS_NOT_OK (SYNCTEX_STATUS_EOF+1)
+/*  When the function returns the value it was asked for:
+ It must be the biggest one */
+#   define SYNCTEX_STATUS_OK (SYNCTEX_STATUS_NOT_OK+1)
+/*  Generic error: */
+#   define SYNCTEX_STATUS_ERROR (SYNCTEX_STATUS_EOF-1)
+/*  Parameter error: */
+#   define SYNCTEX_STATUS_BAD_ARGUMENT (SYNCTEX_STATUS_ERROR-1)
+
+#	ifdef SYNCTEX_NOTHING
+#       pragma mark -
+#       pragma mark File reader
+#   endif
+
+/*  We ensure that SYNCTEX_BUFFER_SIZE < UINT_MAX, I don't know if it makes sense... */
+/*  Actually, the minimum buffer size is driven by integer and float parsing, including the unit.
+ *  ±0.123456789e123??
+ */
+#   define SYNCTEX_BUFFER_MIN_SIZE 32
+#   define SYNCTEX_BUFFER_SIZE 32768
+
+#if SYNCTEX_BUFFER_SIZE >= UINT_MAX
+#   error BAD BUFFER SIZE(1)
 #endif
+#if SYNCTEX_BUFFER_SIZE < SYNCTEX_BUFFER_MIN_SIZE
+#   error BAD BUFFER SIZE(2)
+#endif
+
+typedef struct synctex_reader_t {
+    gzFile file;    /*  The (possibly compressed) file */
+    char * output;
+    char * synctex;
+    char * current; /*  current location in the buffer */
+    char * start;   /*  start of the buffer */
+    char * end;     /*  end of the buffer */
+    size_t min_size;
+    size_t size;
+    int lastv;
+    int line_number;
+    SYNCTEX_DECLARE_CHAR_OFFSET
+} synctex_reader_s;
+
+typedef synctex_reader_s * synctex_reader_p;
+
+typedef struct {
+    synctex_status_t status;
+    char * synctex;
+    gzFile file;
+    synctex_io_mode_t io_mode;
+} synctex_open_s;
+
+/*	This functions opens the file at the "output" given location.
+ *  It manages the problem of quoted filenames that appear with pdftex and filenames containing the space character.
+ *  In TeXLive 2008, the synctex file created with pdftex did contain unexpected quotes.
+ *	This function will remove them if possible.
+ *  All the reference arguments will take a value on return. They must be non NULL.
+ *	- returns: an open structure which status is
+ *      SYNCTEX_STATUS_OK on success,
+ *      SYNCTEX_STATUS_ERROR on failure.
+ *  - note: on success, the caller is the owner
+ *      of the fields of the returned open structure.
+ */
+static synctex_open_s __synctex_open_v2(const char * output, synctex_io_mode_t io_mode, synctex_bool_t add_quotes) {
+    synctex_open_s open = {SYNCTEX_STATUS_ERROR, NULL, NULL, io_mode};
+    char * quoteless_synctex_name = NULL;
+    const char * mode = _synctex_get_io_mode_name(open.io_mode);
+    size_t size = strlen(output)+strlen(synctex_suffix)+strlen(synctex_suffix_gz)+1;
+    if (NULL == (open.synctex = (char *)malloc(size))) {
+        _synctex_error("!  __synctex_open_v2: Memory problem (1)\n");
+        return open;
+    }
+    /*  we have reserved for synctex enough memory to copy output (including its 2 eventual quotes), both suffices,
+     *  including the terminating character. size is free now. */
+    if (open.synctex != strcpy(open.synctex,output)) {
+        _synctex_error("!  __synctex_open_v2: Copy problem\n");
+    return_on_error:
+        free(open.synctex);
+        open.synctex = NULL;
+        free(quoteless_synctex_name);/* We MUST have quoteless_synctex_name<>synctex_name */
+        return open;
+    }
+    /*  remove the last path extension if any */
+    _synctex_strip_last_path_extension(open.synctex);
+    if (!strlen(open.synctex)) {
+        goto return_on_error;
+    }
+    /*  now insert quotes. */
+    if (add_quotes) {
+        char * quoted = NULL;
+        if (_synctex_copy_with_quoting_last_path_component(open.synctex,&quoted,size) || quoted == NULL) {
+            /*	There was an error or quoting does not make sense: */
+            goto return_on_error;
+        }
+        quoteless_synctex_name = open.synctex;
+        open.synctex = quoted;
+    }
+    /*	Now add to open.synctex the first path extension. */
+    if (open.synctex != strcat(open.synctex,synctex_suffix)){
+        _synctex_error("!  __synctex_open_v2: Concatenation problem (can't add suffix '%s')\n",synctex_suffix);
+        goto return_on_error;
+    }
+    /*	Add to quoteless_synctex_name as well, if relevant. */
+    if (quoteless_synctex_name && (quoteless_synctex_name != strcat(quoteless_synctex_name,synctex_suffix))){
+        free(quoteless_synctex_name);
+        quoteless_synctex_name = NULL;
+    }
+    if (NULL == (open.file = gzopen(open.synctex,mode))) {
+        /*  Could not open this file */
+        if (errno != ENOENT) {
+            /*  The file does exist, this is a lower level error, I can't do anything. */
+            _synctex_error("could not open %s, error %i\n",open.synctex,errno);
+            goto return_on_error;
+        }
+        /*  Apparently, there is no uncompressed synctex file. Try the compressed version */
+        if (open.synctex != strcat(open.synctex,synctex_suffix_gz)){
+            _synctex_error("!  __synctex_open_v2: Concatenation problem (can't add suffix '%s')\n",synctex_suffix_gz);
+            goto return_on_error;
+        }
+        open.io_mode |= synctex_io_gz_mask;
+        mode = _synctex_get_io_mode_name(open.io_mode); /* the file is a compressed and is a binary file, this caused errors on Windows */
+        /*	Add the suffix to the quoteless_synctex_name as well. */
+        if (quoteless_synctex_name && (quoteless_synctex_name != strcat(quoteless_synctex_name,synctex_suffix_gz))){
+            free(quoteless_synctex_name);
+            quoteless_synctex_name = NULL;
+        }
+        if (NULL == (open.file = gzopen(open.synctex,mode))) {
+            /*  Could not open this file */
+            if (errno != ENOENT) {
+                /*  The file does exist, this is a lower level error, I can't do anything. */
+                _synctex_error("Could not open %s, error %i\n",open.synctex,errno);
+            }
+            goto return_on_error;
+        }
+    }
+    /*	At this point, the file is properly open.
+     *  If we are in the add_quotes mode, we change the file name by removing the quotes. */
+    if (quoteless_synctex_name) {
+        gzclose(open.file);
+        if (rename(open.synctex,quoteless_synctex_name)) {
+            _synctex_error("Could not rename %s to %s, error %i\n",open.synctex,quoteless_synctex_name,errno);
+            /*	We could not rename, reopen the file with the quoted name. */
+            if (NULL == (open.file = gzopen(open.synctex,mode))) {
+                /*  No luck, could not re open this file, something has happened meanwhile */
+                if (errno != ENOENT) {
+                    /*  The file does not exist any more, it has certainly be removed somehow
+                     *  this is a lower level error, I can't do anything. */
+                    _synctex_error("Could not open again %s, error %i\n",open.synctex,errno);
+                }
+                goto return_on_error;
+            }
+        } else {
+            /*  The file has been successfully renamed */
+            if (NULL == (open.file = gzopen(quoteless_synctex_name,mode))) {
+                /*  Could not open this file */
+                if (errno != ENOENT) {
+                    /*  The file does exist, this is a lower level error, I can't do anything. */
+                    _synctex_error("Could not open renamed %s, error %i\n",quoteless_synctex_name,errno);
+                }
+                goto return_on_error;
+            }
+            /*  The quote free file name should replace the old one:*/
+            free(open.synctex);
+            open.synctex = quoteless_synctex_name;
+            quoteless_synctex_name = NULL;
+        }
+    }
+    /*  The operation is successfull, return the arguments by value.    */
+    open.status = SYNCTEX_STATUS_OK;
+    return open;
+}
+
+/*	Opens the ouput file, taking into account the eventual build_directory.
+ *	- returns: an open structure which status is
+ *      SYNCTEX_STATUS_OK on success,
+ *      SYNCTEX_STATUS_ERROR on failure.
+ *  - note: on success, the caller is the owner
+ *      of the fields of the returned open structure.
+ */
+static synctex_open_s _synctex_open_v2(const char * output, const char * build_directory, synctex_io_mode_t io_mode, synctex_bool_t add_quotes) {
+    synctex_open_s open = __synctex_open_v2(output,io_mode,add_quotes);
+    if (open.status == SYNCTEX_STATUS_OK) {
+        return open;
+    }
+    if (build_directory && strlen(build_directory)) {
+        char * build_output;
+        const char *lpc;
+        size_t size;
+        synctex_bool_t is_absolute;
+        build_output = NULL;
+        lpc = _synctex_last_path_component(output);
+        size = strlen(build_directory)+strlen(lpc)+2;   /*  One for the '/' and one for the '\0'.   */
+        is_absolute = _synctex_path_is_absolute(build_directory);
+        if (!is_absolute) {
+            size += strlen(output);
+        }
+        if ((build_output = (char *)_synctex_malloc(size))) {
+            if (is_absolute) {
+                build_output[0] = '\0';
+            } else {
+                if (build_output != strcpy(build_output,output)) {
+                    _synctex_free(build_output);
+                    return open;
+                }
+                build_output[lpc-output]='\0';
+            }
+            if (build_output == strcat(build_output,build_directory)) {
+                /*	Append a path separator if necessary. */
+                if (!SYNCTEX_IS_PATH_SEPARATOR(build_output[strlen(build_directory)-1])) {
+                    if (build_output != strcat(build_output,"/")) {
+                        _synctex_free(build_output);
+                        return open;
+                    }
+                }
+                /*	Append the last path component of the output. */
+                if (build_output != strcat(build_output,lpc)) {
+                    _synctex_free(build_output);
+                    return open;
+                }
+                open = __synctex_open_v2(build_output,io_mode,add_quotes);
+            }
+            _synctex_free(build_output);
+        } /* if ((build_output... */
+    } /* if (build_directory...) */
+    return open;
+}
+static void synctex_reader_free(synctex_reader_p reader) {
+    if (reader) {
+        _synctex_free(reader->output);
+        _synctex_free(reader->synctex);
+        _synctex_free(reader->start);
+        gzclose(reader->file);
+        _synctex_free(reader);
+    }
+}
+/*
+ *  Return reader on success.
+ *  Deallocate reader and return NULL on failure.
+ */
+static synctex_reader_p synctex_reader_init_with_output_file(synctex_reader_p reader, const char * output, const char * build_directory) {
+    if (reader) {
+        /*  now open the synctex file */
+        synctex_open_s open = _synctex_open_v2(output,build_directory,0,synctex_ADD_QUOTES);
+        if (open.status<SYNCTEX_STATUS_OK) {
+            open = _synctex_open_v2(output,build_directory,0,synctex_DONT_ADD_QUOTES);
+            if (open.status<SYNCTEX_STATUS_OK) {
+                return NULL;
+            }
+        }
+        reader->synctex = open.synctex;
+        reader->file = open.file;
+        /*  make a private copy of output */
+        if (NULL == (reader->output = (char *)_synctex_malloc(strlen(output)+1))){
+            _synctex_error("!  synctex_scanner_new_with_output_file: Memory problem (2), reader's output is not reliable.");
+        } else if (reader->output != strcpy(reader->output,output)) {
+            _synctex_free(reader->output);
+            reader->output = NULL;
+            _synctex_error("!  synctex_scanner_new_with_output_file: Copy problem, reader's output is not reliable.");
+        }
+        reader->start = reader->end = reader->current = NULL;
+        reader->min_size = SYNCTEX_BUFFER_MIN_SIZE;
+        reader->size = SYNCTEX_BUFFER_SIZE;
+        reader->start = reader->current =
+            (char *)_synctex_malloc(reader->size+1); /*  one more character for null termination */
+        if (NULL == reader->start) {
+            _synctex_error("!  malloc error in synctex_reader_init_with_output_file.");
+        bailey:
+#ifdef SYNCTEX_DEBUG
+            return reader;
+#else
+            synctex_reader_free(reader);
+            return NULL;
+#endif
+        }
+        reader->end = reader->start+reader->size;
+        /*  reader->end always points to a null terminating character.
+         *  Maybe there is another null terminating character between reader->current and reader->end-1.
+         *  At least, we are sure that reader->current points to a string covering a valid part of the memory. */
+#   if defined(SYNCTEX_USE_CHARINDEX)
+        reader->charindex_offset = -reader->size;
+#   endif
+    }
+    return reader;
+}
+
+#   if defined(SYNCTEX_USE_HANDLE)
+#       define SYNCTEX_DECLARE_HANDLE synctex_node_p handle;
+#   else
+#       define SYNCTEX_DECLARE_HANDLE
+#   endif
+
+#   ifdef SYNCTEX_NOTHING
+#       pragma mark -
+#       pragma mark SCANNER
+#   endif
 /**
  *  The synctex scanner is the root object.
  *  Is is initialized with the contents of a text file or a gzipped file.
  *  The buffer_.* are first used to parse the text.
  */
 struct synctex_scanner_t {
-    gzFile file;                    /*  The (possibly compressed) file */
-    SYNCTEX_DECLARE_CHAR_OFFSET;
-    char * buffer_cur;              /*  current location in the buffer */
-    char * buffer_start;        /*  start of the buffer */
-    char * buffer_end;          /*  end of the buffer */
+    synctex_reader_p reader;
+    SYNCTEX_DECLARE_NODE_COUNT
+    SYNCTEX_DECLARE_HANDLE
     char * output_fmt;          /*  dvi or pdf, not yet used */
-    char * output;              /*  the output name used to create the scanner */
-    char * synctex;             /*  the .synctex or .synctex.gz name used to create the scanner */
     synctex_iterator_p iterator;/*  result iterator */
     int version;                /*  1, not yet used */
     struct {
@@ -509,9 +808,7 @@ struct synctex_scanner_t {
     synctex_node_p ref_in_form;  /*  The first form ref node, its friends are the other form ref nodes in sheet */
     int number_of_lists;    /*  The number of friend lists */
     synctex_node_r lists_of_friends;/*  The friend lists */
-    synctex_class_s class[synctex_node_number_of_types]; /*  The classes of the nodes of the scanner */
-    int lastv; /* last vertical position read, for compression purpose */
-    int line_number;
+    synctex_class_s class_[synctex_node_number_of_types]; /*  The classes of the nodes of the scanner */
     int display_switcher;
     char * display_prompt;
 };
@@ -523,14 +820,110 @@ struct synctex_scanner_t {
  *  to ask for an acceptable type.
  */
 synctex_node_p synctex_node_new(synctex_scanner_p scanner, synctex_node_type_t type) {
-    return scanner? scanner->class[type].new(scanner):NULL;
+    return scanner? scanner->class_[type].new(scanner):NULL;
 }
+#   if defined(SYNCTEX_USE_HANDLE)
+SYNCTEX_INLINE static void __synctex_scanner_free_handle(synctex_scanner_p scanner) {
+    synctex_node_free(scanner->handle);
+}
+SYNCTEX_INLINE static void __synctex_scanner_remove_handle_to(synctex_node_p node) {
+    synctex_node_p arg_sibling = NULL;
+    synctex_node_p handle = node->class_->scanner->handle;
+    while (handle) {
+        synctex_node_p sibling;
+        if (node == _synctex_tree_target(handle)) {
+            sibling = __synctex_tree_reset_sibling(handle);
+            if (arg_sibling) {
+                __synctex_tree_set_sibling(arg_sibling, sibling);
+            } else {
+                node->class_->scanner->handle = sibling;
+            }
+            synctex_node_free(handle);
+            break;
+        } else {
+            sibling = __synctex_tree_sibling(handle);
+        }
+        arg_sibling = handle;
+        handle = sibling;
+    }
+}
+SYNCTEX_INLINE static void __synctex_scanner_register_handle_to(synctex_node_p  node) {
+    synctex_node_p NNN = _synctex_new_handle_with_target(node);
+    __synctex_tree_set_sibling(NNN,node->class_->scanner->handle);
+    node->class_->scanner->handle = NNN;
+}
+#endif
+#if SYNCTEX_USE_NODE_COUNT>10
+SYNCTEX_INLINE static void _synctex_did_new(synctex_node_p node) {
+    printf("NODE CREATED # %i, %s, %p\n",
+           (node->class_->scanner->node_count)++,
+           synctex_node_isa(node),
+           node);
+}
+SYNCTEX_INLINE static void _synctex_will_free(synctex_node_p node) {
+    printf("NODE DELETED # %i, %s, %p\n",
+           --(node->class_->scanner->node_count),
+           synctex_node_isa(node),
+           node);
+}
+#endif
+
+/**
+ *  Free the given node.
+ *  - parameter node: of type synctex_node_p
+ *  - note: a node is meant to own its child and sibling.
+ *  It is not owned by its parent, unless it is its first child.
+ *  This destructor is for all nodes with children.
+ */
+static void _synctex_free_node(synctex_node_p node) {
+    if (node) {
+        SYNCTEX_SCANNER_REMOVE_HANDLE_TO(node);
+        SYNCTEX_WILL_FREE(node);
+        synctex_node_free(__synctex_tree_sibling(node));
+        synctex_node_free(_synctex_tree_child(node));
+        _synctex_free(node);
+    }
+    return;
+}
+/**
+ *  Free the given handle.
+ *  - parameter node: of type synctex_node_p
+ *  - note: a node is meant to own its child and sibling.
+ *  It is not owned by its parent, unless it is its first child.
+ *  This destructor is for all handles.
+ */
+static void _synctex_free_handle(synctex_node_p handle) {
+    if (handle) {
+        _synctex_free_handle(__synctex_tree_sibling(handle));
+        _synctex_free_handle(_synctex_tree_child(handle));
+        _synctex_free(handle);
+    }
+    return;
+}
+
+/**
+ *  Free the given leaf node.
+ *  - parameter node: of type synctex_node_p, with no child nor sibling.
+ *  - note: a node is meant to own its child and sibling.
+ *  It is not owned by its parent, unless it is its first child.
+ *  This destructor is for all nodes with no children.
+ */
+static void _synctex_free_leaf(synctex_node_p node) {
+    if (node) {
+        SYNCTEX_SCANNER_REMOVE_HANDLE_TO(node);
+        SYNCTEX_WILL_FREE(node);
+        synctex_node_free(__synctex_tree_sibling(node));
+        _synctex_free(node);
+    }
+    return;
+}
+
 /**
  SYNCTEX_CUR, SYNCTEX_START and SYNCTEX_END are convenient shortcuts
  */
-#   define SYNCTEX_CUR (scanner->buffer_cur)
-#   define SYNCTEX_START (scanner->buffer_start)
-#   define SYNCTEX_END (scanner->buffer_end)
+#   define SYNCTEX_CUR (scanner->reader->current)
+#   define SYNCTEX_START (scanner->reader->start)
+#   define SYNCTEX_END (scanner->reader->end)
 
 /*  Here are gathered all the possible status that the next scanning functions will return.
  *  All these functions return a status, and pass their result through pointers.
@@ -543,22 +936,11 @@ synctex_node_p synctex_node_new(synctex_scanner_p scanner, synctex_node_type_t t
  *  status == SYNCTEX_STATUS_EOF means the function did not work as expected and there is no more material.
  *  status<SYNCTEX_STATUS_EOF means an error
  */
-
-#	ifdef SYNCTEX_NOTHING
-#       pragma mark -
-#       pragma mark STATUS
-#   endif
-/*  When the end of the synctex file has been reached: */
-#   define SYNCTEX_STATUS_EOF 0
-/*  When the function could not return the value it was asked for: */
-#   define SYNCTEX_STATUS_NOT_OK (SYNCTEX_STATUS_EOF+1)
-/*  When the function returns the value it was asked for:
- It must be the biggest one */
-#   define SYNCTEX_STATUS_OK (SYNCTEX_STATUS_NOT_OK+1)
-/*  Generic error: */
-#   define SYNCTEX_STATUS_ERROR (SYNCTEX_STATUS_EOF-1)
-/*  Parameter error: */
-#   define SYNCTEX_STATUS_BAD_ARGUMENT (SYNCTEX_STATUS_ERROR-1)
+#if defined(SYNCTEX_USE_CHARINDEX)
+synctex_node_p synctex_scanner_handle(synctex_scanner_p scanner) {
+    return scanner? scanner->handle:NULL;
+}
+#endif
 
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -588,19 +970,17 @@ static synctex_ss_s _synctex_decode_string(synctex_scanner_p scanner);
 
 /**
  *  The next macros are used to access the node data info
- *  SYNCTEX_DATA(node) points to the first synctex integer or pointer data of node
- *  SYNCTEX_DATA(node)[index] is the information at index
- *  for example, the page of a sheet is stored in SYNCTEX_DATA(sheet)[_synctex_data_page_idx]
- *  - parameter NODE: of type synctex_node_p
+ *  through the class modelator integer fields.
+  *  - parameter NODE: of type synctex_node_p
  */
-#   define SYNCTEX_DATA(NODE) ((*((((NODE)->class))->info))(NODE))
+#   define SYNCTEX_DATA(NODE) ((*((((NODE)->class_))->info))(NODE))
 #if defined SYNCTEX_DEBUG > 1000
 #   define DEFINE_SYNCTEX_DATA_HAS(WHAT) \
 SYNCTEX_INLINE static synctex_bool_t __synctex_data_has_##WHAT(synctex_node_p node) {\
-    return (node && (node->class->modelator->WHAT>=0));\
+    return (node && (node->class_->modelator->WHAT>=0));\
 }\
 SYNCTEX_INLINE static synctex_bool_t _synctex_data_has_##WHAT(synctex_node_p node) {\
-    if (node && (node->class->modelator->WHAT<0)) {\
+    if (node && (node->class_->modelator->WHAT<0)) {\
         printf("WARNING: NO %s for %s\n", #WHAT, synctex_node_isa(node));\
     }\
     return __synctex_data_has_##WHAT(node);\
@@ -608,7 +988,7 @@ SYNCTEX_INLINE static synctex_bool_t _synctex_data_has_##WHAT(synctex_node_p nod
 #else
 #   define DEFINE_SYNCTEX_DATA_HAS(WHAT) \
 SYNCTEX_INLINE static synctex_bool_t __synctex_data_has_##WHAT(synctex_node_p node) {\
-    return (node && (node->class->modelator->WHAT>=0));\
+    return (node && (node->class_->modelator->WHAT>=0));\
 }\
 SYNCTEX_INLINE static synctex_bool_t _synctex_data_has_##WHAT(synctex_node_p node) {\
     return __synctex_data_has_##WHAT(node);\
@@ -616,28 +996,28 @@ SYNCTEX_INLINE static synctex_bool_t _synctex_data_has_##WHAT(synctex_node_p nod
 #endif
 
 SYNCTEX_INLINE static synctex_data_p __synctex_data(synctex_node_p node) {
-    return node->data+node->class->navigator->size;
+    return node->data+node->class_->navigator->size;
 }
 #   define DEFINE_SYNCTEX_DATA_INT_GETSET(WHAT) \
 DEFINE_SYNCTEX_DATA_HAS(WHAT)\
 static int _synctex_data_##WHAT(synctex_node_p node) {\
     if (_synctex_data_has_##WHAT(node)) {\
-        return __synctex_data(node)[node->class->modelator->WHAT].as_integer;\
+        return __synctex_data(node)[node->class_->modelator->WHAT].as_integer;\
     }\
     return 0;\
 }\
 static int _synctex_data_set_##WHAT(synctex_node_p node, int new_value) {\
     int old = 0;\
     if (_synctex_data_has_##WHAT(node)) {\
-        old = __synctex_data(node)[node->class->modelator->WHAT].as_integer;\
-        __synctex_data(node)[node->class->modelator->WHAT].as_integer=new_value;\
+        old = __synctex_data(node)[node->class_->modelator->WHAT].as_integer;\
+        __synctex_data(node)[node->class_->modelator->WHAT].as_integer=new_value;\
     }\
     return old;\
 }
 #define DEFINE_SYNCTEX_DATA_INT_DECODE(WHAT) \
 static synctex_status_t _synctex_data_decode_##WHAT(synctex_node_p node) {\
     if (_synctex_data_has_##WHAT(node)) {\
-        synctex_is_s is = _synctex_decode_int(node->class->scanner);\
+        synctex_is_s is = _synctex_decode_int(node->class_->scanner);\
         if (is.status == SYNCTEX_STATUS_OK) {\
             _synctex_data_set_##WHAT(node,is.integer);\
         } \
@@ -648,7 +1028,7 @@ static synctex_status_t _synctex_data_decode_##WHAT(synctex_node_p node) {\
 #   define DEFINE_SYNCTEX_DATA_INT_DECODE_v(WHAT) \
 static synctex_status_t _synctex_data_decode_##WHAT##_v(synctex_node_p node) {\
     if (_synctex_data_has_##WHAT(node)) {\
-        synctex_is_s is = _synctex_decode_int_v(node->class->scanner);\
+        synctex_is_s is = _synctex_decode_int_v(node->class_->scanner);\
         if (is.status == SYNCTEX_STATUS_OK) {\
             _synctex_data_set_##WHAT(node,is.integer);\
         } \
@@ -660,22 +1040,22 @@ static synctex_status_t _synctex_data_decode_##WHAT##_v(synctex_node_p node) {\
 DEFINE_SYNCTEX_DATA_HAS(WHAT)\
 static char * _synctex_data_##WHAT(synctex_node_p node) {\
     if (_synctex_data_has_##WHAT(node)) {\
-        return node->data[node->class->navigator->size+node->class->modelator->WHAT].as_string;\
+        return node->data[node->class_->navigator->size+node->class_->modelator->WHAT].as_string;\
     }\
     return NULL;\
 }\
 static char * _synctex_data_set_##WHAT(synctex_node_p node, char * new_value) {\
     char * old = "";\
     if (_synctex_data_has_##WHAT(node)) {\
-        old = node->data[node->class->navigator->size+node->class->modelator->WHAT].as_string;\
-        node->data[node->class->navigator->size+node->class->modelator->WHAT].as_string =new_value;\
+        old = node->data[node->class_->navigator->size+node->class_->modelator->WHAT].as_string;\
+        node->data[node->class_->navigator->size+node->class_->modelator->WHAT].as_string =new_value;\
     }\
     return old;\
 }
 #define DEFINE_SYNCTEX_DATA_STR_DECODE(WHAT) \
 static synctex_status_t _synctex_data_decode_##WHAT(synctex_node_p node) {\
     if (_synctex_data_has_##WHAT(node)) {\
-        synctex_ss_s ss = _synctex_decode_string(node->class->scanner);\
+        synctex_ss_s ss = _synctex_decode_string(node->class_->scanner);\
         if (ss.status == SYNCTEX_STATUS_OK) {\
             _synctex_data_set_##WHAT(node,ss.string);\
         } \
@@ -707,7 +1087,8 @@ DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE(line)
 DEFINE_SYNCTEX_DATA_STR_GETSET_DECODE(name)
 
 /*  Input nodes only know about their sibling, which is another input node.
- *  The synctex information is the _synctex_data_tag and _synctex_data_name*/
+ *  The synctex information is the _synctex_data_tag and _synctex_data_name
+ *  note: the input owns its name. */
 
 #   define SYNCTEX_INPUT_MARK "Input:"
 
@@ -761,7 +1142,6 @@ static const synctex_tlcpector_s synctex_tlcpector_input = {
 static synctex_class_s synctex_class_input = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_input,    /*  Node type */
-    synctex_node_mask_input,    /*  Node mask */
     &_synctex_new_input,        /*  creator */
     &_synctex_free_input,       /*  destructor */
     &_synctex_log_input,        /*  log */
@@ -776,7 +1156,7 @@ static synctex_class_s synctex_class_input = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_s_input_max+synctex_data_input_tln_max];
 } synctex_input_s;
 
@@ -784,8 +1164,10 @@ static synctex_node_p _synctex_new_input(synctex_scanner_p scanner) {
     if (scanner) {
         synctex_node_p node = _synctex_malloc(sizeof(synctex_input_s));
         if (node) {
-            SYNCTEX_IMPLEMENT_CHARINDEX(node,strlen(SYNCTEX_INPUT_MARK));
-            node->class = scanner->class+synctex_node_type_input;
+            node->class_ = scanner->class_+synctex_node_type_input;
+            SYNCTEX_DID_NEW(node);
+            SYNCTEX_IMPLEMENT_CHARINDEX(node,0);
+            SYNCTEX_REGISTER_HANDLE_TO(node);
         }
         return node;
     }
@@ -794,6 +1176,8 @@ static synctex_node_p _synctex_new_input(synctex_scanner_p scanner) {
 
 static void _synctex_free_input(synctex_node_p node){
     if (node) {
+        SYNCTEX_SCANNER_REMOVE_HANDLE_TO(node);
+        SYNCTEX_WILL_FREE(node);
         synctex_node_free(__synctex_tree_sibling(node));
         _synctex_free(_synctex_data_name(node));
         _synctex_free(node);
@@ -819,7 +1203,7 @@ DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE(page)
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_scn_sheet_max+synctex_data_p_sheet_max];
 } synctex_node_sheet_s;
 
@@ -831,15 +1215,19 @@ static synctex_node_p _synctex_new_##NAME(synctex_scanner_p scanner) {\
         ++SYNCTEX_CUR;\
         synctex_node_p node = _synctex_malloc(sizeof(synctex_node_##NAME##_s));\
         if (node) {\
-            SYNCTEX_IMPLEMENT_CHARINDEX(node,0);\
-            node->class = scanner->class+synctex_node_type_##NAME;\
+            node->class_ = scanner->class_+synctex_node_type_##NAME;\
+            SYNCTEX_DID_NEW(node); \
+            SYNCTEX_IMPLEMENT_CHARINDEX(node,-1);\
+            SYNCTEX_REGISTER_HANDLE_TO(node); \
         }\
         return node;\
     }\
     return NULL;\
 }
+/*  NB: -1 in SYNCTEX_IMPLEMENT_CHARINDEX above because
+ *  the first char of the line has been scanned
+ */
 DEFINE_synctex_new_scanned_NODE(sheet)
-
 static void _synctex_log_sheet(synctex_node_p node);
 static char * _synctex_abstract_sheet(synctex_node_p node);
 static void _synctex_display_sheet(synctex_node_p node);
@@ -878,7 +1266,6 @@ static const synctex_data_model_s synctex_data_model_sheet = {
 static synctex_class_s synctex_class_sheet = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_sheet,    /*  Node type */
-    synctex_node_mask_sf,       /*  Node mask */
     &_synctex_new_sheet,        /*  creator */
     &_synctex_free_node,        /*  destructor */
     &_synctex_log_sheet,        /*  log */
@@ -899,7 +1286,7 @@ static synctex_class_s synctex_class_sheet = {
  */
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_sct_form_max+synctex_data_t_form_max];
 } synctex_node_form_s;
 
@@ -943,7 +1330,6 @@ static const synctex_data_model_s synctex_data_model_form = {
 static synctex_class_s synctex_class_form = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_form,     /*  Node type */
-    synctex_node_mask_sf,       /*  Node mask */
     &_synctex_new_form,         /*  creator */
     &_synctex_free_node,        /*  destructor */
     &_synctex_log_form,         /*  log */
@@ -966,7 +1352,7 @@ static synctex_class_s synctex_class_form = {
  */
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spcfl_vbox_max+synctex_data_box_max];
 } synctex_node_vbox_s;
 
@@ -989,10 +1375,13 @@ static const synctex_tree_model_s synctex_tree_model_vbox = {
     synctex_tree_spcfl_vbox_max
 };
 
+#define SYNCTEX_DFLT_COLUMN -1
+
 DEFINE_SYNCTEX_DATA_INT_GETSET(column)
 static synctex_status_t _synctex_data_decode_column(synctex_node_p node) {
     if (_synctex_data_has_column(node)) {
-        synctex_is_s is = _synctex_decode_int_opt(node->class->scanner,-1);
+        synctex_is_s is = _synctex_decode_int_opt(node->class_->scanner,
+            SYNCTEX_DFLT_COLUMN);
         if (is.status == SYNCTEX_STATUS_OK) {
             _synctex_data_set_column(node,is.integer);
         }
@@ -1005,6 +1394,17 @@ DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE_v(v)
 DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE(width)
 DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE(height)
 DEFINE_SYNCTEX_DATA_INT_GETSET_DECODE(depth)
+
+SYNCTEX_INLINE static void _synctex_data_set_tlc(synctex_node_p node, synctex_node_p model) {
+    _synctex_data_set_tag(node, _synctex_data_tag(model));
+    _synctex_data_set_line(node, _synctex_data_line(model));
+    _synctex_data_set_column(node, _synctex_data_column(model));
+}
+SYNCTEX_INLINE static void _synctex_data_set_tlchv(synctex_node_p node, synctex_node_p model) {
+    _synctex_data_set_tlc(node,model);
+    _synctex_data_set_h(node, _synctex_data_h(model));
+    _synctex_data_set_v(node, _synctex_data_v(model));
+}
 
 static const synctex_data_model_s synctex_data_model_box = {
     synctex_data_tag_idx, /* tag */
@@ -1055,7 +1455,6 @@ static synctex_vispector_s synctex_vispector_box = {
 static synctex_class_s synctex_class_vbox = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_vbox,     /*  Node type */
-    synctex_node_mask_vbox,     /*  Node mask */
     &_synctex_new_vbox,         /*  creator */
     &_synctex_free_node,        /*  destructor */
     &_synctex_log_vbox,         /*  log */
@@ -1063,7 +1462,7 @@ static synctex_class_s synctex_class_vbox = {
     &_synctex_abstract_vbox,    /*  abstract */
     &synctex_tree_model_vbox,   /*  tree model */
     &synctex_data_model_box,    /*  data model */
-    &synctex_tlcpector_none,    /*  tlcpector */
+    &synctex_tlcpector_default, /*  tlcpector */
     &synctex_inspector_box,     /*  inspector */
     &synctex_vispector_box,     /*  vispector */
 };
@@ -1081,7 +1480,7 @@ static const synctex_tree_model_s synctex_tree_model_hbox = {
     synctex_tree_sp_child_idx,      /* child */
     synctex_tree_spc_friend_idx,    /* friend */
     synctex_tree_spcf_last_idx,     /* last */
-    synctex_tree_spcfl_next_hbox_idx,/* next_hbox */
+    synctex_tree_spcfl_next_hbox_idx, /* next_hbox */
     -1, /* arg_sibling */
     -1, /* target */
     synctex_tree_spcfln_hbox_max
@@ -1129,7 +1528,7 @@ static const synctex_data_model_s synctex_data_model_hbox = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spcfln_hbox_max+synctex_data_hbox_max];
 } synctex_node_hbox_s;
 
@@ -1143,7 +1542,6 @@ static void _synctex_display_hbox(synctex_node_p node);
 static synctex_class_s synctex_class_hbox = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_hbox,     /*  Node type */
-    synctex_node_mask_hbox,     /*  Node mask */
     &_synctex_new_hbox,         /*  creator */
     &_synctex_free_node,        /*  destructor */
     &_synctex_log_hbox,         /*  log */
@@ -1176,7 +1574,7 @@ static const synctex_tree_model_s synctex_tree_model_spf = {
 };
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spf_max+synctex_data_box_max];
 } synctex_node_void_vbox_s;
 
@@ -1190,7 +1588,6 @@ static void _synctex_display_void_vbox(synctex_node_p node);
 static synctex_class_s synctex_class_void_vbox = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_void_vbox,/*  Node type */
-    synctex_node_mask_void_vbox,/*  Node mask */
     &_synctex_new_void_vbox,    /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_void_box,     /*  log */
@@ -1218,7 +1615,6 @@ static void _synctex_display_void_hbox(synctex_node_p node);
 static synctex_class_s synctex_class_void_hbox = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_void_hbox,/*  Node type */
-    synctex_node_mask_void_hbox,/*  Node mask */
     &_synctex_new_void_hbox,    /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_void_box,     /*  log */
@@ -1238,7 +1634,7 @@ static synctex_class_s synctex_class_void_hbox = {
 /*  The form ref node.  */
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spfa_max+synctex_data_ref_thv_max];
 } synctex_node_ref_s;
 
@@ -1276,12 +1672,13 @@ static const synctex_data_model_s synctex_data_model_ref = {
     -1, /* width_V */
     -1, /* height_V */
     -1, /* depth_V */
-    synctex_data_ref_thv_max
+    -1, /* name */
+    -1, /* page */
+    synctex_data_ref_thv_max /* size */
 };
 static synctex_class_s synctex_class_ref = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_ref,      /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_ref,          /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_ref,          /*  log */
@@ -1321,7 +1718,7 @@ static const synctex_data_model_s synctex_data_model_tlchv = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spf_max+synctex_data_tlchv_max];
 } synctex_node_tlchv_s;
 
@@ -1356,7 +1753,6 @@ static synctex_vispector_s synctex_vispector_hv = {
 static synctex_class_s synctex_class_math = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_math,     /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_math,         /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_tlchv_node,   /*  log */
@@ -1395,7 +1791,7 @@ static const synctex_data_model_s synctex_data_model_tlchvw = {
 };
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spf_max+synctex_data_tlchvw_max];
 } synctex_node_kern_s;
 
@@ -1426,7 +1822,6 @@ static synctex_vispector_s synctex_vispector_kern = {
 static synctex_class_s synctex_class_kern = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_kern,     /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_kern,         /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_kern_node,    /*  log */
@@ -1453,7 +1848,6 @@ static void _synctex_display_glue(synctex_node_p node);
 static synctex_class_s synctex_class_glue = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_glue,     /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_glue,         /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_tlchv_node,   /*  log */
@@ -1474,7 +1868,7 @@ static synctex_class_s synctex_class_glue = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spf_max+synctex_data_box_max];
 } synctex_node_rule_s;
 
@@ -1500,7 +1894,6 @@ static synctex_vispector_s synctex_vispector_rule = {
 static synctex_class_s synctex_class_rule = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_rule,     /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_rule,         /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_rule,         /*  log */
@@ -1527,7 +1920,6 @@ static void _synctex_display_boundary(synctex_node_p node);
 static synctex_class_s synctex_class_boundary = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_boundary, /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_boundary,     /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_tlchv_node,   /*  log */
@@ -1546,17 +1938,17 @@ static synctex_class_s synctex_class_boundary = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spfa_max+synctex_data_tlchv_max];
 } synctex_node_box_bdry_s;
 
 #define DEFINE_synctex_new_unscanned_NODE(NAME)\
-static synctex_node_p _synctex_new_##NAME(synctex_scanner_p scanner) {\
+SYNCTEX_INLINE static synctex_node_p _synctex_new_##NAME(synctex_scanner_p scanner) {\
     if (scanner) {\
         synctex_node_p node = _synctex_malloc(sizeof(synctex_node_##NAME##_s));\
         if (node) {\
-            SYNCTEX_IMPLEMENT_CHARINDEX(node,0);\
-            node->class = scanner->class+synctex_node_type_##NAME;\
+            node->class_ = scanner->class_+synctex_node_type_##NAME;\
+            SYNCTEX_DID_NEW(node); \
         }\
         return node;\
     }\
@@ -1570,7 +1962,6 @@ static void _synctex_display_box_bdry(synctex_node_p node);
 static synctex_class_s synctex_class_box_bdry = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_box_bdry, /*  Node type */
-    synctex_node_mask_nvnn,     /*  Node mask */
     &_synctex_new_box_bdry,     /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_tlchv_node,   /*  log */
@@ -1659,16 +2050,16 @@ static synctex_class_s synctex_class_box_bdry = {
  *  A proxy do have a target, which can be a proxy
  */
 
-static const synctex_tree_model_s synctex_tree_model_hbox_proxy = {
+static const synctex_tree_model_s synctex_tree_model_proxy_hbox = {
     synctex_tree_sibling_idx,       /* sibling */
     synctex_tree_s_parent_idx,      /* parent */
     synctex_tree_sp_child_idx,      /* child */
     synctex_tree_spc_friend_idx,    /* friend */
     synctex_tree_spcf_last_idx,     /* last */
-    synctex_tree_spcfl_next_hbox_idx,/* next_hbox */
+    synctex_tree_spcfl_next_hbox_idx,   /* next_hbox */
     -1, /* arg_sibling */
     synctex_tree_spcfln_target_idx, /* target */
-    synctex_tree_spcflnt_hbox_proxy_max
+    synctex_tree_spcflnt_proxy_hbox_max
 };
 static const synctex_data_model_s synctex_data_model_proxy = {
     -1, /* tag */
@@ -1692,16 +2083,16 @@ static const synctex_data_model_s synctex_data_model_proxy = {
 };
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
-    synctex_data_u data[synctex_tree_spcflnt_hbox_proxy_max+synctex_data_proxy_hv_max];
-} synctex_node_hbox_proxy_s;
+    synctex_class_p class_;
+    synctex_data_u data[synctex_tree_spcflnt_proxy_hbox_max+synctex_data_proxy_hv_max];
+} synctex_node_proxy_hbox_s;
 
 /*  box proxy node creator */
-DEFINE_synctex_new_unscanned_NODE(hbox_proxy)
+DEFINE_synctex_new_unscanned_NODE(proxy_hbox)
 
 static void _synctex_log_proxy(synctex_node_p node);
-static char * _synctex_abstract_hbox_proxy(synctex_node_p node);
-static void _synctex_display_hbox_proxy(synctex_node_p node);
+static char * _synctex_abstract_proxy_hbox(synctex_node_p node);
+static void _synctex_display_proxy_hbox(synctex_node_p node);
 
 static int _synctex_proxy_tag(synctex_node_p);
 static int _synctex_proxy_line(synctex_node_p);
@@ -1717,7 +2108,7 @@ static int _synctex_proxy_v(synctex_node_p);
 static int _synctex_proxy_width(synctex_node_p);
 static int _synctex_proxy_height(synctex_node_p);
 static int _synctex_proxy_depth(synctex_node_p);
-static synctex_inspector_s synctex_inspector_proxy = {
+static synctex_inspector_s synctex_inspector_proxy_box = {
     &_synctex_proxy_h,
     &_synctex_proxy_v,
     &_synctex_proxy_width,
@@ -1731,7 +2122,7 @@ static float __synctex_proxy_visible_width(synctex_node_p);
 static float __synctex_proxy_visible_height(synctex_node_p);
 static float __synctex_proxy_visible_depth(synctex_node_p);
 
-static synctex_vispector_s synctex_vispector_box_proxy = {
+static synctex_vispector_s synctex_vispector_proxy_box = {
     &__synctex_proxy_visible_h,
     &__synctex_proxy_visible_v,
     &__synctex_proxy_visible_width,
@@ -1739,20 +2130,19 @@ static synctex_vispector_s synctex_vispector_box_proxy = {
     &__synctex_proxy_visible_depth,
 };
 
-static synctex_class_s synctex_class_hbox_proxy = {
+static synctex_class_s synctex_class_proxy_hbox = {
     NULL,                           /*  No scanner yet */
-    synctex_node_type_hbox_proxy,   /*  Node type */
-    synctex_node_mask_hbox_proxy,   /*  Node mask */
-    &_synctex_new_hbox_proxy,       /*  creator */
+    synctex_node_type_proxy_hbox,   /*  Node type */
+    &_synctex_new_proxy_hbox,       /*  creator */
     &_synctex_free_node,            /*  destructor */
     &_synctex_log_proxy,            /*  log */
-    &_synctex_display_hbox_proxy,   /*  display */
-    &_synctex_abstract_hbox_proxy,  /*  abstract */
-    &synctex_tree_model_hbox_proxy, /*  tree model */
+    &_synctex_display_proxy_hbox,   /*  display */
+    &_synctex_abstract_proxy_hbox,  /*  abstract */
+    &synctex_tree_model_proxy_hbox, /*  tree model */
     &synctex_data_model_proxy,      /*  data model */
-    &synctex_tlcpector_none,        /*  tlcpector */
-    &synctex_inspector_proxy,       /*  inspector */
-    &synctex_vispector_box_proxy,   /*  vispector */
+    &synctex_tlcpector_proxy,       /*  tlcpector */
+    &synctex_inspector_proxy_box,   /*  inspector */
+    &synctex_vispector_proxy_box,   /*  vispector */
 };
 
 #	ifdef SYNCTEX_NOTHING
@@ -1761,45 +2151,44 @@ static synctex_class_s synctex_class_hbox_proxy = {
 
 /*  A proxy to a vbox. */
 
-static const synctex_tree_model_s synctex_tree_model_vbox_proxy = {
+static const synctex_tree_model_s synctex_tree_model_proxy_vbox = {
     synctex_tree_sibling_idx,       /* sibling */
     synctex_tree_s_parent_idx,      /* parent */
     synctex_tree_sp_child_idx,      /* child */
     synctex_tree_spc_friend_idx,    /* friend */
-    synctex_tree_spcf_last_idx,     /* last */
+    synctex_tree_spcf_last_idx, /* last */
     -1, /* next_hbox */
     -1, /* arg_sibling */
-    synctex_tree_spcfl_target_idx,  /* target */
-    synctex_tree_spcflt_vbox_proxy_max
+    synctex_tree_spcfl_target_idx,    /* target */
+    synctex_tree_spcflt_proxy_vbox_max
 };
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
-    synctex_data_u data[synctex_tree_spcflt_vbox_proxy_max+synctex_data_proxy_hv_max];
-} synctex_node_vbox_proxy_s;
+    synctex_class_p class_;
+    synctex_data_u data[synctex_tree_spcflt_proxy_vbox_max+synctex_data_proxy_hv_max];
+} synctex_node_proxy_vbox_s;
 
 /*  box proxy node creator */
-DEFINE_synctex_new_unscanned_NODE(vbox_proxy)
+DEFINE_synctex_new_unscanned_NODE(proxy_vbox)
 
 static void _synctex_log_proxy(synctex_node_p node);
-static char * _synctex_abstract_vbox_proxy(synctex_node_p node);
-static void _synctex_display_vbox_proxy(synctex_node_p node);
+static char * _synctex_abstract_proxy_vbox(synctex_node_p node);
+static void _synctex_display_proxy_vbox(synctex_node_p node);
 
-static synctex_class_s synctex_class_vbox_proxy = {
+static synctex_class_s synctex_class_proxy_vbox = {
     NULL,                           /*  No scanner yet */
-    synctex_node_type_vbox_proxy,   /*  Node type */
-    synctex_node_mask_vbox_proxy,   /*  Node mask */
-    &_synctex_new_vbox_proxy,       /*  creator */
+    synctex_node_type_proxy_vbox,   /*  Node type */
+    &_synctex_new_proxy_vbox,       /*  creator */
     &_synctex_free_node,            /*  destructor */
     &_synctex_log_proxy,            /*  log */
-    &_synctex_display_vbox_proxy,   /*  display */
-    &_synctex_abstract_vbox_proxy,  /*  abstract */
-    &synctex_tree_model_vbox_proxy, /*  tree model */
+    &_synctex_display_proxy_vbox,   /*  display */
+    &_synctex_abstract_proxy_vbox,  /*  abstract */
+    &synctex_tree_model_proxy_vbox, /*  tree model */
     &synctex_data_model_proxy,      /*  data model */
     &synctex_tlcpector_proxy,       /*  tlcpector */
-    &synctex_inspector_proxy,       /*  inspector */
-    &synctex_vispector_box_proxy,   /*  vispector */
+    &synctex_inspector_proxy_box,   /*  inspector */
+    &synctex_vispector_proxy_box,   /*  vispector */
 };
 
 #	ifdef SYNCTEX_NOTHING
@@ -1824,7 +2213,7 @@ static const synctex_tree_model_s synctex_tree_model_proxy = {
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
+    synctex_class_p class_;
     synctex_data_u data[synctex_tree_spft_proxy_max+synctex_data_proxy_hv_max];
 } synctex_node_proxy_s;
 
@@ -1846,7 +2235,6 @@ static synctex_vispector_s synctex_vispector_proxy = {
 static synctex_class_s synctex_class_proxy = {
     NULL,                       /*  No scanner yet */
     synctex_node_type_proxy,    /*  Node type */
-    synctex_node_mask_proxy,    /*  Node mask */
     &_synctex_new_proxy,        /*  creator */
     &_synctex_free_leaf,        /*  destructor */
     &_synctex_log_proxy,        /*  log */
@@ -1855,7 +2243,7 @@ static synctex_class_s synctex_class_proxy = {
     &synctex_tree_model_proxy,  /*  tree model */
     &synctex_data_model_proxy,  /*  data model */
     &synctex_tlcpector_proxy,   /*  tlcpector */
-    &synctex_inspector_proxy,   /*  inspector */
+    &synctex_inspector_proxy_box,   /*  inspector */
     &synctex_vispector_proxy,   /*  vispector */
 };
 
@@ -1867,56 +2255,60 @@ static synctex_class_s synctex_class_proxy = {
  *  A proxy to the last proxy/box boundary.
  */
 
-static const synctex_tree_model_s synctex_tree_model_last_proxy = {
+static const synctex_tree_model_s synctex_tree_model_proxy_last = {
     synctex_tree_sibling_idx,   /* sibling */
     synctex_tree_s_parent_idx,  /* parent */
     -1, /* child */
     synctex_tree_sp_friend_idx, /* friend */
     -1, /* last */
     -1, /* next_hbox */
-    synctex_tree_spf_arg_sibling_idx,   /* arg_sibling */
-    synctex_tree_spfa_target_idx,       /* target */
-    synctex_tree_spfat_last_proxy_max
+    synctex_tree_spf_arg_sibling_idx, /* arg_sibling */
+    synctex_tree_spfa_target_idx,     /* target */
+    synctex_tree_spfat_proxy_last_max
 };
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
-    synctex_data_u data[synctex_tree_spfat_last_proxy_max+synctex_data_proxy_hv_max];
-} synctex_node_last_proxy_s;
+    synctex_class_p class_;
+    synctex_data_u data[synctex_tree_spfat_proxy_last_max+synctex_data_proxy_hv_max];
+} synctex_node_proxy_last_s;
 
 /*  proxy node creator */
-DEFINE_synctex_new_unscanned_NODE(last_proxy)
+DEFINE_synctex_new_unscanned_NODE(proxy_last)
 
 static void _synctex_log_proxy(synctex_node_p node);
 static char * _synctex_abstract_proxy(synctex_node_p node);
 static void _synctex_display_proxy(synctex_node_p node);
 
-static synctex_class_s synctex_class_last_proxy = {
+static synctex_class_s synctex_class_proxy_last = {
     NULL,                           /*  No scanner yet */
-    synctex_node_type_last_proxy,   /*  Node type */
-    synctex_node_mask_proxy,        /*  Node mask */
+    synctex_node_type_proxy_last,   /*  Node type */
     &_synctex_new_proxy,            /*  creator */
     &_synctex_free_leaf,            /*  destructor */
     &_synctex_log_proxy,            /*  log */
     &_synctex_display_proxy,        /*  display */
     &_synctex_abstract_proxy,       /*  abstract */
-    &synctex_tree_model_last_proxy, /*  tree model */
+    &synctex_tree_model_proxy_last, /*  tree model */
     &synctex_data_model_proxy,      /*  data model */
     &synctex_tlcpector_proxy,       /*  tlcpector */
-    &synctex_inspector_proxy,       /*  inspector */
+    &synctex_inspector_proxy_box,       /*  inspector */
     &synctex_vispector_proxy,       /*  vispector */
 };
 
 #	ifdef SYNCTEX_NOTHING
-#       pragma mark result.
+#       pragma mark handle.
 #   endif
 
 /**
- *  A proxy to a result node.
+ *  A handle node.
+ *  A handle is never the target of a proxy
+ *  or another handle.
+ *  The child of a handle is always a handle if any.
+ *  The sibling of a handle is always a handle if any.
+ *  The parent of a handle is always a handle if any.
  */
 
-static const synctex_tree_model_s synctex_tree_model_result = {
+static const synctex_tree_model_s synctex_tree_model_handle = {
     synctex_tree_sibling_idx,   /* sibling */
     synctex_tree_s_parent_idx,  /* parent */
     synctex_tree_sp_child_idx,  /* child */
@@ -1925,37 +2317,78 @@ static const synctex_tree_model_s synctex_tree_model_result = {
     -1, /* next_hbox */
     -1, /* arg_sibling */
     synctex_tree_spc_target_idx,/* target */
-    synctex_tree_spct_result_max
+    synctex_tree_spct_handle_max
+};
+
+static const synctex_data_model_s synctex_data_model_handle = {
+    -1, /* tag */
+    -1, /* line */
+    -1, /* column */
+    -1, /* h */
+    -1, /* v */
+    -1, /* width */
+    -1, /* height */
+    -1, /* depth */
+    -1, /* mean_line */
+    synctex_data_handle_w_idx, /* weight */
+    -1, /* h_V */
+    -1, /* v_V */
+    -1, /* width_V */
+    -1, /* height_V */
+    -1, /* depth_V */
+    -1, /* name */
+    -1, /* page */
+    synctex_data_handle_w_max
 };
 
 typedef struct {
     SYNCTEX_DECLARE_CHARINDEX
-    synctex_class_p class;
-    synctex_data_u data[synctex_tree_spct_result_max+0];
-} synctex_node_result_s;
+    synctex_class_p class_;
+    synctex_data_u data[synctex_tree_spct_handle_max+synctex_data_handle_w_max];
+} synctex_node_handle_s;
 
-/*  proxy node creator */
-DEFINE_synctex_new_unscanned_NODE(result)
+/*  handle node creator */
+DEFINE_synctex_new_unscanned_NODE(handle)
 
-static void _synctex_log_result(synctex_node_p node);
-static char * _synctex_abstract_result(synctex_node_p node);
-static void _synctex_display_result(synctex_node_p node);
+static void _synctex_log_handle(synctex_node_p node);
+static char * _synctex_abstract_handle(synctex_node_p node);
+static void _synctex_display_handle(synctex_node_p node);
 
-static synctex_class_s synctex_class_result = {
+static synctex_class_s synctex_class_handle = {
     NULL,                       /*  No scanner yet */
-    synctex_node_type_result,   /*  Node type */
-    0,                          /*  Node mask */
-    &_synctex_new_result,       /*  creator */
-    &_synctex_free_leaf,        /*  destructor */
-    &_synctex_log_result,       /*  log */
-    &_synctex_display_result,   /*  display */
-    &_synctex_abstract_result,  /*  abstract */
-    &synctex_tree_model_result, /*  tree model */
-    &synctex_data_model_none,   /*  data model */
+    synctex_node_type_handle,   /*  Node type */
+    &_synctex_new_handle,       /*  creator */
+    &_synctex_free_handle,      /*  destructor */
+    &_synctex_log_handle,       /*  log */
+    &_synctex_display_handle,   /*  display */
+    &_synctex_abstract_handle,  /*  abstract */
+    &synctex_tree_model_handle, /*  tree model */
+    &synctex_data_model_handle, /*  data model */
     &synctex_tlcpector_proxy,   /*  tlcpector */
-    &synctex_inspector_none,    /*  inspector */
-    &synctex_vispector_none,    /*  vispector */
+    &synctex_inspector_proxy_box,   /*  inspector */
+    &synctex_vispector_proxy_box,   /*  vispector */
 };
+
+SYNCTEX_INLINE static synctex_node_p _synctex_new_handle_with_target(synctex_node_p target) {
+    if (target) {
+        synctex_node_p result = _synctex_new_handle(target->class_->scanner);
+        if (result) {
+            _synctex_tree_set_target(result,target);
+            return result;
+        }
+    }
+    return NULL;
+}
+SYNCTEX_INLINE static synctex_node_p _synctex_new_handle_with_child(synctex_node_p child) {
+    if (child) {
+        synctex_node_p result = _synctex_new_handle(child->class_->scanner);
+        if (result) {
+            _synctex_tree_set_child(result,child);
+            return result;
+        }
+    }
+    return NULL;
+}
 
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -1967,7 +2400,7 @@ synctex_node_p synctex_node_parent(synctex_node_p node)
 }
 synctex_node_p synctex_node_parent_sheet(synctex_node_p node)
 {
-    while(node && SYNCTEX_TYPE(node) != synctex_node_type_sheet) {
+    while(node && synctex_node_type(node) != synctex_node_type_sheet) {
         node = _synctex_tree_parent(node);
     }
     /*  exit the while loop either when node is NULL or node is a sheet */
@@ -1975,7 +2408,7 @@ synctex_node_p synctex_node_parent_sheet(synctex_node_p node)
 }
 synctex_node_p synctex_node_parent_form(synctex_node_p node)
 {
-    while(node && SYNCTEX_TYPE(node) != synctex_node_type_form) {
+    while(node && synctex_node_type(node) != synctex_node_type_form) {
         node = _synctex_tree_parent(node);
     }
     /*  exit the while loop either when node is NULL or node is a form */
@@ -1993,12 +2426,12 @@ SYNCTEX_INLINE static synctex_node_p __synctex_new_proxy_from_ref_to(synctex_nod
     if (!ref || !to_node) {
         return NULL;
     }
-    switch(SYNCTEX_TYPE(to_node)) {
+    switch(synctex_node_type(to_node)) {
         case synctex_node_type_vbox:
-            proxy = _synctex_new_vbox_proxy(ref->class->scanner);
+            proxy = _synctex_new_proxy_vbox(ref->class_->scanner);
             break;
         case synctex_node_type_hbox:
-            proxy = _synctex_new_hbox_proxy(ref->class->scanner);
+            proxy = _synctex_new_proxy_hbox(ref->class_->scanner);
             break;
         default:
             _synctex_error("!  __synctex_new_proxy_from_ref_to. Unexpected form child (%s). Please report.", synctex_node_isa(to_node));
@@ -2009,7 +2442,7 @@ SYNCTEX_INLINE static synctex_node_p __synctex_new_proxy_from_ref_to(synctex_nod
         return NULL;
     }
     _synctex_data_set_h(proxy, _synctex_data_h(ref));
-    _synctex_data_set_v(proxy, _synctex_data_v(ref));
+    _synctex_data_set_v(proxy, _synctex_data_v(ref)-_synctex_data_height(to_node));
     _synctex_tree_set_target(proxy,to_node);
 #   if defined(SYNCTEX_USE_CHARINDEX)
     proxy->line_index=to_node?to_node->line_index:0;
@@ -2032,9 +2465,9 @@ SYNCTEX_INLINE static synctex_node_p __synctex_new_child_proxy_to(synctex_node_p
     if (!owner) {
         return NULL;
     }
-    switch(SYNCTEX_TYPE(target)) {
+    switch(synctex_node_type(target)) {
         case synctex_node_type_vbox:
-            if ((proxy = _synctex_new_vbox_proxy(owner->class->scanner))) {
+            if ((proxy = _synctex_new_proxy_vbox(owner->class_->scanner))) {
             exit_standard:
                 _synctex_data_set_h(proxy, _synctex_data_h(owner));
                 _synctex_data_set_v(proxy, _synctex_data_v(owner));
@@ -2047,8 +2480,8 @@ SYNCTEX_INLINE static synctex_node_p __synctex_new_child_proxy_to(synctex_node_p
                 return proxy;
             };
             break;
-        case synctex_node_type_vbox_proxy:
-            if ((proxy = _synctex_new_vbox_proxy(owner->class->scanner))) {
+        case synctex_node_type_proxy_vbox:
+            if ((proxy = _synctex_new_proxy_vbox(owner->class_->scanner))) {
             exit_proxy:
                 target = _synctex_tree_target(to_node);
                 _synctex_data_set_h(proxy, _synctex_data_h(owner)+_synctex_data_h(to_node));
@@ -2057,22 +2490,23 @@ SYNCTEX_INLINE static synctex_node_p __synctex_new_child_proxy_to(synctex_node_p
             };
             break;
         case synctex_node_type_hbox:
-            if ((proxy = _synctex_new_hbox_proxy(owner->class->scanner))) {
+            if ((proxy = _synctex_new_proxy_hbox(owner->class_->scanner))) {
                 goto exit_standard;
             };
             break;
-        case synctex_node_type_hbox_proxy:
-            if ((proxy = _synctex_new_hbox_proxy(owner->class->scanner))) {
+        case synctex_node_type_proxy_hbox:
+            if ((proxy = _synctex_new_proxy_hbox(owner->class_->scanner))) {
                 goto exit_proxy;
             };
             break;
         case synctex_node_type_proxy:
-            if ((proxy = _synctex_new_proxy(owner->class->scanner))) {
+        case synctex_node_type_proxy_last:
+            if ((proxy = _synctex_new_proxy(owner->class_->scanner))) {
                 goto exit_proxy;
             };
             break;
         default:
-            if ((proxy = _synctex_new_proxy(owner->class->scanner))) {
+            if ((proxy = _synctex_new_proxy(owner->class_->scanner))) {
                 goto exit_standard;
             };
             break;
@@ -2098,16 +2532,15 @@ typedef struct synctex_nns_t {
 SYNCTEX_INLINE static synctex_nns_s _synctex_new_child_proxies_to(synctex_node_p owner, synctex_node_p to_node) {
     synctex_nns_s nns = {NULL,NULL,SYNCTEX_STATUS_OK};
     if ((nns.first = nns.last = __synctex_new_child_proxy_to(owner,to_node))) {
-        synctex_node_p to_sibling = to_node;
-        while (synctex_YES) {
-            synctex_node_p to_next_sibling = NULL;
+        synctex_node_p to_next_sibling = __synctex_tree_sibling(to_node);
+        synctex_node_p to_sibling;
+        while ((to_sibling = to_next_sibling)) {
             synctex_node_p sibling;
             if ((to_next_sibling = __synctex_tree_sibling(to_sibling))) {
                 /*  This is not the last sibling */
                 if((sibling = __synctex_new_child_proxy_to(owner,to_sibling))) {
                     _synctex_tree_set_sibling(nns.last,sibling);
                     nns.last = sibling;
-                    to_sibling = to_next_sibling;
                     continue;
                 } else {
                     _synctex_error("!  _synctex_new_child_proxy_to. "
@@ -2115,7 +2548,7 @@ SYNCTEX_INLINE static synctex_nns_s _synctex_new_child_proxies_to(synctex_node_p
                                    "Please report.");
                     nns.status = SYNCTEX_STATUS_ERROR;
                 }
-            } else if((sibling = _synctex_new_last_proxy(owner->class->scanner))) {
+            } else if((sibling = _synctex_new_proxy_last(owner->class_->scanner))) {
                 _synctex_tree_set_sibling(nns.last,sibling);
                 nns.last = sibling;
                 _synctex_data_set_h(nns.last, _synctex_data_h(nns.first));
@@ -2164,9 +2597,9 @@ SYNCTEX_INLINE static synctex_node_p synctex_tree_set_friend(synctex_node_p node
 SYNCTEX_INLINE static synctex_node_p __synctex_node_make_friend(synctex_node_p node, int i) {
     synctex_node_p old = NULL;
     if (i>=0) {
-        i = i%(node->class->scanner->number_of_lists);
-        old = synctex_tree_set_friend(node,(node->class->scanner->lists_of_friends)[i]);
-        (node->class->scanner->lists_of_friends)[i] = node;
+        i = i%(node->class_->scanner->number_of_lists);
+        old = synctex_tree_set_friend(node,(node->class_->scanner->lists_of_friends)[i]);
+        (node->class_->scanner->lists_of_friends)[i] = node;
 #if SYNCTEX_DEBUG>500
         printf("tl(%i)=>",i);
         synctex_node_log(node);
@@ -2177,14 +2610,10 @@ SYNCTEX_INLINE static synctex_node_p __synctex_node_make_friend(synctex_node_p n
     }
     return old;
 }
-SYNCTEX_INLINE static synctex_node_p __synctex_node_make_friend_tlc(synctex_node_p node) {
-    int i = _synctex_data_tag(node)+_synctex_data_line(node);
-    return __synctex_node_make_friend(node,i);
-}
 /**
  *  All proxies have tlc attributes, on behalf of their target.
  *  The purpose is to register all af them.
- *  - argument node: is the first proxy
+ *  - argument node: is the proxy, must not be NULL
  */
 SYNCTEX_INLINE static synctex_node_p __synctex_proxy_make_friend_and_next_hbox(synctex_node_p node) {
     synctex_node_p old = NULL;
@@ -2195,7 +2624,7 @@ SYNCTEX_INLINE static synctex_node_p __synctex_proxy_make_friend_and_next_hbox(s
     } else {
         old = __synctex_tree_reset_friend(node);
     }
-    if (SYNCTEX_TYPE(node) == synctex_node_type_hbox_proxy) {
+    if (synctex_node_type(node) == synctex_node_type_proxy_hbox) {
         synctex_node_p sheet = synctex_node_parent_sheet(node);
         if (sheet) {
             _synctex_tree_set_next_hbox(node,_synctex_tree_next_hbox(sheet));
@@ -2205,7 +2634,18 @@ SYNCTEX_INLINE static synctex_node_p __synctex_proxy_make_friend_and_next_hbox(s
     return old;
 }
 /**
- *
+ *  Register a node which have tag, line and column.
+ *  - argument node: the node
+ */
+SYNCTEX_INLINE static synctex_node_p __synctex_node_make_friend_tlc(synctex_node_p node) {
+    int i = synctex_node_tag(node)+synctex_node_line(node);
+    return __synctex_node_make_friend(node,i);
+}
+/**
+ *  Register a node which have tag, line and column.
+ *  Does nothing if the argument is NULL.
+ *  Calls __synctex_node_make_friend_tlc.
+ *  - argument node: the node
  */
 SYNCTEX_INLINE static void _synctex_node_make_friend_tlc(synctex_node_p node) {
     if (node) {
@@ -2213,11 +2653,18 @@ SYNCTEX_INLINE static void _synctex_node_make_friend_tlc(synctex_node_p node) {
     }
 }
 static synctex_node_p _synctex_node_set_child(synctex_node_p node, synctex_node_p new_child);
-/*  At parse time, non void box nodes have children.
+/**
+ *  The (first) child of the node, if any, NULL otherwise.
+ *  At parse time, non void box nodes have children.
+ *  All other nodes have no children.
  *  In order to support pdf forms, proxies are created
  *  to place form nodes at real locations.
- *  If form ref nodes have no children, one is created
- *  as a proxy to the box contained in the referenced form.
+ *  Ref nodes are replaced by root proxies targeting
+ *  form contents. If root proxies have no children,
+ *  they are created on the fly as proxies to the
+ *  children of the targeted box.
+ *  As such, proxies created here are targeting a
+ *  node that belongs to a form.
  *  This is the only place where child proxies are created.
  */
 synctex_node_p synctex_node_child(synctex_node_p node) {
@@ -2232,12 +2679,6 @@ synctex_node_p synctex_node_child(synctex_node_p node) {
             synctex_nns_s nns = _synctex_new_child_proxies_to(node, child);
             if (nns.first) {
                 _synctex_node_set_child(node,nns.first);
-                
-#if SYNCTEX_DEBUG>500
-                printf("!  Child proxy (as child):\n");
-                synctex_node_display(proxy);
-                synctex_node_display(_synctex_tree_target(proxy));
-#endif
                 return nns.first;
             } else {
                 _synctex_error("!  synctex_node_child. Internal inconsistency. Please report.");
@@ -2246,16 +2687,28 @@ synctex_node_p synctex_node_child(synctex_node_p node) {
     }
     return NULL;
 }
-static synctex_node_p _synctex_node_set_child(synctex_node_p node, synctex_node_p new_child) {
-    if (node && new_child){
-        synctex_node_p child = new_child;
+/*
+ *  Set the parent/child bound.
+ *  Things get complicated when new_child has siblings.
+ *  The caller is responsible for releasing the returned value.
+ */
+static synctex_node_p _synctex_node_set_child(synctex_node_p parent, synctex_node_p new_child) {
+    if (parent) {
+        synctex_node_p old = _synctex_tree_set_child(parent,new_child);
         synctex_node_p last_child = NULL;
-        synctex_node_p old = _synctex_tree_set_child(node,child);
-        do {
-            _synctex_tree_set_parent(child,node);
-            last_child = child;
-        } while ((child = __synctex_tree_sibling(child)));
-        _synctex_tree_set_last(node,last_child);
+        synctex_node_p child;
+        if ((child = old)) {
+            do {
+                _synctex_tree_reset_parent(child);
+            } while ((child = __synctex_tree_sibling(child)));
+        }
+        if ((child = new_child)) {
+            do {
+                _synctex_tree_set_parent(child,parent);
+                last_child = child;
+            } while ((child = __synctex_tree_sibling(child)));
+        }
+        _synctex_tree_set_last(parent,last_child);
         return old;
     }
     return NULL;
@@ -2282,8 +2735,12 @@ synctex_node_p synctex_node_sibling(synctex_node_p node) {
  *  Connect to the arg_sibling of the new_sibling if relevant.
  *  - returns the old sibling.
  *  The caller is responsible for releasing the old sibling.
+ *  The bound to the parent is managed below.
  */
 SYNCTEX_INLINE static synctex_node_p _synctex_tree_set_sibling(synctex_node_p node, synctex_node_p new_sibling) {
+    if (node == new_sibling) {
+        printf("BOF\n");
+    }
     synctex_node_p old = node? __synctex_tree_set_sibling(node,new_sibling): NULL;
     _synctex_tree_set_arg_sibling(new_sibling,node);
     return old;
@@ -2292,6 +2749,7 @@ SYNCTEX_INLINE static synctex_node_p _synctex_tree_set_sibling(synctex_node_p no
  *  Replace the sibling.
  *  Set the parent of the new sibling (and further siblings)
  *  to the parent of the receiver.
+ *  Also set the last sibling of parent.
  *  - argument new_sibling: must not be NULL.
  *  - returns the old sibling.
  *  The caller is responsible for releasing the old sibling.
@@ -2334,8 +2792,32 @@ synctex_node_p synctex_node_last_sibling(synctex_node_p node) {
 }
 /**
  *  The next nodes corresponds to a deep first tree traversal.
+ *  Does not create child proxies as side effect contrary to
+ *  the synctex_node_next method above.
+ *  May loop infinitely many times if the tree
+ *  is not properly built (contains loops).
+ */
+SYNCTEX_INLINE static synctex_node_p _synctex_node_sibling_or_parents(synctex_node_p node) {
+    while (node) {
+        synctex_node_p N;
+        if ((N = __synctex_tree_sibling(node))) {
+            return N;
+        } else if ((node = _synctex_tree_parent(node))) {
+            if (synctex_node_type(node) == synctex_node_type_sheet) {/*  EXC_BAD_ACCESS? */
+                return NULL;
+            } else if (synctex_node_type(node) == synctex_node_type_form) {
+                return NULL;
+            }
+        } else {
+            return NULL;
+        }
+    }
+    return NULL;
+}
+/**
+ *  The next nodes corresponds to a deep first tree traversal.
  *  Creates child proxies as side effect.
- *  May loop initfinitely many times is the tree
+ *  May loop infinitely many times if the tree
  *  is not properly built (contains loops).
  */
 synctex_node_p synctex_node_next(synctex_node_p node) {
@@ -2343,38 +2825,7 @@ synctex_node_p synctex_node_next(synctex_node_p node) {
     if (N) {
         return N;
     }
-    while (synctex_YES) {
-        if ((N = __synctex_tree_sibling(node))) {
-            return N;
-        } else if ((node = _synctex_tree_parent(node))) {
-            if (SYNCTEX_TYPE(node) == synctex_node_type_sheet) {/*  EXC_BAD_ACCESS? */
-                return NULL;
-            } else if (SYNCTEX_TYPE(node) == synctex_node_type_form) {
-                return NULL;
-            }
-        } else {
-            return NULL;
-        }
-    }
-}
-synctex_node_p _synctex_node_next(synctex_node_p node) {
-    synctex_node_p N = _synctex_tree_child(node);
-    if (N) {
-        return N;
-    }
-    while (synctex_YES) {
-        if ((N = __synctex_tree_sibling(node))) {
-            return N;
-        } else if ((node = _synctex_tree_parent(node))) {
-            if (SYNCTEX_TYPE(node) == synctex_node_type_sheet) {/*  EXC_BAD_ACCESS? */
-                return NULL;
-            } else if (SYNCTEX_TYPE(node) == synctex_node_type_form) {
-                return NULL;
-            }
-        } else {
-            return NULL;
-        }
-    }
+    return _synctex_node_sibling_or_parents(node);
 }
 /**
  *  The node which argument is the sibling.
@@ -2406,23 +2857,16 @@ synctex_node_p synctex_node_arg_sibling(synctex_node_p node) {
 
 /*  Public node accessor: the type  */
 synctex_node_type_t synctex_node_type(synctex_node_p node) {
-    if (node) {
-        return (((node)->class))->type;
-    }
-    return synctex_node_type_none;
+    return node? node->class_->type: synctex_node_type_none;
 }
 
 /*  Public node accessor: the type  */
 synctex_node_type_t synctex_node_target_type(synctex_node_p node) {
-    if (SYNCTEX_IS_PROXY(node)) {
-        synctex_node_p target = _synctex_tree_target(node);
-        if (target) {
-            node = target;
-        }
-        return (((node)->class))->type;
-    }
-    if (node) {
-        return (((node)->class))->type;
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        return (((target)->class_))->type;
+    } else if (node) {
+        return (((node)->class_))->type;
     }
     return synctex_node_type_none;
 }
@@ -2449,7 +2893,7 @@ const char * synctex_node_isa(synctex_node_p node) {
         "last proxy",
         "vbox proxy",
         "hbox proxy",
-        "result"};
+        "handle"};
     return isa[synctex_node_type(node)];
 }
 
@@ -2480,10 +2924,10 @@ static void _synctex_log_sheet(synctex_node_p node) {
         printf("%s:%i",synctex_node_isa(node),_synctex_data_page(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
         printf("    NEXT_hbox:%p\n",(void *)_synctex_tree_next_hbox(node));
     }
 }
@@ -2493,10 +2937,10 @@ static void _synctex_log_form(synctex_node_p node) {
         printf("%s:%i",synctex_node_isa(node),_synctex_data_tag(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
     }
 }
 
@@ -2509,52 +2953,55 @@ static void _synctex_log_ref(synctex_node_p node) {
                _synctex_data_v(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
-        printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
+        printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
     }
 }
 
 static void _synctex_log_tlchv_node(synctex_node_p node) {
     if (node) {
-        printf("%s:%i,%i:%i,%i",
+        printf("%s:%i,%i,%i:%i,%i",
                synctex_node_isa(node),
                _synctex_data_tag(node),
                _synctex_data_line(node),
+               _synctex_data_column(node),
                _synctex_data_h(node),
                _synctex_data_v(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
     }
 }
 
 static void _synctex_log_kern_node(synctex_node_p node) {
     if (node) {
-        printf("%s:%i,%i:%i,%i:%i",
+        printf("%s:%i,%i,%i:%i,%i:%i",
                synctex_node_isa(node),
                _synctex_data_tag(node),
                _synctex_data_line(node),
+               _synctex_data_column(node),
                _synctex_data_h(node),
                _synctex_data_v(node),
                _synctex_data_width(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
     }
 }
 
 static void _synctex_log_rule(synctex_node_p node) {
     if (node) {
-        printf("%s:%i,%i:%i,%i",
+        printf("%s:%i,%i,%i:%i,%i",
                synctex_node_isa(node),
                _synctex_data_tag(node),
                _synctex_data_line(node),
+               _synctex_data_column(node),
                _synctex_data_h(node),
                _synctex_data_v(node));
         printf(":%i",_synctex_data_width(node));
@@ -2562,9 +3009,9 @@ static void _synctex_log_rule(synctex_node_p node) {
         printf(",%i",_synctex_data_depth(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
-        printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
     }
 }
 
@@ -2573,7 +3020,7 @@ static void _synctex_log_void_box(synctex_node_p node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",_synctex_data_tag(node));
         printf(",%i",_synctex_data_line(node));
-        printf(",%i",0);
+        printf(",%i",_synctex_data_column(node));
         printf(":%i",_synctex_data_h(node));
         printf(",%i",_synctex_data_v(node));
         printf(":%i",_synctex_data_width(node));
@@ -2581,10 +3028,10 @@ static void _synctex_log_void_box(synctex_node_p node) {
         printf(",%i",_synctex_data_depth(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
     }
 }
 
@@ -2593,7 +3040,7 @@ static void _synctex_log_vbox(synctex_node_p node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",_synctex_data_tag(node));
         printf(",%i",_synctex_data_line(node));
-        printf(",%i",0);
+        printf(",%i",_synctex_data_column(node));
         printf(":%i",_synctex_data_h(node));
         printf(",%i",_synctex_data_v(node));
         printf(":%i",_synctex_data_width(node));
@@ -2601,10 +3048,10 @@ static void _synctex_log_vbox(synctex_node_p node) {
         printf(",%i",_synctex_data_depth(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
         printf("    NEXT_hbox:%p\n",(void *)_synctex_tree_next_hbox(node));
     }
 }
@@ -2614,7 +3061,7 @@ static void _synctex_log_hbox(synctex_node_p node) {
         printf("%s",synctex_node_isa(node));
         printf(":%i",_synctex_data_tag(node));
         printf(",%i~%i*%i",_synctex_data_line(node),_synctex_data_mean_line(node),_synctex_data_weight(node));
-        printf(",%i",0);
+        printf(",%i",_synctex_data_column(node));
         printf(":%i",_synctex_data_h(node));
         printf(",%i",_synctex_data_v(node));
         printf(":%i",_synctex_data_width(node));
@@ -2627,10 +3074,10 @@ static void _synctex_log_hbox(synctex_node_p node) {
         printf(",%i",_synctex_data_depth_V(node));
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
+        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
         printf("    PARENT:%p\n",(void *)_synctex_tree_parent(node));
         printf("    CHILD:%p\n",(void *)_synctex_tree_child(node));
-        printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
         printf("    NEXT_hbox:%p\n",(void *)_synctex_tree_next_hbox(node));
     }
 }
@@ -2643,11 +3090,11 @@ static void _synctex_log_proxy(synctex_node_p node) {
         SYNCTEX_PRINT_CHARINDEX_NL;
         printf("SELF:%p\n",(void *)node);
         printf("    SIBLING:%p\n",(void *)__synctex_tree_sibling(node));
-        printf("    FRIEND:%p\n",(void *)_synctex_tree_friend(node));
+        printf("    LEFT:%p\n",(void *)_synctex_tree_friend(node));
         printf("    ->%s\n",_synctex_node_abstract(N));
     }
 }
-static void _synctex_log_result(synctex_node_p node) {
+static void _synctex_log_handle(synctex_node_p node) {
     if (node) {
         synctex_node_p N = _synctex_tree_target(node);
         printf("%s",synctex_node_isa(node));
@@ -2686,14 +3133,14 @@ static char * _synctex_scanner_display_prompt_up(synctex_scanner_p scanR) {
 
 void synctex_node_display(synctex_node_p node) {
     if (node) {
-        synctex_scanner_p scanR = node->class->scanner;
+        synctex_scanner_p scanR = node->class_->scanner;
         if (scanR) {
             if (scanR->display_switcher<0) {
                 SYNCTEX_MSG_SEND(node, display);
             } else if (scanR->display_switcher>0 && --scanR->display_switcher>0) {
                 SYNCTEX_MSG_SEND(node, display);
             } else if (scanR->display_switcher-->=0) {
-                printf("%s Next display skipped. Reset display switcher.\n",node->class->scanner->display_prompt);
+                printf("%s Next display skipped. Reset display switcher.\n",node->class_->scanner->display_prompt);
             }
         } else {
             SYNCTEX_MSG_SEND(node, display);
@@ -2701,15 +3148,16 @@ void synctex_node_display(synctex_node_p node) {
     }
 }
 static char * _synctex_node_abstract(synctex_node_p node) {
-    return (node && node->class->abstract)? node->class->abstract(node):"none";
+    SYNCTEX_PARAMETER_ASSERT(node || node->class_);
+    return (node && node->class_->abstract)? node->class_->abstract(node):"none";
 }
 
 SYNCTEX_INLINE static void _synctex_display_child(synctex_node_p node) {
     synctex_node_p N = _synctex_tree_child(node);
     if (N) {
-        _synctex_scanner_display_prompt_down(N->class->scanner);
+        _synctex_scanner_display_prompt_down(N->class_->scanner);
         synctex_node_display(N);
-        _synctex_scanner_display_prompt_up(N->class->scanner);
+        _synctex_scanner_display_prompt_up(N->class_->scanner);
     }
 }
 
@@ -2757,11 +3205,11 @@ static void _synctex_display_sheet(synctex_node_p node) {
         printf("%s{%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_page(node)
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
-        printf("%s}\n",node->class->scanner->display_prompt);
+        printf("%s}\n",node->class_->scanner->display_prompt);
         _synctex_display_sibling(node);
     }
 }
@@ -2782,11 +3230,11 @@ static void _synctex_display_form(synctex_node_p node) {
         printf("%s<%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node)
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
-        printf("%s>\n",node->class->scanner->display_prompt);
+        printf("%s>\n",node->class_->scanner->display_prompt);
         _synctex_display_sibling(node);
     }
 }
@@ -2813,7 +3261,7 @@ static void _synctex_display_vbox(synctex_node_p node) {
         printf("%s[%i,%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -2823,8 +3271,10 @@ static void _synctex_display_vbox(synctex_node_p node) {
                _synctex_data_depth(node)
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
-        printf("%s]\n%slast:",node->class->scanner->display_prompt,node->class->scanner->display_prompt);
-        printf("%s\n",_synctex_node_abstract(_synctex_tree_last(node)));
+        printf("%s]\n%slast:%s\n",
+               node->class_->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
+               _synctex_node_abstract(_synctex_tree_last(node)));
         _synctex_display_sibling(node);
     }
 }
@@ -2853,7 +3303,7 @@ static void _synctex_display_hbox(synctex_node_p node) {
         printf("%s(%i,%i~%i*%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_mean_line(node),
@@ -2866,8 +3316,8 @@ static void _synctex_display_hbox(synctex_node_p node) {
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
         printf("%s)\n%slast:%s\n",
-               node->class->scanner->display_prompt,
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_node_abstract(_synctex_tree_last(node)));
         _synctex_display_sibling(node);
     }
@@ -2896,7 +3346,7 @@ static void _synctex_display_void_vbox(synctex_node_p node) {
         printf("%sv%i,%i;%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -2931,7 +3381,7 @@ static void _synctex_display_void_hbox(synctex_node_p node) {
         printf("%sh%i,%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -2963,7 +3413,7 @@ static void _synctex_display_glue(synctex_node_p node) {
         printf("%sglue:%i,%i:%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -2976,7 +3426,7 @@ static void _synctex_display_glue(synctex_node_p node) {
 static char * _synctex_abstract_rule(synctex_node_p node) {
     static char abstract[SYNCTEX_ABSTRACT_MAX] = "none";
     if (node) {
-        printf("rule:%i,%i:%i,%i:%i,%i,%i"
+        snprintf(abstract,SYNCTEX_ABSTRACT_MAX,"rule:%i,%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT,
                _synctex_data_tag(node),
                _synctex_data_line(node),
@@ -2995,7 +3445,7 @@ static void _synctex_display_rule(synctex_node_p node) {
         printf("%srule:%i,%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -3027,7 +3477,7 @@ static void _synctex_display_math(synctex_node_p node) {
         printf("%smath:%i,%i:%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -3057,7 +3507,7 @@ static void _synctex_display_kern(synctex_node_p node) {
         printf("%skern:%i,%i:%i,%i:%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -3087,7 +3537,7 @@ static void _synctex_display_boundary(synctex_node_p node) {
         printf("%sboundary:%i,%i:%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -3113,7 +3563,7 @@ static char * _synctex_abstract_box_bdry(synctex_node_p node) {
 static void _synctex_display_box_bdry(synctex_node_p node) {
     if (node) {
         printf("%sbox bdry:%i,%i:%i,%i",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_line(node),
                _synctex_data_h(node),
@@ -3138,7 +3588,7 @@ static char * _synctex_abstract_ref(synctex_node_p node) {
 static void _synctex_display_ref(synctex_node_p node) {
     if (node) {
         printf("%sform ref:%i:%i,%i",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_data_tag(node),
                _synctex_data_h(node),
                _synctex_data_v(node));
@@ -3152,8 +3602,8 @@ static char * _synctex_abstract_proxy(synctex_node_p node) {
         synctex_node_p N = _synctex_tree_target(node);
         snprintf(abstract,SYNCTEX_ABSTRACT_MAX,"%s:%i,%i:%i,%i/%p%s",
                synctex_node_isa(node),
-               _synctex_data_tag(node),
-               _synctex_data_line(node),
+               synctex_node_tag(node),
+               synctex_node_line(node),
                _synctex_data_h(node),
                _synctex_data_v(node),
                node,
@@ -3165,10 +3615,10 @@ static void _synctex_display_proxy(synctex_node_p node) {
     if (node) {
         synctex_node_p N = _synctex_tree_target(node);
         printf("%s%s:%i,%i:%i,%i",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                synctex_node_isa(node),
-               _synctex_data_tag(node),
-               _synctex_data_line(node),
+               synctex_node_tag(node),
+               synctex_node_line(node),
                _synctex_data_h(node),
                _synctex_data_v(node));
         if (N) {
@@ -3185,7 +3635,7 @@ static void _synctex_display_proxy(synctex_node_p node) {
         _synctex_display_sibling(node);
     }
 }
-static char * _synctex_abstract_vbox_proxy(synctex_node_p node) {
+static char * _synctex_abstract_proxy_vbox(synctex_node_p node) {
     static char abstract[SYNCTEX_ABSTRACT_MAX] = "none";
     if (node) {
         snprintf(abstract,SYNCTEX_ABSTRACT_MAX,
@@ -3203,12 +3653,12 @@ static char * _synctex_abstract_vbox_proxy(synctex_node_p node) {
     return abstract;
 }
 
-static void _synctex_display_vbox_proxy(synctex_node_p node) {
+static void _synctex_display_proxy_vbox(synctex_node_p node) {
     if (node) {
         printf("%s[*%i,%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                synctex_node_tag(node),
                synctex_node_line(node),
                synctex_node_h(node),
@@ -3219,14 +3669,14 @@ static void _synctex_display_vbox_proxy(synctex_node_p node) {
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
         printf("%s*]\n%slast:%s\n",
-               node->class->scanner->display_prompt,
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_node_abstract(_synctex_tree_last(node)));
         _synctex_display_sibling(node);
     }
 }
 
-static char * _synctex_abstract_hbox_proxy(synctex_node_p node) {
+static char * _synctex_abstract_proxy_hbox(synctex_node_p node) {
     static char abstract[SYNCTEX_ABSTRACT_MAX] = "none";
     if (node) {
         snprintf(abstract,SYNCTEX_ABSTRACT_MAX,"(*%i,%i~%i*%i:%i,%i:%i,%i,%i...*)/%p"
@@ -3246,12 +3696,12 @@ static char * _synctex_abstract_hbox_proxy(synctex_node_p node) {
     return abstract;
 }
 
-static void _synctex_display_hbox_proxy(synctex_node_p node) {
+static void _synctex_display_proxy_hbox(synctex_node_p node) {
     if (node) {
         printf("%s(*%i,%i~%i*%i:%i,%i:%i,%i,%i"
                SYNCTEX_PRINT_CHARINDEX_FMT
                "\n",
-               node->class->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                synctex_node_tag(node),
                synctex_node_line(node),
                synctex_node_mean_line(node),
@@ -3263,30 +3713,34 @@ static void _synctex_display_hbox_proxy(synctex_node_p node) {
                synctex_node_depth(node)
                SYNCTEX_PRINT_CHARINDEX_WHAT);
         _synctex_display_child(node);
-        printf("%s*)\n%slast:%s",
-               node->class->scanner->display_prompt,
-               node->class->scanner->display_prompt,
+        printf("%s*)\n%slast:%s\n",
+               node->class_->scanner->display_prompt,
+               node->class_->scanner->display_prompt,
                _synctex_node_abstract(_synctex_tree_last(node)));
         _synctex_display_sibling(node);
     }
 }
 
-static char * _synctex_abstract_result(synctex_node_p node) {
+static char * _synctex_abstract_handle(synctex_node_p node) {
     static char abstract[SYNCTEX_ABSTRACT_MAX] = "none";
     if (node) {
         synctex_node_p N = _synctex_tree_target(node);
+        if (N && !N->class_) {
+            exit(1);
+        }
         snprintf(abstract,SYNCTEX_ABSTRACT_MAX,"%s:%s",
                synctex_node_isa(node),
                (N?_synctex_node_abstract(N):""));
     }
     return abstract;
 }
-static void _synctex_display_result(synctex_node_p node) {
+static void _synctex_display_handle(synctex_node_p node) {
     if (node) {
         synctex_node_p N = _synctex_tree_target(node);
-        printf("%s%s:->%s\n",
-               node->class->scanner->display_prompt,
+        printf("%s%s(%i):->%s\n",
+               node->class_->scanner->display_prompt,
                synctex_node_isa(node),
+               _synctex_data_weight(N),
                _synctex_node_abstract(N));
         _synctex_display_child(node);
         _synctex_display_sibling(node);
@@ -3296,12 +3750,6 @@ static void _synctex_display_result(synctex_node_p node) {
 #       pragma mark -
 #       pragma mark STATUS
 #   endif
-
-/*  Actually, the minimum buffer size is driven by integer and float parsing, including the unit.
- *  ±0.123456789e123??
- */
-#   define SYNCTEX_BUFFER_MIN_SIZE 32
-#   define SYNCTEX_BUFFER_SIZE 32768
 
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -3339,7 +3787,7 @@ const char * synctex_scanner_get_output_fmt(synctex_scanner_p scanner);
 #       pragma mark SCANNER UTILITIES
 #   endif
 
-#   define SYNCTEX_FILE (scanner->file)
+#   define SYNCTEX_FILE (scanner->reader->file)
 
 /**
  *  Try to ensure that the buffer contains at least size bytes.
@@ -3359,8 +3807,8 @@ static synctex_zs_s _synctex_buffer_get_available_size(synctex_scanner_p scanner
     if (NULL == scanner) {
         return (synctex_zs_s){0,SYNCTEX_STATUS_BAD_ARGUMENT};
     }
-    if (expected>SYNCTEX_BUFFER_SIZE){
-        expected = SYNCTEX_BUFFER_SIZE;
+    if (expected>scanner->reader->size){
+        expected = scanner->reader->size;
     }
     size = SYNCTEX_END - SYNCTEX_CUR; /*  available is the number of unparsed chars in the buffer */
     if (expected<=size) {
@@ -3372,7 +3820,7 @@ static synctex_zs_s _synctex_buffer_get_available_size(synctex_scanner_p scanner
          *  then read the next part of the file */
         int already_read = 0;
 #   if defined(SYNCTEX_USE_CHARINDEX)
-        scanner->charindex_offset += SYNCTEX_CUR - SYNCTEX_START;
+        scanner->reader->charindex_offset += SYNCTEX_CUR - SYNCTEX_START;
 #   endif
         if (size) {
             memmove(SYNCTEX_START, SYNCTEX_CUR, size);
@@ -3435,7 +3883,7 @@ infinite_loop:
     while(SYNCTEX_CUR<SYNCTEX_END) {
         if (*SYNCTEX_CUR == '\n') {
             ++SYNCTEX_CUR;
-            ++scanner->line_number;
+            ++scanner->reader->line_number;
             return _synctex_buffer_get_available_size(scanner, 1).status;
         }
         ++SYNCTEX_CUR;
@@ -3647,14 +4095,14 @@ static synctex_is_s _synctex_decode_int_opt(synctex_scanner_p scanner, int defau
 static synctex_is_s _synctex_decode_int_v(synctex_scanner_p scanner) {
     synctex_is_s is = _synctex_decode_int(scanner);
     if (SYNCTEX_STATUS_OK == is.status) {
-        scanner->lastv = is.integer;
+        scanner->reader->lastv = is.integer;
         return is;
     }
     is.status = _synctex_match_string(scanner,SYNCTEX_INPUT_COMEQUALS);
     if (is.status<SYNCTEX_STATUS_OK) {
         return is;
     }
-    is.integer = scanner->lastv;
+    is.integer = scanner->reader->lastv;
     return is;
 }
 
@@ -3664,7 +4112,8 @@ static synctex_is_s _synctex_decode_int_v(synctex_scanner_p scanner) {
  *  If a string was properly decoded, it is returned in value_ref and
  *  the cursor points to the new line marker.
  *  The returned string was alloced on the heap, the caller is the owner and
- *  is responsible to free it in due time.
+ *  is responsible to free it in due time,
+ *  unless it transfers the ownership to another object.
  *  If no string is parsed, * value_ref is undefined.
  *  The maximum length of a string that a scanner can decode is platform dependent, namely UINT_MAX.
  *  If you just want to blindly parse the file up to the end of the current line,
@@ -3711,11 +4160,20 @@ more_characters:
             if (memcpy(string+already_len,SYNCTEX_CUR,len)) {
                 already_len += len;
                 string[already_len]='\0'; /*  Terminate the string */
-                SYNCTEX_CUR += len;/*  Advance to the terminating '\n' */
+                SYNCTEX_CUR += len;/*  Eventually advance to the terminating '\n' */
                 if (SYNCTEX_CUR==SYNCTEX_END) {
                     /* No \n found*/
                     goto more_characters;
                 }
+                /* trim the trailing whites */
+                len = already_len;
+                while (len>0) {
+                    already_len = len--;
+                    if (string[len]!=' ') {
+                        break;
+                    }
+                }
+                string[already_len] = '\0';
                 return (synctex_ss_s){string,SYNCTEX_STATUS_OK};
             }
             free(string);
@@ -3737,7 +4195,7 @@ static synctex_ns_s __synctex_parse_new_input(synctex_scanner_p scanner) {
     synctex_status_t status = SYNCTEX_STATUS_BAD_ARGUMENT;
     synctex_zs_s zs = {0,0};
     if (NULL == scanner) {
-        return (synctex_ns_s){NULL,status};;
+        return (synctex_ns_s){NULL,status};
     }
     if ((status=_synctex_match_string(scanner,SYNCTEX_INPUT_MARK))<SYNCTEX_STATUS_OK) {
         return (synctex_ns_s){NULL,status};
@@ -4101,7 +4559,7 @@ count_again:
  */
 static synctex_status_t _synctex_setup_visible_hbox(synctex_node_p box) {
     if (box) {
-        switch(SYNCTEX_TYPE(box)) {
+        switch(synctex_node_type(box)) {
             case synctex_node_type_hbox:
                 _synctex_data_set_h_V(box,_synctex_data_h(box));
                 _synctex_data_set_v_V(box,_synctex_data_v(box));
@@ -4109,6 +4567,8 @@ static synctex_status_t _synctex_setup_visible_hbox(synctex_node_p box) {
                 _synctex_data_set_height_V(box,_synctex_data_height(box));
                 _synctex_data_set_depth_V(box,_synctex_data_depth(box));
                 return SYNCTEX_STATUS_OK;
+            default:
+                break;
         }
     }
     return SYNCTEX_STATUS_BAD_ARGUMENT;
@@ -4120,7 +4580,7 @@ static synctex_status_t _synctex_setup_visible_hbox(synctex_node_p box) {
  */
 static synctex_status_t _synctex_make_hbox_contain_point(synctex_node_p node,synctex_point_s point) {
     int min, max, n;
-    if (NULL == node || SYNCTEX_TYPE(node) != synctex_node_type_hbox) {
+    if (NULL == node || synctex_node_type(node) != synctex_node_type_hbox) {
         return SYNCTEX_STATUS_BAD_ARGUMENT;
     }
     if ((n = _synctex_data_width_V(node))<0) {
@@ -4154,7 +4614,7 @@ static synctex_status_t _synctex_make_hbox_contain_point(synctex_node_p node,syn
 }
 static synctex_status_t _synctex_make_hbox_contain_box(synctex_node_p node,synctex_box_s box) {
     int min, max, n;
-    if (NULL == node || SYNCTEX_TYPE(node) != synctex_node_type_hbox) {
+    if (NULL == node || synctex_node_type(node) != synctex_node_type_hbox) {
         return SYNCTEX_STATUS_BAD_ARGUMENT;
     }
     if ((n = _synctex_data_width_V(node))<0) {
@@ -4213,8 +4673,7 @@ static synctex_status_t _synctex_make_hbox_contain_box(synctex_node_p node,synct
 #   define SYNCTEX_CHAR_FORM_REF    'f'
 #   define SYNCTEX_CHAR_BOUNDARY    'x'
 #   define SYNCTEX_CHAR_CHARACTER   'c'
-
-#   define SYNCTEX_RETURN(STATUS) return STATUS;
+#   define SYNCTEX_CHAR_COMMENT     '%'
 
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -4243,7 +4702,8 @@ static synctex_ns_s _synctex_parse_new_sheet(synctex_scanner_p scanner) {
                 while ((next_sheet = __synctex_tree_sibling(last_sheet))) {
                     last_sheet = next_sheet;
                 }
-                __synctex_tree_set_sibling(last_sheet,node); /* sheets have no parent */
+                /* sheets have no parent */
+                __synctex_tree_set_sibling(last_sheet,node);
             } else {
                 scanner->sheet = node;
             }
@@ -4506,12 +4966,61 @@ SYNCTEX_INLINE static synctex_box_s _synctex_data_box_V(synctex_node_p node);
 
 SYNCTEX_INLINE static synctex_node_p _synctex_input_register_line(synctex_node_p input,synctex_node_p node) {
     if (node && _synctex_data_tag(input) != _synctex_data_tag(node)) {
-        input = synctex_scanner_input_with_tag(node->class->scanner,_synctex_data_tag(node));
+        input = synctex_scanner_input_with_tag(node->class_->scanner,_synctex_data_tag(node));
     }
     if (_synctex_data_line(node)>_synctex_data_line(input)) {
         _synctex_data_set_line(input,_synctex_data_line(node));
     }
     return input;
+}
+/**
+ *  Free node and its siblings and return its detached child.
+ */
+SYNCTEX_INLINE static synctex_node_p _synctex_handle_pop_child(synctex_node_p handle) {
+    synctex_node_p child = _synctex_tree_reset_child(handle);
+    synctex_node_free(handle);
+    return child;
+}
+/**
+ *  Set the tlc of all the x nodes that are targets of
+ *  x_handle and its sibling.
+ *  Reset the target of x_handle and deletes its siblings.
+ *  child is a node that has just been parsed and is not a boundary node.
+ */
+SYNCTEX_INLINE static void _synctex_handle_set_tlc(synctex_node_p x_handle, synctex_node_p child, synctex_bool_t make_friend) {
+    if (x_handle) {
+        synctex_node_p sibling = x_handle;
+        if (child) {
+            synctex_node_p target;
+            while ((target = synctex_node_target(sibling))) {
+                _synctex_data_set_tlc(target,child);
+                if (make_friend) {
+                    _synctex_node_make_friend_tlc(target);
+                }
+                if ((sibling = __synctex_tree_sibling(sibling))) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+        _synctex_tree_reset_target(x_handle);
+        sibling = __synctex_tree_reset_sibling(x_handle);
+        synctex_node_free(sibling);
+    }
+}
+/**
+ *  When we have parsed a box, we must register
+ *  all the contained heading boundary nodes
+ *  that have not yet been registered.
+ *  Those handles will be deleted when poping.
+ */
+SYNCTEX_INLINE static void _synctex_handle_make_friend_tlc(synctex_node_p node) {
+    while (node) {
+        synctex_node_p target = _synctex_tree_reset_target(node);
+        _synctex_node_make_friend_tlc(target);
+        node = __synctex_tree_sibling(node);
+    }
 }
 /**
  *  Scan sheets, forms and input records.
@@ -4526,10 +5035,27 @@ static synctex_status_t __synctex_parse_sfi(synctex_scanner_p scanner) {
     synctex_node_p form = NULL;
     synctex_node_p parent = NULL;
     synctex_node_p child = NULL;
+    /*
+     *  Experimentations lead to the forthcoming conclusion:
+     *  Sometimes, the first nodes of a box have the wrong line number.
+     *  These are only boundary (x) nodes.
+     *  We observed that boundary nodes do have the proper line number
+     *  if they follow a node with a different type.
+     *  We keep track of these leading x nodes in a handle tree.
+     */
+    synctex_node_p x_handle = NULL;
+#   define SYNCTEX_RETURN(STATUS) \
+        synctex_node_free(x_handle);\
+        return STATUS
+    synctex_node_p last_k = NULL;
+    synctex_node_p last_g = NULL;
     synctex_ns_s ns = SYNCTEX_NS_NULL;
     int form_depth = 0;
     int ignored_form_depth = 0;
     synctex_bool_t try_input = synctex_YES;
+    if (!(x_handle = _synctex_new_handle(scanner))) {
+        SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
+    }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark MAIN LOOP
 #   endif
@@ -4556,9 +5082,11 @@ main_loop:
                 form = ns.node;
                 parent = form;
                 child = NULL;
+                last_k = last_g = NULL;
                 goto content_loop;
             }
             if (form || sheet) {
+                last_k = last_g = NULL;
                 goto content_loop;
             }
             try_input = synctex_YES;
@@ -4572,6 +5100,7 @@ main_loop:
             if (ns.status == SYNCTEX_STATUS_OK) {
                 sheet = ns.node;
                 parent = sheet;
+                last_k = last_g = NULL;
                 goto content_loop;
             }
             goto main_loop;
@@ -4586,8 +5115,17 @@ main_loop:
                 SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
             }
             if (form || sheet) {
+                last_k = last_g = NULL;
                 goto content_loop;
             }
+            try_input = synctex_YES;
+            goto main_loop;
+        } else if (SYNCTEX_START_SCAN(ANCHOR)) {
+#	ifdef SYNCTEX_NOTHING
+#       pragma mark + SCAN COMMENT
+#   endif
+            ++SYNCTEX_CUR;
+            _synctex_next_line(scanner);
             try_input = synctex_YES;
             goto main_loop;
         } else if (try_input) {
@@ -4603,11 +5141,11 @@ main_loop:
         status = _synctex_match_string(scanner,"Postamble:");
         if (status==SYNCTEX_STATUS_OK) {
             scanner->flags.postamble = 1;
-            return status;
+            SYNCTEX_RETURN(status);
         }
         status = _synctex_next_line(scanner);
         if (status<SYNCTEX_STATUS_OK) {
-            return status;
+            SYNCTEX_RETURN(status);
         }
    }
     /* At least 1 more character */
@@ -4643,6 +5181,7 @@ ignore_loop:
     if (ignored_form_depth) {
         goto ignore_loop;
     } else {
+        last_k = last_g = NULL;
         goto content_loop;
     }
 
@@ -4675,6 +5214,7 @@ content_loop:
 #   endif
             ns = _synctex_parse_new_vbox(scanner);
             if (ns.status == SYNCTEX_STATUS_OK) {
+                x_handle = _synctex_new_handle_with_child(x_handle);
                 if (child) {
                     _synctex_node_set_sibling(child,ns.node);
                 } else {
@@ -4686,10 +5226,11 @@ content_loop:
                 synctex_node_log(parent);
 #   endif
                 input.node = _synctex_input_register_line(input.node,parent);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(END_VBOX)) {
-            if (SYNCTEX_TYPE(parent) == synctex_node_type_vbox) {
+            if (synctex_node_type(parent) == synctex_node_type_vbox) {
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark + SCAN XOBV
 #   endif
@@ -4700,6 +5241,11 @@ content_loop:
                 }
                 child = parent;
                 parent = _synctex_tree_parent(child);
+                if (!form) {
+                    _synctex_handle_make_friend_tlc(x_handle);
+                }
+                x_handle = _synctex_handle_pop_child(x_handle);
+                _synctex_handle_set_tlc(x_handle,child,!form);
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
@@ -4707,6 +5253,7 @@ content_loop:
                     _synctex_error("Uncomplete container.");
                     SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
                 }
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(BEGIN_HBOX)) {
@@ -4714,11 +5261,12 @@ content_loop:
 #       pragma mark + SCAN HBOX
 #   endif
 #   if defined(SYNCTEX_USE_CHARINDEX)
-            synctex_charindex_t char_index = (synctex_charindex_t)(scanner->charindex_offset+SYNCTEX_CUR-SYNCTEX_START);
-            synctex_lineindex_t line_index = scanner->line_number;
+            synctex_charindex_t char_index = (synctex_charindex_t)(scanner->reader->charindex_offset+SYNCTEX_CUR-SYNCTEX_START);
+            synctex_lineindex_t line_index = scanner->reader->line_number;
 #   endif
             ns = _synctex_parse_new_hbox(scanner);
             if (ns.status == SYNCTEX_STATUS_OK) {
+                x_handle = _synctex_new_handle_with_child(x_handle);
                 if (child) {
                     _synctex_node_set_sibling(child,ns.node);
                 } else {
@@ -4732,10 +5280,7 @@ content_loop:
                     child->char_index=char_index;
 #   endif
                     _synctex_node_set_child(parent,child);
-                    _synctex_data_set_tag(child,_synctex_data_tag(parent));
-                    _synctex_data_set_line(child,_synctex_data_line(parent));
-                    _synctex_data_set_h(child,_synctex_data_h(parent));
-                    _synctex_data_set_v(child,_synctex_data_v(parent));
+                    _synctex_data_set_tlchv(child,parent);
                     if (!form) {
                         __synctex_node_make_friend_tlc(child);
                     }
@@ -4746,29 +5291,32 @@ content_loop:
                 synctex_node_log(parent);
 #   endif
                 input.node = _synctex_input_register_line(input.node,parent);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(END_HBOX)) {
-            if (SYNCTEX_TYPE(parent) == synctex_node_type_hbox) {
+            if (synctex_node_type(parent) == synctex_node_type_hbox) {
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark + SCAN XOBH
 #   endif
                 ++SYNCTEX_CUR;
+                /*  setting the next horizontal box at the end ensures
+                 * that a child is recorded before any of its ancestors.
+                 */
+                if (form == NULL /* && sheet != NULL*/ ) {
+                    _synctex_tree_set_next_hbox(parent,_synctex_tree_next_hbox(sheet));
+                    _synctex_tree_set_next_hbox(sheet,parent);
+                }
                 {
-                    /*  setting the next horizontal box at the end ensures
-                     * that a child is recorded before any of its ancestors.
-                     */
-                    if (form == NULL /* && sheet != NULL*/ ) {
-                        _synctex_tree_set_next_hbox(parent,_synctex_tree_next_hbox(sheet));
-                        _synctex_tree_set_next_hbox(sheet,parent);
-                    }
                     /*  Update the mean line number */
                     synctex_node_p node = _synctex_tree_child(parent);
                     synctex_node_p sibling = NULL;
                     /*  Ignore the first node (a box_bdry) */
-                    if (node && (node = __synctex_tree_sibling(node))) {
+                    if (node && (sibling = __synctex_tree_sibling(node))) {
                         unsigned int node_weight = 0;
                         unsigned int cumulated_line_numbers = 0;
+                        _synctex_data_set_line(node, _synctex_data_line(sibling));
+                        node = sibling;
                         do {
                             if (synctex_node_type(node)==synctex_node_type_hbox) {
                                 if (_synctex_data_weight(node)) {
@@ -4795,8 +5343,13 @@ content_loop:
                         sibling->char_index=child->char_index;
 #   endif
                         _synctex_node_set_sibling(child,sibling);
-                        _synctex_data_set_tag(sibling,_synctex_data_tag(child));
-                        _synctex_data_set_line(sibling,_synctex_data_line(child));
+                        {
+                            synctex_node_p N = child;
+                            while (synctex_node_type(N) == synctex_node_type_ref) {
+                                N = _synctex_tree_arg_sibling(N);
+                            }
+                            _synctex_data_set_tlc(sibling,N);
+                        }
                         _synctex_data_set_h(sibling,_synctex_data_h_V(parent)+_synctex_data_width_V(parent));
                         _synctex_data_set_v(sibling,_synctex_data_v_V(parent));
                         child = sibling;
@@ -4805,9 +5358,26 @@ content_loop:
                     }
                     sibling = _synctex_tree_child(parent);
                     _synctex_data_set_point(sibling,_synctex_data_point_V(parent));
+                    if (last_k && last_g && (child = synctex_node_child(parent))) {
+                        /* Find the node preceeding last_k */
+                        synctex_node_p next;
+                        while ((next = __synctex_tree_sibling(child))) {
+                            if (next == last_k) {
+                                _synctex_data_set_tlc(last_k,child);
+                                _synctex_data_set_tlc(last_g,child);
+                                break;
+                            }
+                            child = next;
+                        }
+                    }
                     child = parent;
                     parent = _synctex_tree_parent(child);
-                    _synctex_make_hbox_contain_box(parent,_synctex_data_box_V(child));
+                    if (!form) {
+                        _synctex_handle_make_friend_tlc(x_handle);
+                    }
+                    x_handle = _synctex_handle_pop_child(x_handle);
+                    _synctex_handle_set_tlc(x_handle,child,!form);
+                    _synctex_make_hbox_contain_box(parent,                                    _synctex_data_box_V(child));
 #   if SYNCTEX_VERBOSE
                     synctex_node_log(child);
 #   endif
@@ -4816,6 +5386,7 @@ content_loop:
                     _synctex_error("Uncomplete container.");
                     SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
                 }
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(VOID_VBOX)) {
@@ -4830,10 +5401,12 @@ content_loop:
                     _synctex_node_set_child(parent,ns.node);
                 }
                 child = ns.node;
+                _synctex_handle_set_tlc(x_handle, child,!form);
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(VOID_HBOX)) {
@@ -4851,11 +5424,13 @@ content_loop:
                     _synctex_node_set_child(parent,ns.node);
                 }
                 child = ns.node;
+                _synctex_handle_set_tlc(x_handle, child,!form);
                 _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(KERN)) {
@@ -4863,7 +5438,7 @@ content_loop:
 #       pragma mark + SCAN KERN
 #   endif
             ns = _synctex_parse_new_kern(scanner);
-//        continue_scan:
+        continue_scan:
             if (ns.status == SYNCTEX_STATUS_OK) {
                 if (child) {
                     _synctex_node_set_sibling(child,ns.node);
@@ -4874,11 +5449,14 @@ content_loop:
                 if (!form) {
                     __synctex_node_make_friend_tlc(child);
                 }
+                _synctex_handle_set_tlc(x_handle, child,!form);
                 _synctex_make_hbox_contain_box(parent,_synctex_data_xob(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = child;
+                last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(GLUE)) {
@@ -4896,11 +5474,17 @@ content_loop:
                 if (!form) {
                     __synctex_node_make_friend_tlc(child);
                 }
+                _synctex_handle_set_tlc(x_handle, child,!form);
                 _synctex_make_hbox_contain_point(parent,_synctex_data_point(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                if (last_k) {
+                    last_g = child;
+                } else {
+                    last_k = last_g = NULL;
+                }
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(RULE)) {
@@ -4918,6 +5502,7 @@ content_loop:
                 if (!form) {
                     __synctex_node_make_friend_tlc(child);
                 }
+                _synctex_handle_set_tlc(x_handle, child,!form);
                 /* Rules are sometimes far too big
 _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                  */
@@ -4925,6 +5510,7 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(MATH)) {
@@ -4942,11 +5528,13 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 if (!form) {
                     __synctex_node_make_friend_tlc(child);
                 }
+                _synctex_handle_set_tlc(x_handle, child,!form);
                 _synctex_make_hbox_contain_point(parent,_synctex_data_point(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(FORM_REF)) {
@@ -4979,6 +5567,7 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(BOUNDARY)) {
@@ -4992,15 +5581,23 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 } else {
                     _synctex_node_set_child(parent,ns.node);
                 }
-                child = ns.node;
-                if (!form) {
-                    __synctex_node_make_friend_tlc(child);
+                if (synctex_node_type(child)==synctex_node_type_box_bdry
+                    || _synctex_tree_target(x_handle)) {
+                    child = _synctex_tree_reset_child(x_handle);
+                    child = _synctex_new_handle_with_child(child);
+                    __synctex_tree_set_sibling(child, x_handle);
+                    x_handle = child;
+                    _synctex_tree_set_target(x_handle,ns.node);
+                } else if (!form) {
+                    __synctex_node_make_friend_tlc(ns.node);
                 }
+                child = ns.node;
                 _synctex_make_hbox_contain_point(parent,_synctex_data_point(child));
 #   if SYNCTEX_VERBOSE
                 synctex_node_log(child);
 #   endif
                 input.node = _synctex_input_register_line(input.node,child);
+                last_k = last_g = NULL;
                 goto content_loop;
             }
         } else if (SYNCTEX_START_SCAN(CHARACTER)) {
@@ -5012,6 +5609,7 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 _synctex_error("Missing end of container.");
                 SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
             }
+            last_k = last_g = NULL;
             goto content_loop;
         } else if (SYNCTEX_START_SCAN(ANCHOR)) {
 #	ifdef SYNCTEX_NOTHING
@@ -5040,7 +5638,7 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 if (_synctex_next_line(scanner)<SYNCTEX_STATUS_OK
                     && (form_depth || sheet)) {
                     _synctex_error("Missing end of container.");
-                    return SYNCTEX_STATUS_ERROR;
+                    SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
                 }
                 if ((parent = _synctex_tree_parent(form))) {
                     _synctex_tree_reset_parent(form);
@@ -5056,11 +5654,12 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
                 goto main_loop;
             }
         }
-        _synctex_error("Ignored record <%.20s...>(line %i)\n",SYNCTEX_CUR, scanner->line_number+1);
+        _synctex_error("Ignored record <%.20s...>(line %i)\n",SYNCTEX_CUR, scanner->reader->line_number+1);
         if (_synctex_next_line(scanner)<SYNCTEX_STATUS_OK) {
             _synctex_error("Missing end of sheet/form.");
             SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
         }
+        last_k = last_g = NULL;
         goto content_loop;
     }
     zs = _synctex_buffer_get_available_size(scanner,1);
@@ -5068,8 +5667,10 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
         _synctex_error("Uncomplete synctex file, postamble missing.");
         SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
     }
+    last_k = last_g = NULL;
     goto content_loop;
 }
+#undef SYNCTEX_RETURN
 /**
  *  Replace ref in its tree hierarchy by a single box
  *  proxy to the contents of the associated form.
@@ -5078,6 +5679,9 @@ _synctex_make_hbox_contain_box(parent,_synctex_data_box(child));
  *  - note: Does nothing if ref is not owned.
  *  - note: On return, ref will have no parent nor sibling.
  *      The caller is responsible for releasing ref.
+ *  - note: this is where root proxies are created.
+ *  - note: the target of the root proxy is the content
+ *      of a form.
  */
 SYNCTEX_INLINE static synctex_ns_s __synctex_replace_ref(synctex_node_p ref) {
     synctex_ns_s ns = {NULL,SYNCTEX_STATUS_OK};
@@ -5085,22 +5689,20 @@ SYNCTEX_INLINE static synctex_ns_s __synctex_replace_ref(synctex_node_p ref) {
     if ((parent = _synctex_tree_parent(ref))) {
         synctex_node_p sibling = __synctex_tree_reset_sibling(ref);
         synctex_node_p arg_sibling = synctex_node_arg_sibling(ref);
-        /*  arg_sibling != NULL because it is
-         *  at least a box boundary. */
-        synctex_node_p target = synctex_form_content(ref->class->scanner, _synctex_data_tag(ref));
+        /*  arg_sibling != NULL because the child of a box
+         *  is always a box boundary, not a ref. */
+        synctex_node_p target = synctex_form_content(ref->class_->scanner, _synctex_data_tag(ref));
         /*  The target is a single node (box)
          *  with children and no siblings. */
         if ((ns.node = __synctex_new_proxy_from_ref_to(ref, target))) {
             /*  Insert this proxy instead of ref. */
-            if (arg_sibling) {
-                _synctex_node_set_sibling(arg_sibling,ns.node);
-            } else {
-                _synctex_node_set_child(parent,ns.node);
-            }
+            _synctex_node_set_sibling(arg_sibling,ns.node);
             /*  Then append the original sibling of ref. */
-            _synctex_tree_set_sibling(ns.node,sibling);
+            _synctex_node_set_sibling(ns.node,sibling);
 #   if defined(SYNCTEX_USE_CHARINDEX)
             if (synctex_node_type(sibling) == synctex_node_type_box_bdry) {
+                /*  The sibling is the last box boundary
+                 *  which may have a less accurate information */
                 sibling->char_index = arg_sibling->char_index;
                 sibling->line_index = arg_sibling->line_index;
             }
@@ -5109,14 +5711,9 @@ SYNCTEX_INLINE static synctex_ns_s __synctex_replace_ref(synctex_node_p ref) {
             printf("!  Ref replacement:\n");
             synctex_node_log(ref);
             synctex_node_display(synctex_node_sibling(ref));
-            synctex_node_log(proxy);
-            synctex_node_display(synctex_node_sibling(proxy));
 #endif
-            /*  Now P == _synctex_tree_parent(N) */
-        } else /*  simply remove ref */ if (arg_sibling) {
+        } else /*  simply remove ref */ {
             _synctex_tree_set_sibling(arg_sibling,sibling);
-        } else {
-            __synctex_tree_set_child(parent,sibling);
         }
         __synctex_tree_reset_parent(ref);
     } else {
@@ -5127,10 +5724,11 @@ SYNCTEX_INLINE static synctex_ns_s __synctex_replace_ref(synctex_node_p ref) {
     return ns;
 }
 /**
- *  The ref is the starting point of a linked list of refs.
- *  The link is made through the friend field.
- *  Returns the status and the list of all the proxies created.
- *  The link is made through the friend field.
+ *  - argument ref: is the starting point of a linked list
+ *      of refs. The link is made through the friend field.
+ *  - returns: the status and the list of all the proxies
+ *      created. The link is made through the friend field.
+ *  - note: All refs are freed
  */
 SYNCTEX_INLINE static synctex_ns_s _synctex_post_process_ref(synctex_node_p ref) {
     synctex_ns_s ns = {NULL, SYNCTEX_STATUS_OK};
@@ -5173,16 +5771,16 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process_proxy(synctex_node_
             }
         }
         do {
-            printf("POST PROCESSING %s\n",_synctex_node_abstract(proxy));
 #if SYNCTEX_DEBUG>500
+            printf("POST PROCESSING %s\n",_synctex_node_abstract(proxy));
             {
                 int i,j = 0;
-                for (i=0;i<proxy->class->scanner->number_of_lists;++i) {
-                    synctex_node_p N = proxy->class->scanner->lists_of_friends[i];
+                for (i=0;i<proxy->class_->scanner->number_of_lists;++i) {
+                    synctex_node_p N = proxy->class_->scanner->lists_of_friends[i];
                     do {
                         if (N==proxy) {
                             ++j;
-                            printf("%s",)_synctex_node_abstract(N));
+                            printf("%s",_synctex_node_abstract(N));
                         }
                     } while ((N = _synctex_tree_friend(N)));
                 }
@@ -5195,8 +5793,8 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process_proxy(synctex_node_
 #if SYNCTEX_DEBUG>500
             {
                 int i,j = 0;
-                for (i=0;i<proxy->class->scanner->number_of_lists;++i) {
-                    synctex_node_p N = proxy->class->scanner->lists_of_friends[i];
+                for (i=0;i<proxy->class_->scanner->number_of_lists;++i) {
+                    synctex_node_p N = proxy->class_->scanner->lists_of_friends[i];
                     do {
                         if (N==proxy) {
                             ++j;
@@ -5214,8 +5812,8 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process_proxy(synctex_node_
 #if SYNCTEX_DEBUG>500
             if (proxy) {
                 int i,j = 0;
-                for (i=0;i<proxy->class->scanner->number_of_lists;++i) {
-                    synctex_node_p N = proxy->class->scanner->lists_of_friends[i];
+                for (i=0;i<proxy->class_->scanner->number_of_lists;++i) {
+                    synctex_node_p N = proxy->class_->scanner->lists_of_friends[i];
                     do {
                         if (N==proxy) {
                             ++j;
@@ -5250,10 +5848,14 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process(synctex_scanner_p s
 #endif
     /*  replace form refs inside forms by box proxies */
     ns = _synctex_post_process_ref(scanner->ref_in_form);
+    scanner->ref_in_form = NULL;/*  it was just released */
     if (ns.status<status) {
         status = ns.status;
     }
-    scanner->ref_in_form = NULL;
+#if SYNCTEX_DEBUG>500
+    printf("!  ref replaced in form _synctex_post_process.\n");
+    synctex_node_display(scanner->form);
+#endif
     /*  Create all the form proxy nodes on the fly.
      *  ns.node is the root of the list of
      *  newly created proxies.
@@ -5261,7 +5863,7 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process(synctex_scanner_p s
      *  In order to be properly managed, the data must
      *  be organized in the right way.
      *  The inserted form must be defined before
-     *  the inserting one.   */
+     *  the inserting one. *TeX will take care of that.   */
     ns.status = _synctex_post_process_proxy(ns.node,&_synctex_tree_reset_friend);
     if (ns.status<status) {
         status = ns.status;
@@ -5272,6 +5874,10 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process(synctex_scanner_p s
         status = ns.status;
     }
     scanner->ref_in_sheet = NULL;
+#if SYNCTEX_DEBUG>500
+    printf("!  ref replaced in sheet _synctex_post_process.\n");
+    synctex_node_display(scanner->sheet);
+#endif
 #if 0
     {
         int i;
@@ -5290,7 +5896,7 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process(synctex_scanner_p s
         }
     }
 #endif
-#if 1
+#if SYNCTEX_DEBUG>10000
     {
         int i;
         for (i=0;i<scanner->number_of_lists;++i) {
@@ -5324,7 +5930,7 @@ SYNCTEX_INLINE static synctex_status_t _synctex_post_process(synctex_scanner_p s
 /*  Used when parsing the synctex file
  */
 static synctex_status_t _synctex_scan_content(synctex_scanner_p scanner) {
-    scanner->lastv = -1;
+    scanner->reader->lastv = -1;
     synctex_status_t status = 0;
     if (NULL == scanner) {
         return SYNCTEX_STATUS_BAD_ARGUMENT;
@@ -5348,17 +5954,19 @@ content_not_found:
     }
     return status;
 }
-static synctex_status_t _synctex_open(const char * output, const char * build_directory, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_modeRef);
-
 synctex_scanner_p synctex_scanner_new() {
     synctex_scanner_p scanner =(synctex_scanner_p)_synctex_malloc(sizeof(synctex_scanner_s));
     if (scanner) {
+        if (!(scanner->reader = _synctex_malloc(sizeof(synctex_reader_s)))) {
+            _synctex_free(scanner);
+            return NULL;
+        }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #   endif
 #   define DEFINE_synctex_scanner_class(NAME)\
-    scanner->class[synctex_node_type_##NAME] = synctex_class_##NAME;\
-(scanner->class[synctex_node_type_##NAME]).scanner = scanner
+    scanner->class_[synctex_node_type_##NAME] = synctex_class_##NAME;\
+(scanner->class_[synctex_node_type_##NAME]).scanner = scanner
         DEFINE_synctex_scanner_class(input);
         DEFINE_synctex_scanner_class(sheet);
         DEFINE_synctex_scanner_class(form);
@@ -5373,11 +5981,11 @@ synctex_scanner_p synctex_scanner_new() {
         DEFINE_synctex_scanner_class(boundary);
         DEFINE_synctex_scanner_class(box_bdry);
         DEFINE_synctex_scanner_class(ref);
-        DEFINE_synctex_scanner_class(hbox_proxy);
-        DEFINE_synctex_scanner_class(vbox_proxy);
+        DEFINE_synctex_scanner_class(proxy_hbox);
+        DEFINE_synctex_scanner_class(proxy_vbox);
         DEFINE_synctex_scanner_class(proxy);
-        DEFINE_synctex_scanner_class(last_proxy);
-        DEFINE_synctex_scanner_class(result);
+        DEFINE_synctex_scanner_class(proxy_last);
+        DEFINE_synctex_scanner_class(handle);
         /*  set up the lists of friends */
         scanner->number_of_lists = 1024;
         scanner->lists_of_friends = (synctex_node_r)_synctex_malloc(scanner->number_of_lists*sizeof(synctex_node_p));
@@ -5393,240 +6001,41 @@ synctex_scanner_p synctex_scanner_new() {
 }
 /*  Where the synctex scanner is created. */
 synctex_scanner_p synctex_scanner_new_with_output_file(const char * output, const char * build_directory, int parse) {
-    gzFile file = NULL;
-    char * synctex = NULL;
-    synctex_scanner_p scanner = NULL;
-    synctex_io_mode_t io_mode = 0;
-    /*  We ensure that SYNCTEX_BUFFER_SIZE < UINT_MAX, I don't know if it makes sense... */
-    if (SYNCTEX_BUFFER_SIZE >= UINT_MAX) {
-        _synctex_error("Internal inconsistency, bad SYNCTEX_BUFFER_SIZE (1)");
-        return NULL;
-    }
-    /*  for integers: */
-    if (SYNCTEX_BUFFER_SIZE < SYNCTEX_BUFFER_MIN_SIZE) {
-        _synctex_error("Internal inconsistency, bad SYNCTEX_BUFFER_SIZE (2)");
-        return NULL;
-    }
-    /*  now open the synctex file */
-    if (_synctex_open(output,build_directory,&synctex,&file,synctex_ADD_QUOTES,&io_mode)<SYNCTEX_STATUS_OK || !file) {
-        if (_synctex_open(output,build_directory,&synctex,&file,synctex_DONT_ADD_QUOTES,&io_mode)<SYNCTEX_STATUS_OK || !file) {
-            return NULL;
-        }
-    }
-    scanner = synctex_scanner_new();
+    synctex_scanner_p scanner = synctex_scanner_new();
     if (NULL == scanner) {
         _synctex_error("malloc problem");
-        free(synctex);
-        gzclose(file);
         return NULL;
     }
-    /*  make a private copy of output for the scanner */
-    if (NULL == (scanner->output = (char *)malloc(strlen(output)+1))){
-        _synctex_error("!  synctex_scanner_new_with_output_file: Memory problem (2), scanner's output is not reliable.");
-    } else if (scanner->output != strcpy(scanner->output,output)) {
-        _synctex_error("!  synctex_scanner_new_with_output_file: Copy problem, scanner's output is not reliable.");
+    if ((scanner->reader = synctex_reader_init_with_output_file(scanner->reader, output, build_directory))) {
+        return parse? synctex_scanner_parse(scanner):scanner;
     }
-    scanner->synctex = synctex;/*  Now the scanner owns synctex */
-    SYNCTEX_FILE = file;
-    return parse? synctex_scanner_parse(scanner):scanner;
+    _synctex_error("No file?");
+    return NULL;
 }
 
-/*	This functions opens the file at the "output" given location.
- *  It manages the problem of quoted filenames that appear with pdftex and filenames containing the space character.
- *  In TeXLive 2008, the synctex file created with pdftex did contain unexpected quotes.
- *	This function will remove them if possible.
- *  All the reference arguments will take a value on return. They must be non NULL.
- *	- returns: 0 on success, non 0 on error. */
-static synctex_status_t __synctex_open(const char * output, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_mode_ref) {
-    if (synctex_name_ref && file_ref && io_mode_ref) {
-        /*  1 local variable that uses dynamic memory */
-        char * synctex_name = NULL;
-        gzFile the_file = NULL;
-        char * quoteless_synctex_name = NULL;
-        size_t size = 0;
-        synctex_io_mode_t io_mode = *io_mode_ref;
-        const char * mode = _synctex_get_io_mode_name(io_mode);
-        /*  now create the synctex file name */
-        size = strlen(output)+strlen(synctex_suffix)+strlen(synctex_suffix_gz)+1;
-        synctex_name = (char *)malloc(size);
-        if (NULL == synctex_name) {
-            _synctex_error("!  __synctex_open: Memory problem (1)\n");
-            return SYNCTEX_STATUS_ERROR;
-        }
-        /*  we have reserved for synctex enough memory to copy output (including its 2 eventual quotes), both suffices,
-         *  including the terminating character. size is free now. */
-        if (synctex_name != strcpy(synctex_name,output)) {
-            _synctex_error("!  __synctex_open: Copy problem\n");
-        return_on_error:
-            free(synctex_name);
-            free(quoteless_synctex_name);/* We MUST have quoteless_synctex_name<>synctex_name */
-            return SYNCTEX_STATUS_ERROR;
-        }
-        /*  remove the last path extension if any */
-        _synctex_strip_last_path_extension(synctex_name);
-        if (!strlen(synctex_name)) {
-            goto return_on_error;
-        }
-        /*  now insert quotes. */
-        if (add_quotes) {
-            char * quoted = NULL;
-            if (_synctex_copy_with_quoting_last_path_component(synctex_name,&quoted,size) || quoted == NULL) {
-                /*	There was an error or quoting does not make sense: */
-                goto return_on_error;
-            }
-        }
-        /*	Now add to synctex_name the first path extension. */
-        if (synctex_name != strcat(synctex_name,synctex_suffix)){
-            _synctex_error("!  __synctex_open: Concatenation problem (can't add suffix '%s')\n",synctex_suffix);
-            goto return_on_error;
-        }
-        /*	Add to quoteless_synctex_name as well, if relevant. */
-        if (quoteless_synctex_name && (quoteless_synctex_name != strcat(quoteless_synctex_name,synctex_suffix))){
-            free(quoteless_synctex_name);
-            quoteless_synctex_name = NULL;
-        }
-        if (NULL == (the_file = gzopen(synctex_name,mode))) {
-            /*  Could not open this file */
-            if (errno != ENOENT) {
-                /*  The file does exist, this is a lower level error, I can't do anything. */
-                _synctex_error("could not open %s, error %i\n",synctex_name,errno);
-                goto return_on_error;
-            }
-            /*  Apparently, there is no uncompressed synctex file. Try the compressed version */
-            if (synctex_name != strcat(synctex_name,synctex_suffix_gz)){
-                _synctex_error("!  __synctex_open: Concatenation problem (can't add suffix '%s')\n",synctex_suffix_gz);
-                goto return_on_error;
-            }
-            io_mode |= synctex_io_gz_mask;
-            mode = _synctex_get_io_mode_name(io_mode); /* the file is a compressed and is a binary file, this caused errors on Windows */
-            /*	Add the suffix to the quoteless_synctex_name as well. */
-            if (quoteless_synctex_name && (quoteless_synctex_name != strcat(quoteless_synctex_name,synctex_suffix_gz))){
-                free(quoteless_synctex_name);
-                quoteless_synctex_name = NULL;
-            }
-            if (NULL == (the_file = gzopen(synctex_name,mode))) {
-                /*  Could not open this file */
-                if (errno != ENOENT) {
-                    /*  The file does exist, this is a lower level error, I can't do anything. */
-                    _synctex_error("Could not open %s, error %i\n",synctex_name,errno);
-                }
-                goto return_on_error;
-            }
-        }
-        /*	At this point, the file is properly open.
-         *  If we are in the add_quotes mode, we change the file name by removing the quotes. */
-        if (quoteless_synctex_name) {
-            gzclose(the_file);
-            if (rename(synctex_name,quoteless_synctex_name)) {
-                _synctex_error("Could not rename %s to %s, error %i\n",synctex_name,quoteless_synctex_name,errno);
-                /*	We could not rename, reopen the file with the quoted name. */
-                if (NULL == (the_file = gzopen(synctex_name,mode))) {
-                    /*  No luck, could not re open this file, something has happened meanwhile */
-                    if (errno != ENOENT) {
-                        /*  The file does not exist any more, it has certainly be removed somehow
-                         *  this is a lower level error, I can't do anything. */
-                        _synctex_error("Could not open again %s, error %i\n",synctex_name,errno);
-                    }
-                    goto return_on_error;
-                }
-            } else {
-                /*  The file has been successfully renamed */
-                if (NULL == (the_file = gzopen(quoteless_synctex_name,mode))) {
-                    /*  Could not open this file */
-                    if (errno != ENOENT) {
-                        /*  The file does exist, this is a lower level error, I can't do anything. */
-                        _synctex_error("Could not open renamed %s, error %i\n",quoteless_synctex_name,errno);
-                    }
-                    goto return_on_error;
-                }
-                /*  The quote free file name should replace the old one:*/
-                free(synctex_name);
-                synctex_name = quoteless_synctex_name;
-                quoteless_synctex_name = NULL;
-            }
-        }
-        /*  The operation is successfull, return the arguments by value.    */
-        * file_ref = the_file;
-        * io_mode_ref = io_mode;
-        * synctex_name_ref = synctex_name;
-        return SYNCTEX_STATUS_OK;
-    }
-    return SYNCTEX_STATUS_BAD_ARGUMENT;	/*	Bad parameter.	*/
-}
-
-/*	Opens the ouput file, taking into account the eventual build_directory.
- *	0 on success, non 0 on error. */
-static synctex_status_t _synctex_open(const char * output, const char * build_directory, char ** synctex_name_ref, gzFile * file_ref, synctex_bool_t add_quotes, synctex_io_mode_t * io_mode_ref) {
-#	define synctex_name (*synctex_name_ref)
-#	define the_file (*file_ref)
-    synctex_status_t result = __synctex_open(output,synctex_name_ref,file_ref,add_quotes,io_mode_ref);
-    if ((result < SYNCTEX_STATUS_OK || !*file_ref) && build_directory && strlen(build_directory)) {
-        char * build_output;
-        const char *lpc;
-        size_t size;
-        synctex_bool_t is_absolute;
-        build_output = NULL;
-        lpc = _synctex_last_path_component(output);
-        size = strlen(build_directory)+strlen(lpc)+2;   /*  One for the '/' and one for the '\0'.   */
-        is_absolute = _synctex_path_is_absolute(build_directory);
-        if (!is_absolute) {
-            size += strlen(output);
-        }
-        if ((build_output = (char *)malloc(size))) {
-            if (is_absolute) {
-                build_output[0] = '\0';
-            } else {
-                if (build_output != strcpy(build_output,output)) {
-                    free(build_output);
-                    return -4;
-                }
-                build_output[lpc-output]='\0';
-            }
-            if (build_output == strcat(build_output,build_directory)) {
-                /*	Append a path separator if necessary. */
-                if (!SYNCTEX_IS_PATH_SEPARATOR(build_output[strlen(build_directory)-1])) {
-                    if (build_output != strcat(build_output,"/")) {
-                        free(build_output);
-                        return -2;
-                    }
-                }
-                /*	Append the last path component of the output. */
-                if (build_output != strcat(build_output,lpc)) {
-                    free(build_output);
-                    return -3;
-                }
-                result = __synctex_open(build_output,synctex_name_ref,file_ref,add_quotes,io_mode_ref);
-                free(build_output);
-                return result;
-            }
-            free(build_output);
-        }
-        return -1;
-    }
-    return result;
-#	undef synctex_name
-#	undef the_file
-}
 /*  The scanner destructor
  */
-void synctex_scanner_free(synctex_scanner_p scanner) {
-    if (NULL == scanner) {
-        return;
+int synctex_scanner_free(synctex_scanner_p scanner) {
+    int node_count = 0;
+    if (scanner) {
+        if (SYNCTEX_FILE) {
+            gzclose(SYNCTEX_FILE);
+            SYNCTEX_FILE = NULL;
+        }
+        synctex_node_free(scanner->sheet);
+        synctex_node_free(scanner->form);
+        synctex_node_free(scanner->input);
+        synctex_reader_free(scanner->reader);
+        SYNCTEX_SCANNER_FREE_HANDLE(scanner);
+        synctex_iterator_free(scanner->iterator);
+        free(scanner->output_fmt);
+        free(scanner->lists_of_friends);
+#if SYNCTEX_USE_NODE_COUNT>0
+        node_count = scanner->node_count;
+#endif
+        free(scanner);
     }
-    if (SYNCTEX_FILE) {
-        gzclose(SYNCTEX_FILE);
-        SYNCTEX_FILE = NULL;
-    }
-    synctex_node_free(scanner->sheet);
-    synctex_node_free(scanner->form);
-    synctex_node_free(scanner->input);
-    synctex_iterator_free(scanner->iterator);
-    free(SYNCTEX_START);
-    free(scanner->output_fmt);
-    free(scanner->output);
-    free(scanner->synctex);
-    free(scanner->lists_of_friends);
-    free(scanner);
+    return node_count;
 }
 
 /*  Where the synctex scanner parses the contents of the file. */
@@ -5642,7 +6051,7 @@ synctex_scanner_p synctex_scanner_parse(synctex_scanner_p scanner) {
     /*  initialize the offset with a fake unprobable value,
      *  If there is a post scriptum section, this value will be overriden by the real life value */
     scanner->x_offset = scanner->y_offset = 6.027e23f;
-    scanner->line_number = 1;
+    scanner->reader->line_number = 1;
     
     SYNCTEX_START = (char *)malloc(SYNCTEX_BUFFER_SIZE+1); /*  one more character for null termination */
     if (NULL == SYNCTEX_START) {
@@ -5663,7 +6072,7 @@ synctex_scanner_p synctex_scanner_parse(synctex_scanner_p scanner) {
     *SYNCTEX_END = '\0';
     SYNCTEX_CUR = SYNCTEX_END;
 #   if defined(SYNCTEX_USE_CHARINDEX)
-    scanner->charindex_offset = -SYNCTEX_BUFFER_SIZE;
+    scanner->reader->charindex_offset = -SYNCTEX_BUFFER_SIZE;
 #   endif
     status = _synctex_scan_preamble(scanner);
     if (status<SYNCTEX_STATUS_OK) {
@@ -5741,7 +6150,7 @@ void synctex_scanner_display(synctex_scanner_p scanner) {
     if (NULL == scanner) {
         return;
     }
-    printf("The scanner:\noutput:%s\noutput_fmt:%s\nversion:%i\n",scanner->output,scanner->output_fmt,scanner->version);
+    printf("The scanner:\noutput:%s\noutput_fmt:%s\nversion:%i\n",scanner->reader->output,scanner->output_fmt,scanner->version);
     printf("pre_unit:%i\nx_offset:%i\ny_offset:%i\n",scanner->pre_unit,scanner->pre_x_offset,scanner->pre_y_offset);
     printf("count:%i\npost_magnification:%f\npost_x_offset:%f\npost_y_offset:%f\n",
            scanner->count,scanner->unit,scanner->x_offset,scanner->y_offset);
@@ -5783,6 +6192,12 @@ const char * synctex_scanner_get_name(synctex_scanner_p scanner,int tag) {
                 return (_synctex_data_name(input));
             }
         } while((input = __synctex_tree_sibling(input)));
+    }
+    return NULL;
+}
+const char * synctex_node_get_name(synctex_node_p node) {
+    if (node) {
+        return synctex_scanner_get_name(node->class_->scanner,_synctex_data_tag(node));
     }
     return NULL;
 }
@@ -5835,7 +6250,7 @@ int synctex_scanner_get_tag(synctex_scanner_p scanner,const char * name) {
                 /*  the given name was not the one known by TeX
                  *  try a name relative to the enclosing directory of the scanner->output file */
                 const char * relative = name;
-                const char * ptr = scanner->output;
+                const char * ptr = scanner->reader->output;
                 while((strlen(relative) > 0) && (strlen(ptr) > 0) && (*relative == *ptr))
                 {
                     relative += 1;
@@ -5885,42 +6300,34 @@ const char * synctex_scanner_get_output_fmt(synctex_scanner_p scanner) {
     return NULL != scanner && scanner->output_fmt?scanner->output_fmt:"";
 }
 const char * synctex_scanner_get_output(synctex_scanner_p scanner) {
-    return NULL != scanner && scanner->output?scanner->output:"";
+    return NULL != scanner && scanner->reader->output?scanner->reader->output:"";
 }
 const char * synctex_scanner_get_synctex(synctex_scanner_p scanner) {
-    return NULL != scanner && scanner->synctex?scanner->synctex:"";
+    return NULL != scanner && scanner->reader->synctex?scanner->reader->synctex:"";
 }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Public node attributes
 #   endif
+
 #   define SYNCTEX_DEFINE_NODE_HVWHD(WHAT) \
 int synctex_node_##WHAT(synctex_node_p node) { \
-    if (node && node->class->inspector->WHAT) { \
-        return node->class->inspector->WHAT(node); \
-    } else { \
-        return 0; \
-    } \
+    return (node && node->class_->inspector->WHAT)? \
+        node->class_->inspector->WHAT(node): 0; \
 }
 #   define SYNCTEX_DEFINE_PROXY_HV(WHAT) \
-static int _synctex_proxy_##WHAT(synctex_node_p proxy) { \
+static int _synctex_proxy_##WHAT(synctex_proxy_p proxy) { \
     synctex_node_p target = _synctex_tree_target(proxy); \
     if (target) { \
         return _synctex_data_##WHAT(proxy)+synctex_node_##WHAT(target); \
-    } else if (proxy) { \
-        return _synctex_data_##WHAT(proxy); \
     } else { \
-        return 0; \
+        return proxy? _synctex_data_##WHAT(proxy): 0; \
     } \
 }
 #define SYNCTEX_DEFINE_PROXY_TLCWVD(WHAT) \
-static int _synctex_proxy_##WHAT(synctex_node_p proxy) { \
+static int _synctex_proxy_##WHAT(synctex_proxy_p proxy) { \
     synctex_node_p target = _synctex_tree_target(proxy); \
-    if (target) { \
-        return synctex_node_##WHAT(target); \
-    } else { \
-        return 0; \
-    } \
+    return target? synctex_node_##WHAT(target): 0; \
 }
 
 /**
@@ -5929,7 +6336,7 @@ static int _synctex_proxy_##WHAT(synctex_node_p proxy) { \
  *  - parameter node: a node with geometrical information.
  *  - returns: an integer.
  *  - requires: every proxy node has a target.
- *  - note: recursive call if the parameter is a proxy.
+ *  - note: recursive call if the parameter has a proxy.
  *  - author: JL
  */
 SYNCTEX_DEFINE_NODE_HVWHD(h)
@@ -5946,15 +6353,62 @@ SYNCTEX_DEFINE_PROXY_TLCWVD(width)
 SYNCTEX_DEFINE_PROXY_TLCWVD(height)
 SYNCTEX_DEFINE_PROXY_TLCWVD(depth)
 
-synctex_visible_range_s synctex_node_h_visible_range(synctex_node_p node) {
-    float h = synctex_node_h(node);
-    float w = synctex_node_width(node);
-    if (w<0) {
-        return (synctex_visible_range_s){h+w,-w};
-    } else {
-        return (synctex_visible_range_s){h,w};
-    }
+/**
+ *  Whether the argument is a box,
+ *  either vertical or horizontal,
+ *  either void or not,
+ *  or a proxy to such a box.
+ *  - parameter NODE: of type synctex_node_p
+ *  - returns: yorn
+ */
+
+SYNCTEX_INLINE static synctex_bool_t _synctex_node_is_box(synctex_node_p node) {
+    return node &&
+    (node->class_->type == synctex_node_type_hbox
+     || node->class_->type == synctex_node_type_void_hbox
+     || node->class_->type == synctex_node_type_vbox
+     || node->class_->type == synctex_node_type_void_vbox
+     || _synctex_node_is_box(_synctex_tree_target(node)));
 }
+
+/**
+ *  Whether the argument is a handle.
+ *  Handles are similar to proxies because they have a target.
+ *  They are used for query results.
+ *  - parameter NODE: of type synctex_node_p
+ *  - returns: yorn
+ */
+
+SYNCTEX_INLINE static synctex_bool_t _synctex_node_is_handle(synctex_node_p node) {
+    return node &&
+    (node->class_->type == synctex_node_type_handle);
+}
+
+/**
+ *  Resolves handle indirection.
+ *  - parameter node: of type synctex_node_p
+ *  - returns: node if it is not a handle,
+ *  its target otherwise.
+ */
+
+SYNCTEX_INLINE static synctex_node_p _synctex_node_or_handle_target(synctex_node_p node) {
+    return _synctex_node_is_handle(node)?
+    _synctex_tree_target(node):node;
+}
+
+/**
+ *  Whether the argument is an hbox.
+ *  - parameter NODE: of type synctex_node_p
+ *  - returns: yorn
+ */
+
+SYNCTEX_INLINE static synctex_bool_t _synctex_node_is_hbox(synctex_node_p node) {
+    return node &&
+    (node->class_->type == synctex_node_type_hbox
+     || node->class_->type == synctex_node_type_void_hbox
+     || _synctex_node_is_hbox(_synctex_tree_target(node)));
+}
+
 /**
  *  The horizontal location of the first box enclosing node.
  *  - parameter node: a node with geometrical information.
@@ -5962,7 +6416,7 @@ synctex_visible_range_s synctex_node_h_visible_range(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_box_h(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || (node = _synctex_tree_parent(node))) {
+    if (_synctex_node_is_box(node) || (node = _synctex_tree_parent(node))) {
         return synctex_node_h(node);
     }
     return 0;
@@ -5974,7 +6428,7 @@ int synctex_node_box_h(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_box_v(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || (node = _synctex_tree_parent(node))) {
+    if (_synctex_node_is_box(node) || (node = _synctex_tree_parent(node))) {
         return synctex_node_v(node);
     }
     return 0;
@@ -5986,7 +6440,7 @@ int synctex_node_box_v(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_box_width(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || (node = _synctex_tree_parent(node))) {
+    if (_synctex_node_is_box(node) || (node = _synctex_tree_parent(node))) {
         return synctex_node_width(node);
     }
     return 0;
@@ -5998,7 +6452,7 @@ int synctex_node_box_width(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_box_height(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || (node = _synctex_tree_parent(node))) {
+    if (_synctex_node_is_box(node) || (node = _synctex_tree_parent(node))) {
         return synctex_node_height(node);
     }
     return 0;
@@ -6010,7 +6464,7 @@ int synctex_node_box_height(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_box_depth(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || (node = _synctex_tree_parent(node))) {
+    if (_synctex_node_is_box(node) || (node = _synctex_tree_parent(node))) {
         return synctex_node_depth(node);
     }
     return 0;
@@ -6023,13 +6477,14 @@ int synctex_node_box_depth(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_hbox_h(synctex_node_p node) {
-    switch(SYNCTEX_TYPE(node)) {
+    switch(synctex_node_type(node)) {
         case synctex_node_type_hbox:
             return _synctex_data_h_V(node);
-        case synctex_node_type_hbox_proxy:
+        case synctex_node_type_proxy_hbox:
             return _synctex_data_h(node)+synctex_node_hbox_h(_synctex_tree_target(node));
+        default:
+            return 0;
     }
-    return 0;
 }
 /**
  *  The vertical location of an hbox, corrected with contents.
@@ -6039,45 +6494,42 @@ int synctex_node_hbox_h(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_hbox_v(synctex_node_p node) {
-    switch(SYNCTEX_TYPE(node)) {
+    switch(synctex_node_type(node)) {
         case synctex_node_type_hbox:
             return _synctex_data_v_V(node);
-        case synctex_node_type_hbox_proxy:
+        case synctex_node_type_proxy_hbox:
             return _synctex_data_v(node)+synctex_node_hbox_v(_synctex_tree_target(node));
+        default:
+            return 0;
     }
-    return 0;
 }
 /**
  *  The width of an hbox, corrected with contents.
  *  - parameter node: an hbox node, 0 if node is not an hbox or an hbox proxy.
- *  - note: recursive call when node is an hbox proxy.
  *  - returns: an integer.
  *  - author: JL
  */
 int synctex_node_hbox_width(synctex_node_p node) {
-    switch(SYNCTEX_TYPE(node)) {
-        case synctex_node_type_hbox:
-            return _synctex_data_width_V(node);
-        case synctex_node_type_hbox_proxy:
-            return synctex_node_hbox_width(_synctex_tree_target(node));
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        node = target;
     }
-    return 0;
+    return synctex_node_type(node) == synctex_node_type_hbox?
+    _synctex_data_width_V(node): 0;
 }
 /**
  *  The height of an hbox, corrected with contents.
  *  - parameter node: an hbox node.
  *  - returns: an integer, 0 if node is not an hbox or an hbox proxy.
- *  - note: recursive call when node is an hbox proxy.
  *  - author: JL
  */
 int synctex_node_hbox_height(synctex_node_p node) {
-    switch(SYNCTEX_TYPE(node)) {
-        case synctex_node_type_hbox:
-            return _synctex_data_height_V(node);
-        case synctex_node_type_hbox_proxy:
-            return synctex_node_hbox_height(_synctex_tree_target(node));
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        node = target;
     }
-    return 0;
+    return synctex_node_type(node) == synctex_node_type_hbox?
+    _synctex_data_height_V(node): 0;
 }
 /**
  *  The depth of an hbox, corrected with contents.
@@ -6087,45 +6539,44 @@ int synctex_node_hbox_height(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_hbox_depth(synctex_node_p node) {
-    switch(SYNCTEX_TYPE(node)) {
-        case synctex_node_type_hbox:
-            return _synctex_data_depth_V(node);
-        case synctex_node_type_hbox_proxy:
-            return synctex_node_hbox_depth(_synctex_tree_target(node));
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        node = target;
     }
-    return 0;
+    return synctex_node_type(node) == synctex_node_type_hbox?
+    _synctex_data_depth_V(node): 0;
 }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Public node visible attributes
 #   endif
 
-#define SYNCTEX_VISIBLE_SIZE(s) \
-(s)*node->class->scanner->unit
-#define SYNCTEX_VISIBLE_DISTANCE_h(d) \
-((d)*node->class->scanner->unit+node->class->scanner->x_offset)
-#define SYNCTEX_VISIBLE_DISTANCE_v(d) \
-((d)*node->class->scanner->unit+node->class->scanner->y_offset)
+#define SYNCTEX_VISIBLE_SIZE(node,s) \
+(s)*node->class_->scanner->unit
+#define SYNCTEX_VISIBLE_DISTANCE_h(node,d) \
+((d)*node->class_->scanner->unit+node->class_->scanner->x_offset)
+#define SYNCTEX_VISIBLE_DISTANCE_v(node,d) \
+((d)*node->class_->scanner->unit+node->class_->scanner->y_offset)
 static float __synctex_node_visible_h(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_DISTANCE_h(synctex_node_h(node));
+    return SYNCTEX_VISIBLE_DISTANCE_h(node,synctex_node_h(node));
 }
 static float __synctex_node_visible_v(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_DISTANCE_v(synctex_node_v(node));
+    return SYNCTEX_VISIBLE_DISTANCE_v(node,synctex_node_v(node));
 }
 static float __synctex_node_visible_width(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_SIZE(synctex_node_width(node));
+    return SYNCTEX_VISIBLE_SIZE(node,synctex_node_width(node));
 }
 static float __synctex_node_visible_height(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_SIZE(synctex_node_height(node));
+    return SYNCTEX_VISIBLE_SIZE(node,synctex_node_height(node));
 }
 static float __synctex_node_visible_depth(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_SIZE(synctex_node_depth(node));
+    return SYNCTEX_VISIBLE_SIZE(node,synctex_node_depth(node));
 }
 static float __synctex_proxy_visible_h(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_DISTANCE_h(synctex_node_h(node));
+    return SYNCTEX_VISIBLE_DISTANCE_h(node,synctex_node_h(node));
 }
 static float __synctex_proxy_visible_v(synctex_node_p node) {
-    return SYNCTEX_VISIBLE_DISTANCE_v(synctex_node_v(node));
+    return SYNCTEX_VISIBLE_DISTANCE_v(node,synctex_node_v(node));
 }
 static float __synctex_proxy_visible_width(synctex_node_p node) {
     synctex_node_p target = _synctex_tree_target(node);
@@ -6139,32 +6590,32 @@ static float __synctex_proxy_visible_depth(synctex_node_p node) {
     synctex_node_p target = _synctex_tree_target(node);
     return __synctex_node_visible_depth(target);
 }
-static float __synctex_kern_visible_h(synctex_node_p node) {
-    int h = _synctex_data_h(node);
-    int width = _synctex_data_width(node);
-    return SYNCTEX_VISIBLE_DISTANCE_h(width>0?h-width:h);
+static float __synctex_kern_visible_h(synctex_noxy_p noxy) {
+    int h = _synctex_data_h(noxy);
+    int width = _synctex_data_width(noxy);
+    return SYNCTEX_VISIBLE_DISTANCE_h(noxy, width>0?h-width:h);
 }
-static float __synctex_kern_visible_width(synctex_node_p node) {
-    int width = _synctex_data_width(node);
-    return SYNCTEX_VISIBLE_SIZE(width>0?width:-width);
+static float __synctex_kern_visible_width(synctex_noxy_p noxy) {
+    int width = _synctex_data_width(noxy);
+    return SYNCTEX_VISIBLE_SIZE(noxy, width>0?width:-width);
 }
-static float __synctex_rule_visible_h(synctex_node_p node) {
-    int h = _synctex_data_h(node);
-    int width = _synctex_data_width(node);
-    return SYNCTEX_VISIBLE_DISTANCE_h(width>0?h:h-width);
+static float __synctex_rule_visible_h(synctex_noxy_p noxy) {
+    int h = _synctex_data_h(noxy);
+    int width = _synctex_data_width(noxy);
+    return SYNCTEX_VISIBLE_DISTANCE_h(noxy, width>0?h:h-width);
 }
-static float __synctex_rule_visible_width(synctex_node_p node) {
-    int width = _synctex_data_width(node);
-    return SYNCTEX_VISIBLE_SIZE(width>0?width:-width);
+static float __synctex_rule_visible_width(synctex_noxy_p noxy) {
+    int width = _synctex_data_width(noxy);
+    return SYNCTEX_VISIBLE_SIZE(noxy, width>0?width:-width);
 }
-static float __synctex_rule_visible_v(synctex_node_p node) {
-    return __synctex_node_visible_v(node);
+static float __synctex_rule_visible_v(synctex_noxy_p noxy) {
+    return __synctex_node_visible_v(noxy);
 }
-static float __synctex_rule_visible_height(synctex_node_p node) {
-    return __synctex_node_visible_height(node);
+static float __synctex_rule_visible_height(synctex_noxy_p noxy) {
+    return __synctex_node_visible_height(noxy);
 }
-static float __synctex_rule_visible_depth(synctex_node_p node) {
-    return __synctex_node_visible_depth(node);
+static float __synctex_rule_visible_depth(synctex_noxy_p noxy) {
+    return __synctex_node_visible_depth(noxy);
 }
 
 /**
@@ -6174,7 +6625,7 @@ static float __synctex_rule_visible_depth(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_visible_h(synctex_node_p node){
-    return node? node->class->vispector->h(node): 0;
+    return node? node->class_->vispector->h(node): 0;
 }
 /**
  *  The vertical location of node, in page coordinates.
@@ -6183,7 +6634,7 @@ float synctex_node_visible_h(synctex_node_p node){
  *  - author: JL
  */
 float synctex_node_visible_v(synctex_node_p node){
-    return node? node->class->vispector->v(node): 0;
+    return node? node->class_->vispector->v(node): 0;
 }
 /**
  *  The width of node, in page coordinates.
@@ -6192,7 +6643,7 @@ float synctex_node_visible_v(synctex_node_p node){
  *  - author: JL
  */
 float synctex_node_visible_width(synctex_node_p node){
-    return node? node->class->vispector->width(node): 0;
+    return node? node->class_->vispector->width(node): 0;
 }
 /**
  *  The height of node, in page coordinates.
@@ -6201,7 +6652,7 @@ float synctex_node_visible_width(synctex_node_p node){
  *  - author: JL
  */
 float synctex_node_visible_height(synctex_node_p node){
-    return node? node->class->vispector->height(node): 0;
+    return node? node->class_->vispector->height(node): 0;
 }
 /**
  *  The depth of node, in page coordinates.
@@ -6210,7 +6661,7 @@ float synctex_node_visible_height(synctex_node_p node){
  *  - author: JL
  */
 float synctex_node_visible_depth(synctex_node_p node){
-    return node? node->class->vispector->depth(node): 0;
+    return node? node->class_->vispector->depth(node): 0;
 }
 
 /**
@@ -6296,6 +6747,59 @@ SYNCTEX_INLINE static synctex_box_s _synctex_data_box_V(synctex_node_p node) {
     box.max.v = n + _synctex_node_depth_V(node);
     return box;
 }
+
+/**
+ *  The higher box node in the parent hierarchy which
+ *  mean line number is the one of node ±1.
+ *  This enclosing box is computed as follows
+ *  1) get the first hbox in the parent linked list
+ *  starting at node.
+ *  If there is none, simply return the parent of node.
+ *  2) compute the mean line number
+ *  3) scans up the tree for the higher hbox with
+ *  the same mean line number, ±1 eventually
+*  - parameter node: a node.
+ *  - returns: a (proxy to a) box node.
+ *  - author: JL
+ */
+static synctex_node_p _synctex_node_box_visible(synctex_node_p node) {
+    if ((node = _synctex_node_or_handle_target(node))) {
+        int mean = 0;
+        int bound = 1500000/(node->class_->scanner->pre_magnification/1000.0);
+        synctex_node_p parent = NULL;
+        /*  get the first enclosing parent
+         *  then get the highest enclosing parent with the same mean line ±1 */
+        node = _synctex_node_or_handle_target(node);
+        if (!_synctex_node_is_box(node)) {
+            if ((parent = _synctex_tree_parent(node))) {
+                node = parent;
+            } else if ((node = _synctex_tree_target(node))) {
+                if (!_synctex_node_is_box(node)) {
+                    if ((parent = _synctex_tree_parent(node))) {
+                        node = parent;
+                    } else {
+                        return NULL;
+                    }
+                }
+            }
+        }
+        parent = node;
+        mean = synctex_node_mean_line(node);
+        while ((parent = _synctex_tree_parent(parent))) {
+            if (_synctex_node_is_hbox(parent)) {
+                if (_synctex_abs(mean-synctex_node_mean_line(parent))>1) {
+                    return node;
+                } else if (synctex_node_width(parent)>bound) {
+                    return parent;
+                } else if (synctex_node_height(parent)+synctex_node_depth(parent)>bound) {
+                    return parent;
+                }
+                node = parent;
+            }
+        }
+    }
+    return node;
+}
 /**
  *  The horizontal location of the first box enclosing node, in page coordinates.
  *  - parameter node: a node.
@@ -6303,12 +6807,7 @@ SYNCTEX_INLINE static synctex_box_s _synctex_data_box_V(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_box_visible_h(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node)) {
-        return SYNCTEX_VISIBLE_DISTANCE_h(_synctex_node_h_V(node));
-    } else if (SYNCTEX_IS_BOX(node = _synctex_tree_parent(node))) {
-        return SYNCTEX_VISIBLE_DISTANCE_h(_synctex_node_h_V(node));
-    }
-    return 0;
+    return SYNCTEX_VISIBLE_DISTANCE_h(node,_synctex_node_h_V(_synctex_node_box_visible(node)));
 }
 /**
  *  The vertical location of the first box enclosing node, in page coordinates.
@@ -6317,10 +6816,7 @@ float synctex_node_box_visible_h(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_box_visible_v(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || SYNCTEX_IS_BOX(node = _synctex_tree_parent(node))) {
-        return SYNCTEX_VISIBLE_DISTANCE_v(_synctex_node_v_V(node));
-    }
-    return 0;
+    return SYNCTEX_VISIBLE_DISTANCE_v(node,_synctex_node_v_V(_synctex_node_box_visible(node)));
 }
 /**
  *  The width of the first box enclosing node, in page coordinates.
@@ -6329,10 +6825,7 @@ float synctex_node_box_visible_v(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_box_visible_width(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || SYNCTEX_IS_BOX(node = _synctex_tree_parent(node))) {
-        return SYNCTEX_VISIBLE_SIZE(_synctex_node_width_V(node));
-    }
-    return 0;
+    return SYNCTEX_VISIBLE_SIZE(node,_synctex_node_width_V(_synctex_node_box_visible(node)));
 }
 /**
  *  The height of the first box enclosing node, in page coordinates.
@@ -6341,10 +6834,7 @@ float synctex_node_box_visible_width(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_box_visible_height(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || SYNCTEX_IS_BOX(node = _synctex_tree_parent(node))) {
-        return SYNCTEX_VISIBLE_SIZE(_synctex_node_height_V(node));
-    }
-    return 0;
+    return SYNCTEX_VISIBLE_SIZE(node,_synctex_node_height_V(_synctex_node_box_visible(node)));
 }
 /**
  *  The depth of the first box enclosing node, in page coordinates.
@@ -6353,10 +6843,7 @@ float synctex_node_box_visible_height(synctex_node_p node) {
  *  - author: JL
  */
 float synctex_node_box_visible_depth(synctex_node_p node) {
-    if (SYNCTEX_IS_BOX(node) || SYNCTEX_IS_BOX(node = _synctex_tree_parent(node))) {
-        return SYNCTEX_VISIBLE_SIZE(_synctex_node_depth_V(node));
-    }
-    return 0;
+    return SYNCTEX_VISIBLE_SIZE(node,_synctex_node_depth_V(_synctex_node_box_visible(node)));
 }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -6367,36 +6854,34 @@ float synctex_node_box_visible_depth(synctex_node_p node) {
  *  The page number of the sheet enclosing node.
  *  - parameter node: a node.
  *  - returns: the page number or -1 if node does not belong to a sheet tree.
+ *  - note: a proxy target does not belong to a sheet
+ *      but a form, its page number is always -1.
+ *  - note: a handles does not belong to a sheet not a form.
+ *      its page number is -1.
  *  - author: JL
  */
 int synctex_node_page(synctex_node_p node){
-    if (node) {
-        synctex_node_p parent = _synctex_tree_parent(node);
-        while(parent) {
-            node = parent;
-            parent = _synctex_tree_parent(node);
-        }
-        if (SYNCTEX_TYPE(node) == synctex_node_type_sheet) {
-            return _synctex_data_page(node);
-        }
+    synctex_node_p parent = NULL;
+    while((parent = _synctex_tree_parent(node))) {
+        node = parent;
+    }
+    if (synctex_node_type(node) == synctex_node_type_sheet) {
+        return _synctex_data_page(node);
     }
     return -1;
 }
-
 /**
- *  The page number of the target of the result node.
- *  - parameter node: a node.
- *  - returns: the page number or -1 if target's node does not belong to a sheet tree.
+ *  The page number of the target.
  *  - author: JL
  */
-SYNCTEX_INLINE static int _synctex_result_page(synctex_node_p node){
+SYNCTEX_INLINE static int _synctex_node_target_page(synctex_node_p node){
     return synctex_node_page(_synctex_tree_target(node));
 }
 
-
 #if defined (SYNCTEX_USE_CHARINDEX)
 synctex_charindex_t synctex_node_charindex(synctex_node_p node) {
-    return node?SYNCTEX_CHARINDEX(node):0;
+    synctex_node_p target = _synctex_tree_target(node);
+    return target? SYNCTEX_CHARINDEX(target):(node?SYNCTEX_CHARINDEX(node):0);
 }
 #endif
 
@@ -6407,7 +6892,7 @@ synctex_charindex_t synctex_node_charindex(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_tag(synctex_node_p node) {
-    return node? node->class->tlcpector->tag(node): -1;
+    return node? node->class_->tlcpector->tag(node): -1;
 }
 /**
  *  The line of the node.
@@ -6416,7 +6901,7 @@ int synctex_node_tag(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_line(synctex_node_p node) {
-    return node? node->class->tlcpector->line(node): -1;
+    return node? node->class_->tlcpector->line(node): -1;
 }
 /**
  *  The column of the node.
@@ -6425,46 +6910,54 @@ int synctex_node_line(synctex_node_p node) {
  *  - author: JL
  */
 int synctex_node_column(synctex_node_p node) {
-    return node? node->class->tlcpector->column(node): -1;
+    return node? node->class_->tlcpector->column(node): -1;
 }
 /**
  *  The mean line number of the node.
  *  - parameter node: a node.
- *  - returns: the line or -1 if node is NULL.
- *  - note: recursive call for proxies.
+ *  - returns: the mean line or -1 if node is NULL.
  *  - author: JL
  */
 int synctex_node_mean_line(synctex_node_p node) {
-    if (_synctex_tree_target(node)) {
-        return synctex_node_mean_line(_synctex_tree_target(node));
+    synctex_node_p other = _synctex_tree_target(node);
+    if (other) {
+        node = other;
     }
-    return node?(SYNCTEX_TYPE(node)==synctex_node_type_hbox?_synctex_data_mean_line(node):_synctex_data_line(node)):-1;
+    if (_synctex_data_has_mean_line(node)) {
+        return _synctex_data_mean_line(node);
+    }
+    if ((other = synctex_node_parent(node))) {
+        if (_synctex_data_has_mean_line(other)) {
+            return _synctex_data_mean_line(other);
+        }
+    }
+    return synctex_node_line(node);
 }
 /**
  *  The weight of the node.
  *  - parameter node: a node.
  *  - returns: the weight or -1 if node is NULL.
- *  - note: recursive call for proxies.
  *  - author: JL
  */
 int synctex_node_weight(synctex_node_p node) {
-    if (_synctex_tree_target(node)) {
-        return synctex_node_weight(_synctex_tree_target(node));
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        node = target;
     }
-    return node?(SYNCTEX_TYPE(node)==synctex_node_type_hbox?_synctex_data_weight(node):0):-1;
+    return node?(synctex_node_type(node)==synctex_node_type_hbox?_synctex_data_weight(node):0):-1;
 }
 /**
  *  The number of children of the node.
  *  - parameter node: a node.
  *  - returns: the count or -1 if node is NULL.
- *  - note: recursive call for proxies.
  *  - author: JL
  */
 int synctex_node_child_count(synctex_node_p node) {
-    if (_synctex_tree_target(node)) {
-        return synctex_node_child_count(_synctex_tree_target(node));
+    synctex_node_p target = _synctex_tree_target(node);
+    if (target) {
+        node = target;
     }
-    return node?(SYNCTEX_TYPE(node)==synctex_node_type_hbox?_synctex_data_weight(node):0):-1;
+    return node?(synctex_node_type(node)==synctex_node_type_hbox?_synctex_data_weight(node):0):-1;
 }
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
@@ -6475,6 +6968,7 @@ int synctex_node_child_count(synctex_node_p node) {
  *  The sheet of the scanner with a given page number.
  *  - parameter scanner: a scanner.
  *  - parameter page: a 1 based page number.
+ *      If page == 0, returns the first sheet.
  *  - returns: a sheet or NULL.
  *  - author: JL
  */
@@ -6487,6 +6981,9 @@ synctex_node_p synctex_sheet(synctex_scanner_p scanner,int page) {
             }
             sheet = __synctex_tree_sibling(sheet);
         }
+        if (page == 0) {
+            return scanner->sheet;
+        }
     }
     return NULL;
 }
@@ -6494,8 +6991,8 @@ synctex_node_p synctex_sheet(synctex_scanner_p scanner,int page) {
  *  The form of the scanner with a given tag.
  *  - parameter scanner: a scanner.
  *  - parameter tag: an integer identifier.
+ *      If tag == 0, returns the first form.
  *  - returns: a form.
- *  - note: use this to create a form instead of _synctex_new_form.
  *  - author: JL
  */
 synctex_node_p synctex_form(synctex_scanner_p scanner,int tag) {
@@ -6506,6 +7003,9 @@ synctex_node_p synctex_form(synctex_scanner_p scanner,int tag) {
                 return form;
             }
             form = __synctex_tree_sibling(form);
+        }
+        if (tag == 0) {
+            return scanner->form;
         }
     }
     return NULL;
@@ -6546,44 +7046,96 @@ SYNCTEX_INLINE static synctex_node_p _synctex_scanner_friend(synctex_scanner_p s
     }
     return NULL;
 }
-SYNCTEX_INLINE static synctex_node_p _synctex_vertically_sorted(synctex_node_p sibling) {
-    synctex_node_p child = NULL;
-    synctex_node_p best_child = sibling;
-    synctex_node_p next_child = _synctex_tree_reset_child(best_child);
-    synctex_node_p target = _synctex_tree_target(best_child);
-    synctex_node_p best_parent = _synctex_tree_parent(target);
+SYNCTEX_INLINE static synctex_bool_t _synctex_nodes_are_friend(synctex_node_p left, synctex_node_p right) {
+    return synctex_node_tag(left) == synctex_node_tag(right) && synctex_node_line(left) == synctex_node_line(right);
+}
+/**
+ *  The sibling argument is a parent/child list of nodes of the same page.
+ */
+typedef struct {
+    int count;
+    synctex_node_p node;
+} synctex_counted_node_s;
+
+SYNCTEX_INLINE static synctex_counted_node_s _synctex_vertically_sorted_v2(synctex_node_p sibling) {
+    /* Clean the weights of the parents */
+    synctex_counted_node_s result = {0, NULL};
+    synctex_node_p h = NULL;
+    synctex_node_p next_h = NULL;
     synctex_node_p parent = NULL;
-    unsigned int best_weight = _synctex_data_weight(best_parent);
-    unsigned int weight;
-    int best_match = abs(_synctex_data_line(target)-_synctex_data_mean_line(best_parent));
-    int match;
-    synctex_node_type_t best_type = synctex_node_type(target);
-    synctex_node_type_t type;
-    /*  Navigate through the other children */
-    while ((child = next_child)) {
-        next_child = _synctex_tree_reset_child(child);
-        target = _synctex_tree_target(child);
-        parent = _synctex_tree_parent(target);
-        match = abs(_synctex_data_line(target)-_synctex_data_mean_line(parent));
+    int weight = 0;
+    synctex_node_p N = NULL;
+    h = sibling;
+    do {
+        N = _synctex_tree_target(h);
+        parent = _synctex_tree_parent(N);
+        _synctex_data_set_weight(parent, 0);
+    } while((h = _synctex_tree_child(h)));
+    /* Compute the weights of the nodes */
+    h = sibling;
+    do {
+        N = _synctex_tree_target(h);
+        parent = _synctex_tree_parent(N);
         weight = _synctex_data_weight(parent);
-        type = synctex_node_type(target);
-        if (match<best_match
-            || (match==best_match && weight>=best_weight)) {
-            if (best_type>type) {
-                _synctex_tree_set_child(child,best_child);
-                best_child = child;
-                best_parent = parent;
-                best_match = match;
-                best_weight = weight;
-                best_type = type;
-            } else {
-                _synctex_tree_set_child(child,_synctex_tree_set_child(best_child,child));
-            }
-        } else {
-            synctex_node_free(child);
+        if (weight==0) {
+            N = _synctex_tree_child(parent);
+            do {
+                if (_synctex_nodes_are_friend(N,sibling)) {
+                    ++ weight;
+                }
+            } while ((N = __synctex_tree_sibling(N)));
+            _synctex_data_set_weight(h,weight);
+            _synctex_data_set_weight(parent,weight);
         }
+    } while((h = _synctex_tree_child(h)));
+    /* Order handle nodes according to the weight */
+    h = _synctex_tree_reset_child(sibling);
+    result.node = sibling;
+    weight = 0;
+    while((h)) {
+        N = result.node;
+        if (_synctex_data_weight(h)>_synctex_data_weight(N)) {
+            next_h = _synctex_tree_set_child(h,N);
+            result.node = h;
+        } else if (_synctex_data_weight(h) == 0) {
+            ++ weight;
+            next_h = _synctex_tree_reset_child(h);
+            synctex_node_free(h);
+        } else {
+            synctex_node_p next_N = NULL;
+            while((next_N = _synctex_tree_child(N))) {
+                N = next_N;
+                if (_synctex_data_weight(h)<_synctex_data_weight(next_N)) {
+                    continue;
+                }
+                break;
+            }
+            next_h = _synctex_tree_set_child(h,_synctex_tree_set_child(N,h));
+        }
+        h = next_h;
+    };
+    h = result.node;
+    weight = 0;
+    do {
+        ++weight;
+    } while((h = _synctex_tree_child(h)));
+    result.count = 1;
+    h = result.node;
+    while((next_h = _synctex_tree_child(h))) {
+        if (_synctex_data_weight(next_h)==0) {
+            _synctex_tree_reset_child(h);
+            weight = 1;
+            h = next_h;
+            while((h = _synctex_tree_child(h))) {
+                ++weight;
+            }
+            synctex_node_free(next_h);
+            break;
+        }
+        ++result.count;
+        h = next_h;
     }
-    return best_child;
+    return result;
 }
 
 SYNCTEX_INLINE static synctex_bool_t _synctex_point_in_box_v2(synctex_point_p hitP, synctex_node_p node);
@@ -6637,35 +7189,51 @@ static synctex_nd_s _synctex_eq_closest_child_v2(synctex_point_p hitP, synctex_n
 #       pragma mark Queries
 #   endif
 
-typedef struct synctex_iterator_t {
-    synctex_node_p result;
+/**
+ *  iterator for a deep first tree traversal.
+ */
+struct synctex_iterator_t {
+    synctex_node_p seed;
+    synctex_node_p top;
     synctex_node_p next;
     int count0;
     int count;
-} synctex_iterator_s;
+};
 
 SYNCTEX_INLINE static synctex_iterator_p _synctex_iterator_new(synctex_node_p result, int count) {
     synctex_iterator_p iterator;
     if ((iterator = _synctex_malloc(sizeof(synctex_iterator_s)))) {
-        iterator->result = iterator->next = result;
+        iterator->seed = iterator->top = iterator->next = result;
         iterator->count0 = iterator->count = count;
     }
     return iterator;
 };
 
 void synctex_iterator_free(synctex_iterator_p iterator) {
-    _synctex_free(iterator);
+    if (iterator) {
+        synctex_node_free(iterator->seed);
+        _synctex_free(iterator);
+    }
 }
 synctex_bool_t synctex_iterator_has_next(synctex_iterator_p iterator) {
-    return iterator->count>0;
+    return iterator?iterator->count>0:0;
 }
 int synctex_iterator_count(synctex_iterator_p iterator) {
     return iterator? iterator->count: 0;
 }
-synctex_node_p synctex_iterator_next(synctex_iterator_p iterator) {
+
+/**
+ *  The next result of the iterator.
+ *  Internally, the iterator stores handles to nodes.
+ *  Externally, it returns the targets,
+ *  such that the caller only sees nodes.
+ */
+synctex_node_p synctex_iterator_next_result(synctex_iterator_p iterator) {
     if (iterator && iterator->count>0) {
         synctex_node_p N = iterator->next;
-        iterator->next = __synctex_tree_sibling(N);
+        if(!(iterator->next = _synctex_tree_child(N))) {
+            iterator->next = iterator->top = __synctex_tree_sibling(iterator->top);
+        }
         --iterator->count;
         return _synctex_tree_target(N);
     }
@@ -6673,7 +7241,7 @@ synctex_node_p synctex_iterator_next(synctex_iterator_p iterator) {
 }
 int synctex_iterator_reset(synctex_iterator_p iterator) {
     if (iterator) {
-        iterator->next = iterator->result;
+        iterator->next = iterator->top = iterator->seed;
         return iterator->count = iterator->count0;
     }
     return 0;
@@ -6727,17 +7295,21 @@ synctex_iterator_p synctex_iterator_new_edit(synctex_scanner_p scanner,int page,
                         if ((_synctex_data_tag(nds.r.node)!=_synctex_data_tag(nds.l.node))
                             || (_synctex_data_line(nds.r.node)!=_synctex_data_line(nds.l.node))
                             || (_synctex_data_column(nds.r.node)!=_synctex_data_column(nds.l.node))) {
-                            if (nds.l.distance>nds.r.distance) {
+                            if (_synctex_data_line(nds.r.node)<_synctex_data_line(nds.l.node)) {
                                 node = nds.r.node;
                                 nds.r.node = nds.l.node;
                                 nds.l.node = node;
+                            } else if (_synctex_data_line(nds.r.node)==_synctex_data_line(nds.l.node)) {
+                                if (nds.l.distance>nds.r.distance) {
+                                    node = nds.r.node;
+                                    nds.r.node = nds.l.node;
+                                    nds.l.node = node;
+                                }
                             }
-                            if((node = _synctex_new_result(scanner))) {
-                                synctex_node_p other_result;
-                                _synctex_tree_setup_target(node,nds.l.node);
-                                if((other_result = _synctex_new_result(scanner))) {
-                                    _synctex_tree_setup_target(other_result,nds.r.node);
-                                    _synctex_tree_set_sibling(node,other_result);
+                            if((node = _synctex_new_handle_with_target(nds.l.node))) {
+                                synctex_node_p other_handle;
+                                if((other_handle = _synctex_new_handle_with_target(nds.r.node))) {
+                                    _synctex_tree_set_sibling(node,other_handle);
                                     return _synctex_iterator_new(node,2);
                                 }
                                 return _synctex_iterator_new(node,1);
@@ -6755,8 +7327,7 @@ synctex_iterator_p synctex_iterator_new_edit(synctex_scanner_p scanner,int page,
                     } else if (!nds.l.node) {
                         nds.l.node = node;
                     }
-                    if((node = _synctex_new_result(scanner))) {
-                        _synctex_tree_setup_target(node,nds.l.node);
+                    if((node = _synctex_new_handle_with_target(nds.l.node))) {
                         return _synctex_iterator_new(node,1);
                     }
                     return 0;
@@ -6783,17 +7354,6 @@ synctex_iterator_p synctex_iterator_new_edit(synctex_scanner_p scanner,int page,
     return NULL;
 }
 
-SYNCTEX_INLINE static synctex_node_p _synctex_new_result_with_target(synctex_node_p target) {
-    if (target) {
-        synctex_node_p result = _synctex_new_result(target->class->scanner);
-        if (result) {
-            _synctex_tree_set_target(result,target);
-            return result;
-        }
-    }
-    return NULL;
-}
-
 /**
  *  Loop the candidate friendly list to find the ones with the proper
  *  tag and line.
@@ -6802,86 +7362,90 @@ SYNCTEX_INLINE static synctex_node_p _synctex_new_result_with_target(synctex_nod
  *  All the results with the same page number are linked by child/parent entry.
  *  - parameter candidate: a friendly list of candidates
  */
-static synctex_node_p _synctex_display_query(synctex_node_p target, int tag, int line, synctex_node_type_t type) {
-    synctex_node_p first_result = NULL;
+static synctex_node_p _synctex_display_query_v2(synctex_node_p target, int tag, int line, synctex_bool_t exclude_box) {
+    synctex_node_p first_handle = NULL;
     /*  Search the first match */
     if (target == NULL) {
-        return first_result;
+        return first_handle;
     }
     do {
         int page;
-        if ((synctex_node_type_none != type
-             && synctex_node_type(target)!=type)
+        if ((exclude_box
+             && _synctex_node_is_box(target))
             || (tag != synctex_node_tag(target))
             || (line != synctex_node_line(target))) {
             continue;
         }
-        /*  We found a first match, create a result targeting that candidate */
-        first_result = _synctex_new_result_with_target(target);
-        if (first_result == NULL) {
-            return first_result;
+        /*  We found a first match, create
+         *  a result handle targeting that candidate. */
+        first_handle = _synctex_new_handle_with_target(target);
+        if (first_handle == NULL) {
+            return first_handle;
         }
+        /*  target is either a node,
+         *  or a proxy to some node, in which case,
+         *  the target's target belongs to a form,
+         *  not a sheet. */
         page = synctex_node_page(target);
         /*  Now create all the other results  */
         while ((target = _synctex_tree_friend(target))) {
             synctex_node_p result = NULL;
-            if ((synctex_node_type_none != type
-                 && synctex_node_type(target)!=type)
+            if ((exclude_box
+                 && _synctex_node_is_box(target))
                 || (tag != synctex_node_tag(target))
                 || (line != synctex_node_line(target))) {
                 continue;
             }
             /*  Another match, same page number ? */
-            result = _synctex_new_result_with_target(target);
+            result = _synctex_new_handle_with_target(target);
             if (NULL == result ) {
-                return first_result;
+                return first_handle;
             }
             /*  is it the same page number ? */
             if (synctex_node_page(target) == page) {
-                __synctex_tree_set_child(result, first_result);
-                first_result = result;
+                __synctex_tree_set_child(result, first_handle);
+                first_handle = result;
             } else {
                 /*  We have 2 page numbers involved */
-                __synctex_tree_set_sibling(first_result, result);
+                __synctex_tree_set_sibling(first_handle, result);
                 while ((target = _synctex_tree_friend(target))) {
-                    synctex_node_p same_page;
-                    if ((synctex_node_type_none != type
-                         && synctex_node_type(target)!=type)
+                    synctex_node_p same_page_node;
+                    if ((exclude_box
+                         && _synctex_node_is_box(target))
                         || (tag != synctex_node_tag(target))
                         || (line != synctex_node_line(target))) {
                         continue;
                     }
                     /*  New match found, which page? */
-                    result = _synctex_new_result_with_target(target);
+                    result = _synctex_new_handle_with_target(target);
                     if (NULL == result) {
-                        return first_result;
+                        return first_handle;
                     }
-                    same_page = first_result;
+                    same_page_node = first_handle;
                     page = synctex_node_page(target);
                     /*  Find a result with the same page number */;
                     do {
-                        if (_synctex_result_page(same_page) == page) {
-                            _synctex_tree_set_child(result,_synctex_tree_set_child(same_page,result));
-                        } else if ((same_page = __synctex_tree_sibling(same_page))) {
+                        if (_synctex_node_target_page(same_page_node) == page) {
+                            /* Insert result between same_page_node and its child */
+                            _synctex_tree_set_child(result,_synctex_tree_set_child(same_page_node,result));
+                        } else if ((same_page_node = __synctex_tree_sibling(same_page_node))) {
                             continue;
                         } else {
                             /*  This is a new page number */
-                            __synctex_tree_set_sibling(result,first_result);
-                            first_result = result;
+                            __synctex_tree_set_sibling(result,first_handle);
+                            first_handle = result;
                         }
                         break;
                     } while (synctex_YES);
                 }
-                return first_result;
+                return first_handle;
             }
         }
     } while ((target = _synctex_tree_friend(target)));
-    return first_result;
+    return first_handle;
 }
-synctex_iterator_p synctex_iterator_new_display(synctex_scanner_p scanner,const char *  name,int line,int column, int page_hint) {
-#	ifdef __DARWIN_UNIX03
-#       pragma unused(column)
-#   endif
+synctex_iterator_p synctex_iterator_new_display(synctex_scanner_p scanner,const char * name,int line,int column, int page_hint) {
+    SYNCTEX_UNUSED(column)
     if (scanner) {
         int tag = synctex_scanner_get_tag(scanner,name);/* parse if necessary */
         int max_line = 0;
@@ -6904,21 +7468,11 @@ synctex_iterator_p synctex_iterator_new_display(synctex_scanner_p scanner,const 
                 /*  This loop will only be performed once for advanced viewers */
                 synctex_node_p friend = _synctex_scanner_friend(scanner,tag+line);
                 if ((node = friend)) {
-                    result = _synctex_display_query(node,tag,line,synctex_node_type_boundary);
+                    result = _synctex_display_query_v2(node,tag,line,synctex_YES);
                     if (!result) {
-                        /*  We did not find any matching boundary, retry with kern */
+                        /*  We did not find any matching boundary, retry including boxes */
                         node = friend;/*  no need to test it again, already done */
-                        result = _synctex_display_query(node,tag,line,synctex_node_type_kern);
-                        if (!result) {
-                            /*  We did not find any boundary or kern, retry with glue */
-                            node = friend;/*  no need to test it again, already done */
-                            result = _synctex_display_query(node,tag,line,synctex_node_type_glue);
-                            if (!result) {
-                                /*  We did not find any boundary, kern or glue, retry with everything */
-                                node = friend;/*  no need to test it again, already done */
-                                result = _synctex_display_query(node,tag,line,synctex_node_type_none);
-                            }
-                        }
+                        result = _synctex_display_query_v2(node,tag,line,synctex_NO);
                     }
                     /*  Now reverse the order to have nodes in display order, and then keep just a few nodes.
                      *  Order first the best node. */
@@ -6927,36 +7481,36 @@ synctex_iterator_p synctex_iterator_new_display(synctex_scanner_p scanner,const 
                      *  Each node has a child which corresponds to the same
                      *  page number if relevant.
                      *  Then reorder the nodes to put first the one which fits best.
-                     *  The idea is to walk along the list of nodes and pick up the first one
-                     *  which line info is exactly the mean line of its parent, or at least very close.
-                     *  Then we choose among all such node the one with the maximum weight.
-                     *  Then we switch with the first node.
+                     *  The idea is to count the number of nodes
+                     *  with the same tag and line number in the parents
+                     *  and choose the ones with the biggest count.
                      */
                     if (result) {
-                        /*  navigate through siblings,
-                         then children   */
-                        int count = 1;
+                        /*  navigate through siblings, then children   */
                         synctex_node_p next_sibling = __synctex_tree_reset_sibling(result);
-                        int best_match = abs(page_hint-_synctex_result_page(result));
+                        int best_match = abs(page_hint-_synctex_node_target_page(result));
                         synctex_node_p sibling;
                         int match;
-                        result = _synctex_vertically_sorted(result);
+                        synctex_counted_node_s cn = _synctex_vertically_sorted_v2(result);
+                        int count = cn.count;
+                        result = cn.node;
                         while((sibling = next_sibling)) {
                             /* What is next? Do not miss that step! */
                             next_sibling = __synctex_tree_reset_sibling(sibling);
-                            sibling = _synctex_vertically_sorted(sibling);
-                            match = abs(page_hint-_synctex_result_page(sibling));
+                            cn = _synctex_vertically_sorted_v2(sibling);
+                            count += cn.count;
+                            sibling = cn.node;
+                            match = abs(page_hint-_synctex_node_target_page(sibling));
                             if (match<best_match) {
                                 /*  Order this node first */
                                 __synctex_tree_set_sibling(sibling,result);
                                 result = sibling;
-                            } else /*if (match>best_match)*/ {
+                                best_match = match;
+                            } else /*if (match>=best_match)*/ {
                                 __synctex_tree_set_sibling(sibling,__synctex_tree_sibling(result));
                                 __synctex_tree_set_sibling(result,sibling);
                             }
-                            ++count;
                         }
-                        /*  Now order first the result closest to the page hint */
                         return _synctex_iterator_new(result,count);
                     }
                 }
@@ -6991,11 +7545,18 @@ synctex_status_t synctex_edit_query(synctex_scanner_p scanner,int page,float h,f
     }
     return SYNCTEX_STATUS_ERROR;
 }
-synctex_node_p synctex_next_result(synctex_scanner_p scanner) {
-    return scanner? synctex_iterator_next(scanner->iterator): NULL;
+/**
+ *  The next result of a query.
+ */
+synctex_node_p synctex_scanner_next_result(synctex_scanner_p scanner) {
+    return scanner? synctex_iterator_next_result(scanner->iterator): NULL;
 }
-synctex_status_t synctex_reset_result(synctex_scanner_p scanner) {
+synctex_status_t synctex_scanner_reset_result(synctex_scanner_p scanner) {
     return scanner? synctex_iterator_reset(scanner->iterator): SYNCTEX_STATUS_ERROR;
+}
+
+synctex_node_p synctex_node_target(synctex_node_p node) {
+    return _synctex_tree_target(node);
 }
 
 #	ifdef SYNCTEX_NOTHING
@@ -7015,7 +7576,7 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
     synctex_nd_s nd = {node,INT_MAX};
     if (node) {
         int min,med,max,width;
-        switch(SYNCTEX_TYPE(node)) {
+        switch(synctex_node_type(node)) {
                 /*  The distance between a point and a box is special.
                  *  It is not the euclidian distance, nor something similar.
                  *  We have to take into account the particular layout,
@@ -7047,7 +7608,7 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
                     nd.distance = 0; /*  regions 2+5+8, inside the box, except for vertical coordinates */
                 }
                 break;
-            case synctex_node_type_vbox_proxy:
+            case synctex_node_type_proxy_vbox:
                 /*  getting the box bounds, taking into account negative width, height and depth. */
                 width = synctex_node_width(node);
                 min = synctex_node_h(node);
@@ -7062,7 +7623,7 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
                 }
                 break;
             case synctex_node_type_hbox:
-            case synctex_node_type_hbox_proxy:
+            case synctex_node_type_proxy_hbox:
                 /*  getting the box bounds, taking into account negative width, height and depth. */
                 width = synctex_node_hbox_width(node);
                 min = synctex_node_hbox_h(node);
@@ -7117,6 +7678,7 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
                     nd.distance = min - hit->h - 1; /*  negative, the kern is to the left of the hit point */
                 }
                 break;
+            case synctex_node_type_rule:/* to do: special management */
             case synctex_node_type_glue:
             case synctex_node_type_math:
             case synctex_node_type_boundary:
@@ -7128,6 +7690,7 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
                 nd = _synctex_point_h_ordered_distance_v2(hit,nd.node);
                 break;
             case synctex_node_type_proxy:
+            case synctex_node_type_proxy_last:
             {
                 /* shift the hit point to be relative to the proxy origin,
                  *  then compute the distance to the target
@@ -7139,6 +7702,8 @@ static synctex_nd_s _synctex_point_h_ordered_distance_v2
                 nd = _synctex_point_h_ordered_distance_v2(&otherHit,nd.node);
                 nd.node = node;
             }
+            default:
+                break;
         }
     }
     return nd;
@@ -7152,7 +7717,7 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
 (synctex_point_p hit, synctex_node_p node) {
     synctex_nd_s nd = {node, INT_MAX};
     int min,max,depth,height;
-    switch(SYNCTEX_TYPE(node)) {
+    switch(synctex_node_type(node)) {
             /*  The distance between a point and a box is special.
              *  It is not the euclidian distance, nor something similar.
              *  We have to take into account the particular layout,
@@ -7184,7 +7749,7 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
                 nd.distance = 0; /*  regions 4.5.6, inside the box, except for horizontal coordinates */
             }
             break;
-        case synctex_node_type_vbox_proxy:
+        case synctex_node_type_proxy_vbox:
             /*  getting the box bounds, taking into account negative width, height and depth. */
             min = synctex_node_v(node);
             max = min + _synctex_abs(synctex_node_depth(node));
@@ -7199,7 +7764,7 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
             }
             break;
         case synctex_node_type_hbox:
-        case synctex_node_type_hbox_proxy:
+        case synctex_node_type_proxy_hbox:
             /*  getting the box bounds, taking into account negative height and depth. */
             min = synctex_node_hbox_v(node);
             depth = synctex_node_hbox_depth(node);
@@ -7215,6 +7780,7 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
                 nd.distance = 0; /*  regions 4.5.6, inside the box, except for horizontal coordinates */
             }
             break;
+        case synctex_node_type_rule:/* to do: special management */
         case synctex_node_type_kern:
         case synctex_node_type_glue:
         case synctex_node_type_math:
@@ -7235,6 +7801,7 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
             nd = _synctex_point_v_ordered_distance_v2(hit,nd.node);
             break;
         case synctex_node_type_proxy:
+        case synctex_node_type_proxy_last:
         {
             synctex_point_s otherHit = *hit;
             otherHit.h -= _synctex_data_h(node);
@@ -7243,27 +7810,28 @@ static synctex_nd_s _synctex_point_v_ordered_distance_v2
             nd = _synctex_point_v_ordered_distance_v2(&otherHit,nd.node);
             nd.node = node;
         }
+        default: break;
     }
     return nd;
 }
 /**
- *  The smallest is the one with the smallest area.
+ *  The best is the one with the smallest area.
  *  The area is width*height where width and height may be big.
- *  So there is a real risk of overflow.
+ *  So there is a real risk of overflow if we stick with ints.
  */
 SYNCTEX_INLINE static synctex_node_p _synctex_smallest_container_v2(synctex_node_p node, synctex_node_p other_node) {
-    int total_height, other_total_height;
+    long total_height, other_total_height;
     unsigned long area, other_area;
-    int width = synctex_node_hbox_width(node);
-    int other_width = synctex_node_hbox_width(other_node);
+    long width = synctex_node_hbox_width(node);
+    long other_width = synctex_node_hbox_width(other_node);
     if (width<0) {
         width = -width;
     }
     if (other_width<0) {
         other_width = -other_width;
     }
-    total_height = _synctex_abs(_synctex_data_depth(node)) + _synctex_abs(_synctex_data_height(node));
-    other_total_height = _synctex_abs(_synctex_data_depth(other_node)) + _synctex_abs(_synctex_data_height(other_node));
+    total_height = _synctex_abs(synctex_node_hbox_depth(node)) + _synctex_abs(synctex_node_hbox_height(node));
+    other_total_height = _synctex_abs(synctex_node_hbox_depth(other_node)) + _synctex_abs(synctex_node_hbox_height(other_node));
     area = total_height*width;
     other_area = other_total_height*other_width;
     if (area<other_area) {
@@ -7361,7 +7929,7 @@ static int _synctex_point_node_distance_v2(synctex_point_p hit, synctex_node_p n
     if (node) {
         synctex_box_s box = {{0,0},{0,0}};
         int dd = INT_MAX;
-        switch(SYNCTEX_TYPE(node)) {
+        switch(synctex_node_type(node)) {
             case synctex_node_type_vbox:
                 box.min.h = _synctex_data_h(node);
                 box.max.h = box.min.h + _synctex_abs(_synctex_data_width(node));
@@ -7369,7 +7937,7 @@ static int _synctex_point_node_distance_v2(synctex_point_p hit, synctex_node_p n
                 box.max.v = box.min.v + _synctex_abs(_synctex_data_depth(node));
                 box.min.v -= _synctex_abs(_synctex_data_height(node));
                 return _synctex_distance_to_box_v2(hit,&box);
-            case synctex_node_type_vbox_proxy:
+            case synctex_node_type_proxy_vbox:
                 box.min.h = synctex_node_h(node);
                 box.max.h = box.min.h + _synctex_abs(synctex_node_width(node));
                 box.min.v = synctex_node_v(node);
@@ -7377,7 +7945,7 @@ static int _synctex_point_node_distance_v2(synctex_point_p hit, synctex_node_p n
                 box.min.v -= _synctex_abs(synctex_node_height(node));
                 return _synctex_distance_to_box_v2(hit,&box);
             case synctex_node_type_hbox:
-            case synctex_node_type_hbox_proxy:
+            case synctex_node_type_proxy_hbox:
                 box.min.h = synctex_node_hbox_h(node);
                 box.max.h = box.min.h + _synctex_abs(synctex_node_hbox_width(node));
                 box.min.v = synctex_node_hbox_v(node);
@@ -7417,12 +7985,14 @@ static int _synctex_point_node_distance_v2(synctex_point_p hit, synctex_node_p n
                 box.min.v = box.max.v - _synctex_abs(_synctex_data_height(_synctex_tree_parent(node)));
                 return _synctex_distance_to_box_v2(hit,&box);
             case synctex_node_type_proxy:
+            case synctex_node_type_proxy_last:
             {
                 synctex_point_s otherHit = *hit;
                 otherHit.h -= _synctex_data_h(node);
                 otherHit.v -= _synctex_data_v(node);
                 return _synctex_point_node_distance_v2(&otherHit, _synctex_tree_target(node));
             }
+            default: break;
         }
     }
     return d;
@@ -7446,8 +8016,8 @@ static synctex_node_p _synctex_eq_deepest_container_v2(synctex_point_p hit, sync
                 }
             } while((child = synctex_node_sibling(child)));
             /*  is the hit point inside the box? */
-            if (SYNCTEX_TYPE(node) == synctex_node_type_vbox
-                || SYNCTEX_TYPE(node) == synctex_node_type_vbox_proxy) {
+            if (synctex_node_type(node) == synctex_node_type_vbox
+                || synctex_node_type(node) == synctex_node_type_proxy_vbox) {
                 /*  For vboxes we try to use some node inside.
                  *  Walk through the list of siblings until we find the closest one.
                  *  Only consider siblings with children inside. */
@@ -7491,8 +8061,8 @@ static synctex_nd_s _synctex_eq_deepest_container_v3(synctex_point_p hit, syncte
             /*  For vboxes we try to use some node inside.
              *  Walk through the list of siblings until we find the closest one.
              *  Only consider siblings with children inside. */
-            if (SYNCTEX_TYPE(node) == synctex_node_type_vbox
-                || SYNCTEX_TYPE(node) == synctex_node_type_vbox_proxy) {
+            if (synctex_node_type(node) == synctex_node_type_vbox
+                || synctex_node_type(node) == synctex_node_type_proxy_vbox) {
                 if ((child = synctex_node_child(node))) {
                     synctex_nd_s best = SYNCTEX_ND_0;
                     do {
@@ -7545,7 +8115,10 @@ SYNCTEX_INLINE static synctex_nd_lr_s __synctex_eq_get_closest_children_in_hbox_
                 }
             } else if (childd.distance == 0) {
                 /*  hit point is inside node. */
-                return _synctex_eq_get_closest_children_in_box_v2(hitP, childd.node);
+                if (_synctex_tree_child(childd.node)) {
+                    return _synctex_eq_get_closest_children_in_box_v2(hitP, childd.node);
+                }
+                nds.l = childd;
             } else { /*  here childd.distance < 0, the hit point is to the right of node */
                 childd.distance = -childd.distance;
                 if (nds.l.distance > childd.distance) {
@@ -7644,6 +8217,7 @@ SYNCTEX_INLINE static synctex_nd_lr_s __synctex_eq_get_closest_children_in_hbox_
 }
 #endif
 SYNCTEX_INLINE static synctex_nd_lr_s __synctex_eq_get_closest_children_in_vbox_v2(synctex_point_p hitP, synctex_node_p nodeP) {
+    SYNCTEX_UNUSED(nodeP)
     synctex_nd_lr_s nds = {SYNCTEX_ND_0,SYNCTEX_ND_0};
     synctex_nd_s nd = SYNCTEX_ND_0;
     if ((nd.node = synctex_node_child(nd.node))) {
@@ -7722,13 +8296,13 @@ static synctex_nd_s __synctex_closest_deep_child_v2(synctex_point_p hitP, syncte
             synctex_node_display(child);
 #endif
             synctex_nd_s nd = SYNCTEX_ND_0;
-            if (SYNCTEX_IS_BOX(child)) {
+            if (_synctex_node_is_box(child)) {
                 nd = __synctex_closest_deep_child_v2(hitP,child);
             } else {
                 nd = (synctex_nd_s) {child, _synctex_point_node_distance_v2(hitP,child)};
             }
             if (nd.distance < best.distance ||(nd.distance == best.distance
-                                               && SYNCTEX_TYPE(nd.node) != synctex_node_type_kern)) {
+                                               && synctex_node_type(nd.node) != synctex_node_type_kern)) {
 #if defined(SYNCTEX_DEBUG)
                 if(nd.node) {
                     printf("New best %i<=%i line %i\n",nd.distance,
@@ -7756,9 +8330,9 @@ static synctex_nd_s __synctex_closest_deep_child_v2(synctex_point_p hitP, syncte
  */
 static synctex_nd_s _synctex_eq_closest_child_v2(synctex_point_p hitP, synctex_node_p node) {
     synctex_nd_s nd = SYNCTEX_ND_0;
-    if (SYNCTEX_IS_BOX(node)) {
+    if (_synctex_node_is_box(node)) {
         nd = __synctex_closest_deep_child_v2(hitP, node);
-        if (SYNCTEX_IS_BOX(nd.node)) {
+        if (_synctex_node_is_box(nd.node)) {
             synctex_node_p child = NULL;
             if ((child = synctex_node_child(nd.node))) {
                 synctex_nd_s best = {child,_synctex_point_node_distance_v2(hitP,child)};
@@ -7766,7 +8340,7 @@ static synctex_nd_s _synctex_eq_closest_child_v2(synctex_point_p hitP, synctex_n
                     int d = _synctex_point_node_distance_v2(hitP,child);
                     if (d < best.distance) {
                         best = (synctex_nd_s){child,d};
-                    } else if (d == best.distance && SYNCTEX_TYPE(child) != synctex_node_type_kern) {
+                    } else if (d == best.distance && synctex_node_type(child) != synctex_node_type_kern) {
                         best.node = child;
                     }
                 }
@@ -7777,83 +8351,151 @@ static synctex_nd_s _synctex_eq_closest_child_v2(synctex_point_p hitP, synctex_n
     }
     return SYNCTEX_ND_0;
 }
-#define SYNCTEX_IS_NON_VOID_HBOX(NODE)\
-(((SYNCTEX_NODE_MASK(NODE)&synctex_mask_non_void_hbox)==synctex_mask_non_void_hbox))
-#define SYNCTEX_IS_NON_VOID_VBOX(NODE)\
-(((SYNCTEX_NODE_MASK(NODE)&synctex_mask_non_void_vbox)==synctex_mask_non_void_vbox))
 SYNCTEX_INLINE static synctex_nd_lr_s _synctex_eq_get_closest_children_in_box_v2(synctex_point_p hitP, synctex_node_p node) {
     synctex_nd_lr_s nds = {SYNCTEX_ND_0,SYNCTEX_ND_0};
-    if(SYNCTEX_IS_NON_VOID_HBOX(node)) {
-        return __synctex_eq_get_closest_children_in_hbox_v2(hitP,node);
-    } else if(SYNCTEX_IS_NON_VOID_VBOX(node)) {
-        return __synctex_eq_get_closest_children_in_vbox_v2(hitP,node);
+    if(_synctex_tree_has_child(node)) { /* node != NULL */
+        if (node->class_->type==synctex_node_type_hbox ||
+            node->class_->type==synctex_node_type_proxy_hbox) {
+            return __synctex_eq_get_closest_children_in_hbox_v2(hitP,node);
+        } else {
+            return __synctex_eq_get_closest_children_in_vbox_v2(hitP,node);
+        }
     }
     return nds;
 }
 
+#ifndef SYNCTEX_NO_UPDATER
 
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Updater
 #   endif
 
-typedef int (*synctex_fprintf_t)(void *, const char * , ...); /*  print formatted to either FILE *  or gzFile */
+typedef int (*synctex_print_f)(synctex_updater_p, const char * , ...); /*  print formatted to either FILE *  or gzFile */
+typedef void (*synctex_close_f)(synctex_updater_p); /*  close FILE *  or gzFile */
 
 #   define SYNCTEX_BITS_PER_BYTE 8
 
+typedef union {
+    gzFile as_gzFile;
+    FILE * as_FILE_p;
+    void * as_ptr;
+} syncex_file_u;
+
 struct synctex_updater_t {
-    gzFile file;                /*  the foo.synctex or foo.synctex.gz I/O identifier  */
-    synctex_fprintf_t fprintf;  /*  either fprintf or gzprintf */
-    int length;                 /*  the number of chars appended */
-    struct _flags {
-        unsigned int no_gz:1;   /*  Whether zlib is used or not */
-        unsigned int reserved:SYNCTEX_BITS_PER_BYTE*sizeof(int)-1; /*  Align */
-    } flags;
+    syncex_file_u file;
+    synctex_print_f print;
+    synctex_close_f close;
+    int length;             /*  the number of chars appended */
 };
-#   define SYNCTEX_FILE updater->file
-#   define SYNCTEX_NO_GZ ((updater->flags).no_gz)
-#   define SYNCTEX_fprintf (*(updater->fprintf))
+
+static int _synctex_updater_print(synctex_updater_p updater, const char * format, ...) {
+    int result = 0;
+    if (updater) {
+        va_list va;
+        va_start(va, format);
+        result = vfprintf(updater->file.as_FILE_p,
+                           format,
+                           va);
+        va_end(va);
+    }
+    return result;
+}
+#if defined(_MSC_VER)
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+static int vasprintf(char **ret,
+                     const char *format,
+                     va_list ap)
+{
+    int len;
+    len = _vsnprintf(NULL, 0, format, ap);
+    if (len < 0) return -1;
+    *ret = malloc(len + 1);
+    if (!*ret) return -1;
+    _vsnprintf(*ret, len+1, format, ap);
+    (*ret)[len] = '\0';
+    return len;
+}
+
+#endif
+
+/**
+ *  gzvprintf is not available until OSX 10.10
+ */
+static int _synctex_updater_print_gz(synctex_updater_p updater, const char * format, ...) {
+    int result = 0;
+    if (updater) {
+        char * buffer;
+        va_list va;
+        va_start(va, format);
+        if (vasprintf(&buffer, format, va) < 0) {
+            _synctex_error("Out of memory...");
+        } else if ((result = (int)strlen(buffer))) {
+            result = gzwrite(updater->file.as_gzFile, buffer, (unsigned)result);
+        }
+        va_end(va);
+        free(buffer);
+    }
+    return result;
+}
+
+static void _synctex_updater_close(synctex_updater_p updater) {
+    if (updater) {
+        fclose(updater->file.as_FILE_p);
+    }
+}
+
+static void _synctex_updater_close_gz(synctex_updater_p updater) {
+    if (updater) {
+        gzclose(updater->file.as_gzFile);
+    }
+}
 
 synctex_updater_p synctex_updater_new_with_output_file(const char * output, const char * build_directory) {
     synctex_updater_p updater = NULL;
-    char * synctex = NULL;
-    synctex_io_mode_t io_mode = 0;
     const char * mode = NULL;
+    synctex_open_s open;
     /*  prepare the updater, the memory is the only one dynamically allocated */
     updater = (synctex_updater_p)_synctex_malloc(sizeof(synctex_updater_s));
     if (NULL == updater) {
         _synctex_error("!  synctex_updater_new_with_file: malloc problem");
         return NULL;
     }
-    if (_synctex_open(output,build_directory,&synctex,&SYNCTEX_FILE,synctex_ADD_QUOTES,&io_mode)
-        && _synctex_open(output,build_directory,&synctex,&SYNCTEX_FILE,synctex_DONT_ADD_QUOTES,&io_mode)) {
-    return_on_error:
-        free(updater);
-        updater = NULL;
-        return NULL;
+    open = _synctex_open_v2(output,build_directory,0,synctex_ADD_QUOTES);
+    if (open.status < SYNCTEX_STATUS_OK) {
+        open = _synctex_open_v2(output,build_directory,0,synctex_DONT_ADD_QUOTES);
+        if (open.status < SYNCTEX_STATUS_OK) {
+        return_on_error:
+            _synctex_free(updater);
+            return updater = NULL;
+        }
     }
     /*  OK, the file exists, we close it and reopen it with the correct mode.
      *  The receiver is now the owner of the "synctex" variable. */
-    gzclose(SYNCTEX_FILE);
-    SYNCTEX_FILE = NULL;
-    SYNCTEX_NO_GZ = (io_mode&synctex_io_gz_mask)?synctex_NO:synctex_YES;
-    mode = _synctex_get_io_mode_name(io_mode|synctex_io_append_mask);/* either "a" or "ab", depending on the file extension */
-    if (SYNCTEX_NO_GZ) {
-        if (NULL == (SYNCTEX_FILE = (void *)fopen(synctex,mode))) {
+    gzclose(open.file);
+    updater->file.as_ptr = NULL;
+    mode = _synctex_get_io_mode_name(open.io_mode|synctex_io_append_mask);/* either "a" or "ab", depending on the file extension */
+    if (open.io_mode&synctex_io_gz_mask) {
+        if (NULL == (updater->file.as_FILE_p = fopen(open.synctex,mode))) {
         no_write_error:
-            _synctex_error("!  synctex_updater_new_with_file: Can't append to %s",synctex);
-            free(synctex);
+            _synctex_error("!  synctex_updater_new_with_file: Can't append to %s",open.synctex);
+            free(open.synctex);
             goto return_on_error;
         }
-        updater->fprintf = (synctex_fprintf_t)(&fprintf);
+        updater->print = &_synctex_updater_print;
+        updater->close = &_synctex_updater_close;
     } else {
-        if (NULL == (SYNCTEX_FILE = (void *)gzopen(synctex,mode))) {
+        if (NULL == (updater->file.as_gzFile = gzopen(open.synctex,mode))) {
             goto no_write_error;
         }
-        updater->fprintf = (synctex_fprintf_t)(&gzprintf);
+        updater->print = &_synctex_updater_print_gz;
+        updater->close = &_synctex_updater_close_gz;
     }
-    printf("SyncTeX: updating %s...",synctex);
-    free(synctex);
+    printf("SyncTeX: updating %s...",open.synctex);
+    _synctex_free(open.synctex);
     return updater;
 }
 
@@ -7862,7 +8504,8 @@ void synctex_updater_append_magnification(synctex_updater_p updater, char * magn
         return;
     }
     if (magnification && strlen(magnification)) {
-        updater->length += SYNCTEX_fprintf(SYNCTEX_FILE,"Magnification:%s\n",magnification);
+        updater->length +=
+        updater->print(updater,"Magnification:%s\n",magnification);
     }
 }
 
@@ -7871,7 +8514,7 @@ void synctex_updater_append_x_offset(synctex_updater_p updater, char * x_offset)
         return;
     }
     if (x_offset && strlen(x_offset)) {
-        updater->length += SYNCTEX_fprintf(SYNCTEX_FILE,"X Offset:%s\n",x_offset);
+        updater->length += updater->print(updater,"X Offset:%s\n",x_offset);
     }
 }
 
@@ -7880,7 +8523,7 @@ void synctex_updater_append_y_offset(synctex_updater_p updater, char * y_offset)
         return;
     }
     if (y_offset && strlen(y_offset)) {
-        updater->length += SYNCTEX_fprintf(SYNCTEX_FILE,"Y Offset:%s\n",y_offset);
+        updater->length += updater->print(updater,"Y Offset:%s\n",y_offset);
     }
 }
 
@@ -7889,121 +8532,155 @@ void synctex_updater_free(synctex_updater_p updater){
         return;
     }
     if (updater->length>0) {
-        SYNCTEX_fprintf(SYNCTEX_FILE,"!%i\n",updater->length);
+        updater->print(updater,"!%i\n",updater->length);
     }
-    if (SYNCTEX_NO_GZ) {
-        fclose((FILE *)SYNCTEX_FILE);
-    } else {
-        gzclose((gzFile)SYNCTEX_FILE);
-    }
-    free(updater);
+    updater->close(updater);
+    _synctex_free(updater);
     printf("... done.\n");
     return;
 }
+#endif
+
+#if defined(SYNCTEX_TESTING)
 #	ifdef SYNCTEX_NOTHING
 #       pragma mark -
 #       pragma mark Testers
 #   endif
-#if defined(SYNCTEX_TESTING)
+/**
+ *  The next nodes corresponds to a deep first tree traversal.
+ *  Does not create child proxies as side effect contrary to
+ *  the synctex_node_next method above.
+ *  May loop infinitely many times if the tree
+ *  is not properly built (contains loops).
+ */
+static synctex_node_p _synctex_node_next(synctex_node_p node) {
+    synctex_node_p N = _synctex_tree_child(node);
+    if (N) {
+        return N;
+    }
+    return _synctex_node_sibling_or_parents(node);
+}
+static int _synctex_input_copy_name(synctex_node_p input, char * name) {
+    char * copy = _synctex_malloc(strlen(name)+1);
+    memcpy(copy,name,strlen(name)+1);
+    _synctex_data_set_name(input,copy);
+    return 0;
+}
 int synctex_test_setup_scanner_sheets_421(synctex_scanner_p scanner) {
+    int TC = 0;
     synctex_node_p sheet = synctex_node_new(scanner,synctex_node_type_sheet);
     _synctex_data_set_page(sheet,4);
-    SYNCTEX_TEST_BODY(_synctex_data_page(sheet)==4,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_page(sheet)==4,"");
     synctex_node_free(scanner->sheet);
     scanner->sheet = sheet;
     sheet = synctex_node_new(scanner,synctex_node_type_sheet);
     _synctex_data_set_page(sheet,2);
-    SYNCTEX_TEST_BODY(_synctex_data_page(sheet)==2,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_page(sheet)==2,"");
     __synctex_tree_set_sibling(sheet, scanner->sheet);
     scanner->sheet = sheet;
     sheet = synctex_node_new(scanner,synctex_node_type_sheet);
     _synctex_data_set_page(sheet,1);
-    SYNCTEX_TEST_BODY(_synctex_data_page(sheet)==1,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_page(sheet)==1,"");
     __synctex_tree_set_sibling(sheet, scanner->sheet);
     scanner->sheet = sheet;
-    return 1;
+    return TC;
 }
 int synctex_test_input(synctex_scanner_p scanner) {
+    int TC = 0;
     synctex_node_p input = synctex_node_new(scanner,synctex_node_type_input);
     _synctex_data_set_tag(input,421);
-    SYNCTEX_TEST_BODY(_synctex_data_tag(input)==421,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(input)==421,"");
     _synctex_data_set_tag(input,124);
-    SYNCTEX_TEST_BODY(_synctex_data_tag(input)==124,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(input)==124,"");
     _synctex_data_set_line(input,421);
-    SYNCTEX_TEST_BODY(_synctex_data_line(input)==421,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(input)==421,"");
     _synctex_data_set_line(input,214);
-    SYNCTEX_TEST_BODY(_synctex_data_line(input)==214,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(input)==214,"");
     _synctex_data_set_line(input,214);
-    SYNCTEX_TEST_BODY(_synctex_data_line(input)==214,"");
-    _synctex_data_set_name(input,"214");
-    SYNCTEX_TEST_BODY(0==memcmp(_synctex_data_name(input),"214",4),"");
-    _synctex_data_set_name(input,"421421");
-    SYNCTEX_TEST_BODY(0==memcmp(_synctex_data_name(input),"421421",4),"");
-    
-    return 1;
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(input)==214,"");
+    _synctex_input_copy_name(input,"214");
+    SYNCTEX_TEST_BODY(TC, 0==memcmp(_synctex_data_name(input),"214",4),"");
+    _synctex_input_copy_name(input,"421421");
+
+    SYNCTEX_TEST_BODY(TC,
+                      0==memcmp(_synctex_data_name(input),
+                                "421421",
+                                4),
+                      "");
+    synctex_node_free(input);
+    return TC;
 }
 int synctex_test_proxy(synctex_scanner_p scanner) {
+    int TC = 0;
     synctex_node_p proxy = synctex_node_new(scanner,synctex_node_type_proxy);
     synctex_node_p target = synctex_node_new(scanner,synctex_node_type_rule);
     _synctex_tree_set_target(proxy,target);
     _synctex_data_set_tag(target,421);
-    SYNCTEX_TEST_BODY(_synctex_data_tag(target)==421,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(target)==421,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(proxy)==421,"");
-    return 1;
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(target)==421,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(target)==421,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(proxy)==421,"");
+    synctex_node_free(proxy);
+    synctex_node_free(target);
+    return TC;
 }
-int synctex_test_result(synctex_scanner_p scanner) {
-    synctex_node_p result = synctex_node_new(scanner,synctex_node_type_result);
+int synctex_test_handle(synctex_scanner_p scanner) {
+    int TC = 0;
+    synctex_node_p handle = synctex_node_new(scanner,synctex_node_type_handle);
     synctex_node_p proxy = synctex_node_new(scanner, synctex_node_type_proxy);
     synctex_node_p target = synctex_node_new(scanner,synctex_node_type_rule);
-    _synctex_tree_set_target(result,target);
+    _synctex_tree_set_target(handle,target);
     _synctex_data_set_tag(target,421);
-    SYNCTEX_TEST_BODY(_synctex_data_tag(target)==421,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(target)==421,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(result)==421,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(target)==421,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(target)==421,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(handle)==421,"");
     _synctex_data_set_line(target,214);
-    SYNCTEX_TEST_BODY(_synctex_data_line(target)==214,"");
-    SYNCTEX_TEST_BODY(synctex_node_line(target)==214,"");
-    SYNCTEX_TEST_BODY(synctex_node_line(result)==214,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(target)==214,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_line(target)==214,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_line(handle)==214,"");
     _synctex_data_set_column(target,142);
-    SYNCTEX_TEST_BODY(_synctex_data_column(target)==142,"");
-    SYNCTEX_TEST_BODY(synctex_node_column(target)==142,"");
-    SYNCTEX_TEST_BODY(synctex_node_column(result)==142,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_column(target)==142,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_column(target)==142,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_column(handle)==142,"");
     _synctex_tree_set_target(proxy,target);
-    _synctex_tree_set_target(result,proxy);
+    _synctex_tree_set_target(handle,proxy);
     _synctex_data_set_tag(target,412);
-    SYNCTEX_TEST_BODY(_synctex_data_tag(target)==412,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(target)==412,"");
-    SYNCTEX_TEST_BODY(synctex_node_tag(result)==412,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(target)==412,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(target)==412,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_tag(handle)==412,"");
     _synctex_data_set_line(target,124);
-    SYNCTEX_TEST_BODY(_synctex_data_line(target)==124,"");
-    SYNCTEX_TEST_BODY(synctex_node_line(target)==124,"");
-    SYNCTEX_TEST_BODY(synctex_node_line(result)==124,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(target)==124,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_line(target)==124,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_line(handle)==124,"");
     _synctex_data_set_column(target,241);
-    SYNCTEX_TEST_BODY(_synctex_data_column(target)==241,"");
-    SYNCTEX_TEST_BODY(synctex_node_column(target)==241,"");
-    SYNCTEX_TEST_BODY(synctex_node_column(result)==241,"");
-    return 1;
+    SYNCTEX_TEST_BODY(TC, _synctex_data_column(target)==241,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_column(target)==241,"");
+    SYNCTEX_TEST_BODY(TC, synctex_node_column(handle)==241,"");
+    synctex_node_free(handle);
+    synctex_node_free(proxy);
+    synctex_node_free(target);
+    return TC;
 }
 int synctex_test_setup_scanner_input(synctex_scanner_p scanner) {
+    int TC = 0;
     synctex_node_p input = synctex_node_new(scanner,synctex_node_type_input);
     _synctex_data_set_tag(input,4);
-    _synctex_data_set_name(input,"21");
+    _synctex_input_copy_name(input,"21");
     _synctex_data_set_line(input,421);
     synctex_node_free(scanner->input);
     scanner->input = input;
-    SYNCTEX_TEST_BODY(_synctex_data_tag(input)==4,"");
-    SYNCTEX_TEST_BODY(strcmp(_synctex_data_name(input),"21")==0,"");
-    SYNCTEX_TEST_BODY(_synctex_data_line(input)==421,"");
-    return 1;
+    SYNCTEX_TEST_BODY(TC, _synctex_data_tag(input)==4,"");
+    SYNCTEX_TEST_BODY(TC, strcmp(_synctex_data_name(input),"21")==0,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_data_line(input)==421,"");
+    return TC;
 }
 int synctex_test_setup_nodes(synctex_scanner_p scanner, synctex_node_r nodes) {
+    int TC = 0;
     int n;
     for (n=0;n<synctex_node_number_of_types;++n) {
         nodes[n] = synctex_node_new(scanner,n);
-        SYNCTEX_TEST_BODY(nodes[n]!=NULL,"");
+        SYNCTEX_TEST_BODY(TC, nodes[n]!=NULL,"");
     }
-    return 1;
+    return TC;
 }
 int synctex_test_teardown_nodes(synctex_scanner_p scanner, synctex_node_r nodes) {
     int n;
@@ -8014,65 +8691,234 @@ int synctex_test_teardown_nodes(synctex_scanner_p scanner, synctex_node_r nodes)
     return 1;
 }
 int synctex_test_tree(synctex_scanner_p scanner) {
+    int TC = 0;
     synctex_node_p nodes1[synctex_node_number_of_types];
     synctex_node_p nodes2[synctex_node_number_of_types];
     synctex_node_p nodes3[synctex_node_number_of_types];
-    int i,j,k;
-    synctex_node_type_t with_child[synctex_node_number_of_types];
-    synctex_test_setup_nodes(scanner,nodes1);
-    synctex_test_setup_nodes(scanner,nodes2);
-    synctex_test_setup_nodes(scanner,nodes3);
+    int i,j;
+    TC += synctex_test_setup_nodes(scanner,nodes1);
+    TC += synctex_test_setup_nodes(scanner,nodes2);
+    TC += synctex_test_setup_nodes(scanner,nodes3);
     /*  Every node has a sibling */
     for (i=0;i<synctex_node_number_of_types;++i) {
         for (j=0;j<synctex_node_number_of_types;++j) {
             _synctex_tree_set_sibling(nodes1[i],nodes2[i]);
-            SYNCTEX_TEST_BODY(nodes2[i]==synctex_node_sibling(nodes1[i]),"");
+            SYNCTEX_TEST_BODY(TC, nodes2[i]==synctex_node_sibling(nodes1[i]),"");
         }
     }
     synctex_test_teardown_nodes(scanner,nodes3);
     synctex_test_teardown_nodes(scanner,nodes2);
     synctex_test_teardown_nodes(scanner,nodes1);
-    return 1;
+    return TC;
 }
 int synctex_test_page(synctex_scanner_p scanner) {
-    int count = synctex_test_setup_scanner_sheets_421(scanner);
+    int TC = synctex_test_setup_scanner_sheets_421(scanner);
     synctex_node_p sheet = scanner->sheet;
     synctex_node_p node = synctex_node_new(scanner,synctex_node_type_rule);
     _synctex_data_set_tag(node,4);
     _synctex_data_set_line(node,21);
-    _synctex_node_set_child(sheet,node);
-    SYNCTEX_TEST_BODY(synctex_node_page(node)==synctex_node_page(sheet),"");
-    return count;
+    synctex_node_free(_synctex_node_set_child(sheet,node));
+    SYNCTEX_TEST_BODY(TC, synctex_node_page(node)==synctex_node_page(sheet),"");
+    return TC;
 }
 int synctex_test_display_query(synctex_scanner_p scanner) {
-    int count = synctex_test_setup_scanner_sheets_421(scanner);
+    int TC = synctex_test_setup_scanner_sheets_421(scanner);
     synctex_node_p sheet = scanner->sheet;
     synctex_node_p node = synctex_node_new(scanner,synctex_node_type_rule);
     _synctex_data_set_tag(node,4);
     _synctex_data_set_line(node,21);
-    _synctex_tree_set_child(sheet,node);
-    SYNCTEX_TEST_BODY(node==synctex_node_child(sheet),"");
+    synctex_node_free(_synctex_node_set_child(sheet,node));
+    SYNCTEX_TEST_BODY(TC, node==synctex_node_child(sheet),"");
     __synctex_node_make_friend_tlc(node);
-    SYNCTEX_TEST_BODY(_synctex_scanner_friend(scanner, 25)==node,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_scanner_friend(scanner, 25)==node,"");
     sheet = __synctex_tree_sibling(sheet);
     node = synctex_node_new(scanner,synctex_node_type_rule);
     _synctex_data_set_tag(node,4);
     _synctex_data_set_line(node,21);
-    _synctex_node_set_child(sheet,node);
-    SYNCTEX_TEST_BODY(node==synctex_node_child(sheet),"");
+    synctex_node_free(_synctex_node_set_child(sheet,node));
+    SYNCTEX_TEST_BODY(TC, node==synctex_node_child(sheet),"");
     __synctex_node_make_friend_tlc(node);
-    SYNCTEX_TEST_BODY(_synctex_scanner_friend(scanner, 25)==node,"");
+    SYNCTEX_TEST_BODY(TC, _synctex_scanner_friend(scanner, 25)==node,"");
     sheet = __synctex_tree_sibling(sheet);
     node = synctex_node_new(scanner,synctex_node_type_rule);
     _synctex_data_set_tag(node,4);
     _synctex_data_set_line(node,21);
-    _synctex_tree_set_child(sheet,node);
-    SYNCTEX_TEST_BODY(node==synctex_node_child(sheet),"");
+    synctex_node_free(_synctex_node_set_child(sheet,node));
+    SYNCTEX_TEST_BODY(TC, node==synctex_node_child(sheet),"");
     __synctex_node_make_friend_tlc(node);
-    SYNCTEX_TEST_BODY((_synctex_scanner_friend(scanner, 25)==node),"");
+    SYNCTEX_TEST_BODY(TC, (_synctex_scanner_friend(scanner, 25)==node),"");
     synctex_test_setup_scanner_input(scanner);
     scanner->flags.has_parsed = synctex_YES;
-    SYNCTEX_TEST_BODY((synctex_display_query(scanner,"21",21,4,-1)==3),"");
-    return count;
+#if 1
+    SYNCTEX_TEST_BODY(TC, (synctex_display_query(scanner,"21",21,4,-1)==3),"");
+#endif
+    return TC;
+}
+typedef struct {
+    int s;      /* status */
+    char n[25]; /* name */
+} synctex_test_sn_s;
+
+synctex_test_sn_s synctex_test_tmp_sn(char * content) {
+    synctex_test_sn_s sn = {0, "/tmp/test.XXXXXX.synctex"};
+    FILE *sfp;
+    int fd = mkstemps(sn.n,8);
+    if (fd < 0) {
+        fprintf(stderr, "%s: %s\n", sn.n, strerror(errno));
+        sn.s = -1;
+        return sn;
+    }
+    if ((sfp = fdopen(fd, "w+")) == NULL) {
+        unlink(sn.n);
+        close(fd);
+        fprintf(stderr, "%s: %s\n", sn.n, strerror(errno));
+        sn.s = -2;
+        return sn;
+    }
+    sn.s = fputs(content,sfp);
+    printf("temp:%s\n%i\n",sn.n,sn.s);
+    fclose(sfp);
+    if (sn.s==0) {
+        sn.s = -2;
+        unlink(sn.n);
+    }
+    return sn;
+}
+int synctex_test_sheet_1() {
+    int TC = 0;
+    char * content =
+    "SyncTeX Version:1  \n" /*00-19*/
+    "Input:1:./1.tex    \n" /*20-39*/
+    "Output:pdf         \n" /*40-59*/
+    "Magnification:100000000      \n" /*60-89*/
+    "Unit:1   \n"           /*90-99*/
+    "X Offset:0         \n" /*00-19*/
+    "Y Offset:0         \n" /*20-39*/
+    "Content: \n"           /*40-49*/
+    "{1       \n"           /*50-59*/
+    "[1,10:20,350:330,330,0       \n" /*60-89*/
+    "]        \n"           /*90-99*/
+    "}        \n"           /*00-09*/
+    "Postamble:\n";
+    synctex_test_sn_s sn = synctex_test_tmp_sn(content);
+    if (sn.s>0) {
+        synctex_scanner_p scanner = synctex_scanner_new_with_output_file(sn.n, NULL, synctex_YES);
+        synctex_node_p node = synctex_scanner_handle(scanner);
+        printf("Created nodes:\n");
+        while (node) {
+            printf("%s\n",_synctex_node_abstract(node));
+            node = synctex_node_next(node);
+        }
+        synctex_scanner_free(scanner);
+        unlink(sn.n);
+    } else {
+        ++TC;
+    }
+    return TC;
+}
+int synctex_test_sheet_2() {
+    int TC = 0;
+    char * content =
+    "SyncTeX Version:1  \n" /*00-19*/
+    "Input:1:./1.tex    \n" /*20-39*/
+    "Output:pdf         \n" /*40-59*/
+    "Magnification:100000000      \n" /*60-89*/
+    "Unit:1   \n"           /*90-99*/
+    "X Offset:0         \n" /*00-19*/
+    "Y Offset:0         \n" /*20-39*/
+    "Content: \n"           /*40-49*/
+    "{1       \n"           /*50-59*/
+    "(1,10:20,350:330,330,0       \n" /*60-89*/
+    ")        \n"           /*90-99*/
+    "}        \n"           /*00-09*/
+    "Postamble:\n";
+    synctex_test_sn_s sn = synctex_test_tmp_sn(content);
+    if (sn.s>0) {
+        synctex_scanner_p scanner = synctex_scanner_new_with_output_file(sn.n, NULL, synctex_YES);
+        synctex_node_p node = synctex_scanner_handle(scanner);
+        printf("Created nodes:\n");
+        while (node) {
+            printf("%s\n",_synctex_node_abstract(node));
+            node = _synctex_node_next(node);
+        }
+        TC += synctex_scanner_free(scanner);
+        unlink(sn.n);
+    } else {
+        ++TC;
+    }
+    return TC;
+}
+int synctex_test_charindex() {
+    int TC = 0;
+    char * content =
+    "SyncTeX Version:1  \n" /*00-19*/
+    "Input:1:./1.tex    \n" /*20-39*/
+    "Output:pdf         \n" /*40-59*/
+    "Magnification:100000000      \n" /*60-89*/
+    "Unit:1   \n"           /*90-99*/
+    "X Offset:0         \n" /*00-19*/
+    "Y Offset:0         \n" /*20-39*/
+    "Content: \n"           /*40-49*/
+    "{1       \n"           /*50-59*/
+    "[1,10:20,350:330,330,0       \n" /*60-89*/
+    "(1,58:20,100:250,10,5        \n" /*90-119*/
+    "f1000:50,100       \n" /*20-39*/
+    ")        \n"           /*40-49*/
+    "]        \n"           /*50-59*/
+    "}        \n"           /*60-69*/
+    "Postamble:\n";
+    synctex_test_sn_s sn = synctex_test_tmp_sn(content);
+    if (sn.s>0) {
+        synctex_scanner_p scanner = synctex_scanner_new_with_output_file(sn.n, NULL, synctex_YES);
+        synctex_node_p node = synctex_scanner_handle(scanner);
+        printf("Created nodes:\n");
+        while (node) {
+            printf("%s\n",_synctex_node_abstract(node));
+            node = synctex_node_next(node);
+        }
+        TC += synctex_scanner_free(scanner);
+        unlink(sn.n);
+    } else {
+        ++TC;
+    }
+    return TC;
+}
+int synctex_test_form() {
+    int TC = 0;
+    char * content =
+    "SyncTeX Version:1  \n" /*00-19*/
+    "Input:1:./1.tex    \n" /*20-39*/
+    "Output:pdf         \n" /*40-59*/
+    "Magnification:100000000      \n" /*60-89*/
+    "Unit:1   \n"           /*90-99*/
+    "X Offset:0         \n" /*00-19*/
+    "Y Offset:0         \n" /*20-39*/
+    "Content: \n"           /*40-49*/
+    "{1       \n"           /*50-59*/
+    "[1,10:20,350:330,330,0       \n" /*60-89*/
+    "(1,58:20,100:250,10,5        \n" /*90-119*/
+    "f1000:50,100       \n" /*20-39*/
+    ")        \n"           /*40-49*/
+    "]        \n"           /*50-59*/
+    "}        \n"           /*60-69*/
+    "<1000    \n"           /*70-79*/
+    "(1,63:0,0:100,8,3  \n" /*80-99*/
+    ")        \n"           /*00-09*/
+    ">        \n"           /*10-19*/
+    "Postamble:\n";
+    synctex_test_sn_s sn = synctex_test_tmp_sn(content);
+    if (sn.s>0) {
+        synctex_scanner_p scanner = synctex_scanner_new_with_output_file(sn.n, NULL, synctex_YES);
+        synctex_node_p node = synctex_scanner_handle(scanner);
+        while (node) {
+            printf("%s\n",_synctex_node_abstract(node));
+            node = _synctex_node_next(node);
+        }
+        TC += synctex_scanner_free(scanner);
+        unlink(sn.n);
+    } else {
+        ++TC;
+    }
+    return TC;
 }
 #endif

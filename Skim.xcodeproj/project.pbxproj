@@ -706,6 +706,8 @@
 		CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindController.m; sourceTree = "<group>"; };
 		CE2DED6A0B86334900D0DA12 /* SKFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFieldEditor.h; sourceTree = "<group>"; };
 		CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFieldEditor.m; sourceTree = "<group>"; };
+		CE2EF6852022753D004A73D8 /* synctex_parser_advanced.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = synctex_parser_advanced.h; sourceTree = "<group>"; };
+		CE2EF68D2022753D004A73D8 /* synctex_version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = synctex_version.h; sourceTree = "<group>"; };
 		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE32531D0F4723EA0021BADD /* SKMainWindowController_Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_Actions.h; sourceTree = "<group>"; };
@@ -983,7 +985,6 @@
 		CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorCell.h; sourceTree = "<group>"; };
 		CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorCell.m; sourceTree = "<group>"; };
 		CEE7B7451F7A84E800004238 /* synctex_parser_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_local.h; sourceTree = "<group>"; };
-		CEE7B7461F7A84E800004238 /* synctex_parser_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_private.h; sourceTree = "<group>"; };
 		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
 		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
 		CEEB32811AC30ECA00BDB4E8 /* SKScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScroller.h; sourceTree = "<group>"; };
@@ -1758,8 +1759,9 @@
 		CE33639E0E26E086005F99E6 /* SyncTeX */ = {
 			isa = PBXGroup;
 			children = (
+				CE2EF6852022753D004A73D8 /* synctex_parser_advanced.h */,
+				CE2EF68D2022753D004A73D8 /* synctex_version.h */,
 				CEE7B7451F7A84E800004238 /* synctex_parser_local.h */,
-				CEE7B7461F7A84E800004238 /* synctex_parser_private.h */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
 				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE94D179125535DE0053A520 /* synctex_parser_utils.h */,

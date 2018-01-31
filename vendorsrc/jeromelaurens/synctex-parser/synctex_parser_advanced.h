@@ -1,16 +1,15 @@
 /*
- Copyright (c) 2017 jerome DOT laurens AT u-bourgogne DOT fr
+ Copyright (c) 2008-2017 jerome DOT laurens AT u-bourgogne DOT fr
  
- This file is part of the SyncTeX package.
+ This file is part of the __SyncTeX__ package.
  
- Latest Revision: Tue Jun 14 08:23:30 UTC 2011
+ [//]: # (Latest Revision: Sun Oct 15 15:09:55 UTC 2017)
+ [//]: # (Version: 1.21)
  
- Version: 1.19
+ See `synctex_parser_readme.md` for more details
  
- See synctex_parser_readme.txt for more details
+ ## License
  
- License:
- --------
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
  files (the "Software"), to deal in the Software without
@@ -47,6 +46,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    /*  Reminder that the argument must not be NULL */
+    typedef synctex_node_p synctex_non_null_node_p;
+
     /*  Each node of the tree, except the scanner itself belongs to a class.
      *  The class object is just a struct declaring the owning scanner
      *  This is a pointer to the scanner as root of the tree.
@@ -163,31 +165,30 @@ extern "C" {
         /* All */
         synctex_tree_s_parent_idx       =  1,
         synctex_tree_sp_child_idx       =  2,
-        synctex_tree_spc_target_idx     =  3,
         synctex_tree_spc_friend_idx     =  3,
         synctex_tree_spcf_last_idx      =  4,
         synctex_tree_spcfl_vbox_max     =  5,
         /* hbox supplement */
-        synctex_tree_spcfl_next_hbox_idx    =  5,
-        synctex_tree_spcfln_hbox_max        =  6,
+        synctex_tree_spcfl_next_hbox_idx  =  5,
+        synctex_tree_spcfln_hbox_max      =  6,
         /* hbox proxy supplement */
-        synctex_tree_spcfln_target_idx          =  6,
-        synctex_tree_spcflnt_hbox_proxy_max     =  7,
+        synctex_tree_spcfln_target_idx        =  6,
+        synctex_tree_spcflnt_proxy_hbox_max   =  7,
         /* vbox proxy supplement */
-        synctex_tree_spcfl_target_idx       =  5,
-        synctex_tree_spcflt_vbox_proxy_max  =  6,
+        synctex_tree_spcfl_target_idx         =  5,
+        synctex_tree_spcflt_proxy_vbox_max    =  6,
         /*  spf supplement*/
-        synctex_tree_sp_friend_idx      =  2,
-        synctex_tree_spf_max            =  3,
+        synctex_tree_sp_friend_idx  =  2,
+        synctex_tree_spf_max        =  3,
         /*  box boundary supplement */
-        synctex_tree_spf_arg_sibling_idx    =  3,
-        synctex_tree_spfa_max               =  4,
+        synctex_tree_spf_arg_sibling_idx   =  3,
+        synctex_tree_spfa_max              =  4,
         /*  proxy supplement */
-        synctex_tree_spf_target_idx     =  4,
-        synctex_tree_spft_proxy_max     =  5,
+        synctex_tree_spf_target_idx    =  3,
+        synctex_tree_spft_proxy_max    =  4,
         /*  last proxy supplement */
-        synctex_tree_spfa_target_idx        =  4,
-        synctex_tree_spfat_last_proxy_max   =  5,
+        synctex_tree_spfa_target_idx      =  4,
+        synctex_tree_spfat_proxy_last_max =  5,
         /* sheet supplement */
         synctex_tree_s_child_idx        =  1,
         synctex_tree_sc_next_hbox_idx   =  2,
@@ -196,7 +197,8 @@ extern "C" {
         synctex_tree_sc_target_idx      =  2,
         synctex_tree_sct_form_max       =  3,
         /* spct */
-        synctex_tree_spct_result_max    =  4,
+        synctex_tree_spc_target_idx     =  3,
+        synctex_tree_spct_handle_max    =  4,
     };
     
     enum {
@@ -243,6 +245,9 @@ extern "C" {
         synctex_data_proxy_h_idx    =  0,
         synctex_data_proxy_v_idx    =  1,
         synctex_data_proxy_hv_max   =  2,
+        /* handle */
+        synctex_data_handle_w_idx   =  0,
+        synctex_data_handle_w_max   =  1,
     };
 
     /*  each synctex node has a class */
@@ -273,46 +278,19 @@ extern "C" {
     synctex_charindex_t synctex_node_charindex(synctex_node_p node);
     typedef synctex_charindex_t synctex_lineindex_t;
     synctex_lineindex_t synctex_node_lineindex(synctex_node_p node);
+    synctex_node_p synctex_scanner_handle(synctex_scanner_p scanner);
 #       define SYNCTEX_DECLARE_CHARINDEX \
-synctex_charindex_t char_index;\
-synctex_lineindex_t line_index;
-#       define SYNCTEX_CHARINDEX(NODE) (NODE->char_index)
-#       define SYNCTEX_LINEINDEX(NODE) (NODE->line_index)
-#       define SYNCTEX_PRINT_CHARINDEX_FMT "#%i"
-#       define SYNCTEX_PRINT_CHARINDEX_WHAT ,SYNCTEX_CHARINDEX(node)
-#       define SYNCTEX_PRINT_CHARINDEX\
-            printf(SYNCTEX_PRINT_CHARINDEX_FMT SYNCTEX_PRINT_CHARINDEX_WHAT)
-#       define SYNCTEX_PRINT_LINEINDEX_FMT "L#%i"
-#       define SYNCTEX_PRINT_LINEINDEX_WHAT ,SYNCTEX_LINEINDEX(node)
-#       define SYNCTEX_PRINT_LINEINDEX\
-            printf(SYNCTEX_PRINT_LINEINDEX_FMT SYNCTEX_PRINT_LINEINDEX_WHAT)
-#       define SYNCTEX_PRINT_CHARINDEX_NL\
-            printf(SYNCTEX_PRINT_CHARINDEX_FMT "\n" SYNCTEX_PRINT_CHARINDEX_WHAT)
-#       define SYNCTEX_PRINT_LINEINDEX_NL\
-            printf(SYNCTEX_PRINT_CHARINDEX_FMT "\n"SYNCTEX_PRINT_LINEINDEX_WHAT)
-#       define SYNCTEX_DECLARE_CHAR_OFFSET synctex_charindex_t charindex_offset
-#       define SYNCTEX_IMPLEMENT_CHARINDEX(NODE,CORRECTION)\
-NODE->char_index = (synctex_charindex_t)(scanner->charindex_offset+SYNCTEX_CUR-SYNCTEX_START+(CORRECTION)); \
-NODE->line_index = scanner->line_number
+            synctex_charindex_t char_index;\
+            synctex_lineindex_t line_index;
+#       define SYNCTEX_DECLARE_CHAR_OFFSET \
+            synctex_charindex_t charindex_offset;
 #   else
 #       define SYNCTEX_DECLARE_CHARINDEX
-#       define SYNCTEX_CHARINDEX(NODE) 0
-#       define SYNCTEX_LINEINDEX(NODE) 0
-#       define SYNCTEX_PRINT_CHARINDEX_FMT
-#       define SYNCTEX_PRINT_CHARINDEX_WHAT
-#       define SYNCTEX_PRINT_CHARINDEX
-#       define SYNCTEX_PRINT_CHARINDEX
-#       define SYNCTEX_PRINT_LINEINDEX_FMT
-#       define SYNCTEX_PRINT_LINEINDEX_WHAT
-#       define SYNCTEX_PRINT_LINEINDEX
-#       define SYNCTEX_PRINT_CHARINDEX_NL printf("\n")
-#       define SYNCTEX_PRINT_LINEINDEX_NL printf("\n")
 #       define SYNCTEX_DECLARE_CHAR_OFFSET
-#       define SYNCTEX_IMPLEMENT_CHARINDEX(NODE,CORRECTION)
 #   endif
     struct synctex_node_t {
         SYNCTEX_DECLARE_CHARINDEX
-        synctex_class_p class;
+        synctex_class_p class_;
 #ifdef DEBUG
         synctex_data_u data[22];
 #else
@@ -335,6 +313,53 @@ NODE->line_index = scanner->line_number
     } synctex_box_s;
     
     typedef synctex_box_s * synctex_box_p;
+    /**
+     *  These are the types of the synctex nodes.
+     *  No need to use them but the compiler needs them here.
+     *  There are 3 kinds of nodes.
+     *  - primary nodes
+     *  - proxies
+     *  - handles
+     *  Primary nodes are created at parse time
+     *  of the synctex file.
+     *  Proxies are used to support pdf forms.
+     *  The ref primary nodes are replaced by a tree
+     *  of proxy nodes which duplicate the tree of primary
+     *  nodes available in the refered form.
+     *  Roughly speaking, the primary nodes of the form
+     *  know what to display, the proxy nodes know where.
+     *  Handles are used in queries. They point to either
+     *  primary nodes or proxies.
+     */
+    typedef enum {
+        synctex_node_type_none = 0,
+        synctex_node_type_input,
+        synctex_node_type_sheet,
+        synctex_node_type_form,
+        synctex_node_type_ref,
+        synctex_node_type_vbox,
+        synctex_node_type_void_vbox,
+        synctex_node_type_hbox,
+        synctex_node_type_void_hbox,
+        synctex_node_type_kern,
+        synctex_node_type_glue,
+        synctex_node_type_rule,
+        synctex_node_type_math,
+        synctex_node_type_boundary,
+        synctex_node_type_box_bdry,
+        synctex_node_type_proxy,
+        synctex_node_type_proxy_last,
+        synctex_node_type_proxy_vbox,
+        synctex_node_type_proxy_hbox,
+        synctex_node_type_handle,
+        synctex_node_number_of_types
+    } synctex_node_type_t;
+    /*  synctex_node_type gives the type of a given node,
+     *  synctex_node_isa gives the same information as a human readable text. */
+    synctex_node_type_t synctex_node_type(synctex_node_p node);
+    const char * synctex_node_isa(synctex_node_p node);
+    
+    synctex_node_type_t synctex_node_target_type(synctex_node_p node);
 
     synctex_node_type_t synctex_node_type(synctex_node_p node);
     const char * synctex_node_isa(synctex_node_p node);
@@ -345,16 +370,11 @@ NODE->line_index = scanner->line_number
     /*  Given a node, access to the location in the synctex file where it is defined.
      */
 
-    int synctex_node_tag(synctex_node_p node);
-    int synctex_node_line(synctex_node_p node);
-    int synctex_node_column(synctex_node_p node);
     int synctex_node_form_tag(synctex_node_p node);
     
-    int synctex_node_mean_line(synctex_node_p node);
     int synctex_node_weight(synctex_node_p node);
     int synctex_node_child_count(synctex_node_p node);
-    int synctex_node_sheet_page(synctex_node_p node);
-
+    
     int synctex_node_h(synctex_node_p node);
     int synctex_node_v(synctex_node_p node);
     int synctex_node_width(synctex_node_p node);
@@ -371,19 +391,116 @@ NODE->line_index = scanner->line_number
     int synctex_node_hbox_height(synctex_node_p node);
     int synctex_node_hbox_depth(synctex_node_p node);
     
-    synctex_scanner_p synctex_scanner_new();
+    synctex_scanner_p synctex_scanner_new(void);
     synctex_node_p synctex_node_new(synctex_scanner_p scanner,synctex_node_type_t type);
 
+    /**
+     *  Scanner display switcher getter.
+     *  If the switcher is 0, synctex_node_display is disabled.
+     *  If the switcher is <0, synctex_node_display has no limit.
+     *  If the switcher is >0, only the first switcher (as number) nodes are displayed.
+     *  - parameter: a scanner
+     *  - returns: an integer
+     */
+    int synctex_scanner_display_switcher(synctex_scanner_p scanR);
+    void synctex_scanner_set_display_switcher(synctex_scanner_p scanR, int switcher);
+
+    /**
+     *  Iterator is the structure used to traverse
+     *  the answer to client queries.
+     *  First answers are the best matches, according
+     *  to criteria explained below.
+     *  Next answers are not ordered.
+     *  Objects are handles to nodes in the synctex node tree starting at scanner.
+     */
     typedef struct synctex_iterator_t synctex_iterator_s;
     typedef synctex_iterator_s * synctex_iterator_p;
+
+    /**
+     *  Designated creator for a display query, id est,
+     *  forward navigation from source to output.
+     *  Returns NULL if the query has no answer.
+     *  Code example:
+     *      synctex_iterator_p iterator = NULL;
+     *      if ((iterator = synctex_iterator_new_display(...)) {
+     *      synctex_node_p node = NULL;
+     *      while((node = synctex_iterator_next_result(iterator))) {
+     *          do something with node...
+     *      }
+     */
     synctex_iterator_p synctex_iterator_new_display(synctex_scanner_p scanner,const char *  name,int line,int column, int page_hint);
+    /**
+     *  Designated creator for an  edit query, id est,
+     *  backward navigation from output to source.
+     *  Code example:
+     *      synctex_iterator_p iterator = NULL;
+     *      if ((iterator = synctex_iterator_new_edit(...)) {
+     *      synctex_node_p node = NULL;
+     *      while((node = synctex_iterator_next_result(iterator))) {
+     *          do something with node...
+     *      }
+     */
     synctex_iterator_p synctex_iterator_new_edit(synctex_scanner_p scanner,int page,float h,float v);
+    /**
+     *  Free all the resources.
+     *  - argument iterator: the object to free...
+     *  You should free the iterator before the scanner
+     *  owning the nodes it iterates with.
+     */
     void synctex_iterator_free(synctex_iterator_p iterator);
+    /**
+     *  Wether the iterator actually points to an object.
+     *  - argument iterator: the object to iterate on...
+     */
     synctex_bool_t synctex_iterator_has_next(synctex_iterator_p iterator);
-    synctex_node_p synctex_iterator_next(synctex_iterator_p iterator);
+    /**
+     *  Returns the pointed object and advance the cursor
+     *  to the next object. Returns NULL and does nothing
+     *  if the end has already been reached.
+     *  - argument iterator: the object to iterate on...
+     */
+    synctex_node_p synctex_iterator_next_result(synctex_iterator_p iterator);
+    /**
+     *  Reset the cursor position to the first result.
+     *  - argument iterator: the object to iterate on...
+     */
     int synctex_iterator_reset(synctex_iterator_p iterator);
+    /**
+     *  The number of objects left for traversal.
+     *  - argument iterator: the object to iterate on...
+     */
     int synctex_iterator_count(synctex_iterator_p iterator);
 
+    /**
+     *  The target of the node, either a handle or a proxy.
+     */
+    synctex_node_p synctex_node_target(synctex_node_p node);
+    
+#ifndef SYNCTEX_NO_UPDATER
+    /*  The main synctex updater object.
+     *  This object is used to append information to the synctex file.
+     *  Its implementation is considered private.
+     *  It is used by the synctex command line tool to take into account modifications
+     *  that could occur while postprocessing files by dvipdf like filters.
+     */
+    typedef struct synctex_updater_t synctex_updater_s;
+    typedef synctex_updater_s * synctex_updater_p;
+    
+    /*  Designated initializer.
+     *  Once you are done with your whole job,
+     *  free the updater */
+    synctex_updater_p synctex_updater_new_with_output_file(const char * output, const char * directory);
+    
+    /*  Use the next functions to append records to the synctex file,
+     *  no consistency tests made on the arguments */
+    void synctex_updater_append_magnification(synctex_updater_p updater, char *  magnification);
+    void synctex_updater_append_x_offset(synctex_updater_p updater, char *  x_offset);
+    void synctex_updater_append_y_offset(synctex_updater_p updater, char *  y_offset);
+    
+    /*  You MUST free the updater, once everything is properly appended */
+    void synctex_updater_free(synctex_updater_p updater);
+#endif
+    
 #if defined(SYNCTEX_DEBUG)
 #   include "assert.h"
 #   define SYNCTEX_ASSERT assert
@@ -404,24 +521,30 @@ _Pragma("clang diagnostic ignored \"-Wformat-extra-args\"")
 #define __PRAGMA_POP_NO_EXTRA_ARG_WARNINGS
 #endif
     
-#   define SYNCTEX_TEST_BODY(condition, desc, ...) \
+#   define SYNCTEX_TEST_BODY(counter, condition, desc, ...) \
     do {				\
         __PRAGMA_PUSH_NO_EXTRA_ARG_WARNINGS \
         if (!(condition)) {		\
+            ++counter;  \
             printf("**** Test failed: %s\nfile %s\nfunction %s\nline %i\n",#condition,__FILE__,__FUNCTION__,__LINE__); \
             printf((desc), ##__VA_ARGS__); \
         }				\
         __PRAGMA_POP_NO_EXTRA_ARG_WARNINGS \
     } while(0)
         
-#   define SYNCTEX_TEST_PARAMETER(condition) SYNCTEX_TEST_BODY((condition), "Invalid parameter not satisfying: %s", #condition)
+#   define SYNCTEX_TEST_PARAMETER(counter, condition) SYNCTEX_TEST_BODY(counter, (condition), "Invalid parameter not satisfying: %s", #condition)
     
     int synctex_test_input(synctex_scanner_p scanner);
     int synctex_test_proxy(synctex_scanner_p scanner);
     int synctex_test_tree(synctex_scanner_p scanner);
     int synctex_test_page(synctex_scanner_p scanner);
-    int synctex_test_result(synctex_scanner_p scanner);
+    int synctex_test_handle(synctex_scanner_p scanner);
     int synctex_test_display_query(synctex_scanner_p scanner);
+    int synctex_test_charindex();
+    int synctex_test_sheet_1();
+    int synctex_test_sheet_2();
+    int synctex_test_sheet_3();
+    int synctex_test_form();
 #endif
 
 #ifdef __cplusplus
