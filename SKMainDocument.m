@@ -1568,7 +1568,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         if (status == SKPasswordStatusFound) {
             // update to new format, unless password == NULL, when this is called from setPDFPassword:...
             if (password)
-                [self setPDFPassword:*password item:oldItem forFileID:fileID];
+                [self setPDFPassword:NULL item:oldItem forFileID:fileID];
             if (itemPtr)
                 *itemPtr = oldItem;
         }
