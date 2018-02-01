@@ -76,16 +76,18 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     return attr;
 }
 
-+ (void)setPassword:(NSString *)password item:(id)item forService:(NSString *)service account:(NSString *)account label:(NSString *)label comment:(NSString *)comment {
++ (void)setPassword:(NSString *)password item:(id)item forService:(NSString *)service account:(NSString *)account kind:(NSString *)kind label:(NSString *)label comment:(NSString *)comment {
     const void *passwordData = [password UTF8String];
     UInt32 passwordLength = password ? strlen(passwordData) : 0;
     NSUInteger attrCount = 2;
     SecKeychainAttributeList attributes;
-    SecKeychainAttribute attrs[4];
+    SecKeychainAttribute attrs[5];
     OSStatus err;
     
     attrs[0] = makeKeychainAttribute(kSecServiceItemAttr, service);
     attrs[1] = makeKeychainAttribute(kSecAccountItemAttr, account);
+    if (kind)
+        attrs[attrCount++] = makeKeychainAttribute(kSecDescriptionItemAttr, kind);
     if (label)
         attrs[attrCount++] = makeKeychainAttribute(kSecLabelItemAttr, label);
     if (comment)
