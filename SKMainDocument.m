@@ -119,7 +119,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKRatingKey                 @"Rating"
 
 static NSString *SKPDFPasswordServiceName = @"Skim PDF password";
-static NSString *SKPDFPasswordKindName = @"PDF password";
 
 enum {
     SKExportOptionDefault,
@@ -1584,7 +1583,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         if (status == SKPasswordStatusError)
             return;
     }
-    [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID kind:SKPDFPasswordKindName label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
+    [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
