@@ -97,12 +97,12 @@ static inline SecKeychainAttribute makeKeychainAttribute(SecKeychainAttrType tag
     if (item) {
         // password was on keychain, so modify the keychain
         err = SecKeychainItemModifyAttributesAndData((SecKeychainItemRef)item, &attributes, passwordLength, passwordData);
-        if (err != noErr)
+        if (err != noErr && err != errSecUserCanceled)
             NSLog(@"Error %d occurred modifying password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     } else if (password) {
         // password not on keychain, so add it
         err = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass, &attributes, passwordLength, passwordData, NULL, NULL, NULL);
-        if (err != noErr)
+        if (err != noErr && err != errSecUserCanceled)
             NSLog(@"Error %d occurred adding password: %@", (int)err, [(id)SecCopyErrorMessageString(err, NULL) autorelease]);
     }
 }
