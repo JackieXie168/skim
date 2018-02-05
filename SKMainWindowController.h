@@ -283,6 +283,7 @@ enum {
 - (void)hideRightSideWindow;
 
 @property (nonatomic, readonly) BOOL leftSidePaneIsOpen, rightSidePaneIsOpen;
+@property (nonatomic, readonly) CGFloat leftSideWidth, rightSideWidth;
 
 - (void)displayTocViewAnimating:(BOOL)animate;
 - (void)displayThumbnailViewAnimating:(BOOL)animate;

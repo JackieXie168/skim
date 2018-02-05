@@ -430,8 +430,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [pdfView setFrame:[pdfContentView bounds]];
     if ([[pdfView document] isLocked]) {
         // PDFView has the annoying habit for the password view to force a full window display
-        CGFloat leftWidth = [self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0;
-        CGFloat rightWidth = [self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0;
+        CGFloat leftWidth = [self leftSideWidth];
+        CGFloat rightWidth = [self rightSideWidth];
         [pdfContentView addSubview:pdfView];
         [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
     } else {
@@ -570,8 +570,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     NSUInteger pageIndex = [pdfView currentPageIndexAndPoint:&point rotated:&rotated];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:MAINWINDOWFRAME_KEY];
-    [setup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
-    [setup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithDouble:[self leftSideWidth]] forKey:LEFTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithDouble:[self rightSideWidth]] forKey:RIGHTSIDEPANEWIDTH_KEY];
     [setup setObject:[NSNumber numberWithUnsignedInteger:pageIndex] forKey:PAGEINDEX_KEY];
     if (rotated == NO)
         [setup setObject:NSStringFromPoint(point) forKey:SCROLLPOINT_KEY];
@@ -810,8 +810,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         if ([document isLocked] && [pdfView window]) {
             // PDFView has the annoying habit for the password view to force a full window display
-            CGFloat leftWidth = [self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0;
-            CGFloat rightWidth = [self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0;
+            CGFloat leftWidth = [self leftSideWidth];
+            CGFloat rightWidth = [self rightSideWidth];
             [pdfView setDocument:document];
             [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
         } else {
@@ -1054,6 +1054,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
     else
         state = [splitView isSubviewCollapsed:rightSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
+}
+
+- (CGFloat)leftSideWidth {
+    return [self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0;
+}
+
+- (CGFloat)rightSideWidth {
+    return [self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0;
 }
 
 - (NSArray *)notes {
@@ -1797,8 +1805,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     if ([[pdfView document] isLocked] == NO)
         [self applyPDFSettings:fullScreenSetup];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCollapseSidePanesInFullScreenKey]) {
-        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
-        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self leftSideWidth]] forKey:LEFTSIDEPANEWIDTH_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithDouble:[self rightSideWidth]] forKey:RIGHTSIDEPANEWIDTH_KEY];
         [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
     }
     [self forceSubwindowsOnTop:YES];
