@@ -1203,6 +1203,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (mdFlags.needsPasswordToPrint) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         [self tryToUnlockDocument:pdfDocWithoutNotes];
+        if ([pdfDocWithoutNotes allowsPrinting] == NO && [[self pdfDocument] allowsPrinting]) {
+            @try {
+                NSString *password = [[self pdfDocument] valueForKeyPath:@"private.password"];
+                if ([password isKindOfClass:[NSString class]])
+                    [pdfDocWithoutNotes unlockWithPassword:password];
+            }
+            @catch(id e) {}
+        }
         if ([pdfDocWithoutNotes allowsPrinting] == NO) {
             [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
             return;
