@@ -145,6 +145,7 @@ enum {
 
 @interface PDFDocument (SKPrivateDeclarations)
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
+- (NSString *)passwordUsedForUnlocking;
 @end
 
 #if SDK_BEFORE(10_7)
@@ -1203,13 +1204,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (mdFlags.needsPasswordToPrint) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         [self tryToUnlockDocument:pdfDocWithoutNotes];
-        if ([pdfDocWithoutNotes allowsPrinting] == NO && [[self pdfDocument] allowsPrinting]) {
-            @try {
-                NSString *password = [[self pdfDocument] valueForKeyPath:@"private.password"];
-                if ([password isKindOfClass:[NSString class]])
-                    [pdfDocWithoutNotes unlockWithPassword:password];
-            }
-            @catch(id e) {}
+        if ([[self pdfDocument] respondsToSelector:@selector(passwordUsedForUnlocking)] && [pdfDocWithoutNotes allowsPrinting] == NO && [[self pdfDocument] allowsPrinting]) {
+            NSString *password = [[self pdfDocument] passwordUsedForUnlocking];
+            if ([password isKindOfClass:[NSString class]])
+                [pdfDocWithoutNotes unlockWithPassword:password];
         }
         if ([pdfDocWithoutNotes allowsPrinting] == NO) {
             [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
