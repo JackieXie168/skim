@@ -1204,11 +1204,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (mdFlags.needsPasswordToPrint) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         [self tryToUnlockDocument:pdfDocWithoutNotes];
-        if ([[self pdfDocument] respondsToSelector:@selector(passwordUsedForUnlocking)] && [pdfDocWithoutNotes allowsPrinting] == NO && [[self pdfDocument] allowsPrinting]) {
-            NSString *password = [[self pdfDocument] passwordUsedForUnlocking];
-            if ([password isKindOfClass:[NSString class]])
-                [pdfDocWithoutNotes unlockWithPassword:password];
-        }
         if ([pdfDocWithoutNotes allowsPrinting] == NO) {
             [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
             return;
@@ -1630,14 +1625,17 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)tryToUnlockDocument:(PDFDocument *)document {
-    if (([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO) &&
-        SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
-        NSString *fileID = [self fileIDStringForDocument:document];
-        if (fileID) {
-            NSString *password = nil;
-            if (SKPasswordStatusFound == [self getPDFPassword:&password item:NULL forFileID:fileID])
-                [document unlockWithPassword:password];
+    if ([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO) {
+        NSString *password = nil;
+        if  (SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
+            NSString *fileID = [self fileIDStringForDocument:document];
+            if (fileID)
+                [self getPDFPassword:&password item:NULL forFileID:fileID];
         }
+        if (password == nil && [[self pdfDocument] respondsToSelector:@selector(passwordUsedForUnlocking)])
+            password = [[self pdfDocument] passwordUsedForUnlocking];
+        if (password)
+            [document unlockWithPassword:password];
     }
 }
 
