@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">10K549</string>
+		<string key="IBDocument.SystemVersion">17D47</string>
 		<string key="IBDocument.InterfaceBuilderVersion">851</string>
-		<string key="IBDocument.AppKitVersion">1038.36</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.AppKitVersion">1561.20.106</string>
+		<string key="IBDocument.HIToolboxVersion">910.40</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">851</string>
@@ -38,26 +38,30 @@
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
-				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<nil key="NSUserInterfaceItemIdentifier"/>
+				<string key="NSWindowContentMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="353867392">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
+					<nil key="NSNibTouchBar"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="41455516">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{19, 143}, {64, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="118935392">
-								<int key="NSCellFlags">68288064</int>
-								<int key="NSCellFlags2">272761856</int>
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">71435264</int>
 								<string key="NSContents">Line Width:</string>
 								<object class="NSFont" key="NSSupport" id="26">
-									<string key="NSName">LucidaGrande</string>
+									<string key="NSName">.SFNSText</string>
 									<double key="NSSize">11</double>
-									<int key="NSfFlags">3100</int>
+									<int key="NSfFlags">3088</int>
 								</object>
 								<reference key="NSControlView" ref="41455516"/>
 								<object class="NSColor" key="NSBackgroundColor" id="645443851">
@@ -79,15 +83,19 @@
 									</object>
 								</object>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="468800611">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{88, 93}, {151, 19}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="11793844">
-								<int key="NSCellFlags">-1804468671</int>
+								<int key="NSCellFlags">-1804599231</int>
 								<int key="NSCellFlags2">-1874721792</int>
 								<string key="NSContents"/>
 								<reference key="NSSupport" ref="26"/>
@@ -109,15 +117,19 @@
 									<reference key="NSColor" ref="445692932"/>
 								</object>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSSegmentedControl" id="161259191">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{86, 117}, {155, 20}}</string>
+							<string key="NSFrame">{{86, 117}, {155, 21}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSegmentedCell" key="NSCell" id="206836582">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">75497472</int>
 								<int key="NSCellFlags2">131072</int>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="161259191"/>
@@ -153,16 +165,21 @@
 									</object>
 								</array>
 								<int key="NSSelectedSegment">-1</int>
+								<int key="NSSegmentStyle">1</int>
+								<int key="NSSegmentDistribution">0</int>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 						<object class="NSTextField" id="97886632">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{217, 143}, {22, 19}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="564627324">
-								<int key="NSCellFlags">-1804468671</int>
+								<int key="NSCellFlags">-1804599231</int>
 								<int key="NSCellFlags2">272761856</int>
 								<reference key="NSSupport" ref="26"/>
 								<object class="NSNumberFormatter" key="NSFormatter" id="1070454817">
@@ -216,15 +233,19 @@
 								<reference key="NSBackgroundColor" ref="301489357"/>
 								<reference key="NSTextColor" ref="833274674"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSSlider" id="645666427">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{88, 143}, {121, 18}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSliderCell" key="NSCell" id="173050038">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">131072</int>
 								<object class="NSMutableString" key="NSContents">
 									<characters key="NS.bytes"/>
@@ -244,15 +265,18 @@
 								<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
 								<bool key="NSVertical">NO</bool>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 						<object class="NSSegmentedControl" id="925063898">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{86, 34}, {155, 20}}</string>
+							<string key="NSFrame">{{86, 34}, {155, 21}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSegmentedCell" key="NSCell" id="784313145">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">75497472</int>
 								<int key="NSCellFlags2">131072</int>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="925063898"/>
@@ -294,127 +318,158 @@
 									</object>
 								</array>
 								<int key="NSSelectedSegment">-1</int>
+								<int key="NSSegmentStyle">1</int>
+								<int key="NSSegmentDistribution">0</int>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 						<object class="NSTextField" id="906705159">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{24, 121}, {59, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="692939794">
-								<int key="NSCellFlags">68288064</int>
-								<int key="NSCellFlags2">272761856</int>
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">71435264</int>
 								<string key="NSContents">Line Style:</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="906705159"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="364086832">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{7, 95}, {76, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="917646384">
-								<int key="NSCellFlags">68288064</int>
-								<int key="NSCellFlags2">272761856</int>
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">71435264</int>
 								<string key="NSContents">Dash Pattern:</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="364086832"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="605693693">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{50, 38}, {33, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="565385689">
-								<int key="NSCellFlags">68288064</int>
-								<int key="NSCellFlags2">272761856</int>
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">71435264</int>
 								<string key="NSContents">Start:</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="605693693"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="135806032">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{55, 13}, {28, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="790825426">
-								<int key="NSCellFlags">68288064</int>
-								<int key="NSCellFlags2">272761856</int>
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">71435264</int>
 								<string key="NSContents">End:</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="135806032"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="352104272">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{7, 170}, {235, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="145391919">
-								<int key="NSCellFlags">68288064</int>
+								<int key="NSCellFlags">68157504</int>
 								<int key="NSCellFlags2">272761856</int>
 								<string key="NSContents">Line and Border Style</string>
-								<object class="NSFont" key="NSSupport" id="597381222">
-									<string key="NSName">LucidaGrande-Bold</string>
+								<object class="NSFont" key="NSSupport" id="27">
+									<string key="NSName">.SFNSText-Bold</string>
 									<double key="NSSize">11</double>
-									<int key="NSfFlags">16</int>
+									<int key="NSfFlags">3344</int>
 								</object>
 								<reference key="NSControlView" ref="352104272"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSTextField" id="682881914">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{7, 62}, {235, 14}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="324918538">
-								<int key="NSCellFlags">68288064</int>
+								<int key="NSCellFlags">68157504</int>
 								<int key="NSCellFlags2">272761856</int>
 								<string key="NSContents">Line Ending Style</string>
-								<reference key="NSSupport" ref="597381222"/>
+								<reference key="NSSupport" ref="27"/>
 								<reference key="NSControlView" ref="682881914"/>
 								<reference key="NSBackgroundColor" ref="645443851"/>
 								<reference key="NSTextColor" ref="921418781"/>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+							<int key="NSTextFieldAlignmentRectInsetsVersion">2</int>
 						</object>
 						<object class="NSBox" id="811779794">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{10, 82}, {229, 5}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents"/>
 								<object class="NSFont" key="NSSupport">
-									<string key="NSName">LucidaGrande</string>
+									<string key="NSName">.SFNSText</string>
 									<double key="NSSize">13</double>
-									<int key="NSfFlags">1044</int>
+									<int key="NSfFlags">1040</int>
 								</object>
 								<reference key="NSBackgroundColor" ref="301489357"/>
 								<object class="NSColor" key="NSTextColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwLjgwMDAwMDAxMTkAA</bytes>
+									<int key="NSColorSpace">6</int>
+									<string key="NSCatalogName">System</string>
+									<string key="NSColorName">labelColor</string>
+									<reference key="NSColor" ref="445692932"/>
 								</object>
 							</object>
 							<int key="NSBorderType">3</int>
@@ -424,12 +479,14 @@
 						</object>
 						<object class="NSSegmentedControl" id="1011644715">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{86, 9}, {155, 20}}</string>
+							<string key="NSFrame">{{86, 9}, {155, 21}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSegmentedCell" key="NSCell" id="362750029">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">75497472</int>
 								<int key="NSCellFlags2">131072</int>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="1011644715"/>
@@ -471,22 +528,30 @@
 									</object>
 								</array>
 								<int key="NSSelectedSegment">-1</int>
+								<int key="NSSegmentStyle">1</int>
+								<int key="NSSegmentDistribution">0</int>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 						<object class="NSCustomView" id="452318122">
 							<reference key="NSNextResponder" ref="353867392"/>
+							<nil key="NSNibTouchBar"/>
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{10, 192}, {229, 48}}</string>
 							<reference key="NSSuperview" ref="353867392"/>
+							<reference key="NSWindow"/>
 							<string key="NSClassName">SKLineWell</string>
 							<string key="NSExtension">NSControl</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{249, 250}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
-				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
+				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomObject" id="530339249">
 				<string key="NSClassName">SKIBArray</string>
@@ -2452,4 +2517,114 @@
 		<string key="IBDocument.LastKnownRelativeProjectPath">Skim.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
+	<classes>
+		<class name="IBAccessibilityConnection">
+			<fallbacks/>
+		</class>
+		<class name="IBActionInfo">
+			<fallbacks/>
+		</class>
+		<class name="IBBindingConnection">
+			<fallbacks/>
+		</class>
+		<class name="IBClassDescriber">
+			<fallbacks/>
+		</class>
+		<class name="IBClassDescriptionSource">
+			<fallbacks/>
+		</class>
+		<class name="IBConnectionRecord">
+			<fallbacks/>
+		</class>
+		<class name="IBMutableOrderedSet">
+			<fallbacks/>
+		</class>
+		<class name="IBObjectContainer">
+			<fallbacks/>
+		</class>
+		<class name="IBObjectRecord">
+			<fallbacks/>
+		</class>
+		<class name="IBOutletConnection">
+			<fallbacks/>
+		</class>
+		<class name="IBPartialClassDescription">
+			<fallbacks/>
+		</class>
+		<class name="IBToOneOutletInfo">
+			<fallbacks/>
+		</class>
+		<class name="IBToolTipAttribute">
+			<fallbacks/>
+		</class>
+		<class name="NSAttributedString">
+			<fallbacks/>
+		</class>
+		<class name="NSBox">
+			<fallbacks/>
+		</class>
+		<class name="NSColor">
+			<fallbacks/>
+		</class>
+		<class name="NSCustomObject">
+			<fallbacks/>
+		</class>
+		<class name="NSCustomView">
+			<fallbacks/>
+		</class>
+		<class name="NSDecimalNumberPlaceholder">
+			<fallbacks/>
+		</class>
+		<class name="NSDictionary">
+			<fallbacks/>
+		</class>
+		<class name="NSFont">
+			<fallbacks/>
+		</class>
+		<class name="NSLocale">
+			<fallbacks/>
+		</class>
+		<class name="NSMutableDictionary">
+			<fallbacks/>
+		</class>
+		<class name="NSMutableString">
+			<fallbacks/>
+		</class>
+		<class name="NSNibBindingConnector">
+			<fallbacks/>
+		</class>
+		<class name="NSNumberFormatter">
+			<fallbacks/>
+		</class>
+		<class name="NSSegmentItem">
+			<fallbacks/>
+		</class>
+		<class name="NSSegmentedCell">
+			<fallbacks/>
+		</class>
+		<class name="NSSegmentedControl">
+			<fallbacks/>
+		</class>
+		<class name="NSSlider">
+			<fallbacks/>
+		</class>
+		<class name="NSSliderCell">
+			<fallbacks/>
+		</class>
+		<class name="NSTextField">
+			<fallbacks/>
+		</class>
+		<class name="NSTextFieldCell">
+			<fallbacks/>
+		</class>
+		<class name="NSUserDefaultsController">
+			<fallbacks/>
+		</class>
+		<class name="NSView">
+			<fallbacks/>
+		</class>
+		<class name="NSWindowTemplate">
+			<fallbacks/>
+		</class>
+	</classes>
 </archive>
