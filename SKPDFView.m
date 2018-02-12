@@ -79,6 +79,7 @@
 #import "NSShadow_SKExtensions.h"
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
+#import "PDFAnnotationLine_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -2755,8 +2756,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             endPoint = SKSubstractPoints(endPoint, newBounds.origin);
             
             [annotation setBounds:newBounds];
-            [annotation setStartPoint:startPoint];
-            [annotation setEndPoint:endPoint];
+            [annotation setObservedStartPoint:startPoint];
+            [annotation setObservedEndPoint:endPoint];
         }
         
     } else {
@@ -3025,8 +3026,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             newBounds.origin.y = floor(0.5 * ((startPoint.y + endPoint.y) - MIN_NOTE_SIZE));
         }
         
-        [(PDFAnnotationLine *)activeAnnotation setStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
-        [(PDFAnnotationLine *)activeAnnotation setEndPoint:SKSubstractPoints(endPoint, newBounds.origin)];
+        [(PDFAnnotationLine *)activeAnnotation setObservedStartPoint:SKSubstractPoints(startPoint, newBounds.origin)];
+        [(PDFAnnotationLine *)activeAnnotation setObservedEndPoint:SKSubstractPoints(endPoint, newBounds.origin)];
         [activeAnnotation setBounds:newBounds];
     }
 }

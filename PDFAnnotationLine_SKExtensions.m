@@ -53,6 +53,9 @@
 #import "NSColor_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 
+NSString *SKPDFAnnotationObservedStartPointKey = @"observedStartPointPoint";
+NSString *SKPDFAnnotationObservedEndPointKey = @"observedEndPoint";
+
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
 NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
 NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
@@ -198,6 +201,22 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
     return fdfString;
 }
 
+- (NSPoint)observedStartPoint {
+    return [self startPoint];
+}
+
+- (void)setObservedStartPoint:(NSPoint)point {
+    [self setStartPoint:point];
+}
+
+- (NSPoint)observedEndPoint {
+    return [self endPoint];
+}
+
+- (void)setObservedEndPoint:(NSPoint)point {
+    [self setEndPoint:point];
+}
+
 - (BOOL)isLine { return YES; }
 
 - (BOOL)isResizable { return [self isSkimNote]; }
@@ -265,8 +284,8 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
         [mutableKeys addObject:SKNPDFAnnotationStartLineStyleKey];
         [mutableKeys addObject:SKNPDFAnnotationEndLineStyleKey];
-        [mutableKeys addObject:SKNPDFAnnotationStartPointKey];
-        [mutableKeys addObject:SKNPDFAnnotationEndPointKey];
+        [mutableKeys addObject:SKPDFAnnotationObservedStartPointKey];
+        [mutableKeys addObject:SKPDFAnnotationObservedEndPointKey];
         [mutableKeys addObject:SKNPDFAnnotationInteriorColorKey];
         lineKeys = [mutableKeys copy];
         [mutableKeys release];
@@ -313,8 +332,8 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         endPoint = SKSubstractPoints(endPoint, bounds.origin);
         
         [self setBounds:bounds];
-        [self setStartPoint:startPoint];
-        [self setEndPoint:endPoint];
+        [self setObservedStartPoint:startPoint];
+        [self setObservedEndPoint:endPoint];
     }
 
 }
@@ -349,8 +368,8 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
         endPoint = SKSubstractPoints(endPoint, bounds.origin);
         
         [self setBounds:bounds];
-        [self setStartPoint:startPoint];
-        [self setEndPoint:endPoint];
+        [self setObservedStartPoint:startPoint];
+        [self setObservedEndPoint:endPoint];
     }
 
 }

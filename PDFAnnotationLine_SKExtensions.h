@@ -39,6 +39,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationObservedStartPointKey;
+extern NSString *SKPDFAnnotationObservedEndPointKey;
 
 extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
 extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
@@ -47,6 +49,11 @@ extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
 
 
 @interface PDFAnnotationLine (SKExtensions)
+
+- (NSPoint)observedStartPoint;
+- (void)setObservedStartPoint:(NSPoint)point;
+- (NSPoint)observedEndPoint;
+- (void)setObservedEndPoint:(NSPoint)point;
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
