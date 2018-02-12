@@ -53,7 +53,7 @@
 #import "NSColor_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 
-NSString *SKPDFAnnotationObservedStartPointKey = @"observedStartPointPoint";
+NSString *SKPDFAnnotationObservedStartPointKey = @"observedStartPoint";
 NSString *SKPDFAnnotationObservedEndPointKey = @"observedEndPoint";
 
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
