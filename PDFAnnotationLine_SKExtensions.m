@@ -68,6 +68,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 @implementation PDFAnnotationLine (SKExtensions)
 
 static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextRef) = NULL;
+static void (*original_setBounds)(id, SEL, NSRect) = NULL;
 
 static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloat angle, PDFLineStyle lineStyle, CGFloat lineWidth) {
     CGAffineTransform transform = CGAffineTransformRotate(CGAffineTransformMakeTranslation(point.x, point.y), angle);
@@ -141,9 +142,19 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
     }
 }
 
+- (void)replacement_setBounds:(NSRect)newBounds {
+    NSPoint startPoint = [self startPoint];
+    NSPoint endPoint = [self endPoint];
+    original_setBounds(self, _cmd, newBounds);
+    [self setStartPoint:startPoint];
+    [self setEndPoint:endPoint];
+}
+
 + (void)load {
     if (RUNNING(10_11))
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
+    if (RUNNING(10_13))
+        original_setBounds = (void (*)(id, SEL, NSRect))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setBounds:), @selector(replacement_setBounds:));
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
