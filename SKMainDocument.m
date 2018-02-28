@@ -1354,8 +1354,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-	if ([menuItem action] == @selector(performFindPanelAction:))
+    if ([menuItem action] == @selector(performFindPanelAction:))
         return [[self mainWindowController] validateMenuItem:menuItem];
+    else if ([menuItem action] == @selector(readNotes:) || [menuItem action] == @selector(convertNotes:))
+        return [[self pdfDocument] isLocked] == NO;
     else if ([[SKMainDocument superclass] instancesRespondToSelector:_cmd])
         return [super validateMenuItem:menuItem];
     return YES;
