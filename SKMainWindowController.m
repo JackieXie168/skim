@@ -212,7 +212,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode;
-@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
+@dynamic pdfDocument, presentationOptions, temporarySkimNoteProperties, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -1297,6 +1297,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (shouldRestrict)
         [transitions setShouldRestrict:[shouldRestrict boolValue]];
     [transitions setPageTransitions:pageTransitions];
+}
+
+- (NSArray *)temporarySkimNoteProperties {
+    return [savedNormalSetup objectForKey:NOTES_KEY];
 }
 
 #pragma mark Full Screen support

@@ -264,6 +264,8 @@ enum {
 @property (nonatomic, copy) NSArray *tags;
 @property (nonatomic) double rating;
 
+@property (nonatomic, readonly) NSArray *temporarySkimNoteProperties;
+
 @property (nonatomic, copy) NSArray *selectedNotes;
 
 @property (nonatomic) NSUInteger pageNumber;

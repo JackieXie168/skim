@@ -408,6 +408,10 @@ enum {
 }
 
 - (NSArray *)SkimNoteProperties {
+    // if the document is locked, we never added the notes to the document
+    if ([[self pdfDocument] isLocked])
+        return [[self mainWindowController] temporarySkimNoteProperties];
+    
     NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
     if (pageOffsets != nil) {
         NSMutableArray *mutableArray = [NSMutableArray array];
