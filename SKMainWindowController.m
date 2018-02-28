@@ -2714,8 +2714,10 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
     NSEnumerationOptions options = [sortDesc ascending] ? 0 : NSEnumerationReverse;
     
-    for (selAnnotation in [self selectedNotes])
-        [selPageIndexes addIndex:[selAnnotation pageIndex]];
+    for (selAnnotation in [self selectedNotes]) {
+        if ([selAnnotation pageIndex] != NSNotFound)
+            [selPageIndexes addIndex:[selAnnotation pageIndex]];
+    }
     
     if ([orderedNotes count] == 0 || [selPageIndexes containsIndex:pageIndex])
 		return;
