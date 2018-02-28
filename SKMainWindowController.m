@@ -2703,11 +2703,16 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 #pragma mark Notes
 
 - (void)updateNoteSelection {
-
+    NSSortDescriptor *sortDesc = [[rightSideController.noteArrayController sortDescriptors] firstObject];
+    
+    if ([[sortDesc key] isEqualToString:SKNPDFAnnotationPageIndexKey] == NO)
+        return;
+    
     NSArray *orderedNotes = [rightSideController.noteArrayController arrangedObjects];
     __block PDFAnnotation *selAnnotation = nil;
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
+    NSEnumerationOptions options = [sortDesc ascending] ? 0 : NSEnumerationReverse;
     
     for (selAnnotation in [self selectedNotes])
         [selPageIndexes addIndex:[selAnnotation pageIndex]];
@@ -2716,7 +2721,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 		return;
 	
 	// Walk outline view looking for best firstpage number match.
-    [orderedNotes enumerateObjectsUsingBlock:^(id annotation, NSUInteger i, BOOL *stop) {
+    [orderedNotes enumerateObjectsWithOptions:options usingBlock:^(id annotation, NSUInteger i, BOOL *stop) {
 		if ([annotation pageIndex] == pageIndex) {
             selAnnotation = annotation;
 			*stop = YES;
