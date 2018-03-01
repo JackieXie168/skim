@@ -53,6 +53,7 @@
 #define SKInfoEncryptedKey @"Encrypted"
 #define SKInfoAllowsPrintingKey @"AllowsPrinting"
 #define SKInfoAllowsCopyingKey @"AllowsCopying"
+#define SKInfoAllowsCommentingKey @"AllowsCommenting"
 #define SKInfoFileNameKey @"FileName"
 #define SKInfoFileSizeKey @"FileSize"
 #define SKInfoPhysicalSizeKey @"PhysicalSize"
@@ -98,7 +99,8 @@ static SKInfoWindowController *sharedInstance = nil;
                             @"",
                             SKInfoEncryptedKey,
                             SKInfoAllowsPrintingKey,
-                            SKInfoAllowsCopyingKey, nil];
+                            SKInfoAllowsCopyingKey,
+                            SKInfoAllowsCommentingKey, nil];
         attributesKeys = [[NSArray alloc] initWithObjects:
                             PDFDocumentTitleAttribute,
                             PDFDocumentAuthorAttribute,
@@ -116,8 +118,9 @@ static SKInfoWindowController *sharedInstance = nil;
                             NSLocalizedString(@"PDF Version:", @"Info label"), SKInfoVersionKey, 
                             NSLocalizedString(@"Encrypted:", @"Info label"), SKInfoEncryptedKey, 
                             NSLocalizedString(@"Allows printing:", @"Info label"), SKInfoAllowsPrintingKey, 
-                            NSLocalizedString(@"Allows copying:", @"Info label"), SKInfoAllowsCopyingKey, 
-                            NSLocalizedString(@"Title:", @"Info label"), PDFDocumentTitleAttribute, 
+                            NSLocalizedString(@"Allows copying:", @"Info label"), SKInfoAllowsCopyingKey,
+                            NSLocalizedString(@"Allows notes:", @"Info label"), SKInfoAllowsCommentingKey,
+                            NSLocalizedString(@"Title:", @"Info label"), PDFDocumentTitleAttribute,
                             NSLocalizedString(@"Author:", @"Info label"), PDFDocumentAuthorAttribute, 
                             NSLocalizedString(@"Subject:", @"Info label"), PDFDocumentSubjectAttribute, 
                             NSLocalizedString(@"Content Creator:", @"Info label"), PDFDocumentCreatorAttribute, 
@@ -281,6 +284,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:SKInfoAllowsPrintingKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:SKInfoAllowsCopyingKey];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc respondsToSelector:@selector(allowsCommenting)] == NO || [pdfDoc allowsCommenting]] forKey:SKInfoAllowsCommentingKey];
+#pragma clang diagnostic pop
     }
     [dictionary setValue:[[[doc fileURL] path] lastPathComponent] forKey:SKInfoFileNameKey];
     [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];

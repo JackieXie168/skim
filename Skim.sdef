@@ -1380,6 +1380,10 @@
                 description="Whether the document allows copying.">
                 <cocoa key="AllowsCopying"/>
             </property>
+            <property name="allows notes" code="Comm" type="boolean"
+                description="Whether the document allows adding notes.">
+                <cocoa key="AllowsCommenting"/>
+            </property>
             <property name="tags" code="Tags" access="r"
                 description="Open Meta tags.">
                 <cocoa key="Tags"/>

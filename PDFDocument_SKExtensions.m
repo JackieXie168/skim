@@ -202,6 +202,7 @@
     }
     return isRTL;
 }
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
 
