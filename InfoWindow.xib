@@ -39,7 +39,7 @@
 					<characters key="NS.bytes">View</characters>
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
-				<string key="NSWindowContentMinSize">{280, 273}</string>
+				<string key="NSWindowContentMinSize">{280, 295}</string>
 				<object class="NSView" key="NSWindowView" id="522265183">
 					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -185,7 +185,7 @@
 																<int key="NSTableViewDraggingDestinationStyle">0</int>
 															</object>
 														</array>
-														<string key="NSFrameSize">{380, 198}</string>
+														<string key="NSFrameSize">{380, 220}</string>
 														<reference key="NSSuperview" ref="997250137"/>
 														<reference key="NSNextKeyView" ref="225862586"/>
 														<reference key="NSDocView" ref="225862586"/>
@@ -213,7 +213,7 @@
 														<double key="NSPercent">0.94557823129251706</double>
 													</object>
 												</array>
-												<string key="NSFrame">{{17, 46}, {380, 198}}</string>
+												<string key="NSFrame">{{17, 24}, {380, 220}}</string>
 												<reference key="NSSuperview" ref="909975500"/>
 												<reference key="NSNextKeyView" ref="111550634"/>
 												<int key="NSsFlags">512</int>
@@ -690,7 +690,7 @@
 				<string key="5.IBWindowTemplateEditedContentRect">{{50, 489}, {460, 315}}</string>
 				<boolean value="YES" key="5.ImportedFromIB2"/>
 				<boolean value="YES" key="5.windowTemplate.hasMinSize"/>
-				<string key="5.windowTemplate.minSize">{280, 273}</string>
+				<string key="5.windowTemplate.minSize">{280, 295}</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="6.ImportedFromIB2"/>
 				<string key="91.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
