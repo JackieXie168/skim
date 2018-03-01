@@ -159,6 +159,8 @@ enum {
     
     NSMapTable                          *undoGroupOldPropertiesPerNote;
     
+    NSArray                             *tmpNoteProperties;
+    
     struct _mwcFlags {
         unsigned int leftSidePaneState:1;
         unsigned int rightSidePaneState:1;
@@ -264,7 +266,7 @@ enum {
 @property (nonatomic, copy) NSArray *tags;
 @property (nonatomic) double rating;
 
-@property (nonatomic, readonly) NSArray *temporarySkimNoteProperties;
+@property (nonatomic, readonly) NSArray *tmpNoteProperties;
 
 @property (nonatomic, copy) NSArray *selectedNotes;
 

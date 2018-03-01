@@ -211,8 +211,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 @implementation SKMainWindowController
 
-@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode;
-@dynamic pdfDocument, presentationOptions, temporarySkimNoteProperties, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode, tmpNoteProperties;
+@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -300,6 +300,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
     SKDESTROY(fieldEditor);
+    SKDESTROY(tmpNoteProperties);
     [super dealloc];
 }
 
@@ -871,10 +872,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
     
-    if ([pdfDoc isLocked]) {
+    if ([pdfDoc allowsNotes] == NO) {
         // there should not be any notesToRemove at this point
         if ([noteDicts count])
-            [savedNormalSetup setObject:noteDicts forKey:NOTES_KEY];
+            tmpNoteProperties = [noteDicts retain];
         return;
     }
     
@@ -2134,7 +2135,6 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)documentDidUnlockDelayed {
     NSNumber *pageIndexNumber = [savedNormalSetup objectForKey:PAGEINDEX_KEY];
     NSUInteger pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;
-    NSArray *noteDicts = [savedNormalSetup objectForKey:NOTES_KEY];
     NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     NSDictionary *settings = [self interactionMode] == SKFullScreenMode ? [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] : nil;
     if ([settings count] == 0)
@@ -2150,11 +2150,12 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [lastViewedPages addPointer:(void *)pageIndex];
         [pdfView resetHistory];
     }
-    if ([noteDicts count]) {
+    if (tmpNoteProperties && [[self pdfDocument] allowsNotes]) {
         // this is delayed from loading the document, so should not be undoable, and we don't want to dirty
         [[[self document] undoManager] disableUndoRegistration];
-        [self addAnnotationsFromDictionaries:noteDicts removeAnnotations:nil autoUpdate:NO];
+        [self addAnnotationsFromDictionaries:tmpNoteProperties removeAnnotations:nil autoUpdate:NO];
         [[[self document] undoManager] enableUndoRegistration];
+        SKDESTROY(tmpNoteProperties);
     }
     if ([snapshotSetups count]) {
         [self showSnapshotsWithSetups:snapshotSetups];

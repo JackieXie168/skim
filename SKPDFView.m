@@ -1218,7 +1218,7 @@ enum {
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
     } else if (interactionMode == SKPresentationMode) {
-        if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSPenPointingDevice)) {
+        if (hideNotes == NO && [[self document] allowsNotes] && IS_TABLET_EVENT(theEvent, NSPenPointingDevice)) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
         } else if ((area & kPDFLinkArea)) {
@@ -1253,7 +1253,7 @@ enum {
     } else if (toolMode == SKMagnifyToolMode) {
         [self setCurrentSelection:nil];
         [self doMagnifyWithEvent:theEvent];
-    } else if (hideNotes == NO && IS_TABLET_EVENT(theEvent, NSEraserPointingDevice)) {
+    } else if (hideNotes == NO && [[self document] allowsNotes] && IS_TABLET_EVENT(theEvent, NSEraserPointingDevice)) {
         [self doEraseAnnotationsWithEvent:theEvent];
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink]) {
@@ -1266,7 +1266,7 @@ enum {
         } else {
             [self doDragMouseWithEvent:theEvent];
         }
-    } else if (toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP == NO) {
+    } else if (toolMode == SKNoteToolMode && hideNotes == NO && [[self document] allowsNotes] && ANNOTATION_MODE_IS_MARKUP == NO) {
         if (annotationMode == SKInkNote) {
             [self doDrawFreehandNoteWithEvent:theEvent];
         } else {
@@ -1279,7 +1279,7 @@ enum {
     } else {
         [self setActiveAnnotation:nil];
         [super mouseDown:theEvent];
-        if ((toolMode == SKNoteToolMode && hideNotes == NO && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
+        if ((toolMode == SKNoteToolMode && hideNotes == NO && [[self document] allowsNotes] && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
             [self addAnnotationWithType:annotationMode];
             [self setCurrentSelection:nil];
         }
@@ -1413,7 +1413,7 @@ enum {
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) target:self atIndex:0];
     [item setRepresentedObject:pointValue];
     
-    if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
+    if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO && [[self document] allowsNotes]) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -3276,7 +3276,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             newActiveAnnotation = linkAnnotation;
     }
     
-    if (hideNotes == NO && page != nil && newActiveAnnotation != nil) {
+    if (hideNotes == NO && [[self document] allowsNotes] && page != nil && newActiveAnnotation != nil) {
         BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
         NSUInteger modifiers = [theEvent modifierFlags];
         if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {

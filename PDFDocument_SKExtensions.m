@@ -43,6 +43,14 @@
 #import "NSData_SKExtensions.h"
 
 
+#if SDK_BEFORE(10_13)
+
+@interface PDFDocument (SKHighSierraDeclarations)
+- (BOOL)allowsCommenting;
+@end
+
+#endif
+
 @implementation PDFDocument (SKExtensions)
 
 - (NSArray *)pageLabels {
@@ -194,5 +202,14 @@
     }
     return isRTL;
 }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
+- (BOOL)allowsNotes {
+    return [self isLocked] == NO &&
+            ([self respondsToSelector:@selector(allowsCommenting)] == NO || [self allowsCommenting]);
+}
+
+#pragma clang diagnostic pop
 
 @end

@@ -69,6 +69,7 @@
 #import "PDFView_SKExtensions.h"
 #import "SKGradientView.h"
 #import "SKSnapshotWindowController.h"
+#import "PDFDocument_SKExtensions.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -177,7 +178,7 @@
 }
 
 - (IBAction)createNewNote:(id)sender{
-    if ([pdfView hideNotes] == NO)
+    if ([pdfView hideNotes] == NO && [[self pdfDocument] allowsNotes])
         [pdfView addAnnotationWithType:[sender tag]];
     else NSBeep();
 }

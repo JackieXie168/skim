@@ -45,4 +45,5 @@
 - (NSArray *)fileIDStrings;
 - (NSDictionary *)initialSettings;
 - (BOOL)hasRightToLeftLanguage;
+- (BOOL)allowsNotes;
 @end

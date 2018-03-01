@@ -409,8 +409,8 @@ enum {
 
 - (NSArray *)SkimNoteProperties {
     // if the document is locked, we never added the notes to the document
-    if ([[self pdfDocument] isLocked])
-        return [[self mainWindowController] temporarySkimNoteProperties];
+    if ([[self pdfDocument] allowsNotes] == NO)
+        return [[self mainWindowController] tmpNoteProperties];
     
     NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
     if (pageOffsets != nil) {
@@ -1348,23 +1348,29 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
-        return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] isLocked] == NO;
+        return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsNotes];
+    } else if ([anItem action] == @selector(readNotes:)) {
+        return [[self pdfDocument] allowsNotes];
     } else if ([anItem action] == @selector(saveArchive:)) {
         return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO;
     } else if ([anItem action] == @selector(moveToTrash:)) {
         return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL];
+    } else if ([anItem action] == @selector(performFindPanelAction:)) {
+        if ([[self mainWindowController] interactionMode] == SKPresentationMode)
+            return NO;
+        switch ([anItem tag]) {
+            case NSFindPanelActionShowFindPanel:
+                return YES;
+            case NSFindPanelActionNext:
+            case NSFindPanelActionPrevious:
+                return YES;
+            case NSFindPanelActionSetFindString:
+                return [[[self pdfView] currentSelection] hasCharacters];
+            default:
+                return NO;
+        }
     }
     return [super validateUserInterfaceItem:anItem];
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(performFindPanelAction:))
-        return [[self mainWindowController] validateMenuItem:menuItem];
-    else if ([menuItem action] == @selector(readNotes:) || [menuItem action] == @selector(convertNotes:))
-        return [[self pdfDocument] isLocked] == NO;
-    else if ([[SKMainDocument superclass] instancesRespondToSelector:_cmd])
-        return [super validateMenuItem:menuItem];
-    return YES;
 }
 
 - (void)remoteButtonPressed:(NSEvent *)theEvent {
@@ -1631,7 +1637,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)tryToUnlockDocument:(PDFDocument *)document {
-    if ([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO) {
+    if ([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO || [document allowsNotes] == NO) {
         NSString *password = nil;
         if  (SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
             NSString *fileID = [self fileIDStringForDocument:document];
@@ -2016,7 +2022,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
     if ([[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] == NO && [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFBundleDocumentType] == NO) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-    } else if (mdFlags.convertingNotes) {
+    } else if (mdFlags.convertingNotes || [[self pdfDocument] isLocked]) {
         [command setScriptErrorNumber:NSInternalScriptError];
     } else if ([self hasConvertibleAnnotations]) {
         NSDictionary *args = [command evaluatedArguments];
@@ -2032,6 +2038,8 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     NSURL *notesURL = [args objectForKey:@"File"];
     if (notesURL == nil) {
         [command setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+    } else if ([[self pdfDocument] isLocked]) {
+        [command setScriptErrorNumber:NSInternalScriptError];
     } else {
         NSNumber *replaceNumber = [args objectForKey:@"Replace"];
         NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:notesURL error:NULL];

@@ -1151,16 +1151,18 @@
             NSArray *selections = [[leftSideController.findArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
             item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectSelections:) target:self];
             [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
-            [item setRepresentedObject:selections];
+            if ([pdfView hideNotes] == NO && [[self pdfDocument] allowsNotes]) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
+                [item setRepresentedObject:selections];
+            }
         }
     } else if ([menu isEqual:[leftSideController.groupedFindTableView menu]]) {
         NSIndexSet *rowIndexes = [leftSideController.groupedFindTableView selectedRowIndexes];
@@ -1567,7 +1569,7 @@ static NSArray *allMainDocumentPDFViews() {
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
-        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] allowsNotes] && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && (isMarkup == NO || [[pdfView currentSelection] hasCharacters]);
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]);
@@ -1714,7 +1716,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(performFit:)) {
         return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(password:)) {
-        return [self interactionMode] != SKPresentationMode && ([[self pdfDocument] isLocked] || [[self pdfDocument] allowsPrinting] == NO || [[self pdfDocument] allowsCopying] == NO);
+        return [self interactionMode] != SKPresentationMode && ([[self pdfDocument] isLocked] || [[self pdfDocument] allowsPrinting] == NO || [[self pdfDocument] allowsCopying] == NO || [[self pdfDocument] allowsNotes] == NO);
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
