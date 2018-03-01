@@ -40,6 +40,7 @@
 #import "SKMainDocument.h"
 #import "NSDocument_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 #import <Quartz/Quartz.h>
 
 #define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
@@ -284,10 +285,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:SKInfoAllowsPrintingKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:SKInfoAllowsCopyingKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc respondsToSelector:@selector(allowsCommenting)] == NO || [pdfDoc allowsCommenting]] forKey:SKInfoAllowsCommentingKey];
-#pragma clang diagnostic pop
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsNotes]] forKey:SKInfoAllowsCommentingKey];
     }
     [dictionary setValue:[[[doc fileURL] path] lastPathComponent] forKey:SKInfoFileNameKey];
     [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];
