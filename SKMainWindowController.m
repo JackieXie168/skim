@@ -795,6 +795,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [self setGroupedSearchResults:nil];
             [self removeAllObjectsFromNotes];
             [self removeAllObjectsFromThumbnails];
+            SKDESTROY(tmpNoteProperties);
             
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
