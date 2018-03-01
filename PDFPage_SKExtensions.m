@@ -565,6 +565,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
+        
         PDFAnnotation *annotation = nil;
         NSMutableDictionary *props = [[properties mutableCopy] autorelease];
         NSString *type = [properties objectForKey:SKNPDFAnnotationTypeKey];
@@ -572,7 +573,10 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         if (type == nil && contentsValue)
             type = SKNHighlightString;
         
-        if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
+        if ([[self document] allowsNotes] == NO) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+            [[NSScriptCommand currentCommand] setScriptErrorString:@"PDF does not support notes."];
+        } else if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNStrikeOutString] || [type isEqualToString:SKNUnderlineString ]) {
             id selSpec = contentsValue ?: [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
