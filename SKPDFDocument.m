@@ -54,15 +54,11 @@
 }
 
 - (BOOL)unlockWithPassword:(NSString *)password {
-    BOOL wasLocked = [self isLocked];
-    BOOL allowedPrinting = [self allowsPrinting];
-    BOOL allowedCopying = [self allowsCopying];
-    BOOL allowedNotes = [self allowsNotes];
+    PDFDocumentPermissions permissionsStatus = [self permissionsStatus];
     if ([super unlockWithPassword:password]) {
         if ([[self delegate] respondsToSelector:@selector(document:didUnlockWithPassword:)] &&
-            ([self isLocked] < wasLocked || [self allowsPrinting] > allowedPrinting || [self allowsCopying] > allowedCopying || [self allowsNotes] > allowedNotes)) {
+            [self permissionsStatus] > permissionsStatus)
             [[self delegate] document:self didUnlockWithPassword:password];
-        }
         return YES;
     }
     return NO;
