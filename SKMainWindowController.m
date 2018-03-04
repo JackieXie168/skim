@@ -152,7 +152,8 @@
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
 #define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
 #define PAGEINDEX_KEY               @"pageIndex"
-#define SCROLLPOINT_KEY               @"scrollPoint"
+#define SCROLLPOINT_KEY             @"scrollPoint"
+#define LOCKED_KEY                  @"locked"
 
 #define PAGETRANSITIONS_KEY @"pageTransitions"
 
@@ -211,7 +212,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 @implementation SKMainWindowController
 
-@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode, tmpNoteProperties;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode;
 @dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
@@ -263,6 +264,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([[self window] delegate])
         SKENSURE_MAIN_THREAD( [self cleanup]; );
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    SKDESTROY(placeholderPdfDocument);
     SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
@@ -300,7 +302,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
     SKDESTROY(fieldEditor);
-    SKDESTROY(tmpNoteProperties);
     [super dealloc];
 }
 
@@ -509,10 +510,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self registerForNotifications];
     [self registerAsObserver];
     
-    if ([[pdfView document] isLocked])
+    if ([[pdfView document] isLocked]) {
         [window makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
-    else
+        [savedNormalSetup setObject:[NSNumber numberWithBool:YES] forKey:LOCKED_KEY];
+    } else {
         [savedNormalSetup removeAllObjects];
+    }
     
     mwcFlags.settingUpWindow = 0;
 }
@@ -582,7 +585,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [setup addEntriesFromDictionary:[self currentPDFSettings]];
     } else {
         [setup addEntriesFromDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, LOCKED_KEY, nil]];
     }
     
     return setup;
@@ -795,7 +798,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [self setGroupedSearchResults:nil];
             [self removeAllObjectsFromNotes];
             [self removeAllObjectsFromThumbnails];
-            SKDESTROY(tmpNoteProperties);
+            SKDESTROY(placeholderPdfDocument);
             
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
@@ -867,17 +870,24 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self updateRightStatus];
     }
 }
-    
+
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate {
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
     
-    if ([pdfDoc allowsNotes] == NO) {
+    if ([pdfDoc allowsNotes] == NO && [noteDicts count] > 0) {
         // there should not be any notesToRemove at this point
         if ([noteDicts count])
             tmpNoteProperties = [noteDicts retain];
-        return;
+        NSUInteger i, pageCount = MIN([pdfDoc pageCount], [[noteDicts valueForKeyPath:@"@max.pageIndex"] unsignedIntegerValue]);
+        SKDESTROY(placeholderPdfDocument);
+        pdfDoc = placeholderPdfDocument = [[SKPDFDocument alloc] init];
+        for (i = 0; i < pageCount; i++) {
+            PDFPage *page = [[SKPDFPage alloc] init];
+            [placeholderPdfDocument insertPage:page atIndex:i];
+            [page release];
+        }
     }
     
     // disable automatic add/remove from the notification handlers
@@ -1299,10 +1309,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (shouldRestrict)
         [transitions setShouldRestrict:[shouldRestrict boolValue]];
     [transitions setPageTransitions:pageTransitions];
-}
-
-- (NSArray *)temporarySkimNoteProperties {
-    return [savedNormalSetup objectForKey:NOTES_KEY];
 }
 
 #pragma mark Full Screen support
@@ -1839,8 +1845,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [pdfView setInteractionMode:SKNormalMode];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
-    if ([[pdfView document] isLocked] == NO)
-        [self applyPDFSettings:savedNormalSetup];
+    [self applyPDFSettings:savedNormalSetup];
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
     if (leftWidth && rightWidth)
@@ -2134,13 +2139,13 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)documentDidUnlockDelayed {
-    NSNumber *pageIndexNumber = [savedNormalSetup objectForKey:PAGEINDEX_KEY];
-    NSUInteger pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;
-    NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     NSDictionary *settings = [self interactionMode] == SKFullScreenMode ? [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] : nil;
     if ([settings count] == 0)
         settings = [savedNormalSetup objectForKey:AUTOSCALES_KEY] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey];
     [self applyPDFSettings:settings];
+    
+    NSNumber *pageIndexNumber = [savedNormalSetup objectForKey:PAGEINDEX_KEY];
+    NSUInteger pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;
     if (pageIndex != NSNotFound) {
         NSString *pointString = [savedNormalSetup objectForKey:SCROLLPOINT_KEY];
         if (pointString)
@@ -2151,24 +2156,37 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         [lastViewedPages addPointer:(void *)pageIndex];
         [pdfView resetHistory];
     }
-    if (tmpNoteProperties && [[self pdfDocument] allowsNotes]) {
-        // this is delayed from loading the document, so should not be undoable, and we don't want to dirty
-        [[[self document] undoManager] disableUndoRegistration];
-        [self addAnnotationsFromDictionaries:tmpNoteProperties removeAnnotations:nil autoUpdate:NO];
-        [[[self document] undoManager] enableUndoRegistration];
-        SKDESTROY(tmpNoteProperties);
-    }
-    if ([snapshotSetups count]) {
+    
+    NSArray *snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
+    if ([snapshotSetups count])
         [self showSnapshotsWithSetups:snapshotSetups];
-    }
-    [savedNormalSetup removeAllObjects];
+    
+    if ([self interactionMode] == SKNormalMode)
+        [savedNormalSetup removeAllObjects];
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
-    [self updatePageLabelsAndOutlineForExpansionState:nil];
-    // when the PDF was locked, PDFView resets the display settings, so we need to reapply them, however if don't delay it's reset again immediately
-    if ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode)
-        [self performSelector:@selector(documentDidUnlockDelayed) withObject:nil afterDelay:0.0];
+    if (placeholderPdfDocument && [[self pdfDocument] allowsNotes]) {
+        PDFDocument *pdfDoc = [self pdfDocument];
+        for (PDFAnnotation *note in [self notes]) {
+            PDFPage *page = [note page];
+            if ([page document] != pdfDoc) {
+                [page removeAnnotation:note];
+                [[pdfDoc pageAtIndex:[page pageIndex]] addAnnotation:note];
+            }
+        }
+        SKDESTROY(placeholderPdfDocument);
+        [pdfView requiresDisplay];
+        [rightSideController.noteOutlineView reloadData];
+    }
+    
+    if ([[savedNormalSetup objectForKey:LOCKED_KEY] boolValue]) {
+        [self updatePageLabelsAndOutlineForExpansionState:nil];
+        
+        // when the PDF was locked, PDFView resets the display settings, so we need to reapply them, however if we don't delay it's reset again immediately
+        if ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode)
+            [self performSelector:@selector(documentDidUnlockDelayed) withObject:nil afterDelay:0.0];
+    }
 }
 
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {
