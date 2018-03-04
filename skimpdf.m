@@ -43,6 +43,12 @@
 #import "PDFAnnotation_SKNExtensions.h"
 #import "SKNPDFAnnotationNote.h"
 
+#if !defined(MAC_OS_X_VERSION_10_13) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_13
+@interface PDFDocument (SKNHighSierradeclarations)
+- (BOOL)allowsCommenting;
+@end
+#endif
+
 static char *usageStr = "Usage:\n"
                         " skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n"
                         " skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n"
@@ -188,6 +194,21 @@ static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, N
     return success;
 }
 
+static inline BOOL SKNValidateDocument(PDFDocument *pdfDoc, NSInteger action) {
+    if (pdfDoc == nil)
+        return NO;
+    if ([pdfDoc allowsPrinting] == NO)
+        return NO;
+    if (action == SKNActionEmbed || action == SKNActionUnembed)
+        return YES;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if ([pdfDoc respondsToSelector:@selector(allowsCommenting)] && [pdfDoc allowsCommenting] == NO)
+        return NO;
+#pragma clang diagnostic pop
+    return YES;
+}
+
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
  
@@ -273,9 +294,9 @@ int main (int argc, const char * argv[]) {
             
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
-        } else if (pdfDoc == nil || [pdfDoc allowsPrinting] == NO || (inPath2 && (pdfDoc2 == nil || [pdfDoc2 allowsPrinting] == NO))) {
+        } else if (SKNValidateDocument(pdfDoc, action) == NO || (inPath2 && SKNValidateDocument(pdfDoc2, action) == NO)) {
             
-            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create PDF document", NSLocalizedDescriptionKey, nil]];
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot create valid PDF document", NSLocalizedDescriptionKey, nil]];
             
         } else if (action == SKNActionEmbed) {
             
