@@ -717,12 +717,14 @@ enum {
 #pragma mark Actions
 
 - (void)animateTransitionForNextPage:(BOOL)next {
-    NSUInteger idx = [[self currentPage] pageIndex];
+    PDFPage *fromPage = [self currentPage];
+    NSUInteger idx = [fromPage pageIndex];
     NSUInteger toIdx = (next ? idx + 1 : idx - 1);
-    BOOL shouldAnimate = [transitionController pageTransitions] || [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:toIdx] label]] == NO;
+    PDFPage *toPage = [[self document] pageAtIndex:toIdx];
+    BOOL shouldAnimate = [transitionController pageTransitions] || ([fromPage label] && [toPage label] && [[fromPage label] isEqualToString:[toPage label]] == NO);
     NSRect rect;
     if (shouldAnimate) {
-        rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+        rect = [self convertRect:[fromPage boundsForBox:[self displayBox]] fromPage:fromPage];
         [[self transitionController] prepareAnimationForRect:rect from:idx to:toIdx];
     }
     if (next)
@@ -730,7 +732,7 @@ enum {
     else
         [super goToPreviousPage:self];
     if (shouldAnimate) {
-        rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+        rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
         if (interactionMode == SKPresentationMode)
             [self doAutohide:YES];
@@ -1738,7 +1740,7 @@ enum {
         NSRect selRect = NSIntegralRect(selectionRect);
         
         // Unfortunately only old PboardTypes are requested rather than preferred UTIs, even if we only validate and the Service only requests UTIs, so we need to support both
-        if ([[self document] allowsPrinting]) {
+        if ([[self document] allowsPrinting] && [[self document] isLocked] == NO) {
             if ([types containsObject:NSPasteboardTypePDF])
                 pdfType = NSPasteboardTypePDF;
             else if ([types containsObject:NSPDFPboardType])
@@ -1778,7 +1780,7 @@ enum {
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && 
-        (([[self document] allowsPrinting] && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
+        (([[self document] allowsPrinting] && [[self document] isLocked] == NO && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
     if (RUNNING(10_12) && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
@@ -2436,7 +2438,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             return YES;
         if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
             return YES;
-        if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound)
+        if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && [[self document] isLocked] == NO)
             return YES;
         return NO;
     } else if (action == @selector(cut:)) {
