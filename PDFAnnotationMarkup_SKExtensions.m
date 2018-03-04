@@ -354,7 +354,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (NSString *)textString {
-    if ([self isEditable] == NO)
+    if ([[self page] pageRef] == NULL)
         return nil;
     SKPDFAnnotationMarkupExtraIvars *extraIvars = [self extraIvars];
     NSString *textString = [extraIvars textString];

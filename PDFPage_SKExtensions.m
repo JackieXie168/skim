@@ -545,7 +545,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (void)insertObject:(id)newNote inNotesAtIndex:(NSUInteger)anIndex {
-    if ([self isEditable]) {
+    if ([self isEditable] && [[self document] allowsNotes]) {
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         
         [pdfView addAnnotation:newNote toPage:self];
@@ -554,7 +554,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
-    if ([self isEditable]) {
+    if ([self isEditable] && [[self document] allowsNotes]) {
         PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
         SKPDFView *pdfView = [(SKMainDocument *)[self containingDocument] pdfView];
         

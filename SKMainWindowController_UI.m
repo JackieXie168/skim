@@ -325,7 +325,7 @@
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
+        if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSString *fileExt = nil;
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
@@ -358,7 +358,7 @@
 - (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
+        if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSURL *fileURL = [dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]];
             NSString *pathExt = nil;
@@ -487,7 +487,7 @@
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
+        if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
@@ -878,7 +878,7 @@
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items  {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
-        return [items count] > 0;
+        return [[self pdfDocument] allowsNotes] && [items count] > 0;
     }
     return NO;
 }
@@ -1173,16 +1173,18 @@
             NSArray *selections = [[[leftSideController.groupedFindArrayController arrangedObjects] objectsAtIndexes:rowIndexes] valueForKeyPath:@"@unionOfArrays.matches"];
             item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectSelections:) target:self];
             [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
-            [item setRepresentedObject:selections];
-            item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
-            [item setRepresentedObject:selections];
+            if ([pdfView hideNotes] == NO && [[self pdfDocument] allowsNotes]) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Circle", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKCircleNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Box", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKSquareNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Highlight", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKHighlightNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Underline", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKUnderlineNote];
+                [item setRepresentedObject:selections];
+                item = [menu addItemWithTitle:NSLocalizedString(@"New Strike Out", @"Menu item title") action:@selector(addAnnotationsForSelections:) target:self tag:SKStrikeOutNote];
+                [item setRepresentedObject:selections];
+            }
         }
     } else if ([menu isEqual:[rightSideController.snapshotTableView menu]]) {
         NSInteger row = [rightSideController.snapshotTableView clickedRow];
@@ -1234,15 +1236,17 @@
                         [item setAlternate:YES];
                     }
                 }
-                if ([pdfView activeAnnotation] == annotation) {
-                    item = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
-                    [item setRepresentedObject:annotation];
-                } else {
-                    item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
+                if ([pdfView hideNotes] == NO && [[self pdfDocument] allowsNotes]) {
+                    if ([pdfView activeAnnotation] == annotation) {
+                        item = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
+                        [item setRepresentedObject:annotation];
+                    } else {
+                        item = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
+                        [item setRepresentedObject:annotation];
+                    }
+                    item = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
                     [item setRepresentedObject:annotation];
                 }
-                item = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
-                [item setRepresentedObject:annotation];
             }
             if ([menu numberOfItems] > 0)
                 [menu addItem:[NSMenuItem separatorItem]];
@@ -1716,7 +1720,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(performFit:)) {
         return [self interactionMode] == SKNormalMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(password:)) {
-        return [self interactionMode] != SKPresentationMode && ([[self pdfDocument] isLocked] || [[self pdfDocument] allowsPrinting] == NO || [[self pdfDocument] allowsCopying] == NO || [[self pdfDocument] allowsNotes] == NO);
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] permissionsStatus] != kPDFDocumentPermissionsOwner;
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];

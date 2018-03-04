@@ -207,7 +207,7 @@ enum {
 - (void)setDataFromTmpData {
     PDFDocument *pdfDoc = [tmpData pdfDocument];
     
-    mdFlags.needsPasswordToPrint = [pdfDoc allowsPrinting] == NO;
+    mdFlags.needsPasswordToConvert = [pdfDoc allowsPrinting] == NO || [pdfDoc allowsNotes];
     
     [self tryToUnlockDocument:pdfDoc];
     
@@ -346,7 +346,7 @@ enum {
     [matrix selectCellWithTag:mdFlags.exportOption];
     if ([self canAttachNotesForType:typeName]) {
         [matrix setHidden:NO];
-        if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsPrinting]) {
+        if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && ([[self pdfDocument] isLocked] == NO && [[self pdfDocument] allowsPrinting])) {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
         } else {
             [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:NO];
@@ -408,10 +408,6 @@ enum {
 }
 
 - (NSArray *)SkimNoteProperties {
-    // if the document is locked, we never added the notes to the document
-    if ([[self pdfDocument] allowsNotes] == NO)
-        return [[self mainWindowController] tmpNoteProperties];
-    
     NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
     if (pageOffsets != nil) {
         NSMutableArray *mutableArray = [NSMutableArray array];
@@ -1181,8 +1177,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             if (result == NSOKButton) {
                 [[passwordSheetController window] orderOut:nil];
                 
-                if (pdfDoc && [pdfDoc allowsPrinting] == NO && 
-                    ([pdfDoc unlockWithPassword:[passwordSheetController stringValue]] == NO || [pdfDoc allowsPrinting] == NO)) {
+                if (pdfDoc && ([pdfDoc allowsNotes] == NO || [pdfDoc allowsPrinting] == NO) &&
+                    ([pdfDoc unlockWithPassword:[passwordSheetController stringValue]] == NO || [pdfDoc allowsNotes] == NO || [pdfDoc allowsPrinting] == NO)) {
                     [self beginConvertNotesPasswordSheetForPDFDocument:pdfDoc];
                 } else {
                     [self convertNotesUsingPDFDocument:pdfDoc];
@@ -1205,10 +1201,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     PDFDocument *pdfDocWithoutNotes = nil;
     
-    if (mdFlags.needsPasswordToPrint) {
+    if (mdFlags.needsPasswordToConvert) {
         pdfDocWithoutNotes = [[[PDFDocument alloc] initWithData:pdfData] autorelease];
         [self tryToUnlockDocument:pdfDocWithoutNotes];
-        if ([pdfDocWithoutNotes allowsPrinting] == NO) {
+        if ([pdfDocWithoutNotes allowsNotes] == NO || [pdfDocWithoutNotes allowsPrinting] == NO) {
             [self beginConvertNotesPasswordSheetForPDFDocument:pdfDocWithoutNotes];
             return;
         }
@@ -1637,7 +1633,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)tryToUnlockDocument:(PDFDocument *)document {
-    if ([document isLocked] || [document allowsPrinting] == NO || [document allowsCopying] == NO || [document allowsNotes] == NO) {
+    if ([document permissionsStatus] != kPDFDocumentPermissionsOwner) {
         NSString *password = nil;
         if  (SKOptionNever != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
             NSString *fileID = [self fileIDStringForDocument:document];
@@ -1666,22 +1662,26 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex {
-    PDFPage *page = [newNote page];
-    if (page && [[page annotations] containsObject:newNote] == NO) {
-        SKPDFView *pdfView = [self pdfView];
-        
-        [pdfView addAnnotation:newNote toPage:page];
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-    } else {
-        [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
+    if ([[self pdfDocument] allowsNotes]) {
+        PDFPage *page = [newNote page];
+        if (page && [[page annotations] containsObject:newNote] == NO) {
+            SKPDFView *pdfView = [self pdfView];
+            
+            [pdfView addAnnotation:newNote toPage:page];
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        } else {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError];
+        }
     }
 }
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
-    PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
-    
-    [[self pdfView] removeAnnotation:note];
-    [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    if ([[self pdfDocument] allowsNotes]) {
+        PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
+        
+        [[self pdfView] removeAnnotation:note];
+        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    }
 }
 
 - (PDFPage *)currentPage {
