@@ -65,6 +65,14 @@
 #define LABEL_COLUMN_ID @"label"
 #define VALUE_COLUMN_ID @"value"
 
+#if SDK_BEFORE(10_13)
+
+@interface PDFDocument (SKHighSierraDeclarations)
+- (BOOL)allowsCommenting;
+@end
+
+#endif
+
 @interface SKInfoWindowController (SKPrivate)
 - (void)handleViewFrameDidChangeNotification:(NSNotification *)notification;
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification;
@@ -285,7 +293,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:SKInfoAllowsPrintingKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:SKInfoAllowsCopyingKey];
-        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsNotes]] forKey:SKInfoAllowsCommentingKey];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc respondsToSelector:@selector(allowsCommenting)] == NO || [pdfDoc allowsCommenting]] forKey:SKInfoAllowsCommentingKey];
+#pragma clang diagnostic pop
     }
     [dictionary setValue:[[[doc fileURL] path] lastPathComponent] forKey:SKInfoFileNameKey];
     [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];
