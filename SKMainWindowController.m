@@ -2177,7 +2177,10 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         }
         SKDESTROY(placeholderPdfDocument);
         [pdfView requiresDisplay];
-        [rightSideController.noteOutlineView reloadData];
+        if ([[savedNormalSetup objectForKey:LOCKED_KEY] boolValue] == NO) {
+            [rightSideController.noteOutlineView reloadData];
+            [self allThumbnailsNeedUpdate];
+        }
     }
     
     if ([[savedNormalSetup objectForKey:LOCKED_KEY] boolValue]) {
