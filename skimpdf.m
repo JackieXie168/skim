@@ -197,7 +197,7 @@ static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, N
 static inline BOOL SKNValidateDocument(PDFDocument *pdfDoc, NSInteger action) {
     if (pdfDoc == nil)
         return NO;
-    if ([pdfDoc allowsPrinting] == NO)
+    if ([pdfDoc isLocked] || [pdfDoc allowsPrinting] == NO)
         return NO;
     if (action == SKNActionEmbed || action == SKNActionUnembed)
         return YES;
