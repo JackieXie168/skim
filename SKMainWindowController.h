@@ -305,6 +305,7 @@ enum {
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
 - (void)updateThumbnailAtPageIndex:(NSUInteger)index;
+- (void)updateThumbnailsAtPageIndexes:(NSIndexSet *)indexSet;
 - (void)allThumbnailsNeedUpdate;
 
 - (void)resetSnapshotSizeIfNeeded;

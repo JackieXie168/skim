@@ -2168,18 +2168,21 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)documentDidUnlock:(NSNotification *)notification {
     if (placeholderPdfDocument && [[self pdfDocument] allowsNotes]) {
         PDFDocument *pdfDoc = [self pdfDocument];
+        NSMutableIndexSet *pageIndexes = [NSMutableIndexSet indexSet];
         for (PDFAnnotation *note in [self notes]) {
             PDFPage *page = [note page];
+            NSUInteger pageIndex = [page pageIndex];
             if ([page document] != pdfDoc) {
                 [page removeAnnotation:note];
                 [[pdfDoc pageAtIndex:[page pageIndex]] addAnnotation:note];
+                [pageIndexes addIndex:pageIndex];
             }
         }
         SKDESTROY(placeholderPdfDocument);
         [pdfView requiresDisplay];
         if ([[savedNormalSetup objectForKey:LOCKED_KEY] boolValue] == NO) {
             [rightSideController.noteOutlineView reloadData];
-            [self allThumbnailsNeedUpdate];
+            [self updateThumbnailsAtPageIndexes:pageIndexes];
         }
     }
     
@@ -2733,6 +2736,11 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
     [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
+    [leftSideController.thumbnailTableView reloadData];
+}
+
+- (void)updateThumbnailsAtPageIndexes:(NSIndexSet *)indexSet {
+    [[thumbnails objectsAtIndexes:indexSet] setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
     [leftSideController.thumbnailTableView reloadData];
 }
 
