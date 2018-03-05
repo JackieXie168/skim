@@ -90,8 +90,6 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
-		CE1F60121A822BC8002C3942 /* texi2html in Resources */ = {isa = PBXBuildFile; fileRef = CE1F60111A822BC8002C3942 /* texi2html */; };
-		CE1F60141A822BD8002C3942 /* stopwords-nl.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE1F60131A822BD8002C3942 /* stopwords-nl.txt */; };
 		CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2083E316ADFFD600BC5AFB /* SKAlias.m */; };
 		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
@@ -2232,8 +2230,6 @@
 				CE109796161320A500C4FA18 /* ExportAccessoryView.xib in Resources */,
 				CE1098F11613CFC800C4FA18 /* ExportAccessoryView.strings in Resources */,
 				CE25BB6B163FFB770046A348 /* Skim.help in Resources */,
-				CE1F60121A822BC8002C3942 /* texi2html in Resources */,
-				CE1F60141A822BD8002C3942 /* stopwords-nl.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
