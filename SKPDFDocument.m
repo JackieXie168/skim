@@ -90,6 +90,9 @@
 #undef NSStringCompareOptions
 #endif
 
+// fool the document into thinking it always allows annotations
+- (BOOL)allowsCommenting { return YES; }
+
 - (id <SKPDFDocumentDelegate>)delegate {
     return (id <SKPDFDocumentDelegate>)[super delegate];
 }
