@@ -120,7 +120,7 @@ static SKInfoWindowController *sharedInstance = nil;
                             NSLocalizedString(@"Encrypted:", @"Info label"), SKInfoEncryptedKey, 
                             NSLocalizedString(@"Allows printing:", @"Info label"), SKInfoAllowsPrintingKey, 
                             NSLocalizedString(@"Allows copying:", @"Info label"), SKInfoAllowsCopyingKey,
-                            NSLocalizedString(@"Allows notes:", @"Info label"), SKInfoAllowsCommentingKey,
+                            NSLocalizedString(@"Allows commenting:", @"Info label"), SKInfoAllowsCommentingKey,
                             NSLocalizedString(@"Title:", @"Info label"), PDFDocumentTitleAttribute,
                             NSLocalizedString(@"Author:", @"Info label"), PDFDocumentAuthorAttribute, 
                             NSLocalizedString(@"Subject:", @"Info label"), PDFDocumentSubjectAttribute, 
