@@ -208,7 +208,11 @@
 
 - (BOOL)allowsNotes {
     return [self isLocked] == NO &&
-            ([self respondsToSelector:@selector(allowsCommenting)] == NO || [self allowsCommenting]);
+    ([self respondsToSelector:@selector(allowsCommenting)] == NO || [self allowsCommenting]);
+}
+
+- (BOOL)realAllowsCommenting {
+    return [self respondsToSelector:@selector(allowsCommenting)] == NO || [self allowsCommenting];
 }
 
 #pragma clang diagnostic pop

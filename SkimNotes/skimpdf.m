@@ -50,6 +50,13 @@
 @end
 #endif
 
+@interface PDFDocument (SKNOverride)
+@end
+
+@implementation PDFDocument (SKNOverride)
+- (BOOL)allowsCommenting { return YES; }
+@end
+
 static char *usageStr = "Usage:\n"
                         " skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n"
                         " skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n"

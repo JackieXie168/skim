@@ -46,4 +46,5 @@
 - (NSDictionary *)initialSettings;
 - (BOOL)hasRightToLeftLanguage;
 - (BOOL)allowsNotes;
+- (BOOL)realAllowsCommenting;
 @end

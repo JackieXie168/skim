@@ -41,6 +41,14 @@
 #import "PDFDocument_SKExtensions.h"
 
 
+#if SDK_BEFORE(10_13)
+
+@interface PDFDocument (SKHighSierraDeclarations)
+- (BOOL)allowsCommenting;
+@end
+
+#endif
+
 @implementation SKPDFDocument
 
 - (Class)pageClass {
@@ -92,6 +100,13 @@
 
 // fool the document into thinking it always allows annotations
 - (BOOL)allowsCommenting { return YES; }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
+- (BOOL)realAllowsCommenting { return [PDFDocument instancesRespondToSelector:@selector(allowsCommenting)] == NO || [super allowsCommenting]; }
+
+#pragma clang diagnostic pop
 
 - (id <SKPDFDocumentDelegate>)delegate {
     return (id <SKPDFDocumentDelegate>)[super delegate];
