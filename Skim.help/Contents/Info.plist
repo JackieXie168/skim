@@ -26,8 +26,6 @@
 	<string>SkimHelp.helpindex</string>
 	<key>HPDBookKBProduct</key>
 	<string>skim1</string>
-	<key>HPDBookRemoteURL</key>
-	<string>https://skim-app.sourceforge.io/manual/</string>
 	<key>HPDBookTitle</key>
 	<string>Skim Help</string>
 	<key>HPDBookType</key>
