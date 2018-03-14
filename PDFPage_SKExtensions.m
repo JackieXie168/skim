@@ -520,12 +520,17 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (NSArray *)notes {
-    if ([[self document] allowsNotes] == NO)
-        return [[[[self containingDocument] placeholderPdfDocument] pageAtIndex:[self pageIndex]] notes];
+    NSArray *annotations = [self annotations];
+    
+    if ([[self document] allowsNotes] == NO) {
+        PDFDocument *pdfDoc = [[self containingDocument] placeholderPdfDocument];
+        NSUInteger pageIndex = [self pageIndex];
+        annotations = pageIndex < [pdfDoc pageCount] ? [[pdfDoc pageAtIndex:pageIndex] annotations] : nil;
+    }
     
     NSMutableArray *notes = [NSMutableArray array];
-    
-    for (PDFAnnotation *annotation in [self annotations]) {
+
+    for (PDFAnnotation *annotation in annotations) {
         if ([annotation isSkimNote])
             [notes addObject:annotation];
     }
