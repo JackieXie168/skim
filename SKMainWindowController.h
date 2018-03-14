@@ -224,6 +224,8 @@ enum {
 @property (nonatomic, retain) PDFDocument *pdfDocument;
 @property (nonatomic, readonly) PDFView *secondaryPdfView;
 
+@property (nonatomic, readonly) PDFDocument *placeholderPdfDocument;
+
 - (NSArray *)notes;
 - (NSUInteger)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex;

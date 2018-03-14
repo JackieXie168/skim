@@ -65,6 +65,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 #pragma mark PDF Document
 
 - (PDFDocument *)pdfDocument;
+- (PDFDocument *)placeholderPdfDocument;
 
 #pragma mark Bookmark Actions
 

@@ -520,6 +520,9 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (NSArray *)notes {
+    if ([[self document] allowsNotes] == NO)
+        return [[[[self containingDocument] placeholderPdfDocument] pageAtIndex:[self pageIndex]] notes];
+    
     NSMutableArray *notes = [NSMutableArray array];
     
     for (PDFAnnotation *annotation in [self annotations]) {

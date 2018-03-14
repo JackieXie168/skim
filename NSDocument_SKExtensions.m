@@ -141,6 +141,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (PDFDocument *)pdfDocument { return nil; }
 
+- (PDFDocument *)placeholderPdfDocument { return nil; }
+
 #pragma mark Notes
 
 - (NSArray *)notes { return nil; }

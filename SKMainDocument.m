@@ -1526,6 +1526,10 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return [[self mainWindowController] pdfDocument];
 }
 
+- (PDFDocument *)placeholderPdfDocument{
+    return [[self mainWindowController] placeholderPdfDocument];
+}
+
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [[[super currentDocumentSetup] mutableCopy] autorelease];
     if ([setup count])
