@@ -888,6 +888,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         NSUInteger i, pageCount = MIN([pdfDoc pageCount], [[noteDicts valueForKeyPath:@"@max.pageIndex"] unsignedIntegerValue]);
         SKDESTROY(placeholderPdfDocument);
         pdfDoc = placeholderPdfDocument = [[SKPDFDocument alloc] init];
+        [placeholderPdfDocument setContainingDocument:[self document]];
         for (i = 0; i < pageCount; i++) {
             PDFPage *page = [[SKPDFPage alloc] init];
             [placeholderPdfDocument insertPage:page atIndex:i];

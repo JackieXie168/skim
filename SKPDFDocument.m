@@ -53,6 +53,11 @@
 
 @synthesize containingDocument;
 
+- (void)dealloc {
+    containingDocument = nil;
+    [super dealloc];
+}
+
 - (Class)pageClass {
     return [SKPDFPage class];
 }
