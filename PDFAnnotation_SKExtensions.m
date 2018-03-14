@@ -473,13 +473,8 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-	NSUInteger idx = [[[self page] notes] indexOfObjectIdenticalTo:self];
-    if (idx != NSNotFound) {
-        NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
-        return [[[NSUniqueIDSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" uniqueID:[self uniqueID]] autorelease];
-    } else {
-        return nil;
-    }
+    NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
+    return [[[NSUniqueIDSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" uniqueID:[self uniqueID]] autorelease];
 }
 
 - (NSString *)uniqueID {
