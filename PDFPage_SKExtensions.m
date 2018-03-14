@@ -427,14 +427,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (NSDocument *)containingDocument {
-    NSDocument *document = nil;
-    
-    for (document in [[NSDocumentController sharedDocumentController] documents]) {
-        if ([[self document] isEqual:[document pdfDocument]])
-            break;
-    }
-    
-    return document;
+    return [[self document] containingDocument];
 }
 
 - (NSUInteger)index {
@@ -537,7 +530,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
 }
 
 - (id)valueInNotesWithUniqueID:(NSString *)aUniqueID {
-    for (PDFAnnotation *annotation in [self annotations]) {
+    for (PDFAnnotation *annotation in [self notes]) {
         if ([[annotation uniqueID] isEqualToString:aUniqueID])
             return annotation;
     }

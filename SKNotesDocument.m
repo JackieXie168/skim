@@ -72,6 +72,7 @@
 #import "NSArray_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -221,6 +222,10 @@
     ndFlags.settingUpWindow = NO;
 }
 
+- (void)windowWillClose:(NSNotification *)notification {
+    [pdfDocument setContainingDocument:nil];
+}
+
 - (void)windowDidResize:(NSNotification *)notification {
     if (ndFlags.autoResizeRows) {
         [rowHeights removeAllFloats];
@@ -356,6 +361,8 @@
         [self willChangeValueForKey:PAGES_KEY];
         [pdfDocument autorelease];
         pdfDocument = [[SKPDFDocument alloc] init];
+        
+        [pdfDocument setContainingDocument:self];
         
         for (NSDictionary *dict in array) {
             PDFAnnotation *note = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict];

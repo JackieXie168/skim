@@ -47,4 +47,6 @@
 - (BOOL)hasRightToLeftLanguage;
 - (BOOL)allowsNotes;
 - (BOOL)realAllowsCommenting;
+- (NSDocument *)containingDocument;
+- (void)setContainingDocument:(NSDocument *)document;
 @end

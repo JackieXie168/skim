@@ -43,7 +43,9 @@
 
 @interface SKPDFDocument : PDFDocument {
     CFLocaleLanguageDirection languageDirection;
+    NSDocument *containingDocument;
 }
+@property (nonatomic, assign) NSDocument *containingDocument;
 - (id <SKPDFDocumentDelegate>)delegate;
 - (void)setDelegate:(id <SKPDFDocumentDelegate>)newDelegate;
 @end

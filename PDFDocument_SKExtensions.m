@@ -41,6 +41,7 @@
 #import "NSNumber_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSData_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 
 #if SDK_BEFORE(10_13)
@@ -216,5 +217,18 @@
 }
 
 #pragma clang diagnostic pop
+
+- (NSDocument *)containingDocument {
+    NSDocument *document = nil;
+    
+    for (document in [[NSDocumentController sharedDocumentController] documents]) {
+        if ([self isEqual:[document pdfDocument]])
+            break;
+    }
+    
+    return document;
+}
+
+- (void)setContainingDocument:(NSDocument *)document  {}
 
 @end

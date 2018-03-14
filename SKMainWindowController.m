@@ -325,6 +325,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [noteTypeSheetController setDelegate:nil];
     // Sierra seems to have a retain cycle when the document has an outlineRoot
     [[[pdfView document] outlineRoot] clearDocument];
+    [[pdfView document] setContainingDocument:nil];
     // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
     if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12)) {
         [pdfView setDocument:nil];
@@ -811,6 +812,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [[pdfView document] setDelegate:nil];
             
             [[[pdfView document] outlineRoot] clearDocument];
+            
+            [[pdfView document] setContainingDocument:nil];
         }
         
         if ([document isLocked] && [pdfView window]) {
@@ -826,6 +829,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         [secondaryPdfView setDocument:document];
         
+        [[pdfView document] setContainingDocument:[self document]];
+
         [self registerForDocumentNotifications];
         
         [self updatePageLabelsAndOutlineForExpansionState:openState];

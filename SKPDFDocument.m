@@ -51,6 +51,8 @@
 
 @implementation SKPDFDocument
 
+@synthesize containingDocument;
+
 - (Class)pageClass {
     return [SKPDFPage class];
 }
