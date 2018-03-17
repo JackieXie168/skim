@@ -261,7 +261,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (void)dealloc {
-    if ([[self window] delegate])
+    if ([self isWindowLoaded] && [[self window] delegate])
         SKENSURE_MAIN_THREAD( [self cleanup]; );
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(placeholderPdfDocument);
