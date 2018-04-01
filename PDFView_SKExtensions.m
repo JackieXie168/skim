@@ -280,7 +280,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 - (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point {
     PDFPage *page = [[self document] pageAtIndex:pageIndex];
-    if (RUNNING_AFTER(10_12)) {
+    if (RUNNING(10_13)) {
         NSView *docView = [self documentView];
         if (NSLocationInRange(pageIndex, [self displayedPageIndexRange]) == NO)
             [self goToPage:page];
