@@ -97,7 +97,7 @@ NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
 static NSHashTable *SkimNotes = nil;
 
-static IMP original_dealloc = NULL;
+static void (*original_dealloc)(id, SEL) = NULL;
 
 static void replacement_dealloc(id self, SEL _cmd) {
     @synchronized([PDFAnnotation self]) {
@@ -109,7 +109,7 @@ static void replacement_dealloc(id self, SEL _cmd) {
 + (void)load {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
-    original_dealloc = method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
+    original_dealloc = (void(*)(id,SEL))method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
     [pool release];
 }
 
@@ -362,7 +362,7 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
         [dict setValue:SKNColorFromAnnotationValue(value) forKey:SKNPDFAnnotationInteriorColorKey];
     
     if ((value = [self valueForAnnotationKey:@"/Name"]))
-        [dict setValue:SKNIconTypeFromAnnotationValue(value) forKey:SKNPDFAnnotationIconTypeKey];
+    [dict setValue:[NSNumber numberWithInteger:SKNIconTypeFromAnnotationValue(value)] forKey:SKNPDFAnnotationIconTypeKey];
     
     if ((value = [self valueForAnnotationKey:@"/LE"])) {
         if ([value isKindOfClass:arrayClass] && [value count] == 2) {
@@ -582,7 +582,7 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
         if ([alignment respondsToSelector:@selector(integerValue)])
             [self setAlignment:[alignment integerValue]];
         if ([rotation respondsToSelector:@selector(integerValue)] && [self respondsToSelector:@selector(setRotation:)])
-            [self setRotation:[rotation integerValue]];
+            [self setRotation:[rotation intValue]];
     }
     return self;
 }
