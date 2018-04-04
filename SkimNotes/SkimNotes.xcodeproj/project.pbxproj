@@ -821,7 +821,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -829,7 +828,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -891,7 +889,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimPDF-Tool.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -899,7 +896,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimPDF-Tool.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -923,7 +919,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -931,7 +926,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -939,7 +933,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -947,7 +940,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -971,7 +963,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.framework.${PRODUCT_NAME}";
 			};
 			name = Debug;
@@ -980,7 +971,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.framework.${PRODUCT_NAME}";
 			};
 			name = Release;
