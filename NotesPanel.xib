@@ -60,7 +60,7 @@
 									<int key="NSfFlags">3100</int>
 								</object>
 								<reference key="NSControlView" ref="703337131"/>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -86,7 +86,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="133672285"/>
 								<int key="NSTag">1</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -112,7 +112,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="443330303"/>
 								<int key="NSTag">2</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -138,7 +138,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="902083235"/>
 								<int key="NSTag">3</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -164,7 +164,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="116804473"/>
 								<int key="NSTag">4</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -190,7 +190,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="405047916"/>
 								<int key="NSTag">5</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -216,7 +216,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="6358933"/>
 								<int key="NSTag">6</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -242,7 +242,7 @@
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="830185264"/>
 								<int key="NSTag">7</int>
-								<int key="NSButtonFlags">-2034482945</int>
+								<int key="NSButtonFlags">-2034482953</int>
 								<int key="NSButtonFlags2">34</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>

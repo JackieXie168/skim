@@ -283,7 +283,7 @@
 							<string key="NSContents">Invert bar</string>
 							<reference key="NSSupport" ref="644202295"/>
 							<reference key="NSControlView" ref="211704217"/>
-							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags">1211912695</int>
 							<int key="NSButtonFlags2">2</int>
 							<object class="NSCustomResource" key="NSNormalImage" id="90690674">
 								<string key="NSClassName">NSImage</string>
@@ -537,7 +537,7 @@
 							<string key="NSContents">Anti-alias text and line art</string>
 							<reference key="NSSupport" ref="644202295"/>
 							<reference key="NSControlView" ref="975576526"/>
-							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags">1211912695</int>
 							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="90690674"/>
 							<reference key="NSAlternateImage" ref="785304989"/>
@@ -597,7 +597,7 @@
 							<string key="NSContents">Discrete sizes</string>
 							<reference key="NSSupport" ref="644202295"/>
 							<reference key="NSControlView" ref="330377643"/>
-							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags">1211912695</int>
 							<int key="NSButtonFlags2">2</int>
 							<reference key="NSNormalImage" ref="90690674"/>
 							<reference key="NSAlternateImage" ref="785304989"/>

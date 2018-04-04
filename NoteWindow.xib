@@ -205,7 +205,7 @@
 											<int key="NSfFlags">3100</int>
 										</object>
 										<reference key="NSControlView" ref="216923650"/>
-										<int key="NSButtonFlags">1211912703</int>
+										<int key="NSButtonFlags">1211912695</int>
 										<int key="NSButtonFlags2">2</int>
 										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>

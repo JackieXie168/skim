@@ -48,7 +48,7 @@
 								<int key="NSfFlags">1044</int>
 							</object>
 							<reference key="NSControlView" ref="1020163933"/>
-							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags">1211912695</int>
 							<int key="NSButtonFlags2">2</int>
 							<object class="NSCustomResource" key="NSNormalImage">
 								<string key="NSClassName">NSImage</string>
@@ -78,7 +78,7 @@
 								<string key="NSContents">No automatic page scaling</string>
 								<reference key="NSSupport" ref="422304102"/>
 								<reference key="NSControlView" ref="13365875"/>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">0</int>
 								<object class="NSButtonImageSource" key="NSAlternateImage" id="925635439">
 									<string key="NSImageName">NSRadioButton</string>
@@ -97,7 +97,7 @@
 								<reference key="NSSupport" ref="422304102"/>
 								<reference key="NSControlView" ref="13365875"/>
 								<int key="NSTag">1</int>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">0</int>
 								<reference key="NSAlternateImage" ref="925635439"/>
 								<reference key="NSAlternateContents" ref="1023564624"/>
@@ -112,7 +112,7 @@
 								<reference key="NSSupport" ref="422304102"/>
 								<reference key="NSControlView" ref="13365875"/>
 								<int key="NSTag">2</int>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">0</int>
 								<object class="NSImage" key="NSNormalImage">
 									<int key="NSImageFlags">549453824</int>
@@ -243,7 +243,7 @@ h4QAAAAAAAAAAAAAAAAAAAAAdGV4dAAAAABDb3B5cmlnaHQgQXBwbGUsIEluYy4sIDIwMDgAA</bytes
 							<int key="NSCellFlags2">0</int>
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="422304102"/>
-							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags">1211912695</int>
 							<int key="NSButtonFlags2">0</int>
 							<object class="NSImage" key="NSNormalImage">
 								<int key="NSImageFlags">549453824</int>

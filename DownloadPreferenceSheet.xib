@@ -61,7 +61,7 @@
 									<int key="NSfFlags">1044</int>
 								</object>
 								<reference key="NSControlView" ref="654918061"/>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">2</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="258576248">
 									<string key="NSClassName">NSImage</string>
@@ -88,7 +88,7 @@
 								<string key="NSContents">Remove download when finished successfully</string>
 								<reference key="NSSupport" ref="741104401"/>
 								<reference key="NSControlView" ref="668093328"/>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">2</int>
 								<reference key="NSNormalImage" ref="258576248"/>
 								<reference key="NSAlternateImage" ref="113620053"/>
@@ -110,7 +110,7 @@
 								<string key="NSContents">Hide Downloads window when all downloads finished</string>
 								<reference key="NSSupport" ref="741104401"/>
 								<reference key="NSControlView" ref="637021347"/>
-								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags">1211912695</int>
 								<int key="NSButtonFlags2">2</int>
 								<reference key="NSNormalImage" ref="258576248"/>
 								<reference key="NSAlternateImage" ref="113620053"/>
