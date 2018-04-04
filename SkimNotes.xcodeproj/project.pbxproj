@@ -578,7 +578,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "SkimNotes" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -821,6 +821,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -828,6 +829,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -835,6 +837,26 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 			};
 			name = Debug;
 		};
@@ -842,6 +864,26 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 			};
 			name = Release;
 		};
@@ -849,6 +891,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimPDF-Tool.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -856,12 +899,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE1414161229B7A000C9EBA0 /* SkimPDF-Tool.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
 		CE665A860E1C086F00D0704D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = HeaderDocs;
 			};
 			name = Debug;
@@ -869,6 +914,7 @@
 		CE665A870E1C086F00D0704D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = HeaderDocs;
 			};
 			name = Release;
@@ -877,6 +923,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -884,6 +931,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -891,6 +939,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -898,12 +947,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
 		CEBA2EA30E0673B60000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = Archive;
 			};
 			name = Debug;
@@ -911,6 +962,7 @@
 		CEBA2EA40E0673B60000B2E6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = Archive;
 			};
 			name = Release;
@@ -919,6 +971,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.framework.${PRODUCT_NAME}";
 			};
 			name = Debug;
 		};
@@ -926,6 +980,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.framework.${PRODUCT_NAME}";
 			};
 			name = Release;
 		};
