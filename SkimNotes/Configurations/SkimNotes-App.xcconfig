@@ -4,6 +4,7 @@ INSTALL_PATH = $(HOME)/Applications
 
 INFOPLIST_FILE = SkimNotesTest-Info.plist
 PRODUCT_NAME = SkimNotesTest
+PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.skim-app.SkimNotesTest
 
 GCC_PRECOMPILE_PREFIX_HEADER = YES
 GCC_PREFIX_HEADER = $(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h
