@@ -362,7 +362,7 @@ static inline PDFLineStyle SKNPDFLineStyleFromAnnotationValue(id value) {
         [dict setValue:SKNColorFromAnnotationValue(value) forKey:SKNPDFAnnotationInteriorColorKey];
     
     if ((value = [self valueForAnnotationKey:@"/Name"]))
-    [dict setValue:[NSNumber numberWithInteger:SKNIconTypeFromAnnotationValue(value)] forKey:SKNPDFAnnotationIconTypeKey];
+        [dict setValue:[NSNumber numberWithInteger:SKNIconTypeFromAnnotationValue(value)] forKey:SKNPDFAnnotationIconTypeKey];
     
     if ((value = [self valueForAnnotationKey:@"/LE"])) {
         if ([value isKindOfClass:arrayClass] && [value count] == 2) {
