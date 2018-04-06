@@ -580,6 +580,8 @@ static id sharedNoSplitManager = nil;
 	
 	BZ2_bzCompressInit(&stream, compression, 0, 0);
     BOOL hadError = NO;
+    NSInteger hangCount = 0;
+    const NSInteger maxHangCount = 100;
     do {
         bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
         if (bzret != BZ_RUN_OK && bzret != BZ_STREAM_END) {
@@ -589,6 +591,10 @@ static id sharedNoSplitManager = nil;
             [compressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
             stream.avail_out = buffer_size;
+            if (buffer_size == (NSInteger)stream.avail_out && ++hangCount > maxHangCount) {
+                hadError = YES;
+                compressed = nil;
+            }
         }
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
@@ -614,6 +620,8 @@ static id sharedNoSplitManager = nil;
 	
 	BZ2_bzDecompressInit(&stream, 0, NO);
     BOOL hadError = NO;
+    NSInteger hangCount = 0;
+    const NSInteger maxHangCount = 100;
     do {
         bzret = BZ2_bzDecompress(&stream);
         if (bzret != BZ_OK && bzret != BZ_STREAM_END) {
@@ -623,6 +631,10 @@ static id sharedNoSplitManager = nil;
             [decompressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
             stream.avail_out = buffer_size;
+            if (buffer_size == (NSInteger)stream.avail_out && ++hangCount > maxHangCount) {
+                hadError = YES;
+                decompressed = nil;
+            }
         }
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
