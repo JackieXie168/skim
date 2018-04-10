@@ -570,7 +570,7 @@ static id sharedNoSplitManager = nil;
     int bzret;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
-	stream.avail_in = (int)[data length];
+	stream.avail_in = (unsigned int)[data length];
 	
     const unsigned int buffer_size = 10000;
 	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
@@ -607,7 +607,7 @@ static id sharedNoSplitManager = nil;
 	int bzret;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
-	stream.avail_in = (int)[data length];
+	stream.avail_in = (unsigned int)[data length];
 	
 	const unsigned int buffer_size = 10000;
 	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
