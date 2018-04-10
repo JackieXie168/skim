@@ -572,7 +572,7 @@ static id sharedNoSplitManager = nil;
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = (unsigned int)[data length];
 	
-    const unsigned int buffer_size = 10000;
+    const unsigned int buffer_size = 1000000;
 	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
 	stream.next_out = [buffer mutableBytes];
 	stream.avail_out = buffer_size;
