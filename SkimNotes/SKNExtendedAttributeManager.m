@@ -564,6 +564,8 @@ static id sharedNoSplitManager = nil;
 // implementation modified after http://www.cocoadev.com/index.pl?NSDataPlusBzip (removed exceptions)
 //
 
+#define BZIP_BUFFER_SIZE 16 * 1024
+
 - (NSData *)bzipData:(NSData *)data;
 {
 	int compression = 5;
@@ -572,27 +574,23 @@ static id sharedNoSplitManager = nil;
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = (unsigned int)[data length];
 	
-    const unsigned int buffer_size = 1000000;
-	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
+	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
 	stream.next_out = [buffer mutableBytes];
-	stream.avail_out = buffer_size;
+	stream.avail_out = BZIP_BUFFER_SIZE;
 	
 	NSMutableData *compressed = [NSMutableData dataWithCapacity:[data length]];
 	
 	BZ2_bzCompressInit(&stream, compression, 0, 0);
     BOOL hadError = NO;
-    NSInteger hangCount = 0;
-    const NSInteger maxHangCount = 100;
     do {
         bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
-        if ((bzret != BZ_RUN_OK && bzret != BZ_FINISH_OK && bzret != BZ_STREAM_END) ||
-            (buffer_size == stream.avail_out && ++hangCount > maxHangCount)) {
+        if (bzret != BZ_RUN_OK && bzret != BZ_FINISH_OK && bzret != BZ_STREAM_END) {
             hadError = YES;
             compressed = nil;
         } else {        
-            [compressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
+            [compressed appendBytes:[buffer bytes] length:(BZIP_BUFFER_SIZE - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
-            stream.avail_out = buffer_size;
+            stream.avail_out = BZIP_BUFFER_SIZE;
         }
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
@@ -609,10 +607,9 @@ static id sharedNoSplitManager = nil;
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = (unsigned int)[data length];
 	
-	const unsigned int buffer_size = 10000;
-	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
+	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
 	stream.next_out = [buffer mutableBytes];
-	stream.avail_out = buffer_size;
+	stream.avail_out = BZIP_BUFFER_SIZE;
 	
 	NSMutableData *decompressed = [NSMutableData dataWithCapacity:[data length]];
 	
@@ -623,13 +620,13 @@ static id sharedNoSplitManager = nil;
     do {
         bzret = BZ2_bzDecompress(&stream);
         if ((bzret != BZ_OK && bzret != BZ_STREAM_END) ||
-            (buffer_size == stream.avail_out && ++hangCount > maxHangCount)) {
+            (BZIP_BUFFER_SIZE == stream.avail_out && ++hangCount > maxHangCount)) {
             hadError = YES;
             decompressed = nil;
         } else {        
-            [decompressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
+            [decompressed appendBytes:[buffer bytes] length:(BZIP_BUFFER_SIZE - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
-            stream.avail_out = buffer_size;
+            stream.avail_out = BZIP_BUFFER_SIZE;
         }
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
