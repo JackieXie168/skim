@@ -585,7 +585,7 @@ static id sharedNoSplitManager = nil;
     const NSInteger maxHangCount = 100;
     do {
         bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
-        if ((bzret != BZ_RUN_OK && bzret != BZ_STREAM_END) ||
+        if ((bzret != BZ_RUN_OK && bzret != BZ_FINISH_OK && bzret != BZ_STREAM_END) ||
             (buffer_size == stream.avail_out && ++hangCount > maxHangCount)) {
             hadError = YES;
             compressed = nil;
