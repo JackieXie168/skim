@@ -279,7 +279,11 @@ static id sharedNoSplitManager = nil;
             [attribute release];
             attribute = success ? [[self bunzipData:buffer] retain] : nil;
             
-            if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNReassembleAttributeFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            if (success == NO && NULL != error)
+                *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNReassembleAttributeFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            else if (attribute == nil && NULL != error)
+                *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+
         }
     }
     return [attribute autorelease];
@@ -297,14 +301,19 @@ static id sharedNoSplitManager = nil;
         if ([self isBzipData:data]) 
             data = [self bunzipData:data];
         
-        NSString *errorString;
-        plist = [NSPropertyListSerialization propertyListFromData:data 
-                                                 mutabilityOption:NSPropertyListImmutable 
-                                                           format:NULL 
-                                                 errorDescription:&errorString];
-        if (nil == plist) {
-            if (error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNPlistDeserializationFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
-            [errorString release];
+        if (nil == data) {
+            if (error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+
+        } else {
+            NSString *errorString;
+            plist = [NSPropertyListSerialization propertyListFromData:data
+                                                     mutabilityOption:NSPropertyListImmutable
+                                                               format:NULL
+                                                     errorDescription:&errorString];
+            if (nil == plist) {
+                if (error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNPlistDeserializationFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
+                [errorString release];
+            }
         }
     }
     return plist;
