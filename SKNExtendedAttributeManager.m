@@ -568,19 +568,19 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)bzipData:(NSData *)data;
 {
-	int compression = 5;
+    int compression = 5;
     int bzret;
-	bz_stream stream = { 0 };
-	stream.next_in = (char *)[data bytes];
-	stream.avail_in = (unsigned int)[data length];
-	
-	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
-	stream.next_out = [buffer mutableBytes];
-	stream.avail_out = BZIP_BUFFER_SIZE;
-	
-	NSMutableData *compressed = [NSMutableData dataWithCapacity:[data length]];
-	
-	BZ2_bzCompressInit(&stream, compression, 0, 0);
+    bz_stream stream = { 0 };
+    stream.next_in = (char *)[data bytes];
+    stream.avail_in = (unsigned int)[data length];
+    
+    NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
+    stream.next_out = [buffer mutableBytes];
+    stream.avail_out = BZIP_BUFFER_SIZE;
+    
+    NSMutableData *compressed = [NSMutableData dataWithCapacity:[data length]];
+    
+    BZ2_bzCompressInit(&stream, compression, 0, 0);
     BOOL hadError = NO;
     do {
         bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
@@ -595,25 +595,25 @@ static id sharedNoSplitManager = nil;
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
     BZ2_bzCompressEnd(&stream);
-	[buffer release];
+    [buffer release];
     
-	return compressed;
+    return compressed;
 }
 
 - (NSData *)bunzipData:(NSData *)data;
 {
-	int bzret;
-	bz_stream stream = { 0 };
-	stream.next_in = (char *)[data bytes];
-	stream.avail_in = (unsigned int)[data length];
-	
-	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
-	stream.next_out = [buffer mutableBytes];
-	stream.avail_out = BZIP_BUFFER_SIZE;
-	
-	NSMutableData *decompressed = [NSMutableData dataWithCapacity:[data length]];
-	
-	BZ2_bzDecompressInit(&stream, 0, NO);
+    int bzret;
+    bz_stream stream = { 0 };
+    stream.next_in = (char *)[data bytes];
+    stream.avail_in = (unsigned int)[data length];
+    
+    NSMutableData *buffer = [[NSMutableData alloc] initWithLength:BZIP_BUFFER_SIZE];
+    stream.next_out = [buffer mutableBytes];
+    stream.avail_out = BZIP_BUFFER_SIZE;
+    
+    NSMutableData *decompressed = [NSMutableData dataWithCapacity:[data length]];
+    
+    BZ2_bzDecompressInit(&stream, 0, NO);
     BOOL hadError = NO;
     NSInteger hangCount = 0;
     const NSInteger maxHangCount = 100;
@@ -632,7 +632,7 @@ static id sharedNoSplitManager = nil;
     BZ2_bzDecompressEnd(&stream);
     [buffer release];
 
-	return decompressed;
+    return decompressed;
 }
 
 - (BOOL)isBzipData:(NSData *)data;
