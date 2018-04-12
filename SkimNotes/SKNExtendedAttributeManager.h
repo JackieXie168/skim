@@ -75,11 +75,13 @@ extern NSString *SKNSkimNotesErrorDomain;
     @constant    SKNReassembleAttributeFailedError  Fragments could not be reassembled to a combined value.
     @constant    SKNPlistSerializationFailedError   Property list serialization failed. Uses the description from NSPropertyListSerialization.
     @constant    SKNPlistDeserializationFailedError Property list deserialization failed. Uses the description from NSPropertyListSerialization.
+    @constant    SKNInvalidDataError                The data that was found was not valid.
 */
 enum {
     SKNReassembleAttributeFailedError  = 1,
     SKNPlistSerializationFailedError   = 2,
-    SKNPlistDeserializationFailedError = 3
+    SKNPlistDeserializationFailedError = 3,
+    SKNInvalidDataError = 4
 };
 
 /*!
