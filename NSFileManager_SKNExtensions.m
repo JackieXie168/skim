@@ -102,6 +102,10 @@
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
+            if ([notes isKindOfClass:[NSArray class]] == NO) {
+                notes = nil;
+                error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            }
         } else if (data || ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
             notes = [NSArray array];
         }
@@ -118,7 +122,10 @@
     if ([aURL isFileURL]) {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (string == nil && [[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)
+        if ([string isKindOfClass:[NSString class]] == NO) {
+            string = nil;
+            error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        } else if (string == nil && [[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)
             string = [NSString string];
     }
     if (string == nil && outError) 
@@ -154,6 +161,10 @@
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
+            if ([notes isKindOfClass:[NSArray class]] == NO) {
+                notes = nil;
+                error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            }
         } else if (data || skimFileURL == nil) {
             notes = [NSArray array];
         }
@@ -211,6 +222,10 @@
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
+            if ([notes isKindOfClass:[NSArray class]] == NO) {
+                notes = nil;
+                error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            }
         } else if (data) {
             notes = [NSArray array];
         }
