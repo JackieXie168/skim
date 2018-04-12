@@ -584,7 +584,7 @@ static id sharedNoSplitManager = nil;
     BOOL hadError = NO;
     do {
         bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
-        if (bzret != BZ_RUN_OK && bzret != BZ_FINISH_OK && bzret != BZ_STREAM_END) {
+        if (bzret < BZ_OK) {
             hadError = YES;
             compressed = nil;
         } else {        
@@ -619,8 +619,7 @@ static id sharedNoSplitManager = nil;
     const NSInteger maxHangCount = 100;
     do {
         bzret = BZ2_bzDecompress(&stream);
-        if ((bzret != BZ_OK && bzret != BZ_STREAM_END) ||
-            (BZIP_BUFFER_SIZE == stream.avail_out && ++hangCount > maxHangCount)) {
+        if (bzret < BZ_OK || (BZIP_BUFFER_SIZE == stream.avail_out && ++hangCount > maxHangCount)) {
             hadError = YES;
             decompressed = nil;
         } else {        
