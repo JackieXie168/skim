@@ -587,7 +587,7 @@ static id sharedNoSplitManager = nil;
         if (bzret < BZ_OK) {
             hadError = YES;
             compressed = nil;
-        } else {        
+        } else {
             [compressed appendBytes:[buffer bytes] length:(BZIP_BUFFER_SIZE - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
             stream.avail_out = BZIP_BUFFER_SIZE;
@@ -622,7 +622,7 @@ static id sharedNoSplitManager = nil;
         if (bzret < BZ_OK || (BZIP_BUFFER_SIZE == stream.avail_out && ++hangCount > maxHangCount)) {
             hadError = YES;
             decompressed = nil;
-        } else {        
+        } else {
             [decompressed appendBytes:[buffer bytes] length:(BZIP_BUFFER_SIZE - stream.avail_out)];
             stream.next_out = [buffer mutableBytes];
             stream.avail_out = BZIP_BUFFER_SIZE;
