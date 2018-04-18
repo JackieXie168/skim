@@ -199,6 +199,7 @@ enum {
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent;
 - (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent;
+- (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
@@ -1278,7 +1279,7 @@ enum {
     } else if ((area & SKDragArea)) {
         [self setActiveAnnotation:nil];
         [self doDragWithEvent:theEvent];
-    } else {
+    } else if ([self doDragTextWithEvent:theEvent] == NO) {
         [self setActiveAnnotation:nil];
         [super mouseDown:theEvent];
         if ((toolMode == SKNoteToolMode && hideNotes == NO && [[self document] allowsNotes] && ANNOTATION_MODE_IS_MARKUP) && [[self currentSelection] hasCharacters]) {
@@ -1286,6 +1287,10 @@ enum {
             [self setCurrentSelection:nil];
         }
     }
+}
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
@@ -4238,6 +4243,30 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         [self zoomToRect:rect onPage:page];
     }
+}
+
+- (BOOL)doDragTextWithEvent:(NSEvent *)theEvent {
+    if ([[self currentSelection] hasCharacters] == NO)
+        return NO;
+    
+    NSPoint point;
+    PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:NO];
+    
+    if (page == nil || NSPointInRect(point, [[self currentSelection] boundsForPage:page]) == NO || [NSApp willDragMouse] == NO)
+        return NO;
+    
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    NSImage *dragImage = [NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.9 respectFlipped:YES hints:nil];
+    }];
+    
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
+    
+    point = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]).origin;
+    [self dragImage:dragImage at:point offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
+    
+    return YES;
 }
 
 - (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent {
