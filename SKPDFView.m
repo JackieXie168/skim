@@ -1996,10 +1996,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)removeThisAnnotation:(id)sender{
     PDFAnnotation *annotation = [sender representedObject];
     
-    if (annotation) {
+    if (annotation)
         [self removeAnnotation:annotation];
-        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
-    }
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
