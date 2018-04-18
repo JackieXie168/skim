@@ -2007,8 +2007,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = [[wasAnnotation page] retain];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
-    if ([self isEditingAnnotation:annotation])
-        [self commitEditing];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
