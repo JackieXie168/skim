@@ -178,6 +178,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)endEditingTransferringFirstResponder:(BOOL)wasFirstResponder {
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
     for (NSString *key in [[self class] keysToObserve])
         [annotation removeObserver:self forKeyPath:key];
     SKDESTROY(annotation);
@@ -192,16 +194,12 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)discardEditing {
-    [annotation setShouldDisplay:[annotation shouldPrint]];
-    
     BOOL wasFirstResponder = ([textField currentEditor] != nil);
     [textField abortEditing];
     [self endEditingTransferringFirstResponder:wasFirstResponder];
 }
 
 - (BOOL)commitEditing {
-    [annotation setShouldDisplay:[annotation shouldPrint]];
-    
     BOOL wasFirstResponder = ([textField currentEditor] != nil);
     if (wasFirstResponder && [[textField window] makeFirstResponder:nil] == NO)
         return NO;
