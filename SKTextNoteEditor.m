@@ -204,8 +204,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (wasFirstResponder && [[textField window] makeFirstResponder:nil] == NO)
         return NO;
     
-    NSString *newValue = [textField stringValue];
-    if ([newValue isEqualToString:[annotation string]] == NO)
+    NSString *newValue = [textField stringValue] ?: @"";
+    if ([newValue isEqualToString:[annotation string] ?: @""] == NO)
         [annotation setString:newValue];
     
     [self endEditingTransferringFirstResponder:wasFirstResponder];
