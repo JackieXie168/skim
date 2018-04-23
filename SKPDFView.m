@@ -543,8 +543,8 @@ enum {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
             if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:NO];
-            if (editor)
-                [self commitEditing];
+            if (editor && [self commitEditing] == NO)
+                [self discardEditing];
         }
         
         // Assign.
