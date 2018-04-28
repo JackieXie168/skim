@@ -117,6 +117,8 @@
 #define HUGE_SIZE  256.0
 #define FUDGE_SIZE 0.1
 
+#define MAX_PAGE_COLUMN_WIDTH 100.0
+
 #define PAGELABELS_KEY              @"pageLabels"
 #define SEARCHRESULTS_KEY           @"searchResults"
 #define GROUPEDSEARCHRESULTS_KEY    @"groupedSearchResults"
@@ -669,6 +671,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         labelWidth = fmax(labelWidth, [cell cellSize].width);
     }
     
+    labelWidth = fmin(labelWidth, MAX_PAGE_COLUMN_WIDTH);
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [tableColumn setWidth:labelWidth];
