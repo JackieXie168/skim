@@ -64,6 +64,8 @@
 #define PROPERTIES_KEY @"properties"
 #define CONTENTOBJECT_BINDINGNAME @"contentObject"
 
+#define MAX_PAGE_COLUMN_WIDTH 100.0
+
 #define TABLE_OFFSET 8.0
 
 static char *SKTransitionPropertiesObservationContext;
@@ -224,6 +226,7 @@ static char *SKTransitionPropertiesObservationContext;
         tn = next;
     }
     
+    labelWidth = fmin(labelWidth, MAX_PAGE_COLUMN_WIDTH);
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [tableColumn setWidth:labelWidth];
