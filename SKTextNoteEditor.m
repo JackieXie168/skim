@@ -189,8 +189,11 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (wasFirstResponder)
         [[pdfView window] makeFirstResponder:pdfView];
     
-    if ([pdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
-        [pdfView textNoteEditorDidEndEditing:self];
+    PDFView *thePdfView = pdfView;
+    pdfView = nil;
+    
+    if ([thePdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
+        [thePdfView textNoteEditorDidEndEditing:self];
 }
 
 - (void)discardEditing {
