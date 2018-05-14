@@ -128,6 +128,9 @@ typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
 
 @interface NSEvent (SKLionDeclarations)
 - (NSEventPhase)phase;
+- (BOOL)hasPreciseScrollingDeltas;
+- (CGFloat)scrollingDeltaX;
+- (CGFloat)scrollingDeltaY;
 @end
 
 typedef NS_ENUM(NSInteger, NSScrollerStyle) {

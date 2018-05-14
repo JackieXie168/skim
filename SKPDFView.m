@@ -1541,8 +1541,13 @@ enum {
 
 - (void)magnifyWheel:(NSEvent *)theEvent {
     CGFloat dy = [theEvent deltaY];
+    if ([theEvent respondsToSelector:@selector(scrollingDeltaY)] && [theEvent respondsToSelector:@selector(hasPreciseScrollingDeltas)]) {
+        dy = [theEvent scrollingDeltaY];
+        if ([theEvent hasPreciseScrollingDeltas] == NO)
+            dy *= [[self scrollView] lineScroll];
+    }
     dy = dy > 0 ? fmin(0.2, dy) : fmax(-0.2, dy);
-    [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
+    [self setScaleFactor:[self scaleFactor] * exp(0.5 * dy)];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
