@@ -282,8 +282,10 @@ enum {
 
 - (void)removeWindowController:(NSWindowController *)windowController {
     if ([windowController isEqual:mainWindowController]) {
-        // we need to do this on Tiger, because windowWillClose notifications are posted after this
-        [self saveRecentDocumentInfo];
+        // if the window delegate is nil, windowWillClose: has already cleaned up, and should have called saveRecentDocumentInfo
+        // otherwise, windowWillClose: comes after this (as it did on Tiger) and we need to do this now
+        if ([[mainWindowController window] delegate])
+            [self saveRecentDocumentInfo];
         SKDESTROY(mainWindowController);
     }
     [super removeWindowController:windowController];
