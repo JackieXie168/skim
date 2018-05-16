@@ -217,7 +217,7 @@
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
                              name:SKDocumentDidShowNotification object:nil];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
-                             name:SKDocumentWillCloseNotification object:nil];
+                             name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
     [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
@@ -240,7 +240,7 @@
     [self registerCurrentDocuments:aNotification];
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver:self name:SKDocumentDidShowNotification object:nil];
-    [nc removeObserver:self name:SKDocumentWillCloseNotification object:nil];
+    [nc removeObserver:self name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
     [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:nil];
 }
 
