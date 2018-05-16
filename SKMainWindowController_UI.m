@@ -239,6 +239,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification {
     if ([[notification object] isEqual:[self window]]) {
+        // post this first so document setup can be saved, as cleanup may remove the document from the pdfview
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillCloseNotification object:[self document]];
         // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
         if (snapshotTimer) {
             [snapshotTimer invalidate];

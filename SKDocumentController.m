@@ -73,6 +73,7 @@ NSString *SKDocumentSetupFileNameKey = @"fileName";
 NSString *SKDocumentControllerWillRemoveDocumentNotification = @"SKDocumentControllerWillRemoveDocumentNotification";
 NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
 NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
+NSString *SKDocumentWillCloseNotification = @"SKDocumentWillCloseNotification";
 
 NSString *SKDocumentControllerDocumentKey = @"document";
 

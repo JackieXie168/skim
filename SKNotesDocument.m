@@ -223,6 +223,7 @@
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillCloseNotification object:self];
     [pdfDocument setContainingDocument:nil];
 }
 
