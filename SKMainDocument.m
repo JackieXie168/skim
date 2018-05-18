@@ -284,7 +284,7 @@ enum {
     if ([windowController isEqual:mainWindowController]) {
         // if the window delegate is nil, windowWillClose: has already cleaned up, and should have called saveRecentDocumentInfo
         // otherwise, windowWillClose: comes after this (as it did on Tiger) and we need to do this now
-        if ([[mainWindowController window] delegate])
+        if ([mainWindowController isWindowLoaded] && [[mainWindowController window] delegate])
             [self saveRecentDocumentInfo];
         SKDESTROY(mainWindowController);
     }
