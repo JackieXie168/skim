@@ -265,7 +265,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
 - (void)dealloc {
     if ([self isWindowLoaded] && [[self window] delegate])
         SKENSURE_MAIN_THREAD( [self cleanup]; );
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(placeholderPdfDocument);
     SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
@@ -311,6 +310,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 - (void)cleanup {
     if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingNotes:[self notes]];
     [self unregisterAsObserver];
     [[self window] setDelegate:nil];
