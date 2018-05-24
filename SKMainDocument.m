@@ -1452,11 +1452,15 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
             if ([editorPreset isEqualToString:@""] == NO) {
                 if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
                     (appBundle = [NSBundle bundleWithPath:path])) {
-                    [searchPaths insertObject:[[[appBundle bundlePath] stringByAppendingPathComponent:@"Contents"] stringByAppendingPathComponent:@"Helpers"] atIndex:0];
-                    if ([editorPreset isEqualToString:@"BBEdit"] == NO)
-                        [searchPaths insertObject:[[appBundle executablePath] stringByDeletingLastPathComponent] atIndex:0];
-                    [searchPaths insertObject:[appBundle resourcePath] atIndex:0];
-                    [searchPaths insertObject:[appBundle sharedSupportPath] atIndex:0];
+                    if ((path = [[[appBundle bundlePath] stringByAppendingPathComponent:@"Contents"] stringByAppendingPathComponent:@"Helpers"]))
+                        [searchPaths insertObject:path atIndex:0];
+                    if ([editorPreset isEqualToString:@"BBEdit"] == NO &&
+                        (path = [[appBundle executablePath] stringByDeletingLastPathComponent]))
+                        [searchPaths insertObject:path atIndex:0];
+                    if ((path = [appBundle resourcePath]))
+                        [searchPaths insertObject:path atIndex:0];
+                    if ((path = [appBundle sharedSupportPath]))
+                        [searchPaths insertObject:path atIndex:0];
                 }
             } else {
                 [searchPaths addObjectsFromArray:[[[NSFileManager defaultManager] applicationSupportDirectoryURLs] valueForKey:@"path"]];
