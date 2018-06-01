@@ -104,7 +104,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)checkForFileModification:(NSTimer *)timer {
-    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[document fileURL] path] error:NULL] fileModificationDate];
+    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[[document fileURL] URLByResolvingSymlinksInPath] path] error:NULL] fileModificationDate];
     if (nil == lastModifiedDate) {
         lastModifiedDate = [currentFileModifiedDate copy];
     } else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending) {
@@ -116,7 +116,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)checkForFileReplacement:(NSTimer *)timer {
-    if ([[document fileURL] checkResourceIsReachableAndReturnError:NULL]) {
+    if ([[[document fileURL] URLByResolvingSymlinksInPath] checkResourceIsReachableAndReturnError:NULL]) {
         // the deleted file was replaced at the old path, restart the file updating for the replacement file and note the update
         [self reset];
         [self noteFileUpdated];
@@ -130,7 +130,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 
 - (void)reset {
     [self stop];
-    NSURL *fileURL = [document fileURL];
+    NSURL *fileURL = [[document fileURL] URLByResolvingSymlinksInPath];
     if (fileURL) {
         if (fucFlags.enabled && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
@@ -201,7 +201,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 - (void)fileUpdated {
-    NSURL *fileURL = [document fileURL];
+    NSURL *fileURL = [[document fileURL] URLByResolvingSymlinksInPath];
     
     // should never happen
     if (fucFlags.isUpdatingFile)
@@ -304,7 +304,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 - (void)didUpdateFromURL:(NSURL *)fileURL {
     fucFlags.fileChangedOnDisk = NO;
     [lastModifiedDate release];
-    lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:NULL] fileModificationDate] retain];
+    lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[[fileURL URLByResolvingSymlinksInPath] path] error:NULL] fileModificationDate] retain];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -343,7 +343,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL) {
     BOOL isDVI = NO;
     if (extension) {
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:[[[fileURL URLByStandardizingPath] URLByResolvingSymlinksInPath] path] error:NULL];
+        NSString *theUTI = [ws typeOfFile:[[fileURL URLByStandardizingPath] path] error:NULL];
         if ([extension isCaseInsensitiveEqual:@"pdfd"] || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
             fileURL = [[NSFileManager defaultManager] bundledFileURLWithExtension:@"pdf" inPDFBundleAtURL:fileURL error:NULL];
             if (fileURL == nil)
