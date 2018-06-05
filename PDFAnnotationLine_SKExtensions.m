@@ -156,7 +156,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 + (void)load {
     if (RUNNING(10_11))
         original_drawWithBox_inContext = (void (*)(id, SEL, PDFDisplayBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
-    if (RUNNING_AFTER(10_12))
+    if (RUNNING(10_13))
         original_setBounds = (void (*)(id, SEL, NSRect))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setBounds:), @selector(replacement_setBounds:));
 }
 
