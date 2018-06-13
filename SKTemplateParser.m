@@ -213,6 +213,11 @@ static id templateValueForKeyPath(id object, NSString *keyPath, NSInteger anInde
         if ([keyPath hasPrefix:@"#."] == NO || [keyPath length] < 3)
             return nil;
         keyPath = [keyPath substringFromIndex:2];
+    } else if ([keyPath hasPrefix:@"."]) {
+        if ([keyPath length] == 1)
+            return nil;
+        object = [SKTemplateParser self];
+        keyPath = [keyPath substringFromIndex:1];
     }
     if (object == nil)
         return nil;
@@ -794,6 +799,14 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     
     return [result autorelease];    
 }
+
+#pragma mark Global values
+
++ (NSDate *)date { return [NSDate date]; }
+
++ (NSString *)userName { return NSUserName(); }
+
++ (NSString *)fullUserName { return NSFullUserName(); }
 
 @end
 
