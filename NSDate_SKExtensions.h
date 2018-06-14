@@ -40,15 +40,7 @@
 
 @interface NSDate (SKExtensions)
 
-- (id)fullDateFormat;
-- (id)longDateFormat;
-- (id)mediumDateFormat;
-- (id)shortDateFormat;
-- (id)fullTimeFormat;
-- (id)longTimeFormat;
-- (id)mediumTimeFormat;
-- (id)shortTimeFormat;
-
-- (NSString *)standardDescription;
+@property (nonatomic, readonly) NSDate *fullDateFormat, *longDateFormat, *mediumDateFormat, *shortDateFormat, *fullTimeFormat, *longTimeFormat, *mediumTimeFormat, *shortTimeFormat;
+@property (nonatomic, readonly) NSString *standardDescription;
 
 @end

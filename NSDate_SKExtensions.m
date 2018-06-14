@@ -51,35 +51,37 @@
 
 @implementation NSDate (SKExtensions)
 
-- (id)fullDateFormat {
+@dynamic fullDateFormat, longDateFormat, mediumDateFormat, shortDateFormat, fullTimeFormat, longTimeFormat, mediumTimeFormat, shortTimeFormat, standardDescription;
+
+- (NSDate *)fullDateFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] fullDateFormat];
 }
 
-- (id)longDateFormat {
+- (NSDate *)longDateFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] longDateFormat];
 }
 
-- (id)mediumDateFormat {
+- (NSDate *)mediumDateFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] mediumDateFormat];
 }
 
-- (id)shortDateFormat {
+- (NSDate *)shortDateFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] shortDateFormat];
 }
 
-- (id)fullTimeFormat {
+- (NSDate *)fullTimeFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] fullTimeFormat];
 }
 
-- (id)longTimeFormat {
+- (NSDate *)longTimeFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] longTimeFormat];
 }
 
-- (id)mediumTimeFormat {
+- (NSDate *)mediumTimeFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] mediumTimeFormat];
 }
 
-- (id)shortTimeFormat {
+- (NSDate *)shortTimeFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] shortTimeFormat];
 }
 
@@ -105,6 +107,10 @@
 }
 
 - (id)initWithDate:(NSDate *)aDate {
+    if (date == nil) {
+        [self release];
+        return nil;
+    }
     self = [super init];
     if (self) {
         date = [aDate retain];
@@ -117,16 +123,8 @@
 }
 
 - (id)initWithTimeIntervalSinceReferenceDate:(NSTimeInterval)timeInterval {
-    self = [super init];
-    if (self) {
-        date = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:timeInterval
-                ];
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
-        [formatter setDateStyle:NSDateFormatterNoStyle];
-        [formatter setTimeStyle:NSDateFormatterNoStyle];
-    }
-    return self;
+    return [self initWithDate:[[[NSDate alloc] initWithTimeIntervalSinceReferenceDate:timeInterval
+                ] autorelease]];
 }
 
 - (void)dealloc {
@@ -143,42 +141,42 @@
     return [date timeIntervalSinceReferenceDate];
 }
 
-- (id)fullDateFormat {
+- (NSDate *)fullDateFormat {
     [formatter setDateStyle:NSDateFormatterFullStyle];
     return self;
 }
 
-- (id)longDateFormat {
+- (NSDate *)longDateFormat {
     [formatter setDateStyle:NSDateFormatterLongStyle];
     return self;
 }
 
-- (id)mediumDateFormat {
+- (NSDate *)mediumDateFormat {
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     return self;
 }
 
-- (id)shortDateFormat {
+- (NSDate *)shortDateFormat {
     [formatter setDateStyle:NSDateFormatterShortStyle];
     return self;
 }
 
-- (id)fullTimeFormat {
+- (NSDate *)fullTimeFormat {
     [formatter setTimeStyle:NSDateFormatterFullStyle];
     return self;
 }
 
-- (id)longTimeFormat {
+- (NSDate *)longTimeFormat {
     [formatter setTimeStyle:NSDateFormatterLongStyle];
     return self;
 }
 
-- (id)mediumTimeFormat {
+- (NSDate *)mediumTimeFormat {
     [formatter setTimeStyle:NSDateFormatterMediumStyle];
     return self;
 }
 
-- (id)shortTimeFormat {
+- (NSDate *)shortTimeFormat {
     [formatter setTimeStyle:NSDateFormatterShortStyle];
     return self;
 }
