@@ -814,6 +814,18 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 @implementation NSObject (SKTemplateParser)
 
++ (BOOL)isNotEmpty {
+    return NO;
+}
+
++ (NSString *)templateStringValue {
+    return NSStringFromClass(self);
+}
+
++ (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
+    return [[[NSAttributedString alloc] initWithString:[self templateStringValue] attributes:attributes] autorelease];
+}
+
 - (BOOL)isNotEmpty {
     if ([self respondsToSelector:@selector(count)])
         return [(id)self count] > 0;
@@ -867,6 +879,8 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 #pragma mark -
 
 @implementation NSNull (SKTemplateParser)
++ (NSString *)templateStringValue{ return @""; }
++ (BOOL)isNotEmpty { return NO; }
 - (NSString *)templateStringValue{ return @""; }
 - (BOOL)isNotEmpty { return NO; }
 @end
