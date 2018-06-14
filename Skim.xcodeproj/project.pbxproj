@@ -183,6 +183,7 @@
 		CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */; };
 		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
+		CE8DEF0820D2702A00A10FFE /* NSDate_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */; };
 		CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94D17A125535DE0053A520 /* synctex_parser_utils.m */; };
 		CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */; };
 		CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */; };
@@ -871,6 +872,8 @@
 		CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRightSideViewController.m; sourceTree = "<group>"; };
 		CE8BF068115F859A0029020F /* LeftSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftSideView.xib; sourceTree = "<group>"; };
 		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
+		CE8DEF0620D2702A00A10FFE /* NSDate_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDate_SKExtensions.h; sourceTree = "<group>"; };
+		CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDate_SKExtensions.m; sourceTree = "<group>"; };
 		CE94D179125535DE0053A520 /* synctex_parser_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_utils.h; sourceTree = "<group>"; };
 		CE94D17A125535DE0053A520 /* synctex_parser_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser_utils.m; sourceTree = "<group>"; };
 		CE9768811161195C008DCB8F /* SKDownloadPreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadPreferenceController.h; sourceTree = "<group>"; };
@@ -1361,6 +1364,8 @@
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */,
 				CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */,
+				CE8DEF0620D2702A00A10FFE /* NSDate_SKExtensions.h */,
+				CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */,
 				CEECD61A12E9E30B00B9E35E /* NSError_SKExtensions.h */,
 				CEECD61B12E9E30B00B9E35E /* NSError_SKExtensions.m */,
 				CE5BB21410517AEF00161B87 /* NSFileManager_SKExtensions.h */,
@@ -2405,6 +2410,7 @@
 				CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */,
 				CE4BC1300C357A0300C2AF03 /* SKLineWell.m in Sources */,
 				CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */,
+				CE8DEF0820D2702A00A10FFE /* NSDate_SKExtensions.m in Sources */,
 				CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */,
 				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
 				CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */,
