@@ -815,7 +815,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 @implementation NSObject (SKTemplateParser)
 
 + (BOOL)isNotEmpty {
-    return NO;
+    return YES;
 }
 
 + (NSString *)templateStringValue {
