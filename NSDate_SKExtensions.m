@@ -51,7 +51,7 @@
 
 @implementation NSDate (SKExtensions)
 
-@dynamic fullDateFormat, longDateFormat, mediumDateFormat, shortDateFormat, fullTimeFormat, longTimeFormat, mediumTimeFormat, shortTimeFormat, standardDescription;
+@dynamic fullDateFormat, longDateFormat, mediumDateFormat, shortDateFormat, fullTimeFormat, longTimeFormat, mediumTimeFormat, shortTimeFormat, standardDescription, PDFDescription;
 
 - (NSDate *)fullDateFormat {
     return [[[[SKFormattedDate alloc] initWithDate:self] autorelease] fullDateFormat];
@@ -94,6 +94,23 @@
         [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss ZZZ"];
     }
     return [formatter stringFromDate:self];
+}
+
+- (NSString *)PDFDescription {
+    static NSDateFormatter *formatter = nil;
+    if (formatter == nil) {
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
+    }
+    NSMutableString *dateString = [NSMutableString stringWithString:@"D:"];
+    [dateString appendString:[formatter stringFromDate:self]];
+    if ([dateString hasSuffix:@"+0000"]) {
+        [dateString replaceCharactersInRange:NSMakeRange([dateString length] - 5, 5) withString:@"Z00'00'"];
+    } else {
+        [dateString insertString:@"'" atIndex:[dateString length] - 2];
+        [dateString insertString:@"'" atIndex:[dateString length]];
+    }
+    return dateString;
 }
 
 @end

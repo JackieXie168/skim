@@ -63,6 +63,7 @@
 #import "NSView_SKExtensions.h"
 #import "SKNoteText.h"
 #import "PDFView_SKExtensions.h"
+#import "NSDate_SKExtensions.h"
 #import "SKRuntime.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
@@ -186,7 +187,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     [fdfString appendString:@")"];
     if (modDate) {
         [fdfString appendFDFName:SKFDFAnnotationModificationDateKey];
-        [fdfString appendFormat:@"(%@)", SKFDFStringFromDate(modDate)];
+        [fdfString appendFormat:@"(%@)", [modDate PDFDescription]];
     }
     if (userName) {
         [fdfString appendFDFName:SKFDFAnnotationUserNameKey];

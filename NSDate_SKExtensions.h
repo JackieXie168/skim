@@ -41,6 +41,6 @@
 @interface NSDate (SKExtensions)
 
 @property (nonatomic, readonly) NSDate *fullDateFormat, *longDateFormat, *mediumDateFormat, *shortDateFormat, *fullTimeFormat, *longTimeFormat, *mediumTimeFormat, *shortTimeFormat;
-@property (nonatomic, readonly) NSString *standardDescription;
+@property (nonatomic, readonly) NSString *standardDescription, *PDFDescription;
 
 @end

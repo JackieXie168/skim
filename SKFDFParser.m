@@ -203,24 +203,6 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
 }
 
-NSString *SKFDFStringFromDate(NSDate *date) {
-    if (date == nil) return nil;
-    static NSDateFormatter *formatter = nil;
-    if (formatter == nil) {
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
-    }
-    NSMutableString *dateString = [NSMutableString stringWithString:@"D:"];
-    [dateString appendString:[formatter stringFromDate:date]];
-    if ([dateString hasSuffix:@"+0000"]) {
-        [dateString replaceCharactersInRange:NSMakeRange([dateString length] - 5, 5) withString:@"Z00'00'"];
-    } else {
-        [dateString insertString:@"'" atIndex:[dateString length] - 2];
-        [dateString insertString:@"'" atIndex:[dateString length]];
-    }
-    return dateString;
-}
-
 @implementation SKFDFParser
 
 + (NSDictionary *)noteDictionaryFromPDFDictionary:(CGPDFDictionaryRef)annot {

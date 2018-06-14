@@ -94,8 +94,6 @@ extern SKFDFString SKFDFLineStyleDiamond;
 extern SKFDFString SKFDFLineStyleOpenArrow;
 extern SKFDFString SKFDFLineStyleClosedArrow;
 
-extern NSString *SKFDFStringFromDate(NSDate *date);
-
 extern PDFBorderStyle SKPDFBorderStyleFromFDFBorderStyle(SKFDFString name);
 extern SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle);
 
