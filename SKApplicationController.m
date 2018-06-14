@@ -84,6 +84,8 @@
 
 #define VIEW_MENU_INDEX      4
 
+#define REOPEN_WARNING_LIMIT 50
+
 #define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
 #define SKIsRelaunchKey                     @"SKIsRelaunch"
@@ -180,7 +182,20 @@
                 [sud synchronize];
             }
             
-            for (NSDictionary *dict in [[sud objectForKey:SKLastOpenFileNamesKey] reverseObjectEnumerator]) {
+            NSArray *lastOpenFiles = [sud objectForKey:SKLastOpenFileNamesKey];
+            
+            if ([lastOpenFiles count] > REOPEN_WARNING_LIMIT) {
+                NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[lastOpenFiles count]]];
+                [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+                [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+                [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+                
+                if (NSAlertFirstButtonReturn == [alert runModal])
+                    lastOpenFiles = nil;
+            }
+            
+            for (NSDictionary *dict in [lastOpenFiles reverseObjectEnumerator]) {
                 NSError *error = nil;
                 if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
