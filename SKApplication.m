@@ -212,4 +212,12 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 - (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 
+#pragma mark Template support
+
+- (NSDate *)date { return [NSDate date]; }
+
+- (NSString *)userName { return NSUserName(); }
+
+- (NSString *)fullUserName { return NSFullUserName(); }
+
 @end
