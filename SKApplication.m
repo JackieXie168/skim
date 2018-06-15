@@ -89,6 +89,11 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return NSLeftMouseDragged == [[self nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type];
 }
 
+- (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }
+- (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
+
+#pragma mark Windows menu
+
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
@@ -200,6 +205,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [self reorganizeWindowsItem:aWindow];
 }
 
+#pragma mark Scripting
+
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"orderedDocuments"]) {
         [[NSScriptCommand currentCommand] setScriptErrorNumber:NSOperationNotSupportedForKeyScriptError];
@@ -208,9 +215,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     }
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
-
-- (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }
-- (void)setDelegate:(id <SKApplicationDelegate>)newDelegate { [super setDelegate:newDelegate]; }
 
 #pragma mark Template support
 
