@@ -130,7 +130,7 @@ sub appleHelp_element_heading
        $el_heading .= &$heading($element, $command, $texi_line, $line, $in_preformatted, $one_section, $element_heading);
        if ($first_in_page and $is_top)
        {
-          $result .= "<div class=\"toptitlebox\">\n" . $el_heading . "</div>\n" . "<div class=\"topcontentbox\">\n" if ($first_in_page and $is_top);
+          $result .= "<div class=\"toptitlebox\">\n" . $el_heading . "</div>\n" . "<div class=\"topcontentbox\">\n";
        }
        else
        {
