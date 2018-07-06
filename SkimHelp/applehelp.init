@@ -1,20 +1,5 @@
 # -*-perl-*-
 
-# HTML 3.2 - ouch!
-#$DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN" "http://www.w3.org/TR/html32/loose.dtd">';
-$FRAMESET_DOCTYPE = $DOCTYPE;
-$USE_ISO = 0;
-$things_map{'oe'} = '&#156;';
-$things_map{'OE'} = '&#140;';
-$things_map{'ue'} = '&#252;';
-$things_map{'UE'} = '&#220;';
-$things_map{'dots'} = '<small>...</small>';
-$things_map{'enddots'} = '<small>....</small>';
-$things_map{'euro'} = 'Euro';
-$style_map{'sansserif'} = {};
-$simple_map{'*'} = '<br/>';
-# &quot; is not in html 3.2
-
 # undefined localizations, localization doesn't seem to work
 # $LANGUAGES->{'it'} = $LANGUAGES->{'en'};
 # $LANGUAGES->{'it'}->{'cover (top) of document'} = 'copertina (in testa) del documento';
@@ -46,7 +31,7 @@ sub appleHelp_image
    my $preformatted = shift;
    my $file_name = shift;
    return "[ $base ]" if ($preformatted);
-   return "<img src=\"$file_name\" alt=\"$base\">";
+   return "<img src=\"$file_name\" alt=\"$base\" />";
 }
 
 # indexes
@@ -152,11 +137,11 @@ sub appleHelp_print_page_head
     $longtitle .= ": $Texi2HTML::SIMPLE_TEXT{'This'}" if (defined ($Texi2HTML::SIMPLE_TEXT{'This'}) and ($Texi2HTML::SIMPLE_TEXT{'This'} !~ /^\s*$/) and $SPLIT);
     my $description = $DOCUMENT_DESCRIPTION;
     $description = $shorttitle if (!defined($description));
-    $description = "<meta name=\"description\" content=\"$description\">" if
+    $description = "<meta name=\"description\" content=\"$description\" />" if
          ($description ne '');
     $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
     my $encoding = '';
-    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
+    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\" />" if (defined($ENCODING) and ($ENCODING ne ''));
     print $fh <<EOT;
 $DOCTYPE
 <html>
@@ -168,10 +153,10 @@ $Texi2HTML::THISDOC{program_authors}
 <title>$longtitle</title>
 
 $description
-<meta name="keywords" content="$longtitle">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
+<meta name="keywords" content="$longtitle" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="Generator" content="$Texi2HTML::THISDOC{program}" />
 $encoding
 $CSS_LINES
 $EXTRA_HEAD
