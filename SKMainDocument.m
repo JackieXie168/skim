@@ -142,6 +142,9 @@ enum {
 - (void)setPage:(PDFPage *)newPage;
 @end
 
+@interface NSSavePanel (SKPrivateDeclarations)
+- (void)toggleOptionsView:(id)sender;
+@end
 
 @interface PDFDocument (SKPrivateDeclarations)
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
@@ -1059,6 +1062,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];
         [readNotesAccessoryView release];
+        if ([oPanel respondsToSelector:@selector(toggleOptionsView:)])
+            [oPanel toggleOptionsView:nil];
     }
     
     [oPanel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
