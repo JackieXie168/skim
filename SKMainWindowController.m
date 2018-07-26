@@ -1789,8 +1789,16 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:frameString forKey:MAINWINDOWFRAME_KEY];
 }
 
+static BOOL shouldAutoHideToolbarInFullScreen() {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    if ([sud boolForKey:SKAutoHideToolbarInFullScreenKey] ||
+        (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil))
+        return YES;
+    return NO;
+}
+
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
+    if (shouldAutoHideToolbarInFullScreen())
         return proposedOptions | NSApplicationPresentationAutoHideToolbar;
     return proposedOptions;
 }
@@ -1801,7 +1809,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 17.0;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHideToolbarInFullScreenKey])
+    if (shouldAutoHideToolbarInFullScreen())
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
