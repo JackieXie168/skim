@@ -1813,6 +1813,8 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
+    else if (RUNNING_BEFORE(10_9))
+        offset = 10.0;
     else if (RUNNING_BEFORE(10_11))
         offset = 13.0;
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
