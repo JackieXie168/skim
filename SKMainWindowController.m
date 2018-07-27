@@ -1839,7 +1839,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
-    if (fullscreenToolbarOffset <= 0.0) {
+    if (fullscreenToolbarOffset <= 0.0 && shouldAutoHideToolbarInFullScreen() == NO && [[mainWindow toolbar] isVisible]) {
         // save the offset for the next time, we may guess it wrong as it varies between OS versions
         @try {
             NSView *view = [[mainWindow toolbar] valueForKey:@"toolbarView"];
