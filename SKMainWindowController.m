@@ -1807,39 +1807,20 @@ static inline BOOL shouldAutoHideToolbarInFullScreen() {
     return [[[self document] windowControllers] valueForKey:WINDOW_KEY];
 }
 
-static NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
-    static CGFloat fullscreenToolbarOffset = 0.0;
+static CGFloat fullscreenToolbarOffset = 0.0;
+
+static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 17.0;
-    if (shouldAutoHideToolbarInFullScreen()) {
+    if (shouldAutoHideToolbarInFullScreen())
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
-    } else if ([[window toolbar] isVisible] == NO) {
+    else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
-    } else {
-        if (fullscreenToolbarOffset < 0.0 && ([window styleMask] & NSWindowStyleMaskFullScreen) != 0) {
-            @try {
-                NSView *view = [[window toolbar] valueForKey:@"toolbarView"];
-                if (view)
-                    fullscreenToolbarOffset = - fullscreenToolbarOffset + NSMaxY([[view window] convertRectToScreen:[view convertRect:[view frame] toView:nil]]) - NSMaxY([[[view window] screen] frame]);
-            }
-            @catch (id e) {}
-        }
-        if (fullscreenToolbarOffset > 0.0) {
-            offset = fullscreenToolbarOffset;
-        } else {
-            if (RUNNING_BEFORE(10_9))
-                offset = 10.0;
-            else if (RUNNING_BEFORE(10_11))
-                offset = 13.0;
-            if (fullscreenToolbarOffset >= 0.0 && ([window styleMask] & NSWindowStyleMaskFullScreen) == 0) {
-                @try {
-                    NSView *view = [[window toolbar] valueForKey:@"toolbarView"];
-                    if (view)
-                        fullscreenToolbarOffset = NSMaxY([[view window] convertRectToScreen:[view convertRect:[view frame] toView:nil]]) - NSMaxY([window frame]);
-                }
-                @catch (id e) {}
-            }
-        }
-    }
+    else if (fullscreenToolbarOffset > 0.0)
+        offset = fullscreenToolbarOffset;
+    else if (RUNNING_BEFORE(10_9))
+        offset = 10.0;
+    else if (RUNNING_BEFORE(10_11))
+        offset = 13.0;
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
@@ -1858,6 +1839,15 @@ static NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
+    if (fullscreenToolbarOffset <= 0.0) {
+        // save the offset for the next time, we may guess it wrong as it varies between OS versions
+        @try {
+            NSView *view = [[mainWindow toolbar] valueForKey:@"toolbarView"];
+            if (view)
+                fullscreenToolbarOffset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]) + NSMaxY([[view window] convertRectToScreen:[view convertRect:[view bounds] toView:nil]]) - NSMaxY([[[view window] screen] frame]);
+        }
+        @catch (id e) {}
+    }
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [pdfView setInteractionMode:SKFullScreenMode];
@@ -1903,13 +1893,12 @@ static NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)window:(NSWindow *)window startCustomAnimationToExitFullScreenWithDuration:(NSTimeInterval)duration {
     NSString *frameString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
     NSRect frame = NSRectFromString(frameString);
-    NSRect startFrame = simulatedFullScreenWindowFrame(window);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
     for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
         if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
-    [window setFrame:startFrame display:YES];
+    [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
     [window setLevel:NSStatusWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             [context setDuration:duration - 0.1];
