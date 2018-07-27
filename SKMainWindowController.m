@@ -1789,7 +1789,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:frameString forKey:MAINWINDOWFRAME_KEY];
 }
 
-static BOOL shouldAutoHideToolbarInFullScreen() {
+static inline BOOL shouldAutoHideToolbarInFullScreen() {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     if ([sud boolForKey:SKAutoHideToolbarInFullScreenKey] ||
         (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil))
@@ -1807,16 +1807,39 @@ static BOOL shouldAutoHideToolbarInFullScreen() {
     return [[[self document] windowControllers] valueForKey:WINDOW_KEY];
 }
 
-static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
+static NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
+    static CGFloat fullscreenToolbarOffset = 0.0;
     CGFloat offset = 17.0;
-    if (shouldAutoHideToolbarInFullScreen())
+    if (shouldAutoHideToolbarInFullScreen()) {
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
-    else if ([[window toolbar] isVisible] == NO)
+    } else if ([[window toolbar] isVisible] == NO) {
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
-    else if (RUNNING_BEFORE(10_9))
-        offset = 10.0;
-    else if (RUNNING_BEFORE(10_11))
-        offset = 13.0;
+    } else {
+        if (fullscreenToolbarOffset < 0.0 && ([window styleMask] & NSWindowStyleMaskFullScreen) != 0) {
+            @try {
+                NSView *view = [[window toolbar] valueForKey:@"toolbarView"];
+                if (view)
+                    fullscreenToolbarOffset = - fullscreenToolbarOffset + NSMaxY([[view window] convertRectToScreen:[view convertRect:[view frame] toView:nil]]) - NSMaxY([[[view window] screen] frame]);
+            }
+            @catch (id e) {}
+        }
+        if (fullscreenToolbarOffset > 0.0) {
+            offset = fullscreenToolbarOffset;
+        } else {
+            if (RUNNING_BEFORE(10_9))
+                offset = 10.0;
+            else if (RUNNING_BEFORE(10_11))
+                offset = 13.0;
+            if (fullscreenToolbarOffset >= 0.0 && ([window styleMask] & NSWindowStyleMaskFullScreen) == 0) {
+                @try {
+                    NSView *view = [[window toolbar] valueForKey:@"toolbarView"];
+                    if (view)
+                        fullscreenToolbarOffset = NSMaxY([[view window] convertRectToScreen:[view convertRect:[view frame] toView:nil]]) - NSMaxY([window frame]);
+                }
+                @catch (id e) {}
+            }
+        }
+    }
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
@@ -1880,12 +1903,13 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 - (void)window:(NSWindow *)window startCustomAnimationToExitFullScreenWithDuration:(NSTimeInterval)duration {
     NSString *frameString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
     NSRect frame = NSRectFromString(frameString);
+    NSRect startFrame = simulatedFullScreenWindowFrame(window);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
     for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
         if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
-    [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
+    [window setFrame:startFrame display:YES];
     [window setLevel:NSStatusWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             [context setDuration:duration - 0.1];
