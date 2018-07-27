@@ -308,7 +308,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 // this is called from windowWillClose:
 - (void)cleanup {
-    if ([mainWindow respondsToSelector:@selector(contentLayoutRect)])
+    if (RUNNING_AFTER(10_9))
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingNotes:[self notes]];
@@ -374,7 +374,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([self useNativeFullScreen])
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if ([window respondsToSelector:@selector(contentLayoutRect)]) {
+    if (RUNNING_AFTER(10_9)) {
         [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
         [[splitView superview] setFrame:[window contentLayoutRect]];
         [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
