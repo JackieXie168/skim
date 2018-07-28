@@ -1814,10 +1814,12 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
     else if (fullscreenToolbarOffset > 0.0)
         offset = fullscreenToolbarOffset;
-    else if (RUNNING_BEFORE(10_9))
-        offset = 10.0;
-    else if (RUNNING_BEFORE(10_11))
+    else if (RUNNING_AFTER(10_10))
+        offset = 17.0;
+    else if (RUNNING_AFTER(10_8))
         offset = 13.0;
+    else
+        offset = 10.0;
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
