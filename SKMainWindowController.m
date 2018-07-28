@@ -169,6 +169,10 @@
 #define SKAutoHideToolbarInFullScreenKey @"SKAutoHideToolbarInFullScreen"
 #define SKCollapseSidePanesInFullScreenKey @"SKCollapseSidePanesInFullScreen"
 
+static BOOL useNativeFullScreen = NO;
+static BOOL autoHideToolbarInFullScreen = NO;
+static BOOL collapseSidePanesInFullScreen = NO;
+
 static char SKPDFAnnotationPropertiesObservationContext;
 
 static char SKMainWindowDefaultsObservationContext;
@@ -221,6 +225,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKINITIALIZE;
     
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
+    
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    useNativeFullScreen = [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && [sud boolForKey:SKUseLegacyFullScreenKey] == NO;
+    autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey] || (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil);
+    collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
+
 }
 
 + (BOOL)automaticallyNotifiesObserversOfPageNumber { return NO; }
@@ -371,7 +381,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [toolbarController setupToolbar];
     
     // Set up the window
-    if ([self useNativeFullScreen])
+    if (useNativeFullScreen)
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     if (RUNNING_AFTER(10_9)) {
@@ -1550,7 +1560,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self exitFullscreen];
     }
     
-    if ([self useNativeFullScreen]) {
+    if (useNativeFullScreen) {
         [[self window] toggleFullScreen:nil];
         return;
     }
@@ -1741,15 +1751,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self removeBlankingWindows];
 }
 
-- (BOOL)useNativeFullScreen {
-    return [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] &&
-            [[NSUserDefaults standardUserDefaults] boolForKey:SKUseLegacyFullScreenKey] == NO;
-}
-
 - (BOOL)canEnterFullscreen {
     if (mwcFlags.isSwitchingFullScreen)
         return NO;
-    if ([self useNativeFullScreen])
+    if (useNativeFullScreen)
         return [self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode;
     else
         return [[self pdfDocument] isLocked] == NO &&
@@ -1789,16 +1794,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:frameString forKey:MAINWINDOWFRAME_KEY];
 }
 
-static inline BOOL shouldAutoHideToolbarInFullScreen() {
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    if ([sud boolForKey:SKAutoHideToolbarInFullScreenKey] ||
-        (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil))
-        return YES;
-    return NO;
-}
-
 - (NSApplicationPresentationOptions)window:(NSWindow *)window willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions {
-    if (shouldAutoHideToolbarInFullScreen())
+    if (autoHideToolbarInFullScreen)
         return proposedOptions | NSApplicationPresentationAutoHideToolbar;
     return proposedOptions;
 }
@@ -1811,7 +1808,7 @@ static CGFloat fullscreenToolbarOffset = 0.0;
 
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 17.0;
-    if (shouldAutoHideToolbarInFullScreen())
+    if (autoHideToolbarInFullScreen)
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
     else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
@@ -1839,7 +1836,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
-    if (fullscreenToolbarOffset <= 0.0 && shouldAutoHideToolbarInFullScreen() == NO && [[mainWindow toolbar] isVisible]) {
+    if (fullscreenToolbarOffset <= 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible]) {
         // save the offset for the next time, we may guess it wrong as it varies between OS versions
         @try {
             NSView *view = [[mainWindow toolbar] valueForKey:@"toolbarView"];
@@ -1855,7 +1852,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO)
         [self applyPDFSettings:fullScreenSetup];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKCollapseSidePanesInFullScreenKey]) {
+    if (collapseSidePanesInFullScreen) {
         [savedNormalSetup setObject:[NSNumber numberWithDouble:[self leftSideWidth]] forKey:LEFTSIDEPANEWIDTH_KEY];
         [savedNormalSetup setObject:[NSNumber numberWithDouble:[self rightSideWidth]] forKey:RIGHTSIDEPANEWIDTH_KEY];
         [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
