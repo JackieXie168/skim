@@ -1810,14 +1810,19 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
 }
 
-static inline CGFloat firstToolbarItemOffset(NSWindow *window) {
-    for (NSToolbarItem *item in [[window toolbar] visibleItems]) {
-        NSView *view = [item view];
-        if (view) {
-            return NSMinY([view convertRectToScreen:[[item view] frame]]) - NSMaxY([[view window] frame]);
-            break;
-        }
+static inline CGFloat toolbarViewOffset(NSWindow *window) {
+    NSToolbar *toolbar = [window toolbar];
+    NSView *view = nil;
+    if ([toolbar displayMode] == NSToolbarDisplayModeLabelOnly) {
+        @try { view = [toolbar valueForKey:@"toolbarView"]; }
+        @catch (id e) {}
+    } else {
+        for (NSToolbarItem *item in [toolbar visibleItems])
+            if ((view = [item view]))
+                break;
     }
+    if (view)
+        return NSMaxY([view convertRectToScreen:[view frame]]) - NSMaxY([[view window] frame]);
     return 0.0;
 }
 
@@ -1842,7 +1847,7 @@ static inline CGFloat firstToolbarItemOffset(NSWindow *window) {
 
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
     if (fullScreenToolbarOffset <= 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible])
-        fullScreenToolbarOffset = firstToolbarItemOffset(mainWindow);
+        fullScreenToolbarOffset = toolbarViewOffset(mainWindow);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             [context setDuration:duration - 0.1];
@@ -1858,8 +1863,10 @@ static inline CGFloat firstToolbarItemOffset(NSWindow *window) {
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
     if (fullScreenToolbarOffset < 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible]) {
+        CGFloat toolbarItemOffset = toolbarViewOffset(mainWindow);
+        if (toolbarItemOffset < 0.0)
         // save the offset for the next time, we may guess it wrong as it varies between OS versions
-        fullScreenToolbarOffset = firstToolbarItemOffset(mainWindow) - fullScreenToolbarOffset;
+        fullScreenToolbarOffset = toolbarItemOffset - fullScreenToolbarOffset;
         if (SKFullScreenToolbarOffsetKey)
             [[NSUserDefaults standardUserDefaults] setDouble:fullScreenToolbarOffset forKey:SKFullScreenToolbarOffsetKey];
     }
