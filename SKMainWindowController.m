@@ -173,6 +173,9 @@ static BOOL useNativeFullScreen = NO;
 static BOOL autoHideToolbarInFullScreen = NO;
 static BOOL collapseSidePanesInFullScreen = NO;
 
+static NSString *SKFullScreenToolbarOffsetKey = nil;
+static CGFloat fullScreenToolbarOffset = 0.0;
+
 static char SKPDFAnnotationPropertiesObservationContext;
 
 static char SKMainWindowDefaultsObservationContext;
@@ -230,7 +233,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     useNativeFullScreen = [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && [sud boolForKey:SKUseLegacyFullScreenKey] == NO;
     autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey] || (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil);
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
-
+    
+    SInt32 minor = 0;
+    if (noErr == Gestalt(gestaltSystemVersionMinor, &minor)) {
+        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", minor];
+        fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
+    }
 }
 
 + (BOOL)automaticallyNotifiesObserversOfPageNumber { return NO; }
@@ -1785,6 +1793,34 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return NO;
 }
 
+static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
+    CGFloat offset = 17.0;
+    if (autoHideToolbarInFullScreen)
+        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
+    else if ([[window toolbar] isVisible] == NO)
+        offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
+    else if (fullScreenToolbarOffset > 0.0)
+        offset = fullScreenToolbarOffset;
+    else if (RUNNING_AFTER(10_10))
+        offset = 17.0;
+    else if (RUNNING_AFTER(10_8))
+        offset = 13.0;
+    else
+        offset = 10.0;
+    return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
+}
+
+static inline CGFloat firstToolbarItemOffset(NSWindow *window) {
+    for (NSToolbarItem *item in [[window toolbar] visibleItems]) {
+        NSView *view = [item view];
+        if (view) {
+            return NSMinY([view convertRectToScreen:[[item view] frame]]) - NSMaxY([[view window] frame]);
+            break;
+        }
+    }
+    return 0.0;
+}
+
 - (void)windowWillEnterFullScreen:(NSNotification *)notification {
     mwcFlags.isSwitchingFullScreen = 1;
     interactionMode = SKFullScreenMode;
@@ -1804,26 +1840,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return [[[self document] windowControllers] valueForKey:WINDOW_KEY];
 }
 
-static CGFloat fullscreenToolbarOffset = 0.0;
-
-static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
-    CGFloat offset = 17.0;
-    if (autoHideToolbarInFullScreen)
-        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
-    else if ([[window toolbar] isVisible] == NO)
-        offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
-    else if (fullscreenToolbarOffset > 0.0)
-        offset = fullscreenToolbarOffset;
-    else if (RUNNING_AFTER(10_10))
-        offset = 17.0;
-    else if (RUNNING_AFTER(10_8))
-        offset = 13.0;
-    else
-        offset = 10.0;
-    return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
-}
-
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration {
+    if (fullScreenToolbarOffset <= 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible])
+        fullScreenToolbarOffset = firstToolbarItemOffset(mainWindow);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             [context setDuration:duration - 0.1];
@@ -1838,14 +1857,11 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
-    if (fullscreenToolbarOffset <= 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible]) {
+    if (fullScreenToolbarOffset < 0.0 && autoHideToolbarInFullScreen == NO && [[mainWindow toolbar] isVisible]) {
         // save the offset for the next time, we may guess it wrong as it varies between OS versions
-        @try {
-            NSView *view = [[mainWindow toolbar] valueForKey:@"toolbarView"];
-            if (view)
-                fullscreenToolbarOffset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]) + NSMaxY([[view window] convertRectToScreen:[view convertRect:[view bounds] toView:nil]]) - NSMaxY([[[view window] screen] frame]);
-        }
-        @catch (id e) {}
+        fullScreenToolbarOffset = firstToolbarItemOffset(mainWindow) - fullScreenToolbarOffset;
+        if (SKFullScreenToolbarOffsetKey)
+            [[NSUserDefaults standardUserDefaults] setDouble:fullScreenToolbarOffset forKey:SKFullScreenToolbarOffsetKey];
     }
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
