@@ -236,7 +236,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     SInt32 minor = 0;
     if (noErr == Gestalt(gestaltSystemVersionMinor, &minor)) {
-        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", minor];
+        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", (int)minor];
         fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
     }
 }
