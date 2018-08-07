@@ -42,10 +42,6 @@
 
 @implementation NSAnimationContext (SKExtensions)
 
-+ (void)performCompletionHandler:(void (^)(void))completionHandler {
-    completionHandler();
-}
-
 + (void)fallback_runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler {
     [self beginGrouping];
     NSAnimationContext *context = [self currentContext];
@@ -53,7 +49,7 @@
     NSTimeInterval duration = [context duration];
     [self endGrouping];
     if (completionHandler)
-        [self performSelector:@selector(performCompletionHandler:) withObject:[[completionHandler copy] autorelease] afterDelay:duration];
+        dispatch_after(duration, dispatch_get_main_queue(), completionHandler);
 }
 
 + (void)load {

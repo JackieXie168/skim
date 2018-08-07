@@ -64,13 +64,12 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 - (SKInteractionMode)systemInteractionMode { return SKNormalMode; }
 
-- (void)undoableActionIsDiscardableDeferred:(NSNumber *)anUndoState {
-	[self updateChangeCount:[anUndoState boolValue] ? NSChangeRedone : NSChangeUndone];
-}
-
 - (void)undoableActionIsDiscardable {
 	// This action, while undoable, shouldn't mark the document dirty
-    [self performSelector:@selector(undoableActionIsDiscardableDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
+    NSDocumentChangeType changeType = [[self undoManager] isUndoing] ? NSChangeRedone : NSChangeUndone;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateChangeCount:changeType];
+    });
 }
 
 #pragma mark Document Setup

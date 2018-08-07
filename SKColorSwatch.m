@@ -262,13 +262,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     }
 }
 
-- (void)unhighlight {
-    highlightedIndex = -1;
-    insertionIndex = -1;
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-    [self setNeedsDisplay:YES];
-}
-
 - (void)performClickAtIndex:(NSInteger)i {
     if ([self isEnabled] && i != -1) {
         clickedIndex = i;
@@ -277,7 +270,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         highlightedIndex = i;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
-        [self performSelector:@selector(unhighlight) withObject:nil afterDelay:0.2];
+        dispatch_after(0.2, dispatch_get_main_queue(), ^{
+            highlightedIndex = -1;
+            insertionIndex = -1;
+            [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+            [self setNeedsDisplay:YES];
+        });
     }
 }
 
