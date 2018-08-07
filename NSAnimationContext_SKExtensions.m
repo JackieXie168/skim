@@ -49,7 +49,7 @@
     NSTimeInterval duration = [context duration];
     [self endGrouping];
     if (completionHandler)
-        dispatch_after(duration, dispatch_get_main_queue(), completionHandler);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)), dispatch_get_main_queue(), completionHandler);
 }
 
 + (void)load {

@@ -270,7 +270,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         highlightedIndex = i;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
-        dispatch_after(0.2, dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             highlightedIndex = -1;
             insertionIndex = -1;
             [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
