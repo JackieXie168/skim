@@ -179,8 +179,9 @@ enum {
 - (void)enableNavigation;
 - (void)disableNavigation;
 
-- (void)doAutohide:(BOOL)flag;
-- (void)showNavWindow:(BOOL)flag;
+- (void)doAutohide;
+- (void)showNavWindow;
+- (void)performSelectorOnce:(SEL)aSelector afterDelay:(NSTimeInterval)delay;
 
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
@@ -321,8 +322,8 @@ enum {
     [transitionController removeObserver:self forKeyPath:@"duration"];
     [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
     [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
-    [self showNavWindow:NO];
-    [self doAutohide:NO];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavWindow) object:nil];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     [syncDot invalidate];
@@ -736,7 +737,7 @@ enum {
         rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
         if (interactionMode == SKPresentationMode)
-            [self doAutohide:YES];
+            [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
     }
 }
 
@@ -1312,11 +1313,11 @@ enum {
             }
             [navWindow fadeIn];
         } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
-            [self showNavWindow:YES];
+            [self performSelectorOnce:@selector(showNavWindow) afterDelay:0.25];
         }
     }
     if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
-        [self doAutohide:YES];
+        [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent {
@@ -2519,18 +2520,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
     
-    [self doAutohide:YES];
+    [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
 }
 
 - (void)disableNavigation {
     navigationMode = SKNavigationNone;
     
-    [self showNavWindow:NO];
-    [self doAutohide:NO];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavWindow) object:nil];
     [navWindow remove];
 }
 
-- (void)doAutohideDelayed {
+- (void)hideNavWindow {
     if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
@@ -2540,13 +2541,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
-- (void)doAutohide:(BOOL)flag {
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutohideDelayed) object:nil];
-    if (flag)
-        [self performSelector:@selector(doAutohideDelayed) withObject:nil afterDelay:3.0];
-}
-
-- (void)showNavWindowDelayed {
+- (void)showNavWindow {
     if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
         if ([navWindow parentWindow] == nil) {
             [navWindow setAlphaValue:0.0];
@@ -2556,10 +2551,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
-- (void)showNavWindow:(BOOL)flag {
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindowDelayed) object:nil];
-    if (flag)
-        [self performSelector:@selector(showNavWindowDelayed) withObject:nil afterDelay:0.25];
+- (void)performSelectorOnce:(SEL)aSelector afterDelay:(NSTimeInterval)delay {
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:aSelector object:nil];
+    [self performSelector:aSelector withObject:nil afterDelay:delay];
 }
 
 #pragma mark Event handling
