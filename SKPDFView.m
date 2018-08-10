@@ -2532,7 +2532,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)hideNavWindow {
-    if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
+    if ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
         if (interactionMode == SKPresentationMode)
