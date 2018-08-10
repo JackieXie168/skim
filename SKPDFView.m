@@ -103,6 +103,9 @@
 #define SMALL_MAGNIFICATION   1.5
 #define LARGE_MAGNIFICATION   4.0
 
+#define AUTO_HIDE_DELAY 3.0
+#define SHOW_NAV_DELAY  0.25
+
 NSString *SKPDFViewDisplaysAsBookChangedNotification = @"SKPDFViewDisplaysAsBookChangedNotification";
 NSString *SKPDFViewDisplaysPageBreaksChangedNotification = @"SKPDFViewDisplaysPageBreaksChangedNotification";
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
@@ -736,7 +739,7 @@ enum {
         rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
         if (interactionMode == SKPresentationMode)
-            [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
+            [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
     }
 }
 
@@ -1312,11 +1315,11 @@ enum {
             }
             [navWindow fadeIn];
         } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
-            [self performSelectorOnce:@selector(showNavWindow) afterDelay:0.25];
+            [self performSelectorOnce:@selector(showNavWindow) afterDelay:SHOW_NAV_DELAY];
         }
     }
     if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
-        [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
+        [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent {
@@ -2512,7 +2515,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) name:NSWindowWillCloseNotification object:[self window]];
     
-    [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
+    [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
 
 - (void)disableNavigation {
