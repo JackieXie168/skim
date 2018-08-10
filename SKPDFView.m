@@ -526,6 +526,9 @@ enum {
     if (interactionMode != newInteractionMode) {
         if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
             [[self documentView] setHidden:NO];
+        if ((interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode || newInteractionMode == SKLegacyFullScreenMode || newInteractionMode == SKPresentationMode) &&
+            editor && [self commitEditing] == NO)
+            [self discardEditing];
         interactionMode = newInteractionMode;
         // always clean up navWindow and hanging perform requests
         [self disableNavigation];
@@ -2503,17 +2506,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 #pragma mark FullScreen navigation and autohide
 
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    if (editor && [self commitEditing] == NO)
-        [self discardEditing];
-    [navWindow remove];
-}
-
 - (void)enableNavigation {
     navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKPresentationNavigationOptionKey : SKFullScreenNavigationOptionKey];
     
-    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) name:NSWindowWillCloseNotification object:[self window]];
+    if (navigationMode != SKNavigationNone)
+        navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
     
     [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
@@ -2526,7 +2523,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (navWindow) {
         [navWindow remove];
         SKDESTROY(navWindow);
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[self window]];
     }
 }
 
