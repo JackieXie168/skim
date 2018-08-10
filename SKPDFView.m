@@ -322,8 +322,7 @@ enum {
     [transitionController removeObserver:self forKeyPath:@"duration"];
     [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
     [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
+    [self disableNavigation];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     [syncDot invalidate];
@@ -525,9 +524,9 @@ enum {
         if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
             [[self documentView] setHidden:NO];
         interactionMode = newInteractionMode;
-        if (interactionMode == SKNormalMode || interactionMode == SKFullScreenMode)
-            [self disableNavigation];
-        else
+        // always clean up navWindow and hanging perform requests
+        [self disableNavigation];
+        if (interactionMode == SKPresentationMode || interactionMode == SKLegacyFullScreenMode)
             [self enableNavigation];
         [self resetPDFToolTipRects];
     }
@@ -1305,7 +1304,7 @@ enum {
         [self setActiveAnnotation:nil];
     }
     
-    if ([navWindow isVisible] == NO) {
+    if (navWindow && [navWindow isVisible] == NO) {
         if (navigationMode == SKNavigationEverywhere) {
             if ([navWindow parentWindow] == nil) {
                 [navWindow setAlphaValue:0.0];
@@ -2510,15 +2509,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)enableNavigation {
     navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKPresentationNavigationOptionKey : SKFullScreenNavigationOptionKey];
     
-    // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
-    if (navWindow != nil) {
-        [navWindow remove];
-        [navWindow release];
-    } else {
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
-                                                     name: NSWindowWillCloseNotification object: [self window]];
-    }
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) name:NSWindowWillCloseNotification object:[self window]];
     
     [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
 }
@@ -2528,7 +2520,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
-    [navWindow remove];
+    if (navWindow) {
+        [navWindow remove];
+        SKDESTROY(navWindow);
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[self window]];
+    }
 }
 
 - (void)doAutoHide {
