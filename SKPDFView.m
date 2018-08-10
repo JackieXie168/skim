@@ -526,10 +526,18 @@ enum {
     if (interactionMode != newInteractionMode) {
         if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
             [[self documentView] setHidden:NO];
-        if ((interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode || newInteractionMode == SKLegacyFullScreenMode || newInteractionMode == SKPresentationMode) &&
-            editor && [self commitEditing] == NO)
-            [self discardEditing];
         interactionMode = newInteractionMode;
+        if (interactionMode == SKPresentationMode) {
+            if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+                if (activeAnnotation)
+                    [self setActiveAnnotation:nil];
+                if ([[self currentSelection] hasCharacters])
+                    [self setCurrentSelection:nil];
+            } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
+                [self setCurrentSelectionRect:NSZeroRect];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
+            }
+        }
         // always clean up navWindow and hanging perform requests
         [self disableNavigation];
         if (interactionMode == SKPresentationMode || interactionMode == SKLegacyFullScreenMode)
