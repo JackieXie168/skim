@@ -179,7 +179,7 @@ enum {
 - (void)enableNavigation;
 - (void)disableNavigation;
 
-- (void)hideNavWindow;
+- (void)doAutoHide;
 - (void)showNavWindow;
 - (void)performSelectorOnce:(SEL)aSelector afterDelay:(NSTimeInterval)delay;
 
@@ -323,7 +323,7 @@ enum {
     [transitionController removeObserver:self forKeyPath:@"shouldRestrict"];
     [transitionController removeObserver:self forKeyPath:@"pageTransitions"];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavWindow) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     [syncDot invalidate];
@@ -737,7 +737,7 @@ enum {
         rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
         if (interactionMode == SKPresentationMode)
-            [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
+            [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
     }
 }
 
@@ -1317,7 +1317,7 @@ enum {
         }
     }
     if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
-        [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
+        [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent {
@@ -2520,18 +2520,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
     
-    [self performSelectorOnce:@selector(hideNavWindow) afterDelay:3.0];
+    [self performSelectorOnce:@selector(doAutoHide) afterDelay:3.0];
 }
 
 - (void)disableNavigation {
     navigationMode = SKNavigationNone;
     
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNavWindow) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
     [navWindow remove];
 }
 
-- (void)hideNavWindow {
+- (void)doAutoHide {
     if ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
