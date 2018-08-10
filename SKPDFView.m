@@ -179,7 +179,7 @@ enum {
 - (void)enableNavigation;
 - (void)disableNavigation;
 
-- (void)doAutohide;
+- (void)hideNavWindow;
 - (void)showNavWindow;
 - (void)performSelectorOnce:(SEL)aSelector afterDelay:(NSTimeInterval)delay;
 
