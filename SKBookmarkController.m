@@ -187,6 +187,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
     else
         [[self window] setContentBorderThickness:22.0 forEdge:NSMinYEdge];
     
+    if ([outlineView respondsToSelector:@selector(setStronglyReferencesItems:)])
+        [outlineView setStronglyReferencesItems:YES];
+    
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKPasteboardTypeBookmarkRows, (NSString *)kUTTypeFileURL, NSFilenamesPboardType, nil]];

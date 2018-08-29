@@ -170,6 +170,11 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 - (void)setTabbingMode:(NSWindowTabbingMode)mode;
 @end
 
+@interface NSOutlineView (SKSierraDeclarations)
+- (BOOL)stronglyReferencesItems;
+- (void)setStronglyReferencesItems:(BOOL)flag;
+@end
+
 @protocol PDFViewDelegate <NSObject> @end
 
 #endif

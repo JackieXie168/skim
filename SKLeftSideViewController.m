@@ -98,6 +98,9 @@
     [searchField setAction:@selector(search:)];
     [searchField setTarget:mainController];
     
+    if ([tocOutlineView respondsToSelector:@selector(setStronglyReferencesItems:)])
+        [tocOutlineView setStronglyReferencesItems:YES];
+    
     [tocOutlineView setAutoresizesOutlineColumn: NO];
     
     [tocOutlineView setDelegate:mainController];

@@ -86,6 +86,9 @@
     
     [noteOutlineView setAutoresizesOutlineColumn: NO];
     
+    if ([noteOutlineView respondsToSelector:@selector(setStronglyReferencesItems:)])
+        [noteOutlineView setStronglyReferencesItems:YES];
+    
     [noteOutlineView setDelegate:mainController];
     [noteOutlineView setDataSource:mainController];
     [snapshotTableView setDelegate:mainController];
