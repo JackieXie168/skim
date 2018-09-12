@@ -65,7 +65,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
+@dynamic properties, fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
 
 static NSSet *keysAffectedByFileURL = nil;
 static NSSet *keysAffectedByDownloadStatus = nil;
@@ -105,7 +105,26 @@ static NSSet *infoKeys = nil;
         progressIndicator = nil;
         status = SKDownloadStatusUndefined;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
+                                                     name:NSApplicationWillTerminateNotification object:NSApp];
+    }
+    return self;
+}
+
+- (id)initWithProperties:(NSDictionary *)properties {
+    self = [super init];
+    if (self) {
+        URL = [[properties objectForKey:@"URL"] retain];
+        URLDownload = nil;
+        fileURL = [[properties objectForKey:@"fileURL"] retain];
+        fileIcon = fileURL ? [[[NSWorkspace sharedWorkspace] iconForFileType:[fileURL pathExtension]] retain] : nil;
+        expectedContentLength = [[properties objectForKey:@"expectedContentLength"] longLongValue];
+        receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
+        progressIndicator = nil;
+        status = [[properties objectForKey:@"status"] integerValue];
+        resumeData = [[properties objectForKey:@"resumeData"] retain];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
     }
     return self;
@@ -123,6 +142,7 @@ static NSSet *infoKeys = nil;
     SKDESTROY(URLDownload);
     SKDESTROY(fileURL);
     SKDESTROY(fileIcon);
+    SKDESTROY(resumeData);
     SKDESTROY(progressIndicator);
     [super dealloc];
 }
@@ -146,6 +166,18 @@ static NSSet *infoKeys = nil;
 }
 
 #pragma mark Accessors
+
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:[self URL] forKey:@"URL"];
+    [dict setValue:[NSNumber numberWithInteger:status] forKey:@"status"];
+    [dict setValue:[NSNumber numberWithLongLong:expectedContentLength] forKey:@"expectedContentLength"];
+    [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
+    [dict setValue:[self fileURL] forKey:@"fileURL"];
+    if ([self status] == SKDownloadStatusCanceled)
+        [dict setValue:resumeData ?: [URLDownload resumeData] forKey:@"resumeData"];
+    return dict;
+}
 
 - (void)setStatus:(SKDownloadStatus)newStatus {
     if (status != newStatus) {
@@ -281,8 +313,7 @@ static NSSet *infoKeys = nil;
 - (void)resume {
     if ([self canResume]) {
         
-        NSData *resumeData = nil;
-        if ([self status] == SKDownloadStatusCanceled) 
+        if ([self status] == SKDownloadStatusCanceled && resumeData == nil)
             resumeData = [[[URLDownload resumeData] retain] autorelease];
         
         if (resumeData) {

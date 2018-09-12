@@ -61,8 +61,11 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     NSURL *fileURL;
     NSImage *fileIcon;
     NSProgressIndicator *progressIndicator;
+    NSData *resumeData;
     SKDownloadStatus status;
 }
+
+@property (nonatomic, readonly) NSDictionary *properties;
 
 @property (nonatomic, readonly) SKDownloadStatus status;
 
@@ -83,6 +86,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic) SKDownloadStatus scriptingStatus;
 
 - (id)initWithURL:(NSURL *)aURL;
+- (id)initWithProperties:(NSDictionary *)properties;
 
 - (void)start;
 - (void)cancel;

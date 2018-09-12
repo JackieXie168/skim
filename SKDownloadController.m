@@ -61,11 +61,16 @@
 #define RESUME_COLUMNID @"resume"
 #define CANCEL_COLUMNID @"cancel"
 
+#define DOWNLOADS_KEY @"downloads"
+
 #define SKDownloadsWindowFrameAutosaveName @"SKDownloadsWindow"
 
 static char SKDownloadPropertiesObservationContext;
 
+static NSString *SKDownloadsIdentifier = nil;
+
 @interface SKDownloadController (SKPrivate)
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)startObservingDownloads:(NSArray *)newDownloads;
 - (void)endObservingDownloads:(NSArray *)oldDownloads;
 - (void)removeObjectFromDownloads:(SKDownload *)download;
@@ -74,6 +79,12 @@ static char SKDownloadPropertiesObservationContext;
 @implementation SKDownloadController
 
 @synthesize arrayController, tableView, clearButton, prefButton;
+
++ (void)initialize {
+    SKINITIALIZE;
+    
+    SKDownloadsIdentifier = [[[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".downloads"] retain];
+}
 
 static SKDownloadController *sharedDownloadController = nil;
 
@@ -88,6 +99,18 @@ static SKDownloadController *sharedDownloadController = nil;
     self = [super initWithWindowNibName:@"DownloadsWindow"];
     if (self) {
         downloads = [[NSMutableArray alloc] init];
+        
+        NSDictionary *downloadsDictionary = [[NSUserDefaults standardUserDefaults] persistentDomainForName:SKDownloadsIdentifier];
+        for (NSDictionary *properties in [downloadsDictionary objectForKey:DOWNLOADS_KEY]) {
+            SKDownload *download = [[SKDownload alloc] initWithProperties:properties];
+            [downloads addObject:download];
+            [download release];
+        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleApplicationWillTerminateNotification:)
+                                                     name:NSApplicationWillTerminateNotification
+                                                   object:NSApp];
     }
     return self;
 }
@@ -120,6 +143,12 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, NSPasteboardTypeString, nil]];
     
     [tableView setSupportsQuickLook:YES];
+}
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
+    [downloads makeObjectsPerformSelector:@selector(cancel) withObject:nil];
+    NSDictionary *downloadsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[downloads valueForKey:@"properties"], DOWNLOADS_KEY, nil];
+    [[NSUserDefaults standardUserDefaults] setPersistentDomain:downloadsDictionary forName:SKDownloadsIdentifier];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
