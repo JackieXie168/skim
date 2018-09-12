@@ -308,6 +308,9 @@ static NSSet *infoKeys = nil;
     if ([self canCancel]) {
         
         [URLDownload cancel];
+        [resumeData release];
+        resumeData = [[URLDownload resumeData] retain];
+        SKDESTROY(URLDownload);
         [self setStatus:SKDownloadStatusCanceled];
     }
 }
@@ -315,10 +318,8 @@ static NSSet *infoKeys = nil;
 - (void)resume {
     if ([self canResume]) {
         
-        if ([self status] == SKDownloadStatusCanceled && resumeData == nil)
-            resumeData = [[URLDownload resumeData] retain];
-        
-        if (resumeData && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
+        if ([self status] == SKDownloadStatusCanceled && resumeData &&
+            [[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
             
             [URLDownload release];
             URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[[self fileURL] path]];
@@ -330,8 +331,7 @@ static NSSet *infoKeys = nil;
             
             [self cleanup];
             [self setFileURL:nil];
-            [URLDownload release];
-            URLDownload = nil;
+            SKDESTROY(URLDownload);
             [self start];
             
         }
@@ -406,12 +406,14 @@ static NSSet *infoKeys = nil;
 - (void)downloadDidFinish:(NSURLDownload *)theDownload {
     if (expectedContentLength > 0)
 		[progressIndicator setDoubleValue:(double)expectedContentLength];
+    SKDESTROY(URLDownload);
     [self setStatus:SKDownloadStatusFinished];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
     if (fileURL)
         [[NSFileManager defaultManager] removeItemAtURL:fileURL error:NULL];
+    SKDESTROY(URLDownload);
     [self setFileURL:nil];
     [self setStatus:SKDownloadStatusFailed];
 }
