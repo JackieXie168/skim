@@ -122,8 +122,10 @@ static NSSet *infoKeys = nil;
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
         progressIndicator = nil;
         status = [[properties objectForKey:@"status"] integerValue];
-        resumeData = [[properties objectForKey:@"resumeData"] retain];
-
+        resumeData = nil;
+        if ([fileURL checkResourceIsReachableAndReturnError:NULL])
+            resumeData = [[properties objectForKey:@"resumeData"] retain];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
     }
@@ -314,13 +316,14 @@ static NSSet *infoKeys = nil;
     if ([self canResume]) {
         
         if ([self status] == SKDownloadStatusCanceled && resumeData == nil)
-            resumeData = [[[URLDownload resumeData] retain] autorelease];
+            resumeData = [[URLDownload resumeData] retain];
         
-        if (resumeData) {
+        if (resumeData && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
             
             [URLDownload release];
             URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[[self fileURL] path]];
             [URLDownload setDeletesFileUponFailure:NO];
+            SKDESTROY(resumeData);
             [self setStatus:SKDownloadStatusDownloading];
             
         } else {
@@ -339,6 +342,7 @@ static NSSet *infoKeys = nil;
     [self cancel];
     if (fileURL)
         [[NSFileManager defaultManager] removeItemAtURL:[fileURL URLByDeletingLastPathComponent] error:NULL];
+    SKDESTROY(resumeData);
 }
 
 - (void)moveToTrash {
