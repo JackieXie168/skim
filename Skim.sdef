@@ -706,7 +706,12 @@
                 description="The page on which to get the text.">
                 <cocoa key="Page"/>
             </parameter>
-            <result description="The rich text of the object.">
+            <parameter name="as" type="type" code="rtyp" optional="yes"
+                description="The type of object to return, rich text or a text type. The default is rich text.">
+                <cocoa key="Type"/>
+            </parameter>
+            <result description="The (rich) text of the object.">
+                <type type="text"/>
                 <type type="specifier" hidden="yes"/>
                 <type type="rich text"/>
             </result>

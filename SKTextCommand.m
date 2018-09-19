@@ -54,6 +54,8 @@
     
     PDFPage *page = [[self evaluatedArguments] objectForKey:@"Page"];
     NSAttributedString *attributedString = nil;
+    id asTypeNumber = [[self evaluatedArguments] objectForKey:@"Type"];
+    FourCharCode asType = [asTypeNumber respondsToSelector:@selector(unsignedIntValue)] ? [asTypeNumber unsignedIntValue] : 'ricT';
     
     if ([dPO isKindOfClass:[NSDocument class]]) {
         attributedString = page ? [page attributedString] : [dPO richText];
@@ -69,7 +71,14 @@
         attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return [attributedString richTextSpecifier];
+    if (asType == cText || asType == typeText || asType == typeUnicodeText || asType == typeUTF8Text || asType == typeCString || asType == typeChar) {
+        return [attributedString string];
+    } else if (asType == 'ricT' || asType == typeStyledText || asType == typeObjectSpecifier) {
+        return [attributedString richTextSpecifier];
+    } else {
+        [self setScriptErrorNumber:NSArgumentsWrongScriptError];
+        return nil;
+    }
 }
 
 @end
