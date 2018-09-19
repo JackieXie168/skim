@@ -50,6 +50,7 @@
 - (NSTextStorage *)scriptingRichText;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
+- (NSScriptObjectSpecifier *)richTextSpecifier;
 
 @end
 

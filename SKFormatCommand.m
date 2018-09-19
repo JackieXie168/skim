@@ -74,7 +74,7 @@
     } else if (attrString) {
         NSAttributedString *attrText = [SKTemplateParser attributedStringByParsingTemplateAttributedString:attrString usingObject:receiver];
         if (attrText) {
-            text = attrText;
+            text = [attrText richTextSpecifier];
             if (file) {
                 NSMutableDictionary *mutableDocAttrs = [NSMutableDictionary dictionaryWithDictionary:docAttrs];
                 NSString *ext = [[[file path] pathExtension] lowercaseString];

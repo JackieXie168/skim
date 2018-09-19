@@ -706,7 +706,7 @@
                 description="The page on which to get the text.">
                 <cocoa key="Page"/>
             </parameter>
-            <result type="rich text"
+            <result type="specifier"
                 description="The rich text of the object."/>
         </command>
 
@@ -790,7 +790,7 @@
             <result
                 description="The text or rich text generated using the template.">
                 <type type="text"/>
-                <type type="rich text"/>
+                <type type="specifier"/>
             </result>
         </command>
         

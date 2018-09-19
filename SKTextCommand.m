@@ -69,7 +69,7 @@
         attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return attributedString;
+    return [attributedString richTextSpecifier];
 }
 
 @end
