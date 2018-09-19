@@ -706,8 +706,10 @@
                 description="The page on which to get the text.">
                 <cocoa key="Page"/>
             </parameter>
-            <result type="specifier"
-                description="The rich text of the object."/>
+            <result description="The rich text of the object.">
+                <type type="specifier" hidden="yes"/>
+                <type type="rich text"/>
+            </result>
         </command>
 
         <command name="get index for" code="SKIMIndx"
@@ -728,8 +730,7 @@
                 <cocoa key="Last"/>
             </parameter>
             <result type="integer"
-                description="The index for the object. Returns 0 if no index was found.">
-            </result>
+                description="The index for the object. Returns 0 if no index was found."/>
         </command>
 
         <command name="get pages for" code="SKIMPags"
@@ -790,7 +791,8 @@
             <result
                 description="The text or rich text generated using the template.">
                 <type type="text"/>
-                <type type="specifier"/>
+                <type type="specifier" hidden="yes"/>
+                <type type="rich text"/>
             </result>
         </command>
         
