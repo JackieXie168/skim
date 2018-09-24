@@ -51,10 +51,14 @@
     id doc = [[[selection pages] lastObject] containingDocument];
     BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
     
+    if ([dP isEqual:[NSArray array]])
+        doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
+    
     if ([doc respondsToSelector:@selector(pdfView)]) {
         SKPDFView *pdfView = [doc pdfView];
         [[(NSView *)pdfView window] makeKeyAndOrderFront:nil];
-        [pdfView goToSelection:selection];
+        if (selection)
+            [pdfView goToSelection:selection];
         [pdfView setCurrentSelection:selection animate:animate];
     }
     
