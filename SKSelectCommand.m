@@ -48,18 +48,23 @@
 - (id)performDefaultImplementation {
     id dP = [self directParameter];
     PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
-    id doc = [[[selection pages] lastObject] containingDocument];
+    id doc = [[[selection pages] firstObject] containingDocument];
     BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
     
     if ([dP isEqual:[NSArray array]])
         doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
     
-    if ([doc respondsToSelector:@selector(pdfView)]) {
-        SKPDFView *pdfView = [doc pdfView];
-        [[(NSView *)pdfView window] makeKeyAndOrderFront:nil];
-        if (selection)
-            [pdfView goToSelection:selection];
-        [pdfView setCurrentSelection:selection animate:animate];
+    for  (doc in [doc isKindOfClass:[NSArray class]] ? doc : [NSArray arrayWithObjects:doc, nil]) {
+        if ([doc respondsToSelector:@selector(pdfView)]) {
+            SKPDFView *pdfView = [doc pdfView];
+            [[(NSView *)pdfView window] makeKeyAndOrderFront:nil];
+            if (selection) {
+                [pdfView goToSelection:selection];
+                [pdfView setCurrentSelection:selection animate:animate];
+            } else {
+                [pdfView setCurrentSelection:nil];
+            }
+        }
     }
     
     return nil;
