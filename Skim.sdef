@@ -1549,7 +1549,7 @@
             <cocoa class="NSData"/>
         </value-type>
 
-        <enumeration name="standard color" code="ClrE">
+        <enumeration name="standard color" code="ClrE" inline="0">
             <enumerator name="red" code="Red "
                 description="Red color."/>
             <enumerator name="green" code="Gren"
@@ -1608,7 +1608,7 @@
                 description="Clear color."/>
         </enumeration>
 
-        <enumeration name="note type" code="NTpE">
+        <enumeration name="note type" code="NTpE" inline="0">
             <enumerator name="text note" code="NTxt"
                 description="Text note.">
                 <cocoa string-value="FreeText"/>
@@ -1662,7 +1662,7 @@
             </enumerator>
         </enumeration>
 
-        <enumeration name="icon type" code="ITpE">
+        <enumeration name="icon type" code="ITpE" inline="0">
             <enumerator name="comment icon" code="ICmt"
                 description="Comment icon.">
                 <cocoa integer-value="0"/>
@@ -1693,7 +1693,7 @@
             </enumerator>
         </enumeration>
 
-        <enumeration name="line ending style" code="LESE">
+        <enumeration name="line ending style" code="LESE" inline="0">
             <enumerator name="no line ending" code="LSNo"
                 description="No line ending.">
                 <cocoa integer-value="0"/>
@@ -1720,7 +1720,7 @@
             </enumerator>
         </enumeration>
 
-        <enumeration name="note line style" code="LnSE">
+        <enumeration name="note line style" code="LnSE" inline="0">
             <enumerator name="solid line" code="Soli"
                 description="Solid line.">
                 <cocoa integer-value="0"/>
@@ -1773,7 +1773,7 @@
             </enumerator>
         </enumeration>
 
-        <enumeration name="tool type" code="TolT">
+        <enumeration name="tool type" code="TolT" inline="0">
             <enumerator name="text tool" code="TTxt"
                 description="Text tool mode.">
                 <cocoa integer-value="0"/>
@@ -1862,7 +1862,7 @@
             </enumerator>
         </enumeration>
 
-        <enumeration name="download status" code="DlSt">
+        <enumeration name="download status" code="DlSt" inline="0">
             <enumerator name="undefined download" code="DSUn"
                 description="Undefined download status.">
                 <cocoa integer-value="0"/>
