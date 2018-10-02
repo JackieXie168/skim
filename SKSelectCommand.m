@@ -40,6 +40,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKMainDocument.h"
+#import "NSDocument_SKExtensions.h"
 #import <Quartz/Quartz.h>
 
 
@@ -47,23 +48,38 @@
 
 - (id)performDefaultImplementation {
     id dP = [self directParameter];
-    PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
-    id doc = [[[selection pages] firstObject] containingDocument];
-    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
+    id selection = nil;
+    id doc = nil;
+    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate "] boolValue];
+    id obj = [dP isKindOfClass:[NSArray class]] ? [dP firstObject] : dP;
+    BOOL isNote = [obj respondsToSelector:@selector(keyClassDescription)] && [[[obj keyClassDescription] className] isEqualToString:@"note"];
     
-    if ([dP isEqual:[NSArray array]])
+    if (isNote) {
+        selection = [dP valueForKey:@"objectsByEvaluatingSpecifier"];
+        if ([selection isKindOfClass:[NSArray class]] == NO)
+            selection = [NSArray arrayWithObjects:selection, nil];
+        doc = [[[selection firstObject] page] containingDocument];
+    } else if ([dP isEqual:[NSArray array]]) {
         doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
+    } else {
+        selection = [PDFSelection selectionWithSpecifier:dP];
+        doc = [[[selection pages] firstObject] containingDocument];
+    }
     
     for  (doc in [doc isKindOfClass:[NSArray class]] ? doc : [NSArray arrayWithObjects:doc, nil]) {
-        if ([doc respondsToSelector:@selector(pdfView)]) {
-            SKPDFView *pdfView = [doc pdfView];
-            [[(NSView *)pdfView window] makeKeyAndOrderFront:nil];
-            if (selection) {
-                [pdfView goToSelection:selection];
-                [pdfView setCurrentSelection:selection animate:animate];
-            } else {
-                [pdfView setCurrentSelection:nil];
-            }
+        SKPDFView *pdfView = nil;
+        if ([doc respondsToSelector:@selector(pdfView)])
+            pdfView = [doc pdfView];
+        [[[[doc windowControllers] firstObject] window] makeKeyAndOrderFront:nil];
+        if (isNote) {
+            [doc setNoteSelection:selection];
+        } else if (selection) {
+            [pdfView goToSelection:selection];
+            [pdfView setCurrentSelection:selection animate:animate];
+        } else if (pdfView) {
+            [pdfView setCurrentSelection:nil];
+        } else {
+            [doc setNoteSelection:[NSArray array]];
         }
     }
     

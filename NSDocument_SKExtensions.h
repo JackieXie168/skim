@@ -101,6 +101,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 - (NSData *)selectionQDRect;
 - (id)selectionPage;
 - (NSArray *)noteSelection;
+- (void)setNoteSelection:(NSArray *)newNoteSelection;
 - (NSDictionary *)pdfViewSettings;
 - (NSDictionary *)documentAttributes;
 - (BOOL)isPDFDocument;

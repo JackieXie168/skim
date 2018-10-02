@@ -280,6 +280,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSArray *)noteSelection { return nil; }
 
+- (void)setNoteSelection:(NSArray *)newNoteSelection {}
+
 - (NSDictionary *)pdfViewSettings { return nil; }
 
 - (NSInteger)toolMode { return 0; }
