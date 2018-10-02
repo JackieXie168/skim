@@ -584,7 +584,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
             if (selSpec == nil) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New markup notes need a selection."];
             } else if ((selection = [PDFSelection selectionWithSpecifier:selSpec])) {
                 if ([type isEqualToString:SKNHighlightString])
                     markupType = kPDFMarkupTypeHighlight;
@@ -601,7 +601,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
             [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
             if ([pointLists isKindOfClass:[NSArray class]] == NO) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New freehand notes need a path list.", @"Error description")];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New freehand notes need a path list."];
             } else {
                 NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
                 for (NSArray *list in pointLists) {
@@ -647,7 +647,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
                 annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             } else {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+                [[NSScriptCommand currentCommand] setScriptErrorString:@"New notes need a type."];
             }
         }
         
