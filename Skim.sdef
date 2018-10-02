@@ -1202,6 +1202,9 @@
             <responds-to name="edit">
                 <cocoa method="handleEditScriptCommand:"/>
             </responds-to>
+            <responds-to name="select">
+                <cocoa method=""/>
+            </responds-to>
         </class>
 
         <class name="bookmark" plural="bookmarks" code="Bkmk"
