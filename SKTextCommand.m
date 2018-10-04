@@ -73,7 +73,7 @@
     
     if (asType == cText || asType == typeText || asType == typeUnicodeText || asType == typeUTF8Text || asType == typeCString || asType == typeChar) {
         return [attributedString string];
-    } else if (asType == 'ricT' || asType == typeStyledText || asType == typeObjectSpecifier) {
+    } else if (asType == 'ricT' || asType == 'cha ' || asType == 'cpar' || asType == 'cwor' || asType == 'catr' || asType == typeStyledText || asType == typeObjectSpecifier) {
         return [attributedString richTextSpecifier];
     } else {
         [self setScriptErrorNumber:NSArgumentsWrongScriptError];
