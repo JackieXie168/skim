@@ -1871,7 +1871,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
-	NSDictionary *args = [command evaluatedArguments];
+	NSDictionary *args = [command arguments];
     id fileType = [args objectForKey:@"FileType"];
     id file = [args objectForKey:@"File"];
     // we don't want to expose the UTI types to the user, and we allow template file names without extension
