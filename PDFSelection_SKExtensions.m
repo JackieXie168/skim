@@ -289,13 +289,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     if (startSpec || endSpec) {
                         if (startSpec) {
                             indices = [startSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
-                            startIndex = count ? indices[0] : -1;
+                            startIndex = count > 0 ? indices[0] : -1;
                         } else {
                             startIndex = 0;
                         }
                         if (endSpec) {
                             indices = [endSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
-                            endIndex = count ? indices[count - 1] : -1;
+                            endIndex = count > 0 ? indices[count - 1] : -1;
                         } else {
                             endIndex = [[textStorage valueForKey:key] count] - 1;
                         }
@@ -308,14 +308,18 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     // this handles other objectSpecifiers (index, middel, random, relative, whose). It can contain several ranges, e.g. for aan NSWhoseSpecifier
                     indices = [specifier indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
                     NSRange range = NSMakeRange(0, 0);
-                    for (i = 0; i < count; i++) {
-                        NSUInteger idx = indices[i];
-                        if (range.length == 0 || idx > NSMaxRange(range)) {
-                            if (range.length)
-                                [tmpRanges addPointer:&range];
-                            range = NSMakeRange(idx, 1);
-                        } else {
-                            ++(range.length);
+                    if (count == -1) {
+                        range.length = [[textStorage valueForKey:key] count];
+                    } else if (count > 0) {
+                        for (i = 0; i < count; i++) {
+                            NSUInteger idx = indices[i];
+                            if (range.length == 0 || idx > NSMaxRange(range)) {
+                                if (range.length)
+                                    [tmpRanges addPointer:&range];
+                                range = NSMakeRange(idx, 1);
+                            } else {
+                                ++(range.length);
+                            }
                         }
                     }
                     if (range.length)
