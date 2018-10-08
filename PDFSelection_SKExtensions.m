@@ -273,7 +273,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     textStorage = [[NSTextStorage alloc] initWithAttributedString:[containerText attributedSubstringFromRange:textRange]];
                 
                 // now get the ranges, which can be any kind of specifier
-                NSInteger startIndex, endIndex, i, count, *indices;
+                NSInteger startIndex, endIndex, i, count = -2, *indices;
                 NSPointerArray *tmpRanges = [[NSPointerArray alloc] initForRangePointers];
                 
                 if ([specifier isKindOfClass:[NSPropertySpecifier class]]) {
@@ -288,12 +288,14 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     
                     if (startSpec || endSpec) {
                         if (startSpec) {
+                            count = -2;
                             indices = [startSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
                             startIndex = count > 0 ? indices[0] : -1;
                         } else {
                             startIndex = 0;
                         }
                         if (endSpec) {
+                            count = -2;
                             indices = [endSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
                             endIndex = count > 0 ? indices[count - 1] : -1;
                         } else {
