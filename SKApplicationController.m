@@ -53,7 +53,6 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
-#import "SKLine.h"
 #import "NSImage_SKExtensions.h"
 #import "SKDownloadController.h"
 #import "SKDownload.h"

@@ -48,4 +48,7 @@
 - (NSString *)alphaCounterValue;
 - (NSString *)greekCounterValue;
 
++ (NSNumber *)scriptingTexLineWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (NSAppleEventDescriptor *)scriptingTexLineDescriptor;
+
 @end

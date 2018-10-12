@@ -58,7 +58,6 @@
 #import "SKApplicationController.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKInfoWindowController.h"
-#import "SKLine.h"
 #import "SKApplicationController.h"
 #import "NSFileManager_SKExtensions.h"
 #import "SKFDFParser.h"
@@ -1960,7 +1959,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         [[self pdfView] goToPage:(PDFPage *)location];
     } else if ([location isKindOfClass:[PDFAnnotation class]]) {
         [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
-    } else if ([location isKindOfClass:[SKLine class]]) {
+    } else if ([location isKindOfClass:[NSNumber class]]) {
         id source = [args objectForKey:@"Source"];
         BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
         NSInteger options = showBar ? SKPDFSynchronizerShowReadingBarMask : 0;
@@ -1968,7 +1967,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
             source = [NSURL fileURLWithPath:source];
         else if ([source isKindOfClass:[NSURL class]] == NO)
             source = nil;
-        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[source path] options:options];
+        [[self synchronizer] findPageAndLocationForLine:[location integerValue] inFile:[source path] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([selection hasCharacters]) {

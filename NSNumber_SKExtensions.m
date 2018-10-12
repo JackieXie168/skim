@@ -112,4 +112,17 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
     return string;
 }
 
++ (NSNumber *)scriptingTexLineWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    NSInteger i = [[descriptor descriptorForKeyword:keyAEKeyData] int32Value];
+    return [NSNumber numberWithInt:MAX(0, i - 1)];
+}
+
+- (NSAppleEventDescriptor *)scriptingTexLineDescriptor {
+    AEDesc desc;
+    if (noErr == CreateObjSpecifier('Line', (AEDesc *)[[NSAppleEventDescriptor nullDescriptor] aeDesc], formAbsolutePosition, (AEDesc *)[[NSAppleEventDescriptor descriptorWithInt32:[self intValue] + 1] aeDesc], YES, &desc)) {
+        return [[[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&desc] autorelease];
+    }
+    return nil;
+}
+
 @end

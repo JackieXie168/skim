@@ -205,7 +205,6 @@
 		CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
-		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEB34A530F5C1B7E0037E086 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = CEB34A520F5C1B7E0037E086 /* dsa_pub.pem */; };
 		CEB402C313EDAD6100851D1B /* SKTemporaryData.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB402C213EDAD6100851D1B /* SKTemporaryData.m */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
@@ -918,8 +917,6 @@
 		CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSecondaryPDFView.m; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
-		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
-		CEAF2E580C45414100C3ECBB /* SKLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLine.m; sourceTree = "<group>"; };
 		CEB34A520F5C1B7E0037E086 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		CEB402C113EDAD6100851D1B /* SKTemporaryData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemporaryData.h; sourceTree = "<group>"; };
 		CEB402C213EDAD6100851D1B /* SKTemporaryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemporaryData.m; sourceTree = "<group>"; };
@@ -1705,8 +1702,6 @@
 				CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */,
 				CE121BF911529D15001D92ED /* SKIBArray.h */,
 				CE121BFA11529D15001D92ED /* SKIBArray.m */,
-				CEAF2E570C45414100C3ECBB /* SKLine.h */,
-				CEAF2E580C45414100C3ECBB /* SKLine.m */,
 				CE099661112577A000EDB88F /* SKNotesPage.h */,
 				CE099662112577A000EDB88F /* SKNotesPage.m */,
 				CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */,
@@ -2412,7 +2407,6 @@
 				CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */,
 				CE8DEF0820D2702A00A10FFE /* NSDate_SKExtensions.m in Sources */,
 				CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */,
-				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
 				CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */,
 				CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */,
 				CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */,
