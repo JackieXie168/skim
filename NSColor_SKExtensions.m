@@ -163,9 +163,10 @@
 }
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
-    if ([descriptor numberOfItems] > 0) {
-        CGFloat red, green, blue, alpha;
-        red = green = blue = (CGFloat)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
+    if ([descriptor descriptorType] == typeAEList) {
+        CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+        if ([descriptor numberOfItems] > 0)
+            red = green = blue = (CGFloat)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
         if ([descriptor numberOfItems] > 2) {
             green = (CGFloat)[[descriptor descriptorAtIndex:2] int32Value] / 65535.0f;
             blue = (CGFloat)[[descriptor descriptorAtIndex:3] int32Value] / 65535.0f;
@@ -177,7 +178,7 @@
         else
             alpha= 1.0;
         return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
-    } else {
+    } else if ([descriptor descriptorType] == typeEnumerated) {
         switch ([descriptor enumCodeValue]) {
             case SKScriptingColorRed: return [NSColor redColor];
             case SKScriptingColorGreen: return [NSColor greenColor];
@@ -207,18 +208,18 @@
             case SKScriptingColorDarkGray: return [NSColor darkGrayColor];
             case SKScriptingColorLightGray: return [NSColor lightGrayColor];
             case SKScriptingColorClear: return [NSColor clearColor];
-            default:
-            {
-                // Cocoa Scripting defines coercions from string to color for some standard color names
-                NSString *string = [descriptor stringValue];
-                if (string) {
-                    NSColor *color = [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]];
-                    // We should check the return value, because NSScriptCoercionHandler returns the input when it fails rather than nil, stupid
-                    return [color isKindOfClass:[NSColor class]] ? color : nil;
-                }
-            }
+            default: return nil;
         }
-        return nil;
+    } else {
+        NSString *string = nil;
+        if ([descriptor descriptorType] == typeObjectSpecifier)
+            string = [[descriptor descriptorForKeyword:keyAEKeyData] stringValue];
+        else
+            string = [descriptor stringValue];
+        // Cocoa Scripting defines coercions from string to color for some standard color names
+        NSColor *color = string ? [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]] : nil;
+        // We should check the return value, because NSScriptCoercionHandler returns the input when it fails rather than nil, stupid
+        return [color isKindOfClass:[NSColor class]] ? color : nil;
     }
 }
 
