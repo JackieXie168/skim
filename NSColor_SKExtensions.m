@@ -364,13 +364,18 @@
 }
 
 - (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
+    if ([[lightColor colorSpace] isEqual:space] && [[darkColor colorSpace] isEqual:space])
+        return self;
     return [[[SKDynamicColor alloc] initWithLightColor:[lightColor colorUsingColorSpace:space] darkColor:[darkColor colorUsingColorSpace:space]] autorelease];
 }
 
 - (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name {
+    if ([[lightColor colorSpaceName] isEqualToString:name] && [[darkColor colorSpaceName] isEqualToString:name])
+        return self;
     return [[[SKDynamicColor alloc] initWithLightColor:[lightColor colorUsingColorSpaceName:name] darkColor:[darkColor colorUsingColorSpaceName:name]] autorelease];
 }
 
+FORWARD(colorSpace, NSColorSpace *)
 FORWARD(colorSpaceName, NSString *)
 
 FORWARD(numberOfComponents, NSInteger)
