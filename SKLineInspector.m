@@ -148,6 +148,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [styleButton setImage:image forSegment:kPDFBorderStyleSolid];
         
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -173,6 +174,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [styleButton setImage:image forSegment:kPDFBorderStyleDashed];
     
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -199,6 +201,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path fill];
         return YES;
 	}];
+    [image setTemplate:YES];
     [styleButton setImage:image forSegment:kPDFBorderStyleBeveled];
     
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -225,6 +228,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path fill];
         return YES;
 	}];
+    [image setTemplate:YES];
     [styleButton setImage:image forSegment:kPDFBorderStyleInset];
     
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -236,6 +240,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [styleButton setImage:image forSegment:kPDFBorderStyleUnderline];
 	
     size = NSMakeSize(24.0, 12.0);
@@ -249,6 +254,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleNone];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -260,6 +266,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleNone];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -272,6 +279,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleSquare];
     
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -284,6 +292,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleSquare];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -296,6 +305,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleCircle];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -308,6 +318,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleCircle];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -323,6 +334,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -338,6 +350,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -352,6 +365,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleOpenArrow];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -366,6 +380,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleOpenArrow];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -381,6 +396,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
 	
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
@@ -396,6 +412,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path stroke];
         return YES;
 	}];
+    [image setTemplate:YES];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
 }
 
