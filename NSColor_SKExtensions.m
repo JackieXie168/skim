@@ -328,7 +328,7 @@
 }
 
 - (NSColor *)effectiveColor {
-    return [self effectiveColor];
+    return lightColor;
 }
 
 - (void)set {
@@ -361,6 +361,14 @@
 
 - (void)getComponents:(CGFloat *)components {
     [[self effectiveColor] getComponents:components];
+}
+
+- (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
+    return [[[SKDynamicColor alloc] initWithLightColor:[lightColor colorUsingColorSpace:space] darkColor:[darkColor colorUsingColorSpace:space]] autorelease];
+}
+
+- (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name {
+    return [[[SKDynamicColor alloc] initWithLightColor:[lightColor colorUsingColorSpaceName:name] darkColor:[darkColor colorUsingColorSpaceName:name]] autorelease];
 }
 
 FORWARD(colorSpaceName, NSString *)
