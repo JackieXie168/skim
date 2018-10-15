@@ -65,6 +65,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 - (NSImage *)toolTipImage {
     static NSColor *backgroundColor = nil;
+    // @@ Dark mode
     if (backgroundColor == nil)
         backgroundColor = RUNNING_AFTER(10_9) ? [[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     

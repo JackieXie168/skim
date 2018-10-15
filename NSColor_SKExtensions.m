@@ -60,6 +60,8 @@
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
 }
 
+// @@ Dark mode
+
 + (NSColor *)keySourceListHighlightColor {
     static NSColor *color = nil;
     static NSColor *graphiteColor = nil;

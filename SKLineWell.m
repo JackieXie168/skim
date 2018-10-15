@@ -257,6 +257,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     
     SKDrawTextFieldBezel(bounds, self);
     
+    // @@ Dark mode
+    
     if ([self isActive]) {
         [NSGraphicsContext saveGraphicsState];
         [[NSColor selectedControlColor] setFill];
@@ -265,6 +267,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
+        // @@ Dark mode
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
         NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
@@ -273,6 +276,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if (lineWidth > 0.0) {
         [NSGraphicsContext saveGraphicsState];
         [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];
+        // @@ Dark mode
         [[NSColor blackColor] setStroke];
         [[self path] stroke];
         [NSGraphicsContext restoreGraphicsState];
@@ -292,6 +296,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     CGFloat scale = [self backingScale];
     
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
+        // @@ Dark mode
         CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
         [[NSColor darkGrayColor] setFill];
         NSRectFill(NSInsetRect(rect, 1.0, 1.0));

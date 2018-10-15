@@ -43,6 +43,7 @@
 
 void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)
 {
+    // @@ Dark mode
     CGRect rect = CGRectMake(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius);
     NSColor *color = [[(active ? [NSColor selectedControlColor] : [NSColor secondarySelectedControlColor]) colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
     CGContextSetFillColorWithColor(context, [color CGColor]);
@@ -68,6 +69,7 @@ void SKDrawResizeHandles(CGContextRef context, NSRect rect, CGFloat radius, BOOL
 #pragma mark -
 
 void SKDrawTextFieldBezel(NSRect rect, NSView *controlView) {
+    // @@ Dark mode
     static NSTextFieldCell *cell = nil;
     if (cell == nil) {
         cell = [[NSTextFieldCell alloc] initTextCell:@""];

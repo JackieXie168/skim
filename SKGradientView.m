@@ -41,6 +41,8 @@
 
 #define BORDER_SIZE 1.0
 
+// @@ Dark mode
+
 static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0.8, 0.95,  0.55};
 
 @implementation SKGradientView
@@ -58,6 +60,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0
         autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
+        // @@ Dark mode
         CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 5 : defaultGrays;
         gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[0] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[1] alpha:1.0]];
         alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[2] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[3] alpha:1.0]];

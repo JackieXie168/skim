@@ -215,6 +215,8 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 @implementation NSImage (SKExtensions)
 
+// @@ Dark mode
+
 + (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler {
     if ([self respondsToSelector:@selector(imageWithSize:flipped:drawingHandler:)]) {
         return [self imageWithSize:size flipped:NO drawingHandler:drawingHandler];

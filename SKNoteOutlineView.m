@@ -153,6 +153,8 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         [NSGraphicsContext saveGraphicsState];
         [NSBezierPath setDefaultLineWidth:1.0];
         
+        // @@ Dark mode
+        
         [[NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7] setStroke];
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
         y -= 2.0;

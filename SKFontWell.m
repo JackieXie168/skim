@@ -450,6 +450,7 @@ static char SKFontWellFontSizeObservationContext;
 @synthesize textColor, hasTextColor;
 
 - (void)commonInit {
+    // @@ Dark mode
     if (textColor == nil)
         [self setTextColor:[NSColor blackColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
@@ -504,6 +505,7 @@ static char SKFontWellFontSizeObservationContext;
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
+        // @@ Dark mode
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
         NSFrameRectWithWidthUsingOperation(frame, 1.0, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];

@@ -158,6 +158,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     bounds.size.width = fmin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
+    // @@Dark mode
+    
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
     static CGFloat defaultGrays[10] = {0.7, 0.85, 0.85, 0.85, 0.75, 0.5, 0.75, 0.75, 0.75, 0.66667};
     CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 5 : defaultGrays;

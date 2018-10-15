@@ -1003,6 +1003,7 @@ static NSArray *allMainDocumentPDFViews() {
             page = [pdfView pageForPoint:point nearest:YES];
             
             NSView *controlView = [secondaryPdfView controlView];
+            // @@ Dark mode
             NSColor *color = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0];
             [(SKGradientView *)secondaryPdfContentView setGradient:[[[NSGradient alloc] initWithStartingColor:color endingColor:color] autorelease]];
             [(SKGradientView *)secondaryPdfContentView setAlternateGradient:nil];

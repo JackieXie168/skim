@@ -297,6 +297,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
     [[window contentView] addSubview:controlView];
     [pdfView setFrame:frame];
+    // @@ Dark mode
     [window setBackgroundColor:[NSColor colorWithCalibratedWhite:0.97 alpha:1.0]];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
@@ -482,6 +483,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [transform concat];
     [NSGraphicsContext saveGraphicsState];
     [[PDFView defaultPageBackgroundColor] set];
+    // @@ Dark mode
     if (shadowBlurRadius > 0.0)
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
     NSRectFill(bounds);

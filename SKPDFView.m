@@ -3966,10 +3966,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     CALayer *loupeLayer = nil;
     NSWindow *loupeWindow = nil;
     NSAutoreleasePool *pool = nil;
+    // @@ Dark mode
     NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
     NSColor *backgroundColor = [self backgroundColor];
     NSShadow *aShadow = nil;
     
+    // @@ Dark mode
     if ([backgroundColor alphaComponent] < 1.0)
         backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
     
@@ -3991,6 +3993,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if ([self displaysPageBreaks]) {
         aShadow = [[[NSShadow alloc] init] autorelease];
+        // @@ Dark mode
         [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
     }
     
