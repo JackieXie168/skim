@@ -77,6 +77,9 @@ enum {
 + (NSColor *)mainSourceListBackgroundColor;
 + (NSColor *)sourceListHighlightColorForView:(NSView *)view;
 
++ (NSColor *)selectionHighlightColor:(BOOL)active;
++ (NSColor *)selectionHighlightInteriorColor:(BOOL)active;
+
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 - (void)drawSwatchInRoundedRect:(NSRect)rect;

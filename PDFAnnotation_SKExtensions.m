@@ -414,7 +414,7 @@ static PDFAnnotation *currentActiveAnnotation = nil;
         NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
         CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
         CGContextSaveGState(context);
-        CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
+        CGColorRef color = [[NSColor selectionHighlightColor:active] CGColor];
         CGContextSetStrokeColorWithColor(context, color);
         CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), -0.5 * lineWidth, -0.5 * lineWidth), lineWidth);
         if ([self isResizable])

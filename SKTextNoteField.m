@@ -125,7 +125,7 @@
         [path stroke];
     }
     
-    [[self showsFirstResponder] ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor] setFill];
+    [[NSColor selectionHighlightColor:RUNNING_AFTER(10_12) || [self showsFirstResponder]] setFill];
     NSFrameRectWithWidth(cellFrame, 1.0 / [self scaleFactor]);
     
     [NSGraphicsContext restoreGraphicsState];

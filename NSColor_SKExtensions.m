@@ -121,6 +121,22 @@
         return [self disabledSourceListHighlightColor];
 }
 
++ (NSColor *)selectionHighlightColor:(BOOL)active {
+    // @@ Dark mode
+    if (active)
+        return [NSColor alternateSelectedControlColor];
+    else
+        return [NSColor disabledControlTextColor];
+}
+
++ (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
+    // @@ Dark mode
+    if (active)
+        return [NSColor selectedControlColor];
+    else
+        return [NSColor secondarySelectedControlColor];
+}
+
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     if (rgbColor) {

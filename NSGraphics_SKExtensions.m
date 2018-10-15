@@ -45,9 +45,9 @@ void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOO
 {
     // @@ Dark mode
     CGRect rect = CGRectMake(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius);
-    NSColor *color = [[(active ? [NSColor selectedControlColor] : [NSColor secondarySelectedControlColor]) colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
+    NSColor *color = [[[NSColor selectionHighlightInteriorColor:active] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
     CGContextSetFillColorWithColor(context, [color CGColor]);
-    color = (active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]);
+    color = [NSColor selectionHighlightColor:active];
     CGContextSetStrokeColorWithColor(context, [color CGColor]);
     CGContextSetLineWidth(context, 0.25 * radius);
     CGContextFillEllipseInRect(context, rect);

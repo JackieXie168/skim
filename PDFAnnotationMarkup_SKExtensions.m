@@ -320,7 +320,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     NSUInteger i, iMax = [lines count];
     CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
     PDFPage *page = [self page];
-    CGColorRef color = [(active ? [NSColor alternateSelectedControlColor] : [NSColor disabledControlTextColor]) CGColor];
+    CGColorRef color = [[NSColor selectionHighlightColor:active] CGColor];
     
     CGContextSaveGState(context);
     CGContextSetStrokeColorWithColor(context, color);
