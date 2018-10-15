@@ -450,9 +450,8 @@ static char SKFontWellFontSizeObservationContext;
 @synthesize textColor, hasTextColor;
 
 - (void)commonInit {
-    // @@ Dark mode
     if (textColor == nil)
-        [self setTextColor:[NSColor blackColor]];
+        [self setTextColor:[NSColor controlTextColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
     [self setButtonType:NSPushOnPushOffButton];
     [self setState:NSOffState];
