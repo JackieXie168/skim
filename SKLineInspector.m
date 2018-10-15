@@ -139,8 +139,6 @@ static SKLineInspector *sharedLineInspector = nil;
     NSImage *image = nil;
 	NSSize size = NSMakeSize(29.0, 12.0);
     
-    // @@ Dark mode
-    
     image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 3.0, 17.0, 6.0)];
         [path setLineWidth:2.0];
