@@ -40,6 +40,15 @@
 #import "SKRuntime.h"
 
 
+@interface SKDynamicColor : NSColor {
+    NSColor *lightColor;
+    NSColor *darkColor;
+}
+- (id)initWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor;
+@end
+
+#pragma mark -
+
 @implementation NSColor (SKExtensions)
 
 - (CGColorRef)fallback_CGColor {
@@ -58,6 +67,10 @@
 
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
+}
+
++ (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
+    return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
 }
 
 // @@ Dark mode
@@ -282,5 +295,80 @@
     }
     return nil;
 }
+
+@end
+
+#pragma mark -
+
+@implementation SKDynamicColor
+
+#define FORWARD( PROP, TYPE ) - (TYPE)PROP { return [[self effectiveColor] PROP]; }
+
+- (id)initWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
+    self = [super init];
+    if (self) {
+        lightColor = [aLightColor retain];
+        darkColor = [aDarkColor retain];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    SKDESTROY(lightColor);
+    SKDESTROY(darkColor);
+    [super dealloc];
+}
+
+- (NSColor *)effectiveColor {
+    return [self effectiveColor];
+}
+
+- (void)set {
+    [[self effectiveColor] set];
+}
+
+- (void)setStroke {
+    [[self effectiveColor] setStroke];
+}
+
+- (void)setFill {
+    [[self effectiveColor] setFill];
+}
+
+- (void)getWhite:(CGFloat *)white alpha:(CGFloat *)alpha {
+    [[self effectiveColor] getWhite:white alpha:alpha];
+}
+
+- (void)getRed:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue alpha:(CGFloat *)alpha {
+    [[self effectiveColor] getRed:red green:green blue:blue alpha:alpha];
+}
+
+- (void)getHue:(CGFloat *)hue saturation:(CGFloat *)saturation brightness:(CGFloat *)brightness alpha:(CGFloat *)alpha {
+    [[self effectiveColor] getHue:hue saturation:saturation brightness:brightness alpha:alpha];
+}
+
+- (void)getCyan:(CGFloat *)cyan magenta:(CGFloat *)magenta yellow:(CGFloat *)yellow black:(CGFloat *)black alpha:(CGFloat *)alpha {
+    [[self effectiveColor] getCyan:cyan magenta:magenta yellow:yellow black:black alpha:alpha];
+}
+
+- (void)getComponents:(CGFloat *)components {
+    [[self effectiveColor] getComponents:components];
+}
+
+FORWARD(colorSpaceName, NSString *)
+
+FORWARD(numberOfComponents, NSInteger)
+
+FORWARD(alphaComponent, CGFloat)
+FORWARD(whiteComponent, CGFloat)
+FORWARD(redComponent, CGFloat)
+FORWARD(greenComponent, CGFloat)
+FORWARD(blueComponent, CGFloat)
+FORWARD(hueComponent, CGFloat)
+FORWARD(saturationComponent, CGFloat)
+FORWARD(blackComponent, CGFloat)
+FORWARD(cyanComponent, CGFloat)
+FORWARD(magentaComponent, CGFloat)
+FORWARD(yellowComponent, CGFloat)
 
 @end
