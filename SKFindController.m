@@ -89,8 +89,8 @@
     size.width = 500.0;
     [gradientView setMaxSize:size];
     if (RUNNING_BEFORE(10_10)) {
-        [gradientView setGradient:[[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]] autorelease]];
-        [gradientView setAlternateGradient:nil];
+        [gradientView setStartingColor:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0]];
+        [gradientView setEndingColor:[NSColor colorWithCalibratedWhite:0.914 alpha:1.0]];
     }
     
     NSMenu *menu = [NSMenu menu];

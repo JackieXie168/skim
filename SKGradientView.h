@@ -41,8 +41,10 @@
 
 @interface SKGradientView : NSView {
 	id contentView;
-    NSGradient *gradient;
-    NSGradient *alternateGradient;
+    NSColor *startingColor;
+    NSColor *endingColor;
+    NSColor *alternateStartingColor;
+    NSColor *alternateEndingColor;
     NSColor *edgeColor;
     NSSize minSize;
     NSSize maxSize;
@@ -52,7 +54,7 @@
 }
 
 @property (nonatomic, retain) id contentView;
-@property (nonatomic, retain) NSGradient *gradient, *alternateGradient;
+@property (nonatomic, retain) NSColor *startingColor, *endingColor, *alternateStartingColor, *alternateEndingColor;
 @property (nonatomic, retain) NSColor *edgeColor;
 @property (nonatomic, readonly) NSRect contentRect;
 @property (nonatomic) NSSize minSize, maxSize;
