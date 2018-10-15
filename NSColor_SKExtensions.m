@@ -73,6 +73,14 @@
     return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
 }
 
++ (NSColor *)colorWithCalibratedLightWhite:(CGFloat)lightWhite darkWhite:(CGFloat)darkWhite alpha:(CGFloat)alpha {
+    return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
+}
+
++ (NSColor *)colorWithCalibratedLightRed:(CGFloat)lightRed lightGreen:(CGFloat)lightGreen lightBlue:(CGFloat)lightBlue darkRed:(CGFloat)darkRed darkGreen:(CGFloat)darkGreen darkBlue:(CGFloat)darkBlue alpha:(CGFloat)alpha {
+    return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
+}
+
 // @@ Dark mode
 
 + (NSColor *)keySourceListHighlightColor {

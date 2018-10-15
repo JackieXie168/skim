@@ -42,6 +42,7 @@
 #import "SKApplication.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -155,7 +156,7 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         
         // @@ Dark mode
         
-        [[NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7] setStroke];
+        [[NSColor colorWithCalibratedLightWhite:isHighlighted ? 1.0 : 0.5 darkWhite:isHighlighted ? 0.5 : 0.3 alpha:0.7] setStroke];
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
         y -= 2.0;
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];

@@ -522,6 +522,7 @@ static char SKFontWellFontSizeObservationContext;
     if ([self hasTextColor]) {
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
+        // @@ Dark mode
         if ([[[self textColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] brightnessComponent] > 0.8) {
             NSShadow *shade = [[[NSShadow alloc] init] autorelease];
             [shade setShadowColor:[NSColor blackColor]];

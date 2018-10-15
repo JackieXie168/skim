@@ -58,6 +58,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
+#import "NSColor_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -297,8 +298,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
     [[window contentView] addSubview:controlView];
     [pdfView setFrame:frame];
-    // @@ Dark mode
-    [window setBackgroundColor:[NSColor colorWithCalibratedWhite:0.97 alpha:1.0]];
+    [window setBackgroundColor:[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.1 alpha:1.0]];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     frame = [pdfView convertRect:rect fromPage:page];

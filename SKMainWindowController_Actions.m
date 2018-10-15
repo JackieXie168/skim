@@ -70,6 +70,7 @@
 #import "SKGradientView.h"
 #import "SKSnapshotWindowController.h"
 #import "PDFDocument_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -1003,8 +1004,7 @@ static NSArray *allMainDocumentPDFViews() {
             page = [pdfView pageForPoint:point nearest:YES];
             
             NSView *controlView = [secondaryPdfView controlView];
-            // @@ Dark mode
-            NSColor *color = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0];
+            NSColor *color = [NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.1 alpha:1.0];
             [(SKGradientView *)secondaryPdfContentView setGradient:[[[NSGradient alloc] initWithStartingColor:color endingColor:color] autorelease]];
             [(SKGradientView *)secondaryPdfContentView setAlternateGradient:nil];
             NSRect pdfRect, controlRect;

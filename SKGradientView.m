@@ -38,12 +38,14 @@
 
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define BORDER_SIZE 1.0
 
 // @@ Dark mode
 
-static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0.8, 0.95,  0.55};
+static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
+static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0.05, 0.1,  0.25};
 
 @implementation SKGradientView
 
@@ -60,11 +62,15 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.75, 0.9,  0
         autoTransparent = NO;
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
-        // @@ Dark mode
-        CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 5 : defaultGrays;
-        gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[0] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[1] alpha:1.0]];
-        alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:grays[2] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:grays[3] alpha:1.0]];
-        edgeColor = [[NSColor colorWithDeviceWhite:grays[4] alpha:1.0] retain];
+        if (RUNNING_BEFORE(10_10)) {
+            gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0]];
+            alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0]];
+            edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
+        } else {
+            gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedLightWhite:defaultGrays[0] darkWhite:defaultGrays[5] alpha:1.0] endingColor:[NSColor colorWithCalibratedLightWhite:defaultGrays[1] darkWhite:defaultGrays[6] alpha:1.0]];
+            alternateGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedLightWhite:defaultGrays[2] darkWhite:defaultGrays[7] alpha:1.0] endingColor:[NSColor colorWithCalibratedLightWhite:defaultGrays[3] darkWhite:defaultGrays[8] alpha:1.0]];
+            edgeColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[4] darkWhite:defaultGrays[9] alpha:1.0] retain];
+        }
     }
     return self;
 }
