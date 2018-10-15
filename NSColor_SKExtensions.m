@@ -70,15 +70,18 @@
 }
 
 + (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
-    return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
+    return aLightColor;
+    //return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
 }
 
 + (NSColor *)colorWithCalibratedLightWhite:(CGFloat)lightWhite darkWhite:(CGFloat)darkWhite alpha:(CGFloat)alpha {
-    return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
+    return [self colorWithCalibratedWhite:lightWhite alpha:alpha];
+    //return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
 }
 
 + (NSColor *)colorWithCalibratedLightRed:(CGFloat)lightRed lightGreen:(CGFloat)lightGreen lightBlue:(CGFloat)lightBlue darkRed:(CGFloat)darkRed darkGreen:(CGFloat)darkGreen darkBlue:(CGFloat)darkBlue alpha:(CGFloat)alpha {
-    return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
+    return [self colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha];
+    //return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
 }
 
 // @@ Dark mode
@@ -88,11 +91,11 @@
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[NSColor colorWithCalibratedRed:0.390 green:0.453 blue:0.534 alpha:1.0] retain];
+            graphiteColor = [[NSColor colorWithCalibratedLightRed:0.390 lightGreen:0.453 lightBlue:0.534 darkRed:0.390 darkGreen:0.453 darkBlue:0.534 alpha:1.0] retain];
         return graphiteColor;
     } else {
         if (color == nil)
-            color = [[NSColor colorWithCalibratedRed:0.251 green:0.487 blue:0.780 alpha:1.0] retain];
+            color = [[NSColor colorWithCalibratedLightRed:0.251 lightGreen:0.487 lightBlue:0.780 darkRed:0.251 darkGreen:0.487 darkBlue:0.780 alpha:1.0] retain];
         return color;
     }
 }
@@ -102,11 +105,11 @@
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[NSColor colorWithCalibratedRed:0.572 green:0.627 blue:0.680 alpha:1.0] retain];
+            graphiteColor = [[NSColor colorWithCalibratedLightRed:0.572 lightGreen:0.627 lightBlue:0.680 darkRed:0.572 darkGreen:0.627 darkBlue:0.680 alpha:1.0] retain];
         return graphiteColor;
     } else {
         if (color == nil)
-            color = [[NSColor colorWithCalibratedRed:0.556 green:0.615 blue:0.748 alpha:1.0] retain];
+            color = [[NSColor colorWithCalibratedLightRed:0.556 lightGreen:0.615 lightBlue:0.748 darkRed:0.556 darkGreen:0.615 darkBlue:0.748 alpha:1.0] retain];
         return color;
     }
 }
@@ -116,11 +119,11 @@
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[NSColor colorWithCalibratedRed:0.576 green:0.576 blue:0.576 alpha:1.0] retain];
+            graphiteColor = [[NSColor colorWithCalibratedLightRed:0.576 lightGreen:0.576 lightBlue:0.576 darkRed:0.576 darkGreen:0.576 darkBlue:0.576 alpha:1.0] retain];
         return graphiteColor;
     } else {
         if (color == nil)
-            color = [[NSColor colorWithCalibratedRed:0.576 green:0.576 blue:0.576 alpha:1.0] retain];
+            color = [[NSColor colorWithCalibratedLightRed:0.576 lightGreen:0.576 lightBlue:0.576 darkRed:0.576 darkGreen:0.576 darkBlue:0.576 alpha:1.0] retain];
         return color;
     }
 }
@@ -128,7 +131,7 @@
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil)
-        color = [[NSColor colorWithCalibratedRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.239216 darkGreen:0.266667 darkBlue:0.298039 alpha:1.0] retain];
     return color;
 }
 
