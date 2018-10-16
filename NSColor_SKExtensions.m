@@ -367,11 +367,11 @@
 }
 
 - (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
-    [[self effectiveColor] colorUsingColorSpace:space];
+    return [[self effectiveColor] colorUsingColorSpace:space];
 }
 
 - (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name {
-    [[self effectiveColor] colorUsingColorSpaceName:name];
+    return [[self effectiveColor] colorUsingColorSpaceName:name];
 }
 
 FORWARD(colorSpace, NSColorSpace *)
