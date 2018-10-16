@@ -483,7 +483,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [transform concat];
     [NSGraphicsContext saveGraphicsState];
     [[PDFView defaultPageBackgroundColor] set];
-    // @@ Dark mode
     if (shadowBlurRadius > 0.0)
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
     NSRectFill(bounds);
