@@ -348,7 +348,7 @@
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
+            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
             [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
             [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
             [pboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
@@ -382,7 +382,7 @@
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
+            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
             NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]] URLByAppendingPathExtension:@"tiff"];
             fileURL = [fileURL uniqueFileURL];
