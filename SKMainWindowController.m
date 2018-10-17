@@ -2791,12 +2791,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
     [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
-    [leftSideController.thumbnailTableView reloadData];
+    [leftSideController.thumbnailTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:anIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (void)updateThumbnailsAtPageIndexes:(NSIndexSet *)indexSet {
     [[thumbnails objectsAtIndexes:indexSet] setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
-    [leftSideController.thumbnailTableView reloadData];
+    [leftSideController.thumbnailTableView reloadDataForRowIndexes:indexSet columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (void)allThumbnailsNeedUpdate {
