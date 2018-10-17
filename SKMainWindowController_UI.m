@@ -503,8 +503,9 @@
         }
     } else if ([tv isEqual:leftSideController.findTableView]) {
         NSMutableString *string = [NSMutableString string];
+        NSArray *results = [leftSideController.findArrayController arrangedObjects];
         [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            PDFSelection *match = [searchResults objectAtIndex:idx];
+            PDFSelection *match = [results objectAtIndex:idx];
             [string appendString:@"* "];
             [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
             [string appendFormat:@": %@\n", [[match contextString] string]];
@@ -514,8 +515,9 @@
         [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
         NSMutableString *string = [NSMutableString string];
+        NSArray *results = [leftSideController.groupedFindArrayController arrangedObjects];
         [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            SKGroupedSearchResult *result = [groupedSearchResults objectAtIndex:idx];
+            SKGroupedSearchResult *result = [results objectAtIndex:idx];
             NSArray *matches = [result matches];
             [string appendString:@"* "];
             [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
