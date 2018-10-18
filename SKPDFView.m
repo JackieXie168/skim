@@ -2561,6 +2561,30 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 #pragma mark Event handling
 
+- (NSWindow *)newOverlayLayer:(CALayer *)layer wantsAdded:(BOOL)wantsAdded {
+    NSWindow *overlay = nil;
+    if (wantsAdded && [self wantsLayer]) {
+        [[self layer] addSublayer:layer];
+    } else {
+        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
+        [overlay setIgnoresMouseEvents:YES];
+        [[overlay contentView] setWantsLayer:YES];
+        [[[overlay contentView] layer] addSublayer:layer];
+        if (wantsAdded)
+            [[self window] addChildWindow:overlay ordered:NSWindowAbove];
+    }
+    return overlay;
+}
+
+- (void)removeLayer:(CALayer *)layer overlay:(NSWindow *)overlay {
+    if (overlay) {
+        [[self window] removeChildWindow:overlay];
+        [overlay orderOut:nil];
+    } else {
+        [layer removeFromSuperlayer];
+    }
+}
+
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta {
     NSRect bounds = [activeAnnotation bounds];
     NSRect newBounds = bounds;
@@ -3379,15 +3403,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     }
     
-    if ([self wantsLayer]) {
-        [[self layer] addSublayer:layer];
-    } else {
-        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
-        [overlay setIgnoresMouseEvents:YES];
-        [[overlay contentView] setWantsLayer:YES];
-        [[[overlay contentView] layer] addSublayer:layer];
-        [window addChildWindow:overlay ordered:NSWindowAbove];
-    }
+    overlay = [self newOverlayLayer:layer wantsAdded:YES];
     
     // don't coalesce mouse event from mouse while drawing,
     // but not from tablets because those fire very rapidly and lead to serious delays
@@ -3438,13 +3454,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     }
     
-    if (overlay) {
-        [window removeChildWindow:overlay];
-        [overlay orderOut:nil];
-        [overlay release];
-    } else {
-        [layer removeFromSuperlayer];
-    }
+    [self removeLayer:layer overlay:overlay];
+    [overlay release];
     
     [NSEvent setMouseCoalescingEnabled:wasMouseCoalescingEnabled];
     
@@ -3837,15 +3848,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [layer setMasksToBounds:YES];
     [layer setZPosition:1.0];
     
-    if ([self wantsLayer]) {
-        [[self layer] addSublayer:layer];
-    } else {
-        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
-        [overlay setIgnoresMouseEvents:YES];
-        [[overlay contentView] setWantsLayer:YES];
-        [[[overlay contentView] layer] addSublayer:layer];
-        [window addChildWindow:overlay ordered:NSWindowAbove];
-    }
+    overlay = [self newOverlayLayer:layer wantsAdded:YES];
     
 	while (YES) {
 		theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
@@ -3878,14 +3881,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         CGPathRelease(path);
     }
     
-    if (overlay) {
-        [window removeChildWindow:overlay];
-        [overlay orderOut:nil];
-        [overlay release];
-    } else {
-        [layer removeFromSuperlayer];
-    }
-    
+    [self removeLayer:layer overlay:overlay];
+    [overlay release];
+
 	[self setCursorForMouse:theEvent];
     
     NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
@@ -3985,11 +3983,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
     [loupeLayer setFrame:NSRectToCGRect([self bounds])];
     
-    loupeWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
+    loupeWindow = [self newOverlayLayer:loupeLayer wantsAdded:NO];
     [loupeWindow setHasShadow:YES];
-    [loupeWindow setIgnoresMouseEvents:YES];
-    [[loupeWindow contentView] setWantsLayer:YES];
-    [[[loupeWindow contentView] layer] addSublayer:loupeLayer];
     
     if ([self displaysPageBreaks]) {
         aShadow = [[[NSShadow alloc] init] autorelease];
@@ -4183,15 +4178,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [layer setMasksToBounds:YES];
     [layer setZPosition:1.0];
     
-    if ([self wantsLayer]) {
-        [[self layer] addSublayer:layer];
-    } else {
-        overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
-        [overlay setIgnoresMouseEvents:YES];
-        [[overlay contentView] setWantsLayer:YES];
-        [[[overlay contentView] layer] addSublayer:layer];
-        [window addChildWindow:overlay ordered:NSWindowAbove];
-    }
+    overlay = [self newOverlayLayer:layer wantsAdded:YES];
     
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
@@ -4224,16 +4211,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         CGPathRelease(path);
     }
     
-    if (overlay) {
-        [window removeChildWindow:overlay];
-        [overlay orderOut:nil];
-        [overlay release];
-    } else {
-        [layer removeFromSuperlayer];
-    }
+    [self removeLayer:layer overlay:overlay];
+    [overlay release];
     
     [self setCursorForMouse:theEvent];
-    
     
     if (dragged && NSIsEmptyRect(selRect) == NO) {
         
