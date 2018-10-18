@@ -47,7 +47,11 @@
 #import "NSColor_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKSnapshotWindowController.h"
+#import "NSURL_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
+#define IMAGE_COLUMNID @"image"
 #define COLOR_COLUMNID @"color"
 
 @implementation SKRightSideViewController
@@ -91,8 +95,8 @@
     
     [noteOutlineView setDelegate:mainController];
     [noteOutlineView setDataSource:mainController];
-    [snapshotTableView setDelegate:mainController];
-    [snapshotTableView setDataSource:mainController];
+    [snapshotTableView setDelegate:self];
+    [snapshotTableView setDataSource:self];
     [[noteOutlineView menu] setDelegate:mainController];
     [[snapshotTableView menu] setDelegate:mainController];
     
@@ -115,6 +119,86 @@
     [noteOutlineView registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
     [snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
+}
+
+#pragma mark NSTableView datasource protocol
+
+// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
+    if ([tv isEqual:snapshotTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [[snapshotArrayController arrangedObjects] objectAtIndex:idx];
+            [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
+            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [pboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:snapshotTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [[snapshotArrayController arrangedObjects] objectAtIndex:idx];
+            PDFPage *page = [[[mainController pdfView] document] pageAtIndex:[snapshot pageIndex]];
+            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[mainController document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
+            fileURL = [fileURL uniqueFileURL];
+            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
+        }
+    }
+    return [NSArray array];
+}
+
+#pragma mark NSTableView delegate protocol
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:snapshotTableView]) {
+        NSInteger row = [snapshotTableView selectedRow];
+        if (row != -1) {
+            SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+            if ([[controller window] isVisible])
+                [[controller window] orderFront:self];
+        }
+    }
+}
+
+- (void)tableViewColumnDidResize:(NSNotification *)aNotification {
+    if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
+        if ([[aNotification object] isEqual:snapshotTableView]) {
+            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [snapshotTableView numberOfRows])]];
+        }
+    }
+}
+
+- (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
+    if ([tv isEqual:snapshotTableView]) {
+        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+        return [mainController heightOfRowForThumbnailSize:thumbSize inTableView:tv];
+    }
+    return [tv rowHeight];
+}
+
+- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:snapshotTableView]) {
+        NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+        [controllers makeObjectsPerformSelector:@selector(close)];
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)tv canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:snapshotTableView]) {
+        return [rowIndexes count] > 0;
+    }
+    return NO;
 }
 
 @end

@@ -343,15 +343,6 @@
             [pboard setPropertyList:[NSArray arrayWithObject:fileExt] forType:NSFilesPromisePboardType];
             return YES;
         }
-    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
-            [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
-            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-            [pboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
-            return YES;
-        }
     }
     return NO;
 }
@@ -377,16 +368,6 @@
             if ([data writeToURL:fileURL atomically:YES])
                 return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
         }
-    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
-            PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]] URLByAppendingPathExtension:@"tiff"];
-            fileURL = [fileURL uniqueFileURL];
-            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
-                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
-        }
     }
     return [NSArray array];
 }
@@ -402,13 +383,6 @@
             
             if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
                 [self hideLeftSideWindow];
-        }
-    } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
-        NSInteger row = [rightSideController.snapshotTableView selectedRow];
-        if (row != -1) {
-            SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
-            if ([[controller window] isVisible])
-                [[controller window] orderFront:self];
         }
     }
 }
@@ -429,49 +403,34 @@
     if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
         if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
             [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [leftSideController.thumbnailTableView numberOfRows])]];
-        } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
-            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.snapshotTableView numberOfRows])]];
         }
     }
+}
+
+- (CGFloat)heightOfRowForThumbnailSize:(NSSize)thumbSize inTableView:(NSTableView *)tv {
+    NSSize cellSize;
+    cellSize.width = [[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width];
+    if ([tv isEqual:leftSideController.thumbnailTableView])
+        cellSize.height = fmin(thumbSize.height, roundedThumbnailSize);
+    else if ([tv isEqual:rightSideController.snapshotTableView])
+        cellSize.height = fmin(thumbSize.height, roundedSnapshotThumbnailSize);
+    else
+        cellSize.height = thumbSize.height;
+    if (thumbSize.height < [tv rowHeight])
+        return [tv rowHeight];
+    else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
+        return cellSize.height;
+    else
+        return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+    return [tv rowHeight];
 }
 
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     fmin(thumbSize.height, roundedThumbnailSize));
-        if (thumbSize.height < [tv rowHeight])
-            return [tv rowHeight];
-        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
-            return cellSize.height;
-        else
-            return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSSize thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     fmin(thumbSize.height, roundedSnapshotThumbnailSize));
-        if (thumbSize.height < [tv rowHeight])
-            return [tv rowHeight];
-        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
-            return cellSize.height;
-        else
-            return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+        return [self heightOfRowForThumbnailSize:thumbSize inTableView:tv];
     }
     return [tv rowHeight];
-}
-
-- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSArray *controllers = [[rightSideController.snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
-        [controllers makeObjectsPerformSelector:@selector(close)];
-    }
-}
-
-- (BOOL)tableView:(NSTableView *)tv canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:rightSideController.snapshotTableView]) {
-        return [rowIndexes count] > 0;
-    }
-    return NO;
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {

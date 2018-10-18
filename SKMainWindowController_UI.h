@@ -51,4 +51,6 @@
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 
+- (CGFloat)heightOfRowForThumbnailSize:(NSSize)thumbSize inTableView:(NSTableView *)tv;
+
 @end
