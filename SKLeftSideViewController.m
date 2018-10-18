@@ -211,13 +211,6 @@
     }
 }
 
-- (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]) {
-        return [rowIndexes count] > 0;
-    }
-    return NO;
-}
-
 - (void)tableViewMoveLeft:(NSTableView *)tv {
     if (([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView])) {
         [mainController selectFindResultHighlight:NSSelectingPrevious];
