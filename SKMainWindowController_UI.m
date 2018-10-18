@@ -314,10 +314,6 @@
 
 #pragma mark NSTableView datasource protocol
 
-- (NSString *)draggedFileNameForPage:(PDFPage *)page {
-    return [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-}
-
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
 
@@ -352,7 +348,8 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSURL *fileURL = [dropDestination URLByAppendingPathComponent:[self draggedFileNameForPage:page]];
+            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+            NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
             NSString *pathExt = nil;
             NSData *data = nil;
             
