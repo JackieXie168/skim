@@ -117,11 +117,15 @@
     } else {
         isAnimating = YES;
         
-        [contentView setWantsLayer:YES];
-        [contentView displayIfNeeded];
-        if (changeButton) {
-            [buttonView setWantsLayer:YES];
-            [buttonView displayIfNeeded];
+        BOOL wantsLayer = [contentView wantsLayer];
+        
+        if (wantsLayer == NO) {
+            [contentView setWantsLayer:YES];
+            [contentView displayIfNeeded];
+            if (changeButton) {
+                [buttonView setWantsLayer:YES];
+                [buttonView displayIfNeeded];
+            }
         }
         
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -131,9 +135,11 @@
                     [[buttonView animator] replaceSubview:oldButton with:newButton];
             }
             completionHandler:^{
-                [contentView setWantsLayer:NO];
-                if (changeButton)
-                    [buttonView setWantsLayer:NO];
+                if (wantsLayer == NO) {
+                    [contentView setWantsLayer:NO];
+                    if (changeButton)
+                        [buttonView setWantsLayer:NO];
+                }
                 [[firstResponder window] makeFirstResponder:firstResponder];
                 [[contentView window] recalculateKeyViewLoop];
                 isAnimating = NO;
