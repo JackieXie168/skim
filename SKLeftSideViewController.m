@@ -177,9 +177,6 @@
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView] || [[aNotification object] isEqual:groupedFindTableView]) {
         [mainController selectFindResultHighlight:NSDirectSelection];
-        
-        //if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-        //    [self hideLeftSideWindow];
     }
 }
 
