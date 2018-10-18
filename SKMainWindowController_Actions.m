@@ -83,7 +83,6 @@
 
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
-- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
 - (void)updateNoteFilterPredicate;
 - (void)updateSnapshotFilterPredicate;
 @end
@@ -217,7 +216,7 @@
 
 - (void)goToSelectedFindResults:(id)sender {
     if ([sender clickedRow] != -1)
-        [self updateFindResultHighlightsForDirection:NSDirectSelection];
+        [self selectFindResultHighlight:NSDirectSelection];
 }
 
 - (void)toggleSelectedSnapshots:(id)sender {

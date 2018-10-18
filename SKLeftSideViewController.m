@@ -47,6 +47,9 @@
 #import "SKTocOutlineView.h"
 #import "SKSourceListTextFieldCell.h"
 #import "SKGroupedSearchResult.h"
+#import "PDFSelection_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
+#import "SKImageToolTipContext.h"
 
 #define PAGE_COLUMNID      @"page"
 #define LABEL_COLUMNID     @"label"
@@ -107,9 +110,9 @@
     [tocOutlineView setDataSource:mainController];
     [thumbnailTableView setDelegate:mainController];
     [thumbnailTableView setDataSource:mainController];
-    [findTableView setDelegate:mainController];
-    [groupedFindTableView setDelegate:mainController];
-    [groupedFindTableView setDataSource:mainController];
+    [findTableView setDelegate:self];
+    [groupedFindTableView setDelegate:self];
+    [groupedFindTableView setDataSource:self];
     [[thumbnailTableView menu] setDelegate:mainController];
     [[findTableView menu] setDelegate:mainController];
     [[groupedFindTableView menu] setDelegate:mainController];
@@ -154,6 +157,88 @@
     [[findTableView headerView] setNeedsDisplay:YES];
     [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
     [[groupedFindTableView headerView] setNeedsDisplay:YES];
+}
+
+#pragma mark NSTableView datasource protocol
+
+// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
+
+- (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
+    if ([tv isEqual:groupedFindTableView]) {
+        [groupedFindArrayController setSortDescriptors:[tv sortDescriptors]];
+    }
+}
+
+#pragma mark NSTableView delegate protocol
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:findTableView] || [[aNotification object] isEqual:groupedFindTableView]) {
+        [mainController selectFindResultHighlight:NSDirectSelection];
+        
+        //if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+        //    [self hideLeftSideWindow];
+    }
+}
+
+- (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:findTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        NSArray *results = [findArrayController arrangedObjects];
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            PDFSelection *match = [results objectAtIndex:idx];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
+            [string appendFormat:@": %@\n", [[match contextString] string]];
+        }];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
+    } else if ([tv isEqual:groupedFindTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        NSArray *results = [groupedFindArrayController arrangedObjects];
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            SKGroupedSearchResult *result = [results objectAtIndex:idx];
+            NSArray *matches = [result matches];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
+            [string appendString:@": "];
+            [string appendFormat:NSLocalizedString(@"%ld Results", @""), (long)[matches count]];
+            [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
+        }];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]) {
+        return [rowIndexes count] > 0;
+    }
+    return NO;
+}
+
+- (void)tableViewMoveLeft:(NSTableView *)tv {
+    if (([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView])) {
+        [mainController selectFindResultHighlight:NSSelectingPrevious];
+    }
+}
+
+- (void)tableViewMoveRight:(NSTableView *)tv {
+    if (([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView])) {
+        [mainController selectFindResultHighlight:NSSelectingNext];
+    }
+}
+
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
+    if ([tv isEqual:findTableView])
+        return [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
+    else if ([tv isEqual:groupedFindTableView])
+        return [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+    return nil;
 }
 
 @end

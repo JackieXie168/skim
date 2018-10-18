@@ -2050,6 +2050,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 #define FIND_RESULT_MARGIN 50.0
 
+- (void)selectFindResultHighlight:(NSSelectionDirection)direction {
+    [self updateFindResultHighlightsForDirection:direction];
+    if (direction == NSDirectSelection && [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+        [self hideLeftSideWindow];
+}
+
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction {
     NSArray *findResults = nil;
     

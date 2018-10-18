@@ -118,8 +118,6 @@
 
 - (void)updateNoteFilterPredicate;
 
-- (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
-
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
 @end
@@ -393,21 +391,10 @@
     return [NSArray array];
 }
 
-- (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
-    if ([tv isEqual:leftSideController.groupedFindTableView]) {
-        [leftSideController.groupedFindArrayController setSortDescriptors:[tv sortDescriptors]];
-    }
-}
-
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:leftSideController.findTableView] || [[aNotification object] isEqual:leftSideController.groupedFindTableView]) {
-        [self updateFindResultHighlightsForDirection:NSDirectSelection];
-        
-        if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-            [self hideLeftSideWindow];
-    } else if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
+    if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
         if (mwcFlags.updatingThumbnailSelection == 0) {
             NSInteger row = [leftSideController.thumbnailTableView selectedRow];
             if (row != -1)
@@ -501,38 +488,11 @@
             [pboard clearContents];
             [pboard writeObjects:[NSArray arrayWithObjects:pboardItem, nil]];
         }
-    } else if ([tv isEqual:leftSideController.findTableView]) {
-        NSMutableString *string = [NSMutableString string];
-        NSArray *results = [leftSideController.findArrayController arrangedObjects];
-        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            PDFSelection *match = [results objectAtIndex:idx];
-            [string appendString:@"* "];
-            [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
-            [string appendFormat:@": %@\n", [[match contextString] string]];
-        }];
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard clearContents];
-        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
-    } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
-        NSMutableString *string = [NSMutableString string];
-        NSArray *results = [leftSideController.groupedFindArrayController arrangedObjects];
-        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            SKGroupedSearchResult *result = [results objectAtIndex:idx];
-            NSArray *matches = [result matches];
-            [string appendString:@"* "];
-            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
-            [string appendString:@": "];
-            [string appendFormat:NSLocalizedString(@"%ld Results", @""), (long)[matches count]];
-            [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
-        }];
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard clearContents];
-        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     }
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
@@ -547,26 +507,6 @@
         }
     }
     return NSNotFound;
-}
-
-- (void)tableViewMoveLeft:(NSTableView *)tv {
-    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
-        [self updateFindResultHighlightsForDirection:NSSelectingPrevious];
-    }
-}
-
-- (void)tableViewMoveRight:(NSTableView *)tv {
-    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
-        [self updateFindResultHighlightsForDirection:NSSelectingNext];
-    }
-}
-
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
-    if ([tv isEqual:leftSideController.findTableView])
-        return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
-    else if ([tv isEqual:leftSideController.groupedFindTableView])
-        return [[[[[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
-    return nil;
 }
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

@@ -299,6 +299,8 @@ enum {
 
 - (void)showFindBar;
 
+- (void)selectFindResultHighlight:(NSSelectionDirection)direction;
+
 - (void)updateOutlineSelection;
 
 - (void)updateNoteSelection;
