@@ -418,6 +418,7 @@
             if (textField == nil) {
                 textField = [[[NSTextField alloc] init] autorelease];
                 [textField setCell:[[[SKCenteredTextFieldCell alloc] init] autorelease]];
+                [textField setAlignment:NSRightTextAlignment];
                 [textField setIdentifier:tcID];
             }
             [textField setStringValue:[thumbnail label]];

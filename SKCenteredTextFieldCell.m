@@ -37,10 +37,13 @@
  */
 
 #import "SKCenteredTextFieldCell.h"
+#import "NSColor_SKExtensions.h"
 
 #define TEXT_OFFSET 1.0
 
 @implementation SKCenteredTextFieldCell
+
+@synthesize level;
 
 - (NSRect)centeredFrame:(NSRect)cellFrame inView:(NSView *)view {
     CGFloat height = [self cellSizeForBounds:cellFrame].height;
@@ -53,7 +56,16 @@
 }
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [super drawInteriorWithFrame:[self centeredFrame:cellFrame inView:controlView] inView:controlView];
+    cellFrame = [self centeredFrame:cellFrame inView:controlView];
+    if ([self isHighlighted] == NO && level > 0 && level < 6) {
+        NSColor *color = [[NSColor sourceListHighlightColorForView:controlView] colorWithAlphaComponent:0.5 * (6 - level)];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:color endingColor:[NSColor clearColor]] autorelease];
+        NSPoint point = NSMakePoint(NSMidX(cellFrame), NSMidY(cellFrame));
+        [NSGraphicsContext saveGraphicsState];
+        [gradient drawFromCenter:point radius:0.0 toCenter:point radius:8.0 options:0];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    [super drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
 - (NSRect)expansionFrameWithFrame:(NSRect)cellFrame inView:(NSView *)view {
