@@ -2731,7 +2731,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             
             if (sameSize == NO)
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
-            [leftSideController.thumbnailTableView setNeedsDisplayInRect:[leftSideController.thumbnailTableView frameOfCellAtColumn:0 row:pageIndex]];
+            [leftSideController.thumbnailTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         });
     });
     

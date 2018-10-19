@@ -60,7 +60,7 @@
 
 @implementation SKLeftSideViewController
 
-@synthesize tocOutlineView, thumbnailArrayController, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
+@synthesize tocOutlineView, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
 
 - (void)dealloc {
     [thumbnailTableView setDelegate:nil];
@@ -70,7 +70,6 @@
     [groupedFindTableView setDataSource:nil];
     [tocOutlineView setDelegate:nil];
     [tocOutlineView setDataSource:nil];
-    SKDESTROY(thumbnailArrayController);
     SKDESTROY(findArrayController);
     SKDESTROY(groupedFindArrayController);
     SKDESTROY(tocOutlineView);
@@ -130,11 +129,6 @@
     [[[findTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[groupedFindTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
-    
-    if (RUNNING_AFTER(10_9)) {
-        [thumbnailTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-        [(SKSourceListTextFieldCell *)[[thumbnailTableView tableColumnWithIdentifier:PAGE_COLUMNID] dataCell] setSimulatesSourceList:YES];
-    }
     
     NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
     [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];

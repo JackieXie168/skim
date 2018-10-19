@@ -80,6 +80,7 @@
 #import "NSURL_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
+#import "SKCenteredTextFieldCell.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -106,6 +107,17 @@
 #define EXTRA_ROW_HEIGHT 2.0
 #define DEFAULT_TEXT_ROW_HEIGHT 85.0
 #define DEFAULT_MARKUP_ROW_HEIGHT 50.0
+
+#if SDK_BEFORE(10_7)
+@interface NSView (SKLionDeclarations)
+- (NSString *)identifier;
+- (void)setIdentifier:(NSString *)newIdentifier;
+@end
+
+@interface NSTableView (SKLionDeclarations)
+- (NSView *)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
+@end
+#endif
 
 @interface SKMainWindowController (SKPrivateMain)
 
@@ -315,9 +327,25 @@
 #pragma mark NSTableView datasource protocol
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        return [self countOfThumbnails];
+    }
+    return 0;
+}
 
-- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([tv isEqual:leftSideController.thumbnailTableView] && RUNNING_BEFORE(10_7)) {
+        SKThumbnail *thumbnail = [self objectInThumbnailsAtIndex:row];
+        NSString *tcID = [tableColumn identifier];
+        if ([tcID isEqualToString:IMAGE_COLUMNID]) {
+            return [thumbnail image];
+        } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
+            return [thumbnail label];
+        }
+    }
+    return nil;
+}
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
@@ -370,6 +398,34 @@
 }
 
 #pragma mark NSTableView delegate protocol
+
+// This makes the thumbnail tableview view based on 10.7+
+// on 10.6 this is ignored, and the cell based tableview uses the datasource methods
+- (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        SKThumbnail *thumbnail = [self objectInThumbnailsAtIndex:row];
+        NSString *tcID = [tableColumn identifier];
+        if ([tcID isEqualToString:IMAGE_COLUMNID]) {
+            NSImageView *imageView = [tv makeViewWithIdentifier:tcID owner:self];
+            if (imageView == nil) {
+                imageView = [[[NSImageView alloc] init] autorelease];
+                [imageView setIdentifier:tcID];
+            }
+            [imageView setImage:[thumbnail image]];
+            return imageView;
+        } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
+            NSTextField *textField = [tv makeViewWithIdentifier:tcID owner:self];
+            if (textField == nil) {
+                textField = [[[NSTextField alloc] init] autorelease];
+                [textField setCell:[[[SKCenteredTextFieldCell alloc] init] autorelease]];
+                [textField setIdentifier:tcID];
+            }
+            [textField setStringValue:[thumbnail label]];
+            return textField;
+        }
+    }
+    return nil;
+}
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
