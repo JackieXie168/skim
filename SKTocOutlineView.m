@@ -78,31 +78,6 @@
     [super drawRow:row clipRect:clipRect];
 }
 
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular) {
-        [NSGraphicsContext saveGraphicsState];
-        [[NSColor sourceListHighlightColorForView:self] setFill];
-        [[self selectedRowIndexes] enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop){
-                NSRectFill([self rectOfRow:row]);
-            }];
-        [NSGraphicsContext restoreGraphicsState];
-    } else {
-        [super highlightSelectionInClipRect:clipRect];
-    }
-}
-
-- (NSCell *)preparedCellAtColumn:(NSInteger)column row:(NSInteger)row {
-    NSCell *cell = [super preparedCellAtColumn:column row:row];
-    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleRegular && [self isRowSelected:row] && [cell type] == NSTextCellType) {
-        NSMutableAttributedString *attrString = [[cell attributedStringValue] mutableCopy];
-        NSFont *font = [[NSFontManager sharedFontManager] convertFont:[cell font] toHaveTrait:NSBoldFontMask];
-        [attrString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [attrString length])];
-        [cell setAttributedStringValue:attrString];
-        [attrString release];
-    }
-    return cell;
-}
-
 - (void)handleHighlightsChanged {
     if (RUNNING_BEFORE(10_7) && [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
@@ -135,27 +110,21 @@
 }
 
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
-    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList) {
-        [self handleHighlightsChanged];
-    } else {
-        if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-            [self setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
-        else
-            [self setBackgroundColor:[NSColor controlColor]];
-        [self setNeedsDisplay:YES];
-    }
+    [self handleHighlightsChanged];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    NSWindow *oldWindow = [self window];
-    NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
-    if (oldWindow) {
-        for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
-    }
-    if (newWindow) {
-        for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+    if (RUNNING_BEFORE(10_7)) {
+        NSWindow *oldWindow = [self window];
+        NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+        if (oldWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
+        }
+        if (newWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+        }
     }
     [super viewWillMoveToWindow:newWindow];
 }
