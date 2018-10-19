@@ -40,8 +40,5 @@
 #import "SKSourceListTextFieldCell.h"
 
 
-@interface SKCenteredTextFieldCell : SKSourceListTextFieldCell {
-    NSUInteger level;
-}
-@property (nonatomic) NSUInteger level;
+@interface SKCenteredTextFieldCell : SKSourceListTextFieldCell
 @end
