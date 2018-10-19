@@ -50,7 +50,7 @@
 }
 
 - (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
+    if (RUNNING_BEFORE(10_10) && [[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
         [self isRowSelected:row] == NO) {
         
         NSUInteger level = [[self delegate] tableView:self highlightLevelForRow:row];
@@ -99,7 +99,7 @@
 }
 
 - (void)handleHighlightsChanged {
-    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
+    if (RUNNING_BEFORE(10_7) && [[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
 }
 
