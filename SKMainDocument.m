@@ -296,7 +296,7 @@ enum {
 - (void)saveRecentDocumentInfo {
     NSURL *fileURL = [self fileURL];
     NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
-    if (fileURL && pageIndex != NSNotFound && [self mainWindowController])
+    if (fileURL && pageIndex != NSNotFound && [[[self mainWindowController] window] delegate])
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
