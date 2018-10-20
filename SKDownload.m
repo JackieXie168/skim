@@ -43,15 +43,9 @@
 #import "SKStringConstants.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
+NSString *SKDownloadFileURLKey = @"fileURL";
 NSString *SKDownloadStatusKey = @"status";
 NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
-
-#define SKFileURLKey  @"fileURL"
-#define SKFileIconKey  @"fileIcon"
-#define SKCanCancelKey @"canCancel"
-#define SKCanRemoveKey @"canRemove"
-#define SKCanResumeKey @"canResume"
-#define SKInfoKey      @"info"
 
 @interface SKDownload ()
 @property (nonatomic) SKDownloadStatus status;
@@ -67,30 +61,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @synthesize URL, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
 @dynamic properties, fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
 
-static NSSet *keysAffectedByFileURL = nil;
-static NSSet *keysAffectedByDownloadStatus = nil;
-static NSSet *fileURLSet = nil;
-static NSSet *downloadStatusSet = nil;
 static NSSet *infoKeys = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    keysAffectedByFileURL = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKFileIconKey, nil];
-    keysAffectedByDownloadStatus = [[NSSet alloc] initWithObjects:SKCanCancelKey, SKCanRemoveKey, SKCanResumeKey, nil];
-    fileURLSet = [[NSSet alloc] initWithObjects:SKFileURLKey, nil];
-    downloadStatusSet = [[NSSet alloc] initWithObjects:SKDownloadStatusKey, nil];
     infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
-    NSSet *set = [super keyPathsForValuesAffectingValueForKey:key];
-    if ([keysAffectedByFileURL containsObject:key])
-        return [set count] > 0 ? [set setByAddingObjectsFromSet:fileURLSet] : fileURLSet;
-    if ([keysAffectedByDownloadStatus containsObject:key])
-        return [set count] > 0 ? [set setByAddingObjectsFromSet:downloadStatusSet] : downloadStatusSet;
-    if ([SKInfoKey isEqualToString:key])
-        return [set count] > 0 ? [set setByAddingObjectsFromSet:infoKeys] : infoKeys;
-    return set;
 }
 
 - (id)initWithURL:(NSURL *)aURL {
@@ -115,7 +90,7 @@ static NSSet *infoKeys = nil;
     self = [super init];
     if (self) {
         NSString *URLString = [properties objectForKey:@"URL"];
-        NSString *fileURLPath = [properties objectForKey:@"fileURL"];
+        NSString *fileURLPath = [properties objectForKey:@"file"];
         if (URLString)
             URL = [[NSURL alloc] initWithString:URLString];
         URLDownload = nil;
@@ -179,7 +154,7 @@ static NSSet *infoKeys = nil;
     [dict setValue:[NSNumber numberWithInteger:status] forKey:@"status"];
     [dict setValue:[NSNumber numberWithLongLong:expectedContentLength] forKey:@"expectedContentLength"];
     [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
-    [dict setValue:[[self fileURL] path] forKey:@"fileURL"];
+    [dict setValue:[[self fileURL] path] forKey:@"file"];
     if ([self status] == SKDownloadStatusCanceled)
         [dict setValue:resumeData ?: [URLDownload resumeData] forKey:@"resumeData"];
     return dict;

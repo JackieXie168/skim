@@ -41,6 +41,7 @@
 
 // these are the keys used for the info
 extern NSString *SKDownloadFileNameKey;
+extern NSString *SKDownloadFileURLKey;
 extern NSString *SKDownloadStatusKey;
 extern NSString *SKDownloadProgressIndicatorKey;
 
