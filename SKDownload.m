@@ -114,9 +114,13 @@ static NSSet *infoKeys = nil;
 - (id)initWithProperties:(NSDictionary *)properties {
     self = [super init];
     if (self) {
-        URL = [[properties objectForKey:@"URL"] retain];
+        NSString *URLString = [properties objectForKey:@"URL"];
+        NSString *fileURLPath = [properties objectForKey:@"fileURL"];
+        if (URLString)
+            URL = [[NSURL alloc] initWithString:URLString];
         URLDownload = nil;
-        fileURL = [[properties objectForKey:@"fileURL"] retain];
+        if (fileURLPath)
+            fileURL = [[NSURL alloc] initFileURLWithPath:fileURLPath];
         fileIcon = fileURL ? [[[NSWorkspace sharedWorkspace] iconForFileType:[fileURL pathExtension]] retain] : nil;
         expectedContentLength = [[properties objectForKey:@"expectedContentLength"] longLongValue];
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
@@ -171,11 +175,11 @@ static NSSet *infoKeys = nil;
 
 - (NSDictionary *)properties {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setValue:[self URL] forKey:@"URL"];
+    [dict setValue:[[self URL] absoluteString] forKey:@"URL"];
     [dict setValue:[NSNumber numberWithInteger:status] forKey:@"status"];
     [dict setValue:[NSNumber numberWithLongLong:expectedContentLength] forKey:@"expectedContentLength"];
     [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
-    [dict setValue:[self fileURL] forKey:@"fileURL"];
+    [dict setValue:[[self fileURL] path] forKey:@"fileURL"];
     if ([self status] == SKDownloadStatusCanceled)
         [dict setValue:resumeData ?: [URLDownload resumeData] forKey:@"resumeData"];
     return dict;
