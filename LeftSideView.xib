@@ -275,8 +275,8 @@
 											<reference key="NSTextColor" ref="976628544"/>
 										</object>
 										<object class="NSTextFieldCell" key="NSDataCell" id="123467765">
-											<int key="NSCellFlags">338690112</int>
-											<int key="NSCellFlags2">67109888</int>
+											<int key="NSCellFlags">68157504</int>
+											<int key="NSCellFlags2">67113984</int>
 											<object class="NSFont" key="NSSupport" id="28">
 												<string key="NSName">.SFNSText</string>
 												<double key="NSSize">12</double>
@@ -438,8 +438,8 @@
 											<reference key="NSTextColor" ref="976628544"/>
 										</object>
 										<object class="NSTextFieldCell" key="NSDataCell" id="701993488">
-											<int key="NSCellFlags">337641536</int>
-											<int key="NSCellFlags2">2048</int>
+											<int key="NSCellFlags">67108928</int>
+											<int key="NSCellFlags2">6144</int>
 											<reference key="NSSupport" ref="278281320"/>
 											<reference key="NSControlView" ref="862316959"/>
 											<reference key="NSBackgroundColor" ref="456770670"/>
@@ -463,8 +463,8 @@
 											<reference key="NSTextColor" ref="976628544"/>
 										</object>
 										<object class="NSTextFieldCell" key="NSDataCell" id="1044552294">
-											<int key="NSCellFlags">338690112</int>
-											<int key="NSCellFlags2">67109888</int>
+											<int key="NSCellFlags">68157504</int>
+											<int key="NSCellFlags2">67113984</int>
 											<reference key="NSSupport" ref="28"/>
 											<reference key="NSControlView" ref="862316959"/>
 											<reference key="NSBackgroundColor" ref="958446864"/>
@@ -1826,10 +1826,8 @@
 				<boolean value="YES" key="120.ImportedFromIB2"/>
 				<string key="121.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="121.ImportedFromIB2"/>
-				<string key="122.CustomClassName">SKSourceListTextFieldCell</string>
 				<string key="122.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="122.ImportedFromIB2"/>
-				<string key="123.CustomClassName">SKSourceListTextFieldCell</string>
 				<string key="123.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="123.ImportedFromIB2"/>
 				<string key="124.IBEditorWindowLastContentRect">{{189, 238}, {200, 400}}</string>

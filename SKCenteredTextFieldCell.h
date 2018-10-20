@@ -37,8 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKSourceListTextFieldCell.h"
 
 
-@interface SKCenteredTextFieldCell : SKSourceListTextFieldCell
+@interface SKCenteredTextFieldCell : NSTextFieldCell
 @end
