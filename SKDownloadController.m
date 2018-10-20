@@ -107,6 +107,8 @@ static SKDownloadController *sharedDownloadController = nil;
             [download release];
         }
         
+        [self startObservingDownloads:downloads];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification
