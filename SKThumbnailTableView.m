@@ -49,11 +49,15 @@
     [super dealloc];
 }
 
+- (BOOL)hasHighlights {
+    return [[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
+    (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self));
+}
+
 - (void)drawBackgroundInClipRect:(NSRect)clipRect {
     [super drawBackgroundInClipRect:clipRect];
     
-    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
-        (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self))) {
+    if ([self hasHighlights]) {
         NSRange range = [self rowsInRect:clipRect];
         NSUInteger row;
         NSColor *color = nil;
@@ -81,24 +85,22 @@
     }
 }
 
-- (void)handleHighlightsChanged {
-    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
-        [self setNeedsDisplay:YES];
-}
-
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
     [super selectRowIndexes:indexes byExtendingSelection:extendSelection];
-    [self handleHighlightsChanged];
+    if ([self hasHighlights])
+        [self setNeedsDisplay:YES];
 }
 
 - (void)deselectRow:(NSInteger)row {
     [super deselectRow:row];
-    [self handleHighlightsChanged];
+    if ([self hasHighlights])
+        [self setNeedsDisplay:YES];
 }
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        [self handleHighlightsChanged];
+        if ([self hasHighlights])
+            [self setNeedsDisplay:YES];
         return YES;
     }
     return NO;
@@ -106,14 +108,16 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        [self handleHighlightsChanged];
+        if ([self hasHighlights])
+            [self setNeedsDisplay:YES];
         return YES;
     }
     return NO;
 }
 
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
-    [self handleHighlightsChanged];
+    if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
+        [self setNeedsDisplay:YES];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
