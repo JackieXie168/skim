@@ -54,32 +54,40 @@
     [super dealloc];
 }
 
-- (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
-    if (RUNNING_BEFORE(10_7) && [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
-        [self isRowSelected:row] == NO) {
+- (void)drawBackgroundInClipRect:(NSRect)clipRect {
+    [super drawBackgroundInClipRect:clipRect];
+    
+    if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
+        (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self))) {
+        NSRange range = [self rowsInRect:clipRect];
+        NSUInteger row;
+        NSColor *color = nil;
         
-        NSUInteger level = [[self delegate] outlineView:self highlightLevelForRow:row];
-        
-        if (level < MAX_HIGHLIGHTS) {
+        for (row = range.location; row < NSMaxRange(range); row++) {
+            if ([self isRowSelected:row])
+                continue;
             
-            NSColor *color = [NSColor sourceListHighlightColorForView:self];
-            if (color) {
-                NSRect rect = [self rectOfRow:row];
-                if (NSIntersectsRect(rect, clipRect)) {
-                    [NSGraphicsContext saveGraphicsState];
-                    [[color colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - level)] setFill];
-                    [NSBezierPath fillRect:rect];
-                    [NSGraphicsContext restoreGraphicsState];
-                }
+            NSUInteger level = [[self delegate] outlineView:self highlightLevelForRow:row];
+            if (level >= MAX_HIGHLIGHTS)
+                continue;
+            
+            if (color == nil)
+                color = [NSColor sourceListHighlightColorForView:self];
+            if (color == nil)
+                return;
+            
+            NSRect rect = NSIntersectionRect([self rectOfRow:row], [self rectOfColumn:0]);
+            if (NSIntersectsRect(rect, clipRect)) {
+                NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - level)], [NSColor clearColor], nil]];
+                [gradient drawInRect:rect angle:0.0];
+                [gradient release];
             }
         }
     }
-    
-    [super drawRow:row clipRect:clipRect];
 }
 
 - (void)handleHighlightsChanged {
-    if (RUNNING_BEFORE(10_7) && [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
+    if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
         [self setNeedsDisplay:YES];
 }
 
@@ -114,17 +122,15 @@
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if (RUNNING_BEFORE(10_7)) {
-        NSWindow *oldWindow = [self window];
-        NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
-        if (oldWindow) {
-            for (NSString *name in names)
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
-        }
-        if (newWindow) {
-            for (NSString *name in names)
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
-        }
+    NSWindow *oldWindow = [self window];
+    NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+    if (oldWindow) {
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
+    }
+    if (newWindow) {
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
     }
     [super viewWillMoveToWindow:newWindow];
 }
