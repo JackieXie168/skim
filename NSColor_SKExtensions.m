@@ -87,6 +87,15 @@
     //return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
 }
 
+- (NSColor *)dynamicColorWithMaxDarkBrightness:(CGFloat)maxBrightness {
+    NSColor *lightColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    CGFloat brightness = [lightColor brightnessComponent];
+    if (brightness <= maxBrightness)
+        return self;
+    NSColor *darkColor = [NSColor colorWithCalibratedHue:[lightColor hueComponent] saturation:[lightColor saturationComponent] brightness:maxBrightness alpha:[lightColor alphaComponent]];
+    return [NSColor colorWithLightColor:self darkColor:darkColor];
+}
+
 // @@ Dark mode
 
 + (NSColor *)keySourceListHighlightColor {
