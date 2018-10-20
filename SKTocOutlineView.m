@@ -55,7 +55,7 @@
 }
 
 - (BOOL)hasHighlights {
-    return [[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)] &&
+    return [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
     (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self));
 }
 
@@ -104,7 +104,7 @@
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        if ([self hasHighlights])
+        if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
             [self setNeedsDisplay:YES];
         return YES;
     }
@@ -113,7 +113,7 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if ([self hasHighlights])
+        if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
             [self setNeedsDisplay:YES];
         return YES;
     }

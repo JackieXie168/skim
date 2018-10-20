@@ -99,7 +99,7 @@
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        if ([self hasHighlights])
+        if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
             [self setNeedsDisplay:YES];
         return YES;
     }
@@ -108,7 +108,7 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if ([self hasHighlights])
+        if ([[self delegate] respondsToSelector:@selector(tableView:highlightLevelForRow:)])
             [self setNeedsDisplay:YES];
         return YES;
     }
