@@ -2116,7 +2116,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKCenteredTextFieldCell</string>
-					<string key="superclassName">SKSourceListTextFieldCell</string>
+					<string key="superclassName">NSTextFieldCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKCenteredTextFieldCell.h</string>
@@ -3206,14 +3206,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKSideViewController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKSourceListTextFieldCell</string>
-					<string key="superclassName">NSTextFieldCell</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKSourceListTextFieldCell.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
