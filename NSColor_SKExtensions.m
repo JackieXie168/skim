@@ -386,6 +386,10 @@
     return [[self effectiveColor] colorUsingColorSpace:space];
 }
 
+- (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name device:(NSDictionary *)deviceDescription {
+    return [[self effectiveColor] colorUsingColorSpaceName:name device:deviceDescription];
+}
+
 - (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name {
     return [[self effectiveColor] colorUsingColorSpaceName:name];
 }
