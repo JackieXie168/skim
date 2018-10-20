@@ -39,6 +39,9 @@
 #import "NSColor_SKExtensions.h"
 #import "SKRuntime.h"
 
+@interface NSTableView (SKPrivateDeclarations)
++ (NSColor *)sourceListBackgroundColor;
+@end
 
 @interface SKDynamicColor : NSColor {
     NSColor *lightColor;
@@ -130,8 +133,12 @@
 
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
-    if (color == nil)
-        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.239216 darkGreen:0.266667 darkBlue:0.298039 alpha:1.0] retain];
+    if (color == nil) {
+        if ([NSTableView respondsToSelector:@selector(sourceListBackgroundColor)])
+            color = [[NSTableView sourceListBackgroundColor] retain];
+        else
+            color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.239216 darkGreen:0.266667 darkBlue:0.298039 alpha:1.0] retain];
+    }
     return color;
 }
 
