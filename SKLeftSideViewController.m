@@ -45,7 +45,6 @@
 #import "SKTypeSelectHelper.h"
 #import "SKThumbnailTableView.h"
 #import "SKTocOutlineView.h"
-#import "SKSourceListTextFieldCell.h"
 #import "SKGroupedSearchResult.h"
 #import "PDFSelection_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
