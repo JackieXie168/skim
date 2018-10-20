@@ -1388,7 +1388,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [fileUpdateChecker terminate];
         SKDESTROY(fileUpdateChecker);
         [synchronizer terminate];
-        [self saveRecentDocumentInfo];
     }
 }
 
