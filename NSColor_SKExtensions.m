@@ -106,8 +106,12 @@
             graphiteColor = [[NSColor colorWithCalibratedLightRed:0.390 lightGreen:0.453 lightBlue:0.534 darkRed:0.390 darkGreen:0.453 darkBlue:0.534 alpha:1.0] retain];
         return graphiteColor;
     } else {
-        if (color == nil)
-            color = [[NSColor colorWithCalibratedLightRed:0.251 lightGreen:0.487 lightBlue:0.780 darkRed:0.251 darkGreen:0.487 darkBlue:0.780 alpha:1.0] retain];
+        if (color == nil) {
+            if (RUNNING_AFTER(10_9))
+                color = [[NSColor colorWithCalibratedLightRed:0.192 lightGreen:0.475 lightBlue:0.988 darkRed:0.192 darkGreen:0.475 darkBlue:0.988 alpha:1.0] retain];
+            else
+                color = [[NSColor colorWithCalibratedLightRed:0.251 lightGreen:0.487 lightBlue:0.780 darkRed:0.251 darkGreen:0.487 darkBlue:0.780 alpha:1.0] retain];
+        }
         return color;
     }
 }
