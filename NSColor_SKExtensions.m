@@ -108,7 +108,7 @@
     } else {
         if (color == nil) {
             if (RUNNING_AFTER(10_9))
-                color = [[NSColor colorWithCalibratedLightRed:0.192 lightGreen:0.475 lightBlue:0.988 darkRed:0.192 darkGreen:0.475 darkBlue:0.988 alpha:1.0] retain];
+                color = [[NSColor colorWithCalibratedLightRed:0.192 lightGreen:0.475 lightBlue:0.988 darkRed:0.228 darkGreen:0.228 darkBlue:0.228 alpha:1.0] retain];
             else
                 color = [[NSColor colorWithCalibratedRed:0.251 green:0.487 blue:0.780 alpha:1.0] retain];
         }
