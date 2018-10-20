@@ -39,7 +39,7 @@
 #import "NSColor_SKExtensions.h"
 #import "SKRuntime.h"
 
-@interface NSTableView (SKPrivateDeclarations)
+@interface NSColor (SKPrivateDeclarations)
 + (NSColor *)sourceListBackgroundColor;
 @end
 
@@ -147,8 +147,9 @@
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil) {
-        if ([NSTableView respondsToSelector:@selector(sourceListBackgroundColor)])
-            color = [[NSTableView sourceListBackgroundColor] retain];
+        
+        if ([NSColor respondsToSelector:@selector(sourceListBackgroundColor)])
+            color = [[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] retain];
         else
             color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.2 darkGreen:0.2 darkBlue:0.2 alpha:1.0] retain];
     }
