@@ -97,6 +97,8 @@ enum {
 
 - (NSString *)hexString;
 
+- (NSColor *)effectiveColor;
+
 @end
 
 #if SDK_BEFORE(10_8)
