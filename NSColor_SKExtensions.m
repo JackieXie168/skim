@@ -351,6 +351,16 @@
     [super dealloc];
 }
 
+- (BOOL)isEqual:(id)other {
+    if ([other isMemberOfClass:[self class]] == NO)
+        return NO;
+    return [lightColor isEqual:((SKDynamicColor *)other)->lightColor] && [darkColor isEqual:((SKDynamicColor *)other)->darkColor];
+}
+
+- (NSUInteger)hash {
+    return [lightColor hash] + 31 * [darkColor hash];
+}
+
 - (NSColor *)effectiveColor {
     return lightColor;
 }
