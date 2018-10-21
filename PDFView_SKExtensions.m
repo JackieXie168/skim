@@ -48,6 +48,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>
+#import "NSColor_SKExtensions.h"
 
 
 #if SDK_BEFORE(10_7)
@@ -362,11 +363,16 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 + (NSColor *)defaultBackgroundColor {
-    return [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
+    return darkColor ? [NSColor colorWithLightColor:color darkColor:darkColor] : color;
 }
 
 + (NSColor *)defaultFullScreenBackgroundColor {
     return [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
+    return darkColor ? [NSColor colorWithLightColor:color darkColor:darkColor] : color;
 }
 
 @end
