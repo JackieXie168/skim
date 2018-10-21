@@ -650,21 +650,22 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKDownloadPropertiesObservationContext) {
-        if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
-            NSUInteger row = [downloads indexOfObject:object];
-            if (row != NSNotFound)
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)]];
-            [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
-        } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
-            NSUInteger row = [downloads indexOfObject:object];
-            if (row != NSNotFound)
-                [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 3)]];
-            if ([object status] == SKDownloadStatusFinished) {
-                [self openDownload:object];
-                if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
-                    [[QLPreviewPanel sharedPreviewPanel] reloadData];
+        NSUInteger row = [downloads indexOfObject:object];
+        if (row != NSNotFound) {
+            NSRange columns;
+            if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
+                columns = NSMakeRange(0, 2);
+                [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
+            } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
+                columns = NSMakeRange(1, 3);
+                [self updateClearButton];
+                if ([object status] == SKDownloadStatusFinished) {
+                    [self openDownload:object];
+                    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
+                        [[QLPreviewPanel sharedPreviewPanel] reloadData];
+                }
             }
-            [self updateClearButton];
+            [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndexesInRange:columns]];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
