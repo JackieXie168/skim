@@ -363,8 +363,16 @@
     return [lightColor hash] + 31 * [darkColor hash];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"light = %@, dark = %@", lightColor, darkColor];
+}
+
 - (NSColor *)effectiveColor {
     return [NSApp isDarkMode] ? darkColor : lightColor;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [[self effectiveColor] encodeWithCoder:aCoder];
 }
 
 - (void)set {
@@ -414,6 +422,8 @@
 - (NSColor *)colorUsingColorSpaceName:(NSColorSpaceName)name {
     return [[self effectiveColor] colorUsingColorSpaceName:name];
 }
+
+FORWARD(classForCoder, Class)
 
 FORWARD(colorSpace, NSColorSpace *)
 FORWARD(colorSpaceName, NSString *)
