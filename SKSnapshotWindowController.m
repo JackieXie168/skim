@@ -283,7 +283,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
     [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] floatForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
-    [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
     [pdfView applyDefaultInterpolationQuality];
     [pdfView setDocument:pdfDocument];
@@ -645,7 +645,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKBackgroundColorKey]) {
-            [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+            [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];
         }

@@ -66,8 +66,11 @@
 - (NSRect)integralRect:(NSRect)rect onPage:(PDFPage *)page;
 - (CGFloat)unitWidthOnPage:(PDFPage *)page;
 
-- (void)applyDefaultPageBackgroundColor;
++ (NSColor *)defaultBackgroundColor;
++ (NSColor *)defaultFullScreenBackgroundColor;
++ (NSColor *)defaultPageBackgroundColor;
 
+- (void)applyDefaultPageBackgroundColor;
 - (void)applyDefaultInterpolationQuality;
 
 @end

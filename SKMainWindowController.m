@@ -417,7 +417,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     // Set up the PDF
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
-    [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
+    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
     [pdfView applyDefaultInterpolationQuality];
     
@@ -1573,7 +1573,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         return;
     }
 
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
     
@@ -1702,7 +1702,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         return;
     }
     
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    NSColor *backgroundColor = [PDFView defaultBackgroundColor];
     NSView *view;
     NSView *contentView;
     PDFPage *page = [[self pdfView] currentPage];
@@ -1870,7 +1870,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         if (SKFullScreenToolbarOffsetKey)
             [[NSUserDefaults standardUserDefaults] setDouble:fullScreenToolbarOffset forKey:SKFullScreenToolbarOffsetKey];
     }
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [pdfView setInteractionMode:SKFullScreenMode];
     [pdfView setBackgroundColor:backgroundColor];
@@ -1895,7 +1895,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)windowWillExitFullScreen:(NSNotification *)notification {
     mwcFlags.isSwitchingFullScreen = 1;
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    NSColor *backgroundColor = [PDFView defaultBackgroundColor];
     [pdfView setInteractionMode:SKNormalMode];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
@@ -1951,7 +1951,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 - (void)windowDidFailToExitFullScreen:(NSWindow *)window {
     if (interactionMode == SKNormalMode) {
         interactionMode = SKFullScreenMode;
-        NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+        NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
         NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
         [pdfView setInteractionMode:SKFullScreenMode];
         [pdfView setBackgroundColor:backgroundColor];
@@ -2492,12 +2492,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey]) {
             if ([self interactionMode] == SKNormalMode) {
-                [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
-                [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+                [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
+                [secondaryPdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
             }
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
-                NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+                NSColor *color = [PDFView defaultFullScreenBackgroundColor];
                 if (color) {
                     [pdfView setBackgroundColor:color];
                     [secondaryPdfView setBackgroundColor:color];
