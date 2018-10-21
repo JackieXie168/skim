@@ -87,12 +87,10 @@ static NSSet *infoKeys = nil;
 }
 
 - (id)initWithProperties:(NSDictionary *)properties {
-    self = [super init];
+    NSString *URLString = [properties objectForKey:@"URL"];
+    self = [self initWithURL:URLString ? [NSURL URLWithString:URLString] : nil];
     if (self) {
-        NSString *URLString = [properties objectForKey:@"URL"];
         NSString *fileURLPath = [properties objectForKey:@"file"];
-        if (URLString)
-            URL = [[NSURL alloc] initWithString:URLString];
         URLDownload = nil;
         if (fileURLPath)
             fileURL = [[NSURL alloc] initFileURLWithPath:fileURLPath];
@@ -104,9 +102,6 @@ static NSSet *infoKeys = nil;
         resumeData = nil;
         if ([fileURL checkResourceIsReachableAndReturnError:NULL])
             resumeData = [[properties objectForKey:@"resumeData"] retain];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
-                                                     name:NSApplicationWillTerminateNotification object:NSApp];
     }
     return self;
 }
