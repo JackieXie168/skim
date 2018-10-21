@@ -46,7 +46,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 @implementation SKApplication
 
-@synthesize userAttentionDisabled;
+@synthesize userAttentionDisabled, isDarkMode;
 
 - (NSInteger)requestUserAttention:(NSRequestUserAttentionType)requestType {
     return userAttentionDisabled ? 0 : [super requestUserAttention:requestType];
@@ -87,6 +87,17 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 - (BOOL)willDragMouse {
     return NSLeftMouseDragged == [[self nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type];
+}
+
+- (BOOL)isDarkMode {
+    /*
+    if (RUNNING_AFTER(10_13)) {
+        id appearance = [self valueForKey:@"effectiveAppearance"];
+        if ([appearance respondsToSelector:@selector(bestMatchFromAppearancesWithNames:)])
+            return [[appearance performSelector:@selector(bestMatchFromAppearancesWithNames:) withObject:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+    }
+     */
+    return NO;
 }
 
 - (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }

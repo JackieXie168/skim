@@ -52,6 +52,8 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 - (BOOL)willDragMouse;
 
+@property (readonly) BOOL isDarkMode;
+
 - (id <SKApplicationDelegate>)delegate;
 - (void)setDelegate:(id <SKApplicationDelegate>)newDelegate;
 

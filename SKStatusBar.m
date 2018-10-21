@@ -41,6 +41,7 @@
 #import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSAnimationContext_SKExtensions.h"
+#import "SKApplication.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -58,6 +59,12 @@
 
 #pragma mark -
 
+@interface SKStatusBar (SKPrivate)
+- (void)updateCellBackgroundStyles;
+@end
+    
+#pragma mark -
+
 @implementation SKStatusBar
 
 @synthesize animating, iconCell;
@@ -72,17 +79,16 @@
 		[leftCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [leftCell setAlignment:NSLeftTextAlignment];
         [leftCell setControlView:self];
-        [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
         rightCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
 		[rightCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
-        [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
         iconCell = nil;
 		progressIndicator = nil;
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
+        [self updateCellBackgroundStyles];
     }
     return self;
 }
@@ -106,6 +112,7 @@
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
+        [self updateCellBackgroundStyles];
 	}
 	return self;
 }
@@ -133,6 +140,16 @@
         NSDivideRect(rect, rightFrame, &ignored, rightWidth, NSMaxXEdge);
     if (leftFrame != NULL)
         NSDivideRect(rect, leftFrame, &ignored, leftWidth, NSMinXEdge);
+}
+
+- (void)updateCellBackgroundStyles {
+    NSBackgroundStyle *textBackgroundStyle = NSBackgroundStyleRaised;
+    NSBackgroundStyle *iconBackgroundStyle = NSBackgroundStyleLight;
+    if ([NSApp isDarkMode])
+        iconBackgroundStyle = textBackgroundStyle = NSBackgroundStyleDark;
+    [leftCell setBackgroundStyle:textBackgroundStyle];
+    [rightCell setBackgroundStyle:textBackgroundStyle];
+    [iconCell setBackgroundStyle:iconBackgroundStyle];
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -258,6 +275,10 @@
     }
 }
 
+- (void)viewDidChangeEffectiveAppearance {
+    [self updateCellBackgroundStyles];
+}
+
 #pragma mark Text cell accessors
 
 - (NSString *)leftStringValue {
@@ -362,6 +383,7 @@
         iconCell = [newIconCell retain];
         [[self superview] setNeedsDisplayInRect:[self frame]];
         [self updateTrackingAreas];
+        [self updateCellBackgroundStyles];
     }
 }
 

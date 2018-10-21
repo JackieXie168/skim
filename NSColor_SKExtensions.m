@@ -38,6 +38,7 @@
 
 #import "NSColor_SKExtensions.h"
 #import "SKRuntime.h"
+#import "SKApplication.h"
 
 @interface NSColor (SKPrivateDeclarations)
 + (NSColor *)sourceListBackgroundColor;
@@ -73,18 +74,15 @@
 }
 
 + (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
-    return aLightColor;
-    //return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
+    return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
 }
 
 + (NSColor *)colorWithCalibratedLightWhite:(CGFloat)lightWhite darkWhite:(CGFloat)darkWhite alpha:(CGFloat)alpha {
-    return [self colorWithCalibratedWhite:lightWhite alpha:alpha];
-    //return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
+    return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
 }
 
 + (NSColor *)colorWithCalibratedLightRed:(CGFloat)lightRed lightGreen:(CGFloat)lightGreen lightBlue:(CGFloat)lightBlue darkRed:(CGFloat)darkRed darkGreen:(CGFloat)darkGreen darkBlue:(CGFloat)darkBlue alpha:(CGFloat)alpha {
-    return [self colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha];
-    //return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
+    return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
 }
 
 - (NSColor *)dynamicColorWithMaxDarkBrightness:(CGFloat)maxBrightness {
@@ -366,7 +364,7 @@
 }
 
 - (NSColor *)effectiveColor {
-    return lightColor;
+    return [NSApp isDarkMode] ? darkColor : lightColor;
 }
 
 - (void)set {
