@@ -399,6 +399,10 @@
     [[self effectiveColor] getComponents:components];
 }
 
+- (NSColor *)colorWithAlphaComponent:(CGFloat)alpha {
+    return [[self effectiveColor] colorWithAlphaComponent:alpha];
+}
+
 - (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
     return [[self effectiveColor] colorUsingColorSpace:space];
 }
