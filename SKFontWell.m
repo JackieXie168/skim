@@ -38,6 +38,7 @@
 
 #import "SKFontWell.h"
 #import "NSGraphics_SKExtensions.h"
+#import "SKApplication.h"
 
 #define SKNSFontPanelDescriptorsPboardType @"NSFontPanelDescriptorsPboardType"
 #define SKNSFontPanelFamiliesPboardType @"NSFontPanelFamiliesPboardType"
@@ -523,11 +524,21 @@ static char SKFontWellFontSizeObservationContext;
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
         // @@ Dark mode
-        if ([[[self textColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] brightnessComponent] > 0.8) {
-            NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-            [shade setShadowColor:[NSColor blackColor]];
-            [shade setShadowBlurRadius:1.0];
-            [attrString addAttribute:NSShadowAttributeName value:shade range:NSMakeRange(0, [attrString length])];
+        NSColor *textColor = [[self textColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        if ([NSApp isDarkMode]) {
+            if ([textColor brightnessComponent] < 0.2) {
+                NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+                [shade setShadowColor:[NSColor whiteColor]];
+                [shade setShadowBlurRadius:1.0];
+                [attrString addAttribute:NSShadowAttributeName value:shade range:NSMakeRange(0, [attrString length])];
+            }
+        } else {
+            if ([textColor brightnessComponent] > 0.8) {
+                NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+                [shade setShadowColor:[NSColor blackColor]];
+                [shade setShadowBlurRadius:1.0];
+                [attrString addAttribute:NSShadowAttributeName value:shade range:NSMakeRange(0, [attrString length])];
+            }
         }
         return attrString;
     } else {

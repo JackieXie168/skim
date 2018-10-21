@@ -42,6 +42,7 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "SKApplication.h"
 
 NSString *SKPasteboardTypeLineStyle = @"net.sourceforge.skim-app.pasteboard.line-style";
 
@@ -291,6 +292,16 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSRect bounds = [self bounds];
     NSBezierPath *path = lineWidth > 0.0 ? [self path] : nil;
     CGFloat scale = [self backingScale];
+    NSColor *fillColor;
+    NSColor *strokeColor;
+    
+    if ([NSApp isDarkMode]) {
+        fillColor = [NSColor blackColor];
+        strokeColor = [NSColor whiteColor];
+    } else {
+        fillColor = [NSColor whiteColor];
+        strokeColor = [NSColor blackColor];
+    }
     
     // @@ Dark mode
     
@@ -298,9 +309,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
         [[NSColor darkGrayColor] setFill];
         NSRectFill(NSInsetRect(rect, 1.0, 1.0));
-        [[NSColor controlBackgroundColor] setFill];
+        [fillColor setFill];
         NSRectFill(NSInsetRect(rect, 2.0, 2.0));
-        [[NSColor controlTextColor] setStroke];
+        [strokeColor setStroke];
         [path stroke];
     }];
     

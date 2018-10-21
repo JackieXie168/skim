@@ -42,6 +42,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "SKApplication.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -161,8 +162,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     // @@ Dark mode
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-    static CGFloat defaultGrays[10] = {0.7, 0.85, 0.85, 0.85, 0.75, 0.5, 0.75, 0.75, 0.75, 0.66667};
-    CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 5 : defaultGrays;
+    static CGFloat defaultGrays[15] = {0.7, 0.85, 0.85, 0.85, 0.75,  0.3, 0.3, 0.3, 0.3, 0.1,  0.5, 0.75, 0.75, 0.75, 0.66667};
+    CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 10 : [NSApp isDarkMode] ? defaultGrays + 5 : defaultGrays;
     
     rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
     
