@@ -661,7 +661,7 @@ static SKDownloadController *sharedDownloadController = nil;
                 [self updateClearButton];
                 if ([object status] == SKDownloadStatusFinished) {
                     [self openDownload:object];
-                    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
+                    if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self && [tableView isRowSelected:row])
                         [[QLPreviewPanel sharedPreviewPanel] reloadData];
                 }
             }
