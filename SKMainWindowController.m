@@ -2429,7 +2429,9 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)registerAsObserver {
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
+        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey,
+                                  SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey,
+                                  SKPageBackgroundColorKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                   SKTableFontSizeKey, nil]
@@ -2439,10 +2441,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 - (void)unregisterAsObserver {
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-            [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKPageBackgroundColorKey, 
-                                      SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
-                                      SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                      SKTableFontSizeKey, nil]];
+         [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey,
+                                   SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey,
+                                   SKPageBackgroundColorKey,
+                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey,
+                                   SKShouldAntiAliasKey, SKGreekingThresholdKey,
+                                   SKTableFontSizeKey, nil]];
     }
     @catch (id e) {}
 }
@@ -2490,12 +2494,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         
         // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKBackgroundColorKey]) {
+        if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {
             if ([self interactionMode] == SKNormalMode) {
                 [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
                 [secondaryPdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
             }
-        } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
+        } else if ([key isEqualToString:SKFullScreenBackgroundColorKey] || [key isEqualToString:SKDarkFullScreenBackgroundColorKey]) {
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
                 NSColor *color = [PDFView defaultFullScreenBackgroundColor];
                 if (color) {
