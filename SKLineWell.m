@@ -292,6 +292,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSBezierPath *path = lineWidth > 0.0 ? [self path] : nil;
     CGFloat scale = [self backingScale];
     
+    // @@ Dark mode
+    
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
         CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
         [[NSColor darkGrayColor] setFill];

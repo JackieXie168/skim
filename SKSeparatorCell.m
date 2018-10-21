@@ -44,6 +44,8 @@
 
 @implementation SKSeparatorCell
 
+// @@ Dark mode
+
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     [[NSColor gridColor] setStroke];

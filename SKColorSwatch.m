@@ -158,7 +158,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     bounds.size.width = fmin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
-    // @@Dark mode
+    // @@ Dark mode
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
     static CGFloat defaultGrays[10] = {0.7, 0.85, 0.85, 0.85, 0.75, 0.5, 0.75, 0.75, 0.75, 0.66667};
@@ -230,6 +230,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
                     [pboard clearContents];
                     [pboard writeObjects:[NSArray arrayWithObjects:color, nil]];
+                    
+                    // @@ Dark mode
                     
                     NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
                         [[NSColor blackColor] set];

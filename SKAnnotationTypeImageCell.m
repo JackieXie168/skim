@@ -114,6 +114,7 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
+        // @@ Dark mode
         if ([self backgroundStyle] == NSBackgroundStyleDark)
             [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
         else
