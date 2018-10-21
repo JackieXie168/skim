@@ -73,6 +73,8 @@
 #import "NSError_SKExtensions.h"
 #import "NSValueTransformer_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
+#import "PDFView_SKExtensions.h"
+#import "SKApplication.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -540,19 +542,25 @@
 }
 
 - (NSColor *)backgroundColor {
-    return [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    return [PDFView defaultBackgroundColor];
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
+    if ([NSApp isDarkMode])
+        [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkBackgroundColorKey];
+    else
+        [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
 }
 
 - (NSColor *)fullScreenBackgroundColor {
-    return [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    return [PDFView defaultFullScreenBackgroundColor];
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];
+    if ([NSApp isDarkMode])
+        [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkFullScreenBackgroundColorKey];
+    else
+        [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];
 }
 
 - (NSColor *)pageBackgroundColor {
