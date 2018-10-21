@@ -224,11 +224,15 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
 
 - (void)setContentView:(NSView *)aView {
 	if (aView != contentView) {
+        NSArray *subviews = [[self contentView] copy];
+        [contentView setFrame:[self contentRect]];
+        for (NSView *view in subviews)
+            [aView addSubview:view];
+        [subviews release];
 		[contentView removeFromSuperview];
         [contentView release];
 		[super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
 		contentView = [aView retain];
-		[contentView setFrame:[self contentRect]];
 		[self setNeedsDisplay:YES];
 	}
 }
