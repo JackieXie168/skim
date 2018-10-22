@@ -49,7 +49,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
 
 @implementation SKGradientView
 
-@synthesize contentView, startingColor, endingColor, alternateStartingColor, alternateEndingColor, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
+@synthesize contentView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
 @dynamic contentRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -63,16 +63,12 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
         if (RUNNING_BEFORE(10_10)) {
-            startingColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0] retain];
-            endingColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0] retain];
-            alternateStartingColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0] retain];
-            alternateEndingColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0] retain];
+            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
+            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
-            startingColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[0] darkWhite:defaultGrays[5] alpha:1.0] retain];
-            endingColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[1] darkWhite:defaultGrays[6] alpha:1.0] retain];
-            alternateStartingColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[2] darkWhite:defaultGrays[7] alpha:1.0] retain];
-            alternateEndingColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[3] darkWhite:defaultGrays[8] alpha:1.0] retain];
+            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedLightWhite:defaultGrays[0] darkWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedLightWhite:defaultGrays[1] darkWhite:defaultGrays[6] alpha:1.0], nil];
+            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedLightWhite:defaultGrays[2] darkWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedLightWhite:defaultGrays[3] darkWhite:defaultGrays[8] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithCalibratedLightWhite:defaultGrays[4] darkWhite:defaultGrays[9] alpha:1.0] retain];
         }
     }
@@ -84,10 +80,8 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
     if (self) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
-        startingColor = [[decoder decodeObjectForKey:@"startingColor"] retain];
-        endingColor = [[decoder decodeObjectForKey:@"endingColor"] retain];
-        alternateStartingColor = [[decoder decodeObjectForKey:@"alternateStartingColor"] retain];
-        alternateEndingColor = [[decoder decodeObjectForKey:@"alternateEndingColor"] retain];
+        backgroundColors = [[decoder decodeObjectForKey:@"backgroundColors"] retain];
+        alternateBackgroundColors = [[decoder decodeObjectForKey:@"alternateBackgroundColors"] retain];
         edgeColor = [[decoder decodeObjectForKey:@"edgeColor"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
@@ -104,10 +98,8 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
     [super encodeWithCoder:coder];
     // this encodes only a reference, the actual contentView should already be encoded because it's a subview
     [coder encodeConditionalObject:contentView forKey:@"contentView"];
-    [coder encodeObject:startingColor forKey:@"startingColor"];
-    [coder encodeObject:endingColor forKey:@"endingColor"];
-    [coder encodeObject:alternateStartingColor forKey:@"alternateStartingColor"];
-    [coder encodeObject:alternateEndingColor forKey:@"alternateEndingColor"];
+    [coder encodeObject:backgroundColors forKey:@"backgroundColors"];
+    [coder encodeObject:alternateBackgroundColors forKey:@"alternateBackgroundColors"];
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeDouble:maxSize.width forKey:@"maxSize.width"];
@@ -120,10 +112,8 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(contentView);
-    SKDESTROY(startingColor);
-    SKDESTROY(endingColor);
-    SKDESTROY(alternateStartingColor);
-    SKDESTROY(alternateEndingColor);
+    SKDESTROY(backgroundColors);
+    SKDESTROY(alternateBackgroundColors);
     SKDESTROY(edgeColor);
 	[super dealloc];
 }
@@ -168,24 +158,17 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.1, 0.15,  0
 		NSRectFill(edgeRect);
 	}
     
+    NSArray *colors = backgroundColors;
+    if (alternateBackgroundColors && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
+        colors = alternateBackgroundColors;
     
-    
-    NSColor *startColor = startingColor;
-    NSColor *endColor = endingColor;
-    if (alternateStartingColor && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO) {
-        startColor = alternateStartingColor;
-        endColor = alternateEndingColor;
-    }
-    
-    if (startColor) {
-        if (endColor) {
-            NSGradient *aGradient = [[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor];
-            [aGradient drawInRect:rect angle:90.0];
-            [aGradient release];
-        } else {
-            [startColor setFill];
-            [NSBezierPath fillRect:rect];
-        }
+    if ([colors count] > 1) {
+        NSGradient *aGradient = [[NSGradient alloc] initWithColors:colors];
+        [aGradient drawInRect:rect angle:90.0];
+        [aGradient release];
+    } else if ([colors count] == 1) {
+        [[colors firstObject] setFill];
+        [NSBezierPath fillRect:rect];
     }
     
     [NSGraphicsContext restoreGraphicsState];

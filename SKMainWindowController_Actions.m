@@ -1004,10 +1004,8 @@ static NSArray *allMainDocumentPDFViews() {
             
             NSView *controlView = [secondaryPdfView controlView];
             SKGradientView *gradientView = (SKGradientView *)secondaryPdfContentView;
-            [gradientView setStartingColor:[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.1 alpha:1.0]];
-            [gradientView setEndingColor:nil];
-            [gradientView setAlternateStartingColor:nil];
-            [gradientView setAlternateEndingColor:nil];
+            [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.1 alpha:1.0], nil]];
+            [gradientView setAlternateBackgroundColors:nil];
             NSRect pdfRect, controlRect;
             NSDivideRect([secondaryPdfContentView bounds], &controlRect, &pdfRect, NSHeight([controlView frame]), NSMinYEdge);
             controlRect.size.width = NSWidth([controlView frame]);
