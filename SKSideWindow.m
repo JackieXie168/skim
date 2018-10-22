@@ -336,6 +336,41 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 @implementation SKSideWindowContentView
 
++ (NSColor *)backgroundColor {
+    static NSColor *backgroundColor = nil;
+    if (backgroundColor == nil)
+        backgroundColor = [[NSColor colorWithCalibratedLightWhite:0.8 darkWhite:0.2 alpha:1.0] retain];
+    return backgroundColor;
+}
+
++ (NSColor *)topShadeColor {
+    static NSColor *topShadeColor = nil;
+    if (topShadeColor == nil)
+        topShadeColor = [[NSColor colorWithCalibratedLightWhite:1.0 darkWhite:0.3 alpha:1.0] retain];
+    return topShadeColor;
+}
+
++ (NSColor *)bottomShadeColor {
+    static NSColor *bottomShadeColor = nil;
+    if (bottomShadeColor == nil)
+        bottomShadeColor = [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] retain];
+    return bottomShadeColor;
+}
+
++ (NSColor *)handleColor {
+    static NSColor *handleColor = nil;
+    if (handleColor == nil)
+        handleColor = [[NSColor colorWithCalibratedLightWhite:0.5 darkWhite:0.4 alpha:1.0] retain];
+    return handleColor;
+}
+
++ (NSColor *)handleShadeColor {
+    static NSColor *handleShadeColor = nil;
+    if (handleShadeColor == nil)
+        handleShadeColor = [[NSColor colorWithCalibratedLightWhite:0.9 darkWhite:0.1 alpha:1.0] retain];
+    return handleShadeColor;
+}
+
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge {
     self = [super initWithFrame:frameRect];
     if (self) {
@@ -368,11 +403,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSSize offset = NSZeroSize;
     NSPoint startPoint, endPoint;
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
-    NSColor *backgroundColor = [NSColor colorWithCalibratedLightWhite:0.8 darkWhite:0.2 alpha:1.0];
-    NSColor *topShadeColor = [NSColor colorWithCalibratedLightWhite:1.0 darkWhite:0.3 alpha:1.0];
-    NSColor *bottomShadeColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
-    NSColor *handleColor = [NSColor colorWithCalibratedLightWhite:0.5 darkWhite:0.4 alpha:1.0];
-    NSColor *handleShadeColor = [NSColor colorWithCalibratedLightWhite:0.9 darkWhite:0.1 alpha:1.0];
     
     [NSGraphicsContext saveGraphicsState];
     
@@ -381,7 +411,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [path addClip];
     rect = SKShrinkRect(rect, -CORNER_RADIUS, edge);
     [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] addClip];
-    [backgroundColor set];
+    [[[self class] backgroundColor] set];
     [path fill];
     
     offset.width = NSWidth(rect) + 6.0;
@@ -392,14 +422,14 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     [NSGraphicsContext saveGraphicsState];
     [[NSBezierPath bezierPathWithRect:topRect] addClip];
-    [NSShadow setShadowWithColor:topShadeColor  blurRadius:2.0 offset:offset];
+    [NSShadow setShadowWithColor:[[self class] topShadeColor]  blurRadius:2.0 offset:offset];
     [path fill];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     
     [NSGraphicsContext saveGraphicsState];
     [[NSBezierPath bezierPathWithRect:bottomRect] addClip];
-    [NSShadow setShadowWithColor:bottomShadeColor blurRadius:2.0 offset:offset];
+    [NSShadow setShadowWithColor:[[self class] bottomShadeColor] blurRadius:2.0 offset:offset];
     [path fill];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
@@ -409,8 +439,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
     offset.width = 1.0;
     [NSBezierPath setDefaultLineWidth:1.0];
-    [handleColor set];
-    [NSShadow setShadowWithColor:handleShadeColor blurRadius:0.0 offset:offset];
+    [[[self class] handleColor] set];
+    [NSShadow setShadowWithColor:[[self class] handleShadeColor] blurRadius:0.0 offset:offset];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;
