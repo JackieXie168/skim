@@ -64,4 +64,7 @@
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 
+- (IBAction)changeBackgroundColor:(id)sender;
+- (IBAction)changeFullScreenBackgroundColor:(id)sender;
+
 @end

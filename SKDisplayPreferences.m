@@ -41,14 +41,32 @@
 #import "SKStringConstants.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
+#import "SKApplication.h"
+#import "PDFView_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
+static char SKDisplayPreferencesDefaultsObservationContext;
+
+@interface SKDisplayPreferences (Private)
+- (void)handleDarkModeChangedNotification:(NSNotification *)notification;
+- (void)updateBackgroundColors;
+@end
+    
 @implementation SKDisplayPreferences
 
 @synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
 - (void)dealloc {
+    /*
+    @try {
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil]];
+    }
+    @catch(id e) {}
+     */
     SKDESTROY(tableFontLabelField);
     SKDESTROY(tableFontComboBox);
     SKDESTROY(greekingLabelField);
@@ -91,6 +109,13 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     NSSize size = [[self view] frame].size;
     size.width = w + 20.0;
     [[self view] setFrameSize:size];
+    
+    /*
+    [self updateBackgroundColors];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotification:) name:SKDarkModeChangedNotification object:NSApp];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil] context:&SKDisplayPreferencesDefaultsObservationContext];
+     */
 }
 
 #pragma mark Accessors
@@ -125,6 +150,36 @@ static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 1
     }
     [slider1 sizeToFit];
     [slider2 sizeToFit];
+}
+
+- (IBAction)changeBackgroundColor:(id)sender {
+    NSString *key = [NSApp isDarkMode] ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
+    [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
+}
+
+- (IBAction)changeFullScreenBackgroundColor:(id)sender{
+    NSString *key = [NSApp isDarkMode] ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
+    [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKDisplayPreferencesDefaultsObservationContext)
+        [self updateBackgroundColors];
+    else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+#pragma mark Private
+
+- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
+    [self updateBackgroundColors];
+}
+
+- (void)updateBackgroundColors {
+    [[colorControls objectAtIndex:0] setColor:[[PDFView defaultBackgroundColor] effectiveColor]];
+    [[colorControls objectAtIndex:2] setColor:[[PDFView defaultFullScreenBackgroundColor] effectiveColor]];
 }
 
 @end
