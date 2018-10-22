@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString *SKApplicationStartsTerminatingNotification;
+extern NSString *SKDarkModeChangedNotification;
 
 @protocol SKApplicationDelegate;
 

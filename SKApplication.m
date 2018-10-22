@@ -43,6 +43,7 @@
 #import "NSEvent_SKExtensions.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
+NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
 @implementation SKApplication
 

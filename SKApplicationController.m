@@ -100,6 +100,8 @@
 #define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
+#define AppleInterfaceThemeChangedNotification @"AppleInterfaceThemeChangedNotification"
+
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
@@ -166,6 +168,10 @@
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] == NO)
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
+}
+
+- (void)handleDarkModeChangedNotifcation:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
 }
 
 #pragma mark NSApplication delegate
@@ -237,6 +243,12 @@
     [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
+    
+    /*
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotifcation:)
+            name:AppleInterfaceThemeChangedNotification
+          object:nil];
+    */
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
     if ([sud boolForKey:SKEnableAppleRemoteKey]) {
