@@ -2948,7 +2948,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKNotesPreferences</string>
-					<string key="superclassName">SKPreferencePane</string>
+					<string key="superclassName">SKViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="changeAttributes:">id</string>
 						<string key="changeFont:">id</string>
@@ -3020,28 +3020,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SKNotesPreferences.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SKPreferencePane</string>
-					<string key="superclassName">SKViewController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="changeAttributes:">id</string>
-						<string key="changeFont:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="changeAttributes:">
-							<string key="name">changeAttributes:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeFont:">
-							<string key="name">changeFont:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">SKPreferencePane.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
