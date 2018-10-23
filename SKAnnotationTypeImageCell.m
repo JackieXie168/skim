@@ -118,14 +118,14 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
         // @@ Dark mode
         if ([NSApp isDarkMode]) {
             if ([self backgroundStyle] == NSBackgroundStyleDark)
-                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
-            else
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
-        } else {
-            if ([self backgroundStyle] == NSBackgroundStyleDark)
                 [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] set];
             else
                 [[NSColor colorWithCalibratedWhite:1.0 alpha:0.7] set];
+        } else {
+            if ([self backgroundStyle] == NSBackgroundStyleDark)
+                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
+            else
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
         }
         NSRect rect = cellFrame;
         CGFloat height = fmin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
