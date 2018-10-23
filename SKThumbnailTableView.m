@@ -77,9 +77,11 @@
             
             NSRect rect = NSIntersectionRect([self rectOfRow:row], [self rectOfColumn:0]);
             if (NSIntersectsRect(rect, clipRect)) {
-                NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - level)], [NSColor clearColor], nil]];
-                [gradient drawInRect:rect angle:0.0];
-                [gradient release];
+                //NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - level)], [NSColor clearColor], nil]];
+                //[gradient drawInRect:rect angle:0.0];
+                //[gradient release];
+                [color setFill];
+                [NSBezierPath fillRect:rect];
             }
         }
     }
