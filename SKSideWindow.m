@@ -380,8 +380,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
     [NSGraphicsContext saveGraphicsState];
     
-    // @@ Dark mode
-    
     [path addClip];
     rect = SKShrinkRect(rect, -CORNER_RADIUS, edge);
     [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] addClip];
