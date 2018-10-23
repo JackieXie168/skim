@@ -167,8 +167,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
         [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
-    // @@ Dark mode
-    [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
+    if (RUNNING_BEFORE(10_10))
+        [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
     if ([self isNoteType]) {
         [gradientView setEdges:SKMinYEdgeMask];

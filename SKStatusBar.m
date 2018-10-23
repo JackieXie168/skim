@@ -143,7 +143,7 @@
 }
 
 - (void)updateCellBackgroundStyles {
-    NSBackgroundStyle *textBackgroundStyle = NSBackgroundStyleRaised;
+    NSBackgroundStyle *textBackgroundStyle = RUNNING_BEFORE(10_10) ? NSBackgroundStyleRaised : NSBackgroundStyleLight;
     NSBackgroundStyle *iconBackgroundStyle = NSBackgroundStyleLight;
     if ([NSApp isDarkMode])
         iconBackgroundStyle = textBackgroundStyle = NSBackgroundStyleDark;
