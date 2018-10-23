@@ -291,6 +291,8 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>SKApplication</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
 	<key>NSServices</key>
 	<array>
 		<dict>
