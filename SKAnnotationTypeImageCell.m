@@ -41,6 +41,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "NSImage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKApplication.h"
 
 NSString *SKAnnotationTypeImageCellTypeKey = @"type";
 NSString *SKAnnotationTypeImageCellActiveKey = @"active";
@@ -115,10 +116,17 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
         // @@ Dark mode
-        if ([self backgroundStyle] == NSBackgroundStyleDark)
-            [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
-        else
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
+        if ([NSApp isDarkMode]) {
+            if ([self backgroundStyle] == NSBackgroundStyleDark)
+                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
+            else
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
+        } else {
+            if ([self backgroundStyle] == NSBackgroundStyleDark)
+                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] set];
+            else
+                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.7] set];
+        }
         NSRect rect = cellFrame;
         CGFloat height = fmin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
         CGFloat offset = 0.5 * (NSHeight(cellFrame) - height);

@@ -59,12 +59,6 @@
 
 #pragma mark -
 
-@interface SKStatusBar (SKPrivate)
-- (void)updateCellBackgroundStyles;
-@end
-    
-#pragma mark -
-
 @implementation SKStatusBar
 
 @synthesize animating, iconCell;
@@ -88,7 +82,10 @@
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
-        [self updateCellBackgroundStyles];
+        if (RUNNING_BEFORE(10_10)) {
+            [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
+            [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
+        }
     }
     return self;
 }
@@ -112,7 +109,10 @@
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
-        [self updateCellBackgroundStyles];
+        if (RUNNING_BEFORE(10_10)) {
+            [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
+            [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
+        }
 	}
 	return self;
 }
@@ -140,16 +140,6 @@
         NSDivideRect(rect, rightFrame, &ignored, rightWidth, NSMaxXEdge);
     if (leftFrame != NULL)
         NSDivideRect(rect, leftFrame, &ignored, leftWidth, NSMinXEdge);
-}
-
-- (void)updateCellBackgroundStyles {
-    NSBackgroundStyle *textBackgroundStyle = RUNNING_BEFORE(10_10) ? NSBackgroundStyleRaised : NSBackgroundStyleLight;
-    NSBackgroundStyle *iconBackgroundStyle = NSBackgroundStyleLight;
-    if ([NSApp isDarkMode])
-        iconBackgroundStyle = textBackgroundStyle = NSBackgroundStyleDark;
-    [leftCell setBackgroundStyle:textBackgroundStyle];
-    [rightCell setBackgroundStyle:textBackgroundStyle];
-    [iconCell setBackgroundStyle:iconBackgroundStyle];
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -275,10 +265,6 @@
     }
 }
 
-- (void)viewDidChangeEffectiveAppearance {
-    [self updateCellBackgroundStyles];
-}
-
 #pragma mark Text cell accessors
 
 - (NSString *)leftStringValue {
@@ -383,7 +369,6 @@
         iconCell = [newIconCell retain];
         [[self superview] setNeedsDisplayInRect:[self frame]];
         [self updateTrackingAreas];
-        [self updateCellBackgroundStyles];
     }
 }
 
