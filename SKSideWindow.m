@@ -346,7 +346,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 + (NSColor *)topShadeColor {
     static NSColor *topShadeColor = nil;
     if (topShadeColor == nil)
-        topShadeColor = [[NSColor colorWithCalibratedLightWhite:1.0 darkWhite:0.3 alpha:1.0] retain];
+        topShadeColor = [[NSColor colorWithCalibratedLightWhite:1.0 darkWhite:0.4 alpha:1.0] retain];
     return topShadeColor;
 }
 
@@ -360,14 +360,14 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 + (NSColor *)handleColor {
     static NSColor *handleColor = nil;
     if (handleColor == nil)
-        handleColor = [[NSColor colorWithCalibratedLightWhite:0.5 darkWhite:0.4 alpha:1.0] retain];
+        handleColor = [[NSColor colorWithCalibratedLightWhite:0.5 darkWhite:0.0 alpha:1.0] retain];
     return handleColor;
 }
 
 + (NSColor *)handleShadeColor {
     static NSColor *handleShadeColor = nil;
     if (handleShadeColor == nil)
-        handleShadeColor = [[NSColor colorWithCalibratedLightWhite:0.9 darkWhite:0.1 alpha:1.0] retain];
+        handleShadeColor = [[NSColor colorWithCalibratedLightWhite:0.9 darkWhite:0.4 alpha:1.0] retain];
     return handleShadeColor;
 }
 
