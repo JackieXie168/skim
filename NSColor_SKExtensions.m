@@ -119,7 +119,7 @@
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[NSColor colorWithCalibratedRed:0.572 green:0.627 blue:0.680 alpha:1.0] retain];
+            graphiteColor = [[[NSColor colorWithCalibratedRed:0.572 green:0.627 blue:0.680 alpha:1.0] dynamicColorWithMaxDarkBrightness:0.2] retain];
         return graphiteColor;
     } else {
         if (color == nil)
