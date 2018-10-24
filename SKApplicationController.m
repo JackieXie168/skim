@@ -567,7 +567,12 @@ static char SKApplicationObservationContext;
 }
 
 - (NSColor *)backgroundColor {
-    return [PDFView defaultBackgroundColor];
+    NSColor *backgroundColor = nil;
+    if (SKObjectHasDarkAppearance(NSApp))
+        backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
+    if (backgroundColor == nil)
+        backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    return backgroundColor;
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
@@ -578,7 +583,12 @@ static char SKApplicationObservationContext;
 }
 
 - (NSColor *)fullScreenBackgroundColor {
-    return [PDFView defaultFullScreenBackgroundColor];
+    NSColor *backgroundColor = nil;
+    if (SKObjectHasDarkAppearance(NSApp))
+        backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
+    if (backgroundColor == nil)
+        backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    return backgroundColor;
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
