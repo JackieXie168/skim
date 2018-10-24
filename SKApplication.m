@@ -45,6 +45,27 @@
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
+#if SDK_BEFORE(10_9)
+@interface NSAppearance : NSObject <NSCoding>
++ (NSAppearance *)currentAppearance;
++ (NSAppearance *)appearanceNamed:(NSString *)name;
+- (id)initWithAppearanceNamed:(NSString *)name bundle:(NSBundle *)bundle;
+- (NSString *)name;
+- (BOOL)allowsVibrancy;
+- (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
+@end
+@interface NSApplication (SKMojaveExtensions)
+@property (retain) NSAppearance *appearance;
+@property (readonly, retain) NSAppearance *effectiveAppearance;
+@end
+#elif SDK_BEFORE(10_14)
+@interface NSAppearance (SKMojaveExtensions)
+- (NSAppearanceName)bestMatchFromAppearancesWithNames:(NSArray *)names;
+@end
+@interface NSApplication (SKMojaveExtensions) <NSAppearanceCustomization>
+@end
+#endif
+
 @implementation SKApplication
 
 @synthesize userAttentionDisabled;
@@ -94,9 +115,8 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 - (BOOL)isDarkMode {
     /*
     if (RUNNING_AFTER(10_13)) {
-        id appearance = [self valueForKey:@"effectiveAppearance"];
-        if ([appearance respondsToSelector:@selector(bestMatchFromAppearancesWithNames:)])
-            return [[appearance performSelector:@selector(bestMatchFromAppearancesWithNames:) withObject:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+        id appearance = [self effectiveAppearance];
+        return [[appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
     }
      */
     return NO;
