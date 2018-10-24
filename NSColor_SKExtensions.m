@@ -119,7 +119,7 @@
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[[NSColor colorWithCalibratedRed:0.572 green:0.627 blue:0.680 alpha:1.0] dynamicColorWithMaxDarkBrightness:0.2] retain];
+            graphiteColor = [[NSColor colorWithCalibratedRed:0.572 green:0.627 blue:0.680 alpha:1.0] retain];
         return graphiteColor;
     } else {
         if (color == nil)
@@ -147,9 +147,9 @@
     if (color == nil) {
         
         if ([NSColor respondsToSelector:@selector(sourceListBackgroundColor)])
-            color = [[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] retain];
+            color = [[[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] dynamicColorWithMaxDarkBrightness:0.2] retain];
         else
-            color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.147 darkGreen:0.147 darkBlue:0.147 alpha:1.0] retain];
+            color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.188044 darkGreen:0.193106 darkBlue:0.2 alpha:1.0] retain];
     }
     return color;
 }
