@@ -330,10 +330,6 @@
     return nil;
 }
 
-- (NSColor *)effectiveColor {
-    return self;
-}
-
 @end
 
 #pragma mark -
