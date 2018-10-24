@@ -38,7 +38,7 @@
 
 #import "NSColor_SKExtensions.h"
 #import "SKRuntime.h"
-#import "SKApplication.h"
+#import "NSGraphics_SKExtensions.h"
 
 @interface NSColor (SKPrivateDeclarations)
 + (NSColor *)sourceListBackgroundColor;
@@ -372,7 +372,7 @@
 }
 
 - (NSColor *)effectiveColor {
-    return [NSApp isDarkMode] ? darkColor : lightColor;
+    return SKHasDarkAppearance() ? darkColor : lightColor;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {

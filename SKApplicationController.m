@@ -75,6 +75,7 @@
 #import "SKAnimatedBorderlessWindow.h"
 #import "PDFView_SKExtensions.h"
 #import "SKApplication.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -100,7 +101,9 @@
 #define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
-#define AppleInterfaceThemeChangedNotification @"AppleInterfaceThemeChangedNotification"
+#ifdef DARK_MODE
+static char SKApplicationObservationContext;
+#endif
 
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
@@ -170,9 +173,17 @@
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 
-- (void)handleDarkModeChangedNotifcation:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
+#pragma mark KVO
+
+#ifdef DARK_MODE
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKApplicationObservationContext) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
+#endif
 
 #pragma mark NSApplication delegate
 
@@ -244,11 +255,10 @@
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
     
-    /*
-    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotifcation:)
-            name:AppleInterfaceThemeChangedNotification
-          object:nil];
-    */
+#ifdef DARK_MODE
+    if (RUNNING_AFTER(10_13))
+        [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
+#endif
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
     if ([sud boolForKey:SKEnableAppleRemoteKey]) {
@@ -558,7 +568,7 @@
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    if ([NSApp isDarkMode])
+    if (SKHasDarkAppearance())
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
@@ -569,7 +579,7 @@
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    if ([NSApp isDarkMode])
+    if (SKHasDarkAppearance())
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkFullScreenBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];

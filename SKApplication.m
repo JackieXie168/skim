@@ -45,33 +45,9 @@
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
-#ifdef DARK_MODE
-#if SDK_BEFORE(10_9)
-@interface NSAppearance : NSObject <NSCoding>
-+ (NSAppearance *)currentAppearance;
-+ (NSAppearance *)appearanceNamed:(NSString *)name;
-- (id)initWithAppearanceNamed:(NSString *)name bundle:(NSBundle *)bundle;
-- (NSString *)name;
-- (BOOL)allowsVibrancy;
-- (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
-@end
-@interface NSApplication (SKMojaveExtensions)
-@property (retain) NSAppearance *appearance;
-@property (readonly, retain) NSAppearance *effectiveAppearance;
-@end
-#elif SDK_BEFORE(10_14)
-@interface NSAppearance (SKMojaveExtensions)
-- (NSAppearanceName)bestMatchFromAppearancesWithNames:(NSArray *)names;
-@end
-@interface NSApplication (SKMojaveExtensions) <NSAppearanceCustomization>
-@end
-#endif
-#endif
-
 @implementation SKApplication
 
 @synthesize userAttentionDisabled;
-@dynamic isDarkMode;
 
 - (NSInteger)requestUserAttention:(NSRequestUserAttentionType)requestType {
     return userAttentionDisabled ? 0 : [super requestUserAttention:requestType];
@@ -112,15 +88,6 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
 - (BOOL)willDragMouse {
     return NSLeftMouseDragged == [[self nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type];
-}
-
-- (BOOL)isDarkMode {
-#ifdef DARK_MODE
-    if (RUNNING_AFTER(10_13)) {
-        return [[[self effectiveAppearance] bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
-    }
-#endif
-    return NO;
 }
 
 - (id <SKApplicationDelegate>)delegate { return (id <SKApplicationDelegate>)[super delegate]; }

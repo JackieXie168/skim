@@ -40,6 +40,63 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 
+#ifdef DARK_MODE
+#if SDK_BEFORE(10_9)
+
+@interface NSAppearance : NSObject <NSCoding>
++ (NSAppearance *)currentAppearance;
++ (NSAppearance *)appearanceNamed:(NSString *)name;
+- (id)initWithAppearanceNamed:(NSString *)name bundle:(NSBundle *)bundle;
+- (NSString *)name;
+- (BOOL)allowsVibrancy;
+- (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
+@end
+
+@interface NSObject (NSAppearanceCustomization)
+@property (retain) NSAppearance *appearance;
+@property (readonly, retain) NSAppearance *effectiveAppearance;
+@end
+
+#elif SDK_BEFORE(10_14)
+
+@interface NSAppearance (SKMojaveExtensions)
+- (NSAppearanceName)bestMatchFromAppearancesWithNames:(NSArray *)names;
+@end
+
+@interface NSApplication (SKMojaveExtensions) <NSAppearanceCustomization>
+@end
+
+#endif
+#endif
+
+static inline BOOL SKIsDarkAppearance(NSAppearance *appearance) {
+#ifdef DARK_MODE
+    if (RUNNING_AFTER(10_13)) {
+        return [appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua"]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+    }
+#endif
+    return NO;
+}
+
+BOOL SKHasDarkAppearance() {
+#ifdef DARK_MODE
+    if (RUNNING_AFTER(10_13)) {
+        return SKIsDarkAppearance([NSClassFromString(@"NSAppearance") currentAppearance]);
+    }
+#endif
+    return NO;
+}
+
+BOOL SKObjectHasDarkAppearance(id object) {
+#ifdef DARK_MODE
+    if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(effectiveAppearance)]) {
+        return SKIsDarkAppearance([object effectiveAppearance]);
+    }
+#endif
+    return NO;
+}
+
+#pragma mark -
 
 void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)
 {

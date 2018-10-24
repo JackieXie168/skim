@@ -38,6 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern BOOL SKHasDarkAppearance();
+extern BOOL SKObjectHasDarkAppearance(id object);
+
+#pragma mark -
 
 extern void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active);
 extern void SKDrawResizeHandles(CGContextRef context, NSRect rect, CGFloat radius, BOOL active);
