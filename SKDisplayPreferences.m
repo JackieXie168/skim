@@ -178,8 +178,19 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 }
 
 - (void)updateBackgroundColors {
-    [[colorControls objectAtIndex:0] setColor:[[PDFView defaultBackgroundColor] effectiveColor]];
-    [[colorControls objectAtIndex:2] setColor:[[PDFView defaultFullScreenBackgroundColor] effectiveColor]];
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSColor *backgroundColor = nil;
+    NSColor *fullScreenBackgroundColor = nil;
+    if (SKObjectHasDarkAppearance(NSApp)) {
+        backgroundColor = [sud colorForKey:SKDarkBackgroundColorKey];
+        fullScreenBackgroundColor = [sud colorForKey:SKDarkFullScreenBackgroundColorKey];
+    }
+    if (backgroundColor == nil)
+        backgroundColor = [sud colorForKey:SKBackgroundColorKey];
+    if (fullScreenBackgroundColor == nil)
+        fullScreenBackgroundColor = [sud colorForKey:SKFullScreenBackgroundColorKey];
+    [[colorControls objectAtIndex:0] setColor:backgroundColor];
+    [[colorControls objectAtIndex:2] setColor:fullScreenBackgroundColor];
 }
 
 @end
