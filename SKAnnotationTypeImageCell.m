@@ -114,27 +114,17 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     [super drawWithFrame:cellFrame inView:controlView];
     
     if (active) {
-        [[NSGraphicsContext currentContext] saveGraphicsState];
-        // @@ Dark mode
-        if ([NSApp isDarkMode]) {
-            if ([self backgroundStyle] == NSBackgroundStyleDark)
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] set];
-            else
-                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.7] set];
-        } else {
-            if ([self backgroundStyle] == NSBackgroundStyleDark)
-                [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
-            else
-                [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
-        }
-        NSRect rect = cellFrame;
-        CGFloat height = fmin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
-        CGFloat offset = 0.5 * (NSHeight(cellFrame) - height);
-        rect.origin.y += [controlView isFlipped] ? ceil(offset) - 1.0 : floor(offset) + 1.0;
-        rect.size.height = height;
+        NSSize size = cellFrame.size;
+        size.height = fmin(size.width, size.height);
+        image = [[[NSImage alloc] initWithSize:size] autorelease];
+        [image lockFocus];
+        [[NSColor blackColor] setFill];
         [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
-        [[NSGraphicsContext currentContext] restoreGraphicsState];
+        [NSBezierPath strokeRect:NSMakeRect(0.5, 1.5, size.width - 1.0, size.height - 2.0)];
+        [image unlockFocus];
+        [image setTemplate:YES];
+        [super setObjectValue:image];
+        [super drawWithFrame:cellFrame inView:controlView];
     }
 }
 
