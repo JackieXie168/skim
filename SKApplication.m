@@ -45,6 +45,7 @@
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
+#ifdef DARK_MODE
 #if SDK_BEFORE(10_9)
 @interface NSAppearance : NSObject <NSCoding>
 + (NSAppearance *)currentAppearance;
@@ -64,6 +65,7 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 @end
 @interface NSApplication (SKMojaveExtensions) <NSAppearanceCustomization>
 @end
+#endif
 #endif
 
 @implementation SKApplication
@@ -113,11 +115,11 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 }
 
 - (BOOL)isDarkMode {
-    /*
+#ifdef DARK_MODE
     if (RUNNING_AFTER(10_13)) {
         return [[[self effectiveAppearance] bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
     }
-     */
+#endif
     return NO;
 }
 

@@ -61,12 +61,12 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 @synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
 - (void)dealloc {
-    /*
+#ifdef DARK_MODE
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil]];
     }
     @catch(id e) {}
-     */
+#endif
     SKDESTROY(tableFontLabelField);
     SKDESTROY(tableFontComboBox);
     SKDESTROY(greekingLabelField);
@@ -110,12 +110,12 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     size.width = w + 20.0;
     [[self view] setFrameSize:size];
     
-    /*
+#ifdef DARK_MODE
     [self updateBackgroundColors];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotification:) name:SKDarkModeChangedNotification object:NSApp];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil] context:&SKDisplayPreferencesDefaultsObservationContext];
-     */
+#endif
 }
 
 #pragma mark Accessors

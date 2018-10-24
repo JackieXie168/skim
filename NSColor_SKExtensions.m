@@ -74,7 +74,11 @@
 }
 
 + (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
+#ifdef DARK_MODE
     return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
+#else
+    return aLightColor;
+#endif
 }
 
 + (NSColor *)colorWithCalibratedLightWhite:(CGFloat)lightWhite darkWhite:(CGFloat)darkWhite alpha:(CGFloat)alpha {
