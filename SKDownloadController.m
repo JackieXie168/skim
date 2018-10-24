@@ -654,7 +654,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (context == &SKDownloadPropertiesObservationContext) {
         NSUInteger row = [downloads indexOfObject:object];
         if (row != NSNotFound) {
-            NSRange columns;
+            NSRange columns = NSMakeRange(0, 0);
             if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
                 columns = NSMakeRange(0, 2);
                 [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];

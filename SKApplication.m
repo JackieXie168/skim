@@ -47,7 +47,8 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 
 @implementation SKApplication
 
-@synthesize userAttentionDisabled, isDarkMode;
+@synthesize userAttentionDisabled;
+@dynamic isDarkMode;
 
 - (NSInteger)requestUserAttention:(NSRequestUserAttentionType)requestType {
     return userAttentionDisabled ? 0 : [super requestUserAttention:requestType];
