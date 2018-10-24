@@ -115,8 +115,7 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 - (BOOL)isDarkMode {
     /*
     if (RUNNING_AFTER(10_13)) {
-        id appearance = [self effectiveAppearance];
-        return [[appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+        return [[[self effectiveAppearance] bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
     }
      */
     return NO;
