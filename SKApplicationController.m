@@ -571,7 +571,7 @@ static char SKApplicationObservationContext;
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    if (SKHasDarkAppearance())
+    if (SKObjectHasDarkAppearance(NSApp))
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
@@ -582,7 +582,7 @@ static char SKApplicationObservationContext;
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    if (SKHasDarkAppearance())
+    if (SKObjectHasDarkAppearance(NSApp))
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkFullScreenBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];

@@ -153,12 +153,12 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 }
 
 - (IBAction)changeBackgroundColor:(id)sender {
-    NSString *key = SKHasDarkAppearance() ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
+    NSString *key = SKObjectHasDarkAppearance(NSApp) ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
 }
 
 - (IBAction)changeFullScreenBackgroundColor:(id)sender{
-    NSString *key = SKHasDarkAppearance() ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
+    NSString *key = SKObjectHasDarkAppearance(NSApp) ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
 }
 
