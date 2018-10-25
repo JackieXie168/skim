@@ -373,7 +373,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     NSColor *backgroundColor = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
     CGFloat gray = [backgroundColor whiteComponent];
-    NSColor *topShadeColor = [NSColor colorWithCalibratedWhite:fmin(1.0, gray + 2.0) alpha:1.0];
+    NSColor *topShadeColor = [NSColor colorWithCalibratedWhite:fmin(1.0, gray + 0.2) alpha:1.0];
     NSColor *bottomShadeColor = [NSColor colorWithCalibratedWhite:fmax(0.0, gray - 0.8) alpha:1.0];
     NSColor *handleColor = [NSColor colorWithCalibratedWhite:fmax(0.0, gray - 0.3) alpha:1.0];
     NSColor *handleShadeColor = [NSColor colorWithCalibratedWhite:fmin(1.0, gray + 0.1) alpha:1.0];
