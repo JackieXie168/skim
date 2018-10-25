@@ -51,6 +51,7 @@
     NSArray *thumbnailSizeControls;
     NSArray *colorLabels;
     NSArray *colorControls;
+    BOOL changingColors;
 }
 
 @property (nonatomic, retain) IBOutlet NSTextField *tableFontLabelField;

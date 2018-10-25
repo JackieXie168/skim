@@ -165,21 +165,27 @@ static char SKDisplayPreferencesApplicationObservationContext;
 
 - (IBAction)changeBackgroundColor:(id)sender {
     NSString *key = SKHasDarkAppearance(NSApp) ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
+    changingColors = YES;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
+    changingColors = YES;
 }
 
 - (IBAction)changeFullScreenBackgroundColor:(id)sender{
     NSString *key = SKHasDarkAppearance(NSApp) ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
+    changingColors = YES;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
+    changingColors = NO;
 }
 
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKDisplayPreferencesDefaultsObservationContext || context == &SKDisplayPreferencesApplicationObservationContext)
-        [self updateBackgroundColors];
-    else
+    if (context == &SKDisplayPreferencesDefaultsObservationContext || context == &SKDisplayPreferencesApplicationObservationContext) {
+        if (changingColors == NO)
+            [self updateBackgroundColors];
+    } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 #pragma mark Private
