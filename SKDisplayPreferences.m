@@ -49,7 +49,6 @@
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
 static char SKDisplayPreferencesDefaultsObservationContext;
-static char SKDisplayPreferencesApplicationObservationContext;
 
 @interface SKDisplayPreferences (Private)
 - (void)updateBackgroundColors;
@@ -124,7 +123,7 @@ static char SKDisplayPreferencesApplicationObservationContext;
         [self updateBackgroundColors];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil] context:&SKDisplayPreferencesDefaultsObservationContext];
-        [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKDisplayPreferencesApplicationObservationContext];
+        [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKDisplayPreferencesDefaultsObservationContext];
     }
 #endif
 }
@@ -180,7 +179,7 @@ static char SKDisplayPreferencesApplicationObservationContext;
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKDisplayPreferencesDefaultsObservationContext || context == &SKDisplayPreferencesApplicationObservationContext) {
+    if (context == &SKDisplayPreferencesDefaultsObservationContext) {
         if (changingColors == NO)
             [self updateBackgroundColors];
     } else {
