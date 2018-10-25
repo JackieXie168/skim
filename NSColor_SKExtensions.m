@@ -368,7 +368,7 @@
 }
 
 - (NSColor *)effectiveColor {
-    return SKHasDarkAppearance() ? darkColor : lightColor;
+    return SKHasDarkAppearance(nil) ? darkColor : lightColor;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {

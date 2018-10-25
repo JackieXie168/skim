@@ -568,7 +568,7 @@ static char SKApplicationObservationContext;
 
 - (NSColor *)backgroundColor {
     NSColor *backgroundColor = nil;
-    if (SKObjectHasDarkAppearance(NSApp))
+    if (SKHasDarkAppearance(NSApp))
         backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
     if (backgroundColor == nil)
         backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
@@ -576,7 +576,7 @@ static char SKApplicationObservationContext;
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    if (SKObjectHasDarkAppearance(NSApp))
+    if (SKHasDarkAppearance(NSApp))
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
@@ -584,7 +584,7 @@ static char SKApplicationObservationContext;
 
 - (NSColor *)fullScreenBackgroundColor {
     NSColor *backgroundColor = nil;
-    if (SKObjectHasDarkAppearance(NSApp))
+    if (SKHasDarkAppearance(NSApp))
         backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
     if (backgroundColor == nil)
         backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
@@ -592,7 +592,7 @@ static char SKApplicationObservationContext;
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    if (SKObjectHasDarkAppearance(NSApp))
+    if (SKHasDarkAppearance(NSApp))
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKDarkFullScreenBackgroundColorKey];
     else
         [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];

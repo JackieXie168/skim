@@ -78,25 +78,21 @@ static inline BOOL SKIsDarkAppearance(NSAppearance *appearance) {
     return NO;
 }
 
-BOOL SKHasDarkAppearance() {
+BOOL SKHasDarkAppearance(id object) {
 #ifdef DARK_MODE
     if (RUNNING_AFTER(10_13)) {
-        return SKIsDarkAppearance([NSClassFromString(@"NSAppearance") currentAppearance]);
+        id appearance = nil;
+        if (object == nil)
+            appearance = [NSClassFromString(@"NSAppearance") currentAppearance];
+        else if ([object respondsToSelector:@selector(effectiveAppearance)]) {
+            appearance = [object effectiveAppearance];
+        return [appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua"]] isEqualToString:@"NSAppearanceNameDarkAqua"];
     }
 #endif
     return NO;
 }
 
-BOOL SKObjectHasDarkAppearance(id object) {
-#ifdef DARK_MODE
-    if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(effectiveAppearance)]) {
-        return SKIsDarkAppearance([object effectiveAppearance]);
-    }
-#endif
-    return NO;
-}
-
-void SKSetObjectHasDarkAppearance(id object) {
+void SKSetHasDarkAppearance(id object) {
 #ifdef DARK_MODE
     if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)]) {
         [object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"];

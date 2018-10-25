@@ -153,12 +153,12 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 }
 
 - (IBAction)changeBackgroundColor:(id)sender {
-    NSString *key = SKObjectHasDarkAppearance(NSApp) ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
+    NSString *key = SKHasDarkAppearance(NSApp) ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
 }
 
 - (IBAction)changeFullScreenBackgroundColor:(id)sender{
-    NSString *key = SKObjectHasDarkAppearance(NSApp) ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
+    NSString *key = SKHasDarkAppearance(NSApp) ? SKDarkFullScreenBackgroundColorKey : SKFullScreenBackgroundColorKey;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
 }
 
@@ -181,7 +181,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *backgroundColor = nil;
     NSColor *fullScreenBackgroundColor = nil;
-    if (SKObjectHasDarkAppearance(NSApp)) {
+    if (SKHasDarkAppearance(NSApp)) {
         backgroundColor = [sud colorForKey:SKDarkBackgroundColorKey];
         fullScreenBackgroundColor = [sud colorForKey:SKDarkFullScreenBackgroundColorKey];
     }

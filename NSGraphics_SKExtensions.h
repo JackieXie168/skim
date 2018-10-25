@@ -38,9 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern BOOL SKHasDarkAppearance();
-extern BOOL SKObjectHasDarkAppearance(id object);
-extern void SKSetObjectHasDarkAppearance(id object);
+extern BOOL SKHasDarkAppearance(id object);
+extern void SKSetHasDarkAppearance(id object);
 
 #pragma mark -
 

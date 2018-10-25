@@ -295,7 +295,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSColor *fillColor;
     NSColor *strokeColor;
     
-    if (SKObjectHasDarkAppearance(self)) {
+    if (SKHasDarkAppearance(self)) {
         fillColor = [NSColor blackColor];
         strokeColor = [NSColor whiteColor];
     } else {
