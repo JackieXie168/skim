@@ -43,16 +43,15 @@
 #import "NSImage_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-#import "SKApplication.h"
 #import "PDFView_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
 static char SKDisplayPreferencesDefaultsObservationContext;
+static char SKDisplayPreferencesApplicationObservationContext;
 
 @interface SKDisplayPreferences (Private)
-- (void)handleDarkModeChangedNotification:(NSNotification *)notification;
 - (void)updateBackgroundColors;
 @end
     
@@ -111,10 +110,22 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     [[self view] setFrameSize:size];
     
 #ifdef DARK_MODE
-    [self updateBackgroundColors];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotification:) name:SKDarkModeChangedNotification object:NSApp];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil] context:&SKDisplayPreferencesDefaultsObservationContext];
+    if (RUNNING_AFTER(10_13)) {
+        NSColorWell *colorWell;
+        colorWell = [colorControls objectAtindex:0];
+        [colorWell unbind:NSValueBinding];
+        [colorWell setAction:@selector(changeBackgroundColor:)];
+        [colorWell setTarget:self];
+        colorWell = [colorControls objectAtindex:2];
+        [colorWell unbind:NSValueBinding];
+        [colorWell setAction:@selector(changeFullScreenBackgroundColor:)];
+        [colorWell setTarget:self];
+        
+        [self updateBackgroundColors];
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil] context:&SKDisplayPreferencesDefaultsObservationContext];
+        [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKDisplayPreferencesApplicationObservationContext];
+    }
 #endif
 }
 
@@ -165,17 +176,13 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKDisplayPreferencesDefaultsObservationContext)
+    if (context == &SKDisplayPreferencesDefaultsObservationContext || context == &SKDisplayPreferencesApplicationObservationContext)
         [self updateBackgroundColors];
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 #pragma mark Private
-
-- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
-    [self updateBackgroundColors];
-}
 
 - (void)updateBackgroundColors {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
