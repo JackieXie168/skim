@@ -54,6 +54,17 @@ NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorL
 
 #define SKLineInspectorFrameAutosaveName @"SKLineInspector"
 
+#define MAKE_IMAGE(control, segment, size, instructions) \
+do { \
+NSImage *image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){ \
+instructions \
+return YES; \
+}]; \
+[image setTemplate:YES]; \
+[control setImage:image forSegment:segment]; \
+} while (0)
+
+
 @implementation SKLineInspector
 
 @synthesize lineWidthSlider, lineWidthField, dashPatternField, styleButton, startLineStyleButton, endLineStyleButton, lineWell, lineWidthLabelField, styleLabelField, dashPatternLabelField, startLineStyleLabelField, endLineStyleLabelField, labelFields, lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
@@ -136,20 +147,16 @@ static SKLineInspector *sharedLineInspector = nil;
     
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
 
-    NSImage *image = nil;
 	NSSize size = NSMakeSize(29.0, 12.0);
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(styleButton, kPDFBorderStyleSolid, size,
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 3.0, 17.0, 6.0)];
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [styleButton setImage:image forSegment:kPDFBorderStyleSolid];
-        
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    );
+    
+    MAKE_IMAGE(styleButton, kPDFBorderStyleDashed, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(6.0, 5.0)];
         [path lineToPoint:NSMakePoint(6.0, 3.0)];
@@ -170,12 +177,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [styleButton setImage:image forSegment:kPDFBorderStyleDashed];
+	);
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(styleButton, kPDFBorderStyleBeveled, size,
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 3.0, 17.0, 6.0)];
         [path setLineWidth:2.0];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] setStroke];
@@ -197,12 +201,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path lineToPoint:NSMakePoint(24.0, 8.0)];
         [path closePath];
         [path fill];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [styleButton setImage:image forSegment:kPDFBorderStyleBeveled];
+	);
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(styleButton, kPDFBorderStyleInset, size,
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 3.0, 17.0, 6.0)];
         [path setLineWidth:2.0];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] setStroke];
@@ -224,50 +225,38 @@ static SKLineInspector *sharedLineInspector = nil;
         [path lineToPoint:NSMakePoint(22.0, 10.0)];
         [path closePath];
         [path fill];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [styleButton setImage:image forSegment:kPDFBorderStyleInset];
+    );
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(styleButton, kPDFBorderStyleUnderline, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(6.0, 3.0)];
         [path lineToPoint:NSMakePoint(23.0, 3.0)];
         [path setLineWidth:2.0];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [styleButton setImage:image forSegment:kPDFBorderStyleUnderline];
+    );
 	
     size = NSMakeSize(24.0, 12.0);
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleNone, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleNone];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleNone, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleNone];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleSquare, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
@@ -276,11 +265,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [[NSColor blackColor] setStroke];
         [path stroke];
         return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleSquare];
+	);
     
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleSquare, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
@@ -288,12 +275,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleSquare];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleCircle, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
@@ -301,12 +285,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleCircle];
+    );
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleCircle, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
@@ -314,12 +295,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleCircle];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleDiamond, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
@@ -330,12 +308,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path closePath];
         [path setLineWidth:2.0];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];
+    );
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleDiamond, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
@@ -346,12 +321,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path closePath];
         [path setLineWidth:2.0];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleOpenArrow, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
@@ -361,12 +333,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleOpenArrow];
+    );
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleOpenArrow, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
@@ -376,12 +345,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleOpenArrow];
+	);
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(startLineStyleButton, kPDFLineStyleClosedArrow, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(20.0, 6.0)];
         [path lineToPoint:NSMakePoint(8.0, 6.0)];
@@ -392,12 +358,9 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [startLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
+    );
 	
-    image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+    MAKE_IMAGE(endLineStyleButton, kPDFLineStyleClosedArrow, size,
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(4.0, 6.0)];
         [path lineToPoint:NSMakePoint(16.0, 6.0)];
@@ -408,10 +371,7 @@ static SKLineInspector *sharedLineInspector = nil;
         [path setLineWidth:2.0];
         [[NSColor blackColor] setStroke];
         [path stroke];
-        return YES;
-	}];
-    [image setTemplate:YES];
-    [endLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
+	);
 }
 
 - (void)notifyChangeAction:(SKLineChangeAction)action {
