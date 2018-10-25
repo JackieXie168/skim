@@ -106,6 +106,7 @@
 #import "SKScroller.h"
 #import "SKMainWindow.h"
 #import "PDFOutline_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -1353,6 +1354,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
+        SKSetObjectHasDarkAppearance(leftSideWindow);
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window]];
         [leftSideWindow expand];

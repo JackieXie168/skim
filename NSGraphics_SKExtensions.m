@@ -96,6 +96,14 @@ BOOL SKObjectHasDarkAppearance(id object) {
     return NO;
 }
 
+void SKSetObjectHasDarkAppearance(id object) {
+#ifdef DARK_MODE
+    if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)]) {
+        [object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"];
+    }
+#endif
+}
+
 #pragma mark -
 
 void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)
