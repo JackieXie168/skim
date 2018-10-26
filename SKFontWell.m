@@ -38,7 +38,6 @@
 
 #import "SKFontWell.h"
 #import "NSGraphics_SKExtensions.h"
-#import "SKApplication.h"
 
 #define SKNSFontPanelDescriptorsPboardType @"NSFontPanelDescriptorsPboardType"
 #define SKNSFontPanelFamiliesPboardType @"NSFontPanelFamiliesPboardType"

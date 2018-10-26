@@ -42,7 +42,6 @@
 #import "NSBezierPath_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
-#import "SKApplication.h"
 
 NSString *SKPasteboardTypeLineStyle = @"net.sourceforge.skim-app.pasteboard.line-style";
 

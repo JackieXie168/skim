@@ -73,8 +73,6 @@
 #import "NSError_SKExtensions.h"
 #import "NSValueTransformer_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
-#import "PDFView_SKExtensions.h"
-#import "SKApplication.h"
 #import "NSGraphics_SKExtensions.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
