@@ -411,6 +411,10 @@
     return [[self effectiveColor] colorWithAlphaComponent:alpha];
 }
 
+- (NSColor *)blendedColorWithFraction:(CGFloat)fraction ofColor:(NSColor *)color {
+    return [[self effectiveColor] blendedColorWithFraction:fraction ofColor:color];
+}
+
 - (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
     return [[self effectiveColor] colorUsingColorSpace:space];
 }
