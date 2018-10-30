@@ -50,7 +50,7 @@
     id dP = [self directParameter];
     id selection = nil;
     id doc = nil;
-    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate "] boolValue];
+    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
     id obj = [dP isKindOfClass:[NSArray class]] ? [dP firstObject] : dP;
     BOOL isNote = [obj respondsToSelector:@selector(keyClassDescription)] && [[[obj keyClassDescription] className] isEqualToString:@"note"];
     
