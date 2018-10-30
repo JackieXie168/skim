@@ -758,6 +758,29 @@
             </result>
         </command>
 
+        <command name="get selection for" code="SKIMSele"
+            description="Get the selection for a rectangle.">
+            <cocoa class="SKSelectionCommand"/>
+            <synonym name="selection for"/>
+            <direct-parameter
+                description="The rectangle or start point for the selection.">
+                <type type="rectangle"/>
+                <type type="point"/>
+            </direct-parameter>
+            <parameter name="to" type="point" code="to  " optional="yes"
+                description="The end point for the selection.">
+                <cocoa key="To"/>
+            </parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page for the selection, defaults to the current page.">
+                <cocoa key="Page"/>
+            </parameter>
+            <result
+                description="The selection in the rectangle.">
+                <type type="specifier" list="yes"/>
+            </result>
+        </command>
+
         <command name="grab" code="SKIMGrab"
             description="Grab a picture from a page.">
             <direct-parameter type="page"

@@ -212,6 +212,7 @@
 		CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
+		CECE6C3F2188AE9A00F6179D /* SKSelectionCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */; };
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CED76D671A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */; };
@@ -942,6 +943,8 @@
 		CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSImage_SKExtensions.m; sourceTree = "<group>"; };
 		CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCenteredTextFieldCell.h; sourceTree = "<group>"; };
 		CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCenteredTextFieldCell.m; sourceTree = "<group>"; };
+		CECE6C3D2188AE9A00F6179D /* SKSelectionCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKSelectionCommand.h; sourceTree = "<group>"; };
+		CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKSelectionCommand.m; sourceTree = "<group>"; };
 		CECF61FD0DB258D600587D96 /* SKFontWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFontWell.h; sourceTree = "<group>"; };
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
 		CED76D651A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAnimationContext_SKExtensions.h; sourceTree = "<group>"; };
@@ -1779,6 +1782,8 @@
 				CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */,
 				CE12A73C134F215F003AED67 /* SKSelectCommand.h */,
 				CE12A73D134F215F003AED67 /* SKSelectCommand.m */,
+				CECE6C3D2188AE9A00F6179D /* SKSelectionCommand.h */,
+				CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */,
 				CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */,
 				CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */,
 			);
@@ -2429,6 +2434,7 @@
 				CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */,
 				CEE54D930DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m in Sources */,
 				CEE54D980DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m in Sources */,
+				CECE6C3F2188AE9A00F6179D /* SKSelectionCommand.m in Sources */,
 				CEE54D9C0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m in Sources */,
 				CEE54DAE0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m in Sources */,
 				CEE54DB40DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m in Sources */,
