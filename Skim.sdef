@@ -548,11 +548,16 @@
             description="Select text or notes in a document.">
             <cocoa class="SKSelectCommand"/>
             <direct-parameter
-                description="The character range(s) or note(s) to select.">
+                description="The character range(s), note(s), or bounds to select.">
                 <type type="specifier" list="yes"/>
                 <type type="specifier"/>
+                <type type="rectangle"/>
             </direct-parameter>
-			<parameter name="animating" code="Anim" type="boolean" optional="yes" 
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page for the bounds.">
+                <cocoa key="Page"/>
+            </parameter>
+			<parameter name="animating" code="Anim" type="boolean" optional="yes"
 				description="Animate when selecting?"> 
 				<cocoa key="Animate"/> 
 			</parameter>

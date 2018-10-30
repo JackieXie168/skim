@@ -42,40 +42,74 @@
 #import "SKMainDocument.h"
 #import "NSDocument_SKExtensions.h"
 #import <Quartz/Quartz.h>
+#import "NSData_SKExtensions.h"
+#import "SKPDFView.h"
 
 
 @implementation SKSelectCommand
 
+- (id)evaulatedSubject {
+    return [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
+}
+
 - (id)performDefaultImplementation {
     id dP = [self directParameter];
     id selection = nil;
+    NSRect rect;
     id doc = nil;
-    BOOL animate = [[[self evaluatedArguments] objectForKey:@"Animate"] boolValue];
+    NSDictionary *args = [self evaluatedArguments];
+    PDFPage *page = [args objectForKey:@"Page"];
+    BOOL animate = [[args objectForKey:@"Animate"] boolValue];
     id obj = [dP isKindOfClass:[NSArray class]] ? [dP firstObject] : dP;
     BOOL isNote = [obj respondsToSelector:@selector(keyClassDescription)] && [[[obj keyClassDescription] className] isEqualToString:@"note"];
-    
+    BOOL isRect = [dP isKindOfClass:[NSData class]];
+
     if (isNote) {
         selection = [dP valueForKey:@"objectsByEvaluatingSpecifier"];
         if ([selection isKindOfClass:[NSArray class]] == NO)
             selection = [NSArray arrayWithObjects:selection, nil];
         doc = [[[selection firstObject] page] containingDocument];
+    } else if (isRect) {
+        rect = [dP rectValueAsQDRect];
+        doc = [page containingDocument] ?: [self evaulatedSubject];
     } else if ([dP isEqual:[NSArray array]]) {
-        doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
+        doc = [self evaulatedSubject];
     } else {
         selection = [PDFSelection selectionWithSpecifier:dP];
         doc = [[[selection pages] firstObject] containingDocument];
     }
     
     for  (doc in [doc isKindOfClass:[NSArray class]] ? doc : [NSArray arrayWithObjects:doc, nil]) {
+        if ([doc isKindOfClass:[NSDocument class]] == NO) continue;
+        
         SKPDFView *pdfView = nil;
         if ([doc respondsToSelector:@selector(pdfView)])
             pdfView = [doc pdfView];
+        
         [[[[doc windowControllers] firstObject] window] makeKeyAndOrderFront:nil];
         if (isNote) {
             [doc setNoteSelection:selection];
+        } else if (isRect) {
+            if (pdfView) {
+                if ([pdfView toolMode] == SKSelectToolMode) {
+                    [pdfView setCurrentSelectionRect:rect];
+                    if (page)
+                        [pdfView setCurrentSelectionPage:page];
+                } else if ([pdfView toolMode] == SKTextToolMode) {
+                    selection = [(page ?: [pdfView currentPage]) selectionForRect:rect];
+                    if (selection) {
+                        [pdfView goToSelection:selection];
+                        [pdfView setCurrentSelection:selection animate:animate];
+                    } else {
+                        [pdfView setCurrentSelection:nil];
+                    }
+                }
+            }
         } else if (selection) {
-            [pdfView goToSelection:selection];
-            [pdfView setCurrentSelection:selection animate:animate];
+            if ([pdfView toolMode] == SKTextToolMode) {
+                [pdfView goToSelection:selection];
+                [pdfView setCurrentSelection:selection animate:animate];
+            }
         } else if (pdfView) {
             [pdfView setCurrentSelection:nil];
         } else {
