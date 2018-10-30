@@ -759,7 +759,7 @@
         </command>
 
         <command name="get selection for" code="SKIMSele"
-            description="Get the selection for a rectangle.">
+            description="Get the selection inside a rectangle or between two points.">
             <cocoa class="SKSelectionCommand"/>
             <synonym name="selection for"/>
             <direct-parameter
@@ -776,7 +776,7 @@
                 <cocoa key="Page"/>
             </parameter>
             <result
-                description="The selection in the rectangle.">
+                description="The resulting selection.">
                 <type type="specifier" list="yes"/>
             </result>
         </command>
