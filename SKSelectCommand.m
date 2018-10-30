@@ -93,8 +93,10 @@
             if (pdfView) {
                 if ([pdfView toolMode] == SKSelectToolMode) {
                     [pdfView setCurrentSelectionRect:rect];
-                    if (page)
+                    if (page) {
+                        [pdfView goToPage:page];
                         [pdfView setCurrentSelectionPage:page];
+                    }
                 } else if ([pdfView toolMode] == SKTextToolMode) {
                     selection = [(page ?: [pdfView currentPage]) selectionForRect:rect];
                     if (selection) {
