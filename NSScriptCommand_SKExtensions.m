@@ -90,4 +90,12 @@ static void fixRangeSpecifiers(id object) {
     original_setDirectParameter = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setDirectParameter:), @selector(replacement_setDirectParameter:));
 }
 
+- (NSScriptObjectSpecifier *)subjectSpecifier {
+    return [NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']];
+}
+
+- (id)evaluatedSubjects {
+    return [[self subjectSpecifier] objectsByEvaluatingSpecifier];
+}
+
 @end

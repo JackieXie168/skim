@@ -40,6 +40,10 @@
 
 
 @interface NSScriptCommand (SKExtensions)
+
+- (NSScriptObjectSpecifier *)subjectSpecifier;
+- (id)evaluatedSubjects;
+
 @end
 
 

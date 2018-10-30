@@ -37,11 +37,12 @@
  */
 
 #import "SKSelectCommand.h"
+#import <Quartz/Quartz.h>
 #import "PDFSelection_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "NSDocument_SKExtensions.h"
-#import <Quartz/Quartz.h>
+#import "NSScriptCommand_SKExtensions.h"
 
 
 @implementation SKSelectCommand
@@ -60,13 +61,14 @@
             selection = [NSArray arrayWithObjects:selection, nil];
         doc = [[[selection firstObject] page] containingDocument];
     } else if ([dP isEqual:[NSArray array]]) {
-        doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
+        doc = [self evaluatedSubjects];
     } else {
         selection = [PDFSelection selectionWithSpecifier:dP];
         doc = [[[selection pages] firstObject] containingDocument];
     }
     
     for  (doc in [doc isKindOfClass:[NSArray class]] ? doc : [NSArray arrayWithObjects:doc, nil]) {
+        if ([doc isKindOfClass:[NSDocument class]] == NO) continue;
         SKPDFView *pdfView = nil;
         if ([doc respondsToSelector:@selector(pdfView)])
             pdfView = [doc pdfView];

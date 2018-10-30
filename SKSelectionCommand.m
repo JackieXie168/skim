@@ -43,6 +43,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKMainDocument.h"
 #import "SKPDFView.h"
+#import "NSScriptCommand_SKExtensions.h"
 
 @implementation SKSelectionCommand
 
@@ -51,19 +52,14 @@
     NSDictionary *args = [self evaluatedArguments];
     NSData *point = [args objectForKey:@"To"];
     PDFPage *page = [args objectForKey:@"Page"];
-    id doc = [page containingDocument];
     
-    if (doc == nil)
-        doc = [[NSScriptObjectSpecifier objectSpecifierWithDescriptor:[[self appleEvent] attributeDescriptorForKeyword:'subj']] objectsByEvaluatingSpecifier];
-    
-    if ([doc isKindOfClass:[SKMainDocument class]] == NO) {
-        [self setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [self setScriptErrorString:@"Invalid or missing document."];
-        return nil;
+    if (page == nil) {
+        page = [self evaluatedSubjects];
+        if ([page respondsToSelector:@selector(pdfView)])
+            page = [[(SKMainDocument *)page pdfView] currentPage];
+        else if ([page isKindOfClass:[PDFPage class]] == NO)
+            page = nil;
     }
-    
-    if (page == nil)
-        page = [[doc pdfView] currentPage];
     
     if (point)
         return [[page selectionFromPoint:[rectOrPoint pointValueAsQDPoint] toPoint:[point pointValueAsQDPoint]] objectSpecifier];

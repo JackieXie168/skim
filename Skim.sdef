@@ -767,7 +767,7 @@
                 <cocoa key="To"/>
             </parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
-                description="The page for the selection, defaults to the current page.">
+                description="The page for the selection, defaults to the (current page of) the closest tell block.">
                 <cocoa key="Page"/>
             </parameter>
             <result
