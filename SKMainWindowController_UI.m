@@ -1220,7 +1220,7 @@
 - (void)controlTextDidBeginEditing:(NSNotification *)note {
     if ([[note object] isEqual:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable == NO && mwcFlags.isEditingPDF == NO)
-            [[self document] objectDidBeginEditing:self];
+            [[self document] objectDidBeginEditing:(id)self];
         mwcFlags.isEditingTable = YES;
     }
 }
@@ -1228,7 +1228,7 @@
 - (void)controlTextDidEndEditing:(NSNotification *)note {
     if ([[note object] isEqual:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable && mwcFlags.isEditingPDF == NO)
-            [[self document] objectDidEndEditing:self];
+            [[self document] objectDidEndEditing:(id)self];
         mwcFlags.isEditingTable = NO;
     }
 }
@@ -1238,7 +1238,7 @@
         if ([self commitEditing] == NO)
             [self discardEditing];
         if (mwcFlags.isEditingPDF || mwcFlags.isEditingTable)
-            [[self document] objectDidEndEditing:self];
+            [[self document] objectDidEndEditing:(id)self];
         mwcFlags.isEditingPDF = mwcFlags.isEditingTable = NO;
     }
     [super setDocument:document];
@@ -1251,7 +1251,7 @@
     [pdfView discardEditing];
     // when using abortEditing the control does not call the controlTextDidEndEditing: delegate method
     if (mwcFlags.isEditingTable || mwcFlags.isEditingPDF)
-        [[self document] objectDidEndEditing:self];
+        [[self document] objectDidEndEditing:(id)self];
     mwcFlags.isEditingTable = NO;
     mwcFlags.isEditingPDF = NO;
 }
@@ -1340,13 +1340,13 @@
 
 - (void)PDFViewDidBeginEditing:(PDFView *)sender {
     if (mwcFlags.isEditingPDF == NO && mwcFlags.isEditingTable == NO)
-        [[self document] objectDidBeginEditing:self];
+        [[self document] objectDidBeginEditing:(id)self];
     mwcFlags.isEditingPDF = YES;
 }
 
 - (void)PDFViewDidEndEditing:(PDFView *)sender {
     if (mwcFlags.isEditingPDF && mwcFlags.isEditingTable == NO)
-        [[self document] objectDidEndEditing:self];
+        [[self document] objectDidEndEditing:(id)self];
     mwcFlags.isEditingPDF = NO;
 }
 
