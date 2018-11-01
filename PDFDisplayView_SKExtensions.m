@@ -131,7 +131,7 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
 static id fallback_accessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = [self getPDFView];
     if (pdfView) {
-        NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
+        NSPoint point = [pdfView convertPointFromScreen:[parameter pointValue]];
         PDFPage *page = [pdfView pageForPoint:point nearest:NO];
         if (page) {
             NSInteger i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];

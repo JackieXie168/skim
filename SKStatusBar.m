@@ -42,6 +42,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSAnimationContext_SKExtensions.h"
 #import "SKApplication.h"
+#import "NSView_SKExtensions.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -502,7 +503,7 @@
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
-    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
+    NSPoint localPoint = [self convertPointFromScreen:point];
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
     if (NSMouseInRect(localPoint, rightRect, [self isFlipped]))

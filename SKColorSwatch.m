@@ -515,7 +515,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
-    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
+    NSPoint localPoint = [self convertPointFromScreen:point];
     NSInteger i = [self colorIndexAtPoint:localPoint];
     if (i != -1) {
         SKAccessibilityColorSwatchElement *color = [[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i parent:self] autorelease];

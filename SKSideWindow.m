@@ -288,7 +288,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         return;
 	}
     
-    NSPoint initialLocation = [self convertBaseToScreen:[theEvent locationInWindow]];
+    NSPoint initialLocation = [theEvent locationOnScreen];
 	NSRect initialFrame = [self frame];
 	BOOL keepGoing = YES;
 	
@@ -300,7 +300,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 		switch ([theEvent type]) {
 			case NSLeftMouseDragged:
             {
-				NSPoint	newLocation = [self convertBaseToScreen:[theEvent locationInWindow]];
+				NSPoint	newLocation = [theEvent locationOnScreen];
                 NSRect newFrame = initialFrame;
                 
                 if (edge == NSMaxXEdge) {

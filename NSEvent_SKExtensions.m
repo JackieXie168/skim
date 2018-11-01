@@ -73,4 +73,8 @@ static NSPointingDeviceType currentPointingDeviceType = NSUnknownPointingDevice;
     return [view convertPoint:[self locationInWindow] fromView:nil];
 }
 
+- (NSPoint)locationOnScreen {
+    return [[self window] convertBaseToScreen:[self locationInWindow]];
+}
+
 @end

@@ -51,5 +51,8 @@
 - (CGFloat)backingScale;
 
 - (NSRect)convertRectToScreen:(NSRect)rect;
+- (NSRect)convertRectFromScreen:(NSRect)rect;
+- (NSPoint)convertPointToScreen:(NSPoint)point;
+- (NSPoint)convertPointFromScreen:(NSPoint)point;
 
 @end

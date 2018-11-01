@@ -678,7 +678,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:[self bounds].origin toView:nil]]];
+        return [NSValue valueWithPoint:[self convertRectToScreen:[self bounds]].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
         return [NSValue valueWithSize:[self convertSize:[self bounds].size toView:nil]];
     } else {

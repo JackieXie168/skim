@@ -115,6 +115,19 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     return rect;
 }
 
+- (NSRect)convertRectFromScreen:(NSRect)rect {
+    rect.origin = [[self window] convertScreenToBase:rect.origin];
+    return [self convertRect:rect fromView:nil];
+}
+
+- (NSPoint)convertPointToScreen:(NSPoint)point {
+    return [[self window] convertBaseToScreen:[self convertPoint:point toView:nil]];
+}
+
+- (NSPoint)convertPointFromScreen:(NSPoint)point {
+    return [self convertPoint:[[self window] convertScreenToBase:point] toView:nil];
+}
+
 @end
 
 

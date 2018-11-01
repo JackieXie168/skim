@@ -2166,8 +2166,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + TOOLTIP_OFFSET_FRACTION * NSWidth(bounds), NSMinY(bounds) + TOOLTIP_OFFSET_FRACTION * NSHeight(bounds));
-            point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
-            point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
+            point = [self convertPoint:point fromPage:[annotation page]];
+            point = [self convertPointToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
         } else {
             [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2214,8 +2214,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + TOOLTIP_OFFSET_FRACTION * NSWidth(bounds), NSMinY(bounds) + TOOLTIP_OFFSET_FRACTION * NSHeight(bounds));
-            point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
-            point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
+            point = [self convertPoint:point fromPage:[annotation page]] ;
+            point = [self convertPointToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:point];
         } else {
             [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -4285,7 +4285,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSInteger modifiers = [theEvent standardModifierFlags];
     
     if ([[self document] isLocked]) {
-    } else if (NSPointInRect(p, [self convertRect:[self visibleContentRect] toView:nil]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:p], [navWindow frame]))) {
+    } else if (NSPointInRect(p, [self convertRect:[self visibleContentRect] toView:nil]) == NO || ([navWindow isVisible] && NSPointInRect([theEvent locationOnScreen], [navWindow frame]))) {
         area = kPDFNoArea;
     } else if (interactionMode == SKPresentationMode) {
         area &= (kPDFPageArea | kPDFLinkArea);

@@ -55,5 +55,6 @@ enum {
 - (unichar)firstCharacter;
 
 - (NSPoint)locationInView:(NSView *)view;
+- (NSPoint)locationOnScreen;
 
 @end
