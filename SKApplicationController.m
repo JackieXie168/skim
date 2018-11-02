@@ -293,16 +293,16 @@ static char SKApplicationObservationContext;
 #pragma mark Services Support
 
 - (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:NULL];
+    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
 }
 
 - (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard completionHandler:NULL];
+    [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
     
 }
 
 - (void)openNotesDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:YES completionHandler:NULL];
+    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
 }
 
 #pragma mark Actions

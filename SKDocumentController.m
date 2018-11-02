@@ -222,7 +222,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     [self openDocumentWithImageFromPasteboard:pboard completionHandler:^(NSDocument *document1, BOOL documentWasAlreadyOpen1, NSError *error1){
         if (document1 == nil) {
             [self openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:^(NSDocument *document2, BOOL documentWasAlreadyOpen2, NSError *error2){
-                if (document2 == nil && error2 && [error2 isUserCancelledError] == NO)
+                if (error2 && [error2 isUserCancelledError] == NO)
                     [self presentError:error2];
             }];
         }
@@ -321,7 +321,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     } else if (showNotes == NO && theURL) {
         id download = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
         if (completionHandler)
-            completionHandler(download, NO, download ? nil : [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
+            completionHandler(nil, NO, download ? nil : [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
     } else if (completionHandler) {
         completionHandler(nil, NO, [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")]);
     }
