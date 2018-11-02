@@ -1303,10 +1303,6 @@ enum {
     }
 }
 
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
-    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
-}
-
 - (void)mouseMoved:(NSEvent *)theEvent {
     [super mouseMoved:theEvent];
     
@@ -1649,6 +1645,41 @@ enum {
         [super swipeWithEvent:theEvent];
     }
 }
+
+#pragma mark NSDraggingSource protocol
+
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [dragItems addObject:dragItem];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
+    
+    NSPoint dragPoint = frame.origin;
+    if ([self isFlipped])
+        dragPoint.y += NSHeight(frame);
+    
+    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
+}
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+#endif
 
 #pragma mark NSDraggingDestination protocol
 
@@ -4236,16 +4267,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (page == nil || NSPointInRect(point, [[self currentSelection] boundsForPage:page]) == NO || [NSApp willDragMouse] == NO)
         return NO;
     
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     NSImage *dragImage = [NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
         [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.9 respectFlipped:YES hints:nil];
     }];
     
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
+    NSRect dragFrame = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]);
     
-    point = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]).origin;
-    [self dragImage:dragImage at:point offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
+    [self dragObject:[[self currentSelection] attributedString] withImage:dragImage fromFrame:dragFrame forEvent:theEvent];
     
     return YES;
 }

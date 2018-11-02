@@ -59,6 +59,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 #define SKLineWellWillBecomeActiveNotification @"SKLineWellWillBecomeActiveNotification"
 #define EXCLUSIVE_KEY @"exclusive"
 
+@interface SKLineWell (SKPrivate)
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
+@end
+
 @implementation SKLineWell
 
 @synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle;
@@ -347,12 +351,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                         [dict setObject:[NSNumber numberWithInteger:endLineStyle] forKey:SKLineWellEndLineStyleKey];
                     }
                     
-                    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-                    [pboard clearContents];
-                    [pboard setPropertyList:dict forType:SKPasteboardTypeLineStyle];
+                    NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+                    [item setPropertyList:dict forType:SKPasteboardTypeLineStyle];
                     
-                    NSRect bounds = [self bounds];
-                    [self dragImage:[self dragImage] at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
+                    [self dragObject:item withImage:[self dragImage] fromFrame:[self bounds] forEvent:theEvent];
                     
                     keepOn = NO;
                     break;
@@ -577,9 +579,38 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark NSDraggingSource protocol 
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [dragItems addObject:dragItem];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return NSDragOperationGeneric;
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
+    
+    NSPoint dragPoint = frame.origin;
+    if ([self isFlipped])
+        dragPoint.y += NSHeight(frame);
+    
+    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
+}
+
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
     return NSDragOperationGeneric;
 }
+
+#endif
 
 #pragma mark NSDraggingDestination protocol 
 

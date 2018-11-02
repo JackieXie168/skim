@@ -349,14 +349,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 #pragma mark SKDragImageView delegate protocol
 
-- (NSArray *)draggedItemsForDragImageView:(SKDragImageView *)view {
+- (id<NSPasteboardWriting>)draggedObjectForDragImageView:(SKDragImageView *)view {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
         [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
         [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
         [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-        return [NSArray arrayWithObjects:item, nil];
+        return item;
     } else return nil;
 }
 

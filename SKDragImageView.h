@@ -55,7 +55,7 @@
 @protocol SKDragImageViewDelegate <NSObject>
 @optional
 
-- (NSArray *)draggedItemsForDragImageView:(SKDragImageView *)view;
+- (id<NSPasteboardWriting>)draggedObjectForDragImageView:(SKDragImageView *)view;
 - (void)showImageForDragImageView:(SKDragImageView *)view;
 
 @end

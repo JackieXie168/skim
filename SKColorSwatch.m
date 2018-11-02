@@ -63,6 +63,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 @property (nonatomic, readonly) NSInteger index;
 @end
 
+@interface SKColorSwatch (SKPrivate)
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
+@end
 
 @interface SKColorSwatch (SKAccessibilityColorSwatchElementParent)
 - (NSRect)screenRectForElementAtIndex:(NSInteger)anIndex;
@@ -228,9 +231,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     draggedIndex = i;
                     
                     NSColor *color = [colors objectAtIndex:i];
-                    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-                    [pboard clearContents];
-                    [pboard writeObjects:[NSArray arrayWithObjects:color, nil]];
                     
                     // @@ Dark mode
                     
@@ -241,10 +241,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
                     }];
                     
-                    mouseLoc = [theEvent locationInView:self];
-                    mouseLoc.x -= 6.0;
-                    mouseLoc.y -= 6.0;
-                    [self dragImage:image at:mouseLoc offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
+                    NSRect rect = SKRectFromCenterAndSquareSize([theEvent locationInView:self], 12.0);
+                    
+                    [self dragObject:color withImage:image fromFrame:rect forEvent:theEvent];
                     
                     keepOn = NO;
                     break;
@@ -384,6 +383,48 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 #pragma mark NSDraggingSource protocol 
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [dragItems addObject:dragItem];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return context == NSDraggingContextWithinApplication ? NSDragOperationGeneric : NSDragOperationDelete;
+}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
+        if (draggedIndex != -1 && [self isEnabled]) {
+            [self willChangeValueForKey:COLORS_KEY];
+            [colors removeObjectAtIndex:draggedIndex];
+            if (autoResizes)
+                [self sizeToFit];
+            [self didChangeValueForKey:COLORS_KEY];
+            [self notifyColorsChanged];
+            [self setNeedsDisplay:YES];
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
+        }
+    }
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
+    
+    NSPoint dragPoint = frame.origin;
+    if ([self isFlipped])
+        dragPoint.y += NSHeight(frame);
+    
+    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
+}
+
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
     return isLocal ? NSDragOperationGeneric : NSDragOperationDelete;
 }
@@ -402,6 +443,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         }
     }
 }
+
+#endif
 
 #pragma mark NSDraggingDestination protocol 
 

@@ -43,6 +43,10 @@
 #import "NSImage_SKExtensions.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 
+@interface SKDragImageView (SKPrivate)
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
+@end
+
 @implementation SKDragImageView
 
 @synthesize delegate;
@@ -118,9 +122,9 @@
         isInside = [self mouse:mouseLoc inRect:[self bounds]];
         switch ([theEvent type]) {
             case NSLeftMouseDragged:
-                if(isInside && [delegate respondsToSelector:@selector(draggedItemsForDragImageView:)]) {
-                    NSArray *items = [delegate draggedItemsForDragImageView:self];
-                    if ([items count] > 0) {
+                if(isInside && [delegate respondsToSelector:@selector(draggedObjectForDragImageView:)]) {
+                    id<NSPasteboardWriting> object = [delegate draggedObjectForDragImageView:self];
+                    if (object) {
                         
                         NSRect bounds = [self bounds];
                         CGFloat scale = [self backingScale];
@@ -133,11 +137,7 @@
                             [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:YES hints:nil];
                         }];
                         
-                        NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-                        [pboard clearContents];
-                        [pboard writeObjects:items];
-                        
-                        [self dragImage:dragImage at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
+                        [self dragObject:object withImage:dragImage fromFrame:bounds forEvent:theEvent];
                     }
                     keepOn = NO;
                     break;
@@ -152,8 +152,39 @@
     }
 }
 
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
-    return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
+#pragma mark NSDraggingSource protocol
+
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [dragItems addObject:dragItem];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
 }
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return context == NSDraggingContextWithinApplication || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard clearContents];
+    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
+    
+    NSPoint dragPoint = frame.origin;
+    if ([self isFlipped])
+        dragPoint.y += NSHeight(frame);
+    
+    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
+}
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+    return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+#endif
 
 @end
