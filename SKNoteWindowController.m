@@ -62,6 +62,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSPasteboard_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -337,9 +338,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
-        [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSPasteboardTypeTIFF, nil] owner:nil];
-        [pasteboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
-        [pasteboard setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+        NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+        [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+        [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+        [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+        [pasteboard clearContents];
+        [pasteboard writeObjects:[NSArray arrayWithObjects:item, nil]];
         return YES;
     } else return NO;
 }
@@ -357,6 +361,26 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     }
     return nil;
 }
+
+#pragma mark NSPasteboardItemDataProvider protocol
+
+- (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSPasteboardType)type {
+    if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
+        NSURL *dropDestination = [pboard pasteLocationURL];
+        NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
+        if (image) {
+            NSString *name = [note string];
+            if ([name length] == 0)
+                name = @"NoteImage";
+            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
+            fileURL = [fileURL uniqueFileURL];
+            if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
+                [item setString:[fileURL absoluteString] forType:type];
+        }
+    }
+}
+
+#pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKNoteWindowDefaultsObservationContext) {

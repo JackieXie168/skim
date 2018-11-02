@@ -44,7 +44,7 @@
 
 @class PDFAnnotation, SKStatusBar, SKGradientView, SKNoteTextView;
 
-@interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, QLPreviewItem> {
+@interface SKNoteWindowController : SKWindowController <NSWindowDelegate, SKDragImageViewDelegate, NSPasteboardItemDataProvider, QLPreviewPanelDataSource, QLPreviewPanelDelegate, QLPreviewItem> {
     SKNoteTextView *textView;
     SKGradientView *gradientView;
     SKDragImageView *imageView;
