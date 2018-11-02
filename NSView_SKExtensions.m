@@ -109,6 +109,30 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     return 1.0;
 }
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+
+- (NSRect)convertRectToScreen:(NSRect)rect {
+    return [[self window] convertRectToScreen:[self convertRect:rect toView:nil]];
+}
+
+- (NSRect)convertRectFromScreen:(NSRect)rect {
+    return [self convertRect:[[self window] convertRectFromScreen:rect] fromView:nil];
+}
+
+- (NSPoint)convertPointToScreen:(NSPoint)point {
+    NSRect rect = NSZeroRect;
+    rect.origin = [self convertPoint:point toView:nil];
+    return [[self window] convertRectToScreen:rect].origin;
+}
+
+- (NSPoint)convertPointFromScreen:(NSPoint)point {
+    NSRect rect = NSZeroRect;
+    rect.origin = point;
+    return [self convertPoint:[[self window] convertRectFromScreen:rect].origin fromView:nil];
+}
+
+#else
+
 - (NSRect)convertRectToScreen:(NSRect)rect {
     rect = [self convertRect:rect toView:nil];
     rect.origin = [[self window] convertBaseToScreen:rect.origin];
@@ -121,12 +145,14 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
 }
 
 - (NSPoint)convertPointToScreen:(NSPoint)point {
-    return [[self window] convertBaseToScreen:[self convertPoint:point toView:nil]];
+    return [self convertPoint:[[self window] convertBaseToScreen:point] toView:nil];
 }
 
 - (NSPoint)convertPointFromScreen:(NSPoint)point {
-    return [self convertPoint:[[self window] convertScreenToBase:point] toView:nil];
+    return [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
 }
+
+#endif
 
 @end
 
