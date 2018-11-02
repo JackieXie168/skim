@@ -137,6 +137,14 @@ enum {
 };
 
 
+static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+    return saveOperation < NSAutosaveElsewhereOperation;
+#else
+    return saveOperation < NSAutosaveOperation;
+#endif
+}
+
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
 @end
@@ -532,7 +540,7 @@ enum {
             [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         }
     
-        if ([[self class] isNativeType:typeName] && saveOperation < NSAutosaveOperation)
+        if ([[self class] isNativeType:typeName] && SKIsNotAutosave(saveOperation))
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     } else if (saveOperation == NSSaveOperation) {
         NSArray *skimNotes = [info objectForKey:SKIMNOTES_KEY];
@@ -583,7 +591,7 @@ enum {
         [info setObject:invocation forKey:CALLBACK_KEY];
     }
     
-    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && saveOperation != NSAutosaveOperation) {
+    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && SKIsNotAutosave(saveOperation)) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         NSURL *tmpURL = nil;
