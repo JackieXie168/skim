@@ -42,6 +42,7 @@
 		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
+		CE08EBF5218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE08EBF4218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m */; };
 		CE090544113EDA72004B85C6 /* BookmarkSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090540113EDA72004B85C6 /* BookmarkSheet.xib */; };
 		CE090545113EDA72004B85C6 /* PageSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090541113EDA72004B85C6 /* PageSheet.xib */; };
 		CE090546113EDA72004B85C6 /* PasswordSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE090542113EDA72004B85C6 /* PasswordSheet.xib */; };
@@ -509,6 +510,8 @@
 		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDocument.icns; sourceTree = "<group>"; };
 		CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotPageCell.h; sourceTree = "<group>"; };
 		CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotPageCell.m; sourceTree = "<group>"; };
+		CE08EBF3218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSPasteboard_SKExtensions.h; sourceTree = "<group>"; };
+		CE08EBF4218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSPasteboard_SKExtensions.m; sourceTree = "<group>"; };
 		CE090540113EDA72004B85C6 /* BookmarkSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarkSheet.xib; sourceTree = "<group>"; };
 		CE090541113EDA72004B85C6 /* PageSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PageSheet.xib; sourceTree = "<group>"; };
 		CE090542113EDA72004B85C6 /* PasswordSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PasswordSheet.xib; sourceTree = "<group>"; };
@@ -1375,6 +1378,8 @@
 				CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
+				CE08EBF3218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.h */,
+				CE08EBF4218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m */,
 				CE42B8EA106996C60091F588 /* NSPointerArray_SKExtensions.h */,
 				CE42B8EB106996C60091F588 /* NSPointerArray_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
@@ -2459,6 +2464,7 @@
 				CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */,
 				CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */,
 				CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */,
+				CE08EBF5218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m in Sources */,
 				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,
 				CEC3AD240E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m in Sources */,
 				CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */,
