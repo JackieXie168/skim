@@ -353,18 +353,23 @@
         if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSString *fileExt = nil;
+            NSString *fileUTI = nil;
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
             if ([[pdfView document] allowsPrinting]) {
                 NSData *pdfData = [page dataRepresentation];
                 fileExt = @"pdf";
-                [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypePDF, NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
-                [pboard setData:pdfData forType:NSPasteboardTypePDF];
+                fileUTI = (NSString *)kUTTypePDF;
+                [item setData:pdfData forType:NSPasteboardTypePDF];
             } else {
                 fileExt = @"tiff";
-                [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
+                fileUTI = (NSString *)kUTTypeTIFF;
             }
-            [pboard setData:tiffData forType:NSPasteboardTypeTIFF];
-            [pboard setPropertyList:[NSArray arrayWithObject:fileExt] forType:NSFilesPromisePboardType];
+            [item setData:tiffData forType:NSPasteboardTypeTIFF];
+            [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
             return YES;
         }
     }

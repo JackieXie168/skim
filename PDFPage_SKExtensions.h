@@ -50,7 +50,7 @@ extern NSString *SKPDFPageActionRotate;
 
 @class SKMainDocument, SKReadingBar;
 
-@interface PDFPage (SKExtensions)
+@interface PDFPage (SKExtensions) <NSPasteboardItemDataProvider>
 
 + (BOOL)usesSequentialPageNumbering;
 + (void)setUsesSequentialPageNumbering:(BOOL)flag;

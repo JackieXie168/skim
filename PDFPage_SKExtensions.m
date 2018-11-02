@@ -60,6 +60,8 @@
 #import "NSShadow_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSPasteboard_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -305,6 +307,29 @@ static BOOL usesSequentialPageNumbering = NO;
     [image unlockFocus];
     
     return [image TIFFRepresentation];
+}
+
+// the page is set as owner in -[NSMainWindowController(UI) tableView:writeRowsWithIndexestoPasteboard:]
+- (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSPasteboardType)type {
+    if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
+        NSURL *dropDestination = [pboard pasteLocationURL];
+        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
+        NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
+        NSString *pathExt = nil;
+        NSData *data = nil;
+        
+        if ([[self document] allowsPrinting]) {
+            pathExt = @"pdf";
+            data = [self dataRepresentation];
+        } else {
+            pathExt = @"tiff";
+            data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+        }
+        
+        fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
+        if ([data writeToURL:fileURL atomically:YES])
+            [item setString:[fileURL absoluteString] forType:type];
+    }
 }
 
 static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
