@@ -74,12 +74,12 @@ static NSPointingDeviceType currentPointingDeviceType = NSUnknownPointingDevice;
 }
 
 - (NSPoint)locationOnScreen {
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+#if DEPLOYMENT_BEFORE(10_7)
+    return [[self window] convertBaseToScreen:[self locationInWindow]];
+#else
     NSRect rect = NSZeroRect;
     rect.origin = [self locationInWindow];
     return [[self window] convertRectToScreen:rect].origin;
-#else
-    return [[self window] convertBaseToScreen:[self locationInWindow]];
 #endif
 }
 

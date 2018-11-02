@@ -43,10 +43,10 @@
 + (CGFloat)effectiveScrollerWidth {
     if ([self respondsToSelector:@selector(preferredScrollerStyle)] && [self preferredScrollerStyle] != NSScrollerStyleLegacy)
         return 0.0;
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-    return [self scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
-#else
+#if DEPLOYMENT_BEFORE(10_7)
     return [self scrollerWidth];
+#else
+    return [self scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 #endif
 }
 

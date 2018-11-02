@@ -74,7 +74,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKColorSwatch (SKLionExtensions) <NSDraggingSource>
 @end
 #endif
@@ -387,34 +387,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 #pragma mark NSDraggingSource protocol 
 
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
-
-- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
-    return context == NSDraggingContextWithinApplication ? NSDragOperationGeneric : NSDragOperationDelete;
-}
-
-- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
-        if (draggedIndex != -1 && [self isEnabled]) {
-            [self willChangeValueForKey:COLORS_KEY];
-            [colors removeObjectAtIndex:draggedIndex];
-            if (autoResizes)
-                [self sizeToFit];
-            [self didChangeValueForKey:COLORS_KEY];
-            [self notifyColorsChanged];
-            [self setNeedsDisplay:YES];
-            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-        }
-    }
-}
-
-#else
+#if DEPLOYMENT_BEFORE(10_7)
 
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
@@ -433,6 +406,33 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
+        if (draggedIndex != -1 && [self isEnabled]) {
+            [self willChangeValueForKey:COLORS_KEY];
+            [colors removeObjectAtIndex:draggedIndex];
+            if (autoResizes)
+                [self sizeToFit];
+            [self didChangeValueForKey:COLORS_KEY];
+            [self notifyColorsChanged];
+            [self setNeedsDisplay:YES];
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
+        }
+    }
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return context == NSDraggingContextWithinApplication ? NSDragOperationGeneric : NSDragOperationDelete;
+}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
     if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
         if (draggedIndex != -1 && [self isEnabled]) {
             [self willChangeValueForKey:COLORS_KEY];

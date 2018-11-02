@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 #define SDK_BEFORE(_version) (!defined(MAC_OS_X_VERSION_ ## _version) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_ ## _version)
+#define DEPLOYMENT_BEFORE(_version) (!defined(MAC_OS_X_VERSION_ ## _version) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_ ## _version)
 
 #if SDK_BEFORE(10_13)
 

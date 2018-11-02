@@ -138,10 +138,10 @@ enum {
 
 
 static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-    return saveOperation < NSAutosaveElsewhereOperation;
-#else
+#if DEPLOYMENT_BEFORE(10_7)
     return saveOperation < NSAutosaveOperation;
+#else
+    return saveOperation < NSAutosaveElsewhereOperation;
 #endif
 }
 

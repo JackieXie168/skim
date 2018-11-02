@@ -346,7 +346,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
-#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_7
+#if DEPLOYMENT_BEFORE(10_7)
     if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd] == NO) {
         // fallback for 10.6, call openDocumentWithContentsOfURL:display:error:
         BOOL documentWasAlreadyOpen = nil != [self documentForURL:absoluteURL];
@@ -446,7 +446,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }];
 }
 
-#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_7
+#if DEPLOYMENT_BEFORE(10_7)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *fragment = [absoluteURL fragment];

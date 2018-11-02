@@ -47,7 +47,7 @@
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
 @end
 
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKDragImageView (SKLionExtensions) <NSDraggingSource>
 @end
 #endif
@@ -159,19 +159,7 @@
 
 #pragma mark NSDraggingSource protocol
 
-#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
-
-- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
-    return context == NSDraggingContextWithinApplication || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
-}
-
-#else
+#if DEPLOYMENT_BEFORE(10_7)
 
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
@@ -187,6 +175,18 @@
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+#else
+
+- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+    [dragItem setDraggingFrame:frame contents:image];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return context == NSDraggingContextWithinApplication || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
 }
 
 #endif
