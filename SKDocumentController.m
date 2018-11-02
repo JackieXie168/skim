@@ -388,6 +388,12 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 [urls addObject:url];
         }
         
+        if ([urls count] == 0) {
+            if (completionHandler)
+                completionHandler(nil, NO, nil);
+            return;
+        }
+        
         if ([urls count] > WARNING_LIMIT) {
             NSAlert *alert = [[[NSAlert alloc] init] autorelease];
             [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
