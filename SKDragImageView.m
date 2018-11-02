@@ -47,6 +47,11 @@
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
 @end
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+@interface SKDragImageView (SKLionExtensions) <NSDraggingSource>
+@end
+#endif
+
 @implementation SKDragImageView
 
 @synthesize delegate;

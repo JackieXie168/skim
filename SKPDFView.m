@@ -212,6 +212,11 @@ enum {
 
 @end
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+@interface SKPDFView (SKLionExtensions) <NSDraggingSource>
+@end
+#endif
+
 #pragma mark -
 
 @implementation SKPDFView

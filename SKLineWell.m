@@ -63,6 +63,11 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
 @end
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+@interface SKLineWell (SKLionExtensions) <NSDraggingSource>
+@end
+#endif
+
 @implementation SKLineWell
 
 @synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle;

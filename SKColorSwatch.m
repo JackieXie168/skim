@@ -74,6 +74,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
+#if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+@interface SKColorSwatch (SKLionExtensions) <NSDraggingSource>
+@end
+#endif
 
 @implementation SKColorSwatch
 
