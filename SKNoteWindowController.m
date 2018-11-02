@@ -305,6 +305,20 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return textViewUndoManager;
 }
 
+- (NSURL *)writeImageToDestination:(NSURL *)destination {
+    NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
+    if (image) {
+        NSString *name = [note string];
+        if ([name length] == 0)
+            name = @"NoteImage";
+        NSURL *fileURL = [[destination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
+        fileURL = [fileURL uniqueFileURL];
+        if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
+            return fileURL;
+    }
+    return nil;
+}
+
 #pragma mark NSEditorRegistration and NSEditor protocol
 
 - (void)objectDidBeginEditing:(id)editor {
@@ -335,31 +349,21 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 #pragma mark SKDragImageView delegate protocol
 
-- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
+- (NSArray *)draggedItemsForDragImageView:(SKDragImageView *)view {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
         [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
         [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
         [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-        [pasteboard clearContents];
-        [pasteboard writeObjects:[NSArray arrayWithObjects:item, nil]];
-        return YES;
-    } else return NO;
+        return [NSArray arrayWithObjects:item, nil];
+    } else return nil;
 }
 
-- (NSURL *)dragImageView:(SKDragImageView *)view writeToDestination:(NSURL *)dropDestination {
-    NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
-    if (image) {
-        NSString *name = [note string];
-        if ([name length] == 0)
-            name = @"NoteImage";
-        NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
-        fileURL = [fileURL uniqueFileURL];
-        if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
-            return fileURL;
-    }
-    return nil;
+- (void)showImageForDragImageView:(SKDragImageView *)view {
+    NSURL *fileURL = [self writeImageToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]];
+    if (fileURL)
+        [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }
 
 #pragma mark NSPasteboardItemDataProvider protocol
@@ -367,16 +371,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSPasteboardType)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
-        NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
-        if (image) {
-            NSString *name = [note string];
-            if ([name length] == 0)
-                name = @"NoteImage";
-            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"tiff"];
-            fileURL = [fileURL uniqueFileURL];
-            if ([[image TIFFRepresentation] writeToURL:fileURL atomically:YES])
-                [item setString:[fileURL absoluteString] forType:type];
-        }
+        NSURL *fileURL = [self writeImageToDestination:dropDestination];
+        if (fileURL)
+            [item setString:[fileURL absoluteString] forType:type];
     }
 }
 
@@ -408,7 +405,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
     [self endPreviewPanelControl:nil];
-    previewURL = [[self dragImageView:nil writeToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]] retain];
+    previewURL = [[self writeImageToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]] retain];
     [panel setDelegate:self];
     [panel setDataSource:self];
 }

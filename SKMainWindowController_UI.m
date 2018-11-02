@@ -376,32 +376,6 @@
     return NO;
 }
 
-- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
-            PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-            NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
-            NSString *pathExt = nil;
-            NSData *data = nil;
-            
-            if ([[pdfView document] allowsPrinting]) {
-                pathExt = @"pdf";
-                data = [page dataRepresentation];
-            } else {
-                pathExt = @"tiff";
-                data = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            }
-            
-            fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
-            if ([data writeToURL:fileURL atomically:YES])
-                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
-        }
-    }
-    return [NSArray array];
-}
-
 #pragma mark NSTableView delegate protocol
 
 // This makes the thumbnail tableview view based on 10.7+

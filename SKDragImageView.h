@@ -55,7 +55,7 @@
 @protocol SKDragImageViewDelegate <NSObject>
 @optional
 
-- (BOOL)dragImageView:(SKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
-- (NSURL *)dragImageView:(SKDragImageView *)view writeToDestination:(NSURL *)dropDestination;
+- (NSArray *)draggedItemsForDragImageView:(SKDragImageView *)view;
+- (void)showImageForDragImageView:(SKDragImageView *)view;
 
 @end

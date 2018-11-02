@@ -145,22 +145,6 @@
     return NO;
 }
 
-- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:snapshotTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [[snapshotArrayController arrangedObjects] objectAtIndex:idx];
-            PDFPage *page = [[[mainController pdfView] document] pageAtIndex:[snapshot pageIndex]];
-            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[mainController document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
-            fileURL = [fileURL uniqueFileURL];
-            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
-                return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
-        }
-    }
-    return [NSArray array];
-}
-
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {

@@ -39,8 +39,6 @@
 #import "SKDragImageView.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "NSFileManager_SKExtensions.h"
-#import "NSURL_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSBitmapImageRep_SKExtensions.h"
@@ -50,18 +48,8 @@
 @synthesize delegate;
 
 - (IBAction)show:(id)sender {
-    NSImage *image = [self image];
-    
-    if ([self isEditable] == NO) {
-        return;
-    } else if (image == nil || [self isEditable] == NO || [delegate respondsToSelector:@selector(dragImageView:writeToDestination:)] == NO) {
-        NSBeep();
-        return;
-    }
-    
-    NSURL *fileURL = [delegate dragImageView:self writeToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]];
-    if (fileURL)
-        [[NSWorkspace sharedWorkspace] openURL:fileURL];
+    if ([self isEditable] && [delegate respondsToSelector:@selector(showImageForDragImageView:)])
+        [delegate showImageForDragImageView:self];
 }
 
 - (IBAction)togglePreviewPanel:(id)sender {
@@ -130,11 +118,9 @@
         isInside = [self mouse:mouseLoc inRect:[self bounds]];
         switch ([theEvent type]) {
             case NSLeftMouseDragged:
-                if(isInside){
-					NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-					
-					if ([delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)] &&
-						[delegate dragImageView:self writeDataToPasteboard:pboard]) {
+                if(isInside && [delegate respondsToSelector:@selector(draggedItemsForDragImageView:)]) {
+                    NSArray *items = [delegate draggedItemsForDragImageView:self];
+                    if ([items count] > 0) {
                         
                         NSRect bounds = [self bounds];
                         CGFloat scale = [self backingScale];
@@ -147,9 +133,13 @@
                             [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:YES hints:nil];
                         }];
                         
-                        [self dragImage:dragImage at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
+                        NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+                        [pboard clearContents];
+                        [pboard writeObjects:items];
+                        
+                        [self dragImage:dragImage at:bounds.origin offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];
                     }
-					keepOn = NO;
+                    keepOn = NO;
                     break;
                 }
             case NSLeftMouseUp:
@@ -161,12 +151,6 @@
         }
     }
 }
-
-- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
-    if ([delegate respondsToSelector:@selector(dragImageView:writeToDestination:)])
-		return [NSArray arrayWithObjects:[[delegate dragImageView:self writeToDestination:dropDestination] lastPathComponent], nil];
-	return nil;
-}    
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
