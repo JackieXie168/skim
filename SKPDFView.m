@@ -80,6 +80,7 @@
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
 #import "PDFAnnotationLine_SKExtensions.h"
+#import "NSScroller_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -2371,24 +2372,22 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)zoomToRect:(NSRect)rect onPage:(PDFPage *)page {
     if (NSIsEmptyRect(rect) == NO) {
-        BOOL isLegacy = [NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy;
+        CGFloat scrollerWidth = [NSScroller effectiveScrollerWidth];
         NSRect bounds = [self bounds];
         CGFloat scale = 1.0;
-        if (isLegacy) {
-            bounds.size.width -= [NSScroller scrollerWidth];
-            bounds.size.height -= [NSScroller scrollerWidth];
-        }
+        bounds.size.width -= scrollerWidth;
+        bounds.size.height -= scrollerWidth;
         if (NSWidth(bounds) * NSHeight(rect) > NSWidth(rect) * NSHeight(bounds))
             scale = NSHeight(bounds) / NSHeight(rect);
         else
             scale = NSWidth(bounds) / NSWidth(rect);
         [self setScaleFactor:scale];
         NSScrollView *scrollView = [self scrollView];
-        if (isLegacy && ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO)) {
+        if (scrollerWidth > 0.0 && ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO)) {
             if ([scrollView hasVerticalScroller])
-                bounds.size.width -= [NSScroller scrollerWidth];
+                bounds.size.width -= scrollerWidth;
             if ([scrollView hasHorizontalScroller])
-                bounds.size.height -= [NSScroller scrollerWidth];
+                bounds.size.height -= scrollerWidth;
             if (NSWidth(bounds) * NSHeight(rect) > NSWidth(rect) * NSHeight(bounds))
                 scale = NSHeight(bounds) / NSHeight(rect);
             else

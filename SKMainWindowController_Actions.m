@@ -71,6 +71,7 @@
 #import "SKSnapshotWindowController.h"
 #import "PDFDocument_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSScroller_SKExtensions.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -400,16 +401,16 @@ static NSArray *allMainDocumentPDFViews() {
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
         NSUInteger numCols = (displayMode == kPDFDisplayTwoUp && pageCount > 1 && ([pdfView displaysAsBook] == NO || pageCount > 2)) ? 2 : 1;
-        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ) && ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy))
-            scrollerWidth =  [NSScroller scrollerWidth];
+        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ))
+            scrollerWidth =  [NSScroller effectiveScrollerWidth];
         scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( margin + NSWidth(pageRect) );
     } else {
         // zoom to height
         NSUInteger numRows = pageCount;
         if (displayMode == kPDFDisplayTwoUpContinuous)
             numRows = [pdfView displaysAsBook] ? (1 + pageCount) / 2 : 1 + pageCount / 2;
-        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ) && ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy))
-            scrollerWidth = [NSScroller scrollerWidth];
+        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ))
+            scrollerWidth = [NSScroller effectiveScrollerWidth];
         scaleFactor = ( NSHeight(frame) - scrollerWidth ) / ( margin + NSHeight(pageRect) );
     }
     [pdfView setScaleFactor:scaleFactor];
@@ -809,8 +810,7 @@ static NSArray *allMainDocumentPDFViews() {
         size.height = NSHeight(documentRect);
     } else {
         size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor;
-        if ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] == NO || [NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
-            size.width += [NSScroller scrollerWidth];
+        size.width += [NSScroller effectiveScrollerWidth];
     }
     if (autoScales)
         size.height /= scaleFactor;
