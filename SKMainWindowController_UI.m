@@ -1269,23 +1269,21 @@
 
 - (void)PDFViewOpenPDF:(PDFView *)sender forRemoteGoToAction:(PDFActionRemoteGoTo *)action {
     NSURL *fileURL = [action URL];
-    NSError *error = nil;
     SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
     Class docClass = [sdc documentClassForContentsOfURL:fileURL];
-    id document = nil;
     if (docClass) {
-        if ((document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error])) {
-            if ([docClass isPDFDocument]) {
+        [sdc openDocumentWithContentsOfURL:fileURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+            if ([document isPDFDocument]) {
                 NSUInteger pageIndex = [action pageIndex];
                 if (pageIndex < [[document pdfDocument] pageCount]) {
                     PDFPage *page = [[document pdfDocument] pageAtIndex:pageIndex];
                     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
-                    [[document pdfView] goToDestination:dest];
+                    [[(SKMainDocument *)document pdfView] goToDestination:dest];
                 }
+            } else if (document == nil && error && [error isUserCancelledError] == NO) {
+                [self presentError:error];
             }
-        } else if (error && [error isUserCancelledError] == NO) {
-            [self presentError:error];
-        }
+        }];
     } else if (fileURL) {
         // fall back to just opening the file and ignore the destination
         [[NSWorkspace sharedWorkspace] openURL:fileURL];
@@ -1293,13 +1291,12 @@
 }
 
 - (void)PDFViewWillClickOnLink:(PDFView *)sender withURL:(NSURL *)url {
-    NSError *error = nil;
     SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
-    id document = nil;
     if ([url isFileURL] && [sdc documentClassForContentsOfURL:url]) {
-        document = [sdc openDocumentWithContentsOfURL:url display:YES error:&error];
-        if (document == nil && error && [error isUserCancelledError] == NO)
-            [self presentError:error];
+        [sdc openDocumentWithContentsOfURL:url display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [self presentError:error];
+        }];
     } else {
         [[NSWorkspace sharedWorkspace] openURL:url];
     }

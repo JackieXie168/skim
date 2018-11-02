@@ -212,9 +212,10 @@ static char SKApplicationObservationContext;
             }
             
             for (NSDictionary *dict in [lastOpenFiles reverseObjectEnumerator]) {
-                NSError *error = nil;
-                if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error && [error isUserCancelledError] == NO)
-                    [NSApp presentError:error];
+                [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                    if (document == nil && error && [error isUserCancelledError] == NO)
+                        [NSApp presentError:error];
+                }];
             }
         }
     }
@@ -292,27 +293,16 @@ static char SKApplicationObservationContext;
 #pragma mark Services Support
 
 - (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    NSError *error;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:NO error:&error];
-    
-    if (document == nil && errorString)
-        *errorString = [error localizedDescription];
+    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:NULL];
 }
 
 - (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    NSError *error;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard error:&error];
+    [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard completionHandler:NULL];
     
-    if (document == nil && errorString)
-        *errorString = [error localizedDescription];
 }
 
 - (void)openNotesDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
-    NSError *error;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:YES  error:&error];
-    
-    if (document == nil && errorString)
-        *errorString = [error localizedDescription];
+    [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard showNotes:YES completionHandler:NULL];
 }
 
 #pragma mark Actions
@@ -467,10 +457,10 @@ static char SKApplicationObservationContext;
         NSURL *theURL = [NSURL URLWithString:theURLString] ?: [NSURL URLWithString:[(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)theURLString, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease]];
         
         if ([theURL isFileURL]) {
-            NSError *error = nil;
-            id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:&error];
-            if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
-                [NSApp presentError:error];
+            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
+                    [NSApp presentError:error];
+            }];
         } else if (theURL) {
             [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
         }

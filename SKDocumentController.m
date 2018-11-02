@@ -217,8 +217,19 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return pdfData;
 }
 
-- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
-    id document = nil;
+- (IBAction)newDocumentFromClipboard:(id)sender {
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    [self openDocumentWithImageFromPasteboard:pboard completionHandler:^(NSDocument *document1, BOOL documentWasAlreadyOpen1, NSError *error1){
+        if (document1 == nil) {
+            [self openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:^(NSDocument *document2, BOOL documentWasAlreadyOpen2, NSError *error2){
+                if (document2 == nil && error2 && [error2 isUserCancelledError] == NO)
+                    [self presentError:error2];
+            }];
+        }
+    }];
+}
+
+- (void)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
     NSData *data = nil;
     NSString *type = nil;
     
@@ -242,10 +253,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
     }
     
+    NSDocument *document = nil;
+    NSError *error = nil;
+    
     if (data && type) {
-        
-        NSError *error = nil;
-        
         document = [self makeUntitledDocumentOfType:type error:&error];
         
         if ([document readFromData:data ofType:type error:&error]) {
@@ -254,35 +265,35 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             [document showWindows];
         } else {
             document = nil;
-            if (outError)
-                *outError = error;
         }
-        
-    } else if (outError) {
-        *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
+    } else {
+        error = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
     }
     
-    return document;
+    if (completionHandler)
+        completionHandler(document, NO, error);
 }
 
-- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError {
+- (void)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
     NSArray *theURLs = [NSURL readURLsFromPasteboard:pboard];
     NSURL *theURL = [theURLs count] > 0 ? [theURLs objectAtIndex:0] : nil;
-    id document = nil;
     
     if ([theURL isFileURL]) {
         NSError *error = nil;
         NSString *type = [self typeForContentsOfURL:theURL error:&error];
         
         if (showNotes == NO || [[SKNotesDocument readableTypes] containsObject:type]) {
-            document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
+            [self openDocumentWithContentsOfURL:theURL display:YES completionHandler:completionHandler];
         } else if ([[SKMainDocument readableTypes] containsObject:type]) {
+            id document = nil;
             for (document in [self documents]) {
                 if ([document respondsToSelector:@selector(sourceFileURL)] && [[document sourceFileURL] isEqual:theURL])
                     break;
             }
             if (document) {
                 [document showWindows];
+                if (completionHandler)
+                    completionHandler(document, YES, nil);
             } else {
                 NSData *data = nil;
                 
@@ -302,45 +313,140 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     [document showWindows];
                 } else {
                     document = nil;
-                    if (outError)
-                        *outError = error;
                 }
+                if (completionHandler)
+                    completionHandler(document, NO, error);
             }
         }
     } else if (showNotes == NO && theURL) {
-        document = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
-    } else if (outError) {
-        *outError = [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")];
+        id download = [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
+        if (completionHandler)
+            completionHandler(download, NO, download ? nil : [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
+    } else if (completionHandler) {
+        completionHandler(nil, NO, [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")]);
     }
-    
-    return document;
 }
 
-- (IBAction)newDocumentFromClipboard:(id)sender {
-    NSError *error = nil;
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    id document = [self openDocumentWithImageFromPasteboard:pboard error:&error];
-    if (document == nil)
-        document = [self openDocumentWithURLFromPasteboard:pboard showNotes:NO error:&error];
-    if (document == nil && error && [error isUserCancelledError] == NO)
-        [self presentError:error];
-}
-
-- (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError {
-    id document = nil;
-    NSURL *fileURL = [[SKAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
+- (void)openDocumentWithSetup:(NSDictionary *)setup completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    NSURL *fileURL = [(SKAlias *)[SKAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
     if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-        if ((document = [self openDocumentWithContentsOfURL:fileURL display:NO error:outError])) {
-            [document applySetup:setup];
-            [document showWindows];
-        }
-    } else if (outError) {
-        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+        [self openDocumentWithContentsOfURL:fileURL display:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document) {
+                [document applySetup:setup];
+                [document showWindows];
+            }
+            if (completionHandler)
+                completionHandler(document, documentWasAlreadyOpen, error);
+        }];
+    } else if (completionHandler) {
+        completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
     }
-    return document;
 }
+
+- (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_7
+    if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd] == NO) {
+        // fallback for 10.6, call openDocumentWithContentsOfURL:display:error:
+        BOOL documentWasAlreadyOpen = nil != [self documentForURL:absoluteURL];
+        NSError *error = nil;
+        id document = [self openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:&error];
+        if (completionHandler)
+            completionHandler(document, documentWasAlreadyOpen, error);
+        return;
+    }
+#endif
+    
+    NSString *fragment = [absoluteURL fragment];
+    if ([fragment length] > 0)
+        absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
+    // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
+    if ([absoluteURL isFileURL])
+        absoluteURL = [absoluteURL filePathURL];
+    
+    NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    if ([ws type:type conformsToType:SKNotesDocumentType]) {
+        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+        if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
+            NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
+            if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
+                absoluteURL = pdfURL;
+        }
+    } else if ([ws type:type conformsToType:SKFolderDocumentType]) {
+        NSError *error = nil;
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
+                                          enumeratorAtURL:absoluteURL
+                                          includingPropertiesForKeys:nil
+                                          options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
+                                          errorHandler:nil];
+        NSMutableArray *urls = [NSMutableArray array];
+        
+        for (NSURL *url in dirEnum) {
+            if ([self documentClassForContentsOfURL:url])
+                [urls addObject:url];
+        }
+        
+        if ([urls count] > WARNING_LIMIT) {
+            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
+            [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+            
+            if (NSAlertFirstButtonReturn == [alert runModal]) {
+                urls = nil;
+                error = [NSError userCancelledErrorWithUnderlyingError:nil];
+                if (completionHandler)
+                    completionHandler(nil, NO, error);
+                return;
+            }
+        }
+        
+        __block NSInteger i = [urls count];
+        __block BOOL failed = NO;
+        __block NSError *failedError = nil;
+        
+        for (NSURL *url in urls) {
+            [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (document == nil) {
+                    failed = YES;
+                    if (failedError == nil)
+                        failedError = [error retain];
+                }
+                if (--i == 0) {
+                    // or should we call the completionHandler for every URL?
+                    if (completionHandler)
+                        completionHandler(failed ? nil : document, failed ? NO : documentWasAlreadyOpen, failedError);
+                    SKDESTROY(failedError);
+                }
+            }];
+        }
+        
+        return;
+    }
+    
+    [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
+        if ([document isPDFDocument] && [fragment length] > 0) {
+            for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+                if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+                    NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
+                    if (page > 0)
+                        [[(SKMainDocument *)document mainWindowController] setPageNumber:page];
+                } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
+                    NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+                    if ([searchString length] > 0)
+                        [[(SKMainDocument *)document mainWindowController] displaySearchResultsForString:searchString];
+                }
+            }
+        }
+        if (completionHandler)
+            completionHandler(document, documentWasAlreadyOpen, error);
+    }];
+}
+
+#if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_7
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *fragment = [absoluteURL fragment];
@@ -419,6 +525,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     return document;
 }
+
+#endif
 
 // By not responding to newWindowForTab: no "+" button is shown in the tab bar
 - (BOOL)respondsToSelector:(SEL)aSelector {

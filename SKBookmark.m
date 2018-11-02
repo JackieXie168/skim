@@ -516,20 +516,21 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)open {
-    id document = nil;
-    NSError *error = nil;
     if (setup) {
-        document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] error:&error];
+        [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
     } else {
         // we allow UI when resolving alias for opening the bookmark, so don't use -fileURL, also consistent with openDocumentWithSetup:error:
         NSURL *fileURL = [alias fileURL];
-        if (fileURL && NO == [fileURL isTrashedFileURL] && 
-            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) &&
-            [document isPDFDocument] && [self pageIndex] != NSNotFound)
-            [[document mainWindowController] setPageNumber:[self pageIndex] + 1];
+        if (fileURL && NO == [fileURL isTrashedFileURL]) {
+            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (document && [document isPDFDocument] && [self pageIndex] != NSNotFound)
+                    [[(SKMainDocument *)document mainWindowController] setPageNumber:[self pageIndex] + 1];
+            }];
+        }
     }
-    if (document == nil && error && [error isUserCancelledError] == NO)
-        [NSApp presentError:error];
 }
 
 @end

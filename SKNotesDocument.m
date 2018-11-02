@@ -504,7 +504,6 @@
 
 - (IBAction)openPDF:(id)sender {
     NSURL *url = sourceFileURL ?: [[self fileURL] URLReplacingPathExtension:@"pdf"];
-    NSError *error = nil;
     if ([url checkResourceIsReachableAndReturnError:NULL]) {
         // resolve symlinks and aliases
         NSNumber *isAlias = nil;
@@ -514,8 +513,10 @@
             if (data)
                 url = [NSURL URLByResolvingBookmarkData:data options:NSURLBookmarkResolutionWithoutUI relativeToURL:nil bookmarkDataIsStale:NULL error:NULL] ?: url;
         }
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error] && [error isUserCancelledError] == NO)
-            [self presentError:error];
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && [error isUserCancelledError] == NO)
+                [self presentError:error];
+        }];
     } else NSBeep();
 }
 

@@ -60,15 +60,22 @@ extern NSString *SKDocumentDidShowNotification;
 
 extern NSString *SKDocumentControllerDocumentKey;
 
+#if SDK_BEFORE(10_7)
+@interface NSDocumentController (SKLionDeclarations)
+// 10.7+ method, always defined
+- (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
+@end
+#endif
+
 @interface SKDocumentController : NSDocumentController
 
 - (IBAction)newDocumentFromClipboard:(id)sender;
 
-- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+- (void)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 // this method may return an SKDownload instance
-- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes error:(NSError **)outError;
+- (void)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
-- (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
+- (void)openDocumentWithSetup:(NSDictionary *)setup completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
 
