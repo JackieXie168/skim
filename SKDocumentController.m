@@ -367,15 +367,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    if ([ws type:type conformsToType:SKNotesDocumentType]) {
-        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-        if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-            NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
-            if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
-                absoluteURL = pdfURL;
-        }
-    } else if ([ws type:type conformsToType:SKFolderDocumentType]) {
-        NSError *error = nil;
+    
+    if ([ws type:type conformsToType:SKFolderDocumentType]) {
+        
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
                                           enumeratorAtURL:absoluteURL
                                           includingPropertiesForKeys:nil
@@ -391,65 +385,75 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if ([urls count] == 0) {
             if (completionHandler)
                 completionHandler(nil, NO, nil);
-            return;
-        }
-        
-        if ([urls count] > WARNING_LIMIT) {
-            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
-            [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+        } else {
             
-            if (NSAlertFirstButtonReturn == [alert runModal]) {
-                urls = nil;
-                error = [NSError userCancelledErrorWithUnderlyingError:nil];
-                if (completionHandler)
-                    completionHandler(nil, NO, error);
-                return;
-            }
-        }
-        
-        __block NSInteger i = [urls count];
-        __block BOOL failed = NO;
-        __block NSError *failedError = nil;
-        
-        for (NSURL *url in urls) {
-            [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                if (document == nil) {
-                    failed = YES;
-                    if (failedError == nil)
-                        failedError = [error retain];
-                }
-                if (--i == 0) {
-                    // or should we call the completionHandler for every URL?
+            if ([urls count] > WARNING_LIMIT) {
+                NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
+                [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+                [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+                [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+                
+                if (NSAlertFirstButtonReturn == [alert runModal]) {
+                    urls = nil;
                     if (completionHandler)
-                        completionHandler(failed ? nil : document, failed ? NO : documentWasAlreadyOpen, failedError);
-                    SKDESTROY(failedError);
+                        completionHandler(nil, NO, [NSError userCancelledErrorWithUnderlyingError:nil]);
                 }
-            }];
-        }
-        
-        return;
-    }
-    
-    [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
-        if ([document isPDFDocument] && [fragment length] > 0) {
-            for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
-                if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-                    NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
-                    if (page > 0)
-                        [[(SKMainDocument *)document mainWindowController] setPageNumber:page];
-                } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-                    NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
-                    if ([searchString length] > 0)
-                        [[(SKMainDocument *)document mainWindowController] displaySearchResultsForString:searchString];
+            }
+            
+            if (urls) {
+                
+                __block NSInteger i = [urls count];
+                __block BOOL failed = NO;
+                __block NSError *failedError = nil;
+                
+                for (NSURL *url in urls) {
+                    [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                        if (document == nil) {
+                            failed = YES;
+                            if (failedError == nil)
+                                failedError = [error retain];
+                        }
+                        if (--i == 0) {
+                            // or should we call the completionHandler for every URL?
+                            if (completionHandler)
+                                completionHandler(failed ? nil : document, failed ? NO : documentWasAlreadyOpen, failedError);
+                            SKDESTROY(failedError);
+                        }
+                    }];
                 }
             }
         }
-        if (completionHandler)
-            completionHandler(document, documentWasAlreadyOpen, error);
-    }];
+        
+    } else {
+        
+        if ([ws type:type conformsToType:SKNotesDocumentType]) {
+            NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+            if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
+                NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
+                if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
+                    absoluteURL = pdfURL;
+            }
+        }
+        
+        [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
+            if ([document isPDFDocument] && [fragment length] > 0) {
+                for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+                    if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+                        NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
+                        if (page > 0)
+                            [[(SKMainDocument *)document mainWindowController] setPageNumber:page];
+                    } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
+                        NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+                        if ([searchString length] > 0)
+                            [[(SKMainDocument *)document mainWindowController] displaySearchResultsForString:searchString];
+                    }
+                }
+            }
+            if (completionHandler)
+                completionHandler(document, documentWasAlreadyOpen, error);
+        }];
+    }
 }
 
 #if DEPLOYMENT_BEFORE(10_7)
