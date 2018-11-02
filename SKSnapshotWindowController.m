@@ -59,6 +59,8 @@
 #import "NSShadow_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import "NSColor_SKExtensions.h"
+#import "NSPasteboard_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -651,6 +653,21 @@ static char SKSnaphotWindowDefaultsObservationContext;
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+#pragma mark NSPasteboardItemDataProvider protocol
+
+// the controller is set as owner in -[SKRightSideController tableView:writeRowsWithIndexestoPasteboard:]
+- (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSPasteboardType)type {
+    if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
+        NSURL *dropDestination = [pboard pasteLocationURL];
+        PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
+        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+        NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
+        fileURL = [fileURL uniqueFileURL];
+        if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+            [item setString:[fileURL absoluteString] forType:type];
     }
 }
 

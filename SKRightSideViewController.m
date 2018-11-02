@@ -133,9 +133,12 @@
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [[snapshotArrayController arrangedObjects] objectAtIndex:idx];
-            [pboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilesPromisePboardType, nil] owner:self];
-            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-            [pboard setPropertyList:[NSArray arrayWithObject:@"tiff"] forType:NSFilesPromisePboardType];
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
             return YES;
         }
     }

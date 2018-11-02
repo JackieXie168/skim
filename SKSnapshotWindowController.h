@@ -43,7 +43,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
 @protocol SKSnapshotWindowControllerDelegate;
 
-@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
+@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider> {
     SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;
