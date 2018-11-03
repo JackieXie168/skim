@@ -425,7 +425,7 @@ static NSError *concatenatedError(NSArray *errors) {
             __block NSMutableArray *errors = nil;
 
             for (NSURL *url in urls) {
-                [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                [super openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
                     if (document == nil && error) {
                         if (errors == nil)
                             errors = [[NSMutableArray alloc] init];
@@ -495,7 +495,7 @@ static NSError *concatenatedError(NSArray *errors) {
             NSMutableArray *errors = nil;
             
             for (NSURL *url in urls) {
-                document = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error];
+                document = [super openDocumentWithContentsOfURL:url display:displayDocument error:&error];
                 if (document == nil && error) {
                     if (errors == nil)
                         errors = [[NSMutableArray alloc] init];
