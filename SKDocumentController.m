@@ -345,6 +345,49 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
 }
 
+- (NSArray *)fileURLsInFolderAtURL:(NSURL *)folderURL error:(NSError **)outError {
+    NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
+                                      enumeratorAtURL:folderURL
+                                      includingPropertiesForKeys:nil
+                                      options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
+                                      errorHandler:nil];
+    NSMutableArray *urls = [NSMutableArray array];
+    
+    for (NSURL *url in dirEnum) {
+        if ([self documentClassForContentsOfURL:url])
+            [urls addObject:url];
+    }
+    
+    if ([urls count] > WARNING_LIMIT) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
+        [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+        
+        if (NSAlertFirstButtonReturn == [alert runModal]) {
+            urls = nil;
+            if (outError)
+                *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
+        }
+    } else if ([urls count] == 0 && outError) {
+        *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
+    }
+    
+    return urls;
+}
+
+static inline NSError *concatenatedErrors(NSArray *errors) {
+    NSError *error = [errors firstObject];
+    if ([errors count] > 1) {
+        NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
+        [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
+        error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
+        [userInfo release];
+    }
+    return error;
+}
+
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
 #if DEPLOYMENT_BEFORE(10_7)
     if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd] == NO) {
@@ -361,78 +404,42 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSString *fragment = [absoluteURL fragment];
     if ([fragment length] > 0)
         absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
-    // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
-    if ([absoluteURL isFileURL])
-        absoluteURL = [absoluteURL filePathURL];
-    
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         
-        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
-                                          enumeratorAtURL:absoluteURL
-                                          includingPropertiesForKeys:nil
-                                          options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
-                                          errorHandler:nil];
-        NSMutableArray *urls = [NSMutableArray array];
+        NSError *error = nil;
+        NSArray *urls = [self fileURLsInFolderAtURL:absoluteURL error:&error];
         
-        for (NSURL *url in dirEnum) {
-            if ([self documentClassForContentsOfURL:url])
-                [urls addObject:url];
-        }
-        
-        if ([urls count] == 0) {
-            if (completionHandler)
-                completionHandler(nil, NO, nil);
-        } else {
+        if ([urls count] > 0) {
             
-            if ([urls count] > WARNING_LIMIT) {
-                NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
-                [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
-                [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-                [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
-                
-                if (NSAlertFirstButtonReturn == [alert runModal]) {
-                    urls = nil;
-                    if (completionHandler)
-                        completionHandler(nil, NO, [NSError userCancelledErrorWithUnderlyingError:nil]);
-                }
-            }
-            
-            if (urls) {
-                
-                __block NSInteger i = [urls count];
-                __block NSMutableArray *errors = nil;
+            __block NSInteger i = [urls count];
+            __block NSMutableArray *errors = nil;
 
-                for (NSURL *url in urls) {
-                    [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                        if (document == nil && error) {
-                            if (errors == nil)
-                                errors = [[NSMutableArray alloc] init];
-                            [errors addObject:error];
-                        }
-                        if (--i == 0) {
-                            if (completionHandler) {
-                                if (errors) {
-                                    document = nil;
-                                    documentWasAlreadyOpen = NO;
-                                    error = [errors firstObject];
-                                    if ([errors count] > 1) {
-                                        NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
-                                        [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
-                                        error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
-                                        [userInfo release];
-                                    }
-                                }
-                                completionHandler(document, documentWasAlreadyOpen, error);
+            for (NSURL *url in urls) {
+                [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                    if (document == nil && error) {
+                        if (errors == nil)
+                            errors = [[NSMutableArray alloc] init];
+                        [errors addObject:error];
+                    }
+                    if (--i == 0) {
+                        if (completionHandler) {
+                            if (errors) {
+                                document = nil;
+                                documentWasAlreadyOpen = NO;
+                                error = concatenatedErrors(errors);
                             }
-                            SKDESTROY(errors);
+                            completionHandler(document, documentWasAlreadyOpen, error);
                         }
-                    }];
-                }
+                        SKDESTROY(errors);
+                    }
+                }];
             }
+            
+        } else if (completionHandler) {
+            completionHandler(nil, NO, error);
         }
         
     } else {
@@ -446,8 +453,12 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             }
         }
         
+        // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
+        if ([absoluteURL isFileURL])
+            absoluteURL = [absoluteURL filePathURL];
+        
         [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
-            if ([fragment length] > 0)
+            if (document && [fragment length] > 0)
                 [document applyFragment:fragment];
             if (completionHandler)
                 completionHandler(document, documentWasAlreadyOpen, error);
@@ -463,42 +474,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSString *fragment = [absoluteURL fragment];
     if ([fragment length] > 0)
         absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
-    // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
-    if ([absoluteURL isFileURL])
-        absoluteURL = [absoluteURL filePathURL];
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         
-        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
-                       enumeratorAtURL:absoluteURL
-            includingPropertiesForKeys:nil
-                               options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
-                          errorHandler:nil];
-        NSMutableArray *urls = [NSMutableArray array];
         NSError *error = nil;
+        NSArray *urls = [self fileURLsInFolderAtURL:absoluteURL error:&error];
         
-        for (NSURL *url in dirEnum) {
-            if ([self documentClassForContentsOfURL:url])
-                [urls addObject:url];
-        }
-        
-        if ([urls count] > WARNING_LIMIT) {
-            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
-            [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
-            
-            if (NSAlertFirstButtonReturn == [alert runModal]) {
-                urls = nil;
-                error = [NSError userCancelledErrorWithUnderlyingError:nil];
-            }
-        }
-        
-        if (urls) {
+        if ([urls count] > 0) {
             
             NSMutableArray *errors = nil;
             
@@ -513,13 +498,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             
             if (errors) {
                 document = nil;
-                error = [errors firstObject];
-                if ([errors count] > 1) {
-                    NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
-                    [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
-                    error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
-                    [userInfo release];
-                }
+                error = concatenatedErrors(errors);
                 [errors release];
             }
 
@@ -539,9 +518,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             }
         }
         
+        // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
+        if ([absoluteURL isFileURL])
+            absoluteURL = [absoluteURL filePathURL];
+
         document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
         
-        if ([fragment length] > 0)
+        if (document && [fragment length] > 0)
             [document applyFragment:fragment];
         
     }
