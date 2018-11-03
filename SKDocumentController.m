@@ -459,6 +459,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 #if DEPLOYMENT_BEFORE(10_7)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
+    
+    id document = nil;
     NSString *fragment = [absoluteURL fragment];
     if ([fragment length] > 0)
         absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
@@ -468,16 +470,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    if ([ws type:type conformsToType:SKNotesDocumentType]) {
-        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-        if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-            NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
-            if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
-                absoluteURL = pdfURL;
-        }
-    } else if ([ws type:type conformsToType:SKFolderDocumentType]) {
-        NSDocument *doc = nil;
-        NSError *error = nil;
+    
+    if ([ws type:type conformsToType:SKFolderDocumentType]) {
+        
         NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager]
                        enumeratorAtURL:absoluteURL
             includingPropertiesForKeys:nil
@@ -485,6 +480,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                           errorHandler:nil];
         NSMutableArray *urls = [NSMutableArray array];
         BOOL failed = NO;
+        NSError *error = nil;
         
         for (NSURL *url in dirEnum) {
             if ([self documentClassForContentsOfURL:url])
@@ -505,32 +501,43 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         for (NSURL *url in urls) {
-           doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error];
-           if (doc == nil)
+            document = [self openDocumentWithContentsOfURL:url display:displayDocument error:failed ? NULL : &error];
+           if (document == nil)
                 failed = YES;
         }
         
         if (failed)
-            doc = nil;
-        if (doc == nil && outError)
+            document = nil;
+        if (document == nil && outError)
             *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
-        return doc;
-    }
-    
-    id document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
-    
-    if ([document isPDFDocument] && [fragment length] > 0) {
-        for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
-            if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-                NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
-                if (page > 0)
-                    [[document mainWindowController] setPageNumber:page];
-            } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-                NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
-                if ([searchString length] > 0)
-                    [[document mainWindowController] displaySearchResultsForString:searchString];
+        
+    } else {
+        
+        if ([ws type:type conformsToType:SKNotesDocumentType]) {
+            NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+            if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
+                NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
+                if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
+                    absoluteURL = pdfURL;
             }
         }
+        
+        document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+        
+        if ([document isPDFDocument] && [fragment length] > 0) {
+            for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+                if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+                    NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
+                    if (page > 0)
+                        [[document mainWindowController] setPageNumber:page];
+                } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
+                    NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+                    if ([searchString length] > 0)
+                        [[document mainWindowController] displaySearchResultsForString:searchString];
+                }
+            }
+        }
+        
     }
     
     return document;
