@@ -423,7 +423,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                                         NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
                                         [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
                                         error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
-                                         [userInfo release];
+                                        [userInfo release];
                                     }
                                 }
                                 completionHandler(document, documentWasAlreadyOpen, error);
