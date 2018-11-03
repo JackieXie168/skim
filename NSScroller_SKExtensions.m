@@ -38,7 +38,7 @@
 
 #import "NSScroller_SKExtensions.h"
 
-@implementation NSScroller (NSScroller)
+@implementation NSScroller (SKExtensions)
 
 + (CGFloat)effectiveScrollerWidth {
     if ([self respondsToSelector:@selector(preferredScrollerStyle)] && [self preferredScrollerStyle] != NSScrollerStyleLegacy)

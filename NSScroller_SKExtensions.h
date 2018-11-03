@@ -38,6 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSScroller (NSScroller)
+@interface NSScroller (SKExtensions)
 + (CGFloat)effectiveScrollerWidth;
 @end
