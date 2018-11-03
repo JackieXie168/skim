@@ -308,6 +308,26 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
+- (void)applySetup:(NSDictionary *)setup {
+    if ([self mainWindowController] == nil)
+        [self makeWindowControllers];
+    [[self mainWindowController] applySetup:setup];
+}
+
+- (void)applyFragment:(NSString *)fragment {
+    for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+        if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
+            NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
+            if (page > 0)
+                [[self mainWindowController] setPageNumber:page];
+        } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
+            NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+            if ([searchString length] > 0)
+                [[self mainWindowController] displaySearchResultsForString:searchString];
+        }
+    }
+}
+
 #pragma mark Writing
 
 - (NSString *)fileType {
@@ -1552,12 +1572,6 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     if ([setup count])
         [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
     return setup;
-}
-
-- (void)applySetup:(NSDictionary *)setup {
-    if ([self mainWindowController] == nil)
-        [self makeWindowControllers];
-    [[self mainWindowController] applySetup:setup];
 }
 
 - (SKPDFView *)pdfView {

@@ -78,6 +78,8 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 - (void)applySetup:(NSDictionary *)setup {}
 
+- (void)applyFragment:(NSString *)fragment {}
+
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];

@@ -447,19 +447,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
-            if ([document isPDFDocument] && [fragment length] > 0) {
-                for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
-                    if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-                        NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
-                        if (page > 0)
-                            [[(SKMainDocument *)document mainWindowController] setPageNumber:page];
-                    } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-                        NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
-                        if ([searchString length] > 0)
-                            [[(SKMainDocument *)document mainWindowController] displaySearchResultsForString:searchString];
-                    }
-                }
-            }
+            if ([fragment length] > 0)
+                [document applyFragment:fragment];
             if (completionHandler)
                 completionHandler(document, documentWasAlreadyOpen, error);
         }];
@@ -552,19 +541,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
         
-        if ([document isPDFDocument] && [fragment length] > 0) {
-            for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
-                if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-                    NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
-                    if (page > 0)
-                        [[document mainWindowController] setPageNumber:page];
-                } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-                    NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
-                    if ([searchString length] > 0)
-                        [[document mainWindowController] displaySearchResultsForString:searchString];
-                }
-            }
-        }
+        if ([fragment length] > 0)
+            [document applyFragment:fragment];
         
     }
     

@@ -60,6 +60,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (void)saveRecentDocumentInfo;
 - (void)applySetup:(NSDictionary *)setup;
+- (void)applyFragment:(NSString *)fragment;
 - (NSDictionary *)currentDocumentSetup;
 
 #pragma mark PDF Document
