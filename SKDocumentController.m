@@ -404,21 +404,31 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if (urls) {
                 
                 __block NSInteger i = [urls count];
-                __block BOOL failed = NO;
-                __block NSError *failedError = nil;
-                
+                __block NSMutableArray *errors = nil;
+
                 for (NSURL *url in urls) {
                     [self openDocumentWithContentsOfURL:url display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                        if (document == nil) {
-                            failed = YES;
-                            if (failedError == nil)
-                                failedError = [error retain];
+                        if (document == nil && error) {
+                            if (errors == nil)
+                                errors = [[NSMutableArray alloc] init];
+                            [errors addObject:error];
                         }
                         if (--i == 0) {
-                            // or should we call the completionHandler for every URL?
-                            if (completionHandler)
-                                completionHandler(failed ? nil : document, failed ? NO : documentWasAlreadyOpen, failedError);
-                            SKDESTROY(failedError);
+                            if (completionHandler) {
+                                if (errors) {
+                                    document = nil;
+                                    documentWasAlreadyOpen = NO;
+                                    error = [errors firstObject];
+                                    if ([errors count] > 1) {
+                                        NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
+                                        [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
+                                        error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
+                                         [userInfo release];
+                                    }
+                                }
+                                completionHandler(document, documentWasAlreadyOpen, error);
+                            }
+                            SKDESTROY(errors);
                         }
                     }];
                 }
@@ -479,7 +489,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                                options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants
                           errorHandler:nil];
         NSMutableArray *urls = [NSMutableArray array];
-        BOOL failed = NO;
         NSError *error = nil;
         
         for (NSURL *url in dirEnum) {
@@ -500,14 +509,33 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             }
         }
         
-        for (NSURL *url in urls) {
-            document = [self openDocumentWithContentsOfURL:url display:displayDocument error:failed ? NULL : &error];
-           if (document == nil)
-                failed = YES;
+        if (urls) {
+            
+            NSMutableArray *errors = nil;
+            
+            for (NSURL *url in urls) {
+                document = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error];
+                if (document == nil && error) {
+                    if (errors == nil)
+                        errors = [[NSMutableArray alloc] init];
+                    [errors addObject:error];
+                }
+            }
+            
+            if (errors) {
+                document = nil;
+                error = [errors firstObject];
+                if ([errors count] > 1) {
+                    NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
+                    [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
+                    error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
+                    [userInfo release];
+                }
+                [errors release];
+            }
+
         }
         
-        if (failed)
-            document = nil;
         if (document == nil && outError)
             *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
         
