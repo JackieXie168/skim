@@ -80,6 +80,8 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
+#define ELLIPSIS_CHARACTER (unichar)0x2026
+
 #if SDK_BEFORE(10_8)
 @interface NSDocumentController (SKMountainLionDeclarations)
 // this is used in 10.8 and later from the openDocument: action
@@ -377,11 +379,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return urls;
 }
 
-static inline NSError *concatenatedErrors(NSArray *errors) {
+static NSError *concatenatedError(NSArray *errors) {
     NSError *error = [errors firstObject];
     if ([errors count] > 1) {
         NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
-        [userInfo setObject:[[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] forKey:NSLocalizedDescriptionKey];
+        NSString *description;
+        if ([errors count] > WARNING_LIMIT)
+            description = [[[[errors subarrayWithRange:NSMakeRange(0, WARNING_LIMIT)] valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] stringByAppendingFormat:@"\n%C", ELLIPSIS_CHARACTER];
+        else
+            description = [[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"];
+        [userInfo setObject:description forKey:NSLocalizedDescriptionKey];
         error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
         [userInfo release];
     }
@@ -429,7 +436,7 @@ static inline NSError *concatenatedErrors(NSArray *errors) {
                             if (errors) {
                                 document = nil;
                                 documentWasAlreadyOpen = NO;
-                                error = concatenatedErrors(errors);
+                                error = concatenatedError(errors);
                             }
                             completionHandler(document, documentWasAlreadyOpen, error);
                         }
@@ -498,7 +505,7 @@ static inline NSError *concatenatedErrors(NSArray *errors) {
             
             if (errors) {
                 document = nil;
-                error = concatenatedErrors(errors);
+                error = concatenatedError(errors);
                 [errors release];
             }
 
