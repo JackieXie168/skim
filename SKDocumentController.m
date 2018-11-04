@@ -416,8 +416,8 @@ static NSError *concatenatedError(NSArray *errors) {
     
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         
-        NSError *error = nil;
-        NSArray *urls = [self fileURLsInFolderAtURL:absoluteURL error:&error];
+        NSError *err = nil;
+        NSArray *urls = [self fileURLsInFolderAtURL:absoluteURL error:&err];
         
         if ([urls count] > 0) {
             
@@ -446,7 +446,7 @@ static NSError *concatenatedError(NSArray *errors) {
             }
             
         } else if (completionHandler) {
-            completionHandler(nil, NO, error);
+            completionHandler(nil, NO, err);
         }
         
     } else {
