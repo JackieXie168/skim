@@ -55,6 +55,8 @@ enum {
 + (id)userCancelledErrorWithUnderlyingError:(NSError *)error;
 + (id)printDocumentErrorWithLocalizedDescription:(NSString *)description;
 
++ (NSError *)combineErrors:(NSArray *)errors maximum:(NSUInteger)max;
+
 - (BOOL)isUserCancelledError;
 
 @end

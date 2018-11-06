@@ -40,6 +40,8 @@
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
+#define ELLIPSIS_CHARACTER (unichar)0x2026
+
 @implementation NSError (SKExtensions)
 
 + (id)writeFileErrorWithLocalizedDescription:(NSString *)description {
@@ -60,6 +62,22 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 + (id)userCancelledErrorWithUnderlyingError:(NSError *)error {
     return [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, nil]];
+}
+
++ (NSError *)combineErrors:(NSArray *)errors maximum:(NSUInteger)max {
+    NSError *error = [errors firstObject];
+    if ([errors count] > 1) {
+        NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
+        NSString *description;
+        if ([errors count] > max)
+            description = [[[[errors subarrayWithRange:NSMakeRange(0, max)] valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] stringByAppendingFormat:@"\n%C", ELLIPSIS_CHARACTER];
+        else
+            description = [[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"];
+        [userInfo setObject:description forKey:NSLocalizedDescriptionKey];
+        error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
+        [userInfo release];
+    }
+    return error;
 }
 
 - (BOOL)isUserCancelledError {

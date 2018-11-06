@@ -211,10 +211,23 @@ static char SKApplicationObservationContext;
                     lastOpenFiles = nil;
             }
             
+            __block NSInteger i = [lastOpenFiles count];
+            __block NSMutableArray *errors = nil;
+            
+            SKDocumentController *sdc = [NSDocumentController sharedDocumentController];
             for (NSDictionary *dict in [lastOpenFiles reverseObjectEnumerator]) {
-                [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                    if (document == nil && error && [error isUserCancelledError] == NO)
-                        [NSApp presentError:error];
+                [sdc openDocumentWithSetup:dict completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                    if (document == nil && error && [error isUserCancelledError] == NO) {
+                        if (errors == nil)
+                            errors = [[NSMutableArray alloc] init];
+                        [errors addObject:error];
+                    }
+                    if (--i == 0) {
+                        if (errors) {
+                            [NSApp presentError:[NSError combineErrors:errors maximum:10]];
+                            SKDESTROY(errors);
+                        }
+                    }
                 }];
             }
         }

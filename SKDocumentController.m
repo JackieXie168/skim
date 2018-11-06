@@ -49,6 +49,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKNotesDocument.h"
 #import "SKTemplateManager.h"
+#import "NSError_SKExtensions.h"
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
@@ -381,22 +382,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return urls;
 }
 
-static NSError *concatenatedError(NSArray *errors) {
-    NSError *error = [errors firstObject];
-    if ([errors count] > 1) {
-        NSMutableDictionary *userInfo = [[error userInfo] mutableCopy];
-        NSString *description;
-        if ([errors count] > WARNING_LIMIT)
-            description = [[[[errors subarrayWithRange:NSMakeRange(0, WARNING_LIMIT)] valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"] stringByAppendingFormat:@"\n%C", ELLIPSIS_CHARACTER];
-        else
-            description = [[errors valueForKey:@"localizedDescription"] componentsJoinedByString:@"\n"];
-        [userInfo setObject:description forKey:NSLocalizedDescriptionKey];
-        error = [NSError errorWithDomain:[error domain] code:[error code] userInfo:userInfo];
-        [userInfo release];
-    }
-    return error;
-}
-
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
 #if DEPLOYMENT_BEFORE(10_7)
     if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd] == NO) {
@@ -438,7 +423,7 @@ static NSError *concatenatedError(NSArray *errors) {
                             if (errors) {
                                 document = nil;
                                 documentWasAlreadyOpen = NO;
-                                error = concatenatedError(errors);
+                                error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
                             }
                             completionHandler(document, documentWasAlreadyOpen, error);
                         }
@@ -507,7 +492,7 @@ static NSError *concatenatedError(NSArray *errors) {
             
             if (errors) {
                 document = nil;
-                error = concatenatedError(errors);
+                error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
                 [errors release];
             }
 
