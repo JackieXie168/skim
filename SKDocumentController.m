@@ -336,6 +336,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
         [self openDocumentWithContentsOfURL:fileURL display:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
             if (document) {
+                if (documentWasAlreadyOpen == NO)
+                    [document makeWindowControllers];
                 [document applySetup:setup];
                 [document showWindows];
             }
