@@ -119,6 +119,7 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 #pragma mark -
 
 @interface SKMainToolbarController (SKPrivate)
+- (void)handleColorSwatchFrameChangedNotification:(NSNotification *)notification;
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
 @end
 
@@ -645,17 +646,19 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
             NSDictionary *options = [NSDictionary dictionaryWithObject:SKUnarchiveFromDataArrayTransformerName forKey:NSValueTransformerNameBindingOption];
             [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:SKSwatchColorsKey] options:options];
             [colorSwatch sizeToFit];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:) 
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:)
                                                          name:SKColorSwatchColorsChangedNotification object:colorSwatch];
-            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchFrameChangedNotification:)
+                                                         name:NSViewFrameDidChangeNotification object:colorSwatch];
+
             menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
             [item setLabels:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Favorite Colors", @"Tool tip message")];
             [item setViewWithSizes:colorSwatch];
             [item setMenuFormRepresentation:menuItem];
-            [self handleColorSwatchColorsChangedNotification:nil];
-            
+            [self handleColorSwatchFrameChangedNotification:nil];
+
         } else if ([identifier isEqualToString:SKDocumentToolbarColorsItemIdentifier]) {
             
             menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Colors", @"Menu item title") action:@selector(orderFrontColorPanel:) target:nil];
@@ -890,8 +893,11 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
         [item setRepresentedObject:color];
         [item setImage:image];
     }
-    
-    size = [colorSwatch bounds].size;
+}
+
+- (void)handleColorSwatchFrameChangedNotification:(NSNotification *)notification {
+    NSToolbarItem *toolbarItem = [self toolbarItemForItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
+    NSSize size = [colorSwatch bounds].size;
     [toolbarItem setMinSize:size];
     [toolbarItem setMaxSize:size];
 }
