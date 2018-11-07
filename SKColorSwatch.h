@@ -47,9 +47,8 @@ extern NSString *SKColorSwatchColorsChangedNotification;
     NSInteger focusedIndex;
     NSInteger clickedIndex;
     NSInteger draggedIndex;
-    NSInteger resizedIndex;
-    CGFloat resizedWidth;
-
+    NSInteger modifiedIndex;
+    
     SEL action;
     id target;
     
