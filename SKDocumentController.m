@@ -284,10 +284,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([theURL isFileURL]) {
         NSError *error = nil;
         NSString *type = [self typeForContentsOfURL:theURL error:&error];
+        Class docClass = [self documentClassForType:type];
         
-        if (showNotes == NO || [[SKNotesDocument readableTypes] containsObject:type]) {
+        if (showNotes == NO || docClass == [SKNotesDocument class]) {
             [self openDocumentWithContentsOfURL:theURL display:YES completionHandler:completionHandler];
-        } else if ([[SKMainDocument readableTypes] containsObject:type]) {
+        } else if (docClass == [SKMainDocument class]) {
             id document = nil;
             for (document in [self documents]) {
                 if ([document respondsToSelector:@selector(sourceFileURL)] && [[document sourceFileURL] isEqual:theURL])
