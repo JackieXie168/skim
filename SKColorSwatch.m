@@ -52,6 +52,13 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #define ACTION_KEY      @"action"
 #define AUTORESIZES_KEY @"autoResizes"
 
+#if SDK_BEFORE(10_7)
+@interface NSView (SKLionExtensions)
+- (NSRect)focusRingMask;
+- (void)drawFocusRingMask;
+- (void)noteFocusRingMaskChanged;
+@end
+#endif
 
 @interface SKAccessibilityColorSwatchElement : NSObject {
     SKColorSwatch *parent;
@@ -216,11 +223,26 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSRectFill(NSMakeRect(insertionIndex * (NSHeight(r) + 1.0), 1.0, 3.0, NSHeight(r) + 2.0));
     }
     
-    if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
+    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)] == NO && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
         r.origin.x = 2.0 + focusedIndex * (NSWidth(r) + 1.0);
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(r);
     }
+}
+
+- (NSRect)focusRingMaskBounds {
+    if (focusedIndex == -1)
+        return NSZeroRect;
+    NSRect rect = NSInsetRect([self bounds], 1.0, 1.0);
+    rect.size.width = NSHeight(rect);
+    rect.origin.x = 1.0 + focusedIndex * (NSWidth(rect) - 1.0);
+    return rect;
+}
+
+- (void)drawFocusRingMask {
+    NSRect rect = [self focusRingMaskBounds];
+    if (NSIsEmptyRect(rect) == NO)
+        NSRectFill(rect);
 }
 
 - (void)setKeyboardFocusRingNeedsDisplayInRect:(NSRect)rect {
@@ -235,7 +257,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if ([self isEnabled]) {
         highlightedIndex = i;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-        [self setNeedsDisplay:YES];
     }
     
     if (i != -1) {
@@ -296,12 +317,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         clickedIndex = -1;
         highlightedIndex = i;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-        [self setNeedsDisplay:YES];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             highlightedIndex = -1;
             insertionIndex = -1;
             [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-            [self setNeedsDisplay:YES];
         });
     }
 }
@@ -313,6 +332,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)moveRight:(id)sender {
     if (++focusedIndex >= (NSInteger)[colors count])
         focusedIndex = 0;
+    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
+        [self noteFocusRingMaskChanged];
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
@@ -320,6 +341,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)moveLeft:(id)sender {
     if (--focusedIndex < 0)
         focusedIndex = [colors count] - 1;
+    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
+        [self noteFocusRingMaskChanged];
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
@@ -514,7 +537,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if ([sender draggingSource] == self && isCopy == NO)
         i = -1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-    [self setNeedsDisplay:YES];
     if ([self isEnabled] == NO || i == -1) {
         highlightedIndex = -1;
         insertionIndex = -1;
@@ -533,7 +555,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     highlightedIndex = -1;
     insertionIndex = -1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-    [self setNeedsDisplay:YES];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
@@ -663,6 +684,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if (focused && anIndex < (NSInteger)[[self colors] count]) {
         [[self window] makeFirstResponder:self];
         focusedIndex = anIndex;
+        if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
+            [self noteFocusRingMaskChanged];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     }
 }
