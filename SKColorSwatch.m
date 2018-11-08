@@ -266,7 +266,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)dirty {
     if (RUNNING_BEFORE(10_7))
-        [super setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
 
