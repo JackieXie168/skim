@@ -159,6 +159,18 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (BOOL)acceptsFirstResponder { return YES; }
 
+- (CGFloat)distanceBetweenColors {
+    return NSHeight([self bounds]) - 3.0;
+}
+
+- (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
+    NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
+    rect.size.width = NSHeight(rect);
+    if (anIndex > 0)
+        rect.origin.x += anIndex * [self distanceBetweenColors];
+    return rect;
+}
+
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
     NSSize size = [self frame].size;
     size.width = count * (size.height - 3.0) + 3.0;
@@ -191,6 +203,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
         [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
         [NSBezierPath fillRect:rect];
+        [[NSBezierPath bezierPathWithRect:rect] addClip];
     } else {
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5];
         [[NSColor controlColor] setFill];
@@ -198,10 +211,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [path fill];
         [path stroke];
         radius = 1.5;
+        [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:3.0 yRadius:3.0] addClip];
     }
     
-    NSRect r = NSInsetRect(bounds, 2.0, 2.0);
-    r.size.width = NSHeight(r);
+    NSRect r = [self frameForColorAtIndex:0];
+    CGFloat distance = [self distanceBetweenColors];
     NSInteger i;
     for (i = 0; i < count; i++) {
         if (shrinkIndex == i)
@@ -213,30 +227,31 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
             [borderColor set];
             [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(r, 0.5, 0.5) xRadius:radius yRadius:radius] stroke];
         }
-        r.origin.x = NSMaxX(r) + 1.0;
-        if (shrinkIndex == i)
+        r.origin.x += distance;
+        if (shrinkIndex == i) {
+            r.origin.x -= shrinkWidth;
             r.size.width = NSHeight(r);
+        }
     }
     
     if (insertionIndex != -1) {
         [[NSColor selectedControlColor] setFill];
-        NSRectFill(NSMakeRect(insertionIndex * (NSHeight(r) + 1.0), 1.0, 3.0, NSHeight(r) + 2.0));
+        r = [self frameForColorAtIndex:insertionIndex];
+        r.origin.x -= 1.0;
+        r.size.width = 1.0;
+        NSRectFill(NSInsetRect(r, -1.0, -1.0));
     }
     
     if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
-        r.origin.x = 2.0 + focusedIndex * (NSWidth(r) + 1.0);
         NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill(r);
+        NSRectFill([self frameForColorAtIndex:focusedIndex]);
     }
 }
 
 - (NSRect)focusRingMaskBounds {
     if (focusedIndex == -1)
         return NSZeroRect;
-    NSRect rect = NSInsetRect([self bounds], 1.0, 1.0);
-    rect.size.width = NSHeight(rect);
-    rect.origin.x = 1.0 + focusedIndex * (NSWidth(rect) - 1.0);
-    return rect;
+    return [self frameForColorAtIndex:focusedIndex];
 }
 
 - (void)drawFocusRingMask {
@@ -348,25 +363,22 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (NSInteger)colorIndexAtPoint:(NSPoint)point {
-    NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
+    NSRect rect = [self frameForColorAtIndex:0];
+    CGFloat distance = [self distanceBetweenColors];
+    NSInteger i, count = [colors count];
     
-    if (NSMouseInRect(point, rect, [self isFlipped])) {
-        NSInteger i, count = [colors count];
-        
-        rect.size.width = NSHeight(rect);
-        for (i = 0; i < count; i++) {
-            if (NSMouseInRect(point, rect, [self isFlipped]))
-                return i;
-            rect.origin.x += NSWidth(rect) + 1.0;
-        }
+    for (i = 0; i < count; i++) {
+        if (NSMouseInRect(point, rect, [self isFlipped]))
+            return i;
+        rect.origin.x += distance;
     }
     return -1;
 }
 
 - (NSInteger)insertionIndexAtPoint:(NSPoint)point {
-    NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
-    CGFloat w = NSHeight(rect) + 1.0;
-    CGFloat x = NSMinX(rect) + w / 2.0;
+    NSRect rect = [self frameForColorAtIndex:0];
+    CGFloat w = [self distanceBetweenColors];
+    CGFloat x = NSMidX(rect);
     NSInteger i, count = [colors count];
     
     for (i = 0; i < count; i++) {
@@ -667,12 +679,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (NSRect)screenRectForElementAtIndex:(NSInteger)anIndex {
     NSRect rect = NSZeroRect;
-    if (anIndex < (NSInteger)[[self colors] count]) {
-        rect = NSInsetRect([self bounds], 1.0, 1.0);
-        rect.size.width = NSHeight(rect);
-        rect.origin.x += anIndex * (NSWidth(rect) - 1.0);
-        rect = [self convertRectToScreen:rect];
-    }
+    if (anIndex < (NSInteger)[[self colors] count])
+        return [self convertRectToScreen:NSInsetRect([self frameForColorAtIndex:anIndex], -1.0, -1.0)];
     return rect;
 }
 
