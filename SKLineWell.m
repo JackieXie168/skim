@@ -172,6 +172,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [super viewWillMoveToWindow:newWindow];
 }
 
+- (void)dirty {
+    if (RUNNING_BEFORE(10_7))
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self setNeedsDisplay:YES];
+}
+
 - (NSBezierPath *)path {
     NSBezierPath *path = [NSBezierPath bezierPath];
     NSRect bounds = [self bounds];
@@ -348,7 +354,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self isEnabled]) {
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
         NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
 		BOOL keepOn = YES;
@@ -451,7 +457,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         
         lwFlags.active = 1;
         
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -460,7 +466,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isActive]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         lwFlags.active = 0;
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -629,7 +635,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:YES];
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
         return NSDragOperationEvery;
     } else
@@ -639,7 +645,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:NO];
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -669,7 +675,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self sendAction:[self action] to:[self target]];
     
     [self setHighlighted:NO];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     [self setNeedsDisplay:YES];
     
 	return dict != nil;

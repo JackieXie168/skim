@@ -169,6 +169,12 @@ static char SKFontWellFontSizeObservationContext;
     [self deactivate];
 }
 
+- (void)dirty {
+    if (RUNNING_BEFORE(10_7))
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self setNeedsDisplay:YES];
+}
+
 - (void)notifyFontBinding {
     NSDictionary *info = [self infoForBinding:FONTNAME_KEY];
     [[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
@@ -229,14 +235,14 @@ static char SKFontWellFontSizeObservationContext;
                name:NSWindowWillCloseNotification object:[fm fontPanel:YES]];
     
     [self setState:NSOnState];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     [self setNeedsDisplay:YES];
 }
 
 - (void)deactivate {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setState:NSOffState];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     [self setNeedsDisplay:YES];
 }
 
@@ -373,7 +379,7 @@ static char SKFontWellFontSizeObservationContext;
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
         [[self cell] setHighlighted:YES];
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
         return NSDragOperationGeneric;
     } else
@@ -383,7 +389,7 @@ static char SKFontWellFontSizeObservationContext;
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, ([self hasTextColor] ? NSPasteboardTypeColor : nil), nil]]) {
         [[self cell] setHighlighted:NO];
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -436,7 +442,7 @@ static char SKFontWellFontSizeObservationContext;
     }
     
     [[self cell] setHighlighted:NO];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     [self setNeedsDisplay:YES];
     
 	return droppedFont != nil || droppedColor != nil;
