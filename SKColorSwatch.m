@@ -196,6 +196,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     [NSBezierPath setDefaultLineWidth:1.0];
     
+    [NSGraphicsContext saveGraphicsState];
+    
     CGFloat radius = 0.0;
     if (RUNNING_BEFORE(10_10)) {
         static const NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
@@ -203,7 +205,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
         [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
         [NSBezierPath fillRect:rect];
-        [[NSBezierPath bezierPathWithRect:rect] addClip];
     } else {
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5];
         [[NSColor controlColor] setFill];
@@ -211,8 +212,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [path fill];
         [path stroke];
         radius = 1.5;
-        [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:3.0 yRadius:3.0] addClip];
     }
+    
+    [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:2.0 * radius yRadius:2.0 * radius] addClip];
     
     NSRect r = [self frameForColorAtIndex:0];
     CGFloat distance = [self distanceBetweenColors];
@@ -242,6 +244,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSRectFill(NSInsetRect(r, -1.0, -1.0));
     }
     
+    [NSGraphicsContext restoreGraphicsState];
+
     if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill([self frameForColorAtIndex:focusedIndex]);
@@ -260,8 +264,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSRectFill(rect);
 }
 
-- (void)setKeyboardFocusRingNeedsDisplayInRect:(NSRect)rect {
-    [super setKeyboardFocusRingNeedsDisplayInRect:rect];
+- (void)dirty {
+    if (RUNNING_BEFORE(10_7))
+        [super setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
 
@@ -271,7 +276,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     if ([self isEnabled]) {
         highlightedIndex = i;
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
     }
     
     if (i != -1) {
@@ -331,11 +336,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [self sendAction:[self action] to:[self target]];
         clickedIndex = -1;
         highlightedIndex = i;
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             highlightedIndex = -1;
             insertionIndex = -1;
-            [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+            [self dirty];
         });
     }
 }
@@ -349,7 +354,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         focusedIndex = 0;
     if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
         [self noteFocusRingMaskChanged];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
@@ -358,7 +363,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         focusedIndex = [colors count] - 1;
     if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
         [self noteFocusRingMaskChanged];
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
@@ -548,7 +553,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
     if ([sender draggingSource] == self && isCopy == NO)
         i = -1;
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
     if ([self isEnabled] == NO || i == -1) {
         highlightedIndex = -1;
         insertionIndex = -1;
@@ -566,7 +571,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     highlightedIndex = -1;
     insertionIndex = -1;
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self dirty];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
@@ -694,7 +699,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         focusedIndex = anIndex;
         if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
             [self noteFocusRingMaskChanged];
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self dirty];
     }
 }
 
