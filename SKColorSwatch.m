@@ -223,7 +223,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         NSRectFill(NSMakeRect(insertionIndex * (NSHeight(r) + 1.0), 1.0, 3.0, NSHeight(r) + 2.0));
     }
     
-    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)] == NO && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
+    if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
         r.origin.x = 2.0 + focusedIndex * (NSWidth(r) + 1.0);
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(r);

@@ -288,12 +288,20 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
+    if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
         [NSGraphicsContext saveGraphicsState];
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(bounds);
         [NSGraphicsContext restoreGraphicsState];
     }
+}
+
+- (NSRect)focusRingMaskBounds {
+    return [self bounds];
+}
+
+- (void)drawFocusRingMask {
+    NSRectFill([self bounds]);
 }
 
 - (NSImage *)dragImage {

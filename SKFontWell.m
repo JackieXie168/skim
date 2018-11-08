@@ -510,12 +510,20 @@ static char SKFontWellFontSizeObservationContext;
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    if ([self showsFirstResponder]) {
+    if (RUNNING_BEFORE(10_7) && [self showsFirstResponder]) {
         [NSGraphicsContext saveGraphicsState];
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(frame);
         [NSGraphicsContext restoreGraphicsState];
     }
+}
+
+- (NSRect)focusRingMaskBoundsForFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    return cellFrame;
+}
+
+- (void)drawFocusRingMaskWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSRectFill(cellFrame);
 }
 
 - (NSAttributedString *)attributedTitle {
