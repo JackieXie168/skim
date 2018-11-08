@@ -659,7 +659,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark NSPasteboardItemDataProvider protocol
 
 // the controller is set as owner in -[SKRightSideViewController tableView:writeRowsWithIndexestoPasteboard:]
-- (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSPasteboardType)type {
+- (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
         PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
