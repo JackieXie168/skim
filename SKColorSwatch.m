@@ -152,20 +152,20 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (BOOL)acceptsFirstResponder { return YES; }
 
-- (NSRect)frameForNumberOfColors:(NSUInteger)count {
-    NSRect frame = [self frame];
-    frame.size.width = count * (NSHeight(frame) - 3.0) + 3.0;
-    return frame;
+- (NSSize)sizeForNumberOfColors:(NSUInteger)count {
+    NSSize size = [self frame].size;
+    size.width = count * (size.height - 3.0) + 3.0;
+    return size;
 }
 
 - (void)sizeToFit {
-    [self setFrame:[self frameForNumberOfColors:[colors count]]];
+    [self setFrameSize:[self sizeForNumberOfColors:[colors count]]];
 }
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
     NSInteger count = [colors count];
-    CGFloat shrinkWidth = NSWidth([self frameForNumberOfColors:[colors count]]) - NSWidth(bounds);
+    CGFloat shrinkWidth = [self sizeForNumberOfColors:[colors count]].width - NSWidth(bounds);
     NSInteger shrinkIndex = -1;
     
     if (shrinkWidth > 0.0)
@@ -423,9 +423,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         if (draggedIndex != -1 && [self isEnabled]) {
             if (autoResizes) {
                 modifiedIndex = draggedIndex;
-                NSRect rect = [self frameForNumberOfColors:[colors count] - 1];
+                NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
                 [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrame:rect];
+                    [[self animator] setFrameSize:size];
                 }
                 completionHandler:^{
                     modifiedIndex = -1;
@@ -466,9 +466,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         if (draggedIndex != -1 && [self isEnabled]) {
             if (autoResizes) {
                 modifiedIndex = draggedIndex;
-                NSRect rect = [self frameForNumberOfColors:[colors count] - 1];
+                NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
                 [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrame:rect];
+                    [[self animator] setFrameSize:size];
                 }
                 completionHandler:^{
                     modifiedIndex = -1;
@@ -543,9 +543,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
             [colors insertObject:color atIndex:i];
             NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
             if (autoResizes) {
-                NSRect rect = [self frameForNumberOfColors:[colors count]];
+                NSSize size = [self sizeForNumberOfColors:[colors count]];
                 [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrame:rect];
+                    [[self animator] setFrameSize:size];
                 }
                 completionHandler:^{
                     modifiedIndex = -1;
