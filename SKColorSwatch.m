@@ -149,6 +149,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     if ([self infoForBinding:COLORS_KEY])
         SKENSURE_MAIN_THREAD( [self unbind:COLORS_KEY]; );
     SKDESTROY(colors);
@@ -206,11 +207,13 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
         [NSBezierPath fillRect:rect];
     } else {
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5];
         [[NSColor controlColor] setFill];
-        [[NSColor controlShadowColor] setStroke];
-        [path fill];
-        [path stroke];
+        [[NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4.0 yRadius:4.0] fill];
+        if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+            [[NSColor controlShadowColor] setStroke];
+        else
+            [[[NSColor controlShadowColor] colorWithAlphaComponent:0.3] setStroke];
+        [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5] stroke];
         radius = 1.5;
     }
     
@@ -268,6 +271,30 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if (RUNNING_BEFORE(10_7))
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
+}
+
+- (void)handleKeyOrMainStateChanged:(NSNotification *)note {
+    [self setNeedsDisplay:YES];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    NSWindow *oldWindow = [self window];
+    NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+    if (oldWindow) {
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
+    }
+    if (newWindow) {
+        for (NSString *name in names)
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+    }
+    [super viewWillMoveToWindow:newWindow];
+}
+
+- (void)viewDidMoveToWindow {
+    [super viewDidMoveToWindow];
+    if ([self window])
+        [self handleKeyOrMainStateChanged:nil];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
