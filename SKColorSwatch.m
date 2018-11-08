@@ -165,7 +165,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
     NSInteger count = [colors count];
-    CGFloat shrinkWidth = [self sizeForNumberOfColors:[colors count]].width - NSWidth(bounds);
+    CGFloat shrinkWidth = [self sizeForNumberOfColors:count].width - NSWidth(bounds);
     NSInteger shrinkIndex = -1;
     
     if (shrinkWidth > 0.0)
@@ -175,43 +175,49 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     // @@ Dark mode
     
-    NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-    static CGFloat defaultGrays[15] = {0.7, 0.85, 0.85, 0.85, 0.75,  0.3, 0.3, 0.3, 0.3, 0.1,  0.5, 0.75, 0.75, 0.75, 0.66667};
-    CGFloat *grays = RUNNING_BEFORE(10_10) ? defaultGrays + 10 : SKHasDarkAppearance(nil) ? defaultGrays + 5 : defaultGrays;
+    [NSBezierPath setDefaultLineWidth:1.0];
     
-    rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
+    CGFloat radius = 0.0;
+    if (RUNNING_BEFORE(10_10)) {
+        static const NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
+        static const CGFloat grays[5] = {0.5, 0.75, 0.75, 0.75, 0.66667};
+        rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
+        [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
+        [NSBezierPath fillRect:rect];
+    } else {
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5];
+        [[NSColor controlColor] setFill];
+        [[NSColor controlShadowColor] setStroke];
+        [path fill];
+        [path stroke];
+        radius = 1.5;
+    }
     
-    [[NSBezierPath bezierPathWithRect:rect] addClip];
-    
-    NSRect r = NSMakeRect(1.0, 1.0, NSHeight(rect), NSHeight(rect));
+    NSRect r = NSInsetRect(bounds, 2.0, 2.0);
+    r.size.width = NSHeight(r);
     NSInteger i;
     for (i = 0; i < count; i++) {
         if (shrinkIndex == i)
             r.size.width -= shrinkWidth;
-        NSColor *borderColor = [NSColor colorWithCalibratedWhite:grays[4] alpha:1.0];
-        [borderColor set];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:NSInsetRect(r, 0.5, 0.5)];
-        borderColor = highlightedIndex == i ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
-        [borderColor set];
-        if (NSWidth(r) >= 3.0)
-            [[NSBezierPath bezierPathWithRect:NSInsetRect(r, 1.5, 1.5)] stroke];
-        if (NSWidth(r) > 4.0)
-            [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 2.0, 2.0)];
-        r.origin.x = NSMaxX(r) - 1.0;
+        if (NSWidth(r) >= 1.0) {
+            if (NSWidth(r) > 2.0)
+                [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 1.0, 1.0)];
+            NSColor *borderColor = highlightedIndex == i ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
+            [borderColor set];
+            [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(r, 0.5, 0.5) xRadius:radius yRadius:radius] stroke];
+        }
+        r.origin.x = NSMaxX(r) + 1.0;
         if (shrinkIndex == i)
-            r.size.width = NSHeight(rect);
+            r.size.width = NSHeight(r);
     }
     
     if (insertionIndex != -1) {
         [[NSColor selectedControlColor] setFill];
-        NSRectFill(NSMakeRect(insertionIndex * (NSHeight(rect) - 1.0), 1.0, 3.0, NSHeight(rect)));
+        NSRectFill(NSMakeRect(insertionIndex * (NSHeight(r) + 1.0), 1.0, 3.0, NSHeight(r) + 2.0));
     }
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
-        r = NSInsetRect([self bounds], 1.0, 1.0);
-        r.size.width = NSHeight(r);
-        r.origin.x += focusedIndex * (NSWidth(r) - 1.0);
+        r.origin.x = 2.0 + focusedIndex * (NSWidth(r) + 1.0);
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(r);
     }
