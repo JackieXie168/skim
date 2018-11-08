@@ -263,8 +263,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)drawFocusRingMask {
     NSRect rect = [self focusRingMaskBounds];
-    if (NSIsEmptyRect(rect) == NO)
-        NSRectFill(rect);
+    if (NSIsEmptyRect(rect) == NO) {
+        if (RUNNING_BEFORE(10_7))
+            NSRectFill(rect);
+        else
+            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] fill];
+    }
 }
 
 - (void)dirty {
