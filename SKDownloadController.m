@@ -244,14 +244,20 @@ static SKDownloadController *sharedDownloadController = nil;
     static NSImage *deleteImage = nil;
     if (deleteImage == nil) {
         deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            [[NSColor lightGrayColor] setFill];
-            [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
-            [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-            [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
-            [[NSColor whiteColor] setFill];
-            [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            if (RUNNING_AFTER(10_9)) {
+                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            } else {
+                [[NSColor lightGrayColor] setFill];
+                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+                [[NSColor whiteColor] setFill];
+                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            }
             return YES;
         }] retain];
+        if (RUNNING_AFTER(10_9))
+            [deleteImage setTemplate:YES];
     }
     return deleteImage;
 }
@@ -260,14 +266,20 @@ static SKDownloadController *sharedDownloadController = nil;
     static NSImage *resumeImage = nil;
     if (resumeImage == nil) {
         resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            [[NSColor lightGrayColor] setFill];
-            [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
-            [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-            [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
-            [[NSColor whiteColor] setFill];
-            [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            if (RUNNING_AFTER(10_9)) {
+                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            } else {
+                [[NSColor lightGrayColor] setFill];
+                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+                [[NSColor whiteColor] setFill];
+                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            }
             return YES;
         }] retain];
+        if (RUNNING_AFTER(10_9))
+            [resumeImage setTemplate:YES];
     }
     return resumeImage;
 }
