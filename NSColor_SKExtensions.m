@@ -105,7 +105,7 @@
     static NSColor *graphiteColor = nil;
     if (RUNNING_AFTER(10_9)) {
         if (color == nil)
-            color = [[NSColor selectedMenuItemColor] retain];
+            color = [[NSColor keyboardFocusIndicatorColor] retain];
         return color;
     } else if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
