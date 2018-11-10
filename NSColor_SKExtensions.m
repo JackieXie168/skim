@@ -151,7 +151,7 @@
     if (color == nil) {
         
         if ([NSColor respondsToSelector:@selector(sourceListBackgroundColor)])
-            color = [[[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] dynamicColorWithMaxDarkBrightness:0.2] retain];
+            color = [[NSColor colorWithLightColor:[NSColor sourceListBackgroundColor] darkColor:[NSColor colorWithCalibratedWhite:0.164 alpha:1.0]] retain];
         else
             color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.188044 darkGreen:0.193106 darkBlue:0.2 alpha:1.0] retain];
     }
