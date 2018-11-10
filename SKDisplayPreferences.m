@@ -59,10 +59,12 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 
 - (void)dealloc {
 #ifdef DARK_MODE
-    @try {
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil]];
+    if (RUNNING_AFTER(10_13)) {
+        @try {
+            [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil]];
+        }
+        @catch(id e) {}
     }
-    @catch(id e) {}
 #endif
     SKDESTROY(tableFontLabelField);
     SKDESTROY(tableFontComboBox);
