@@ -40,6 +40,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 
+
 #ifdef DARK_MODE
 #if SDK_BEFORE(10_9)
 
@@ -52,7 +53,7 @@
 - (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
 @end
 
-@interface NSObject (NSAppearanceCustomization)
+@protocol NSAppearanceCustomization : NSObject
 @property (retain) NSAppearance *appearance;
 @property (readonly, retain) NSAppearance *effectiveAppearance;
 @end
@@ -76,8 +77,11 @@ BOOL SKHasDarkAppearance(id object) {
         if (object == nil)
             appearance = [NSClassFromString(@"NSAppearance") currentAppearance];
         else if ([object respondsToSelector:@selector(effectiveAppearance)])
-            appearance = [object effectiveAppearance];
+            appearance = [(id<NSAppearanceCustomization>)object effectiveAppearance];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         return [[appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+#pragma clang diagnostic pop
     }
 #endif
     return NO;
@@ -86,7 +90,7 @@ BOOL SKHasDarkAppearance(id object) {
 void SKSetHasDarkAppearance(id object) {
 #ifdef DARK_MODE
     if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)])
-        [object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"]];
+        [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"]];
 #endif
 }
 
