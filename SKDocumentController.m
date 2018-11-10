@@ -81,8 +81,6 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
-#define ELLIPSIS_CHARACTER (unichar)0x2026
-
 #if SDK_BEFORE(10_8)
 @interface NSDocumentController (SKMountainLionDeclarations)
 // this is used in 10.8 and later from the openDocument: action
