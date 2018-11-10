@@ -81,7 +81,6 @@ enum {
 + (NSColor *)mainSourceListHighlightColor;
 + (NSColor *)disabledSourceListHighlightColor;
 + (NSColor *)mainSourceListBackgroundColor;
-+ (NSColor *)sourceListHighlightColorForView:(NSView *)view;
 
 + (NSColor *)selectionHighlightColor:(BOOL)active;
 + (NSColor *)selectionHighlightInteriorColor:(BOOL)active;

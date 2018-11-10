@@ -70,8 +70,19 @@
             if (level >= MAX_HIGHLIGHTS)
                 continue;
             
-            if (color == nil)
-                color = [NSColor sourceListHighlightColorForView:self];
+            if (color == nil) {
+                if (RUNNING_BEFORE(10_10)) {
+                    NSWindow *window = [self window];
+                    if ([window isKeyWindow] && [window firstResponder] == self)
+                        color = [NSColor keySourceListHighlightColor];
+                    else if ([window isMainWindow] || [window isKeyWindow])
+                        color = [NSColor mainSourceListHighlightColor];
+                    else
+                        color = [NSColor disabledSourceListHighlightColor];
+                } else {
+                    color = [NSColor keySourceListHighlightColor];
+                }
+            }
             if (color == nil)
                 return;
             

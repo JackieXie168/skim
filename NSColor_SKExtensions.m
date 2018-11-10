@@ -158,16 +158,6 @@
     return color;
 }
 
-+ (NSColor *)sourceListHighlightColorForView:(NSView *)view {
-    NSWindow *window = [view window];
-    if ([window isKeyWindow] && [window firstResponder] == view)
-        return [self keySourceListHighlightColor];
-    else if ([window isMainWindow] || [window isKeyWindow])
-        return [self mainSourceListHighlightColor];
-    else
-        return [self disabledSourceListHighlightColor];
-}
-
 + (NSColor *)selectionHighlightColor:(BOOL)active {
     // @@ Dark mode
     if (active)
