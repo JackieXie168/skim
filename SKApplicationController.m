@@ -238,9 +238,6 @@ static char SKApplicationObservationContext;
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-#if defined(DARK_MODE) && DARK_MODE
-    [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
-#endif
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
