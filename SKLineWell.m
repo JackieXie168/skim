@@ -312,29 +312,21 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (NSImage *)dragImage {
     NSRect bounds = [self bounds];
-    NSBezierPath *path = lineWidth > 0.0 ? [self path] : nil;
     CGFloat scale = [self backingScale];
-    NSColor *fillColor;
-    NSColor *strokeColor;
+    NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
+    BOOL wasActive = lwFlags.active;
     
-    if (SKHasDarkAppearance(self)) {
-        fillColor = [NSColor colorWithCalibratedWhite:0.15 alpha:1.0];
-        strokeColor = [NSColor whiteColor];
-    } else {
-        fillColor = [NSColor whiteColor];
-        strokeColor = [NSColor blackColor];
-    }
+    lwFlags.active = 0;
+    [self cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
+    lwFlags.active = wasActive;
     
     // @@ Dark mode
     
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
         CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
-        [[NSColor darkGrayColor] setFill];
-        NSRectFill(NSInsetRect(rect, 1.0, 1.0));
-        [fillColor setFill];
-        NSRectFill(NSInsetRect(rect, 2.0, 2.0));
-        [strokeColor setStroke];
-        [path stroke];
+        [imageRep drawInRect:rect];
+        [[NSColor controlShadowColor] set];
+        NSFrameRect(rect);
     }];
     
     return image;
