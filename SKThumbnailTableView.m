@@ -80,7 +80,7 @@
                     else
                         color = [NSColor disabledSourceListHighlightColor];
                 } else {
-                    color = [NSColor keySourceListHighlightColor];
+                    color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
                 }
             }
             if (color == nil)

@@ -98,16 +98,10 @@
     return [NSColor colorWithLightColor:self darkColor:darkColor];
 }
 
-// @@ Dark mode
-
 + (NSColor *)keySourceListHighlightColor {
     static NSColor *color = nil;
     static NSColor *graphiteColor = nil;
-    if (RUNNING_AFTER(10_9)) {
-        if (color == nil)
-            color = [[NSColor keyboardFocusIndicatorColor] retain];
-        return color;
-    } else if ([NSColor currentControlTint] == NSGraphiteControlTint) {
+    if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
             graphiteColor = [[NSColor colorWithCalibratedRed:0.555 green:0.555 blue:0.578 alpha:1.0] retain];
         return graphiteColor;
@@ -145,6 +139,8 @@
         return color;
     }
 }
+
+// @@ Dark mode
 
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
