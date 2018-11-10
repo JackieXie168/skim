@@ -312,8 +312,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (NSImage *)dragImage {
     NSRect bounds = [self bounds];
-    CGFloat scale = [self backingScale];
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
+    CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
     BOOL wasActive = lwFlags.active;
     
     lwFlags.active = 0;
@@ -323,10 +323,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     // @@ Dark mode
     
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
-        CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.7);
-        [imageRep drawInRect:rect];
-        [[NSColor controlShadowColor] set];
-        NSFrameRect(rect);
+        [[[NSColor controlShadowColor] colorWithAlphaComponent:0.7] setStroke];
+        [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
+        rect = NSInsetRect(rect, 1.0, 1.0);
+        [imageRep drawInRect:rect fromRect:rect operation:NSCompositingOperationCopy fraction:0.7 respectFlipped:NO hints:nil];
     }];
     
     return image;
