@@ -112,11 +112,11 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 #ifdef DARK_MODE
     if (RUNNING_AFTER(10_13)) {
         NSColorWell *colorWell;
-        colorWell = [colorControls objectAtindex:0];
+        colorWell = [colorControls objectAtIndex:0];
         [colorWell unbind:NSValueBinding];
         [colorWell setAction:@selector(changeBackgroundColor:)];
         [colorWell setTarget:self];
-        colorWell = [colorControls objectAtindex:2];
+        colorWell = [colorControls objectAtIndex:2];
         [colorWell unbind:NSValueBinding];
         [colorWell setAction:@selector(changeFullScreenBackgroundColor:)];
         [colorWell setTarget:self];

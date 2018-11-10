@@ -77,7 +77,7 @@ BOOL SKHasDarkAppearance(id object) {
             appearance = [NSClassFromString(@"NSAppearance") currentAppearance];
         else if ([object respondsToSelector:@selector(effectiveAppearance)])
             appearance = [object effectiveAppearance];
-        return [appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua"]] isEqualToString:@"NSAppearanceNameDarkAqua"];
+        return [[appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
     }
 #endif
     return NO;
@@ -86,7 +86,7 @@ BOOL SKHasDarkAppearance(id object) {
 void SKSetHasDarkAppearance(id object) {
 #ifdef DARK_MODE
     if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)])
-        [object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"];
+        [object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"]];
 #endif
 }
 
