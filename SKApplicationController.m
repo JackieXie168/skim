@@ -99,9 +99,7 @@
 #define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
-#ifdef DARK_MODE
 static char SKApplicationObservationContext;
-#endif
 
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
@@ -173,7 +171,6 @@ static char SKApplicationObservationContext;
 
 #pragma mark KVO
 
-#ifdef DARK_MODE
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
@@ -181,7 +178,6 @@ static char SKApplicationObservationContext;
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
-#endif
 
 #pragma mark NSApplication delegate
 
@@ -267,10 +263,8 @@ static char SKApplicationObservationContext;
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
     
-#ifdef DARK_MODE
     if (RUNNING_AFTER(10_13))
         [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
-#endif
     
     // kHIDRemoteModeExclusiveAuto lets the HIDRemote handle activation when the app gets or loses focus
     if ([sud boolForKey:SKEnableAppleRemoteKey]) {

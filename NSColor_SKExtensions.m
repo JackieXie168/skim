@@ -74,10 +74,8 @@
 }
 
 + (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
-#ifdef DARK_MODE
     if (RUNNING_AFTER(10_13))
         return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
-#endif
     return aLightColor;
 }
 

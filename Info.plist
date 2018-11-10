@@ -292,7 +292,7 @@
 	<key>NSPrincipalClass</key>
 	<string>SKApplication</string>
 	<key>NSRequiresAquaSystemAppearance</key>
-	<true/>
+	<false/>
 	<key>NSServices</key>
 	<array>
 		<dict>

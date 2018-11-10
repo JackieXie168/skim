@@ -41,7 +41,6 @@
 #import "NSColor_SKExtensions.h"
 
 
-#ifdef DARK_MODE
 #if SDK_BEFORE(10_9)
 
 @interface NSAppearance : NSObject <NSCoding>
@@ -68,10 +67,8 @@
 @end
 
 #endif
-#endif
 
 BOOL SKHasDarkAppearance(id object) {
-#ifdef DARK_MODE
     if (RUNNING_AFTER(10_13)) {
         id appearance = nil;
         if (object == nil)
@@ -83,15 +80,12 @@ BOOL SKHasDarkAppearance(id object) {
         return [[appearance bestMatchFromAppearancesWithNames:[NSArray arrayWithObjects:@"NSAppearanceNameAqua", @"NSAppearanceNameDarkAqua", nil]] isEqualToString:@"NSAppearanceNameDarkAqua"];
 #pragma clang diagnostic pop
     }
-#endif
     return NO;
 }
 
 void SKSetHasDarkAppearance(id object) {
-#ifdef DARK_MODE
     if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)])
         [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"]];
-#endif
 }
 
 #pragma mark -
