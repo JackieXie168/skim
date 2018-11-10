@@ -103,17 +103,17 @@
 + (NSColor *)keySourceListHighlightColor {
     static NSColor *color = nil;
     static NSColor *graphiteColor = nil;
-    if ([NSColor currentControlTint] == NSGraphiteControlTint) {
+    if (RUNNING_AFTER(10_9)) {
+        if (color == nil)
+            color = [[NSColor selectedMenuItemColor] retain];
+        return color;
+    } else if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
-            graphiteColor = [[NSColor colorWithCalibratedLightRed:0.555 lightGreen:0.555 lightBlue:0.578 darkRed:0.255 darkGreen:0.255 darkBlue:0.278 alpha:1.0] retain];
+            graphiteColor = [[NSColor colorWithCalibratedRed:0.555 green:0.555 blue:0.578 alpha:1.0] retain];
         return graphiteColor;
     } else {
-        if (color == nil) {
-            if (RUNNING_AFTER(10_9))
-                color = [[NSColor colorWithCalibratedLightRed:0.196 lightGreen:0.478 lightBlue:0.988 darkRed:0.228 darkGreen:0.228 darkBlue:0.228 alpha:1.0] retain];
-            else
-                color = [[NSColor colorWithCalibratedRed:0.251 green:0.487 blue:0.780 alpha:1.0] retain];
-        }
+        if (color == nil)
+            color = [[NSColor colorWithCalibratedRed:0.251 green:0.487 blue:0.780 alpha:1.0] retain];
         return color;
     }
 }
