@@ -281,7 +281,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.1] setFill];
+        [[[NSColor controlShadowColor] colorWithAlphaComponent:0.3] setFill];
         NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
