@@ -65,8 +65,6 @@
 @synthesize animating, iconCell;
 @dynamic isVisible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle;
 
-// @@ Dark mode
-
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
