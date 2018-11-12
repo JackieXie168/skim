@@ -902,6 +902,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *notesToAdd = [NSMutableArray array];
+    NSMutableIndexSet *pageIndexes = [NSMutableIndexSet indexSet];
     
     if ([pdfDoc allowsNotes] == NO && [noteDicts count] > 0) {
         // there should not be any notesToRemove at this point
@@ -931,6 +932,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [pdfView setActiveAnnotation:nil];
         }
         for (annotation in [[notesToRemove copy] autorelease]) {
+            [pageIndexes addIndex:[annotation pageIndex]];
             PDFAnnotation *popup = [annotation popup];
             if (popup)
                 [pdfView removeAnnotation:popup];
@@ -951,6 +953,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
                 pageIndex = [pdfDoc pageCount] - 1;
+            [pageIndexes addIndex:pageIndex];
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page];
             if (autoUpdate && [[annotation contents] length] == 0)
@@ -965,7 +968,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     // make sure we clear the undo handling
     [self observeUndoManagerCheckpoint:nil];
     [rightSideController.noteOutlineView reloadData];
-    [self allThumbnailsNeedUpdate];
+    [self updateThumbnailsAtPageIndexes:pageIndexes];
     [pdfView resetPDFToolTipRects];
     
     mwcFlags.addOrRemoveNotesInBulk = 0;
@@ -2754,8 +2757,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (void)resetThumbnails {
-    [self willChangeValueForKey:THUMBNAILS_KEY];
-    [thumbnails removeAllObjects];
+    NSMutableArray *newThumbnails = [NSMutableArray array];
     if ([pageLabels count] > 0) {
         BOOL isLocked = [[pdfView document] isLocked];
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
@@ -2779,12 +2781,16 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:pageImage label:label pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
-            [thumbnails addObject:thumbnail];
+            [newThumbnails addObject:thumbnail];
             [thumbnail release];
         }];
     }
-    [self didChangeValueForKey:THUMBNAILS_KEY];
-    [self allThumbnailsNeedUpdate];
+    [[self mutableArrayValueForKey:THUMBNAILS_KEY] setArray:newThumbnails];
+    // reloadData resets the selection, so we have to ignore its notification and reset it
+    mwcFlags.updatingThumbnailSelection = 1;
+    [leftSideController.thumbnailTableView reloadData];
+    [self updateThumbnailSelection];
+    mwcFlags.updatingThumbnailSelection = 0;
 }
 
 - (void)resetThumbnailSizeIfNeeded {
@@ -2812,12 +2818,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (void)allThumbnailsNeedUpdate {
-    [thumbnails setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
-    // reloadData resets the selection, so we have to ignore its notification and reset it
-    mwcFlags.updatingThumbnailSelection = 1;
-    [leftSideController.thumbnailTableView reloadData];
-    [self updateThumbnailSelection];
-    mwcFlags.updatingThumbnailSelection = 0;
+    [self updateThumbnailsAtPageIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
 }
 
 #pragma mark Notes
