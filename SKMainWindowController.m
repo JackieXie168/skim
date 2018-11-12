@@ -2813,7 +2813,11 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)allThumbnailsNeedUpdate {
     [thumbnails setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
+    // reloadData resets the selection, so we have to ignore its notification and reset it
+    mwcFlags.updatingThumbnailSelection = 1;
     [leftSideController.thumbnailTableView reloadData];
+    [self updateThumbnailSelection];
+    mwcFlags.updatingThumbnailSelection = 0;
 }
 
 #pragma mark Notes
