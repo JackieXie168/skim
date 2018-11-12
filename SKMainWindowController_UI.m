@@ -1734,7 +1734,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
-    [self resetThumbnails];
+    [self allThumbnailsNeedUpdate];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey])
         [self updateRightStatus];
 }
