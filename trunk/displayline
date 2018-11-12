@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# displayline (Skim)
+#
+# Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "-help" ]]; then
+  echo "Usage: displayline [-r] [-b] [-g] LINE PDFFILE [TEXSOURCEFILE]
+Options:
+-r, -revert      Revert the file from disk if it was open
+-b, -readingbar  Indicate the line using the reading bar
+-g, -background  Do not bring Skim to the foreground"
+  exit 0
+fi
+
+# get arguments
+revert=false
+bar=false
+activate=true
+while [[ "${1:0:1}" == "-" ]]; do
+  if [[ "$1" == "-r" || "$1" == "-revert" ]]; then
+    revert=true
+  elif [[ "$1" == "-b" || "$1" == "-readingbar" ]]; then
+    bar=true
+  elif [[ "$1" == "-g" || "$1" == "-background" ]]; then
+    activate=false
+  fi
+  shift
+done
+line=$1
+file="$2"
+shopt -s extglob
+[[ $# -gt 2 ]] && source="$3" || source=""
+
+# expand relative paths
+[[ "${file:0:1}" == "/" ]] || file="${PWD}/${file}"
+[[ "${source}" == "" || "${source:0:1}" == "/" ]] || source="${PWD}/${source}"
+
+# run AppleScript
+/usr/bin/osascript << EOF
+  set theLine to $line as integer
+  set theFile to POSIX file "$file"
+  set thePath to POSIX path of (theFile as alias)
+  tell application "Skim"
+    if $activate then activate
+    if $revert then
+      try
+        set theDocs to get documents whose path is thePath
+        if (count of theDocs) > 0 then revert theDocs
+      end try
+    end if
+    open theFile
+    if "$source" is "" then
+      tell front document to go to TeX line theLine showing reading bar $bar
+    else
+      set theSource to POSIX file "$source"
+      tell front document to go to TeX line theLine from theSource showing reading bar $bar
+    end if
+  end tell
+EOF
