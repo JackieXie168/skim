@@ -41,6 +41,7 @@
 #import "SKPDFView.h"
 #import "NSAttributedString_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSView_SKExtensions.h"
 #import <objc/objc-runtime.h>
 
 #define SKDisableExtendedPDFViewAccessibilityKey @"SKDisableExtendedPDFViewAccessibility"
