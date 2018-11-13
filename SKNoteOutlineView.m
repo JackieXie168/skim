@@ -42,7 +42,7 @@
 #import "SKApplication.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import "NSColor_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -146,17 +146,21 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] &&
         [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
         
-        BOOL isHighlighted = [[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row];
         NSRect rect = [self rectOfRow:row];
         CGFloat x = ceil(NSMidX(rect));
         CGFloat y = NSMaxY(rect) - 1.5;
+        CGFloat gray = 0.3;
+        
+        // @@ Dark mode
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row])
+            gray = SKHasDarkAppearance(nil) ? 0.5 : 1.0;
+        else
+            gray = SKHasDarkAppearance(nil) ? 0.3 : 0.5;
         
         [NSGraphicsContext saveGraphicsState];
         [NSBezierPath setDefaultLineWidth:1.0];
         
-        // @@ Dark mode
-        
-        [[NSColor colorWithCalibratedLightWhite:isHighlighted ? 1.0 : 0.5 darkWhite:isHighlighted ? 0.5 : 0.3 alpha:0.7] setStroke];
+        [[NSColor colorWithCalibratedWhite:gray alpha:0.7] setStroke];
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
         y -= 2.0;
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
