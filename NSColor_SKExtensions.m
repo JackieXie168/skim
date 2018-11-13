@@ -143,7 +143,6 @@
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil) {
-        
         if ([NSColor respondsToSelector:@selector(sourceListBackgroundColor)])
             color = [[NSColor colorWithLightColor:[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] darkColor:[NSColor colorWithCalibratedRed:0.164 green:0.164 blue:0.164 alpha:1.0]] retain];
         else
@@ -166,6 +165,14 @@
         return [NSColor selectedControlColor];
     else
         return [NSColor secondarySelectedControlColor];
+}
+
++ (NSColor *)pdfControlBackgroundColor {
+    static NSColor *color = nil;
+    if (color == nil) {
+        color = [[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.21 alpha:1.0] retain];
+    }
+    return color;
 }
 
 - (uint32_t)uint32HSBAValue {

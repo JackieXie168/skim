@@ -85,6 +85,8 @@ enum {
 + (NSColor *)selectionHighlightColor:(BOOL)active;
 + (NSColor *)selectionHighlightInteriorColor:(BOOL)active;
 
++ (NSColor *)pdfControlBackgroundColor;
+
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 - (void)drawSwatchInRoundedRect:(NSRect)rect;

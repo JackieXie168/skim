@@ -300,7 +300,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
     [[window contentView] addSubview:controlView];
     [pdfView setFrame:frame];
-    [window setBackgroundColor:[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.21 alpha:1.0]];
+    [window setBackgroundColor:[NSColor pdfControlBackgroundColor]];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     frame = [pdfView convertRect:rect fromPage:page];
