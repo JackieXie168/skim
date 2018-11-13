@@ -996,17 +996,26 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender selectedTag];
-    [mainController.pdfView setDisplayMode:displayMode];
+    if ([mainController.pdfView displayMode] !=- displayMode) {
+        [mainController.pdfView needsRewind];
+        [mainController.pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender selectedTag];
-    [mainController.pdfView setDisplayMode:displayMode];
+    if ([mainController.pdfView displayMode] !=- displayMode) {
+        [mainController.pdfView needsRewind];
+        [mainController.pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender selectedTag];
-    [mainController.pdfView setDisplayMode:displayMode];
+    if ([mainController.pdfView displayMode] !=- displayMode) {
+        [mainController.pdfView needsRewind];
+        [mainController.pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)changeBookMode:(id)sender {

@@ -248,15 +248,27 @@
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
-    [pdfView setDisplayMode:([pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender tag]];
+    PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender tag];
+    if ([pdfView displayMode] !=- displayMode) {
+        [pdfView needsRewind];
+        [pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
-    [pdfView setDisplayMode:([pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender tag]];
+    PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender tag];
+    if ([pdfView displayMode] !=- displayMode) {
+        [pdfView needsRewind];
+        [pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    [pdfView setDisplayMode:[sender tag]];
+    PDFDisplayMode displayMode = [sender tag];
+    if ([pdfView displayMode] !=- displayMode) {
+        [pdfView needsRewind];
+        [pdfView setDisplayMode:displayMode];
+    }
 }
 
 - (IBAction)toggleDisplayAsBook:(id)sender {
