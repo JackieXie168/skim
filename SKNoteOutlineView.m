@@ -149,18 +149,18 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
         NSRect rect = [self rectOfRow:row];
         CGFloat x = ceil(NSMidX(rect));
         CGFloat y = NSMaxY(rect) - 1.5;
-        CGFloat gray = 0.3;
+        NSColor *color = nil;
         
         // @@ Dark mode
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row])
-            gray = SKHasDarkAppearance(nil) ? 0.5 : 1.0;
+            color = [[NSColor alternateSelectedControlTextColor] colorWithAlphaComponent:0.7];
         else
-            gray = SKHasDarkAppearance(nil) ? 0.3 : 0.5;
-        
+            color = [[NSColor disabledControlTextColor] colorWithAlphaComponent:0.7];
+
         [NSGraphicsContext saveGraphicsState];
         [NSBezierPath setDefaultLineWidth:1.0];
         
-        [[NSColor colorWithCalibratedWhite:gray alpha:0.7] setStroke];
+        [color setStroke];
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
         y -= 2.0;
         [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
