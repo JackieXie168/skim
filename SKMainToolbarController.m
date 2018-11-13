@@ -988,7 +988,10 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 
 - (IBAction)changeDisplayBox:(id)sender {
     PDFDisplayBox displayBox = [sender selectedTag];
-    [mainController.pdfView setDisplayBox:displayBox];
+    if ([mainController.pdfView displayBox] != displayBox) {
+        [mainController.pdfView needsRewind];
+        [mainController.pdfView setDisplayBox:displayBox];
+    }
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {

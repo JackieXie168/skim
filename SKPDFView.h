@@ -116,6 +116,8 @@ enum {
     NSRect selectionRect;
     NSUInteger selectionPageIndex;
     
+    PDFPage *rewindPage;
+    
     SKSyncDot *syncDot;
     
     CGFloat magnification;
@@ -146,6 +148,10 @@ enum {
 @property (readonly) SKReadingBar *readingBar;
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
+
+
+@property (nonatomic, readonly) BOOL wantsRewind;
+- (void)needsRewind;
 
 - (void)toggleReadingBar;
 

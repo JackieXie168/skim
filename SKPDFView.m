@@ -320,6 +320,7 @@ enum {
     SKDESTROY(readingBar);
     SKDESTROY(editor);
     SKDESTROY(highlightAnnotation);
+    SKDESTROY(rewindPage);
     [super dealloc];
 }
 
@@ -493,6 +494,7 @@ enum {
     [syncDot invalidate];
     [self setSyncDot:nil];
     [self removePDFToolTipRects];
+    SKDESTROY(rewindPage);
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     [super setDocument:document];
     [self resetPDFToolTipRects];
@@ -1132,6 +1134,24 @@ enum {
 
 - (void)ignoreSpelling:(id)sender {
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
+}
+
+#pragma mark Rewind
+
+- (BOOL)wantsRewind {
+    return rewindPage != nil;
+}
+
+- (void)needsRewind {
+    [rewindPage release];
+    rewindPage = [[self currentPage] retain];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (rewindPage) {
+            if ([[self currentPage] isEqual:rewindPage] == NO)
+                [self goToPage:rewindPage];
+            SKDESTROY(rewindPage);
+        }
+    });
 }
 
 #pragma mark Event Handling

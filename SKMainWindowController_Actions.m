@@ -268,7 +268,11 @@
 }
 
 - (IBAction)changeDisplayBox:(id)sender {
-    [pdfView setDisplayBox:[sender tag]];
+    PDFDisplayBox displayBox = [sender tag];
+    if ([pdfView displayBox] != displayBox) {
+        [pdfView needsRewind];
+        [pdfView setDisplayBox:displayBox];
+    }
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
@@ -448,14 +452,12 @@ static NSArray *allMainDocumentPDFViews() {
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
     [[self document] undoableActionIsDiscardable];
     
-    PDFPage *page = [pdfView currentPage];
+    [pdfView needsRewind];
+    
     NSInteger i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++)
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + rotation];
     [pdfView layoutDocumentView];
-    // due to as PDFKit bug, PDFView doesn't notice that it's currentPage has changed, so we need to force a page change to have it notice first
-    [pdfView goToPreviousPage:nil];
-    [pdfView goToPage:page];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
@@ -504,8 +506,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)cropPagesToRects:(NSPointerArray *)rects {
-    PDFPage *currentPage = [pdfView currentPage];
-    NSRect visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
+    [pdfView needsRewind];
     
     NSInteger i, count = [[pdfView document] pageCount];
     NSInteger rectCount = [rects count];
@@ -528,9 +529,6 @@ static NSArray *allMainDocumentPDFViews() {
     
     // make sure we show the crop box
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
-    // layout after cropping when you're in the middle of a document can lose the current page
-    [pdfView goToPage:currentPage];
-    [pdfView goToRect:visibleRect onPage:currentPage];
 }
 
 - (IBAction)cropAll:(id)sender {
