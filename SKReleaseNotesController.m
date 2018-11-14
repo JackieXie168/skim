@@ -37,7 +37,6 @@
  */
 
 #import "SKReleaseNotesController.h"
-#import "NSGraphics_SKExtensions.h"
 
 
 @implementation SKReleaseNotesController
@@ -65,10 +64,10 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 - (void)windowDidLoad {
     if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
-    SKSetHasLightAppearance(textView);
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
                                withRTF:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ReleaseNotes" withExtension:@"rtf"]]];
+    [textView setTextColor:[NSColor textColor]];
 }
 
 @end
