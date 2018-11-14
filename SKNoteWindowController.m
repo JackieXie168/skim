@@ -180,7 +180,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         if (font)
             [textView setFont:font];
         [textView bind:@"attributedString" toObject:noteController withKeyPath:@"selection.text" options:nil];
-        
+        SKSetHasLightAppearance(textView);
+
         for (NSMenuItem *item in [iconTypePopUpButton itemArray])
             [item setImage:noteIcons[[item tag]]];
         
@@ -194,7 +195,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
-        SKSetHasLightAppearance(textView);
         
         NSSize minimumSize = [[self window] minSize];
         frame = [[[self window] contentView] frame];
