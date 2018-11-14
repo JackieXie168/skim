@@ -77,7 +77,7 @@
 }
 
 - (id)objectValue {
-    return [note isNote] ? (id)[note text] : (id)[note textString];
+    return [note textString];
 }
 
 @end
