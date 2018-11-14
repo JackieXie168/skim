@@ -194,6 +194,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
+        SKSetHasLightAppearance(textView);
         
         NSSize minimumSize = [[self window] minSize];
         frame = [[[self window] contentView] frame];

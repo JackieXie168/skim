@@ -88,6 +88,11 @@ void SKSetHasDarkAppearance(id object) {
         [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameDarkAqua"]];
 }
 
+void SKSetHasLightAppearance(id object) {
+    if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)])
+        [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameAqua"]];
+}
+
 #pragma mark -
 
 void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)

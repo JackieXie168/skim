@@ -40,6 +40,7 @@
 
 extern BOOL SKHasDarkAppearance(id object);
 extern void SKSetHasDarkAppearance(id object);
+extern void SKSetHasLightAppearance(id object);
 
 #pragma mark -
 
