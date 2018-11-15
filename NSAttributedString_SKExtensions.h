@@ -41,6 +41,9 @@
 
 @interface NSAttributedString (SKExtensions)
 
+- (NSAttributedString *)attributedStringByAddingTextColorAttribute;
+- (NSAttributedString *)attributedStringByRemovingTextColorAttribute;
+
 - (NSAttributedString *)accessibilityAttributedString;
 
 - (NSString *)xmlString;
@@ -51,6 +54,14 @@
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (NSScriptObjectSpecifier *)richTextSpecifier;
+
+@end
+
+
+@interface NSMutableAttributedString (SKExtensions)
+
+- (BOOL)addTextColorAttribute;
+- (BOOL)removeTextColorAttribute;
 
 @end
 

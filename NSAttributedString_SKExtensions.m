@@ -43,6 +43,22 @@
 
 @implementation NSAttributedString (SKExtensions)
 
+- (NSAttributedString *)attributedStringByAddingTextColorAttribute {
+    NSMutableAttributedString *attrString = [self mutableCopy];
+    if ([attrString addTextColorAttribute])
+        return [attrString autorelease];
+    [attrString release];
+    return self;
+}
+
+- (NSAttributedString *)attributedStringByRemovingTextColorAttribute {
+    NSMutableAttributedString *attrString = [self mutableCopy];
+    if ([attrString removeTextColorAttribute])
+        return [attrString autorelease];
+    [attrString release];
+    return self;
+}
+
 - (NSAttributedString *)accessibilityAttributedString {
     static NSTextFieldCell *cell = nil;
     if (cell == nil)
@@ -83,6 +99,32 @@
 
 @end
 
+
+@implementation NSMutableAttributedString (SKExtensions)
+
+- (BOOL)addTextColorAttribute {
+    __block BOOL changed = NO;
+    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *top){
+        if (value == nil) {
+            changed = YES;
+            [self addAttribute:NSForegroundColorAttributeName value:[NSColor textColor] range:range];
+        }
+    }];
+    return changed;
+}
+
+- (BOOL)removeTextColorAttribute {
+    __block BOOL changed = NO;
+    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *top){
+        if ([value isEqual:[NSColor textColor]]) {
+            changed = YES;
+            [self removeAttribute:NSForegroundColorAttributeName range:range];
+        }
+    }];
+    return changed;
+}
+
+@end
 
 @implementation NSTextStorage (SKExtensions)
 

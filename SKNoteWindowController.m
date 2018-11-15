@@ -63,6 +63,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "NSPasteboard_SKExtensions.h"
+#import "NSAttributedString_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -75,6 +76,11 @@
 
 static char SKNoteWindowDefaultsObservationContext;
 static char SKNoteWindowNoteObservationContext;
+
+@interface SKAddTextColorTransformer : NSValueTransformer
+@end
+
+#pragma mark -
 
 @implementation SKNoteWindowController
 
@@ -179,9 +185,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
         if (font)
             [textView setFont:font];
-        [textView bind:@"attributedString" toObject:noteController withKeyPath:@"selection.text" options:nil];
-        SKSetHasLightAppearance(textView);
-
+        
+        NSDictionary *options = nil;
+        if (RUNNING_AFTER(10_13))
+            options = [NSDictionary dictionaryWithObjectsAndKeys:[[[SKAddTextColorTransformer alloc] init] autorelease], NSValueTransformerBindingOption, nil];
+        [textView bind:@"attributedString" toObject:noteController withKeyPath:@"selection.text" options:options];
+        
         for (NSMenuItem *item in [iconTypePopUpButton itemArray])
             [item setImage:noteIcons[[item tag]]];
         
@@ -320,6 +329,11 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return nil;
 }
 
+- (void)controlTextDidChange:(NSNotification *)notification {
+    if (RUNNING_AFTER(10_13))
+        [[textView textStorage] addTextColorAttribute];
+}
+
 #pragma mark NSEditorRegistration and NSEditor protocol
 
 - (void)objectDidBeginEditing:(id)editor {
@@ -451,6 +465,20 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if ([title length] == 0)
         title = @"Skim Note";
     return title;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAddTextColorTransformer
+
+- (id)transformedValue:(id)value {
+    return [value attributedStringByAddingTextColorAttribute];
+}
+
+- (id)reverseTransformedValue:(id)value {
+    return [value attributedStringByRemovingTextColorAttribute];
 }
 
 @end

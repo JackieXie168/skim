@@ -38,6 +38,7 @@
 
 #import "SKNoteText.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "NSAttributedString_SKExtensions.h"
 
 
 @implementation SKNoteText
@@ -77,7 +78,12 @@
 }
 
 - (id)objectValue {
-    return [note textString];
+    if ([note isNote] == NO)
+        return [note textString];
+    else if (RUNNING_AFTER(10_13))
+        return [[note text] attributedStringByAddingTextColorAttribute];
+    else
+        return [note text];
 }
 
 @end
