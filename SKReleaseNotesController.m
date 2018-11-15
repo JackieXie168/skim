@@ -37,6 +37,7 @@
  */
 
 #import "SKReleaseNotesController.h"
+#import "NSAttributedString_SKExtensions.h"
 
 
 @implementation SKReleaseNotesController
@@ -67,7 +68,8 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
     [textView setString:@""];
     [textView replaceCharactersInRange:[textView selectedRange]
                                withRTF:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ReleaseNotes" withExtension:@"rtf"]]];
-    [textView setTextColor:[NSColor textColor]];
+    if (RUNNING_AFTER(10_13))
+        [[textView textStorage] addTextColorAttribute];
 }
 
 @end
