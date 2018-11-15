@@ -8,6 +8,10 @@
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZoM/AAAAAYY=</data>
 		<key>SKFullScreenBackgroundColor</key>
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZoM+gAAAAYY=</data>
+		<key>SKDarkBackgroundColor</key>
+		<data></data>
+		<key>SKDarkFullScreenBackgroundColor</key>
+		<data></data>
 		<key>SKLastOpenFileNames</key>
 		<array/>
 		<key>SKOpenContentsPaneOnlyForTOC</key>
@@ -271,6 +275,8 @@
 			<string>SKGreekingThreshold</string>
 			<string>SKBackgroundColor</string>
 			<string>SKFullScreenBackgroundColor</string>
+			<string>SKDarkBackgroundColor</string>
+			<string>SKDarkFullScreenBackgroundColor</string>
 			<string>SKReadingBarColor</string>
 			<string>SKReadingBarInvert</string>
 		</array>
