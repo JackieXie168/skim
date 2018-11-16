@@ -355,19 +355,22 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         // order is the index in the ordered documents
         // index is the index in the tabbed windows
         NSArray *tabOrders = [tabInfo firstObject];
-        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
-        NSMutableArray *windows = [NSMutableArray array];
         NSUInteger i, iMax = [tabOrders count];
+        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
         NSUInteger frontIndex = NSNotFound;
         NSWindow *frontWindow = nil;
         NSUInteger lowestOrder = NSNotFound;
         NSUInteger lowestIndex = NSNotFound;
+        NSPointerArray *windows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        
+        [windows setCount:iMax];
         
         for (i = 0; i < iMax; i++) {
             NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
             NSDocument *doc = (id)[documents pointerAtIndex:order];
             NSWindow *window = [[[doc windowControllers] firstObject] window];
-            [windows addObject:window ?: [NSNull null]];
+            if (window)
+                [windows replacePointerAtIndex:i withPointer:window];
             if (order == frontOrder) {
                 frontWindow = window;
                 frontIndex = i;
@@ -380,20 +383,21 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         if (frontWindow == nil) {
             // the selected document was not opened, get the window with the lowest order
-            frontWindow = [windows objectAtIndex:lowestIndex];
+            frontWindow = [windows pointerAtIndex:lowestIndex];
             frontIndex = lowestIndex;
         }
         
         for (i = 0; i < frontIndex; i++) {
-            NSWindow *window = [windows objectAtIndex:i];
-            if ([window isEqual:[NSNull null]] == NO)
+            NSWindow *window = (id)[windows pointerAtIndex:i];
+            if (window)
                 [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
         }
         for (i = iMax - 1; i > frontIndex; i--) {
-            NSWindow *window = [windows objectAtIndex:i];
-            if ([window isEqual:[NSNull null]] == NO)
+            NSWindow *window = (id)[windows pointerAtIndex:i];
+            if (window)
                 [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
         }
+        [windows release];
         // make sure we select the frontWindow, addTabbedWindow:ordered: sometimes changes it
         if (RUNNING_AFTER(10_12))
              [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
