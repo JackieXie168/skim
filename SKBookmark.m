@@ -779,6 +779,14 @@ static Class SKBookmarkClass = Nil;
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
+- (void)open {
+    NSArray *setups = [[self children] valueForKey:PROPERTIES_KEY];
+    [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+        if (document == nil && error && [error isUserCancelledError] == NO)
+            [NSApp presentError:error];
+    }];
+}
+
 @end
 
 #pragma mark -

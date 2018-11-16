@@ -53,6 +53,7 @@ extern NSString *SKFolderDocumentType;
 
 extern NSString *SKDocumentSetupAliasKey;
 extern NSString *SKDocumentSetupFileNameKey;
+extern NSString *SKDocumentSetupTabbedDocumentsKey;
 
 extern NSString *SKDocumentControllerWillRemoveDocumentNotification;
 extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
@@ -76,6 +77,7 @@ extern NSString *SKDocumentControllerDocumentKey;
 - (void)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
 - (void)openDocumentWithSetup:(NSDictionary *)setup completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
+- (void)openDocumentWithSetups:(NSArray *)setups completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
 

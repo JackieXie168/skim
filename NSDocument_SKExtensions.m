@@ -93,6 +93,17 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
             [setup setObject:data forKey:SKDocumentSetupAliasKey];
     }
     
+    if (RUNNING_AFTER(10_11)) {
+        NSArray *tabbedDocuments = [[[self windowControllers] firstObject] valueForKeyPath:@"window.tabbedWindows.windowController.document"];
+        if ([tabbedDocuments count] > 1 && [tabbedDocuments firstObject] == self) {
+            NSMutableArray *tabs = [NSMutableArray array];
+            NSArray *orderedDocuments = [NSApp orderedDocuments];
+            for (NSDocument *doc in tabbedDocuments)
+                [tabs addObject:[NSNumber numberWithUnsignedInteger:[orderedDocuments indexOfObjectIdenticalTo:doc]]];
+            [setup setObject:tabs forKey:SKDocumentSetupTabbedDocumentsKey];
+        }
+    }
+    
     return setup;
 }
 

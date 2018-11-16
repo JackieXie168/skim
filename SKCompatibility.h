@@ -167,6 +167,7 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 
 @interface NSWindow (SKSierraDeclarations)
 - (NSArray *)tabbedWindows;
+- (void)addTabbedWindow:(NSWindow *)window ordered:(NSWindowOrderingMode)ordered;
 - (NSWindowTabbingMode)tabbingMode;
 - (void)setTabbingMode:(NSWindowTabbingMode)mode;
 @end

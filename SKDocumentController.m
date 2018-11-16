@@ -70,6 +70,7 @@ NSString *SKFolderDocumentType = @"public.folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
+NSString *SKDocumentSetupTabbedDocumentsKey = @"tabbedDocuments";
 
 NSString *SKDocumentControllerWillRemoveDocumentNotification = @"SKDocumentControllerWillRemoveDocumentNotification";
 NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
@@ -346,6 +347,93 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }];
     } else if (completionHandler) {
         completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
+    }
+}
+
+- (void)addTabs:(NSArray *)tabs forDocuments:(NSPointerArray *)documents {
+    for (NSArray *tabIndexes in tabs) {
+        NSMutableArray *windows = [NSMutableArray array];
+        NSUInteger i, iMax = [tabIndexes count];
+        NSUInteger lowestIdx = NSNotFound;
+        NSUInteger frontIndex = 0;
+        NSWindow *frontWindow = nil;
+        
+        for (i = 0; i < iMax; i++) {
+            NSUInteger idx = [[tabIndexes objectAtIndex:i] unsignedIntegerValue];
+            NSDocument *doc = (id)[documents pointerAtIndex:idx];
+            NSWindow *window = [[[doc windowControllers] firstObject] window];
+            [windows addObject:window ?: [NSNull null]];
+            if (window && idx < lowestIdx) {
+                lowestIdx = idx;
+                frontIndex = i;
+                frontWindow = window;
+            }
+        }
+        
+        for (i = 0; i < frontIndex; i++) {
+            NSWindow *window = [windows objectAtIndex:i];
+            if ([window isEqual:[NSNull null]] == NO)
+                [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
+        }
+        for (i = iMax - 1; i > frontIndex; i--) {
+            NSWindow *window = [windows objectAtIndex:i];
+            if ([window isEqual:[NSNull null]] == NO)
+                [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
+        }
+        if (RUNNING_AFTER(10_12))
+             [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
+    }
+}
+
+- (void)openDocumentWithSetups:(NSArray *)setups completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    NSInteger i = [setups count];
+    
+    __block NSInteger countDown = i;
+    __block NSMutableArray *errors = nil;
+    __block NSPointerArray *documents = nil;
+    __block NSMutableArray *tabs = nil;
+    
+    if (RUNNING_AFTER(10_11)) {
+        documents = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        [documents setCount:i];
+    }
+    
+    while (i-- > 0) {
+        NSDictionary *setup = [setups objectAtIndex:i];
+        
+        if (documents) {
+            NSArray *tabIndexes = [setup objectForKey:SKDocumentSetupTabbedDocumentsKey];
+            if (tabIndexes) {
+                if (tabs == nil)
+                    tabs = [[NSMutableArray alloc] init];
+                [tabs addObject:tabIndexes];
+            }
+        }
+        
+        [self openDocumentWithSetup:setup completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (documents && document)
+                [documents replacePointerAtIndex:i withPointer:document];
+            if (document == nil && error) {
+                if (errors == nil)
+                    errors = [[NSMutableArray alloc] init];
+                [errors addObject:error];
+            }
+            if (--countDown == 0) {
+                if (documents && tabs)
+                    [self addTabs:tabs forDocuments:documents];
+                SKDESTROY(documents);
+                SKDESTROY(tabs);
+                if (completionHandler) {
+                    if (errors) {
+                        document = nil;
+                        documentWasAlreadyOpen = NO;
+                        error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
+                    }
+                    completionHandler(document, documentWasAlreadyOpen, error);
+                }
+                SKDESTROY(errors);
+            }
+        }];
     }
 }
 
