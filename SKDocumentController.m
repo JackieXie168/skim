@@ -70,7 +70,7 @@ NSString *SKFolderDocumentType = @"public.folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
-NSString *SKDocumentSetupTabbedDocumentsKey = @"tabbedDocuments";
+NSString *SKDocumentSetupTabsKey = @"tabs";
 
 NSString *SKDocumentControllerWillRemoveDocumentNotification = @"SKDocumentControllerWillRemoveDocumentNotification";
 NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
@@ -402,7 +402,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSDictionary *setup = [setups objectAtIndex:i];
         
         if (documents) {
-            NSArray *tabIndexes = [setup objectForKey:SKDocumentSetupTabbedDocumentsKey];
+            NSArray *tabIndexes = [setup objectForKey:SKDocumentSetupTabsKey];
             if (tabIndexes) {
                 if (tabs == nil)
                     tabs = [[NSMutableArray alloc] init];

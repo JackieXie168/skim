@@ -116,7 +116,7 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
             NSArray *orderedDocuments = [NSApp orderedDocuments];
             for (NSDocument *doc in [tabbedWindows valueForKeyPath:@"windowController.document"])
                 [tabs addObject:[NSNumber numberWithUnsignedInteger:[orderedDocuments indexOfObjectIdenticalTo:doc]]];
-            [setup setObject:tabs forKey:SKDocumentSetupTabbedDocumentsKey];
+            [setup setObject:tabs forKey:SKDocumentSetupTabsKey];
         }
     }
     

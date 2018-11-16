@@ -53,7 +53,7 @@ extern NSString *SKFolderDocumentType;
 
 extern NSString *SKDocumentSetupAliasKey;
 extern NSString *SKDocumentSetupFileNameKey;
-extern NSString *SKDocumentSetupTabbedDocumentsKey;
+extern NSString *SKDocumentSetupTabsKey;
 
 extern NSString *SKDocumentControllerWillRemoveDocumentNotification;
 extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
