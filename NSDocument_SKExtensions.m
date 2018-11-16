@@ -80,6 +80,21 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 - (void)applyFragment:(NSString *)fragment {}
 
+static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows) {
+    if (RUNNING_AFTER(10_12))
+        return [window valueForKeyPath:@"tabGroup.selectedWindow"] == window;
+    if ([tabbedWindows count] > 1) {
+        NSArray *orderedWindows = [NSApp orderedWindows];
+        NSUInteger i = [orderedWindows indexOfObjectIdenticalTo:window];
+        for (NSWindow *tabbedWindow in tabbedWindows) {
+            NSUInteger j = [orderedWindows indexOfObjectIdenticalTo:tabbedWindow];
+            if (i > j)
+                return NO;
+        }
+    }
+    return YES;
+}
+
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
@@ -94,11 +109,12 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     }
     
     if (RUNNING_AFTER(10_11)) {
-        NSArray *tabbedDocuments = [[[self windowControllers] firstObject] valueForKeyPath:@"window.tabbedWindows.windowController.document"];
-        if ([tabbedDocuments count] > 1 && [tabbedDocuments firstObject] == self) {
+        NSWindow *window = [[[self windowControllers] firstObject] window];
+        NSArray *tabbedWindows = [window tabbedWindows];
+        if ([tabbedWindows count] > 1 && isWindowTabSelected(window, tabbedWindows)) {
             NSMutableArray *tabs = [NSMutableArray array];
             NSArray *orderedDocuments = [NSApp orderedDocuments];
-            for (NSDocument *doc in tabbedDocuments)
+            for (NSDocument *doc in [tabbedWindows valueForKeyPath:@"windowController.document"])
                 [tabs addObject:[NSNumber numberWithUnsignedInteger:[orderedDocuments indexOfObjectIdenticalTo:doc]]];
             [setup setObject:tabs forKey:SKDocumentSetupTabbedDocumentsKey];
         }
