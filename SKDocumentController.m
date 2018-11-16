@@ -367,8 +367,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         for (i = 0; i < iMax; i++) {
             NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
-            NSDocument *doc = (id)[documents pointerAtIndex:order];
-            NSWindow *window = [[[doc windowControllers] firstObject] window];
+            NSWindow *window = [[[(id)[documents pointerAtIndex:order] windowControllers] firstObject] window];
             if (window)
                 [windows replacePointerAtIndex:i withPointer:window];
             if (order == frontOrder) {

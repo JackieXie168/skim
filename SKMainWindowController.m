@@ -2351,8 +2351,71 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [swc release];
 }
 
+- (void)addTabs:(NSArray *)tabs forSnapshots:(NSArray *)snapshotControllers {
+    for (NSArray *tabInfo in tabs) {
+        // order is the index in the snapshotControllers
+        // index is the index in the tabbed windows
+        NSArray *tabOrders = [tabInfo firstObject];
+        NSUInteger i, iMax = [tabOrders count];
+        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
+        NSUInteger frontIndex = NSNotFound;
+        NSWindow *frontWindow = nil;
+        NSUInteger lowestOrder = NSNotFound;
+        NSUInteger lowestIndex = NSNotFound;
+        NSPointerArray *windows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        
+        [windows setCount:iMax];
+        
+        for (i = 0; i < iMax; i++) {
+            NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
+            SKSnapshotWindowController *swc = [snapshotControllers objectAtIndex:order];
+            NSWindow *window = [swc window];
+            if (window)
+                [windows replacePointerAtIndex:i withPointer:window];
+            if (order == frontOrder) {
+                frontWindow = window;
+                frontIndex = i;
+            }
+            if (window && order < lowestOrder) {
+                lowestOrder = order;
+                lowestIndex = i;
+            }
+        }
+        
+        if (frontWindow == nil) {
+            // the selected document was not opened, get the window with the lowest order
+            frontWindow = [windows pointerAtIndex:lowestIndex];
+            frontIndex = lowestIndex;
+        }
+        
+        for (i = 0; i < frontIndex; i++) {
+            NSWindow *window = (id)[windows pointerAtIndex:i];
+            if (window)
+                [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
+        }
+        for (i = iMax - 1; i > frontIndex; i--) {
+            NSWindow *window = (id)[windows pointerAtIndex:i];
+            if (window)
+                [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
+        }
+        [windows release];
+        // make sure we select the frontWindow, addTabbedWindow:ordered: sometimes changes it
+        if (RUNNING_AFTER(10_12))
+            [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
+    }
+}
+
 - (void)showSnapshotsWithSetups:(NSArray *)setups {
-    for (NSDictionary *setup in setups) {
+    NSUInteger i, iMax = [setups count];
+    NSMutableArray *tabs = 0;
+    NSMutableArray *swcs = nil;
+    
+    if (RUNNING_AFTER(10_11))
+        swcs = [NSMutableArray array];
+    
+    for (i = 0; i < iMax; i++) {
+        NSDictionary *setup  = [setups objectAtIndex:i];
+        
         SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
         
         [swc setDelegate:self];
@@ -2362,8 +2425,23 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [swc setForceOnTop:[self interactionMode] != SKNormalMode];
         
         [[self document] addWindowController:swc];
+        
+        if (swcs) {
+            [swcs addObject:swc];
+            
+            NSArray *tabIndexes = [setup objectForKey:SKSnapshotTabsKey];
+            if (tabIndexes) {
+                if (tabs == nil)
+                    tabs = [NSMutableArray array];
+                [tabs addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
+            }
+        }
+        
         [swc release];
     }
+    
+    if (tabs)
+        [self addTabs:tabs forSnapshots:swcs];
 }
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {
