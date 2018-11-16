@@ -104,7 +104,7 @@
 
 - (BOOL)addTextColorAttribute {
     __block BOOL changed = NO;
-    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *top){
+    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop){
         if (value == nil) {
             changed = YES;
             [self addAttribute:NSForegroundColorAttributeName value:[NSColor textColor] range:range];
@@ -115,7 +115,7 @@
 
 - (BOOL)removeTextColorAttribute {
     __block BOOL changed = NO;
-    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *top){
+    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop){
         if ([value isEqual:[NSColor textColor]]) {
             changed = YES;
             [self removeAttribute:NSForegroundColorAttributeName range:range];
