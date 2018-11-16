@@ -351,23 +351,37 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (void)addTabs:(NSArray *)tabs forDocuments:(NSPointerArray *)documents {
-    for (NSArray *tabIndexes in tabs) {
+    for (NSArray *tabInfo in tabs) {
+        // order is the index in the ordered documents
+        // index is the index in the tabbed windows
+        NSArray *tabOrders = [tabInfo firstObject];
+        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
         NSMutableArray *windows = [NSMutableArray array];
-        NSUInteger i, iMax = [tabIndexes count];
-        NSUInteger lowestIdx = NSNotFound;
-        NSUInteger frontIndex = 0;
+        NSUInteger i, iMax = [tabOrders count];
+        NSUInteger frontIndex = NSNotFound;
         NSWindow *frontWindow = nil;
+        NSUInteger lowestOrder = NSNotFound;
+        NSUInteger lowestIndex = NSNotFound;
         
         for (i = 0; i < iMax; i++) {
-            NSUInteger idx = [[tabIndexes objectAtIndex:i] unsignedIntegerValue];
-            NSDocument *doc = (id)[documents pointerAtIndex:idx];
+            NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
+            NSDocument *doc = (id)[documents pointerAtIndex:order];
             NSWindow *window = [[[doc windowControllers] firstObject] window];
             [windows addObject:window ?: [NSNull null]];
-            if (window && idx < lowestIdx) {
-                lowestIdx = idx;
-                frontIndex = i;
+            if (order == frontOrder) {
                 frontWindow = window;
+                frontIndex = i;
             }
+            if (window && order < lowestOrder) {
+                lowestOrder = order;
+                lowestIndex = i;
+            }
+        }
+        
+        if (frontWindow == nil) {
+            // the selected document was not opened, get the window with the lowest order
+            frontWindow = [windows objectAtIndex:lowestIndex];
+            frontIndex = lowestIndex;
         }
         
         for (i = 0; i < frontIndex; i++) {
@@ -380,6 +394,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if ([window isEqual:[NSNull null]] == NO)
                 [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
         }
+        // make sure we select the frontWindow, addTabbedWindow:ordered: sometimes changes it
         if (RUNNING_AFTER(10_12))
              [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
     }
@@ -406,7 +421,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if (tabIndexes) {
                 if (tabs == nil)
                     tabs = [[NSMutableArray alloc] init];
-                [tabs addObject:tabIndexes];
+                [tabs addObject:[NSArray arrayWithObjects:tabIndexes, [NSNumber numberWithUnsignedInteger:i], nil]];
             }
         }
         
