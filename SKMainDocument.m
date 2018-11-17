@@ -1559,6 +1559,10 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return SKNormalMode;
 }
 
+- (NSWindow *)mainWindow {
+    return [mainWindowController window];
+}
+
 - (PDFDocument *)pdfDocument{
     return [[self mainWindowController] pdfDocument];
 }
