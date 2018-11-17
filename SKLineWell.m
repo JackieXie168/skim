@@ -281,7 +281,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
-        [[[NSColor controlShadowColor] colorWithAlphaComponent:0.3] setFill];
+        [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
         NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
@@ -315,6 +315,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
     CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
     BOOL wasActive = lwFlags.active;
+    NSColor *borderColor = [NSColor colorWithCalibratedWhite:SKHasDarkAppearance(NSApp) ? 1.0 : 0.0 alpha:0.7];
     
     lwFlags.active = 0;
     [self cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
@@ -323,7 +324,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     // @@ Dark mode
     
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
-        [[[NSColor controlShadowColor] colorWithAlphaComponent:0.7] setStroke];
+        [borderColor setStroke];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         rect = NSInsetRect(rect, 1.0, 1.0);
         [imageRep drawInRect:rect fromRect:rect operation:NSCompositingOperationCopy fraction:0.7 respectFlipped:NO hints:nil];
