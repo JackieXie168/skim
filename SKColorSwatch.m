@@ -210,9 +210,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [[NSColor controlColor] setFill];
         [[NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4.0 yRadius:4.0] fill];
         if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-            [[NSColor controlShadowColor] setStroke];
+            [[NSColor gridColor] setStroke];
         else
-            [[[NSColor controlShadowColor] colorWithAlphaComponent:0.3] setStroke];
+            [[[NSColor gridColor] colorWithAlphaComponent:0.3] setStroke];
         [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 0.5, 0.5) xRadius:3.5 yRadius:3.5] stroke];
         radius = 1.5;
     }
