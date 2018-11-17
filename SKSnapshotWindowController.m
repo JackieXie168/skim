@@ -61,6 +61,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSPasteboard_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSWindow_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -78,7 +79,6 @@ NSString *SKSnapshotTabsKey = @"tabs";
 #define HASWINDOW_KEY       @"hasWindow"
 #define PAGELABEL_KEY       @"pageLabel"
 #define PAGEANDWINDOW_KEY   @"pageAndWindow"
-#define TABS_KEY            @"tabs"
 
 #define SKSnapshotWindowFrameAutosaveName @"SKSnapshotWindow"
 #define SKSnapshotViewChangedNotification @"SKSnapshotViewChangedNotification"
@@ -370,35 +370,14 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [self updateWindowLevel];
 }
 
-static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows) {
-    if (RUNNING_AFTER(10_12))
-        return [window valueForKeyPath:@"tabGroup.selectedWindow"] == window;
-    if ([tabbedWindows count] > 1) {
-        NSArray *orderedWindows = [NSApp orderedWindows];
-        NSUInteger i = [orderedWindows indexOfObjectIdenticalTo:window];
-        for (NSWindow *tabbedWindow in tabbedWindows) {
-            NSUInteger j = [orderedWindows indexOfObjectIdenticalTo:tabbedWindow];
-            if (i > j)
-                return NO;
-        }
-    }
-    return YES;
-}
-
 - (NSDictionary *)currentSetup {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView autoFits];
-    NSMutableArray *tabs = nil;
+    NSArray *tabs = nil;
     if (RUNNING_AFTER(10_11)) {
-        NSWindow *window = [self window];
-        NSArray *tabbedWindows = [window tabbedWindows];
-        if ([tabbedWindows count] > 1 && isWindowTabSelected(window, tabbedWindows)) {
-            tabs = [NSMutableArray array];
-            NSArray *orderedSnapshots = [[(SKMainDocument *)[self document] mainWindowController] snapshots];
-            for (SKSnapshotWindowController *swc in [tabbedWindows valueForKeyPath:@"windowController"])
-                [tabs addObject:[NSNumber numberWithUnsignedInteger:[orderedSnapshots indexOfObjectIdenticalTo:swc]]];
-        }
+        NSArray *windows = [[[(SKMainDocument *)[self document] mainWindowController] snapshots] valueForKey:@"window"];
+        tabs = [[self window] tabIndexesInWindows:windows];
     }
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, tabs, SKSnapshotTabsKey, nil];
 }

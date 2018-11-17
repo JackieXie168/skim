@@ -56,6 +56,8 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (void)undoableActionIsDiscardable;
 
+- (NSWindow *)mainWindow;
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo;

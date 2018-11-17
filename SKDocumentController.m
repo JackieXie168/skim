@@ -50,6 +50,7 @@
 #import "SKNotesDocument.h"
 #import "SKTemplateManager.h"
 #import "NSError_SKExtensions.h"
+#import "NSWindow_SKExtensions.h"
 
 #define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
@@ -350,76 +351,21 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
 }
 
-- (void)addTabs:(NSArray *)tabs forDocuments:(NSPointerArray *)documents {
-    for (NSArray *tabInfo in tabs) {
-        // order is the index in the ordered documents
-        // index is the index in the tabbed windows
-        NSArray *tabOrders = [tabInfo firstObject];
-        NSUInteger i, iMax = [tabOrders count];
-        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
-        NSUInteger frontIndex = NSNotFound;
-        NSWindow *frontWindow = nil;
-        NSUInteger lowestOrder = NSNotFound;
-        NSUInteger lowestIndex = NSNotFound;
-        NSPointerArray *windows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-        
-        [windows setCount:iMax];
-        
-        for (i = 0; i < iMax; i++) {
-            NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
-            NSWindow *window = [[[(id)[documents pointerAtIndex:order] windowControllers] firstObject] window];
-            if (window)
-                [windows replacePointerAtIndex:i withPointer:window];
-            if (order == frontOrder) {
-                frontWindow = window;
-                frontIndex = i;
-            }
-            if (window && order < lowestOrder) {
-                lowestOrder = order;
-                lowestIndex = i;
-            }
-        }
-        
-        if (frontWindow == nil) {
-            // the selected document was not opened, get the window with the lowest order
-            frontWindow = [windows pointerAtIndex:lowestIndex];
-            frontIndex = lowestIndex;
-        }
-        
-        for (i = 0; i < frontIndex; i++) {
-            NSWindow *window = (id)[windows pointerAtIndex:i];
-            if (window)
-                [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
-        }
-        for (i = iMax - 1; i > frontIndex; i--) {
-            NSWindow *window = (id)[windows pointerAtIndex:i];
-            if (window)
-                [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
-        }
-        [windows release];
-        // make sure we select the frontWindow, addTabbedWindow:ordered: sometimes changes it
-        if (RUNNING_AFTER(10_12))
-             [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
-    }
-}
-
 - (void)openDocumentWithSetups:(NSArray *)setups completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
     NSInteger i = [setups count];
     
     __block NSInteger countDown = i;
     __block NSMutableArray *errors = nil;
-    __block NSPointerArray *documents = nil;
+    __block NSMutableArray *windows = nil;
     __block NSMutableArray *tabs = nil;
     
-    if (RUNNING_AFTER(10_11)) {
-        documents = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-        [documents setCount:i];
-    }
+    if (RUNNING_AFTER(10_11))
+        windows = [[NSMutableArray alloc] init];
     
     while (i-- > 0) {
         NSDictionary *setup = [setups objectAtIndex:i];
         
-        if (documents) {
+        if (windows) {
             NSArray *tabIndexes = [setup objectForKey:SKDocumentSetupTabsKey];
             if (tabIndexes) {
                 if (tabs == nil)
@@ -429,17 +375,17 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         [self openDocumentWithSetup:setup completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (documents && document)
-                [documents replacePointerAtIndex:i withPointer:document];
+            if (windows)
+                [windows addObject:[document mainWindow] ?: [NSNull null]];
             if (document == nil && error) {
                 if (errors == nil)
                     errors = [[NSMutableArray alloc] init];
                 [errors addObject:error];
             }
             if (--countDown == 0) {
-                if (documents && tabs)
-                    [self addTabs:tabs forDocuments:documents];
-                SKDESTROY(documents);
+                if (windows && tabs)
+                    [NSWindow addTabs:tabs forWindows:windows];
+                SKDESTROY(windows);
                 SKDESTROY(tabs);
                 if (completionHandler) {
                     if (errors) {

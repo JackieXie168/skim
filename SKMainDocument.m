@@ -2086,17 +2086,3 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 @end
-
-
-@implementation NSWindow (SKScriptingExtensions)
-
-- (void)handleRevertScriptCommand:(NSScriptCommand *)command {
-    id document = [[self windowController] document];
-    if (document == nil) {
-        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [command setScriptErrorString:@"Window does not have a document."];
-    } else
-        [document handleRevertScriptCommand:command];
-}
-
-@end

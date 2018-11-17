@@ -52,6 +52,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKTemplateManager.h"
+#import "NSWindow_SKExtensions.h"
 
 #define SKDisableExportAttributesKey @"SKDisableExportAttributes"
 
@@ -72,6 +73,10 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     });
 }
 
+- (NSWindow *)mainWindow {
+    return [[[self windowControllers] firstObject] window];
+}
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo {}
@@ -79,21 +84,6 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 - (void)applySetup:(NSDictionary *)setup {}
 
 - (void)applyFragment:(NSString *)fragment {}
-
-static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows) {
-    if (RUNNING_AFTER(10_12))
-        return [window valueForKeyPath:@"tabGroup.selectedWindow"] == window;
-    if ([tabbedWindows count] > 1) {
-        NSArray *orderedWindows = [NSApp orderedWindows];
-        NSUInteger i = [orderedWindows indexOfObjectIdenticalTo:window];
-        for (NSWindow *tabbedWindow in tabbedWindows) {
-            NSUInteger j = [orderedWindows indexOfObjectIdenticalTo:tabbedWindow];
-            if (i > j)
-                return NO;
-        }
-    }
-    return YES;
-}
 
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
@@ -109,15 +99,10 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
     }
     
     if (RUNNING_AFTER(10_11)) {
-        NSWindow *window = [[[self windowControllers] firstObject] window];
-        NSArray *tabbedWindows = [window tabbedWindows];
-        if ([tabbedWindows count] > 1 && isWindowTabSelected(window, tabbedWindows)) {
-            NSMutableArray *tabs = [NSMutableArray array];
-            NSArray *orderedDocuments = [NSApp orderedDocuments];
-            for (NSDocument *doc in [tabbedWindows valueForKeyPath:@"windowController.document"])
-                [tabs addObject:[NSNumber numberWithUnsignedInteger:[orderedDocuments indexOfObjectIdenticalTo:doc]]];
-            [setup setObject:tabs forKey:SKDocumentSetupTabsKey];
-        }
+        NSArray *windows = [[NSApp orderedDocuments] valueForKey:@"mainWindow"];
+        NSArray *tabIndexes = [[self mainWindow] tabIndexesInWindows:windows];
+        if (tabIndexes)
+            [setup setObject:tabIndexes forKey:SKDocumentSetupTabsKey];
     }
     
     return setup;
