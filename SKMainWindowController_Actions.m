@@ -272,6 +272,7 @@
 }
 
 - (IBAction)toggleDisplayAsBook:(id)sender {
+    [pdfView needsRewind];
     [pdfView setDisplaysAsBook:[pdfView displaysAsBook] == NO];
 }
 

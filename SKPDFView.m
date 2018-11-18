@@ -615,7 +615,10 @@ enum {
 
 - (void)setDisplaysAsBook:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
+        PDFPage *page = [self currentPage];
         [super setDisplaysAsBook:asBook];
+        if (page && [page isEqual:[self currentPage]] == NO)
+            [self goToPage:page];
         [self resetPDFToolTipRects];
         [editor layout];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysAsBookChangedNotification object:self];

@@ -1019,6 +1019,7 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 }
 
 - (IBAction)changeBookMode:(id)sender {
+    [mainController.pdfView needsRewind];
     [mainController.pdfView setDisplaysAsBook:NO == [mainController.pdfView displaysAsBook]];
 }
 
