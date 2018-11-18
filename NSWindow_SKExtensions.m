@@ -50,44 +50,53 @@
     for (NSArray *tabInfo in tabInfos) {
         // order is the index in windows
         // index is the index in the tabbed windows
-        NSArray *tabOrders = [tabInfo firstObject];
-        NSUInteger i, iMax = [tabOrders count];
-        NSNumber *frontNumber = [tabInfo lastObject];
-        NSUInteger frontOrder = [frontNumber unsignedIntegerValue];
-        NSUInteger frontIndex = [tabOrders indexOfObject:frontNumber];
-        NSWindow *frontWindow = SAFE_OBJECT_AT_INDEX(windows, frontOrder);
+        NSString *tabOrders = [tabInfo firstObject];
+        NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
+        NSUInteger frontIndex = NSNotFound, lowestOrder = NSNotFound, lowestIndex = NSNotFound;
+        NSWindow *frontWindow = nil;
+        NSWindow *window = nil;
+        NSPointerArray *tabbedWindows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
         
-        if (frontWindow == nil || frontIndex == NSNotFound) {
-            NSUInteger lowestOrder = NSNotFound;
-            for (i = 0; i < iMax; i++) {
-                NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
-                NSWindow *window = SAFE_OBJECT_AT_INDEX(windows, order);
-                if (window && [window isEqual:[NSNull null]] == NO && order < lowestOrder) {
-                    lowestOrder = order;
-                    frontIndex = i;
-                    frontWindow = window;
-                }
+        tabOrders = [tabOrders substringWithRange:NSMakeRange(1, [tabOrders length] - 2)];
+        
+        for (NSString *tabIndex in [tabOrders componentsSeparatedByString:@","]) {
+            NSUInteger order = (NSUInteger)[tabIndex integerValue];
+            window = order < [windows count] ? [windows objectAtIndex:order] : nil;
+            if ([window isEqual:[NSNull null]])
+                window = nil;
+            if (order == frontOrder) {
+                frontIndex = [tabbedWindows count];
+                frontWindow = window;
             }
+            if (window && order < lowestOrder) {
+                lowestOrder = order;
+                lowestIndex = [tabbedWindows count];
+            }
+            [tabbedWindows addPointer:window];
         }
         
-        if (frontWindow && frontIndex < iMax) {
+        if (frontWindow == nil) {
+            frontIndex = lowestIndex;
+            if (frontIndex != NSNotFound)
+                frontWindow = (id)[tabbedWindows pointerAtIndex:frontIndex];
+        }
+        
+        if (frontWindow) {
+            NSUInteger i;
             for (i = 0; i < frontIndex; i++) {
-                NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
-                NSWindow *window = SAFE_OBJECT_AT_INDEX(windows, order);
-                if (window && [window isEqual:[NSNull null]] == NO)
+                if ((window = (id)[tabbedWindows pointerAtIndex:i]))
                     [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
             }
-            for (i = iMax - 1; i > frontIndex; i--) {
-                NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
-                NSWindow *window = SAFE_OBJECT_AT_INDEX(windows, order);
-                if (window && [window isEqual:[NSNull null]] == NO)
+            for (i = [tabbedWindows count] - 1; i > frontIndex; i--) {
+                if ((window = (id)[tabbedWindows pointerAtIndex:i]))
                     [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
             }
-            
             // make sure we select the frontWindow, addTabbedWindow:ordered: sometimes changes it
             if (RUNNING_AFTER(10_12))
                 [frontWindow setValue:frontWindow forKeyPath:@"tabGroup.selectedWindow"];
         }
+        
+        [tabbedWindows release];
     }
 }
 
@@ -106,13 +115,16 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
     return YES;
 }
 
-- (NSArray *)tabIndexesInWindows:(NSArray *)windows {
+- (NSString  *)tabIndexesInWindows:(NSArray *)windows {
     if (RUNNING_AFTER(10_11)) {
         NSArray *tabbedWindows = [self tabbedWindows];
         if ([tabbedWindows count] > 1 && isWindowTabSelected(self, tabbedWindows)) {
-            NSMutableArray *tabs = [NSMutableArray array];
-            for (NSWindow *win in tabbedWindows)
-                [tabs addObject:[NSNumber numberWithUnsignedInteger:[windows indexOfObjectIdenticalTo:win]]];
+            NSMutableString *tabs = [NSMutableString string];
+            for (NSWindow *win in tabbedWindows) {
+                [tabs appendString:[tabs length] > 0 ? @", " : @"{"];
+                [tabs appendFormat:@"%lu", [windows indexOfObjectIdenticalTo:win]];
+            }
+            [tabs appendString:@"}"];
             return tabs;
         }
     }
