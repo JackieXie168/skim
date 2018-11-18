@@ -57,10 +57,13 @@
         NSWindow *window = nil;
         NSPointerArray *tabbedWindows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
         
-        tabOrders = [tabOrders substringWithRange:NSMakeRange(1, [tabOrders length] - 2)];
+        if ([tabOrders hasPrefix:@"{"])
+            tabOrders = [tabOrders substringFromIndex:1];
+        if ([tabOrders hasSuffix:@"}"])
+            tabOrders = [tabOrders substringToIndex:[tabOrders length] - 1];
         
-        for (NSString *tabIndex in [tabOrders componentsSeparatedByString:@","]) {
-            NSUInteger order = (NSUInteger)[tabIndex integerValue];
+        for (NSString *orderString in [tabOrders componentsSeparatedByString:@","]) {
+            NSUInteger order = (NSUInteger)[orderString integerValue];
             window = order < [windows count] ? [windows objectAtIndex:order] : nil;
             if ([window isEqual:[NSNull null]])
                 window = nil;
@@ -75,10 +78,9 @@
             [tabbedWindows addPointer:window];
         }
         
-        if (frontWindow == nil) {
+        if (frontWindow == nil && frontIndex != NSNotFound) {
             frontIndex = lowestIndex;
-            if (frontIndex != NSNotFound)
-                frontWindow = (id)[tabbedWindows pointerAtIndex:frontIndex];
+            frontWindow = (id)[tabbedWindows pointerAtIndex:frontIndex];
         }
         
         if (frontWindow) {
