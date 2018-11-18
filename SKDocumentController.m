@@ -359,8 +359,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     __block NSMutableArray *windows = nil;
     __block NSMutableArray *tabs = nil;
     
-    if (RUNNING_AFTER(10_11))
+    if (RUNNING_AFTER(10_11)) {
         windows = [[NSMutableArray alloc] init];
+        while ([windows count] < (NSUInteger)i)
+            [windows addObject:[NSNull null]];
+    }
     
     while (i-- > 0) {
         NSDictionary *setup = [setups objectAtIndex:i];
@@ -375,8 +378,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         [self openDocumentWithSetup:setup completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (windows)
-                [windows addObject:[document mainWindow] ?: [NSNull null]];
+            if (windows && [document mainWindow])
+                [windows replaceObjectAtIndex:i withObject:[document mainWindow]];
             if (document == nil && error) {
                 if (errors == nil)
                     errors = [[NSMutableArray alloc] init];
