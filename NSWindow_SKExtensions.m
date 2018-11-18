@@ -72,12 +72,14 @@
         
         if (frontWindow && frontIndex < iMax) {
             for (i = 0; i < frontIndex; i++) {
-                NSWindow *window = [windows objectAtIndex:i];
+                NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
+                NSWindow *window = SAFE_OBJECT_AT_INDEX(windows, order);
                 if (window && [window isEqual:[NSNull null]] == NO)
                     [frontWindow addTabbedWindow:window ordered:NSWindowBelow];
             }
             for (i = iMax - 1; i > frontIndex; i--) {
-                NSWindow *window = [windows objectAtIndex:i];
+                NSUInteger order = [[tabOrders objectAtIndex:i] unsignedIntegerValue];
+                NSWindow *window = SAFE_OBJECT_AT_INDEX(windows, order);
                 if (window && [window isEqual:[NSNull null]] == NO)
                     [frontWindow addTabbedWindow:window ordered:NSWindowAbove];
             }
