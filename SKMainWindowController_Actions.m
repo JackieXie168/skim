@@ -249,31 +249,20 @@
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender tag];
-    if ([pdfView displayMode] !=- displayMode) {
-        [pdfView needsRewind];
-        [pdfView setDisplayMode:displayMode];
-    }
+    [pdfView setDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender tag];
-    if ([pdfView displayMode] !=- displayMode) {
-        [pdfView needsRewind];
-        [pdfView setDisplayMode:displayMode];
-    }
+    [pdfView setDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    PDFDisplayMode displayMode = [sender tag];
-    if ([pdfView displayMode] !=- displayMode) {
-        [pdfView needsRewind];
-        [pdfView setDisplayMode:displayMode];
-    }
+    [pdfView setDisplayModeAndRewind:[sender tag]];
 }
 
 - (IBAction)toggleDisplayAsBook:(id)sender {
-    [pdfView needsRewind];
-    [pdfView setDisplaysAsBook:[pdfView displaysAsBook] == NO];
+    [pdfView setDisplaysAsBookAndRewind:[pdfView displaysAsBook] == NO];
 }
 
 - (IBAction)toggleDisplayPageBreaks:(id)sender {
@@ -281,11 +270,7 @@
 }
 
 - (IBAction)changeDisplayBox:(id)sender {
-    PDFDisplayBox displayBox = [sender tag];
-    if ([pdfView displayBox] != displayBox) {
-        [pdfView needsRewind];
-        [pdfView setDisplayBox:displayBox];
-    }
+    [pdfView setDisplayBoxAndRewind:[sender tag]];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {

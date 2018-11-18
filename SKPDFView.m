@@ -601,6 +601,13 @@ enum {
         [editor layout];
     }
 }
+    
+- (void)setDisplayModeAndRewind:(PDFDisplayMode)mode {
+    if (mode != [self displayMode]) {
+        [self needsRewind];
+        [self setDisplayMode:mode];
+    }
+}
 
 - (void)setDisplayBox:(PDFDisplayBox)box {
     if (box != [self displayBox]) {
@@ -613,6 +620,13 @@ enum {
     }
 }
 
+- (void)setDisplayBoxAndRewind:(PDFDisplayBox)box {
+    if (box != [self displayBox]) {
+        [self needsRewind];
+        [self setDisplayBox:box];
+    }
+}
+
 - (void)setDisplaysAsBook:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
         PDFPage *page = [self currentPage];
@@ -622,6 +636,13 @@ enum {
         [self resetPDFToolTipRects];
         [editor layout];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysAsBookChangedNotification object:self];
+    }
+}
+
+- (void)setDisplaysAsBookAndRewind:(BOOL)asBook {
+    if (asBook != [self displaysAsBook]) {
+        [self needsRewind];
+        [self setDisplaysAsBook:asBook];
     }
 }
 

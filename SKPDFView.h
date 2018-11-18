@@ -166,6 +166,10 @@ enum {
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
 
+- (void)setDisplayModeAndRewind:(PDFDisplayMode)mode;
+- (void)setDisplayBoxAndRewind:(PDFDisplayBox)box;
+- (void)setDisplaysAsBookAndRewind:(BOOL)asBook;
+
 - (void)zoomLog:(id)sender;
 - (void)toggleAutoActualSize:(id)sender;
 - (void)exitFullscreen:(id)sender;

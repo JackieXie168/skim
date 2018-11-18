@@ -987,40 +987,26 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
 }
 
 - (IBAction)changeDisplayBox:(id)sender {
-    PDFDisplayBox displayBox = [sender selectedTag];
-    if ([mainController.pdfView displayBox] != displayBox) {
-        [mainController.pdfView needsRewind];
-        [mainController.pdfView setDisplayBox:displayBox];
-    }
+    [mainController.pdfView setDisplayBoxAndRewind:[sender selectedTag]];
 }
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender selectedTag];
-    if ([mainController.pdfView displayMode] !=- displayMode) {
-        [mainController.pdfView needsRewind];
-        [mainController.pdfView setDisplayMode:displayMode];
-    }
+    [mainController.pdfView setDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender selectedTag];
-    if ([mainController.pdfView displayMode] !=- displayMode) {
-        [mainController.pdfView needsRewind];
-        [mainController.pdfView setDisplayMode:displayMode];
-    }
+    [mainController.pdfView setDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender selectedTag];
-    if ([mainController.pdfView displayMode] !=- displayMode) {
-        [mainController.pdfView needsRewind];
-        [mainController.pdfView setDisplayMode:displayMode];
-    }
+    [mainController.pdfView setDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeBookMode:(id)sender {
-    [mainController.pdfView needsRewind];
-    [mainController.pdfView setDisplaysAsBook:NO == [mainController.pdfView displaysAsBook]];
+    [mainController.pdfView setDisplaysAsBookAndRewind:NO == [mainController.pdfView displaysAsBook]];
 }
 
 - (IBAction)changePageBreaks:(id)sender {
