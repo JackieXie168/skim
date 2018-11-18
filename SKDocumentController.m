@@ -357,7 +357,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     __block NSInteger countDown = i;
     __block NSMutableArray *errors = nil;
     __block NSMutableArray *windows = nil;
-    __block NSMutableArray *tabs = nil;
+    __block NSMutableArray *tabInfos = nil;
     
     if (RUNNING_AFTER(10_11)) {
         windows = [[NSMutableArray alloc] init];
@@ -369,11 +369,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         NSDictionary *setup = [setups objectAtIndex:i];
         
         if (windows) {
-            NSArray *tabIndexes = [setup objectForKey:SKDocumentSetupTabsKey];
-            if (tabIndexes) {
-                if (tabs == nil)
-                    tabs = [[NSMutableArray alloc] init];
-                [tabs addObject:[NSArray arrayWithObjects:tabIndexes, [NSNumber numberWithUnsignedInteger:i], nil]];
+            NSString *tabs = [setup objectForKey:SKDocumentSetupTabsKey];
+            if (tabs) {
+                if (tabInfos == nil)
+                    tabInfos = [[NSMutableArray alloc] init];
+                [tabInfos addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
             }
         }
         
@@ -386,10 +386,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 [errors addObject:error];
             }
             if (--countDown == 0) {
-                if (windows && tabs)
-                    [NSWindow addTabs:tabs forWindows:windows];
+                if (windows && tabInfos)
+                    [NSWindow addTabs:tabInfos forWindows:windows];
                 SKDESTROY(windows);
-                SKDESTROY(tabs);
+                SKDESTROY(tabInfos);
                 if (completionHandler) {
                     if (errors) {
                         document = nil;

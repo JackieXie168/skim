@@ -374,7 +374,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView autoFits];
-    NSArray *tabs = nil;
+    NSString *tabs = nil;
     if (RUNNING_AFTER(10_11)) {
         NSArray *windows = [[[(SKMainDocument *)[self document] mainWindowController] snapshots] valueForKey:@"window"];
         tabs = [[self window] tabIndexesInWindows:windows];

@@ -100,9 +100,9 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     
     if (RUNNING_AFTER(10_11)) {
         NSArray *windows = [[NSApp orderedDocuments] valueForKey:@"mainWindow"];
-        NSArray *tabIndexes = [[self mainWindow] tabIndexesInWindows:windows];
-        if (tabIndexes)
-            [setup setObject:tabIndexes forKey:SKDocumentSetupTabsKey];
+        NSString *tabs = [[self mainWindow] tabIndexesInWindows:windows];
+        if (tabs)
+            [setup setObject:tabs forKey:SKDocumentSetupTabsKey];
     }
     
     return setup;

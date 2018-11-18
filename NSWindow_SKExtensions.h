@@ -42,7 +42,7 @@
 @interface NSWindow (SKExtensions)
 
 + (void)addTabs:(NSArray *)tabInfos forWindows:(NSArray *)windows;
-- (NSArray *)tabIndexesInWindows:(NSArray *)windows;
+- (NSString *)tabIndexesInWindows:(NSArray *)windows;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 

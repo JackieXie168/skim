@@ -2354,7 +2354,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)showSnapshotsWithSetups:(NSArray *)setups {
     NSUInteger i, iMax = [setups count];
-    NSMutableArray *tabs = 0;
+    NSMutableArray *tabInfos = 0;
     NSMutableArray *swcs = nil;
     
     if (RUNNING_AFTER(10_11))
@@ -2376,19 +2376,19 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         if (swcs) {
             [swcs addObject:swc];
             
-            NSArray *tabIndexes = [setup objectForKey:SKSnapshotTabsKey];
-            if (tabIndexes) {
-                if (tabs == nil)
-                    tabs = [NSMutableArray array];
-                [tabs addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
+            NSString *tabs = [setup objectForKey:SKSnapshotTabsKey];
+            if (tabs) {
+                if (tabInfos == nil)
+                    tabInfos = [NSMutableArray array];
+                [tabInfos addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
             }
         }
         
         [swc release];
     }
     
-    if (tabs)
-        [NSWindow addTabs:tabs forWindows:[swcs valueForKey:@"window"]];
+    if (tabInfos)
+        [NSWindow addTabs:tabInfos forWindows:[swcs valueForKey:@"window"]];
 }
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {

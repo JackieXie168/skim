@@ -115,7 +115,7 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
     return YES;
 }
 
-- (NSString  *)tabIndexesInWindows:(NSArray *)windows {
+- (NSString *)tabIndexesInWindows:(NSArray *)windows {
     if (RUNNING_AFTER(10_11)) {
         NSArray *tabbedWindows = [self tabbedWindows];
         if ([tabbedWindows count] > 1 && isWindowTabSelected(self, tabbedWindows)) {
