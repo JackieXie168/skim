@@ -124,7 +124,7 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
             NSMutableString *tabs = [NSMutableString string];
             for (NSWindow *win in tabbedWindows) {
                 [tabs appendString:[tabs length] > 0 ? @", " : @"{"];
-                [tabs appendFormat:@"%lu", [windows indexOfObjectIdenticalTo:win]];
+                [tabs appendFormat:@"%lu", (unsigned long)[windows indexOfObjectIdenticalTo:win]];
             }
             [tabs appendString:@"}"];
             return tabs;
