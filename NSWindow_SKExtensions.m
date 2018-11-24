@@ -38,10 +38,9 @@
 
 #import "NSWindow_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 @implementation NSWindow (SKExtensions)
-
-#define SAFE_OBJECT_AT_INDEX(array, idx) idx < [array count] ? [array objectAtIndex:idx] : nil
 
 + (void)addTabs:(NSArray *)tabInfos forWindows:(NSArray *)windows {
     if (RUNNING_BEFORE(10_12))
@@ -57,10 +56,12 @@
         NSWindow *window = nil;
         NSPointerArray *tabbedWindows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
         
-        if ([tabOrders hasPrefix:@"{"])
-            tabOrders = [tabOrders substringFromIndex:1];
-        if ([tabOrders hasSuffix:@"}"])
-            tabOrders = [tabOrders substringToIndex:[tabOrders length] - 1];
+        if ([tabOrders isKindOfClass:[NSArray class]] == NO)
+            tabOrders = [[tabOrders description] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+        
+        if ([tabOrders isKindOfClass:[NSString class]] == NO || [tabOrders length] < 3) continue;
+        
+        tabOrders = [tabOrders substringWithRange:NSMakeRange(1, [tabOrders length] - 2)];
         
         for (NSString *orderString in [tabOrders componentsSeparatedByString:@","]) {
             NSUInteger order = (NSUInteger)[orderString integerValue];
@@ -123,10 +124,10 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
         if ([tabbedWindows count] > 1 && isWindowTabSelected(self, tabbedWindows)) {
             NSMutableString *tabs = [NSMutableString string];
             for (NSWindow *win in tabbedWindows) {
-                [tabs appendString:[tabs length] > 0 ? @", " : @"{"];
+                [tabs appendString:[tabs length] > 0 ? @", " : @"("];
                 [tabs appendFormat:@"%lu", (unsigned long)[windows indexOfObjectIdenticalTo:win]];
             }
-            [tabs appendString:@"}"];
+            [tabs appendString:@")"];
             return tabs;
         }
     }
