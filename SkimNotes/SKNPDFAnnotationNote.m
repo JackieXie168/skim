@@ -59,8 +59,10 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 #endif
 
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
-@interface PDFPage (SKNSierraDeclarations)
+@interface PDFAnnotation (SKNSierraDeclarations)
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
+@end
+@interface PDFPage (SKNSierraDeclarations)
 - (void)transformContext:(CGContextRef)context forBox:(PDFDisplayBox)box;
 @end
 #endif
