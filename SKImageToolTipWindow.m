@@ -46,7 +46,11 @@
 #define AUTO_HIDE_TIME_INTERVAL 10.0
 #define DEFAULT_SHOW_DELAY      1.5
 #define ALT_SHOW_DELAY          0.2
-#define WINDOW_LEVEL            ((NSWindowLevel)104)
+#if SDK_BEFORE(10_13)
+#define WINDOW_LEVEL            104
+#else
+#define WINDOW_LEVEL            ((NSWIndowLevel)104)
+#endif
 
 
 @implementation SKImageToolTipWindow

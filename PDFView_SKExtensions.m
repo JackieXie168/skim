@@ -77,6 +77,10 @@ typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
 - (void)drawPage:(PDFPage *)page toContext:(CGContextRef)context;
 @end
 
+@interface PDFAnnotation (SKSierraDeclarations)
+- (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_13)

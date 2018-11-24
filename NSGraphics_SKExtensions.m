@@ -60,7 +60,7 @@
 #elif SDK_BEFORE(10_14)
 
 @interface NSAppearance (SKMojaveExtensions)
-- (NSAppearanceName)bestMatchFromAppearancesWithNames:(NSArray *)names;
+- (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
 @end
 
 @interface NSApplication (SKMojaveExtensions) <NSAppearanceCustomization>

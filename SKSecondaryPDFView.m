@@ -266,7 +266,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
         
         [toolModeButton setButtonType:NSOnOffButton];
-        [toolModeButton setBezelStyle:NSBezelStyleTexturedSquare];
+        [toolModeButton setBezelStyle:NSTexturedSquareBezelStyle];
         [toolModeButton setImage:[NSImage imageNamed:SKImageNameTextToolAdorn]];
         
         [toolModeButton setState:[self selectsText]];

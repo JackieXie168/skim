@@ -327,7 +327,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [borderColor setStroke];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         rect = NSInsetRect(rect, 1.0, 1.0);
-        [imageRep drawInRect:rect fromRect:rect operation:NSCompositingOperationCopy fraction:0.7 respectFlipped:NO hints:nil];
+        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:NO hints:nil];
     }];
     
     return image;
