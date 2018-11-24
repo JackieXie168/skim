@@ -1306,6 +1306,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     MAKE_IMAGE(SKImageNameToolbarInfo, YES, 27.0, 20.0,
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] setFill];
         NSFont *font = [NSFont fontWithName:@"Hoefler Text Black Italic" size:13.0];
+        if (font == nil)
+            font = [NSFont fontWithName:@"Palatino Bold Italic" size:13.0];
+        if (font == nil)
+            font = [NSFont fontWithName:@"Times New Roman Bold Italic" size:13.0];
         NSGlyph glyph = [font glyphWithName:@"i"];
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(5.5, 2.5, 16.0, 16.0)];
         [[NSColor blackColor] setFill];
