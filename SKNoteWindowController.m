@@ -106,6 +106,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         noteIcons[i] = [[NSImage bitmapImageWithSize:SKNPDFAnnotationNoteSize drawingHandler:^(NSRect rect){
                 [page drawWithBox:kPDFDisplayBoxMediaBox];
             }] retain];
+        [noteIcons[i] setTemplate:YES];
     }
     [page release];
 }
