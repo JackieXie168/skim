@@ -1229,7 +1229,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     );
     
     MAKE_IMAGE(SKImageNameToolbarTextTool, YES, 27.0, 19.0, 
-        NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0] ?: [NSFont systemFontOfSize:12.0];
         NSGlyph glyph = [font glyphWithName:@"A"];
         [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.5, 3.5, 12.0, 12.0)];
@@ -1305,11 +1305,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
     MAKE_IMAGE(SKImageNameToolbarInfo, YES, 27.0, 20.0,
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] setFill];
-        NSFont *font = [NSFont fontWithName:@"Hoefler Text Black Italic" size:13.0];
-        if (font == nil)
-            font = [NSFont fontWithName:@"Palatino Bold Italic" size:13.0];
-        if (font == nil)
-            font = [NSFont fontWithName:@"Times New Roman Bold Italic" size:13.0];
+        NSFont *font = [NSFont fontWithName:@"Hoefler Text Black Italic" size:13.0] ?: [NSFont boldSystemFontOfSize:13.0];
         NSGlyph glyph = [font glyphWithName:@"i"];
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(5.5, 2.5, 16.0, 16.0)];
         [[NSColor blackColor] setFill];
@@ -1577,7 +1573,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     );
     
     MAKE_IMAGE(SKImageNameTextToolAdorn, YES, 11.0, 11.0,
-        NSFont *font = [NSFont fontWithName:@"Helvetica" size:8.0];
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:8.0] ?: [NSFont systemFontOfSize:8.0];
         NSGlyph glyph = [font glyphWithName:@"A"];
         [[NSColor blackColor] set];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.5, 1.5, 8.0, 8.0)];
@@ -2124,7 +2120,7 @@ static void drawSquareNote() {
 }
 
 static void drawHighlightNote() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0] ?: [NSFont boldSystemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"H"];
     NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0]] autorelease];
     [gradient drawInRect:NSMakeRect(3.0, 2.0, 15.0, 16.0) angle:90.0];
@@ -2139,7 +2135,7 @@ static void drawHighlightNote() {
 }
 
 static void drawUnderlineNote() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0] ?: [NSFont boldSystemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"U"];
     [NSGraphicsContext saveGraphicsState];
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:2.0 yOffset:0.0];
@@ -2155,7 +2151,7 @@ static void drawUnderlineNote() {
 }
 
 static void drawStrikeOutNote() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica-Bold" size:14.0] ?: [NSFont boldSystemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"S"];
     [NSGraphicsContext saveGraphicsState];
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] blurRadius:2.0 yOffset:0.0];
@@ -2247,7 +2243,7 @@ static void drawSquareNoteTemplate() {
 }
 
 static void drawHighlightNoteTemplate() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"H"];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] setFill];
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 2.0, 15.0, 16.0)];
@@ -2260,7 +2256,7 @@ static void drawHighlightNoteTemplate() {
 }
 
 static void drawUnderlineNoteTemplate() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"U"];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
@@ -2275,7 +2271,7 @@ static void drawUnderlineNoteTemplate() {
 }
 
 static void drawStrikeOutNoteTemplate() {
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"S"];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
@@ -2373,7 +2369,7 @@ static void drawUnderlineNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"U"];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 6.0)];
@@ -2388,7 +2384,7 @@ static void drawStrikeOutNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
     [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"S"];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
