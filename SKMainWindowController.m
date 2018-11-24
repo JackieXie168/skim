@@ -387,6 +387,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     pdfView = [[SKPDFView alloc] initWithFrame:[pdfContentView bounds]];
     [pdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
+    if ([pdfView maximumScaleFactor] < 20.0 && [pdfView respondsToSelector:NSSelectorFromString(@"setMaxScaleFactor:")])
+        [pdfView setValue:[NSNumber numberWithDouble:20.0] forKey:@"maxScaleFactor"];
+    
     // Set up the tool bar
     [toolbarController setupToolbar];
     
