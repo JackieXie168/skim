@@ -2337,9 +2337,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
-                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                 if ([self hasReadingBar] == NO)
                     [self toggleReadingBar];
+                [userInfo setValue:[readingBar page] forKey:SKPDFViewOldPageKey];
                 [readingBar setPage:page];
                 [readingBar goToLineForPoint:point];
                 [self requiresDisplay];
