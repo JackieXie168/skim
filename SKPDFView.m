@@ -2337,19 +2337,28 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
-                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, nil];
+                BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
+                PDFPage *oldPage = nil;
+                NSRect oldRect = NSZeroRect;
                 if ([self hasReadingBar] == NO) {
                     SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
                     [aReadingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
                     [aReadingBar goToLineForPoint:point];
                     [self setReadingBar:aReadingBar];
                     [aReadingBar release];
+                    if (invert)
+                        [self requiresDisplay];
+                    else
+                        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
                 } else {
-                    [userInfo setValue:[readingBar page] forKey:SKPDFViewOldPageKey];
+                    oldPage = [readingBar page];
+                    oldRect = [readingBar currentBoundsForBox:[self displayBox]];
                     [readingBar setPage:page];
                     [readingBar goToLineForPoint:point];
+                    [self setNeedsDisplayInRect:oldRect ofPage:oldPage];
+                    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
                 }
-                [self requiresDisplay];
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, oldPage, SKPDFViewOldPageKey, nil];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             } else if ([sel hasCharacters] && [self toolMode] == SKTextToolMode) {
                 [self setCurrentSelection:sel];
