@@ -2337,14 +2337,20 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
-                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-                if ([self hasReadingBar] == NO)
-                    [self toggleReadingBar];
-                [userInfo setValue:[readingBar page] forKey:SKPDFViewOldPageKey];
-                [readingBar setPage:page];
-                [readingBar goToLineForPoint:point];
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, nil];
+                if ([self hasReadingBar] == NO) {
+                    SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
+                    [aReadingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
+                    [aReadingBar goToNextLine];
+                    [aReadingBar goToLineForPoint:point];
+                    [self setReadingBar:aReadingBar];
+                    [aReadingBar release];
+                } else {
+                    [userInfo setValue:[readingBar page] forKey:SKPDFViewOldPageKey];
+                    [readingBar setPage:page];
+                    [readingBar goToLineForPoint:point];
+                }
                 [self requiresDisplay];
-                [userInfo setObject:page forKey:SKPDFViewNewPageKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             } else if ([sel hasCharacters] && [self toolMode] == SKTextToolMode) {
                 [self setCurrentSelection:sel];
