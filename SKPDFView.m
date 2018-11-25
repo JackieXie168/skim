@@ -2341,7 +2341,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 if ([self hasReadingBar] == NO) {
                     SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
                     [aReadingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
-                    [aReadingBar goToNextLine];
                     [aReadingBar goToLineForPoint:point];
                     [self setReadingBar:aReadingBar];
                     [aReadingBar release];
