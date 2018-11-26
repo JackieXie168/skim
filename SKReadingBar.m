@@ -43,6 +43,8 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
 
+#define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
+
 
 @implementation SKReadingBar
 
@@ -52,7 +54,7 @@
 - (id)initWithPage:(PDFPage *)aPage {
     self = [super init];
     if (self) {
-        numberOfLines = 1;
+        numberOfLines = MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey]);
         lineRects = nil;
         currentLine = -1;
         [self setPage:aPage];
@@ -111,6 +113,7 @@
 - (void)setNumberOfLines:(NSUInteger)number {
     numberOfLines = number;
     [self updateCurrentBounds];
+    [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
 }
 
 - (NSRect)currentBounds {

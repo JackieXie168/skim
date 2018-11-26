@@ -134,8 +134,6 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
 
-#define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
-
 #define SKAnnotationKey @"SKAnnotation"
 
 static char SKPDFViewDefaultsObservationContext;
@@ -746,7 +744,6 @@ enum {
     } else {
         page = [self currentPage];
         SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
-        [aReadingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
         [aReadingBar goToNextLine];
         bounds = [aReadingBar currentBoundsForBox:[self displayBox]];
         [self goToRect:NSInsetRect([aReadingBar currentBounds], 0.0, -20.0) onPage:page];
@@ -2342,7 +2339,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 NSRect oldRect = NSZeroRect;
                 if ([self hasReadingBar] == NO) {
                     SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
-                    [aReadingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
                     [aReadingBar goToLineForPoint:point];
                     [self setReadingBar:aReadingBar];
                     [aReadingBar release];
@@ -3071,7 +3067,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFPage *page = [readingBar page];
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         [readingBar setNumberOfLines:numberOfLines];
-        [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
         [self setNeedsDisplayInRect:NSUnionRect(rect, [readingBar currentBoundsForBox:[self displayBox]]) ofPage:page];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil]];
@@ -3908,7 +3903,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (numberOfLines > 0 && numberOfLines != (NSInteger)[readingBar numberOfLines]) {
             NSRect oldRect = [readingBar currentBoundsForBox:[self displayBox]];
             [readingBar setNumberOfLines:numberOfLines];
-            [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
             [self setNeedsDisplayInRect:NSUnionRect(oldRect, [readingBar currentBoundsForBox:[self displayBox]]) ofPage:page];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
