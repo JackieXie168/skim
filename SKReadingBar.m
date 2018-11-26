@@ -48,7 +48,7 @@
 
 @implementation SKReadingBar
 
-@synthesize currentLine, numberOfLines;
+@synthesize currentLine, numberOfLines, maxLine;
 @dynamic page, currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage {
@@ -116,6 +116,11 @@
     [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
 }
 
+- (NSInteger)maxLine {
+    NSInteger lineCount = (NSInteger)[lineRects count];
+    return lineCount == 0 ? -1 : MAX(0, lineCount - (NSInteger)numberOfLines);
+}
+
 - (NSRect)currentBounds {
     NSRect bounds;
     @synchronized (self) {
@@ -159,7 +164,7 @@
             }
             [lineRects release];
             lineRects = [lines retain];
-            currentLine = atTop ? 0 : MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
+            currentLine = atTop ? 0 : [self maxLine];
             [self updateCurrentBounds];
             didMove = YES;
             break;
@@ -183,7 +188,7 @@
             }
             [lineRects release];
             lineRects = [lines retain];
-            currentLine = atTop ? 0 : MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
+            currentLine = atTop ? 0 : [self maxLine];
             [self updateCurrentBounds];
             didMove = YES;
             break;
@@ -194,7 +199,7 @@
 
 - (BOOL)goToNextLine {
     BOOL didMove = NO;
-    if (currentLine < (NSInteger)[lineRects count] - (NSInteger)numberOfLines) {
+    if (currentLine < [self maxLine]) {
         ++currentLine;
         [self updateCurrentBounds];
         didMove = YES;
@@ -239,7 +244,7 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
 - (BOOL)goToLineForPoint:(NSPoint)point {
     if ([lineRects count] == 0)
         return NO;
-    NSInteger i = [lineRects count] - numberOfLines;
+    NSInteger i = [self maxLine];
     NSInteger rotation = [page intrinsicRotation];
     while (--i >= 0)
         if (topAbovePoint([lineRects rectAtIndex:i], point, rotation)) break;

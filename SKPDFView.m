@@ -484,18 +484,49 @@ enum {
 #pragma mark Accessors
 
 - (void)setDocument:(PDFDocument *)document {
-    [self setReadingBar:nil];
+    SKDESTROY(rewindPage);
+    
+    [syncDot invalidate];
+    [self setSyncDot:nil];
+    
     @synchronized (self) {
         selectionRect = NSZeroRect;
         selectionPageIndex = NSNotFound;
     }
-    [syncDot invalidate];
-    [self setSyncDot:nil];
+    
     [self removePDFToolTipRects];
-    SKDESTROY(rewindPage);
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
+    
+    NSUInteger readingBarPageIndex = NSNotFound;
+    NSInteger readingBarLine = -1;
+    if ([self hasReadingBar]) {
+        readingBarPageIndex = [[readingBar page] pageIndex];
+        readingBarLine = [readingBar currentLine];
+        [self setReadingBar:nil];
+    }
+    
     [super setDocument:document];
+    
     [self resetPDFToolTipRects];
+    
+    if (readingBarPageIndex != NSNotFound) {
+        PDFPage *page = nil;
+        if (readingBarPageIndex < [document pageCount]) {
+            page = [document pageAtIndex:readingBarPageIndex];
+        } else if ([document pageCount] > 0) {
+            page = [document pageAtIndex:[document pageCount] - 1];
+            readingBarLine = 0;
+        }
+        if (page) {
+            SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
+            if (readingBarLine <= [aReadingBar maxLine])
+                [aReadingBar setCurrentLine:readingBarLine];
+            else
+                [aReadingBar goToNextLine];
+            [self setReadingBar:aReadingBar];
+            [aReadingBar release];
+        }
+    }
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
@@ -2339,22 +2370,24 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 NSRect oldRect = NSZeroRect;
                 if ([self hasReadingBar] == NO) {
                     SKReadingBar *aReadingBar = [[SKReadingBar alloc] initWithPage:page];
-                    [aReadingBar goToLineForPoint:point];
+                    if (NO == [readingBar goToLineForPoint:point])
+                        [readingBar goToNextLine];
                     [self setReadingBar:aReadingBar];
                     [aReadingBar release];
                     if (invert)
                         [self requiresDisplay];
                     else
-                        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
+                        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
                 } else {
                     oldPage = [readingBar page];
                     oldRect = [readingBar currentBoundsForBox:[self displayBox]];
                     [readingBar setPage:page];
-                    [readingBar goToLineForPoint:point];
+                    if (NO == [readingBar goToLineForPoint:point])
+                        [readingBar goToNextLine];
                     [self setNeedsDisplayInRect:oldRect ofPage:oldPage];
-                    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:page];
+                    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
                 }
-                NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, oldPage, SKPDFViewOldPageKey, nil];
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewNewPageKey, oldPage, SKPDFViewOldPageKey, nil];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             } else if ([sel hasCharacters] && [self toolMode] == SKTextToolMode) {
                 [self setCurrentSelection:sel];

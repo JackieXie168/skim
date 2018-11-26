@@ -51,6 +51,7 @@
 @property (retain) PDFPage *page;
 @property (nonatomic) NSInteger currentLine;
 @property (nonatomic) NSUInteger numberOfLines;
+@property (nonatomic) NSInteger maxLine;
 @property (readonly) NSRect currentBounds;
 
 - (id)initWithPage:(PDFPage *)aPage;
