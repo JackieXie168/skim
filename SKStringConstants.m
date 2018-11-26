@@ -138,4 +138,5 @@ NSString *SKDownloadsDirectoryKey = @"SKDownloadsDirectory";
 NSString *SKDisableSearchAfterSpotlighKey = @"SKDisableSearchAfterSpotligh";
 NSString *SKDisplayNoteBoundsKey = @"SKDisplayNoteBounds";
 NSString *SKDisplayPageBoundsKey = @"SKDisplayPageBounds";
+NSString *SKDisableHistoryHighlightsKey = @"SKDisableHistoryHighlights";
 

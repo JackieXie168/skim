@@ -41,6 +41,7 @@
 #import "NSColor_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKStringConstants.h"
 
 #define MAX_HIGHLIGHTS 5
 
@@ -54,9 +55,14 @@
     [super dealloc];
 }
 
-- (BOOL)hasHighlights {
-    return [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
+- (BOOL)supportsHighlights {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO &&
+    [[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)] &&
     (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self));
+}
+
+- (BOOL)hasHighlights {
+    return [self supportsHighlights] && (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[self window] firstResponder] == self));
 }
 
 - (void)drawBackgroundInClipRect:(NSRect)clipRect {
@@ -115,7 +121,7 @@
 
 - (BOOL)becomeFirstResponder {
     if ([super becomeFirstResponder]) {
-        if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
+        if ([self supportsHighlights])
             [self setNeedsDisplay:YES];
         return YES;
     }
@@ -124,7 +130,7 @@
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
+        if ([self supportsHighlights])
             [self setNeedsDisplay:YES];
         return YES;
     }
@@ -132,20 +138,22 @@
 }
 
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:highlightLevelForRow:)])
+    if ([self supportsHighlights])
         [self setNeedsDisplay:YES];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    NSWindow *oldWindow = [self window];
-    NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
-    if (oldWindow) {
-        for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
-    }
-    if (newWindow) {
-        for (NSString *name in names)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO) {
+        NSWindow *oldWindow = [self window];
+        NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+        if (oldWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
+        }
+        if (newWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+        }
     }
     [super viewWillMoveToWindow:newWindow];
 }
