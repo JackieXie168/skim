@@ -49,7 +49,7 @@
 #if SDK_BEFORE(10_13)
 #define WINDOW_LEVEL            104
 #else
-#define WINDOW_LEVEL            ((NSWIndowLevel)104)
+#define WINDOW_LEVEL            ((NSWindowLevel)104)
 #endif
 
 
