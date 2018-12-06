@@ -48,8 +48,8 @@
 
 @implementation SKReadingBar
 
-@synthesize currentLine, numberOfLines, maxLine;
-@dynamic page, currentBounds;
+@synthesize currentLine, numberOfLines;
+@dynamic page, currentBounds, maxLine;
 
 - (id)initWithPage:(PDFPage *)aPage {
     self = [super init];
