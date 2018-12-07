@@ -129,7 +129,8 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 }
 
 - (NSDictionary *)SkimNoteProperties{
-    NSMutableDictionary *dict = [super genericSkimNoteProperties];
+    NSMutableDictionary *dict = [self genericSkimNoteProperties];
+    [dict setValue:[NSNumber numberWithInteger:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
     [dict setValue:[self text] forKey:SKNPDFAnnotationTextKey];
     [dict setValue:[self image] forKey:SKNPDFAnnotationImageKey];
     return dict;
