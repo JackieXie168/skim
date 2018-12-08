@@ -45,7 +45,6 @@
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
     BOOL didCheckReopen;
     BOOL remoteScrolling;
-    id activity;
 }
 
 - (IBAction)orderFrontLineInspector:(id)sender;
