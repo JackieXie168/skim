@@ -1392,22 +1392,27 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [generalImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     );
     
+    NSImage *fontImage = [NSImage bitmapImageWithSize:NSMakeSize(21.0, 29.0) drawingHandler:^(NSRect r){
+        [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] set];
+        NSRectFill(NSMakeRect(0.0, 0.0, 21.0, 29.0));
+        [[NSImage imageNamed:NSImageNameFontPanel] drawInRect:NSMakeRect(-4.0, 0.0, 29.0, 29.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+    }];
+
     MAKE_IMAGE(SKImageNameDisplayPreferences, NO, 32.0, 32.0, 
         NSImage *colorImage = [NSImage imageNamed:NSImageNameColorPanel];
-        NSImage *fontImage = [NSImage imageNamed:NSImageNameFontPanel];
         [colorImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [fontImage drawInRect:NSMakeRect(-4.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
+        [fontImage drawInRect:NSMakeRect(0.0, 0.0, 21.0, 29.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
     );
     
     MAKE_IMAGE(SKImageNameNotesPreferences, NO, 32.0, 32.0, 
         NSImage *clippingImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.935 blue:0.422 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.975 blue:0.768 alpha:1.0]] autorelease];
         [[NSColor blackColor] setFill];
-        [NSBezierPath fillRect:NSMakeRect(0.0, 0.0, 32.0, 32.0)];
-        [clippingImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [NSBezierPath fillRect:NSMakeRect(2.0, 0.0, 28.0, 32.0)];
+        [clippingImage drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
         CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
-        [gradient drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) angle:90.0];
-        [clippingImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+        [gradient drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) angle:90.0];
+        [clippingImage drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
     );
     
     NSImage *refreshImage = [NSImage bitmapImageWithSize:NSMakeSize(10.0, 12.0) drawingHandler:^(NSRect r){
