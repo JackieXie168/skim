@@ -700,8 +700,6 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)setupToolbar {
     // Create a new toolbar instance, and attach it to our window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKDownloadsToolbarIdentifier] autorelease];
-    NSToolbarItem *item;
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
     
     [toolbar setAllowsUserCustomization:NO];
     [toolbar setAutosavesConfiguration:NO];
@@ -711,31 +709,25 @@ static SKDownloadController *sharedDownloadController = nil;
     // We are the delegate
     [toolbar setDelegate:self];
     
-    // Add template toolbar items
-    
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarPreferencesItemIdentifier];
-    [item setToolTip:NSLocalizedString(@"Download preferences", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:NSImageNamePreferencesGeneral]];
-    [item setTarget:self];
-    [item setAction:@selector(showDownloadPreferences:)];
-    [dict setObject:item forKey:SKDownloadsToolbarPreferencesItemIdentifier];
-    [item release];
-    
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarClearItemIdentifier];
-    [item setView:clearButton];
-    [item setMinSize:[clearButton bounds].size];
-    [item setMaxSize:[clearButton bounds].size];
-    [dict setObject:item forKey:SKDownloadsToolbarClearItemIdentifier];
-    [item release];
-    
-    toolbarItems = [dict copy];
-    
     // Attach the toolbar to the window
     [[self window] setToolbar:toolbar];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
-    return [toolbarItems objectForKey:itemIdent];
+    NSToolbarItem *item = nil;
+    if ([itemIdent isEqualToString:SKDownloadsToolbarPreferencesItemIdentifier]) {
+        item = [[[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarPreferencesItemIdentifier] autorelease];
+        [item setToolTip:NSLocalizedString(@"Download preferences", @"Tool tip message")];
+        [item setImage:[NSImage imageNamed:NSImageNamePreferencesGeneral]];
+        [item setTarget:self];
+        [item setAction:@selector(showDownloadPreferences:)];
+    } else if ([itemIdent isEqualToString:SKDownloadsToolbarClearItemIdentifier]) {
+        item = [[[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarClearItemIdentifier] autorelease];
+        [item setView:clearButton];
+        [item setMinSize:[clearButton bounds].size];
+        [item setMaxSize:[clearButton bounds].size];
+    }
+    return item;
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {

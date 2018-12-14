@@ -48,7 +48,6 @@
     SKTableView *tableView;
     NSButton *clearButton;
     NSMutableArray *downloads;
-    NSDictionary *toolbarItems;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;
