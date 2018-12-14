@@ -44,15 +44,15 @@
 
 @class SKDownload;
 
-@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, QLPreviewPanelDelegate, QLPreviewPanelDataSource> {
+@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource> {
     SKTableView *tableView;
     NSButton *clearButton;
-    NSButton *prefButton;
     NSMutableArray *downloads;
+    NSDictionary *toolbarItems;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;
-@property (nonatomic, retain) IBOutlet NSButton *clearButton, *prefButton;
+@property (nonatomic, retain) IBOutlet NSButton *clearButton;
 
 + (id)sharedDownloadController;
 
@@ -72,5 +72,7 @@
 - (SKDownload *)objectInDownloadsAtIndex:(NSUInteger)anIndex;
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
+
+- (void)setupToolbar;
 
 @end

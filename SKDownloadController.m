@@ -53,6 +53,12 @@
 #import "NSFileManager_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "SKToolbarItem.h"
+#import "SKLocalization.h"
+
+#define SKDownloadsToolbarIdentifier                @"SKDownloadsToolbarIdentifier"
+#define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
+#define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -93,7 +99,7 @@ static NSString *SKDownloadsIdentifier = nil;
 
 @implementation SKDownloadController
 
-@synthesize tableView, clearButton, prefButton;
+@synthesize tableView, clearButton;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -137,17 +143,22 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDESTROY(downloads);
     SKDESTROY(tableView);
     SKDESTROY(clearButton);
-    SKDESTROY(prefButton);
     [super dealloc];
 }
 
 - (void)windowDidLoad {
+    // this isn't done by the superclass because it is not part of the window
+    [clearButton localizeStringsFromTable:[self windowNibName]];
+    [clearButton sizeToFit];
+    
+    [self setupToolbar];
+    
+    if ([[self window] respondsToSelector:@selector(setTitleVisibility:)])
+        [[self window] setTitleVisibility:NSWindowTitleHidden];
+    
     if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
     
-    [[prefButton cell] accessibilitySetOverrideValue:NSLocalizedString(@"Download preferences", @"Tool tip message") forAttribute:NSAccessibilityDescriptionAttribute];
-    
-    [clearButton sizeToFit];
     [self updateClearButton];
     
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
@@ -682,6 +693,64 @@ static SKDownloadController *sharedDownloadController = nil;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+#pragma mark Toolbar
+
+- (void)setupToolbar {
+    // Create a new toolbar instance, and attach it to our window
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKDownloadsToolbarIdentifier] autorelease];
+    NSToolbarItem *item;
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
+    
+    // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
+    [toolbar setAllowsUserCustomization:NO];
+    [toolbar setAutosavesConfiguration:NO];
+    [toolbar setDisplayMode:NSToolbarDisplayModeIconOnly];
+    [toolbar setSizeMode:NSToolbarSizeModeSmall];
+
+    // We are the delegate
+    [toolbar setDelegate:self];
+    
+    // Add template toolbar items
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarPreferencesItemIdentifier];
+    [item setToolTip:NSLocalizedString(@"Download preferences", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:NSImageNamePreferencesGeneral]];
+    [item setTarget:self];
+    [item setAction:@selector(showDownloadPreferences:)];
+    [dict setObject:item forKey:SKDownloadsToolbarPreferencesItemIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDownloadsToolbarClearItemIdentifier];
+    [item setView:clearButton];
+    [item setMinSize:[clearButton bounds].size];
+    [item setMaxSize:[clearButton bounds].size];
+    [dict setObject:item forKey:SKDownloadsToolbarClearItemIdentifier];
+    [item release];
+    
+    toolbarItems = [dict copy];
+    
+    // Attach the toolbar to the window
+    [[self window] setToolbar:toolbar];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
+    return [toolbarItems objectForKey:itemIdent];
+}
+
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects:
+            SKDownloadsToolbarClearItemIdentifier,
+            NSToolbarFlexibleSpaceItemIdentifier,
+            SKDownloadsToolbarPreferencesItemIdentifier, nil];
+}
+
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects:
+            SKDownloadsToolbarPreferencesItemIdentifier,
+            NSToolbarFlexibleSpaceItemIdentifier,
+            SKDownloadsToolbarClearItemIdentifier, nil];
 }
 
 #pragma mark Quick Look Panel Support

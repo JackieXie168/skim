@@ -136,6 +136,7 @@
 		CE4643DE0DF6B77800CFD8D2 /* SKBoundsCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643DD0DF6B77800CFD8D2 /* SKBoundsCommand.m */; };
 		CE4645910DF8140200CFD8D2 /* SKNumberArrayFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4645900DF8140200CFD8D2 /* SKNumberArrayFormatter.m */; };
 		CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */; };
+		CE48EFB121C3DC3900249D4C /* SKDownloadsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48EFB021C3DC3900249D4C /* SKDownloadsWindow.m */; };
 		CE4972510BDE898F00D7F1D2 /* SKMainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */; };
 		CE49726D0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */; };
 		CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4972890BDE8B2900D7F1D2 /* SKToolbarItem.m */; };
@@ -772,6 +773,8 @@
 		CE485BF00BC4443B00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateParser.h; sourceTree = "<group>"; };
 		CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateParser.m; sourceTree = "<group>"; };
+		CE48EFAF21C3DC3900249D4C /* SKDownloadsWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKDownloadsWindow.h; sourceTree = "<group>"; };
+		CE48EFB021C3DC3900249D4C /* SKDownloadsWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKDownloadsWindow.m; sourceTree = "<group>"; };
 		CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindow.h; sourceTree = "<group>"; };
 		CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindow.m; sourceTree = "<group>"; };
 		CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFSelection_SKExtensions.h; sourceTree = "<group>"; };
@@ -1550,7 +1553,6 @@
 				CEAA557E0C6DE030006BD633 /* SKDownloadController.m */,
 				CE9768811161195C008DCB8F /* SKDownloadPreferenceController.h */,
 				CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */,
-				CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */,
 				CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
@@ -1560,6 +1562,7 @@
 				CEDE68E3201FDCB4000D881A /* SKKeychain.m */,
 				CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */,
 				CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */,
+				CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */,
 				CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */,
 				CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */,
 				CE6C96AF0CD925550022D69F /* SKNotesPanelController.h */,
@@ -1613,6 +1616,8 @@
 			children = (
 				CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */,
 				CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */,
+				CE48EFAF21C3DC3900249D4C /* SKDownloadsWindow.h */,
+				CE48EFB021C3DC3900249D4C /* SKDownloadsWindow.m */,
 				CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */,
 				CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */,
 				CE2DE4FB0B85DBD400D0DA12 /* SKImageToolTipWindow.h */,
@@ -2374,6 +2379,7 @@
 				4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */,
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
+				CE48EFB121C3DC3900249D4C /* SKDownloadsWindow.m in Sources */,
 				CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */,
 				F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */,
 				F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */,
