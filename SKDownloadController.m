@@ -703,7 +703,6 @@ static SKDownloadController *sharedDownloadController = nil;
     NSToolbarItem *item;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
     
-    // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
     [toolbar setAllowsUserCustomization:NO];
     [toolbar setAutosavesConfiguration:NO];
     [toolbar setDisplayMode:NSToolbarDisplayModeIconOnly];
