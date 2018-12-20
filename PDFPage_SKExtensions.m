@@ -420,8 +420,8 @@ static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
         case NSLocaleLanguageDirectionUnknown:
         case NSLocaleLanguageDirectionLeftToRight: return 0;
         case NSLocaleLanguageDirectionRightToLeft: return 180;
-        case NSLocaleLanguageDirectionTopToBottom: return 90;
-        case NSLocaleLanguageDirectionBottomToTop: return 270;
+        case NSLocaleLanguageDirectionTopToBottom: return 270;
+        case NSLocaleLanguageDirectionBottomToTop: return 90;
     }
     return 0;
 }
@@ -433,9 +433,9 @@ static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
     CGFloat sortOrder = 0.0;
     NSInteger lineAngle, characterAngle;
     characterAngle = lineAngle = [self intrinsicRotation];
-    characterAngle -= angleForDirection(direction.characterDirection);
-    lineAngle -= angleForDirection(direction.lineDirection);
-    switch ((lineAngle + 360) % 360) {
+    characterAngle += angleForDirection(direction.characterDirection);
+    lineAngle += angleForDirection(direction.lineDirection);
+    switch (lineAngle % 360) {
         case 0:
             sortOrder = NSHeight(pageBounds) * floor(NSMinX(bounds));
             break;
@@ -449,7 +449,7 @@ static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
             sortOrder = NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
             break;
     }
-    switch ((characterAngle + 360) % 360) {
+    switch (characterAngle % 360) {
         case 0:
             sortOrder += NSMinX(bounds);
             break;
