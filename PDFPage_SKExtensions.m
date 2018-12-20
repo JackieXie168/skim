@@ -415,143 +415,56 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return transform;
 }
 
+static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
+    switch (direction) {
+        case NSLocaleLanguageDirectionUnknown:
+        case NSLocaleLanguageDirectionLeftToRight: return 0;
+        case NSLocaleLanguageDirectionRightToLeft: return 180;
+        case NSLocaleLanguageDirectionTopToBottom: return 90;
+        case NSLocaleLanguageDirectionBottomToTop: return 270;
+    }
+    return 0;
+}
+
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
     // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page
-    NSInteger dir = [[self document] languageDirection];
-    NSLocaleLanguageDirection charDir = dir % 8, lineDir = dir / 8;
-    CGFloat order = 0.0;
-    switch ([self intrinsicRotation]) {
+    // languageDirection = characterDirection + 8 * lineDirection
+    NSInteger direction = [[self document] languageDirection];
+    CGFloat sortOrder = 0.0;
+    NSInteger lineAngle, characterAngle;
+    characterAngle = lineAngle = [self intrinsicRotation];
+    characterAngle -= angleForDirection((direction % 8) ?: NSLocaleLanguageDirectionLeftToRight);
+    lineAngle -= angleForDirection((direction / 8) ?: NSLocaleLanguageDirectionTopToBottom);
+    switch ((lineAngle + 360) % 360) {
         case 0:
-            switch (lineDir) {
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSHeight(pageBounds) * NSMinX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - NSMaxX(bounds));
-                    break;
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSWidth(pageBounds) * floor(NSMinY(pageBounds));
-                    break;
-            }
-            switch (charDir) {
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSMinX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSMaxX(pageBounds) - NSMaxX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSMaxY(pageBounds) - NSMaxY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSMinY(bounds);
-                    break;
-            }
+            sortOrder = NSHeight(pageBounds) * floor(NSMinX(bounds));
             break;
         case 90:
-            switch (lineDir) {
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSWidth(pageBounds) * floor(NSMinY(bounds));
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
-                    break;
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSHeight(pageBounds) * floor(NSMinX(bounds));
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
-                    break;
-            }
-            switch (charDir) {
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSMinY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSMaxY(pageBounds) - NSMaxY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSMinX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSMaxX(pageBounds) - NSMaxX(bounds);
-                    break;
-            }
+            sortOrder = NSWidth(pageBounds) * floor(NSMinY(bounds));
             break;
         case 180:
-            switch (lineDir) {
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSHeight(pageBounds) * floor(NSMinX(bounds));
-                    break;
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSWidth(pageBounds) * floor(NSMinY(bounds));
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
-                    break;
-            }
-            switch (charDir) {
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSMaxX(pageBounds) - NSMaxX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSMinX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSMinY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSMaxY(pageBounds) - NSMaxY(bounds);
-                    break;
-            }
+            sortOrder = NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
             break;
         case 270:
-            switch (lineDir) {
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSWidth(pageBounds) * floor(NSMinY(bounds));
-                    break;
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSHeight(pageBounds) * floor(NSMinX(bounds));
-                    break;
-            }
-            switch (charDir) {
-                case NSLocaleLanguageDirectionUnknown:
-                case NSLocaleLanguageDirectionLeftToRight:
-                    order += NSMaxY(pageBounds) - NSMaxY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionRightToLeft:
-                    order += NSMinY(bounds);
-                    break;
-                case NSLocaleLanguageDirectionTopToBottom:
-                    order += NSMaxX(pageBounds) - NSMaxX(bounds);
-                    break;
-                case NSLocaleLanguageDirectionBottomToTop:
-                    order += NSMinX(bounds);
-                    break;
-            }
+            sortOrder = NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
             break;
     }
-    return order;
+    switch ((characterAngle + 360) % 360) {
+        case 0:
+            sortOrder += NSMinX(bounds);
+            break;
+        case 90:
+            sortOrder += NSMinY(bounds);
+            break;
+        case 180:
+            sortOrder += NSMaxX(pageBounds) - NSMaxX(bounds);
+            break;
+        case 270:
+            sortOrder += NSMaxY(pageBounds) - NSMaxY(bounds);
+            break;
+    }
+    return sortOrder;
 }
 
 #pragma mark Scripting support
