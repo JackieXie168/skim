@@ -419,133 +419,133 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
     // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page
     NSInteger dir = [[self document] languageDirection];
-    CFLocaleLanguageDirection charDir = dir % 8, lineDir = dir / 8;
+    NSLocaleLanguageDirection charDir = dir % 8, lineDir = dir / 8;
     CGFloat order = 0.0;
     switch ([self intrinsicRotation]) {
         case 0:
             switch (lineDir) {
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSHeight(pageBounds) * NSMinX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - NSMaxX(bounds));
                     break;
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSWidth(pageBounds) * floor(NSMinY(pageBounds));
                     break;
             }
             switch (charDir) {
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSMinX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSMaxX(pageBounds) - NSMaxX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSMaxY(pageBounds) - NSMaxY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSMinY(bounds);
                     break;
             }
             break;
         case 90:
             switch (lineDir) {
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSWidth(pageBounds) * floor(NSMinY(bounds));
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
                     break;
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSHeight(pageBounds) * floor(NSMinX(bounds));
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
                     break;
             }
             switch (charDir) {
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSMinY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSMaxY(pageBounds) - NSMaxY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSMinX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSMaxX(pageBounds) - NSMaxX(bounds);
                     break;
             }
             break;
         case 180:
             switch (lineDir) {
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSHeight(pageBounds) * floor(NSMinX(bounds));
                     break;
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSWidth(pageBounds) * floor(NSMinY(bounds));
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
                     break;
             }
             switch (charDir) {
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSMaxX(pageBounds) - NSMaxX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSMinX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSMinY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSMaxY(pageBounds) - NSMaxY(bounds);
                     break;
             }
             break;
         case 270:
             switch (lineDir) {
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSWidth(pageBounds) * floor(NSMinY(bounds));
                     break;
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSHeight(pageBounds) * floor(NSMinX(bounds));
                     break;
             }
             switch (charDir) {
-                case kCFLocaleLanguageDirectionUnknown:
-                case kCFLocaleLanguageDirectionLeftToRight:
+                case NSLocaleLanguageDirectionUnknown:
+                case NSLocaleLanguageDirectionLeftToRight:
                     order += NSMaxY(pageBounds) - NSMaxY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionRightToLeft:
+                case NSLocaleLanguageDirectionRightToLeft:
                     order += NSMinY(bounds);
                     break;
-                case kCFLocaleLanguageDirectionTopToBottom:
+                case NSLocaleLanguageDirectionTopToBottom:
                     order += NSMaxX(pageBounds) - NSMaxX(bounds);
                     break;
-                case kCFLocaleLanguageDirectionBottomToTop:
+                case NSLocaleLanguageDirectionBottomToTop:
                     order += NSMinX(bounds);
                     break;
             }

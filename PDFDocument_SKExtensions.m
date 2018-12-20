@@ -192,8 +192,8 @@
 - (NSInteger)languageDirection {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
-    CFLocaleLanguageDirection charDir = kCFLocaleLanguageDirectionLeftToRight;
-    CFLocaleLanguageDirection lineDir = kCFLocaleLanguageDirectionTopToBottom;
+    NSLocaleLanguageDirection charDir = NSLocaleLanguageDirectionLeftToRight;
+    NSLocaleLanguageDirection lineDir = NSLocaleLanguageDirectionTopToBottom;
     if (catalog) {
         CGPDFStringRef lang = NULL;
         if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
