@@ -197,8 +197,20 @@
         CGPDFStringRef lang = NULL;
         if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
             NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
-            direction.characterDirection = [NSLocale characterDirectionForLanguage:language] ?: NSLocaleLanguageDirectionLeftToRight;
-            direction.lineDirection = [NSLocale lineDirectionForLanguage:language] ?: NSLocaleLanguageDirectionTopToBottom;
+            direction.characterDirection = [NSLocale characterDirectionForLanguage:language];
+            direction.lineDirection = [NSLocale lineDirectionForLanguage:language];
+            if (direction.lineDirection == NSLocaleLanguageDirectionUnknown) {
+                if (direction.characterDirection < NSLocaleLanguageDirectionTopToBottom)
+                    direction.lineDirection = NSLocaleLanguageDirectionTopToBottom;
+                else
+                    direction.lineDirection = NSLocaleLanguageDirectionLeftToRight;
+            }
+            if (direction.characterDirection == NSLocaleLanguageDirectionUnknown) {
+                if (direction.lineDirection > NSLocaleLanguageDirectionRightToLeft)
+                    direction.characterDirection = NSLocaleLanguageDirectionLeftToRight;
+                else
+                    direction.characterDirection = NSLocaleLanguageDirectionTopToBottom;
+            }
             [language release];
         }
     }
