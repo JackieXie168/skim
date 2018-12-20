@@ -146,7 +146,7 @@ static BOOL useToolModeCursors = NO;
 
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page);
 
-static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower);
+static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger lineAngle, BOOL lower);
 
 enum {
     SKNavigationNone,
@@ -3050,21 +3050,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFPage *newPage = [readingBar page];
         NSRect newBounds = [readingBar currentBoundsForBox:[self displayBox]];
         NSRect rect = [readingBar currentBounds];
-        NSInteger rotation = [newPage intrinsicRotation];
-        if ((rotation % 180)) {
-            rect = NSInsetRect(rect, -20.0, 0.0) ;
-            if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
-                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:newPage];
-                rect = NSInsetRect(rect, - floor( ( NSWidth(visibleRect) - NSWidth(rect) ) / 2.0 ), 0.0 );
-                if (NSHeight(rect) <= NSHeight(visibleRect)) {
-                    if (NSMinY(rect) > NSMinY(visibleRect))
-                        rect.origin.y = fmax(NSMinY(visibleRect), NSMaxY(rect) - NSHeight(visibleRect));
-                } else if (rotation == 270) {
-                    rect.origin.y = NSMaxY(rect) - NSHeight(visibleRect);
-                }
-                rect.size.height = NSHeight(visibleRect);
-            }
-        } else {
+        NSInteger lineAngle = [newPage languageDirectionAngles].lineAngle;
+        if ((lineAngle % 180)) {
             rect = NSInsetRect(rect, 0.0, -20.0) ;
             if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
                 NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:newPage];
@@ -3072,10 +3059,23 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 if (NSWidth(rect) <= NSWidth(visibleRect)) {
                     if (NSMinX(rect) > NSMinX(visibleRect))
                         rect.origin.x = fmax(NSMinX(visibleRect), NSMaxX(rect) - NSWidth(visibleRect));
-                } else if (rotation == 180) {
+                } else if (lineAngle == 90) {
                     rect.origin.x = NSMaxX(rect) - NSWidth(visibleRect);
                 }
                 rect.size.width = NSWidth(visibleRect);
+            }
+        } else {
+            rect = NSInsetRect(rect, -20.0, 0.0) ;
+            if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
+                NSRect visibleRect = [self convertRect:[self visibleContentRect] toPage:newPage];
+                rect = NSInsetRect(rect, - floor( ( NSWidth(visibleRect) - NSWidth(rect) ) / 2.0 ), 0.0 );
+                if (NSHeight(rect) <= NSHeight(visibleRect)) {
+                    if (NSMinY(rect) > NSMinY(visibleRect))
+                        rect.origin.y = fmax(NSMinY(visibleRect), NSMaxY(rect) - NSHeight(visibleRect));
+                } else if (lineAngle == 180) {
+                    rect.origin.y = NSMaxY(rect) - NSHeight(visibleRect);
+                }
+                rect.size.height = NSHeight(visibleRect);
             }
         }
         [self goToRect:rect onPage:newPage];
@@ -3820,12 +3820,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = readingBarPage;
     NSPointerArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
-    NSInteger rotation = [page intrinsicRotation];
+    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
     
     NSEvent *lastMouseEvent = theEvent;
     NSPoint lastMouseLoc = [theEvent locationInView:self];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
-    NSInteger lineOffset = SKIndexOfRectAtPointInOrderedRects(point, lineRects, rotation, YES) - [readingBar currentLine];
+    NSInteger lineOffset = SKIndexOfRectAtPointInOrderedRects(point, lineRects, lineAngle, YES) - [readingBar currentLine];
     NSDate *lastPageChangeDate = [NSDate distantPast];
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
@@ -3874,13 +3874,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([mousePage isEqual:page] == NO) {
             page = mousePage;
             lineRects = [page lineRects];
-            rotation = [page intrinsicRotation];
+            lineAngle = [page languageDirectionAngles].lineAngle;
         }
         
         if ([lineRects count] == 0)
             continue;
         
-        currentLine = SKIndexOfRectAtPointInOrderedRects(mouseLocInPage, lineRects, rotation, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
+        currentLine = SKIndexOfRectAtPointInOrderedRects(mouseLocInPage, lineRects, lineAngle, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
         currentLine = MIN((NSInteger)[lineRects count] - (NSInteger)[readingBar numberOfLines], currentLine);
         currentLine = MAX(0, currentLine);
         
@@ -3916,8 +3916,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSInteger firstLine = [readingBar currentLine];
     NSPointerArray *lineRects = [page lineRects];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil];
-    NSInteger rotation = [page intrinsicRotation];
-    
+    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+
     [[NSCursor resizeUpDownCursor] push];
     
 	while (YES) {
@@ -3931,7 +3931,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([[self pageAndPoint:&point forEvent:theEvent nearest:YES] isEqual:page] == NO)
             continue;
         
-        NSInteger numberOfLines = MAX(0, SKIndexOfRectAtPointInOrderedRects(point, lineRects, rotation, YES)) - firstLine + 1;
+        NSInteger numberOfLines = MAX(0, SKIndexOfRectAtPointInOrderedRects(point, lineRects, lineAngle, YES)) - firstLine + 1;
         
         if (numberOfLines > 0 && numberOfLines != (NSInteger)[readingBar numberOfLines]) {
             NSRect oldRect = [readingBar currentBoundsForBox:[self displayBox]];
@@ -4415,18 +4415,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (readingBar && [[readingBar page] isEqual:page]) {
             NSRect bounds = [readingBar currentBounds];
-            NSInteger rotation = [page intrinsicRotation];
-            if ((rotation % 180)) {
-                if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
-                    area |= SKReadingBarArea;
-                    if ((rotation == 90 && p.x > NSMaxX(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 270 && p.x < NSMinX(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT))
-                        area |= ([page rotation] % 180) ? SKResizeUpDownArea : SKResizeLeftRightArea;
-                }
-            } else {
+            NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+            if ((lineAngle % 180)) {
                 if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
                     area |= SKReadingBarArea;
-                    if ((rotation == 0 && p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT) || (rotation == 180 && p.y > NSMaxY(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT))
+                    if ((lineAngle == 270 && p.y < NSMinY(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT) || (lineAngle == 90 && p.y > NSMaxY(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT))
                         area |= ([page rotation] % 180) ? SKResizeLeftRightArea : SKResizeUpDownArea;
+                }
+            } else {
+                if (p.x >= NSMinX(bounds) && p.x <= NSMaxX(bounds)) {
+                    area |= SKReadingBarArea;
+                    if ((lineAngle == 0 && p.x > NSMaxX(bounds) - READINGBAR_RESIZE_EDGE_HEIGHT) || (lineAngle == 180 && p.x < NSMinX(bounds) + READINGBAR_RESIZE_EDGE_HEIGHT))
+                        area |= ([page rotation] % 180) ? SKResizeUpDownArea : SKResizeLeftRightArea;
                 }
             }
         }
@@ -4531,18 +4531,18 @@ static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask
         return kPDFNoArea;
 }
 
-static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger rotation, BOOL lower) 
+static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger lineAngle, BOOL lower)
 {
     NSInteger i = 0, iMax = [rectArray count];
     
     for (i = 0; i < iMax; i++) {
         NSRect rect = [rectArray rectAtIndex:i];
         NSInteger pos;
-        switch (rotation) {
-            case 0:   pos = point.y < NSMinY(rect) ? -1 : point.y < NSMaxY(rect) ? 0 : 1; break;
-            case 90:  pos = point.x > NSMaxX(rect) ? -1 : point.x > NSMinX(rect) ? 0 : 1; break;
-            case 180: pos = point.y > NSMaxY(rect) ? -1 : point.y > NSMinY(rect) ? 0 : 1; break;
-            case 270: pos = point.x < NSMinX(rect) ? -1 : point.x < NSMaxX(rect) ? 0 : 1; break;
+        switch (lineAngle) {
+            case 0:   pos = point.x > NSMaxX(rect) ? -1 : point.x > NSMinX(rect) ? 0 : 1; break;
+            case 90:  pos = point.y > NSMaxY(rect) ? -1 : point.y > NSMinY(rect) ? 0 : 1; break;
+            case 180: pos = point.x < NSMinX(rect) ? -1 : point.x < NSMaxX(rect) ? 0 : 1; break;
+            case 270: pos = point.y < NSMinY(rect) ? -1 : point.y < NSMaxY(rect) ? 0 : 1; break;
             default:  pos = point.y < NSMinY(rect) ? -1 : point.y < NSMaxY(rect) ? 0 : 1; break;
         }
         if (pos != -1) {

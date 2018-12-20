@@ -135,7 +135,7 @@
     @synchronized (self) {
         rect = currentBounds;
         bounds = [page boundsForBox:box];
-        rotated = ([page intrinsicRotation] % 180) != 0;
+        rotated = ([page languageDirectionAngles].lineAngle % 180) == 0;
     }
     if (NSEqualRects(rect, NSZeroRect))
         return NSZeroRect;
@@ -231,12 +231,12 @@
     return [self goToPreviousPageAtTop:YES];
 }
 
-static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation) {
-    switch (rotation) {
-        case 0:   return NSMaxY(rect) >= point.y;
-        case 90:  return NSMinX(rect) <= point.x;
-        case 180: return NSMinY(rect) <= point.y;
-        case 270: return NSMaxX(rect) >= point.x;
+static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger lineAngle) {
+    switch (lineAngle) {
+        case 0:   return NSMinX(rect) <= point.x;
+        case 90:  return NSMinY(rect) <= point.y;
+        case 180: return NSMaxX(rect) >= point.x;
+        case 270: return NSMaxY(rect) >= point.y;
         default:  return NSMaxY(rect) >= point.x;
     }
 }
@@ -245,9 +245,9 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
     if ([lineRects count] == 0)
         return NO;
     NSInteger i = [self maxLine];
-    NSInteger rotation = [page intrinsicRotation];
+    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
     while (--i >= 0)
-        if (topAbovePoint([lineRects rectAtIndex:i], point, rotation)) break;
+        if (topAbovePoint([lineRects rectAtIndex:i], point, lineAngle)) break;
     currentLine = MAX(0, i);
     [self updateCurrentBounds];
     return YES;
@@ -266,12 +266,12 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger rotation)
             NSRect bounds = [pdfPage boundsForBox:box];
             if (NSEqualRects(rect, NSZeroRect)) {
                 CGContextFillRect(context, NSRectToCGRect(bounds));
-            } else if (([pdfPage intrinsicRotation] % 180)) {
-                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
-                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)));
-            } else {
+            } else if (([pdfPage languageDirectionAngles].lineAngle % 180)) {
                 CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
                 CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
+            } else {
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxX(bounds) - NSMaxX(rect), NSMaxXEdge)));
+                CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinX(rect) - NSMinX(bounds), NSMinXEdge)));
             }
         } else {
             CGContextSetBlendMode(context, kCGBlendModeMultiply);

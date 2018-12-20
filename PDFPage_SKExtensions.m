@@ -364,7 +364,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     }
     
     NSRect prevRect = NSZeroRect;
-    BOOL rotated = ([self intrinsicRotation] % 180) != 0;
+    BOOL rotated = ([self languageDirectionAngles].lineAngle % 180) == 0;
     
     for (i = 0; i < [lines count]; i++) {
         rect = [lines rectAtIndex:i];
@@ -398,6 +398,48 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return CGPDFPageGetRotationAngle([self pageRef]);
 }
 
+static inline NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
+    switch (direction) {
+        case NSLocaleLanguageDirectionUnknown:
+        case NSLocaleLanguageDirectionLeftToRight: return 0;
+        case NSLocaleLanguageDirectionRightToLeft: return 180;
+        case NSLocaleLanguageDirectionTopToBottom: return 270;
+        case NSLocaleLanguageDirectionBottomToTop: return 90;
+        default:                                   return 0;
+    }
+}
+
+static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect pageBounds) {
+    switch (angle) {
+        case 0:   return NSMinX(bounds);
+        case 90:  return NSMinY(bounds);
+        case 180: return NSMaxX(pageBounds) - NSMaxX(bounds);
+        case 270: return NSMaxY(pageBounds) - NSMaxY(bounds);
+        default:  return NSMinX(bounds);
+    }
+}
+
+- (SKLanguageDirectionAngles)languageDirectionAngles {
+    SKLanguageDirection direction = [[self document] languageDirection];
+    NSInteger rotation = [self intrinsicRotation];
+    SKLanguageDirectionAngles angles;
+    angles.characterAngle = (rotation + angleForDirection(direction.characterDirection)) % 360;
+    angles.lineAngle = (rotation + angleForDirection(direction.lineDirection)) % 360;
+    return angles;
+}
+
+- (CGFloat)sortOrderForBounds:(NSRect)bounds {
+    // count pixels from start of page in reading direction until the corner of the bounds, in intrinsically rotated page
+    SKLanguageDirectionAngles angles = [self languageDirectionAngles];
+    // first get the area in pixels from the start of the page to the line for the bounds
+    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    CGFloat sortOrder = floor(distanceForAngle(angles.lineAngle, bounds, pageBounds));
+    sortOrder *= (angles.lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
+    // next add the pixels from the start of the line to the bounds
+    sortOrder += distanceForAngle(angles.characterAngle, bounds, pageBounds);
+    return sortOrder;
+}
+
 - (BOOL)isEditable {
     return NO;
 }
@@ -413,43 +455,6 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
         case 270: [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)]; break;
     }
     return transform;
-}
-
-static inline NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
-    switch (direction) {
-        case NSLocaleLanguageDirectionUnknown:
-        case NSLocaleLanguageDirectionLeftToRight: return 0;
-        case NSLocaleLanguageDirectionRightToLeft: return 180;
-        case NSLocaleLanguageDirectionTopToBottom: return 270;
-        case NSLocaleLanguageDirectionBottomToTop: return 90;
-        default:                                   return 0;
-    }
-}
-
-static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect pageBounds) {
-    switch ((angle % 360)) {
-        case 0:   return NSMinX(bounds);
-        case 90:  return NSMinY(bounds);
-        case 180: return NSMaxX(pageBounds) - NSMaxX(bounds);
-        case 270: return NSMaxY(pageBounds) - NSMaxY(bounds);
-        default:  return NSMinX(bounds);
-    }
-}
-
-- (CGFloat)sortOrderForBounds:(NSRect)bounds {
-    // count pixels from start of page in reading direction until the corner of the bounds, in intrinsically rotated page
-    SKLanguageDirection direction = [[self document] languageDirection];
-    NSInteger baseAngle = [self intrinsicRotation];
-    NSInteger lineAngle = angleForDirection(direction.lineDirection);
-    NSInteger characterAngle = angleForDirection(direction.characterDirection);;
-    
-    // first get the area in pixels from the start of the page to the line for the bounds
-    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    CGFloat sortOrder = floor(distanceForAngle(baseAngle + lineAngle, bounds, pageBounds));
-    sortOrder *= (lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
-    // next add the pixels from the start of the line to the bounds
-    sortOrder += distanceForAngle(baseAngle + characterAngle, bounds, pageBounds);
-    return sortOrder;
 }
 
 #pragma mark Scripting support

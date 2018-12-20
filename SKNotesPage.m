@@ -48,7 +48,7 @@
 - (NSInteger)intrinsicRotation {
     if (intrinsicRotation == 0)
         intrinsicRotation = [super intrinsicRotation] + 360;
-    return intrinsicRotation - 360;
+    return 0;
 }
 
 - (NSAttributedString *)attributedString {
