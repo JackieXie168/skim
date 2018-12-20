@@ -429,13 +429,12 @@ static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
     // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page
-    // languageDirection = characterDirection + 8 * lineDirection
-    NSInteger direction = [[self document] languageDirection];
+    SKLanguageDirection direction = [[self document] languageDirection];
     CGFloat sortOrder = 0.0;
     NSInteger lineAngle, characterAngle;
     characterAngle = lineAngle = [self intrinsicRotation];
-    characterAngle -= angleForDirection((direction % 8) ?: NSLocaleLanguageDirectionLeftToRight);
-    lineAngle -= angleForDirection((direction / 8) ?: NSLocaleLanguageDirectionTopToBottom);
+    characterAngle -= angleForDirection(direction.characterDirection);
+    lineAngle -= angleForDirection(direction.lineDirection);
     switch ((lineAngle + 360) % 360) {
         case 0:
             sortOrder = NSHeight(pageBounds) * floor(NSMinX(bounds));

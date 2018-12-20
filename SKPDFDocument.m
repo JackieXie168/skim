@@ -62,8 +62,8 @@
     return [SKPDFPage class];
 }
 
-- (NSInteger)languageDirection {
-    if (languageDirection == 0)
+- (SKLanguageDirection)languageDirection {
+    if (languageDirection.characterDirection == NSLocaleLanguageDirectionUnknown)
         languageDirection = [super languageDirection] ;
     return languageDirection;
 }

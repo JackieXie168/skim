@@ -189,21 +189,20 @@
     return [settings count] > 0 ? settings : nil;
 }
 
-- (NSInteger)languageDirection {
+- (SKLanguageDirection)languageDirection {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
-    NSLocaleLanguageDirection charDir = NSLocaleLanguageDirectionLeftToRight;
-    NSLocaleLanguageDirection lineDir = NSLocaleLanguageDirectionTopToBottom;
+    SKLanguageDirection direction = (SKLanguageDirection){NSLocaleLanguageDirectionLeftToRight, NSLocaleLanguageDirectionTopToBottom};
     if (catalog) {
         CGPDFStringRef lang = NULL;
         if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
             NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
-            charDir = [NSLocale characterDirectionForLanguage:language] ?: charDir;
-            lineDir = [NSLocale lineDirectionForLanguage:language] ?: lineDir;
+            direction.characterDirection = [NSLocale characterDirectionForLanguage:language] ?: NSLocaleLanguageDirectionLeftToRight;
+            direction.lineDirection = [NSLocale lineDirectionForLanguage:language] ?: NSLocaleLanguageDirectionTopToBottom;
             [language release];
         }
     }
-    return charDir + 8 * lineDir;
+    return direction;
 }
 
 #pragma clang diagnostic push

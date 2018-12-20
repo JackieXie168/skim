@@ -38,11 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "PDFDocument_SKExtensions.h"
 
 @protocol SKPDFDocumentDelegate;
 
 @interface SKPDFDocument : PDFDocument {
-    NSInteger languageDirection;
+    SKLanguageDirection languageDirection;
     NSDocument *containingDocument;
 }
 @property (nonatomic, assign) NSDocument *containingDocument;
