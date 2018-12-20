@@ -439,17 +439,16 @@ static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect 
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
     // count pixels from start of page in reading direction until the corner of the bounds, in intrinsically rotated page
     SKLanguageDirection direction = [[self document] languageDirection];
-    NSInteger lineAngle, characterAngle;
-    characterAngle = lineAngle = [self intrinsicRotation];
-    characterAngle += angleForDirection(direction.characterDirection);
-    lineAngle += angleForDirection(direction.lineDirection);
+    NSInteger baseAngle = [self intrinsicRotation];
+    NSInteger lineAngle = angleForDirection(direction.lineDirection);
+    NSInteger characterAngle = angleForDirection(direction.characterDirection);;
     
     // first get the area in pixels from the start of the page to the line for the bounds
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    CGFloat sortOrder = floor(distanceForAngle(lineAngle, bounds, pageBounds));
+    CGFloat sortOrder = floor(distanceForAngle(baseAngle + lineAngle, bounds, pageBounds));
     sortOrder *= (lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
     // next add the pixels from the start of the line to the bounds
-    sortOrder += distanceForAngle(characterAngle, bounds, pageBounds);
+    sortOrder += distanceForAngle(baseAngle + characterAngle, bounds, pageBounds);
     return sortOrder;
 }
 
