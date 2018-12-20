@@ -849,6 +849,7 @@
 		CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_SKExtensions.m; sourceTree = "<group>"; };
 		CE6DC9930D699F21003A072F /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TransitionMask.jpg; sourceTree = "<group>"; };
+		CE7311F521CBCE4800291D36 /* SKFileUpdateChecker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKFileUpdateChecker.h; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Skim.icns; sourceTree = "<group>"; };
 		CE7611620EA49D1400301E45 /* SKPrintableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintableView.h; sourceTree = "<group>"; };
 		CE7611630EA49D1400301E45 /* SKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintableView.m; sourceTree = "<group>"; };
@@ -1553,6 +1554,7 @@
 				CEAA557E0C6DE030006BD633 /* SKDownloadController.m */,
 				CE9768811161195C008DCB8F /* SKDownloadPreferenceController.h */,
 				CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */,
+				CE7311F521CBCE4800291D36 /* SKFileUpdateChecker.h */,
 				CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
