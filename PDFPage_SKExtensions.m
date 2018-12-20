@@ -415,54 +415,41 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return transform;
 }
 
-static NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
+static inline NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
     switch (direction) {
         case NSLocaleLanguageDirectionUnknown:
         case NSLocaleLanguageDirectionLeftToRight: return 0;
         case NSLocaleLanguageDirectionRightToLeft: return 180;
         case NSLocaleLanguageDirectionTopToBottom: return 270;
         case NSLocaleLanguageDirectionBottomToTop: return 90;
+        default:                                   return 0;
     }
-    return 0;
+}
+
+static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect pageBounds) {
+    switch ((angle % 360)) {
+        case 0:   return NSMinX(bounds);
+        case 90:  return NSMinY(bounds);
+        case 180: return NSMaxX(pageBounds) - NSMaxX(bounds);
+        case 270: return NSMaxY(pageBounds) - NSMaxY(bounds);
+        default:  return NSMinX(bounds);
+    }
 }
 
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
-    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    // count pixels from top of page in reading direction until the corner of the bounds, in intrinsically rotated page
+    // count pixels from start of page in reading direction until the corner of the bounds, in intrinsically rotated page
     SKLanguageDirection direction = [[self document] languageDirection];
-    CGFloat sortOrder = 0.0;
     NSInteger lineAngle, characterAngle;
     characterAngle = lineAngle = [self intrinsicRotation];
     characterAngle += angleForDirection(direction.characterDirection);
     lineAngle += angleForDirection(direction.lineDirection);
-    switch (lineAngle % 360) {
-        case 0:
-            sortOrder = NSHeight(pageBounds) * floor(NSMinX(bounds));
-            break;
-        case 90:
-            sortOrder = NSWidth(pageBounds) * floor(NSMinY(bounds));
-            break;
-        case 180:
-            sortOrder = NSHeight(pageBounds) * (NSMaxX(pageBounds) - ceil(NSMaxX(bounds)));
-            break;
-        case 270:
-            sortOrder = NSWidth(pageBounds) * (NSMaxY(pageBounds) - ceil(NSMaxY(bounds)));
-            break;
-    }
-    switch (characterAngle % 360) {
-        case 0:
-            sortOrder += NSMinX(bounds);
-            break;
-        case 90:
-            sortOrder += NSMinY(bounds);
-            break;
-        case 180:
-            sortOrder += NSMaxX(pageBounds) - NSMaxX(bounds);
-            break;
-        case 270:
-            sortOrder += NSMaxY(pageBounds) - NSMaxY(bounds);
-            break;
-    }
+    
+    // first get the area in pixels from the start of the page to the line for the bounds
+    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    CGFloat sortOrder = floor(distanceForAngle(lineAngle, bounds, pageBounds));
+    sortOrder *= (lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
+    // next add the pixels from the start of the line to the bounds
+    sortOrder += distanceForAngle(characterAngle, bounds, pageBounds);
     return sortOrder;
 }
 
