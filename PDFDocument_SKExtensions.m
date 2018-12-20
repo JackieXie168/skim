@@ -189,19 +189,21 @@
     return [settings count] > 0 ? settings : nil;
 }
 
-- (BOOL)hasRightToLeftLanguage {
+- (NSInteger)languageDirection {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
-    BOOL isRTL = NO;
+    CFLocaleLanguageDirection charDir = kCFLocaleLanguageDirectionLeftToRight;
+    CFLocaleLanguageDirection lineDir = kCFLocaleLanguageDirectionTopToBottom;
     if (catalog) {
         CGPDFStringRef lang = NULL;
         if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
             NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
-            isRTL = [NSLocale characterDirectionForLanguage:language] == kCFLocaleLanguageDirectionRightToLeft;
+            charDir = [NSLocale characterDirectionForLanguage:language] ?: charDir;
+            lineDir = [NSLocale lineDirectionForLanguage:language] ?: lineDir;
             [language release];
         }
     }
-    return isRTL;
+    return charDir + 8 * lineDir;
 }
 
 #pragma clang diagnostic push

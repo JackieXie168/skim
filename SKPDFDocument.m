@@ -62,10 +62,10 @@
     return [SKPDFPage class];
 }
 
-- (BOOL)hasRightToLeftLanguage {
-    if (languageDirection == kCFLocaleLanguageDirectionUnknown)
-        languageDirection = [super hasRightToLeftLanguage] ? kCFLocaleLanguageDirectionRightToLeft : kCFLocaleLanguageDirectionLeftToRight;
-    return languageDirection == kCFLocaleLanguageDirectionRightToLeft;
+- (NSInteger)languageDirection {
+    if (languageDirection == 0)
+        languageDirection = [super languageDirection] ;
+    return languageDirection;
 }
 
 - (BOOL)unlockWithPassword:(NSString *)password {

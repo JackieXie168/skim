@@ -44,7 +44,7 @@
 - (NSArray *)pageLabels;
 - (NSArray *)fileIDStrings;
 - (NSDictionary *)initialSettings;
-- (BOOL)hasRightToLeftLanguage;
+- (NSInteger)languageDirection;
 - (BOOL)allowsNotes;
 - (BOOL)realAllowsCommenting;
 - (NSDocument *)containingDocument;
