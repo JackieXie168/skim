@@ -398,14 +398,14 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     return CGPDFPageGetRotationAngle([self pageRef]);
 }
 
-static inline NSInteger angleForDirection(NSLocaleLanguageDirection direction) {
+static inline NSInteger angleForDirection(NSLocaleLanguageDirection direction, BOOL isLine) {
     switch (direction) {
-        case NSLocaleLanguageDirectionUnknown:
         case NSLocaleLanguageDirectionLeftToRight: return 0;
         case NSLocaleLanguageDirectionRightToLeft: return 180;
         case NSLocaleLanguageDirectionTopToBottom: return 270;
         case NSLocaleLanguageDirectionBottomToTop: return 90;
-        default:                                   return 0;
+        case NSLocaleLanguageDirectionUnknown:
+        default:                                   return isLine ? 270 : 0;
     }
 }
 
@@ -423,8 +423,8 @@ static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect 
     SKLanguageDirection direction = [[self document] languageDirection];
     NSInteger rotation = [self intrinsicRotation];
     SKLanguageDirectionAngles angles;
-    angles.characterAngle = (rotation + angleForDirection(direction.characterDirection)) % 360;
-    angles.lineAngle = (rotation + angleForDirection(direction.lineDirection)) % 360;
+    angles.characterAngle = (rotation + angleForDirection(direction.characterDirection, NO)) % 360;
+    angles.lineAngle = (rotation + angleForDirection(direction.lineDirection, YES)) % 360;
     return angles;
 }
 
