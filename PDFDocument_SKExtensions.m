@@ -195,7 +195,7 @@
     SKLanguageDirections directions = (SKLanguageDirections){NSLocaleLanguageDirectionLeftToRight, NSLocaleLanguageDirectionTopToBottom};
     if (catalog) {
         CGPDFStringRef lang = NULL;
-        if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
+        if (CGPDFDictionaryGetString(catalog, "Lang", &lang)) {
             NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
             directions.characterDirection = [NSLocale characterDirectionForLanguage:language];
             directions.lineDirection = [NSLocale lineDirectionForLanguage:language];
