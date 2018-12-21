@@ -40,7 +40,6 @@
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "PDFPage_SKExtensions.h"
 #import "SKPDFView.h"
 
 
