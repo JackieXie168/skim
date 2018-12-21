@@ -39,16 +39,16 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-typedef struct _SKLanguageDirection {
+typedef struct _SKLanguageDirections {
     NSLocaleLanguageDirection characterDirection;
     NSLocaleLanguageDirection lineDirection;
-} SKLanguageDirection;
+} SKLanguageDirections;
 
 @interface PDFDocument (SKExtensions)
 - (NSArray *)pageLabels;
 - (NSArray *)fileIDStrings;
 - (NSDictionary *)initialSettings;
-- (SKLanguageDirection)languageDirection;
+- (SKLanguageDirections)languageDirections;
 - (BOOL)allowsNotes;
 - (BOOL)realAllowsCommenting;
 - (NSDocument *)containingDocument;

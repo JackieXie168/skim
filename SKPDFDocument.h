@@ -43,7 +43,7 @@
 @protocol SKPDFDocumentDelegate;
 
 @interface SKPDFDocument : PDFDocument {
-    SKLanguageDirection *languageDirection;
+    SKLanguageDirections *languageDirections;
     NSDocument *containingDocument;
 }
 @property (nonatomic, assign) NSDocument *containingDocument;

@@ -420,11 +420,11 @@ static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect 
 }
 
 - (SKLanguageDirectionAngles)languageDirectionAngles {
-    SKLanguageDirection direction = [[self document] languageDirection];
+    SKLanguageDirections directions = [[self document] languageDirections];
     NSInteger rotation = [self intrinsicRotation];
     SKLanguageDirectionAngles angles;
-    angles.characterAngle = (rotation + angleForDirection(direction.characterDirection, NO)) % 360;
-    angles.lineAngle = (rotation + angleForDirection(direction.lineDirection, YES)) % 360;
+    angles.characterAngle = (rotation + angleForDirection(directions.characterDirection, NO)) % 360;
+    angles.lineAngle = (rotation + angleForDirection(directions.lineDirection, YES)) % 360;
     return angles;
 }
 

@@ -189,32 +189,32 @@
     return [settings count] > 0 ? settings : nil;
 }
 
-- (SKLanguageDirection)languageDirection {
+- (SKLanguageDirections)languageDirections {
     CGPDFDocumentRef doc = [self documentRef];
     CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(doc);
-    SKLanguageDirection direction = (SKLanguageDirection){NSLocaleLanguageDirectionLeftToRight, NSLocaleLanguageDirectionTopToBottom};
+    SKLanguageDirections directions = (SKLanguageDirections){NSLocaleLanguageDirectionLeftToRight, NSLocaleLanguageDirectionTopToBottom};
     if (catalog) {
         CGPDFStringRef lang = NULL;
         if (CGPDFDictionaryGetString(catalog, "LANG", &lang)) {
             NSString *language = (NSString *)CGPDFStringCopyTextString(lang);
-            direction.characterDirection = [NSLocale characterDirectionForLanguage:language];
-            direction.lineDirection = [NSLocale lineDirectionForLanguage:language];
-            if (direction.lineDirection == NSLocaleLanguageDirectionUnknown) {
-                if (direction.characterDirection < NSLocaleLanguageDirectionTopToBottom)
-                    direction.lineDirection = NSLocaleLanguageDirectionTopToBottom;
+            directions.characterDirection = [NSLocale characterDirectionForLanguage:language];
+            directions.lineDirection = [NSLocale lineDirectionForLanguage:language];
+            if (directions.lineDirection == NSLocaleLanguageDirectionUnknown) {
+                if (directions.characterDirection < NSLocaleLanguageDirectionTopToBottom)
+                    directions.lineDirection = NSLocaleLanguageDirectionTopToBottom;
                 else
-                    direction.lineDirection = NSLocaleLanguageDirectionLeftToRight;
+                    directions.lineDirection = NSLocaleLanguageDirectionLeftToRight;
             }
-            if (direction.characterDirection == NSLocaleLanguageDirectionUnknown) {
-                if (direction.lineDirection > NSLocaleLanguageDirectionRightToLeft)
-                    direction.characterDirection = NSLocaleLanguageDirectionLeftToRight;
+            if (directions.characterDirection == NSLocaleLanguageDirectionUnknown) {
+                if (directions.lineDirection > NSLocaleLanguageDirectionRightToLeft)
+                    directions.characterDirection = NSLocaleLanguageDirectionLeftToRight;
                 else
-                    direction.characterDirection = NSLocaleLanguageDirectionTopToBottom;
+                    directions.characterDirection = NSLocaleLanguageDirectionTopToBottom;
             }
             [language release];
         }
     }
-    return direction;
+    return directions;
 }
 
 #pragma clang diagnostic push
