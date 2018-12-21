@@ -48,11 +48,6 @@ extern NSString *SKPDFPageActionCrop;
 extern NSString *SKPDFPageActionResize;
 extern NSString *SKPDFPageActionRotate;
 
-typedef struct _SKLanguageDirectionAngles {
-    NSInteger characterAngle;
-    NSInteger lineAngle;
-} SKLanguageDirectionAngles;
-
 @class SKMainDocument, SKReadingBar;
 
 @interface PDFPage (SKExtensions) <NSPasteboardItemDataProvider>
@@ -85,7 +80,8 @@ typedef struct _SKLanguageDirectionAngles {
 - (NSString *)displayLabel;
 
 - (NSInteger)intrinsicRotation;
-- (SKLanguageDirectionAngles)languageDirectionAngles;
+- (NSInteger)characterDirectionAngle;
+- (NSInteger)lineDirectionAngle;
 
 - (BOOL)isEditable;
 

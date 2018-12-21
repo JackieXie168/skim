@@ -135,7 +135,7 @@
     @synchronized (self) {
         rect = currentBounds;
         bounds = [page boundsForBox:box];
-        rotated = ([page languageDirectionAngles].lineAngle % 180) == 0;
+        rotated = ([page lineDirectionAngle] % 180) == 0;
     }
     if (NSEqualRects(rect, NSZeroRect))
         return NSZeroRect;
@@ -245,7 +245,7 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger lineAngle
     if ([lineRects count] == 0)
         return NO;
     NSInteger i = [self maxLine];
-    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+    NSInteger lineAngle = [page lineDirectionAngle];
     while (--i >= 0)
         if (topAbovePoint([lineRects rectAtIndex:i], point, lineAngle)) break;
     currentLine = MAX(0, i);
@@ -266,7 +266,7 @@ static inline BOOL topAbovePoint(NSRect rect, NSPoint point, NSInteger lineAngle
             NSRect bounds = [pdfPage boundsForBox:box];
             if (NSEqualRects(rect, NSZeroRect)) {
                 CGContextFillRect(context, NSRectToCGRect(bounds));
-            } else if (([pdfPage languageDirectionAngles].lineAngle % 180)) {
+            } else if (([pdfPage lineDirectionAngle] % 180)) {
                 CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge)));
                 CGContextFillRect(context, NSRectToCGRect(SKSliceRect(bounds, NSMinY(rect) - NSMinY(bounds), NSMinYEdge)));
             } else {

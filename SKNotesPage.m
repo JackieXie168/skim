@@ -38,14 +38,10 @@
 
 #import "SKNotesPage.h"
 #import <SkimNotes/SkimNotes.h>
+#import "PDFPage_SKExtensions.h"
 
 
 @implementation SKNotesPage
-
-- (void)dealloc {
-    SKZONEDESTROY(languageDirectionAngles);
-    [super dealloc];
-}
 
 - (NSString *)label { return [self sequentialLabel]; }
 
@@ -55,12 +51,16 @@
     return 0;
 }
 
-- (SKLanguageDirectionAngles)languageDirectionAngles {
-    if (languageDirectionAngles == NULL) {
-        languageDirectionAngles = (SKLanguageDirectionAngles *)NSZoneMalloc(NULL, sizeof(SKLanguageDirectionAngles));
-        *languageDirectionAngles = [super languageDirectionAngles];
-    }
-    return *languageDirectionAngles;
+- (NSInteger)characterDirectionAngle {
+    if (characterDirectionAngle == 0)
+        characterDirectionAngle = [super characterDirectionAngle] + 360;
+    return characterDirectionAngle - 360;
+}
+
+- (NSInteger)lineDirectionAngle {
+    if (lineDirectionAngle == 0)
+        lineDirectionAngle = [super lineDirectionAngle] + 360;
+    return lineDirectionAngle - 360;
 }
 
 - (NSAttributedString *)attributedString {

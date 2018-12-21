@@ -3050,7 +3050,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         PDFPage *newPage = [readingBar page];
         NSRect newBounds = [readingBar currentBoundsForBox:[self displayBox]];
         NSRect rect = [readingBar currentBounds];
-        NSInteger lineAngle = [newPage languageDirectionAngles].lineAngle;
+        NSInteger lineAngle = [newPage lineDirectionAngle];
         if ((lineAngle % 180)) {
             rect = NSInsetRect(rect, 0.0, -20.0) ;
             if (([self displayMode] & kPDFDisplaySinglePageContinuous)) {
@@ -3820,7 +3820,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *page = readingBarPage;
     NSPointerArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
-    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+    NSInteger lineAngle = [page lineDirectionAngle];
     
     NSEvent *lastMouseEvent = theEvent;
     NSPoint lastMouseLoc = [theEvent locationInView:self];
@@ -3874,7 +3874,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([mousePage isEqual:page] == NO) {
             page = mousePage;
             lineRects = [page lineRects];
-            lineAngle = [page languageDirectionAngles].lineAngle;
+            lineAngle = [page lineDirectionAngle];
         }
         
         if ([lineRects count] == 0)
@@ -3916,7 +3916,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSInteger firstLine = [readingBar currentLine];
     NSPointerArray *lineRects = [page lineRects];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil];
-    NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+    NSInteger lineAngle = [page lineDirectionAngle];
 
     [[NSCursor resizeUpDownCursor] push];
     
@@ -4415,7 +4415,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (readingBar && [[readingBar page] isEqual:page]) {
             NSRect bounds = [readingBar currentBounds];
-            NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+            NSInteger lineAngle = [page lineDirectionAngle];
             if ((lineAngle % 180)) {
                 if (p.y >= NSMinY(bounds) && p.y <= NSMaxY(bounds)) {
                     area |= SKReadingBarArea;

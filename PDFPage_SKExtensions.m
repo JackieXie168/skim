@@ -364,7 +364,7 @@ static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     }
     
     NSRect prevRect = NSZeroRect;
-    BOOL rotated = ([self languageDirectionAngles].lineAngle % 180) == 0;
+    BOOL rotated = ([self lineDirectionAngle] % 180) == 0;
     
     for (i = 0; i < [lines count]; i++) {
         rect = [lines rectAtIndex:i];
@@ -419,24 +419,26 @@ static inline NSInteger distanceForAngle(NSInteger angle, NSRect bounds, NSRect 
     }
 }
 
-- (SKLanguageDirectionAngles)languageDirectionAngles {
+- (NSInteger)characterDirectionAngle {
     SKLanguageDirections directions = [[self document] languageDirections];
-    NSInteger rotation = [self intrinsicRotation];
-    SKLanguageDirectionAngles angles;
-    angles.characterAngle = (rotation + angleForDirection(directions.characterDirection, NO)) % 360;
-    angles.lineAngle = (rotation + angleForDirection(directions.lineDirection, YES)) % 360;
-    return angles;
+    return ([self intrinsicRotation] + angleForDirection(directions.characterDirection, NO)) % 360;
+}
+
+- (NSInteger)lineDirectionAngle {
+    SKLanguageDirections directions = [[self document] languageDirections];
+    return ([self intrinsicRotation] + angleForDirection(directions.lineDirection, YES)) % 360;
 }
 
 - (CGFloat)sortOrderForBounds:(NSRect)bounds {
     // count pixels from start of page in reading direction until the corner of the bounds, in intrinsically rotated page
-    SKLanguageDirectionAngles angles = [self languageDirectionAngles];
+    NSInteger characterAngle = [self characterDirectionAngle];
+    NSInteger lineAngle = [self lineDirectionAngle];
     // first get the area in pixels from the start of the page to the line for the bounds
     NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    CGFloat sortOrder = floor(distanceForAngle(angles.lineAngle, bounds, pageBounds));
-    sortOrder *= (angles.lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
+    CGFloat sortOrder = floor(distanceForAngle(lineAngle, bounds, pageBounds));
+    sortOrder *= (lineAngle % 180) ? NSWidth(pageBounds) : NSHeight(pageBounds);
     // next add the pixels from the start of the line to the bounds
-    sortOrder += distanceForAngle(angles.characterAngle, bounds, pageBounds);
+    sortOrder += distanceForAngle(characterAngle, bounds, pageBounds);
     return sortOrder;
 }
 

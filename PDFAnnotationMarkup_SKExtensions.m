@@ -177,7 +177,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         self = [self initSkimNoteWithBounds:bounds markupType:type];
         if (self) {
             PDFPage *page = [selection safeFirstPage];
-            NSInteger lineAngle = [page languageDirectionAngles].lineAngle;
+            NSInteger lineAngle = [page lineDirectionAngle];
             NSRect newBounds = NSZeroRect;
             NSPointerArray *lines = nil;
             for (PDFSelection *sel in [selection selectionsByLine]) {
@@ -306,7 +306,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     bounds = [super displayRectForBounds:bounds lineWidth:lineWidth];
     if ([self markupType] == kPDFMarkupTypeHighlight) {
         CGFloat delta = -0.03 * NSHeight(bounds);
-        bounds = ([[self page] languageDirectionAngles].lineAngle % 180) != 0 ? NSInsetRect(bounds, 0.0, delta) : NSInsetRect(bounds, delta, 0.0);
+        bounds = ([[self page] lineDirectionAngle] % 180) != 0 ? NSInsetRect(bounds, 0.0, delta) : NSInsetRect(bounds, delta, 0.0);
     }
     return bounds;
 }

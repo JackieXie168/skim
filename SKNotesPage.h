@@ -38,11 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import "PDFPage_SKExtensions.h"
 
 
 @interface SKNotesPage : PDFPage {
     NSInteger intrinsicRotation;
-    SKLanguageDirectionAngles *languageDirectionAngles;
+    NSInteger characterDirectionAngle;
+    NSInteger lineDirectionAngle;
 }
 @end

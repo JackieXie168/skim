@@ -41,6 +41,7 @@
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKPDFView.h"
+#import "PDFPage_SKExtensions.h"
 
 
 @interface PDFPage (SKPrivateDeclarations)
@@ -48,11 +49,6 @@
 @end
 
 @implementation SKPDFPage
-
-- (void)dealloc {
-    SKZONEDESTROY(languageDirectionAngles);
-    [super dealloc];
-}
 
 // On Sierra the PDFView is set on the PDFPage, but we don't want the secondary or snapshot PDFView to steal us away
 - (void)setView:(PDFView *)view {
@@ -93,12 +89,16 @@
     return intrinsicRotation - 360;
 }
 
-- (SKLanguageDirectionAngles)languageDirectionAngles {
-    if (languageDirectionAngles == NULL) {
-        languageDirectionAngles = (SKLanguageDirectionAngles *)NSZoneMalloc(NULL, sizeof(SKLanguageDirectionAngles));
-        *languageDirectionAngles = [super languageDirectionAngles];
-    }
-    return *languageDirectionAngles;
+- (NSInteger)characterDirectionAngle {
+    if (characterDirectionAngle == 0)
+        characterDirectionAngle = [super characterDirectionAngle] + 360;
+    return characterDirectionAngle - 360;
+}
+
+- (NSInteger)lineDirectionAngle {
+    if (lineDirectionAngle == 0)
+        lineDirectionAngle = [super lineDirectionAngle] + 360;
+    return lineDirectionAngle - 360;
 }
 
 - (NSAttributedString *)attributedString {
