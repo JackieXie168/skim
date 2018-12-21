@@ -38,10 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "PDFPage_SKExtensions.h"
 
 
 @interface SKPDFPage : PDFPage {
     NSRect foregroundBox;
     NSInteger intrinsicRotation;
+    SKLanguageDirectionAngles *languageDirectionAngles;
 }
 @end

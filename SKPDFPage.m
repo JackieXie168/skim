@@ -50,6 +50,11 @@
 
 @implementation SKPDFPage
 
+- (void)dealloc {
+    SKZONEDESTROY(languageDirectionAngles);
+    [super dealloc];
+}
+
 // On Sierra the PDFView is set on the PDFPage, but we don't want the secondary or snapshot PDFView to steal us away
 - (void)setView:(PDFView *)view {
     if ([PDFPage instancesRespondToSelector:_cmd] && (view == nil || [view isKindOfClass:[SKPDFView class]]))
@@ -87,6 +92,14 @@
     if (intrinsicRotation == 0)
         intrinsicRotation = [super intrinsicRotation] + 360;
     return intrinsicRotation - 360;
+}
+
+- (SKLanguageDirectionAngles)languageDirectionAngles {
+    if (languageDirectionAngles == NULL) {
+        languageDirectionAngles = (SKLanguageDirectionAngles *)NSZoneMalloc(NULL, sizeof(SKLanguageDirectionAngles));
+        *languageDirectionAngles = [super languageDirectionAngles];
+    }
+    return *languageDirectionAngles;
 }
 
 - (NSAttributedString *)attributedString {

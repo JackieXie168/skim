@@ -55,6 +55,7 @@
 
 - (void)dealloc {
     containingDocument = nil;
+    SKZONEDESTROY(languageDirection);
     [super dealloc];
 }
 
@@ -63,9 +64,11 @@
 }
 
 - (SKLanguageDirection)languageDirection {
-    if (languageDirection.characterDirection == NSLocaleLanguageDirectionUnknown)
-        languageDirection = [super languageDirection] ;
-    return languageDirection;
+    if (languageDirection == NULL) {
+        languageDirection = (SKLanguageDirection *)NSZoneMalloc(NULL, sizeof(SKLanguageDirection));
+        *languageDirection = [super languageDirection];
+    }
+    return *languageDirection;
 }
 
 - (BOOL)unlockWithPassword:(NSString *)password {
