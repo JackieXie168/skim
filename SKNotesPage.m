@@ -37,37 +37,13 @@
  */
 
 #import "SKNotesPage.h"
-#import <SkimNotes/SkimNotes.h>
 #import "PDFPage_SKExtensions.h"
 
 
 @implementation SKNotesPage
 
+- (BOOL)isEditable { return NO; }
+
 - (NSString *)label { return [self sequentialLabel]; }
-
-- (NSInteger)intrinsicRotation {
-    if (intrinsicRotation == 0)
-        intrinsicRotation = [super intrinsicRotation] + 360;
-    return 0;
-}
-
-- (NSInteger)characterDirectionAngle {
-    if (characterDirectionAngle == 0)
-        characterDirectionAngle = [super characterDirectionAngle] + 360;
-    return characterDirectionAngle - 360;
-}
-
-- (NSInteger)lineDirectionAngle {
-    if (lineDirectionAngle == 0)
-        lineDirectionAngle = [super lineDirectionAngle] + 360;
-    return lineDirectionAngle - 360;
-}
-
-- (NSAttributedString *)attributedString {
-    // on 10.6 the attributedstring is over-released by one
-    if (RUNNING(10_6))
-        return [[super attributedString] retain];
-    return [super attributedString];
-}
 
 @end
