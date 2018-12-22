@@ -2515,7 +2515,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (editor && [self commitEditing] == NO)
         [self discardEditing];
     
-    if (!RUNNING_AFTER(10_12)) {
+    if (RUNNING_BEFORE(10_13)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         NSWindow *oldWindow = [self window];
         if (oldWindow) {
@@ -2535,13 +2535,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
     if ([textField isEditable]) {
         [textField selectText:nil];
-        if (!RUNNING_AFTER(10_12))
+        if (RUNNING_BEFORE(10_13))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     
     if ([super becomeFirstResponder]) {
-        if (!RUNNING_AFTER(10_12))
+        if (RUNNING_BEFORE(10_13))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
@@ -2550,7 +2550,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if (!RUNNING_AFTER(10_12))
+        if (RUNNING_BEFORE(10_13))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
