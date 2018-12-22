@@ -40,6 +40,9 @@
 #import "NSString_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 
+#if !SDK_BEFORE(10_14)
+extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* target, AEEventClass theAEEventClass, AEEventID theAEEventID, Boolean askUserIfNeeded ) WEAK_IMPORT_ATTRIBUTE;
+#endif
 
 @implementation SKAttachmentEmailer
 
@@ -47,14 +50,14 @@
 
 + (BOOL)permissionToComposeMessage {
 #if !SDK_BEFORE(10_14)
-    if (RUNNING_AFTER(10_13)) {
-        NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease] ?: @"com.apple.mail";
-        NSAppleEventDescriptor *targetDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:mailAppID];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
+    if (AEDeterminePermissionToAutomateTarget != NULL) {
+        NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease] ?: @"com.apple.mail";
+        NSAppleEventDescriptor *targetDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:mailAppID];
         return noErr == AEDeterminePermissionToAutomateTarget(targetDescriptor.aeDesc, typeWildCard, typeWildCard, true);
-#pragma clang diagnostic pop
     }
+#pragma clang diagnostic pop
 #endif
     return YES;
 }
