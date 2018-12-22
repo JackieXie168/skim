@@ -76,10 +76,23 @@ static id fallback_getPDFView(id self, SEL _cmd) {
     return [pdfView isKindOfClass:[PDFView class]] ? pdfView : nil;
 }
 
+static id (*original_menuForEvent)(id, SEL, id) = NULL;
+
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
 static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
 static id (*original_accessibilityAttributeValue)(id, SEL, id) = NULL;
+
+#pragma mark PDFPageView fix
+
+// On Sierra and later menuForEvent: is forwarded to the PDFView of the PDFPage rather than the actual PDFView,
+static NSMenu *replacement_menuForEvent(id self, SEL _cmd, NSEvent *event) {
+    id view = [[self enclosingScrollView] superview];
+    while ((view = [view superview]))
+        if ([view isKindOfClass:[PDFView class]])
+            break;
+    return [view menuForEvent:event];
+}
 
 #pragma mark Skim support
 
@@ -195,6 +208,10 @@ static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self,
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
 void SKSwizzlePDFDisplayViewMethods() {
+    Class PDFPageViewClass = NSClassFromString(@"PDFPageView");
+    if (PDFPageViewClass)
+        original_menuForEvent = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFPageViewClass, @selector(menuForEvent:), (IMP)replacement_menuForEvent);
+    
     Class PDFDisplayViewClass = RUNNING_BEFORE(10_12) ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
     if (PDFDisplayViewClass == Nil)
         return;
