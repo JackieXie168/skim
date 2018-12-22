@@ -44,6 +44,8 @@
     NSString *subject;
 }
 
++ (BOOL)permissionToComposeMessage;
+
 + (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject waitingForTask:(NSTask *)task;
 
 @property (nonatomic, retain) NSURL *fileURL;

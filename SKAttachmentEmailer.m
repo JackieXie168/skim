@@ -45,6 +45,20 @@
 
 @synthesize fileURL, subject;
 
++ (BOOL)permissionToComposeMessage {
+#if !SDK_BEFORE(10_14)
+    if (RUNNING_AFTER(10_13)) {
+        NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease] ?: @"com.apple.mail";
+        NSAppleEventDescriptor *targetDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:mailAppID];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        return noErr == AEDeterminePermissionToAutomateTarget(targetDescriptor.aeDesc, typeWildCard, typeWildCard, true);
+#pragma clang diagnostic pop
+    }
+#endif
+    return YES;
+}
+
 + (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject waitingForTask:(NSTask *)task {
     id attachmentEmailer = [[[self alloc] init] autorelease];
     [attachmentEmailer setFileURL:aURL];

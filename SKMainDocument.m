@@ -1303,9 +1303,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSURL *fileURL = [self fileURL];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
         if (([sender tag] | SKArchiveEmailMask)) {
-            NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
-            [self saveArchiveToURL:tmpFileURL email:YES];
+            if ([SKAttachmentEmailer permissionToComposeMessage]) {
+                NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
+                NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
+                [self saveArchiveToURL:tmpFileURL email:YES];
+            } else {
+                NSBeep();
+            }
         } else {
             NSSavePanel *sp = [NSSavePanel savePanel];
             [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
