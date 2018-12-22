@@ -177,6 +177,10 @@
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
 }
 
+- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation {
+    [[NSPasteboard pasteboardWithName:NSDragPboard] clearContents];
+}
+
 #else
 
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
@@ -187,6 +191,12 @@
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return context == NSDraggingContextWithinApplication || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
+}
+
+- (void)draggingSession:(NSDraggingSession *)session
+           endedAtPoint:(NSPoint)screenPoint
+              operation:(NSDragOperation)operation {
+    [[session draggingPasteboard] clearContents];
 }
 
 #endif
