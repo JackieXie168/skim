@@ -315,7 +315,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
     CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
     BOOL wasActive = lwFlags.active;
-    NSColor *borderColor = [NSColor colorWithCalibratedWhite:SKHasDarkAppearance(NSApp) ? 1.0 : 0.0 alpha:0.7];
+    NSColor *borderColor = [NSColor colorWithCalibratedWhite:SKHasDarkAppearance(NSApp) ? 1.0 : 0.0 alpha:0.6];
+    CGFloat fraction = RUNNING_AFTER(10_13) ? 1.0 : 0.7;
     
     lwFlags.active = 0;
     [self cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
@@ -327,7 +328,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [borderColor setStroke];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         rect = NSInsetRect(rect, 1.0, 1.0);
-        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:NO hints:nil];
+        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:fraction respectFlipped:NO hints:nil];
     }];
     
     return image;
