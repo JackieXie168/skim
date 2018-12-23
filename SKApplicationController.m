@@ -217,6 +217,7 @@ static char SKApplicationObservationContext;
 }    
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+    [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
     [NSImage makeImages];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }

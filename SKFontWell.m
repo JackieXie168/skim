@@ -153,6 +153,8 @@ static char SKFontWellFontSizeObservationContext;
     [super dealloc];
 }
 
+- (BOOL)isOpaque{ return YES; }
+
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     [self deactivate];
     [super viewWillMoveToWindow:newWindow];
@@ -505,14 +507,14 @@ static char SKFontWellFontSizeObservationContext;
     if ([self state] == NSOnState) {
         [NSGraphicsContext saveGraphicsState];
         [[NSColor selectedControlColor] setFill];
-        NSRectFillUsingOperation(frame, NSCompositePlusDarker);
+        [NSBezierPath fillRect:NSInsetRect(frame, 1.0, 1.0)];
         [NSGraphicsContext restoreGraphicsState];
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(frame, 1.0, NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(controlView) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     

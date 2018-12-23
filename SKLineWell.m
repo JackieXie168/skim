@@ -275,14 +275,14 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isActive]) {
         [NSGraphicsContext saveGraphicsState];
         [[NSColor selectedControlColor] setFill];
-        NSRectFillUsingOperation(bounds, NSCompositePlusDarker);
+        [NSBezierPath fillRect:NSInsetRect(bounds, 1.0, 1.0)];
         [NSGraphicsContext restoreGraphicsState];
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation([self bounds], 1.0, NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(self) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     
