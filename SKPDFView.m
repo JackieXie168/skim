@@ -4340,7 +4340,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return NO;
     
     NSImage *dragImage = [NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
-        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.9 respectFlipped:YES hints:nil];
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.8 : 1.0 respectFlipped:YES hints:nil];
     }];
     
     NSRect dragFrame = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]);

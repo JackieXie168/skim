@@ -139,7 +139,7 @@
                         }];
                         
                         NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
-                            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:0.7 respectFlipped:YES hints:nil];
+                            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:YES hints:nil];
                         }];
                         
                         [self dragObject:object withImage:dragImage fromFrame:bounds forEvent:theEvent];
