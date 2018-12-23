@@ -45,7 +45,7 @@
 // @@ Dark mode
 
 static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
-static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.13, 0.18,  0.08, 0.12,  0.3};
+static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0.15, 0.15,  0.05};
 
 @implementation SKGradientView
 
