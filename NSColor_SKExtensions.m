@@ -170,7 +170,7 @@
 + (NSColor *)pdfControlBackgroundColor {
     static NSColor *color = nil;
     if (color == nil) {
-        color = [[NSColor colorWithCalibratedLightWhite:0.97 darkWhite:0.21 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedLightWhite:0.95 darkWhite:0.15 alpha:1.0] retain];
     }
     return color;
 }
