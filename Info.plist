@@ -285,14 +285,14 @@
 	<string>${CURRENT_PROJECT_VERSION}</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.6.0</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Skim uses AppleScript to compse e-mail messages, open text editors, and run user AppleScripts from the menu.</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>SKApplication</string>
-	<key>NSAppleEventsUsageDescription</key>
-	<string>Skim uses AppleScript to compse e-mail messages, open text editors, and run user AppleScripts from the menu.</string>
 	<key>NSRequiresAquaSystemAppearance</key>
 	<false/>
 	<key>NSServices</key>
