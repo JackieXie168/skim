@@ -221,29 +221,32 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     
     CGFloat radius = 0.0;
     NSColor *borderColor = nil;
+    NSColor *highlightColor = nil;
     if (RUNNING_BEFORE(10_10)) {
         static const NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
         static const CGFloat grays[5] = {0.5, 0.75, 0.75, 0.75, 0.66667};
         rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
         [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
         [NSBezierPath fillRect:rect];
-        borderColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+        borderColor = [NSColor controlBackgroundColor];
+        highlightColor = [NSColor selectedControlColor];
     } else {
-        static const CGFloat grays[12] = {0.94, 0.98, 0.7,  0.96, 0.96, 0.7,  0.34, 0.37, 0.3,  0.2, 0.2, 0.3};
-        NSUInteger offset = SKHasDarkAppearance(self) ? 6 : 0;
+        static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
+        NSUInteger offset = SKHasDarkAppearance(self) ? 8 : 0;
         if ([[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
-            offset += 3;
+            offset += 4;
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
         NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4.0 yRadius:4.0];
         [NSGraphicsContext saveGraphicsState];
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-0.2];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.2 yOffset:-0.2];
         [startColor setFill];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [gradient drawInBezierPath:path angle:90.0];
         borderColor = [NSColor colorWithCalibratedWhite:grays[offset + 2] alpha:1.0];
+        highlightColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
         radius = 1.5;
     }
     
@@ -258,10 +261,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         if (NSWidth(r) >= 1.0) {
             if (NSWidth(r) > 2.0)
                 [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 1.0, 1.0)];
-            if (highlightedIndex == i)
-                [[NSColor selectedControlColor] setStroke];
-            else
-                [borderColor setStroke];
+            [(highlightedIndex == i ? highlightColor : borderColor) setStroke];
             [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(r, 0.5, 0.5) xRadius:radius yRadius:radius] stroke];
         }
         r.origin.x += distance;
@@ -272,7 +272,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     }
     
     if (insertionIndex != -1) {
-        [[NSColor selectedControlColor] setFill];
+        [highlightColor setFill];
         r = [self frameForColorAtIndex:insertionIndex];
         r.origin.x -= 1.0;
         r.size.width = 1.0;
@@ -365,7 +365,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
                         [[NSColor blackColor] set];
                         [NSBezierPath setDefaultLineWidth:1.0];
-                        [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.0 yRadius:1.0] stroke];
+                        [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 yRadius:1.5] stroke];
                     }];
                     
                     NSRect rect = SKRectFromCenterAndSquareSize([theEvent locationInView:self], 12.0);
