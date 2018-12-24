@@ -53,6 +53,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #define ACTION_KEY      @"action"
 #define AUTORESIZES_KEY @"autoResizes"
 
+#define BEZEL_HEIGHT 23.0
+#define BEZEL_INSET 1.0
+#define BEZEL_INSET_OLD 0.0
+#define COLOR_INSET 2.0
+#define COLOR_SEPARATION 1.0
+
 #if SDK_BEFORE(10_7)
 @interface NSView (SKLionExtensions)
 - (NSRect)focusRingMask;
@@ -161,18 +167,22 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (BOOL)acceptsFirstResponder { return YES; }
 
+- (CGFloat)bezelInset {
+    return RUNNING_BEFORE(10_10) ? BEZEL_INSET_OLD : BEZEL_INSET;
+}
+
 - (NSRect)bezelFrame {
-    CGFloat inset = RUNNING_BEFORE(10_10) ? 0.0 : 1.0;
+    CGFloat inset = [self bezelInset];
     NSRect bounds = NSInsetRect([self bounds], inset, inset);
     return bounds;
 }
 
 - (CGFloat)distanceBetweenColors {
-    return NSHeight([self bezelFrame]) - 3.0;
+    return NSHeight([self bezelFrame]) - 2.0 * COLOR_INSET + COLOR_SEPARATION;
 }
 
 - (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
-    NSRect rect = NSInsetRect([self bezelFrame], 2.0, 2.0);
+    NSRect rect = NSInsetRect([self bezelFrame], COLOR_INSET, COLOR_INSET);
     rect.size.width = NSHeight(rect);
     if (anIndex > 0)
         rect.origin.x += anIndex * [self distanceBetweenColors];
@@ -180,10 +190,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
-    CGFloat offset = RUNNING_BEFORE(10_10) ? 0.0 : 2.0;
+    CGFloat inset = [self bezelInset];
+    CGFloat offset = 2.0 * COLOR_INSET - COLOR_SEPARATION;
     NSSize size;
-    size.height = 23.0 + offset;
-    size.width = count * (size.height - 3.0 - offset) + 3.0 + offset;
+    size.height = BEZEL_HEIGHT + 2.0 * inset;
+    size.width = count * (BEZEL_HEIGHT - offset) + offset + 2.0 * inset;
     return size;
 }
 
