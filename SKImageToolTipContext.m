@@ -45,6 +45,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define TEXT_MARGIN_X 2.0
 #define TEXT_MARGIN_Y 2.0
@@ -67,7 +68,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     static NSColor *backgroundColor = nil;
     // @@ Dark mode
     if (backgroundColor == nil)
-        backgroundColor = RUNNING_AFTER(10_9) ? [[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
+        backgroundColor = RUNNING_AFTER(10_9) ? [[NSColor colorWithCalibratedLightRed:0.95 lightGreen:0.95 lightBlue:0.95 darkRed:0.25 darkGreen:0.25 darkBlue:0.25 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey] - 2.0 * TEXT_MARGIN_X;
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey] - 2.0 * TEXT_MARGIN_Y;
