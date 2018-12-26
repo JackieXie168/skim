@@ -1914,8 +1914,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [pdfView setInteractionMode:SKNormalMode];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
-    [pdfView needsRewind];
-    [self applyPDFSettings:savedNormalSetup];
+    if ([[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] count]) {
+        [pdfView needsRewind];
+        [self applyPDFSettings:savedNormalSetup];
+    }
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
     if (leftWidth && rightWidth)
