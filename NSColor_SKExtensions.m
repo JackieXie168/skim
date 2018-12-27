@@ -40,10 +40,6 @@
 #import "SKRuntime.h"
 #import "NSGraphics_SKExtensions.h"
 
-@interface NSColor (SKPrivateDeclarations)
-+ (NSColor *)sourceListBackgroundColor;
-@end
-
 @interface SKDynamicColor : NSColor {
     NSColor *lightColor;
     NSColor *darkColor;
@@ -142,12 +138,8 @@
 
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
-    if (color == nil) {
-        if ([NSColor respondsToSelector:@selector(sourceListBackgroundColor)])
-            color = [[NSColor colorWithLightColor:[[NSColor sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] darkColor:[NSColor colorWithCalibratedRed:0.164 green:0.164 blue:0.164 alpha:1.0]] retain];
-        else
-            color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.164 darkGreen:0.164 darkBlue:0.164 alpha:1.0] retain];
-    }
+    if (color == nil)
+        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.164 darkGreen:0.164 darkBlue:0.164 alpha:1.0] retain];
     return color;
 }
 
@@ -432,6 +424,7 @@ FORWARD(greenComponent, CGFloat)
 FORWARD(blueComponent, CGFloat)
 FORWARD(hueComponent, CGFloat)
 FORWARD(saturationComponent, CGFloat)
+FORWARD(brightnessComponent, CGFloat)
 FORWARD(blackComponent, CGFloat)
 FORWARD(cyanComponent, CGFloat)
 FORWARD(magentaComponent, CGFloat)
