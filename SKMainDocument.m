@@ -1807,7 +1807,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings {
-    [[self mainWindowController] applyPDFSettings:pdfViewSettings];
+    [[self mainWindowController] applyPDFSettings:pdfViewSettings rewind:NO];
 }
 
 - (NSInteger)toolMode {

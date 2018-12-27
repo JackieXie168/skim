@@ -426,7 +426,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [pdfView applyDefaultPageBackgroundColor];
     [pdfView applyDefaultInterpolationQuality];
     
-    [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey] rewind:NO];
     
     [pdfView setDelegate:self];
     
@@ -470,7 +470,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (hasWindowSetup == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseSettingsFromPDFKey]) {
         NSDictionary *initialSettings = [[self pdfDocument] initialSettings];
         if (initialSettings) {
-            [self applyPDFSettings:initialSettings];
+            [self applyPDFSettings:initialSettings rewind:NO];
             if ([initialSettings objectForKey:@"fitWindow"])
                 windowSizeOption = [[initialSettings objectForKey:@"fitWindow"] boolValue] ? SKWindowOptionFit : SKWindowOptionDefault;
         }
@@ -577,7 +577,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [self showSnapshotsWithSetups:snapshotSetups];
         
         if ([self interactionMode] == SKNormalMode)
-            [self applyPDFSettings:setup];
+            [self applyPDFSettings:setup rewind:NO];
         else
             [savedNormalSetup addEntriesFromDictionary:setup];
         
@@ -617,7 +617,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return setup;
 }
 
-- (void)applyPDFSettings:(NSDictionary *)setup {
+- (void)applyPDFSettings:(NSDictionary *)setup rewind:(BOOL)rewind {
+    if ([setup count] && rewind)
+        [pdfView setNeedsRewind:YES];
     NSNumber *number;
     if ((number = [setup objectForKey:AUTOSCALES_KEY]))
         [pdfView setAutoScales:[number boolValue]];
@@ -1613,8 +1615,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [[self window] setLevel:NSNormalWindowLevel];
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
-        [pdfView setNeedsRewind:YES];
-        [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup];
+        [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup rewind:YES];
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
     } else {
@@ -1622,8 +1623,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
-        [pdfView setNeedsRewind:YES];
-        [self applyPDFSettings:fullScreenSetup];
+        [self applyPDFSettings:fullScreenSetup rewind:YES];
         
         [self fadeInFullScreenView:pdfSplitView inset:[SKSideWindow requiredMargin]];
     }
@@ -1748,8 +1748,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
-    [pdfView setNeedsRewind:YES];
-    [self applyPDFSettings:savedNormalSetup];
+    [self applyPDFSettings:savedNormalSetup rewind:YES];
     [savedNormalSetup removeAllObjects];
     
     [pdfView layoutDocumentView];
@@ -1888,10 +1887,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [pdfView setInteractionMode:SKFullScreenMode];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
-    if ([[pdfView document] isLocked] == NO && [fullScreenSetup count]) {
-        [pdfView setNeedsRewind:YES];
-        [self applyPDFSettings:fullScreenSetup];
-    }
+    if ([[pdfView document] isLocked] == NO && [fullScreenSetup count])
+        [self applyPDFSettings:fullScreenSetup rewind:YES];
     if (collapseSidePanesInFullScreen) {
         [savedNormalSetup setObject:[NSNumber numberWithDouble:[self leftSideWidth]] forKey:LEFTSIDEPANEWIDTH_KEY];
         [savedNormalSetup setObject:[NSNumber numberWithDouble:[self rightSideWidth]] forKey:RIGHTSIDEPANEWIDTH_KEY];
@@ -1914,10 +1911,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [pdfView setInteractionMode:SKNormalMode];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
-    if ([[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] count]) {
-        [pdfView setNeedsRewind:YES];
-        [self applyPDFSettings:savedNormalSetup];
-    }
+    if ([[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] count])
+        [self applyPDFSettings:savedNormalSetup rewind:YES];
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
     if (leftWidth && rightWidth)
@@ -1975,7 +1970,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
         if ([[pdfView document] isLocked] == NO)
-            [self applyPDFSettings:fullScreenSetup];
+            [self applyPDFSettings:fullScreenSetup rewind:YES];
         [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
         [self forceSubwindowsOnTop:YES];
     }
@@ -2220,7 +2215,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     NSDictionary *settings = [self interactionMode] == SKFullScreenMode ? [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] : nil;
     if ([settings count] == 0)
         settings = [savedNormalSetup objectForKey:AUTOSCALES_KEY] ? savedNormalSetup : [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey];
-    [self applyPDFSettings:settings];
+    [self applyPDFSettings:settings rewind:NO];
     
     NSNumber *pageIndexNumber = [savedNormalSetup objectForKey:PAGEINDEX_KEY];
     NSUInteger pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;

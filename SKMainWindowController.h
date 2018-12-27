@@ -322,7 +322,7 @@ enum {
 
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;
-- (void)applyPDFSettings:(NSDictionary *)setup;
+- (void)applyPDFSettings:(NSDictionary *)setup rewind:(BOOL)rewind;
 - (NSDictionary *)currentPDFSettings;
 
 - (void)updateLeftStatus;
