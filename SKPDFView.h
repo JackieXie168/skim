@@ -149,9 +149,7 @@ enum {
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
-
-@property (nonatomic, readonly) BOOL wantsRewind;
-- (void)needsRewind;
+@property (nonatomic) BOOL needsRewind;
 
 - (void)toggleReadingBar;
 

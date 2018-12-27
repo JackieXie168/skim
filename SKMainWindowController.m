@@ -1431,7 +1431,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     // Set up presentation mode
-    [pdfView needsRewind];
+    [pdfView setNeedsRewind:YES];
     [pdfView setBackgroundColor:RUNNING(10_12) ? [NSColor blackColor] : [NSColor clearColor]];
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
@@ -1613,7 +1613,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [[self window] setLevel:NSNormalWindowLevel];
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
-        [pdfView needsRewind];
+        [pdfView setNeedsRewind:YES];
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup];
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
@@ -1622,7 +1622,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
-        [pdfView needsRewind];
+        [pdfView setNeedsRewind:YES];
         [self applyPDFSettings:fullScreenSetup];
         
         [self fadeInFullScreenView:pdfSplitView inset:[SKSideWindow requiredMargin]];
@@ -1748,7 +1748,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
-    [pdfView needsRewind];
+    [pdfView setNeedsRewind:YES];
     [self applyPDFSettings:savedNormalSetup];
     [savedNormalSetup removeAllObjects];
     
@@ -1889,7 +1889,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO && [fullScreenSetup count]) {
-        [pdfView needsRewind];
+        [pdfView setNeedsRewind:YES];
         [self applyPDFSettings:fullScreenSetup];
     }
     if (collapseSidePanesInFullScreen) {
@@ -1915,7 +1915,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] count]) {
-        [pdfView needsRewind];
+        [pdfView setNeedsRewind:YES];
         [self applyPDFSettings:savedNormalSetup];
     }
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];

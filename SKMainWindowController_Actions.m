@@ -450,7 +450,7 @@ static NSArray *allMainDocumentPDFViews() {
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
     [[self document] undoableActionIsDiscardable];
     
-    [pdfView needsRewind];
+    [pdfView setNeedsRewind:YES];
     
     NSInteger i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++)
@@ -504,7 +504,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)cropPagesToRects:(NSPointerArray *)rects {
-    [pdfView needsRewind];
+    [pdfView setNeedsRewind:YES];
     
     NSInteger i, count = [[pdfView document] pageCount];
     NSInteger rectCount = [rects count];

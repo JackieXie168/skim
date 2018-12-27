@@ -633,7 +633,7 @@ enum {
     
 - (void)setDisplayModeAndRewind:(PDFDisplayMode)mode {
     if (mode != [self displayMode]) {
-        [self needsRewind];
+        [self setNeedsRewind:YES];
         [self setDisplayMode:mode];
     }
 }
@@ -651,7 +651,7 @@ enum {
 
 - (void)setDisplayBoxAndRewind:(PDFDisplayBox)box {
     if (box != [self displayBox]) {
-        [self needsRewind];
+        [self setNeedsRewind:YES];
         [self setDisplayBox:box];
     }
 }
@@ -670,7 +670,7 @@ enum {
 
 - (void)setDisplaysAsBookAndRewind:(BOOL)asBook {
     if (asBook != [self displaysAsBook]) {
-        [self needsRewind];
+        [self setNeedsRewind:YES];
         [self setDisplaysAsBook:asBook];
     }
 }
@@ -1190,20 +1190,24 @@ enum {
 
 #pragma mark Rewind
 
-- (BOOL)wantsRewind {
+- (BOOL)needsRewind {
     return rewindPage != nil;
 }
 
-- (void)needsRewind {
-    [rewindPage release];
-    rewindPage = [[self currentPage] retain];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (rewindPage) {
-            if ([[self currentPage] isEqual:rewindPage] == NO)
-                [self goToPage:rewindPage];
-            SKDESTROY(rewindPage);
-        }
-    });
+- (void)setNeedsRewind:(BOOL)flag {
+    if (flag) {
+        [rewindPage release];
+        rewindPage = [[self currentPage] retain];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (rewindPage) {
+                if ([[self currentPage] isEqual:rewindPage] == NO)
+                    [self goToPage:rewindPage];
+                SKDESTROY(rewindPage);
+            }
+        });
+    } else {
+        SKDESTROY(rewindPage);
+    }
 }
 
 #pragma mark Event Handling
