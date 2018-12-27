@@ -222,7 +222,7 @@ enum {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, isZooming;
-@dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect;
+@dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
