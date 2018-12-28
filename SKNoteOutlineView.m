@@ -161,19 +161,16 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
             [image setTemplate:YES];
             
             resizeIndicatorCell = [[NSImageCell alloc] initImageCell:image];
+            [resizeIndicatorCell setImageScaling:NSImageScaleNone];
+            [resizeIndicatorCell setImageAlignment:NSImageAlignBottom];
             [image release];
         }
         
-        NSRect rect = [self rectOfRow:row];
-        rect.origin.x = ceil(NSMidX(rect)) - 3.0;
-        rect.origin.y = NSMaxY(rect) - 4.0;
-        rect.size.width = 6.0;
-        rect.size.height = 3.0;
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row])
             [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleDark];
         else
             [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleLight];
-        [resizeIndicatorCell drawWithFrame:rect inView:self];
+        [resizeIndicatorCell drawWithFrame:[self rectOfRow:row] inView:self];
     }
 }
 
