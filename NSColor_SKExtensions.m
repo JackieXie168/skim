@@ -139,7 +139,7 @@
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil)
-        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.164 darkGreen:0.164 darkBlue:0.164 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.145098 darkGreen:0.149020 darkBlue:0.156863 alpha:1.0] retain];
     return color;
 }
 
