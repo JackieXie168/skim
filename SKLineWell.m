@@ -161,7 +161,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [super dealloc];
 }
 
-- (BOOL)isOpaque{ return YES; }
+- (BOOL)isOpaque{ return NO; }
 
 - (BOOL)acceptsFirstResponder { return [self canActivate]; }
 
@@ -282,7 +282,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(nil) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(self) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     

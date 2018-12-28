@@ -153,7 +153,7 @@ static char SKFontWellFontSizeObservationContext;
     [super dealloc];
 }
 
-- (BOOL)isOpaque{ return YES; }
+- (BOOL)isOpaque{ return NO; }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     [self deactivate];
@@ -514,7 +514,7 @@ static char SKFontWellFontSizeObservationContext;
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(nil) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(controlView) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     
