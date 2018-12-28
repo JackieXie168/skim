@@ -282,7 +282,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(self) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(nil) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     
@@ -327,7 +327,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [borderColor setStroke];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         rect = NSInsetRect(rect, 1.0, 1.0);
-        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.7 : ? 1.0 respectFlipped:NO hints:nil];
+        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:NO hints:nil];
     }];
     
     return image;

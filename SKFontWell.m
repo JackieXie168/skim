@@ -514,7 +514,7 @@ static char SKFontWellFontSizeObservationContext;
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(controlView) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(nil) ? NSCompositePlusLighter : NSCompositePlusDarker);
         [NSGraphicsContext restoreGraphicsState];
     }
     

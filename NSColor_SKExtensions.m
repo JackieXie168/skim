@@ -144,7 +144,6 @@
 }
 
 + (NSColor *)selectionHighlightColor:(BOOL)active {
-    // @@ Dark mode
     if (active)
         return [NSColor alternateSelectedControlColor];
     else
@@ -152,7 +151,6 @@
 }
 
 + (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
-    // @@ Dark mode
     if (active)
         return [NSColor selectedControlColor];
     else

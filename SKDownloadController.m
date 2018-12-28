@@ -238,8 +238,6 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark Images
 
-// @@ Dark mode
-
 + (NSImage *)cancelImage {
     static NSImage *cancelImage = nil;
     if (cancelImage == nil) {    
