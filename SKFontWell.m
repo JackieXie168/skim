@@ -103,6 +103,7 @@ static char SKFontWellFontSizeObservationContext;
     if ([self font] == nil)
         [self setFont:[NSFont systemFontOfSize:0.0]];
     [self fontChanged];
+    [[self cell] setShowsStateBy:NSNoCellMask];
     [super setAction:@selector(changeActive:)];
     [super setTarget:self];
     bindingInfo = [[NSMutableDictionary alloc] init];
