@@ -98,6 +98,11 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     return self;
 }
 
+- (void)dealloc {
+    SKDESTROY(resizeIndicatorCell);
+    [super dealloc];
+}
+
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
         NSPoint mouseLoc = [theEvent locationInView:self];
@@ -146,23 +151,29 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] &&
         [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
         
+        if (resizeIndicatorCell == nil) {
+            NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(6.0, 3.0)];
+            [image lockFocus];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] setStroke];
+            [NSBezierPath strokeLineFromPoint:NSMakePoint(0.0, 2.5) toPoint:NSMakePoint(6.0, 2.5)];
+            [NSBezierPath strokeLineFromPoint:NSMakePoint(2.0, 0.5) toPoint:NSMakePoint(4.0, 0.5)];
+            [image unlockFocus];
+            [image setTemplate:YES];
+            
+            resizeIndicatorCell = [[NSImageCell alloc] initImageCell:image];
+            [image release];
+        }
+        
         NSRect rect = [self rectOfRow:row];
-        CGFloat x = ceil(NSMidX(rect));
-        CGFloat y = NSMaxY(rect) - 1.5;
-        BOOL isHighlighted = [[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row];
-        BOOL isDark = SKHasDarkAppearance(nil);
-        
-        // @@ Dark mode
-
-        [NSGraphicsContext saveGraphicsState];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        
-        [[NSColor colorWithCalibratedWhite:isDark || isHighlighted ? 1.0 : 0.0 alpha:isHighlighted ? 0.7 : 0.5] setStroke];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
-        y -= 2.0;
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
-        
-        [NSGraphicsContext restoreGraphicsState];
+        rect.origin.x = ceil(NSMidX(rect)) - 3.0;
+        rect.origin.y = NSMaxY(rect) - 4.0;
+        rect.size.width = 6.0;
+        rect.size.height = 3.0;
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row])
+            [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleDark];
+        else
+            [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleLight];
+        [resizeIndicatorCell drawWithFrame:rect inView:self];
     }
 }
 
