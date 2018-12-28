@@ -41,10 +41,10 @@
 #import "NSGraphics_SKExtensions.h"
 
 @interface SKDynamicColor : NSColor {
-    NSColor *lightColor;
-    NSColor *darkColor;
+    NSColor *aquaColor;
+    NSColor *darkAquaColor;
 }
-- (id)initWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor;
+- (id)initWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor;
 @end
 
 #pragma mark -
@@ -69,27 +69,18 @@
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
 }
 
-+ (NSColor *)colorWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
++ (NSColor *)colorWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor {
     if (RUNNING_AFTER(10_13))
-        return [[[SKDynamicColor alloc] initWithLightColor:aLightColor darkColor:aDarkColor] autorelease];
-    return aLightColor;
+        return [[[SKDynamicColor alloc] initWithAquaColor:aAquaColor darkAquaColor:aDarkAquaColor] autorelease];
+    return aAquaColor;
 }
 
-+ (NSColor *)colorWithCalibratedLightWhite:(CGFloat)lightWhite darkWhite:(CGFloat)darkWhite alpha:(CGFloat)alpha {
-    return [self colorWithLightColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:alpha] darkColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:alpha]];
++ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)lightWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkWhite alpha:(CGFloat)darkAquaAlpha {
+    return [self colorWithAquaColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:darkAquaAlpha]];
 }
 
-+ (NSColor *)colorWithCalibratedLightRed:(CGFloat)lightRed lightGreen:(CGFloat)lightGreen lightBlue:(CGFloat)lightBlue darkRed:(CGFloat)darkRed darkGreen:(CGFloat)darkGreen darkBlue:(CGFloat)darkBlue alpha:(CGFloat)alpha {
-    return [self colorWithLightColor:[NSColor colorWithCalibratedRed:lightRed green:lightGreen blue:lightBlue alpha:alpha] darkColor:[NSColor colorWithCalibratedRed:darkRed green:darkGreen blue:darkBlue alpha:alpha]];
-}
-
-- (NSColor *)dynamicColorWithMaxDarkBrightness:(CGFloat)maxBrightness {
-    NSColor *lightColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-    CGFloat brightness = [lightColor brightnessComponent];
-    if (brightness <= maxBrightness)
-        return self;
-    NSColor *darkColor = [NSColor colorWithCalibratedHue:[lightColor hueComponent] saturation:[lightColor saturationComponent] brightness:maxBrightness alpha:[lightColor alphaComponent]];
-    return [NSColor colorWithLightColor:self darkColor:darkColor];
++ (NSColor *)colorWithCalibratedAquaRed:(CGFloat)aquaRed green:(CGFloat)aquaGreen blue:(CGFloat)aquaBlue alpha:(CGFloat)aquaAlpha darkAquaRed:(CGFloat)darkAquaRed green:(CGFloat)darkAquaGreen blue:(CGFloat)darkAquaBlue alpha:(CGFloat)darkAquaAlpha {
+    return [self colorWithAquaColor:[NSColor colorWithCalibratedRed:aquaRed green:aquaGreen blue:aquaBlue alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedRed:darkAquaRed green:darkAquaGreen blue:darkAquaBlue alpha:darkAquaAlpha]];
 }
 
 + (NSColor *)keySourceListHighlightColor {
@@ -139,7 +130,7 @@
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil)
-        color = [[NSColor colorWithCalibratedLightRed:0.839216 lightGreen:0.866667 lightBlue:0.898039 darkRed:0.211765 darkGreen:0.215686 darkBlue:0.223529 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedAquaRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0 darkAquaRed:0.211765 green:0.215686 blue:0.223529 alpha:1.0] retain];
     return color;
 }
 
@@ -160,7 +151,7 @@
 + (NSColor *)pdfControlBackgroundColor {
     static NSColor *color = nil;
     if (color == nil) {
-        color = [[NSColor colorWithCalibratedLightWhite:0.95 darkWhite:0.15 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedAquaWhite:0.95 alpha:1.0 darkAquaWhite:0.15 alpha:1.0] retain];
     }
     return color;
 }
@@ -319,37 +310,37 @@
 
 #define FORWARD( PROP, TYPE ) - (TYPE)PROP { return [[self effectiveColor] PROP]; }
 
-- (id)initWithLightColor:(NSColor *)aLightColor darkColor:(NSColor *)aDarkColor {
+- (id)initWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor {
     self = [super init];
     if (self) {
-        lightColor = [aLightColor retain];
-        darkColor = [aDarkColor retain];
+        aquaColor = [aAquaColor retain];
+        darkAquaColor = [aDarkAquaColor retain];
     }
     return self;
 }
 
 - (void)dealloc {
-    SKDESTROY(lightColor);
-    SKDESTROY(darkColor);
+    SKDESTROY(aquaColor);
+    SKDESTROY(darkAquaColor);
     [super dealloc];
 }
 
 - (BOOL)isEqual:(id)other {
     if ([other isMemberOfClass:[self class]] == NO)
         return NO;
-    return [lightColor isEqual:((SKDynamicColor *)other)->lightColor] && [darkColor isEqual:((SKDynamicColor *)other)->darkColor];
+    return [aquaColor isEqual:((SKDynamicColor *)other)->aquaColor] && [darkAquaColor isEqual:((SKDynamicColor *)other)->darkAquaColor];
 }
 
 - (NSUInteger)hash {
-    return [lightColor hash] + 31 * [darkColor hash];
+    return [aquaColor hash] + 31 * [darkAquaColor hash];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"light = %@, dark = %@", lightColor, darkColor];
+    return [NSString stringWithFormat:@"light = %@, dark = %@", aquaColor, darkAquaColor];
 }
 
 - (NSColor *)effectiveColor {
-    return SKHasDarkAppearance(nil) ? darkColor : lightColor;
+    return SKHasDarkAppearance(nil) ? darkAquaColor : aquaColor;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {

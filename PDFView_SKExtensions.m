@@ -369,13 +369,13 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 + (NSColor *)defaultBackgroundColor {
     NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
     NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
-    return darkColor ? [NSColor colorWithLightColor:color darkColor:darkColor] : color;
+    return darkColor ? [NSColor colorWithAquaColor:color darkAquaColor:darkColor] : color;
 }
 
 + (NSColor *)defaultFullScreenBackgroundColor {
     NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
-    return darkColor ? [NSColor colorWithLightColor:color darkColor:darkColor] : color;
+    return darkColor ? [NSColor colorWithAquaColor:color darkAquaColor:darkColor] : color;
 }
 
 @end
