@@ -160,7 +160,7 @@ static SKInfoWindowController *sharedInstance = nil;
     for (tv in tables) {
         NSUInteger row, rowMax = [tv numberOfRows];
         for (row = 0; row < rowMax; row++)
-            width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width);
+            width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width + 1.0);
     }
     for (tv in tables) {
         [[[tv tableColumns] objectAtIndex:0] setWidth:width];
