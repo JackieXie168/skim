@@ -315,7 +315,16 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
     CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
     BOOL wasActive = lwFlags.active;
-    NSColor *borderColor = [NSColor colorWithCalibratedWhite:SKHasDarkAppearance(NSApp) ? 1.0 : 0.0 alpha:0.6];
+    NSColor *borderColor;
+    NSColor *backgroundColor;
+    
+    if (SKHasDarkAppearance(NSApp)) {
+        borderColor = [NSColor colorWithCalibratedWhite:1.0 alpha:0.6];
+        backgroundColor = [NSColor colorWithCalibratedRed:0.157 green:0.165 blue:0.169 alpha:1.0];
+    } else {
+        borderColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.6];
+        backgroundColor = [NSColor colorWithCalibratedWhite:0.906 alpha:1.0];
+    }
     
     lwFlags.active = 0;
     [self cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
@@ -324,10 +333,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     // @@ Dark mode
     
     NSImage *image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
+        [backgroundColor setFill];
+        [NSBezierPath fillRect:rect];
         [borderColor setStroke];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         rect = NSInsetRect(rect, 1.0, 1.0);
-        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:NO hints:nil];
+        [imageRep drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:NO hints:nil];
     }];
     
     return image;
