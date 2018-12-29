@@ -150,32 +150,34 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)reloadPagePopUpButton {
-    NSArray *labels = [[self document] pageLabels];
-    NSUInteger count = [pagePopUpButton numberOfItems];
-    NSSize size = NSMakeSize(1000.0, 1000.0);
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
-    __block CGFloat maxWidth = 0.0;
-    __block NSUInteger maxIndex = 0;
-    
-    while (count--)
-        [pagePopUpButton removeItemAtIndex:count];
-    
-    if ([labels count] > 0) {
-        [labels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
-            CGFloat width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
-            if (width > maxWidth) {
-                maxWidth = width;
-                maxIndex = i;
-            }
-            [pagePopUpButton addItemWithTitle:label];
-        }];
+    if (pagePopUpButton) {
+        NSArray *labels = [[self document] pageLabels];
+        NSUInteger count = [pagePopUpButton numberOfItems];
+        NSSize size = NSMakeSize(1000.0, 1000.0);
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
+        __block CGFloat maxWidth = 0.0;
+        __block NSUInteger maxIndex = 0;
         
-        sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
+        while (count--)
+            [pagePopUpButton removeItemAtIndex:count];
         
-        [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
-        
-        if (controlView)
-            [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
+        if ([labels count] > 0) {
+            [labels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
+                CGFloat width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
+                if (width > maxWidth) {
+                    maxWidth = width;
+                    maxIndex = i;
+                }
+                [pagePopUpButton addItemWithTitle:label];
+            }];
+            
+            sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
+            
+            [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
+            
+            if (controlView)
+                [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
+        }
     }
 }
 
