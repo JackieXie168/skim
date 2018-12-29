@@ -119,7 +119,7 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
         size.height = fmin(size.width, size.height);
         if (activeImage == nil || NSEqualSizes([activeImage size], size) == NO) {
             SKDESTROY(activeImage);
-            activeImage = [[[NSImage alloc] initWithSize:size] autorelease];
+            activeImage = [[NSImage alloc] initWithSize:size];
             [activeImage lockFocus];
             [[NSColor blackColor] setFill];
             [NSBezierPath setDefaultLineWidth:1.0];
