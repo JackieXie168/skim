@@ -514,8 +514,8 @@ static char SKFontWellFontSizeObservationContext;
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
-        [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(frame, 1.0, SKHasDarkAppearance(controlView) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setStroke];
+        [NSBezierPath strokeRect:NSInsetRect(frame, 0.5, 0.5)];
         [NSGraphicsContext restoreGraphicsState];
     }
     

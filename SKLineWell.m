@@ -281,8 +281,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
         // @@ Dark mode
-        [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setFill];
-        NSFrameRectWithWidthUsingOperation(bounds, 1.0, SKHasDarkAppearance(self) ? NSCompositePlusLighter : NSCompositePlusDarker);
+        [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setStroke];
+        [NSBezierPath strokeRect:NSInsetRect(bounds, 0.5, 0.5)];
         [NSGraphicsContext restoreGraphicsState];
     }
     
