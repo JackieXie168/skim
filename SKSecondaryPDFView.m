@@ -52,8 +52,6 @@
 #import "NSImage_SKExtensions.h"
 #import "SKPDFView.h"
 
-@interface SKSmallButton : NSButton
-@end
 
 @interface SKSecondaryPDFView (SKPrivate)
 
@@ -266,10 +264,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (toolModeButton == nil) {
         
         // create it
-        toolModeButton = [[SKSmallButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
+        toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
         
-        [toolModeButton setButtonType:NSOnOffButton];
-        [toolModeButton setBezelStyle:NSTexturedSquareBezelStyle];
+        [toolModeButton setButtonType:NSToggleButton];
+        [toolModeButton setBordered:NO];
         [toolModeButton setImage:[NSImage imageNamed:SKImageNameTextToolAdorn]];
         
         [toolModeButton setState:[self selectsText]];
@@ -698,25 +696,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification {
     if ([self autoScales] == NO && [self synchronizeZoom] == NO)
         [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
-}
-
-@end
-
-#pragma mark
-
-@interface SKSmallButtonCell : NSButtonCell
-@end
-
-@implementation SKSmallButton
-
-+ (Class)cellClass { return [SKSmallButtonCell class]; }
-
-@end
-
-@implementation SKSmallButtonCell
-
-- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
-    [super drawBezelWithFrame:NSInsetRect(frame, -4.0, -4.0) inView:controlView];
 }
 
 @end
