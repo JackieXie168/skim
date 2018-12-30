@@ -50,6 +50,7 @@
     BOOL switching;
     BOOL selectsText;
     CGFloat startScale;
+    NSTrackingArea *area;
 }
 
 @property (nonatomic, retain) PDFView *synchronizedPDFView;

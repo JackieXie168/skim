@@ -52,6 +52,9 @@
 #import "NSImage_SKExtensions.h"
 #import "SKPDFView.h"
 
+@interface SKSmallButton : NSButton
+@end
+
 @interface SKSecondaryPDFView (SKPrivate)
 
 - (void)reloadPagePopUpButton;
@@ -150,34 +153,32 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)reloadPagePopUpButton {
-    if (pagePopUpButton) {
-        NSArray *labels = [[self document] pageLabels];
-        NSUInteger count = [pagePopUpButton numberOfItems];
-        NSSize size = NSMakeSize(1000.0, 1000.0);
-        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
-        __block CGFloat maxWidth = 0.0;
-        __block NSUInteger maxIndex = 0;
+    NSArray *labels = [[self document] pageLabels];
+    NSUInteger count = [pagePopUpButton numberOfItems];
+    NSSize size = NSMakeSize(1000.0, 1000.0);
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
+    __block CGFloat maxWidth = 0.0;
+    __block NSUInteger maxIndex = 0;
+    
+    while (count--)
+        [pagePopUpButton removeItemAtIndex:count];
+    
+    if ([labels count] > 0) {
+        [labels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
+            CGFloat width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
+            if (width > maxWidth) {
+                maxWidth = width;
+                maxIndex = i;
+            }
+            [pagePopUpButton addItemWithTitle:label];
+        }];
         
-        while (count--)
-            [pagePopUpButton removeItemAtIndex:count];
+        sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
-        if ([labels count] > 0) {
-            [labels enumerateObjectsUsingBlock:^(id label, NSUInteger i, BOOL *stop) {
-                CGFloat width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
-                if (width > maxWidth) {
-                    maxWidth = width;
-                    maxIndex = i;
-                }
-                [pagePopUpButton addItemWithTitle:label];
-            }];
-            
-            sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
-            
-            [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
-            
-            if (controlView)
-                [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
-        }
+        [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
+        
+        if (controlView)
+            [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
     }
 }
 
@@ -265,7 +266,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (toolModeButton == nil) {
         
         // create it
-        toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
+        toolModeButton = [[SKSmallButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
         
         [toolModeButton setButtonType:NSOnOffButton];
         [toolModeButton setBezelStyle:NSTexturedSquareBezelStyle];
@@ -697,6 +698,25 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification {
     if ([self autoScales] == NO && [self synchronizeZoom] == NO)
         [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
+}
+
+@end
+
+#pragma mark
+
+@interface SKSmallButtonCell : NSButtonCell
+@end
+
+@implementation SKSmallButton
+
++ (Class)cellClass { return [SKSmallButtonCell class]; }
+
+@end
+
+@implementation SKSmallButtonCell
+
+- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
+    [super drawBezelWithFrame:NSInsetRect(frame, -4.0, -4.0) inView:controlView];
 }
 
 @end

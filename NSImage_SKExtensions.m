@@ -1578,13 +1578,13 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     );
     
     MAKE_IMAGE(SKImageNameTextToolAdorn, YES, 11.0, 11.0,
-        NSFont *font = [NSFont fontWithName:@"Helvetica" size:8.0] ?: [NSFont systemFontOfSize:8.0];
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:10.0] ?: [NSFont systemFontOfSize:10.0];
         NSGlyph glyph = [font glyphWithName:@"A"];
         [[NSColor blackColor] set];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(1.5, 1.5, 8.0, 8.0)];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(0.5, 0.5, 10.0, 10.0)];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(5.5 - NSMidX([font boundingRectForGlyph:glyph]), 2.5)];
+        [path moveToPoint:NSMakePoint(5.5 - NSMidX([font boundingRectForGlyph:glyph]), 2.0)];
         [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
     );
