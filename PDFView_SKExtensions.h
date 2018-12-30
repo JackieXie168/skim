@@ -57,6 +57,7 @@
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
+- (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
 
 - (PDFPage *)pageAndPoint:(NSPoint *)point forEvent:(NSEvent *)event nearest:(BOOL)nearest;
 

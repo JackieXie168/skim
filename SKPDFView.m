@@ -1711,40 +1711,6 @@ enum {
     }
 }
 
-#pragma mark NSDraggingSource protocol
-
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
-    
-    NSPoint dragPoint = frame.origin;
-    if ([self isFlipped])
-        dragPoint.y += NSHeight(frame);
-    
-    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
-    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
-}
-
-#else
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
-
-- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
-    return context == NSDraggingContextWithinApplication ? NSDragOperationNone : NSDragOperationCopy;
-}
-
-#endif
-
 #pragma mark NSDraggingDestination protocol
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
@@ -4331,27 +4297,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         [self zoomToRect:rect onPage:page];
     }
-}
-
-- (BOOL)doDragTextWithEvent:(NSEvent *)theEvent {
-    if ([[self currentSelection] hasCharacters] == NO)
-        return NO;
-    
-    NSPoint point;
-    PDFPage *page = [self pageAndPoint:&point forEvent:theEvent nearest:NO];
-    
-    if (page == nil || NSPointInRect(point, [[self currentSelection] boundsForPage:page]) == NO || [NSApp willDragMouse] == NO)
-        return NO;
-    
-    NSImage *dragImage = [NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
-        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.8 : 1.0 respectFlipped:YES hints:nil];
-    }];
-    
-    NSRect dragFrame = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]);
-    
-    [self dragObject:[[self currentSelection] attributedString] withImage:dragImage fromFrame:dragFrame forEvent:theEvent];
-    
-    return YES;
 }
 
 - (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent {

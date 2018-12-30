@@ -633,7 +633,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         [self doDragWithEvent:theEvent];
         
-    } else {
+    } else if ([self doDragTextWithEvent:theEvent] == NO) {
         
         [super mouseDown:theEvent];
         
