@@ -52,6 +52,7 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     SKAnnotationTypeImageCell *copy = [super copyWithZone:aZone];
     copy->type = [type retain];
     copy->active = active;
+    copy->activeImage = nil;
     return copy;
 }
 
