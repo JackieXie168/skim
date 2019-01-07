@@ -351,6 +351,7 @@ char * _synctex_merge_strings(const char * first,...) {
 		size_t len = strlen(temp);
 		if(UINT_MAX-len<size) {
 			_synctex_error("!  _synctex_merge_strings: Capacity exceeded.");
+			va_end(arg);
 			return NULL;
 		}
 		size+=len;
@@ -369,6 +370,7 @@ char * _synctex_merge_strings(const char * first,...) {
 					/*  There is something to merge */
 					if(dest != strncpy(dest,temp,size)) {
 						_synctex_error("!  _synctex_merge_strings: Copy problem");
+						va_end(arg);
 						free(result);
 						result = NULL;
 						return NULL;
