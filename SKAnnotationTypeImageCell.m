@@ -48,11 +48,17 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 
 @implementation SKAnnotationTypeImageCell
 
+static NSMutableDictionary *activeImages;
+
++ (void)initialize {
+    SKINITIALIZE;
+    activeImages = [[NSMutableDictionary alloc] init];
+}
+
 - (id)copyWithZone:(NSZone *)aZone {
     SKAnnotationTypeImageCell *copy = [super copyWithZone:aZone];
     copy->type = [type retain];
     copy->active = active;
-    copy->activeImage = [activeImage retain];
     return copy;
 }
 
@@ -73,7 +79,6 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 
 - (void)dealloc {
     SKDESTROY(type);
-    SKDESTROY(activeImage);
     [super dealloc];
 }
 
@@ -118,17 +123,19 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     if (active) {
         NSSize size = cellFrame.size;
         size.height = fmin(size.width, size.height);
-        if (activeImage == nil || NSEqualSizes([activeImage size], size) == NO) {
-            SKDESTROY(activeImage);
-            activeImage = [[NSImage alloc] initWithSize:size];
-            [activeImage lockFocus];
+        NSString *sizeKey = NSStringFromSize(size);
+        image = [activeImages objectForKey:sizeKey];
+        if (image == nil) {
+            image = [[[NSImage alloc] initWithSize:size] autorelease];
+            [image lockFocus];
             [[NSColor blackColor] setFill];
             [NSBezierPath setDefaultLineWidth:1.0];
             [NSBezierPath strokeRect:NSMakeRect(0.5, 1.5, size.width - 1.0, size.height - 2.0)];
-            [activeImage unlockFocus];
-            [activeImage setTemplate:YES];
+            [image unlockFocus];
+            [image setTemplate:YES];
+            [activeImages setObject:image forKey:sizeKey];
         }
-        [super setObjectValue:activeImage];
+        [super setObjectValue:image];
         [super drawWithFrame:cellFrame inView:controlView];
     }
 }

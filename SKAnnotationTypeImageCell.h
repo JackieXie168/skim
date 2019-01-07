@@ -44,6 +44,5 @@ extern NSString *SKAnnotationTypeImageCellActiveKey;
 @interface SKAnnotationTypeImageCell : NSImageCell {
     NSString *type;
     BOOL active;
-    NSImage *activeImage;
 }
 @end
