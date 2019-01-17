@@ -220,7 +220,7 @@ static char *SKTransitionPropertiesObservationContext;
             [info setProperties:([ptEnum nextObject] ?: dictionary)];
             [array addObject:info];
             [cell setStringValue:[info label]];
-            labelWidth = fmax(labelWidth, ceil([cell cellSize].width));
+            labelWidth = fmax(labelWidth, ceil([cell cellSize].width + 1.0));
             [info release];
         }
         tn = next;

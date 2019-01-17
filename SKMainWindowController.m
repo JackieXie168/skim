@@ -693,7 +693,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     for (NSString *label in pageLabels) {
         [cell setStringValue:label];
-        labelWidth = fmax(labelWidth, [cell cellSize].width);
+        labelWidth = fmax(labelWidth, [cell cellSize].width + 1.0);
     }
     
     labelWidth = fmin(labelWidth, MAX_PAGE_COLUMN_WIDTH);
