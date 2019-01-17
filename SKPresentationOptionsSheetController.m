@@ -220,13 +220,13 @@ static char *SKTransitionPropertiesObservationContext;
             [info setProperties:([ptEnum nextObject] ?: dictionary)];
             [array addObject:info];
             [cell setStringValue:[info label]];
-            labelWidth = fmax(labelWidth, ceil([cell cellSize].width + 1.0));
+            labelWidth = fmax(labelWidth, [cell cellSize].width);
             [info release];
         }
         tn = next;
     }
     
-    labelWidth = fmin(labelWidth, MAX_PAGE_COLUMN_WIDTH);
+    labelWidth = fmin(ceil(labelWidth), MAX_PAGE_COLUMN_WIDTH);
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [tableColumn setWidth:labelWidth];
