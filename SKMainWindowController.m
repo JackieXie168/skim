@@ -762,13 +762,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [self updatePageLabel];
     
-    [self updatePageColumnWidthForTableView:leftSideController.thumbnailTableView];
-    [self updatePageColumnWidthForTableView:rightSideController.snapshotTableView];
-    [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
-    [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
-    [self updatePageColumnWidthForTableView:leftSideController.findTableView];
-    [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
-    
     // this uses the pageLabels
     [[leftSideController.thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
     
@@ -776,6 +769,13 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self resetThumbnails];
     [self allSnapshotsNeedUpdate];
     [rightSideController.noteOutlineView reloadData];
+    
+    [self updatePageColumnWidthForTableView:leftSideController.thumbnailTableView];
+    [self updatePageColumnWidthForTableView:rightSideController.snapshotTableView];
+    [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
+    [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
+    [self updatePageColumnWidthForTableView:leftSideController.findTableView];
+    [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
     
     PDFOutline *outlineRoot = [[pdfView document] outlineRoot];
     
