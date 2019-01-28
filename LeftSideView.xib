@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,7 +23,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="85" userLabel="LeftSideView">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -132,9 +131,9 @@
         <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="116">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <clipView key="contentView" id="Hnd-hK-VAX">
+            <clipView key="contentView" drawsBackground="NO" id="Hnd-hK-VAX">
                 <rect key="frame" x="1" y="1" width="198" height="398"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="20" indentationPerLevel="14" outlineTableColumn="121" id="119" customClass="SKTocOutlineView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="398"/>
@@ -172,6 +171,7 @@
                         </tableColumns>
                     </outlineView>
                 </subviews>
+                <nil key="backgroundColor"/>
             </clipView>
             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="117">
                 <rect key="frame" x="-100" y="-100" width="220" height="15"/>
@@ -186,14 +186,14 @@
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" id="VaG-cU-bQa">
-                <rect key="frame" x="1" y="25" width="198" height="374"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <rect key="frame" x="1" y="0.0" width="198" height="399"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="108" id="111" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                         <tableColumns>
                             <tableColumn identifier="page" editable="NO" width="42" minWidth="32" maxWidth="42" id="113">
@@ -262,14 +262,14 @@
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" id="CUc-Bz-YWJ">
-                <rect key="frame" x="1" y="25" width="198" height="374"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <rect key="frame" x="1" y="0.0" width="198" height="399"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="125" id="128" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                         <tableColumns>
                             <tableColumn identifier="relevance" editable="NO" width="150" minWidth="40" maxWidth="1000" id="129">
@@ -282,7 +282,6 @@
                                 <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count" ascending="NO"/>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <connections>
-                                    <binding destination="97" name="maxValue" keyPath="arrangedObjects.maxCount" id="165"/>
                                     <binding destination="97" name="value" keyPath="arrangedObjects.count" previousBinding="165" id="153">
                                         <dictionary key="options">
                                             <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
@@ -290,6 +289,7 @@
                                             <integer key="NSCreatesSortDescriptor" value="0"/>
                                         </dictionary>
                                     </binding>
+                                    <binding destination="97" name="maxValue" keyPath="arrangedObjects.maxCount" id="165"/>
                                 </connections>
                             </tableColumn>
                             <tableColumn identifier="page" editable="NO" width="42" minWidth="32" maxWidth="42" id="130">
